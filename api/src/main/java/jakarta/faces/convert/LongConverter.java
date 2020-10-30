@@ -30,9 +30,9 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 @JSFConverter
 public class LongConverter implements Converter
 {
-    public static final String CONVERTER_ID = "javax.faces.Long";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String LONG_ID = "javax.faces.converter.LongConverter.LONG";
+    public static final String CONVERTER_ID = "jakarta.faces.Long";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String LONG_ID = "jakarta.faces.converter.LongConverter.LONG";
 
     public LongConverter()
     {

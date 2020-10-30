@@ -19,10 +19,10 @@
 package org.apache.myfaces.core.integrationtests.ajax.basic;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.annotation.FacesConfig;
+import jakarta.faces.annotation.FacesConfig;
 import javax.inject.Named;
 
-import static javax.faces.annotation.FacesConfig.Version.JSF_2_3;
+import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
 
 @Named
 @RequestScoped

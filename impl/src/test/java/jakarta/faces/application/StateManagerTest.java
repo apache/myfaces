@@ -45,7 +45,7 @@ public class StateManagerTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
+     * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
     public void testNullThrowsIsSavingStateInClient()
     {
@@ -61,7 +61,7 @@ public class StateManagerTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
+     * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
     public void testIsSavingStateInClientTrue()
     {
@@ -81,7 +81,7 @@ public class StateManagerTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
+     * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
     public void testIsSavingStateInClientFalse()
     {
@@ -103,7 +103,7 @@ public class StateManagerTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
+     * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
     public void testIsSavingStateInClientBogus()
     {
@@ -127,7 +127,7 @@ public class StateManagerTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.StateManager.isSavingStateInClient(FacesContext)'
+     * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
     public void testIsSavingStateInClientNull()
     {

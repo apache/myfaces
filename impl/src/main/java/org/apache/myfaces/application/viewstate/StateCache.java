@@ -56,7 +56,7 @@ public abstract class StateCache<K, V>
      * 
      * @param facesContext
      * @param serializedView The state that will be used to derive the token returned.
-     * @return A token (usually encoded on javax.faces.ViewState input hidden field) that will be passed to 
+     * @return A token (usually encoded on jakarta.faces.ViewState input hidden field) that will be passed to 
      *         ResponseStateManager.writeState or ResponseStateManager.getViewState to be 
      *         output to the client.
      */

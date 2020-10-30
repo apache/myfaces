@@ -26,7 +26,7 @@ import jakarta.faces.component.visit.VisitHint;
 
 public class MyFacesVisitHints
 {
-    public static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    public static final String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
     
     public static final Set<VisitHint> SET_SKIP_ITERATION = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.SKIP_ITERATION));

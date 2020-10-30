@@ -45,15 +45,15 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
     tagClass="org.apache.myfaces.taglib.core.ValidateLengthTag")
 @JSFJspProperty(
     name="binding", 
-    returnType = "javax.faces.validator.LengthValidator",
+    returnType = "jakarta.faces.validator.LengthValidator",
     longDesc = "A ValueExpression that evaluates to a LengthValidator.")
 public class LengthValidator
         implements Validator, PartialStateHolder
 {
     // FIELDS
-    public static final String     MAXIMUM_MESSAGE_ID = "javax.faces.validator.LengthValidator.MAXIMUM";
-    public static final String     MINIMUM_MESSAGE_ID = "javax.faces.validator.LengthValidator.MINIMUM";
-    public static final String     VALIDATOR_ID        = "javax.faces.Length";
+    public static final String     MAXIMUM_MESSAGE_ID = "jakarta.faces.validator.LengthValidator.MAXIMUM";
+    public static final String     MINIMUM_MESSAGE_ID = "jakarta.faces.validator.LengthValidator.MINIMUM";
+    public static final String     VALIDATOR_ID        = "jakarta.faces.Length";
 
     private Integer _minimum = null;
     private Integer _maximum = null;

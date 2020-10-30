@@ -28,13 +28,13 @@ import java.io.IOException;
  */
 public abstract class ResponseStateManager
 {
-    public static final String RENDER_KIT_ID_PARAM = "javax.faces.RenderKitId";
-    public static final String VIEW_STATE_PARAM = "javax.faces.ViewState";
+    public static final String RENDER_KIT_ID_PARAM = "jakarta.faces.RenderKitId";
+    public static final String VIEW_STATE_PARAM = "jakarta.faces.ViewState";
     
-    public static final String CLIENT_WINDOW_PARAM = "javax.faces.ClientWindow";
+    public static final String CLIENT_WINDOW_PARAM = "jakarta.faces.ClientWindow";
     public static final String CLIENT_WINDOW_URL_PARAM = "jfwid";
     
-    public static final String NON_POSTBACK_VIEW_TOKEN_PARAM = "javax.faces.Token";
+    public static final String NON_POSTBACK_VIEW_TOKEN_PARAM = "jakarta.faces.Token";
 
     public void writeState(FacesContext context, Object state) throws IOException
     {

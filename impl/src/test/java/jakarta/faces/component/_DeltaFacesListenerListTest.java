@@ -39,7 +39,7 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         @Override
         public String getFamily()
         {
-            return "javax.faces.Test";
+            return "jakarta.faces.Test";
         }
     }
     

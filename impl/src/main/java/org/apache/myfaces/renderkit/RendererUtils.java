@@ -538,26 +538,6 @@ public final class RendererUtils
         }
     }
 
-    /**
-     * Call {@link UIComponent#pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)}, 
-     * reads the isRendered property, call {@link
-     * UIComponent#popComponentFromEL(javax.faces.context.FacesContext)} and returns the value of isRendered.
-     */
-    public static boolean isRendered(FacesContext facesContext, UIComponent uiComponent)
-    {
-        // We must call pushComponentToEL here because ValueExpression may have 
-        // implicit object "component" used. 
-        try
-        {
-            uiComponent.pushComponentToEL(facesContext, uiComponent);
-            return uiComponent.isRendered();
-        }
-        finally
-        {
-            uiComponent.popComponentFromEL(facesContext);
-        }
-    }
-
     public static List getSelectItemList(UISelectOne uiSelectOne)
     {
         return internalGetSelectItemList(uiSelectOne, FacesContext.getCurrentInstance());
@@ -892,7 +872,7 @@ public final class RendererUtils
       * Checks for name/library attributes on component and if they are avaliable,
       * creates {@link Resource} and returns it's path suitable for rendering.
       * If component doesn't have name/library gets value for attribute named <code>attributeName</code> 
-      * returns it processed with {@link #toResourceUri(javax.faces.context.FacesContext, java.lang.Object)}
+      * returns it processed with {@link #toResourceUri(jakarta.faces.context.FacesContext, java.lang.Object)}
       *       
       * @param facesContext a {@link FacesContext}
       * @param component a {@link UIComponent}

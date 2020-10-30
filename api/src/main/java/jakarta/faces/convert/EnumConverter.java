@@ -34,9 +34,9 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 public class EnumConverter implements Converter, PartialStateHolder
 {
 
-    public static final String CONVERTER_ID = "javax.faces.Enum";
-    public static final String ENUM_ID = "javax.faces.converter.EnumConverter.ENUM";
-    public static final String ENUM_NO_CLASS_ID = "javax.faces.converter.EnumConverter.ENUM_NO_CLASS";
+    public static final String CONVERTER_ID = "jakarta.faces.Enum";
+    public static final String ENUM_ID = "jakarta.faces.converter.EnumConverter.ENUM";
+    public static final String ENUM_NO_CLASS_ID = "jakarta.faces.converter.EnumConverter.ENUM_NO_CLASS";
 
     /**
      * If value is a String instance and this param is true, pass it directly without try any change.

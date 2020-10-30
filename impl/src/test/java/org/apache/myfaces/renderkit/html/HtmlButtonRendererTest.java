@@ -64,8 +64,8 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
                 form.getRendererType(),
                 new HtmlFormRenderer());
         facesContext.getRenderKit().addRenderer(
-                "javax.faces.Input",
-                "javax.faces.Hidden",
+                "jakarta.faces.Input",
+                "jakarta.faces.Hidden",
                 new HtmlHiddenRenderer());
         
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
@@ -196,8 +196,8 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
     
     /**
      * If a h:commandButton has any UIParameter children, he should
-     * render them with a renderer of family javax.faces.Input and
-     * renderer type javax.faces.Hidden.
+     * render them with a renderer of family jakarta.faces.Input and
+     * renderer type jakarta.faces.Hidden.
      * If the disable attribute of a child UIParameter is true,
      * he should be ignored.
      * @throws Exception

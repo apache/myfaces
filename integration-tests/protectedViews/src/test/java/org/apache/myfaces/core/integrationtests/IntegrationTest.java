@@ -80,7 +80,7 @@ public class IntegrationTest
         Assert.assertTrue(webDriver.getPageSource().contains("Index View"));
         
         WebElement link = webDriver.findElement(By.id("link"));
-        Assert.assertTrue(link.getAttribute("href").contains("javax.faces.Token"));
+        Assert.assertTrue(link.getAttribute("href").contains("jakarta.faces.Token"));
         
         Graphene.guardHttp(link).click();
         

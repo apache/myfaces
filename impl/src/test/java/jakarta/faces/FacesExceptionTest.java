@@ -43,7 +43,7 @@ public class FacesExceptionTest
     }
 
     /*
-     * Test method for 'javax.faces.FacesException.FacesException()'
+     * Test method for 'jakarta.faces.FacesException.FacesException()'
      */
     @Test
     public void testFacesException()
@@ -54,7 +54,7 @@ public class FacesExceptionTest
     }
 
     /*
-     * Test method for 'javax.faces.FacesException.FacesException(Throwable)'
+     * Test method for 'jakarta.faces.FacesException.FacesException(Throwable)'
      */
     @Test
     public void testFacesExceptionThrowable()
@@ -65,7 +65,7 @@ public class FacesExceptionTest
     }
 
     /*
-     * Test method for 'javax.faces.FacesException.FacesException(String)'
+     * Test method for 'jakarta.faces.FacesException.FacesException(String)'
      */
     @Test
     public void testFacesExceptionString()
@@ -76,7 +76,7 @@ public class FacesExceptionTest
     }
 
     /*
-     * Test method for 'javax.faces.FacesException.FacesException(String, Throwable)'
+     * Test method for 'jakarta.faces.FacesException.FacesException(String, Throwable)'
      */
     @Test
     public void testFacesExceptionStringThrowable()
@@ -89,7 +89,7 @@ public class FacesExceptionTest
     }
 
     /*
-     * Test method for 'javax.faces.FacesException.getCause()'
+     * Test method for 'jakarta.faces.FacesException.getCause()'
      */
     @Test
     public void testGetCause()

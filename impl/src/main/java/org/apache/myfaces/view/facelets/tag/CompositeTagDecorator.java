@@ -44,7 +44,7 @@ public final class CompositeTagDecorator implements TagDecorator
      * Uses the chain of responsibility pattern to stop processing if any of the TagDecorators return a value other than
      * null.
      * 
-     * @see javax.faces.view.facelets.TagDecorator#decorate(javax.faces.view.facelets.Tag)
+     * @see jakarta.faces.view.facelets.TagDecorator#decorate(jakarta.faces.view.facelets.Tag)
      */
     @Override
     public Tag decorate(Tag tag)

@@ -49,8 +49,8 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 /**
  * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
  * 
- * See javax.faces.event.ActionListener
- * See javax.faces.component.ActionSource
+ * See jakarta.faces.event.ActionListener
+ * See jakarta.faces.component.ActionSource
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -147,8 +147,8 @@ public final class ActionListenerHandler extends TagHandler
     /*
      * (non-Javadoc)
      * 
-     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
-     * javax.faces.component.UIComponent)
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext, 
+     * jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,

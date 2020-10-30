@@ -65,9 +65,9 @@ public class DataTableTestCase extends FaceletTestCase
     protected void setupRenderers() throws Exception
     {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());
+                "jakarta.faces.Text", new HtmlTextRenderer());
         renderKit.addRenderer(UIData.COMPONENT_FAMILY,
-                "javax.faces.Table", new HtmlTableRenderer());
+                "jakarta.faces.Table", new HtmlTableRenderer());
     }
 
     @Test

@@ -30,9 +30,9 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 @JSFConverter
 public class IntegerConverter implements Converter
 {
-    public static final String CONVERTER_ID = "javax.faces.Integer";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String INTEGER_ID = "javax.faces.converter.IntegerConverter.INTEGER";
+    public static final String CONVERTER_ID = "jakarta.faces.Integer";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String INTEGER_ID = "jakarta.faces.converter.IntegerConverter.INTEGER";
 
     public IntegerConverter()
     {

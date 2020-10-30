@@ -76,7 +76,7 @@ public abstract class StateManager
             since="1.1", group="state", tags="performance", ignoreUpperLowerCase = true,
             desc="Define the state method to be used. There are two different options "
                  + "defined by the specification: 'client' and 'server' state.")
-    public static final String STATE_SAVING_METHOD_PARAM_NAME = "javax.faces.STATE_SAVING_METHOD";
+    public static final String STATE_SAVING_METHOD_PARAM_NAME = "jakarta.faces.STATE_SAVING_METHOD";
     public static final String STATE_SAVING_METHOD_CLIENT = "client";
     public static final String STATE_SAVING_METHOD_SERVER = "server";
     
@@ -85,7 +85,7 @@ public abstract class StateManager
      * without use Partial State Saving (PSS).
      */
     @JSFWebConfigParam(since="2.0", group="state")
-    public static final String FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME = "javax.faces.FULL_STATE_SAVING_VIEW_IDS";
+    public static final String FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME = "jakarta.faces.FULL_STATE_SAVING_VIEW_IDS";
     
     /**
      * Enable or disable partial state saving algorithm.
@@ -97,12 +97,12 @@ public abstract class StateManager
      */
     @JSFWebConfigParam(expectedValues="true,false", since="2.0", defaultValue="true (false with 1.2 webapps)",
                        tags="performance", group="state")
-    public static final String PARTIAL_STATE_SAVING_PARAM_NAME = "javax.faces.PARTIAL_STATE_SAVING";
+    public static final String PARTIAL_STATE_SAVING_PARAM_NAME = "jakarta.faces.PARTIAL_STATE_SAVING";
     private Boolean _savingStateInClient = null;
 
-    public static final String IS_BUILDING_INITIAL_STATE = "javax.faces.IS_BUILDING_INITIAL_STATE";
+    public static final String IS_BUILDING_INITIAL_STATE = "jakarta.faces.IS_BUILDING_INITIAL_STATE";
     
-    public static final String IS_SAVING_STATE = "javax.faces.IS_SAVING_STATE";
+    public static final String IS_SAVING_STATE = "jakarta.faces.IS_SAVING_STATE";
 
     /**
      * Indicate if the state should be serialized before save it on the session.
@@ -115,7 +115,7 @@ public abstract class StateManager
      */
     @JSFWebConfigParam(since="2.2", group="state", tags="performance", 
             defaultValue="false", expectedValues="true,false")
-    public static final java.lang.String SERIALIZE_SERVER_STATE_PARAM_NAME = "javax.faces.SERIALIZE_SERVER_STATE";
+    public static final java.lang.String SERIALIZE_SERVER_STATE_PARAM_NAME = "jakarta.faces.SERIALIZE_SERVER_STATE";
     
     /**
      * Invokes getTreeStructureToSave and getComponentStateToSave, then return an object that wraps the two resulting

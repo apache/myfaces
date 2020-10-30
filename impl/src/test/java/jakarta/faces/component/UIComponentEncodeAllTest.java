@@ -33,7 +33,7 @@ import org.easymock.classextension.IMocksControl;
 import org.junit.Test;
 
 /**
-     * Tests for {@link UIComponent#encodeAll(javax.faces.context.FacesContext)}.
+     * Tests for {@link UIComponent#encodeAll(jakarta.faces.context.FacesContext)}.
  */
 public class UIComponentEncodeAllTest extends AbstractJsfTestCase
 {

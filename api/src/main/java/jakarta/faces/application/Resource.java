@@ -34,7 +34,7 @@ public abstract class Resource extends ViewResource
      * This constant is used as the key in the component attribute map of a composite component to 
      * associate the component with its <code>Resource</code> instance.
      */
-    public static final String COMPONENT_RESOURCE_KEY = "javax.faces.application.Resource.ComponentResource";
+    public static final String COMPONENT_RESOURCE_KEY = "jakarta.faces.application.Resource.ComponentResource";
 
     private String _contentType;
     private String _libraryName;

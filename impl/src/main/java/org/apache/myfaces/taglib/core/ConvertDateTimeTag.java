@@ -66,7 +66,7 @@ public class ConvertDateTimeTag extends ConverterTag
         {
             CONVERTER_ID =
                     facesContext.getApplication().getExpressionFactory().createValueExpression(
-                        facesContext.getELContext(), "javax.faces.DateTime", String.class);
+                        facesContext.getELContext(), "jakarta.faces.DateTime", String.class);
         }
         else
         {

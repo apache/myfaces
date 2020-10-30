@@ -178,7 +178,7 @@
                             <jsfVersion>12</jsfVersion>
                             <templateTagName>tagClass12.vm</templateTagName>
                             <packageContains>org.apache</packageContains>
-                            <typePrefix>javax.faces</typePrefix>
+                            <typePrefix>jakarta.faces</typePrefix>
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                             </modelIds>
@@ -615,6 +615,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <trimStackTrace>false</trimStackTrace>
                     <excludes>
                         <exclude>**/DefaultViewHandlerSupportTest*</exclude>
                         <exclude>**/ApplicationImplTest*</exclude>
@@ -708,7 +709,7 @@
                                     org.apache.jasper.el;resolution:=optional,
                                     org.apache.el;resolution:=optional,
                                     org.apache.tomcat;resolution:=optional,
-                                    javax.faces.*;version="${project.version}",
+                                    jakarta.faces.*;version="${project.version}",
                                     *
                                 </Import-Package>
                             </instructions>

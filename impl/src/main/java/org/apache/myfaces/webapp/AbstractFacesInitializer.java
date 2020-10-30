@@ -359,7 +359,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         // clear UIViewParameter default renderer map
         try
         {
-            Class<?> c = ClassUtils.classForName("javax.faces.component.UIViewParameter");
+            Class<?> c = ClassUtils.classForName("jakarta.faces.component.UIViewParameter");
             Method m = c.getDeclaredMethod("releaseRenderer");
             m.setAccessible(true);
             m.invoke(null);
@@ -537,7 +537,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
     /**
      * The intention of this method is provide a point where CDI integration is done.
-     * {@link javax.faces.flow.FlowScoped} and {@link javax.faces.view.ViewScoped} requires CDI in order to work,
+     * {@link jakarta.faces.flow.FlowScoped} and {@link jakarta.faces.view.ViewScoped} requires CDI in order to work,
      * so this method should set a BeanManager instance on application map under
      * the key "oam.cdi.BEAN_MANAGER_INSTANCE".
      * The default implementation look on ServletContext first and then use JNDI.

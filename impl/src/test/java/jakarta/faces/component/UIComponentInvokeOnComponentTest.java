@@ -39,7 +39,7 @@ import org.junit.Test;
 
 /**
      * Tests for
- * {@link UIComponent#invokeOnComponent(javax.faces.context.FacesContext, String, ContextCallback)}.
+ * {@link UIComponent#invokeOnComponent(jakarta.faces.context.FacesContext, String, ContextCallback)}.
  */
 public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
 {

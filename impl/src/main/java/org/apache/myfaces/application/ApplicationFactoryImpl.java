@@ -68,7 +68,7 @@ public class ApplicationFactoryImpl extends ApplicationFactory
     @Override
     public Application getApplication()
     {
-        //Put it on ApplicationMap, so javax.faces.application.Application
+        //Put it on ApplicationMap, so jakarta.faces.application.Application
         //class can find it. This allows wrapped jsf 1.1 application instances
         //to work correctly in jsf 1.2 as ri does.
         if (_application != null && !_myfacesInstanceAddedToApplicationMap)

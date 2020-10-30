@@ -101,7 +101,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         // META-INF/faces-config.xml files
         appConfigResources.addAll(facesConfigProvider.getClassloaderFacesConfig(externalContext));
         
-        // faces-config.xml files from javax.faces.CONFIG_FILES
+        // faces-config.xml files from jakarta.faces.CONFIG_FILES
         appConfigResources.addAll(facesConfigProvider.getContextSpecifiedFacesConfig(externalContext));
         
         // JSF 2.2 ApplicationConfigurationResourceDocumentPopulator FacesConfig

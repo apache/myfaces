@@ -52,7 +52,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
     private static final String BEANINFO_MSG = "The BeanInfo metadata has to be store in the component's " + 
                                                "attribute map under the key " + UIComponent.BEANINFO_KEY;
     
-    private static final String COMPOSITE_RENDERER_MSG = "The rendererType has to be javax.faces.Composite";
+    private static final String COMPOSITE_RENDERER_MSG = "The rendererType has to be jakarta.faces.Composite";
     
     private static final String TEST_COMPONENT_TYPE = "org.apache.myfaces.MyCustomComponentType";
     
@@ -97,7 +97,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
      */
     private static void assertRendererTypeResourceBeanInfo(UIComponent component, Resource resource, BeanInfo metadata)
     {
-        Assert.assertEquals(COMPOSITE_RENDERER_MSG, "javax.faces.Composite", component.getRendererType());
+        Assert.assertEquals(COMPOSITE_RENDERER_MSG, "jakarta.faces.Composite", component.getRendererType());
         Assert.assertEquals(RESOURCE_MSG, resource, component.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY));
         Assert.assertEquals(BEANINFO_MSG, metadata, component.getAttributes().get(UIComponent.BEANINFO_KEY));
     }

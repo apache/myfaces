@@ -140,7 +140,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
          *  FacesMessage from the UpdateModelException.
          *    Log a SEVERE message to the log and queue the FacesMessage on the
          *    FacesContext, using the clientId of the source
-         *    component in a call to FacesContext.addMessage(java.lang.String, javax.faces.application.FacesMessage).
+         *    component in a call to FacesContext.addMessage(java.lang.String, jakarta.faces.application.FacesMessage).
          *  - Checks org.apache.myfaces.ERROR_HANDLER for backwards compatibility to myfaces-1.2's error handling
          */
         @Override

@@ -56,7 +56,7 @@ public class _AttachedListStateWrapperTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.component._AttachedListStateWrapper._AttachedListStateWrapper(List)'
+     * Test method for 'jakarta.faces.component._AttachedListStateWrapper._AttachedListStateWrapper(List)'
      */
     public void test_AttachedListStateWrapper()
     {

@@ -69,7 +69,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         servletContext.addInitParameter(ViewPoolImpl.INIT_PARAM_VIEW_POOL_ENTRY_MODE, "soft");
         servletContext.addInitParameter(ViewPoolImpl.INIT_PARAM_VIEW_POOL_MAX_POOL_SIZE, "20");
         servletContext.addInitParameter("org.apache.myfaces.CACHE_EL_EXPRESSIONS", "alwaysRecompile");
-        servletContext.addInitParameter("javax.faces.CONFIG_FILES", "/view-pool-faces-config.xml");
+        servletContext.addInitParameter("jakarta.faces.CONFIG_FILES", "/view-pool-faces-config.xml");
         servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, "Production");
     }
 

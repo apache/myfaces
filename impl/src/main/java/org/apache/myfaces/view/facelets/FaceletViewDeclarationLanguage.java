@@ -193,7 +193,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     public final static String MARK_INITIAL_STATE_KEY = "org.apache.myfaces.MARK_INITIAL_STATE";
     
     public final static String IS_BUILDING_INITIAL_STATE_KEY_ALIAS
-            = "javax.faces.view.ViewDeclarationLanguage.IS_BUILDING_INITIAL_STATE";
+            = "jakarta.faces.view.ViewDeclarationLanguage.IS_BUILDING_INITIAL_STATE";
 
     public final static String CLEAN_TRANSIENT_BUILD_ON_RESTORE
             = "org.apache.myfaces.CLEAN_TRANSIENT_BUILD_ON_RESTORE";
@@ -942,7 +942,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
         // "...For each attribute that is a MethodExpression..." This means we have to scan
         // all attributes with "method-signature" attribute and no "type" attribute
-        // javax.faces.component._ComponentAttributesMap uses BeanInfo.getPropertyDescriptors to
+        // jakarta.faces.component._ComponentAttributesMap uses BeanInfo.getPropertyDescriptors to
         // traverse over it, but here the metadata returned by UIComponent.BEANINFO_KEY is available
         // only for composite components.
         // That means somewhere we need to create a custom BeanInfo object for composite components
@@ -1699,8 +1699,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     public StateManagementStrategy getStateManagementStrategy(FacesContext context, String viewId)
     {
-        // Use partial state saving strategy only if javax.faces.PARTIAL_STATE_SAVING is "true" and
-        // the current view is not on javax.faces.FULL_STATE_SAVING_VIEW_IDS.
+        // Use partial state saving strategy only if jakarta.faces.PARTIAL_STATE_SAVING is "true" and
+        // the current view is not on jakarta.faces.FULL_STATE_SAVING_VIEW_IDS.
         return _usePartialStateSavingOnThisView(viewId) ? stateManagementStrategy : null;
     }
 

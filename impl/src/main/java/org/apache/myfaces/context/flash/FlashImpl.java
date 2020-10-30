@@ -169,7 +169,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         _flashScopeDisabled = MyfacesConfig.getCurrentInstance(externalContext).isFlashScopeDisabled();
     }
     
-    // ~ methods from javax.faces.context.Flash -------------------------------
+    // ~ methods from jakarta.faces.context.Flash -------------------------------
 
     /**
      * Used to restore the redirect value and the FacesMessages of the previous 

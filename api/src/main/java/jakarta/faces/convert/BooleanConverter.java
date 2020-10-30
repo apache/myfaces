@@ -30,9 +30,9 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 @JSFConverter
 public class BooleanConverter implements Converter
 {
-    public static final String CONVERTER_ID = "javax.faces.Boolean";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String BOOLEAN_ID = "javax.faces.converter.BooleanConverter.BOOLEAN";
+    public static final String CONVERTER_ID = "jakarta.faces.Boolean";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String BOOLEAN_ID = "jakarta.faces.converter.BooleanConverter.BOOLEAN";
 
     public BooleanConverter()
     {

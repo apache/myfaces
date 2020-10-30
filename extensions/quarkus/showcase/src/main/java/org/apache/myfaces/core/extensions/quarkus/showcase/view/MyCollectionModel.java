@@ -19,8 +19,8 @@
 package org.apache.myfaces.core.extensions.quarkus.showcase.view;
 
 import java.util.List;
-import javax.faces.model.FacesDataModel;
-import javax.faces.model.ListDataModel;
+import jakarta.faces.model.FacesDataModel;
+import jakarta.faces.model.ListDataModel;
 
 @FacesDataModel(forClass = MyCollection.class)
 public class MyCollectionModel<E> extends ListDataModel<E> {

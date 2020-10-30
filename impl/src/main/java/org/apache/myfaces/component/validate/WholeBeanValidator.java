@@ -341,7 +341,7 @@ public class WholeBeanValidator implements Validator
     /**
      * Set the Bean Validation validation groups.
      * @param validationGroups The validation groups String, separated by
-     *                         {@link javax.faces.validator.BeanValidator#VALIDATION_GROUPS_DELIMITER}.
+     *                         {@link jakarta.faces.validator.BeanValidator#VALIDATION_GROUPS_DELIMITER}.
      */
     public void setValidationGroups(ValidateWholeBeanComponent component, final String validationGroups)
     {

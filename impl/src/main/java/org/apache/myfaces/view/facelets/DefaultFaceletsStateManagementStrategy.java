@@ -69,7 +69,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
  * 
  * The following considerations apply for this class:
  * 
- * 1. This StateManagementStrategy should only be active if javax.faces.PARTIAL_STATE_SAVING
+ * 1. This StateManagementStrategy should only be active if jakarta.faces.PARTIAL_STATE_SAVING
  *    config param is active(true). See javadoc on StateManager for details.
  * 2. A map using component clientId as keys are used to hold the state.
  * 3. Each component has a valid id after ViewDeclarationLanguage.buildView().
@@ -80,7 +80,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
  * 5. A SystemEventListener is used to keep track for added and removed components, listen
  *    PostAddToViewEvent and PreRemoveFromViewEvent event triggered by UIComponent.setParent()
  *    method.
- * 6. It is not possible to use javax.faces.component.visit API to traverse the component
+ * 6. It is not possible to use jakarta.faces.component.visit API to traverse the component
  *    tree during save/restore, because UIData.visitTree traverse all rows and we only need
  *    to restore state per component (not per row).
  * 7. It is necessary to preserve the order of the children added/removed between requests.

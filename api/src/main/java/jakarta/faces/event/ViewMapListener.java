@@ -19,7 +19,7 @@
 package jakarta.faces.event;
 
 /**
- * see Javadoc /javax/faces/event/ViewMapListener.html
+ * see Javadoc /jakarta/faces/event/ViewMapListener.html
  */
 public interface ViewMapListener extends SystemEventListener
 {

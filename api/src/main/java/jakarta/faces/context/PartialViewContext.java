@@ -28,18 +28,18 @@ import jakarta.faces.event.PhaseId;
 public abstract class PartialViewContext
 {
     public static final String ALL_PARTIAL_PHASE_CLIENT_IDS = "@all";
-    public static final String PARTIAL_EXECUTE_PARAM_NAME = "javax.faces.partial.execute";
-    public static final String PARTIAL_RENDER_PARAM_NAME = "javax.faces.partial.render";
+    public static final String PARTIAL_EXECUTE_PARAM_NAME = "jakarta.faces.partial.execute";
+    public static final String PARTIAL_RENDER_PARAM_NAME = "jakarta.faces.partial.render";
     
     /**
      * @since 2.2
      */
-    public static final java.lang.String RESET_VALUES_PARAM_NAME = "javax.faces.partial.resetValues";
+    public static final java.lang.String RESET_VALUES_PARAM_NAME = "jakarta.faces.partial.resetValues";
     
     /**
      * @since 2.3
      */
-    public static final String PARTIAL_EVENT_PARAM_NAME = "javax.faces.partial.event";
+    public static final String PARTIAL_EVENT_PARAM_NAME = "jakarta.faces.partial.event";
     
     public abstract Collection<String> getExecuteIds();
     

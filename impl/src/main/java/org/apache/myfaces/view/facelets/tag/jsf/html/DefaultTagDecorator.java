@@ -33,7 +33,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
 
 /**
  * Default implementation of TagDecorator as described in JSF 2.2 javadoc of
- * javax.faces.view.facelets.TagDecorator
+ * jakarta.faces.view.facelets.TagDecorator
  * 
  * @since 2.2
  * @author Leonardo Uribe

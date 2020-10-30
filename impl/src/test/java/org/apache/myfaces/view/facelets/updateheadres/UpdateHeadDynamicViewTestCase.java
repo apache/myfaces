@@ -42,7 +42,7 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         super.setUpWebConfigParams();
         servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES","org.apache.myfaces.view.facelets.updateheadres.managed");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
     }
     
@@ -60,7 +60,7 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecuteAndRender();
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assert.assertFalse(text.contains("update id=\"javax.faces.ViewHead\""));
+        Assert.assertFalse(text.contains("update id=\"jakarta.faces.ViewHead\""));
         //System.out.println(text);
         endRequest();
     }
@@ -80,7 +80,7 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assert.assertTrue(text.contains("update id=\"javax.faces.Resource\""));
+        Assert.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
         Assert.assertTrue(text.contains("alert(\"script2\");"));
         //System.out.println(text);
         endRequest();
@@ -101,9 +101,9 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assert.assertTrue(text.contains("update id=\"javax.faces.Resource\""));
+        Assert.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
         Assert.assertTrue(text.contains("alert(\"script3\");"));
-        Assert.assertTrue(text.contains("link rel=\"stylesheet\" type=\"text/css\" href=\"/test/faces/javax.faces.resource/style3.css\""));
+        Assert.assertTrue(text.contains("link rel=\"stylesheet\" type=\"text/css\" href=\"/test/faces/jakarta.faces.resource/style3.css\""));
         //System.out.println(text);
         endRequest();
     }

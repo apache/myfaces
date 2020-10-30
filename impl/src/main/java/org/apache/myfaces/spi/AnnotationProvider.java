@@ -32,13 +32,13 @@ import jakarta.faces.context.ExternalContext;
  * needs to be found at startup: 
  * 
  * <ul>
- * <li>{@link javax.faces.component.FacesComponent}</li>
- * <li>{@link javax.faces.component.behavior.FacesBehavior}</li>
- * <li>{@link javax.faces.convert.FacesConverter}</li>
- * <li>{@link javax.faces.event.NamedEvent}</li>
- * <li>{@link javax.faces.render.FacesRenderer}</li>
- * <li>{@link javax.faces.render.FacesBehaviorRenderer}</li>
- * <li>{@link javax.faces.validator.FacesValidator}</li>
+ * <li>{@link jakarta.faces.component.FacesComponent}</li>
+ * <li>{@link jakarta.faces.component.behavior.FacesBehavior}</li>
+ * <li>{@link jakarta.faces.convert.FacesConverter}</li>
+ * <li>{@link jakarta.faces.event.NamedEvent}</li>
+ * <li>{@link jakarta.faces.render.FacesRenderer}</li>
+ * <li>{@link jakarta.faces.render.FacesBehaviorRenderer}</li>
+ * <li>{@link jakarta.faces.validator.FacesValidator}</li>
  * </ul>
  * 
  * <p>This is provided to allow application containers solve the following points</p>

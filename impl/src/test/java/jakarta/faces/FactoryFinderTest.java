@@ -102,7 +102,7 @@ public class FactoryFinderTest
     }
 
     /*
-     * Test method for 'javax.faces.FactoryFinder.getFactory(String)'
+     * Test method for 'jakarta.faces.FactoryFinder.getFactory(String)'
      */
     @Test
     public void testGetFactory() throws Exception
@@ -123,7 +123,7 @@ public class FactoryFinderTest
     }
 
     /*
-     * Test method for 'javax.faces.FactoryFinder.getFactory(String)'
+     * Test method for 'jakarta.faces.FactoryFinder.getFactory(String)'
      */
     @Test
     public void testGetFactoryTwice() throws Exception
@@ -148,7 +148,7 @@ public class FactoryFinderTest
     }
 
     /*
-     * Test method for 'javax.faces.FactoryFinder.getFactory(String)'
+     * Test method for 'jakarta.faces.FactoryFinder.getFactory(String)'
      */
     @Test
     public void testGetFactoryNoFactory() throws Exception
@@ -169,7 +169,7 @@ public class FactoryFinderTest
 
     /*
      * No configuration test, this should throw and deliver a useful message Test method for
-     * 'javax.faces.FactoryFinder.getFactory(String)'
+     * 'jakarta.faces.FactoryFinder.getFactory(String)'
      */
     @Test
     public void testGetFactoryNoConfiguration() throws Exception
@@ -187,7 +187,7 @@ public class FactoryFinderTest
     }
 
     /*
-     * Bogus factory name test Test method for 'javax.faces.FactoryFinder.setFactory(String, String)'
+     * Bogus factory name test Test method for 'jakarta.faces.FactoryFinder.setFactory(String, String)'
      */
     @Test
     public void testSetFactoryBogusName()
@@ -204,7 +204,7 @@ public class FactoryFinderTest
     }
 
     /*
-     * Test method for 'javax.faces.FactoryFinder.setFactory(String, String)'
+     * Test method for 'jakarta.faces.FactoryFinder.setFactory(String, String)'
      */
     @Test
     public void testSetFactory() throws Exception
@@ -223,7 +223,7 @@ public class FactoryFinderTest
 
     /*
      * If a factory has ever been handed out then setFactory is not supposed to change the factory layout. This test
-     * checks to see if that is true. Test method for 'javax.faces.FactoryFinder.setFactory(String, String)'
+     * checks to see if that is true. Test method for 'jakarta.faces.FactoryFinder.setFactory(String, String)'
      */
     @Test
     public void testSetFactoryNoEffect() throws Exception
@@ -253,7 +253,7 @@ public class FactoryFinderTest
 
     /*
      * Adding factories should add the class name to the list of avalable class names Test method for
-     * 'javax.faces.FactoryFinder.setFactory(String, String)'
+     * 'jakarta.faces.FactoryFinder.setFactory(String, String)'
      */
     @Test
     public void testSetFactoryAdditiveClassNames() throws Exception
@@ -278,7 +278,7 @@ public class FactoryFinderTest
     }
 
     /*
-     * Test method for 'javax.faces.FactoryFinder.releaseFactories()'
+     * Test method for 'jakarta.faces.FactoryFinder.releaseFactories()'
      */
     @Test
     public void testReleaseFactories()

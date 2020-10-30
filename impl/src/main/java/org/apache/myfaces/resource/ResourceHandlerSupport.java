@@ -37,7 +37,7 @@ public abstract class ResourceHandlerSupport
      * 
      * For example:
      * 
-     * /javax.faces.resource/image.jpg
+     * /jakarta.faces.resource/image.jpg
      * 
      * This is used on ResourceHandler.handleResourceRequest()
      * 

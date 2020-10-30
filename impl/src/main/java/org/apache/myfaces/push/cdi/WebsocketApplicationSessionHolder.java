@@ -239,7 +239,7 @@ public final class WebsocketApplicationSessionHolder
         if (!queue.isEmpty())
         {
             // It is necessary to have at least 1 registered Session instance to call getOpenSessions() and get all
-            // instances associated to javax.faces.push Endpoint.
+            // instances associated to jakarta.faces.push Endpoint.
             Map<String, Reference<Session>> map = getWebsocketSessionLRUCache().getLatestAccessedItems(1);
             if (map != null && !map.isEmpty())
             {

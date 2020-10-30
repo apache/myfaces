@@ -299,9 +299,9 @@ public class ComponentUtils
     }
     
     /**
-     * Call {@link UIComponent#pushComponentToEL(javax.faces.context.FacesContext,javax.faces.component.UIComponent)},
-     * reads the isRendered property, call {@link
-     * UIComponent#popComponentFromEL} and returns the value of isRendered.
+     * Call
+     * {@link UIComponent#pushComponentToEL(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)},
+     * reads the isRendered property, call {@link UIComponent#popComponentFromEL} and returns the value of isRendered.
      */
     public static boolean isRendered(FacesContext facesContext, UIComponent uiComponent)
     {

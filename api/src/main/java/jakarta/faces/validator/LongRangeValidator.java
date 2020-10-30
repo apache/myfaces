@@ -44,17 +44,17 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
     tagClass="org.apache.myfaces.taglib.core.ValidateLongRangeTag")
 @JSFJspProperty(
     name="binding", 
-    returnType = "javax.faces.validator.LongRangeValidator",
+    returnType = "jakarta.faces.validator.LongRangeValidator",
     longDesc = "A ValueExpression that evaluates to a LongRangeValidator.")
 public class LongRangeValidator
         implements Validator, PartialStateHolder
 {
     // FIELDS
-    public static final String MAXIMUM_MESSAGE_ID = "javax.faces.validator.LongRangeValidator.MAXIMUM";
-    public static final String MINIMUM_MESSAGE_ID =    "javax.faces.validator.LongRangeValidator.MINIMUM";
-    public static final String TYPE_MESSAGE_ID       = "javax.faces.validator.LongRangeValidator.TYPE";
-    public static final String VALIDATOR_ID       = "javax.faces.LongRange";
-    public static final String NOT_IN_RANGE_MESSAGE_ID = "javax.faces.validator.LongRangeValidator.NOT_IN_RANGE";
+    public static final String MAXIMUM_MESSAGE_ID = "jakarta.faces.validator.LongRangeValidator.MAXIMUM";
+    public static final String MINIMUM_MESSAGE_ID =    "jakarta.faces.validator.LongRangeValidator.MINIMUM";
+    public static final String TYPE_MESSAGE_ID       = "jakarta.faces.validator.LongRangeValidator.TYPE";
+    public static final String VALIDATOR_ID       = "jakarta.faces.LongRange";
+    public static final String NOT_IN_RANGE_MESSAGE_ID = "jakarta.faces.validator.LongRangeValidator.NOT_IN_RANGE";
     
     private Long _minimum = null;
     private Long _maximum = null;

@@ -59,7 +59,7 @@ public class TestIsAjaxRequest extends AbstractJsfTestCase {
 
     public void testEntry() {
         request.addHeader("Faces-Request", "partial/ajax");
-        request.addParameter("javax.faces.partial.ajax","true");
+        request.addParameter("jakarta.faces.partial.ajax","true");
         Assert.assertTrue("no ajax request found", context.getPartialViewContext().isAjaxRequest());
     }
 

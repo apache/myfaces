@@ -200,7 +200,7 @@ $baseContent
     <br/>
     <b>Tags:</b> #if ($webConfigParam.tags)$webConfigParam.tags#end
     <br/>
-#if ($webConfigParam.sourceClassName.startsWith("javax.faces."))
+#if ($webConfigParam.sourceClassName.startsWith("jakarta.faces."))
 #set ($javadocPath = "../myfaces-api/xref/" + $webConfigParam.sourceClassName.replace('.', '/') )
 #elseif ($webConfigParam.sourceClassName.startsWith("org.apache.myfaces.shared."))
 #set ($javadocPath = "../myfaces-impl-shared/xref/" + $webConfigParam.sourceClassName.replace('.', '/') )

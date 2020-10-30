@@ -119,8 +119,8 @@ final class DefaultFacelet extends AbstractFacelet
     }    
 
     /**
-     * @see org.apache.myfaces.view.facelets.Facelet#apply(javax.faces.context.FacesContext,
-     *      javax.faces.component.UIComponent)
+     * @see org.apache.myfaces.view.facelets.Facelet#apply(jakarta.faces.context.FacesContext,
+     *      jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FacesContext facesContext, UIComponent parent) throws IOException, FacesException,
@@ -521,7 +521,7 @@ final class DefaultFacelet extends AbstractFacelet
      * Used for delegation by the DefaultFaceletContext. First pulls the URL from {@link #getRelativePath(String)
      * getRelativePath(String)}, then calls
      * {@link #include(org.apache.myfaces.view.facelets.AbstractFaceletContext,
-     * javax.faces.component.UIComponent, java.net.URL)}.
+     * jakarta.faces.component.UIComponent, java.net.URL)}.
      * 
      * @see FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx

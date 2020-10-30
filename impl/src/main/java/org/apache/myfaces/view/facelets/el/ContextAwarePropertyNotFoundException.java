@@ -22,7 +22,7 @@ import jakarta.faces.view.Location;
 
 /**
  * Implementation of types {@link javax.el.PropertyNotFoundException},
- * {@link ContextAware} and {@link javax.faces.FacesWrapper}
+ * {@link ContextAware} and {@link jakarta.faces.FacesWrapper}
  *
  * @author martinkoci
  *

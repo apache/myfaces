@@ -31,7 +31,7 @@ public interface AttachedObjectTarget
      * The key in the value set of the <em>composite component</em> <code>BeanDescriptor</code>, the value for which is
      * a <code>List&lt;AttachedObjectTarget&gt;</code>.
      */
-    public static final String ATTACHED_OBJECT_TARGETS_KEY = "javax.faces.view.AttachedObjectTargets";
+    public static final String ATTACHED_OBJECT_TARGETS_KEY = "jakarta.faces.view.AttachedObjectTargets";
 
     public String getName();
 

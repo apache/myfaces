@@ -44,7 +44,7 @@ public class _MessageUtilsTest
 
     /**
      * Test method for
-     * {@link javax.faces.validator._MessageUtils#getErrorMessage(javax.faces.context.FacesContext, java.lang.String, java.lang.Object[])}.
+     * {@link jakarta.faces.validator._MessageUtils#getErrorMessage(jakarta.faces.context.FacesContext, java.lang.String, java.lang.Object[])}.
      */
     @Test
     public void testErrorMessage()
@@ -65,7 +65,7 @@ public class _MessageUtilsTest
         
         expect(application.getViewHandler()).andReturn(viewHandler);
         expect(viewHandler.calculateLocale(facesContext)).andReturn(Locale.ENGLISH);
-        expect(application.getMessageBundle()).andReturn("javax.faces.Messages");
+        expect(application.getMessageBundle()).andReturn("jakarta.faces.Messages");
         expect(application.getExpressionFactory()).andReturn(expressionFactory);
         expect(externalContext.getApplicationMap()).andReturn(new HashMap<>());
         String s = "xxx: Validation Error: Value is greater than allowable maximum of ''xyz''";
@@ -73,7 +73,7 @@ public class _MessageUtilsTest
         expect(valueExpression.getValue(elContext)).andReturn(s);
         mocksControl.replay();
 
-        Assert.assertEquals(MessageUtils.getErrorMessage(facesContext, "javax.faces.validator.DoubleRangeValidator.MAXIMUM",
+        Assert.assertEquals(MessageUtils.getErrorMessage(facesContext, "jakarta.faces.validator.DoubleRangeValidator.MAXIMUM",
                 new Object[] { "xyz", "xxx" }).getDetail(),
                 "xxx: Validation Error: Value is greater than allowable maximum of 'xyz'");
     }

@@ -414,7 +414,7 @@ class MyFacesProcessor
     void produceApplicationArchiveMarker(
             BuildProducer<AdditionalApplicationArchiveMarkerBuildItem> additionalArchiveMarkers)
     {
-        additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("javax/faces/component"));
+        additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("jakarta/faces/component"));
         additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("org/apache/myfaces/view"));
     }
 
@@ -446,8 +446,8 @@ class MyFacesProcessor
         }
 
         classNames.addAll(Arrays.asList(
-            "javax.faces.component._DeltaStateHelper",
-            "javax.faces.component._DeltaStateHelper$InternalMap"));
+            "jakarta.faces.component._DeltaStateHelper",
+            "jakarta.faces.component._DeltaStateHelper$InternalMap"));
 
         classes.addAll(Arrays.asList(
                 ApplicationImplEventManager.class,
@@ -478,7 +478,7 @@ class MyFacesProcessor
         List<String> classNames = new ArrayList<>();
         List<Class<?>> classes = new ArrayList<>();
         
-        classNames.add("javax.faces._FactoryFinderProviderFactory");
+        classNames.add("jakarta.faces._FactoryFinderProviderFactory");
         
         classNames.addAll(collectSubclasses(combinedIndex, TagHandler.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ConverterHandler.class.getName()));
@@ -516,7 +516,7 @@ class MyFacesProcessor
                                CombinedIndexBuildItem combinedIndex)
     {     
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, 
-                "javax.faces.context._MyFacesExternalContextHelper"));
+                "jakarta.faces.context._MyFacesExternalContextHelper"));
     }
 
     @BuildStep
@@ -545,25 +545,25 @@ class MyFacesProcessor
                 "META-INF/rsc/myfaces-dev-error-include.xml",
                 "META-INF/services/javax.servlet.ServletContainerInitializer"));
 
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_ar"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_ca"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_cs"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_de"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_en"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_es"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_fr"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_it"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_ja"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_mt"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_nl"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_pl"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_pt_PR"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_ru"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_sk"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_zh_CN"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_zh_HK"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_zh_TW"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_ar"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_ca"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_cs"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_de"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_en"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_es"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_fr"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_it"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_ja"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_mt"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_nl"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_pl"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_pt_PR"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_ru"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_sk"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_CN"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_HK"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_TW"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.el.PrivateMessages"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.servlet.LocalStrings"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.el.LocalStrings"));

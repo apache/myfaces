@@ -57,7 +57,7 @@ package jakarta.faces.component;
 public interface NamingContainer
 {
     /**
-     * @deprecated Use {@link UINamingContainer#getSeparatorChar(javax.faces.context.FacesContext)}
+     * @deprecated Use {@link UINamingContainer#getSeparatorChar(jakarta.faces.context.FacesContext)}
      */
     public static final char SEPARATOR_CHAR = ':';
 }

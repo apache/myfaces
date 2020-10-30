@@ -34,7 +34,7 @@ import org.apache.myfaces.util.WebConfigParamUtils;
 public class ValidateWholeBeanComponent extends UIInput
 {
     static public final String COMPONENT_FAMILY =
-        "javax.faces.Input";
+        "jakarta.faces.Input";
     static public final String COMPONENT_TYPE =
         "org.apache.myfaces.component.validate.ValidateWholeBean";
 

@@ -38,9 +38,9 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 public class ComponentResourceContainer extends UIPanel
 {
     static public final String COMPONENT_FAMILY =
-        "javax.faces.Panel";
+        "jakarta.faces.Panel";
     static public final String COMPONENT_TYPE =
-        "javax.faces.ComponentResourceContainer";
+        "jakarta.faces.ComponentResourceContainer";
 
     public ComponentResourceContainer()
     {

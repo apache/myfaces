@@ -32,7 +32,7 @@ public interface Converter<T>
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0", group="validation")
     public static final String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME =
-            "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";
+            "jakarta.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";
     
     T getAsObject(FacesContext context,
                        UIComponent component,

@@ -66,7 +66,7 @@ public class PartialViewContextImpl extends PartialViewContext
 
     private static final String FACES_REQUEST = "Faces-Request";
     private static final String PARTIAL_AJAX = "partial/ajax";
-    private static final String PARTIAL_AJAX_REQ = "javax.faces.partial.ajax";
+    private static final String PARTIAL_AJAX_REQ = "jakarta.faces.partial.ajax";
     private static final String PARTIAL_PROCESS = "partial/process";
     
     private static final Set<VisitHint> PARTIAL_EXECUTE_HINTS = Collections.unmodifiableSet( 
@@ -110,7 +110,7 @@ public class PartialViewContextImpl extends PartialViewContext
             _ajaxRequest = (requestType != null && PARTIAL_AJAX.equals(requestType));
             String reqParmamterPartialAjax = context.getExternalContext()
                     .getRequestParameterMap().get(PARTIAL_AJAX_REQ);
-            //jsdoc reference in an ajax request the javax.faces.partial.ajax must be set as ajax parameter
+            //jsdoc reference in an ajax request the jakarta.faces.partial.ajax must be set as ajax parameter
             //the other one is Faces-Request == partial/ajax which is basically the same
             _ajaxRequest = _ajaxRequest || reqParmamterPartialAjax != null;
         }
@@ -213,7 +213,7 @@ public class PartialViewContextImpl extends PartialViewContext
                         tempList.add(clientId);
                     }
                 }
-                // The "javax.faces.source" parameter needs to be added to the list of
+                // The "jakarta.faces.source" parameter needs to be added to the list of
                 // execute ids if missing (otherwise, we'd never execute an action associated
                 // with, e.g., a button).
 
@@ -462,7 +462,7 @@ public class PartialViewContextImpl extends PartialViewContext
                     }
                     else
                     {
-                        // In JSF 2.3 it was added javax.faces.Resource as an update target to add scripts or
+                        // In JSF 2.3 it was added jakarta.faces.Resource as an update target to add scripts or
                         // stylesheets inside <head> tag
                         
                         List<UIComponent> updatedComponents = new ArrayList<>();
@@ -573,7 +573,7 @@ public class PartialViewContextImpl extends PartialViewContext
             List<UIComponent> list = rvc.getRenderTargetComponentList(target);
             if (list != null && !list.isEmpty())
             {
-                writer.startUpdate("javax.faces.Resource");
+                writer.startUpdate("jakarta.faces.Resource");
                 for (UIComponent component : list)
                 {
                     boolean resourceRendered = false;

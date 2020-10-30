@@ -65,7 +65,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.convert.EnumConverter#getAsObject(FacesContext, javax.faces.component.UIComponent, String)}.
+     * {@link jakarta.faces.convert.EnumConverter#getAsObject(FacesContext, jakarta.faces.component.UIComponent, String)}.
      */
     public void testGetAsObject()
     {
@@ -76,7 +76,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.convert.EnumConverter#getAsObject(FacesContext, javax.faces.component.UIComponent, String)}.
+     * {@link jakarta.faces.convert.EnumConverter#getAsObject(FacesContext, jakarta.faces.component.UIComponent, String)}.
      */
     public void testGetAsObjectNull()
     {
@@ -87,7 +87,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.convert.EnumConverter#getAsObject(FacesContext, javax.faces.component.UIComponent, String)}.
+     * {@link jakarta.faces.convert.EnumConverter#getAsObject(FacesContext, jakarta.faces.component.UIComponent, String)}.
      */
     public void testGetAsObjectNoEnum()
     {
@@ -105,7 +105,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.convert.EnumConverter#getAsObject(FacesContext, javax.faces.component.UIComponent, String)}.
+     * {@link jakarta.faces.convert.EnumConverter#getAsObject(FacesContext, jakarta.faces.component.UIComponent, String)}.
      */
     public void testGetAsObjectNoClassSet()
     {
@@ -124,7 +124,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.convert.EnumConverter#getAsString(FacesContext, javax.faces.component.UIComponent, Object)}.
+     * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
      */
     public void testGetAsString()
     {
@@ -135,7 +135,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.convert.EnumConverter#getAsString(FacesContext, javax.faces.component.UIComponent, Object)}.
+     * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
      */
     public void testGetAsStringNull()
     {
@@ -146,7 +146,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.convert.EnumConverter#getAsString(FacesContext, javax.faces.component.UIComponent, Object)}.
+     * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
      */
     public void testGetAsStringNoEnum()
     {
@@ -164,7 +164,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.convert.EnumConverter#getAsString(FacesContext, javax.faces.component.UIComponent, Object)}.
+     * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
      */
     public void testGetAsStringNoClassSet()
     {

@@ -544,9 +544,9 @@ public class ViewIdSupport
      * </p>
      * <ul>
      * <li>lookup the viewid from the request attribute "javax.servlet.include.path_info"
-     * <li>if null lookup the value for viewid by {@link javax.faces.context.ExternalContext#getRequestPathInfo()}
+     * <li>if null lookup the value for viewid by {@link jakarta.faces.context.ExternalContext#getRequestPathInfo()}
      * <li>if null lookup the value for viewid from the request attribute "javax.servlet.include.servlet_path"
-     * <li>if null lookup the value for viewid by {@link javax.faces.context.ExternalContext#getRequestServletPath()}
+     * <li>if null lookup the value for viewid by {@link jakarta.faces.context.ExternalContext#getRequestServletPath()}
      * <li>if null throw a {@link jakarta.faces.FacesException}
      * </ul>
      */

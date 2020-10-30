@@ -138,7 +138,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         // 2. A faces-config.xml file is found in the META-INF directory of a jar in the application's classpath.
         // 3. A filename ending in .faces-config.xml is found in the META-INF directory of a jar in the 
         //    application's classpath.
-        // 4. The javax.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
+        // 4. The jakarta.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
         // 5. The Set of classes passed to the onStartup() method of the ServletContainerInitializer 
         //    implementation is not empty.
         if ((clazzes != null && !clazzes.isEmpty()) || isFacesConfigPresent(servletContext))
@@ -261,8 +261,8 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                 return true;
             }
 
-            // 4. The javax.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
-            // check for alternate faces-config files specified by javax.faces.CONFIG_FILES
+            // 4. The jakarta.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
+            // check for alternate faces-config files specified by jakarta.faces.CONFIG_FILES
             String configFilesAttrValue = servletContext.getInitParameter(FacesServlet.CONFIG_FILES_ATTR);
             if (configFilesAttrValue != null)
             {

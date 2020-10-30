@@ -45,7 +45,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         super.setUpWebConfigParams();
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
         servletContext.addInitParameter("org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS", "true");
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
     }
 
     /**
@@ -86,7 +86,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
                 ComponentSystemEvent e = (ComponentSystemEvent) EasyMock.getCurrentArguments()[0];
                 Assert.assertTrue(e.getComponent() instanceof UIViewRoot);
                 Assert.assertEquals(PhaseId.RESTORE_VIEW, facesContext.getCurrentPhaseId());
-                Assert.assertTrue(facesContext.getAttributes().containsKey("javax.faces.IS_BUILDING_INITIAL_STATE"));
+                Assert.assertTrue(facesContext.getAttributes().containsKey("jakarta.faces.IS_BUILDING_INITIAL_STATE"));
                 Assert.assertFalse(FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
                 return null;
             }).once();
@@ -159,7 +159,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
                             .getCurrentArguments()[0];
                     Assert.assertTrue(e.getComponent() instanceof UIForm);
                     Assert.assertEquals(PhaseId.RESTORE_VIEW, facesContext.getCurrentPhaseId());
-                    Assert.assertTrue(facesContext.getAttributes().containsKey("javax.faces.IS_BUILDING_INITIAL_STATE"));
+                    Assert.assertTrue(facesContext.getAttributes().containsKey("jakarta.faces.IS_BUILDING_INITIAL_STATE"));
                     Assert.assertFalse(FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
                     return null;
                 }
@@ -253,7 +253,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         EasyMock.expectLastCall().andAnswer(() -> {
             ComponentSystemEvent e = (ComponentSystemEvent) EasyMock.getCurrentArguments()[0];
             Assert.assertTrue(e.getComponent() instanceof UIOutput);
-            Assert.assertTrue(e.getComponent().getRendererType().equals("javax.faces.Head"));
+            Assert.assertTrue(e.getComponent().getRendererType().equals("jakarta.faces.Head"));
             return null;
         }).once();
         EasyMock.replay(bean);
@@ -274,7 +274,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
             EasyMock.expectLastCall().andAnswer(() -> {
                 ComponentSystemEvent e = (ComponentSystemEvent) EasyMock.getCurrentArguments()[0];
                 Assert.assertTrue(e.getComponent() instanceof UIOutput);
-                Assert.assertTrue(e.getComponent().getRendererType().equals("javax.faces.Head"));
+                Assert.assertTrue(e.getComponent().getRendererType().equals("jakarta.faces.Head"));
                 return null;
             }).once();
         }

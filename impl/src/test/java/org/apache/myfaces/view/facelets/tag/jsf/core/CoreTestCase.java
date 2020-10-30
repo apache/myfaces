@@ -104,19 +104,19 @@ public class CoreTestCase extends FaceletTestCase
     @Override
     protected void setupRenderers() throws Exception
     {
-        renderKit.addRenderer(UIOutput.COMPONENT_FAMILY, "javax.faces.Text",
+        renderKit.addRenderer(UIOutput.COMPONENT_FAMILY, "jakarta.faces.Text",
                 new HtmlTextRenderer());
-        renderKit.addRenderer(UIInput.COMPONENT_FAMILY, "javax.faces.Text",
+        renderKit.addRenderer(UIInput.COMPONENT_FAMILY, "jakarta.faces.Text",
                 new HtmlTextRenderer());
-        renderKit.addRenderer(UIGraphic.COMPONENT_FAMILY, "javax.faces.Image",
+        renderKit.addRenderer(UIGraphic.COMPONENT_FAMILY, "jakarta.faces.Image",
                 new HtmlImageRenderer());
-        renderKit.addRenderer(UICommand.COMPONENT_FAMILY, "javax.faces.Link",
+        renderKit.addRenderer(UICommand.COMPONENT_FAMILY, "jakarta.faces.Link",
                 new HtmlLinkRenderer());
-        renderKit.addRenderer(UIForm.COMPONENT_FAMILY, "javax.faces.Form",
+        renderKit.addRenderer(UIForm.COMPONENT_FAMILY, "jakarta.faces.Form",
                 new HtmlFormRenderer());
-        renderKit.addRenderer(UIData.COMPONENT_FAMILY, "javax.faces.Table",
+        renderKit.addRenderer(UIData.COMPONENT_FAMILY, "jakarta.faces.Table",
                 new HtmlTableRenderer());
-        renderKit.addRenderer(UICommand.COMPONENT_FAMILY, "javax.faces.Button",
+        renderKit.addRenderer(UICommand.COMPONENT_FAMILY, "jakarta.faces.Button",
                 new HtmlButtonRenderer());
         
     }

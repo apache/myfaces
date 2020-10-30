@@ -28,7 +28,7 @@ public abstract class Flash implements Map<String, Object>
     /**
      * @since 2.2
      */
-    public static final String NULL_VALUE = "javax.faces.context.Flash.NULL_VALUE";
+    public static final String NULL_VALUE = "jakarta.faces.context.Flash.NULL_VALUE";
     
     public abstract boolean isKeepMessages();
 

@@ -14,7 +14,7 @@
  */
 package org.apache.myfaces.core.integrationtests.ajax.test1Protocol.responseWriter;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 import java.io.IOException;
 import java.util.Map;
 

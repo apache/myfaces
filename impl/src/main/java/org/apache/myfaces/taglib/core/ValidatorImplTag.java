@@ -69,10 +69,10 @@ public class ValidatorImplTag extends ValidatorELTag
     }
 
     /**
-     * A ValueExpression that evaluates to an implementation of the javax.faces.validator.Validator interface.
+     * A ValueExpression that evaluates to an implementation of the jakarta.faces.validator.Validator interface.
      */
     @JSFJspAttribute(className="javax.el.ValueExpression",
-            deferredValueType="javax.faces.validator.Validator")
+            deferredValueType="jakarta.faces.validator.Validator")
     public void setBinding(ValueExpression binding)
     {
         _binding = binding;

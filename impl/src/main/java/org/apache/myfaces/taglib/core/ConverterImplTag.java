@@ -63,7 +63,7 @@ public class ConverterImplTag extends ConverterELTag
      * A ValueExpression that evaluates to a Converter.
      */
     @JSFJspAttribute(className="javax.el.ValueExpression",
-            deferredValueType="javax.faces.convert.Converter")
+            deferredValueType="jakarta.faces.convert.Converter")
     public void setBinding(ValueExpression binding)
     {
         _binding = binding;

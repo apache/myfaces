@@ -32,7 +32,7 @@ import javax.servlet.jsp.tagext.JspTag;
 
 public abstract class UIComponentTagBase extends Object implements JspTag
 {
-    protected static final Logger log = Logger.getLogger("javax.faces.webapp");
+    protected static final Logger log = Logger.getLogger("jakarta.faces.webapp");
     
     protected abstract void addChild(UIComponent child);
 

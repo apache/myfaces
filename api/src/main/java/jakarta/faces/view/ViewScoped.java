@@ -27,15 +27,15 @@ import java.lang.annotation.Target;
 import javax.enterprise.context.NormalScope;
 
 /**
- * This is the CDI successor of {@link javax.faces.bean.ViewScoped}.
+ * This is the CDI successor of {@link jakarta.faces.bean.ViewScoped}.
  *
  * @since 2.2
  */
-@NormalScope(passivating=true)
+@NormalScope(passivating = true)
 @Inherited
 @Documented
-@Target(value={ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
-@Retention(value= RetentionPolicy.RUNTIME)
+@Target(value = { ElementType.TYPE, ElementType.FIELD, ElementType.METHOD })
+@Retention(value = RetentionPolicy.RUNTIME)
 public @interface ViewScoped
 {
     

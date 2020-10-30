@@ -122,7 +122,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     @Test
     public void testComponentType() throws Exception
     {
-        Assert.assertEquals("javax.faces.ViewRoot", UIViewRoot.COMPONENT_TYPE);
+        Assert.assertEquals("jakarta.faces.ViewRoot", UIViewRoot.COMPONENT_TYPE);
     }
 
     @Test
@@ -140,7 +140,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIViewRoot#createUniqueId()}.
+     * Test method for {@link jakarta.faces.component.UIViewRoot#createUniqueId()}.
      */
     @Test
     public void testCreateUniqueId()
@@ -167,7 +167,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
 // Disabled until Myfaces test issues are resolved..
 //    /**
-//     * Test method for {@link javax.faces.component.UIViewRoot#processDecodes(javax.faces.context.FacesContext)}.
+//     * Test method for {@link jakarta.faces.component.UIViewRoot#processDecodes(jakarta.faces.context.FacesContext)}.
 //     * 
 //     * @throws Throwable
 //     */
@@ -184,7 +184,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 //    }
 //
 //    /**
-//     * Test method for {@link javax.faces.component.UIViewRoot#processValidators(javax.faces.context.FacesContext)}.
+//     * Test method for {@link jakarta.faces.component.UIViewRoot#processValidators(jakarta.faces.context.FacesContext)}.
 //     * 
 //     * @throws Throwable
 //     */
@@ -201,7 +201,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 //    }
 //
 //    /**
-//     * Test method for {@link javax.faces.component.UIViewRoot#processUpdates(javax.faces.context.FacesContext)}.
+//     * Test method for {@link jakarta.faces.component.UIViewRoot#processUpdates(jakarta.faces.context.FacesContext)}.
 //     * 
 //     * @throws Throwable
 //     */
@@ -218,7 +218,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 //    }
 //
 //    /**
-//     * Test method for {@link javax.faces.component.UIViewRoot#processApplication(javax.faces.context.FacesContext)}.
+//     * Test method for {@link jakarta.faces.component.UIViewRoot#processApplication(jakarta.faces.context.FacesContext)}.
 //     * 
 //     * @throws Throwable
 //     */
@@ -235,7 +235,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 //    }
 //
 //    /**
-//     * Test method for {@link javax.faces.component.UIViewRoot#encodeBegin(javax.faces.context.FacesContext)}.
+//     * Test method for {@link jakarta.faces.component.UIViewRoot#encodeBegin(jakarta.faces.context.FacesContext)}.
 //     * 
 //     * @throws Throwable
 //     */
@@ -252,7 +252,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 //    }
 //
 //    /**
-//     * Test method for {@link javax.faces.component.UIViewRoot#encodeEnd(javax.faces.context.FacesContext)}.
+//     * Test method for {@link jakarta.faces.component.UIViewRoot#encodeEnd(jakarta.faces.context.FacesContext)}.
 //     * 
 //     * @throws Throwable
 //     */
@@ -311,7 +311,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     //
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#saveState(javax.faces.context.FacesContext)}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#saveState(jakarta.faces.context.FacesContext)}.
     // */
     // public void testSaveState()
     // {
@@ -320,7 +320,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     //
     // /**
     // * Test method for
-    // * {@link javax.faces.component.UIViewRoot#restoreState(javax.faces.context.FacesContext, java.lang.Object)}.
+    // * {@link jakarta.faces.component.UIViewRoot#restoreState(jakarta.faces.context.FacesContext, java.lang.Object)}.
     // */
     // public void testRestoreState()
     // {
@@ -328,7 +328,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#UIViewRoot()}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#UIViewRoot()}.
     // */
     // public void testUIViewRoot()
     // {
@@ -337,7 +337,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     //
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#setLocale(java.util.Locale)}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#setLocale(java.util.Locale)}.
     // */
     // public void testSetLocale()
     // {
@@ -345,7 +345,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#getRenderKitId()}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#getRenderKitId()}.
     // */
     // public void testGetRenderKitId()
     // {
@@ -353,7 +353,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#setRenderKitId(java.lang.String)}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#setRenderKitId(java.lang.String)}.
     // */
     // public void testSetRenderKitId()
     // {
@@ -361,7 +361,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#getViewId()}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#getViewId()}.
     // */
     // public void testGetViewId()
     // {
@@ -369,7 +369,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#setViewId(java.lang.String)}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#setViewId(java.lang.String)}.
     // */
     // public void testSetViewId()
     // {
@@ -377,7 +377,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#addPhaseListener(javax.faces.event.PhaseListener)}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#addPhaseListener(jakarta.faces.event.PhaseListener)}.
     // */
     // public void testAddPhaseListener()
     // {
@@ -385,7 +385,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#removePhaseListener(javax.faces.event.PhaseListener)}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#removePhaseListener(jakarta.faces.event.PhaseListener)}.
     // */
     // public void testRemovePhaseListener()
     // {
@@ -393,7 +393,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#getBeforePhaseListener()}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#getBeforePhaseListener()}.
     // */
     // public void testGetBeforePhaseListener()
     // {
@@ -401,7 +401,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#setBeforePhaseListener(javax.el.MethodExpression)}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#setBeforePhaseListener(javax.el.MethodExpression)}.
     // */
     // public void testSetBeforePhaseListener()
     // {
@@ -409,7 +409,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#getAfterPhaseListener()}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#getAfterPhaseListener()}.
     // */
     // public void testGetAfterPhaseListener()
     // {
@@ -417,7 +417,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#setAfterPhaseListener(javax.el.MethodExpression)}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#setAfterPhaseListener(javax.el.MethodExpression)}.
     // */
     // public void testSetAfterPhaseListener()
     // {
@@ -425,7 +425,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link javax.faces.component.UIViewRoot#getFamily()}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#getFamily()}.
     // */
     // public void testGetFamily()
     // {

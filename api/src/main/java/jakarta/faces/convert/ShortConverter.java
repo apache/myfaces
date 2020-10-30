@@ -30,9 +30,9 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 @JSFConverter
 public class ShortConverter implements Converter
 {
-    public static final String CONVERTER_ID = "javax.faces.Short";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String SHORT_ID = "javax.faces.converter.ShortConverter.SHORT";
+    public static final String CONVERTER_ID = "jakarta.faces.Short";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String SHORT_ID = "jakarta.faces.converter.ShortConverter.SHORT";
 
     public ShortConverter()
     {

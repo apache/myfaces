@@ -128,7 +128,7 @@ public class MockExceptionHandler extends ExceptionHandler
                     Throwable exception = context.getException();
 
                     // Upon encountering the first such Exception that is not an instance of
-                    // javax.faces.event.AbortProcessingException
+                    // jakarta.faces.event.AbortProcessingException
                     if (!shouldSkip(exception))
                     {
                         // set handledAndThrown so that getHandledExceptionQueuedEvent() returns this event

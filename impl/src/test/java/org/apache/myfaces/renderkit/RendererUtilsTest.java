@@ -33,6 +33,7 @@ import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.html.HtmlGraphicImage;
 import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.junit.Assert;
 import org.apache.myfaces.renderkit.html.util.HTML;
@@ -65,7 +66,7 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
 
 	String resourceName = "picture.gif";
 
-	String requestPath = "/somePrefix/faces/javax.faces.resource/picture.gif?ln=\"images\"";
+	String requestPath = "/somePrefix/faces/jakarta.faces.resource/picture.gif?ln=\"images\"";
 
 	// a Component instance:
 	HtmlGraphicImage graphicImage = new HtmlGraphicImage();
@@ -170,15 +171,15 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
     public void testIsRendered()
     {
         UIComponent uiComponent = new UIOutput();
-        boolean rendered = RendererUtils.isRendered(facesContext, uiComponent);
+        boolean rendered = ComponentUtils.isRendered(facesContext, uiComponent);
         Assert.assertTrue(rendered);
         
         uiComponent.setRendered(false);
-        rendered = RendererUtils.isRendered(facesContext, uiComponent);
+        rendered = ComponentUtils.isRendered(facesContext, uiComponent);
         Assert.assertFalse(rendered);
         
         uiComponent = _setUpComponentStack();
-        rendered = RendererUtils.isRendered(facesContext, uiComponent);
+        rendered = ComponentUtils.isRendered(facesContext, uiComponent);
         Assert.assertFalse(rendered);
         Assert.assertEquals("isRendered must not change current component", parent, UIComponent.getCurrentComponent(facesContext));
     }

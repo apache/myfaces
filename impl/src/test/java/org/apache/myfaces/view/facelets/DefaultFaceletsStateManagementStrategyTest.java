@@ -70,7 +70,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         
         FactoryFinder.setFactory(FactoryFinder.VISIT_CONTEXT_FACTORY, VisitContextFactoryImpl.class.getName());
         
-        RenderKitFactory renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory("javax.faces.render.RenderKitFactory");
+        RenderKitFactory renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory("jakarta.faces.render.RenderKitFactory");
         renderKit = new MockRenderKit()
         {
             ResponseStateManager stateManager = new ResponseStateManager(){
@@ -144,7 +144,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
-        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
@@ -172,7 +172,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
-        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
@@ -211,7 +211,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
-        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         
@@ -279,7 +279,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
-        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
@@ -347,7 +347,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
-        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);

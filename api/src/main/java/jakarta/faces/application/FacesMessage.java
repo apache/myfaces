@@ -39,7 +39,7 @@ import java.util.Map;
  * <ul>
  * <li>Call
  * {@link Application#getMessageBundle()}. If <code>non-null</code>, locate the named <code>ResourceBundle</code>, using
- * the <code>Locale</code> from the current {@link javax.faces.component.UIViewRoot} and see if it has a value for 
+ * the <code>Locale</code> from the current {@link jakarta.faces.component.UIViewRoot} and see if it has a value for 
  * the argument
  * <code>messageId</code>. If it does, treat the value as the <code>summary</code> of the {@link FacesMessage}. If it
  * does not, or if {@link Application#getMessageBundle()} returned null, look in the ResourceBundle named by the value
@@ -63,7 +63,7 @@ public class FacesMessage implements Serializable
      * <code>ResourceBundle</code> identifier for messages whose message identifiers are defined in the JavaServer Faces
      * specification.
      */
-    public static final String FACES_MESSAGES = "javax.faces.Messages";
+    public static final String FACES_MESSAGES = "jakarta.faces.Messages";
 
     /**
      * Message severity level indicating an informational message rather than an error.

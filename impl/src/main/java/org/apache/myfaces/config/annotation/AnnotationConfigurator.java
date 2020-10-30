@@ -290,8 +290,8 @@ public class AnnotationConfigurator
                     // Just log this.  We'll catch it later in the runtime.
                     if (log.isLoggable(Level.WARNING))
                     {
-                        log.warning(clazz.getName() + " is annotated with @javax.faces.event.NamedEvent, but does "
-                                    + "not extend javax.faces.event.ComponentSystemEvent");
+                        log.warning(clazz.getName() + " is annotated with @jakarta.faces.event.NamedEvent, but does "
+                                    + "not extend jakarta.faces.event.ComponentSystemEvent");
                     }
                 }
                 // Have to register @NamedEvent annotations with the NamedEventManager class since
@@ -321,8 +321,8 @@ public class AnnotationConfigurator
                     if (log.isLoggable(Level.WARNING))
                     {
                         log.warning(clazz.getName()
-                                    + " is annotated with @javax.faces.component.behavior.FacesBehavior, "
-                                    + "but does not implement javax.faces.component.behavior.Behavior");
+                                    + " is annotated with @jakarta.faces.component.behavior.FacesBehavior, "
+                                    + "but does not implement jakarta.faces.component.behavior.Behavior");
                     }
                 }
 

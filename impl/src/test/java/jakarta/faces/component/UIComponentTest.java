@@ -37,7 +37,7 @@ import org.junit.Test;
 public class UIComponentTest extends UIComponentTestBase
 {
     /**
-     * Test method for {@link javax.faces.component.UIComponent#getFacetCount()}.
+     * Test method for {@link jakarta.faces.component.UIComponent#getFacetCount()}.
      */
     @Test
     public void testGetFacetCount() throws Exception
@@ -62,7 +62,7 @@ public class UIComponentTest extends UIComponentTestBase
 
     /**
      * Test method for
-     * {@link javax.faces.component.UIComponent#getContainerClientId(javax.faces.context.FacesContext)}.
+     * {@link jakarta.faces.component.UIComponent#getContainerClientId(jakarta.faces.context.FacesContext)}.
      * 
      * @throws Exception
      */

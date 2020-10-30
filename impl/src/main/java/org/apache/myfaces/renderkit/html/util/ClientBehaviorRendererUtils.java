@@ -172,7 +172,7 @@ public class ClientBehaviorRendererUtils
         boolean submitting = false;
         
         // List<ClientBehavior>  attachedEventBehaviors is  99% _DeltaList created in
-        // javax.faces.component.UIComponentBase.addClientBehavior
+        // jakarta.faces.component.UIComponentBase.addClientBehavior
         if (attachedEventBehaviors instanceof RandomAccess)
         {
             for (int i = 0, size = attachedEventBehaviors.size(); i < size; i++)

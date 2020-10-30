@@ -325,7 +325,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     public UIData()
     {
-        setRendererType("javax.faces.Table");
+        setRendererType("jakarta.faces.Table");
     }
 
     @Override
@@ -1632,7 +1632,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     }
 
     /**
-     * @see javax.faces.component.UIComponentBase#encodeEnd(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.UIComponentBase#encodeEnd(jakarta.faces.context.FacesContext)
      */
     @Override
     public void encodeEnd(FacesContext context) throws IOException
@@ -2103,7 +2103,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     /**
      * Overrides the behavior in 
-     * UIComponent.visitTree(javax.faces.component.visit.VisitContext, javax.faces.component.visit.VisitCallback)
+     * UIComponent.visitTree(jakarta.faces.component.visit.VisitContext, jakarta.faces.component.visit.VisitCallback)
      * to handle iteration correctly.
      * 
      * @param context the visit context which handles the processing details

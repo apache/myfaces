@@ -57,18 +57,18 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
     tagClass="org.apache.myfaces.taglib.core.ConvertDateTimeTag")
 @JSFJspProperty(
     name="binding", 
-    returnType = "javax.faces.convert.DateTimeConverter",
+    returnType = "jakarta.faces.convert.DateTimeConverter",
     longDesc = "A ValueExpression that evaluates to a DateTimeConverter.")
 public class DateTimeConverter
         implements Converter, PartialStateHolder
 {
 
     // API field
-    public static final String CONVERTER_ID = "javax.faces.DateTime";
-    public static final String DATE_ID = "javax.faces.converter.DateTimeConverter.DATE";
-    public static final String DATETIME_ID = "javax.faces.converter.DateTimeConverter.DATETIME";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String TIME_ID = "javax.faces.converter.DateTimeConverter.TIME";
+    public static final String CONVERTER_ID = "jakarta.faces.DateTime";
+    public static final String DATE_ID = "jakarta.faces.converter.DateTimeConverter.DATE";
+    public static final String DATETIME_ID = "jakarta.faces.converter.DateTimeConverter.DATETIME";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String TIME_ID = "jakarta.faces.converter.DateTimeConverter.TIME";
 
     // internal constants
     private static final String TYPE_DATE = "date";

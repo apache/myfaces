@@ -209,7 +209,7 @@ public abstract class FacesConfigData implements Serializable
 
 
     /**
-     * @return Iterator over {@link javax.faces.event.PhaseListener} implementation class names
+     * @return Iterator over {@link jakarta.faces.event.PhaseListener} implementation class names
      */
     public abstract Collection<String> getLifecyclePhaseListeners();
 

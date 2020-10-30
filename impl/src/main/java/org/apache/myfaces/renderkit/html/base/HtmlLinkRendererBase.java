@@ -557,9 +557,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         List<ClientBehavior> eventBehaviors = clientBehaviors.get(eventName);
         if (eventBehaviors != null && !eventBehaviors.isEmpty())
         {
-            // perf: in 99% cases is  eventBehaviors javax.faces.component._DeltaList._DeltaList(int) = RandomAccess
-            // instance created in javax.faces.component.UIComponentBase.addClientBehavior(String, ClientBehavior), but
-            // component libraries can provide own implementation
+            // perf: in 99% cases is eventBehaviors jakarta.faces.component._DeltaList._DeltaList(int) = RandomAccess
+            // instance created in jakarta.faces.component.UIComponentBase.addClientBehavior(String, ClientBehavior),
+            // but component libraries can provide own implementation
             if (eventBehaviors instanceof RandomAccess)
             {
                 for (int i = 0, size = eventBehaviors.size(); i < size; i++)

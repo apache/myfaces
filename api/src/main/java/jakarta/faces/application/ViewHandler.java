@@ -62,14 +62,14 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  * Of course there is no reason why the "template" needs to be a textual file. A view could be generated based on data
  * in a database, or many other mechanisms.
  * <p>
- * This class is expected to be invoked via the concrete implementation of {@link javax.faces.lifecycle.Lifecycle}.
+ * This class is expected to be invoked via the concrete implementation of {@link jakarta.faces.lifecycle.Lifecycle}.
  * <p>
  * For the official specification for this class, see <a
  * href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>.
  */
 public abstract class ViewHandler
 {
-    public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
+    public static final String CHARACTER_ENCODING_KEY = "jakarta.faces.request.charset";
     public static final String DEFAULT_FACELETS_SUFFIX = ".xhtml";
     public static final String DEFAULT_SUFFIX = ".xhtml .view.xml .jsp";
     
@@ -78,19 +78,19 @@ public abstract class ViewHandler
      * used by JSF to create views and render pages. 
      */
     @JSFWebConfigParam(defaultValue=".xhtml .view.xml .jsp", since="1.1", group="viewhandler")
-    public static final String DEFAULT_SUFFIX_PARAM_NAME = "javax.faces.DEFAULT_SUFFIX";
+    public static final String DEFAULT_SUFFIX_PARAM_NAME = "jakarta.faces.DEFAULT_SUFFIX";
     
     /**
      * The default extension used to handle facelets pages.
      */
     @JSFWebConfigParam(defaultValue=".xhtml", since="2.0", group="viewhandler")
-    public static final String FACELETS_SUFFIX_PARAM_NAME = "javax.faces.FACELETS_SUFFIX";
+    public static final String FACELETS_SUFFIX_PARAM_NAME = "jakarta.faces.FACELETS_SUFFIX";
     
     /**
      * Set of extensions handled by facelets, separated by ';'.
      */
     @JSFWebConfigParam(since="2.0", group="viewhandler")
-    public static final String FACELETS_VIEW_MAPPINGS_PARAM_NAME = "javax.faces.FACELETS_VIEW_MAPPINGS";
+    public static final String FACELETS_VIEW_MAPPINGS_PARAM_NAME = "jakarta.faces.FACELETS_VIEW_MAPPINGS";
 
     /**
      * Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a
@@ -100,14 +100,14 @@ public abstract class ViewHandler
             tags = "performance", defaultValue="1024",
             desc = "Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in "
                    + "a servlet environment to HttpServletResponse.setBufferSize()")
-    public static final java.lang.String FACELETS_BUFFER_SIZE_PARAM_NAME = "javax.faces.FACELETS_BUFFER_SIZE";
+    public static final java.lang.String FACELETS_BUFFER_SIZE_PARAM_NAME = "jakarta.faces.FACELETS_BUFFER_SIZE";
     
     /**
      * Set of class names, separated by ';', implementing TagDecorator interface, used to transform
      * a view definition in a facelet abstract syntax tree, that is used later to generate a component tree.
      */
     @JSFWebConfigParam(since = "2.0", alias = "facelets.DECORATORS")
-    public static final java.lang.String FACELETS_DECORATORS_PARAM_NAME = "javax.faces.FACELETS_DECORATORS";
+    public static final java.lang.String FACELETS_DECORATORS_PARAM_NAME = "jakarta.faces.FACELETS_DECORATORS";
     
     /**
      * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
@@ -115,7 +115,7 @@ public abstract class ViewHandler
     @JSFWebConfigParam(since = "2.0",
             desc = "Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
             alias = "facelets.LIBRARIES")
-    public static final java.lang.String FACELETS_LIBRARIES_PARAM_NAME = "javax.faces.FACELETS_LIBRARIES";
+    public static final java.lang.String FACELETS_LIBRARIES_PARAM_NAME = "jakarta.faces.FACELETS_LIBRARIES";
     
     /**
      * Define the period used to refresh the facelet abstract syntax tree from the view definition file. 
@@ -124,13 +124,13 @@ public abstract class ViewHandler
      */
     @JSFWebConfigParam(since = "2.0", defaultValue = "-1", alias = "facelets.REFRESH_PERIOD",
             classType = "java.lang.Long", tags = "performance")
-    public static final java.lang.String FACELETS_REFRESH_PERIOD_PARAM_NAME = "javax.faces.FACELETS_REFRESH_PERIOD";
+    public static final java.lang.String FACELETS_REFRESH_PERIOD_PARAM_NAME = "jakarta.faces.FACELETS_REFRESH_PERIOD";
 
     /**
      * Skip comments found on a facelet file.
      */
     @JSFWebConfigParam(since = "2.0", alias = "facelets.SKIP_COMMENTS")
-    public static final java.lang.String FACELETS_SKIP_COMMENTS_PARAM_NAME = "javax.faces.FACELETS_SKIP_COMMENTS";
+    public static final java.lang.String FACELETS_SKIP_COMMENTS_PARAM_NAME = "jakarta.faces.FACELETS_SKIP_COMMENTS";
     
     /**
      * @since JSF 1.2
@@ -172,7 +172,7 @@ public abstract class ViewHandler
      * Some request protocols allow an application user to specify what locale they prefer the response to be in. For
      * example, HTTP requests can specify the "accept-language" header.
      * <p>
-     * Method {@link javax.faces.application.Application#getSupportedLocales()} defines what locales this JSF
+     * Method {@link jakarta.faces.application.Application#getSupportedLocales()} defines what locales this JSF
      * application is capable of supporting.
      * <p>
      * This method should match such sources of data up and return the Locale object that is the best choice for
@@ -240,7 +240,7 @@ public abstract class ViewHandler
      * Return a JSF action URL derived from the viewId argument that is suitable to be used as
      * the target of a link in a JSF response. Compiliant implementations must implement this method
      * as specified in section JSF.7.5.2. The default implementation simply calls through to
-     * getActionURL(javax.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
+     * getActionURL(jakarta.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
      * 
      * @param context
      * @param viewId
@@ -285,7 +285,7 @@ public abstract class ViewHandler
      * the NavigationHandler to issue a redirect request to the URL using a NonFaces request.
      * Compiliant implementations must implement this method as specified in section JSF.7.5.2.
      * The default implementation simply calls through to
-     * getActionURL(javax.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
+     * getActionURL(jakarta.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
      * 
      * @param context
      * @param viewId
@@ -316,7 +316,7 @@ public abstract class ViewHandler
      * <P>
      * The default implementation must perform the following actions. If
      * ExternalContext.getRequestCharacterEncoding() returns null, call
-     * calculateCharacterEncoding(javax.faces.context.FacesContext) and pass the result,
+     * calculateCharacterEncoding(jakarta.faces.context.FacesContext) and pass the result,
      * if non-null, into the ExternalContext.setRequestCharacterEncoding(java.lang.String) method.
      * If ExternalContext.getRequestCharacterEncoding() returns non-null take no action.
      * 
@@ -344,7 +344,7 @@ public abstract class ViewHandler
      *  <P>
      *  Otherwise, the default implementation must obtain a reference to the
      *  ViewDeclarationLanguage for the viewId of the argument viewToRender and call its
-     *  ViewDeclarationLanguage.renderView(javax.faces.context.FacesContext, javax.faces.component.UIViewRoot)
+     *  ViewDeclarationLanguage.renderView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)
      *  method, returning the result and not swallowing any exceptions thrown by that method.
      */
     public abstract void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException;
@@ -357,20 +357,20 @@ public abstract class ViewHandler
      * <P>
      * Otherwise, the default implementation must obtain a reference to the
      * ViewDeclarationLanguage for this viewId and call its
-     * ViewDeclarationLanguage.restoreView(javax.faces.context.FacesContext, java.lang.String)
+     * ViewDeclarationLanguage.restoreView(jakarta.faces.context.FacesContext, java.lang.String)
      * method, returning the result and not swallowing any exceptions thrown by that method.
      */
     public abstract UIViewRoot restoreView(FacesContext context, String viewId);
 
     /**
      * Take any appropriate action to either immediately write out the current state information
-     * (by calling StateManager.writeState(javax.faces.context.FacesContext, java.lang.Object),
+     * (by calling StateManager.writeState(jakarta.faces.context.FacesContext, java.lang.Object),
      * or noting where state information should later be written.
      * <P>
      * This method must do nothing if the current request is an Ajax request. When responding
-     * to Ajax requests, the state is obtained by calling StateManager.getViewState(javax.faces.context.FacesContext)
+     * to Ajax requests, the state is obtained by calling StateManager.getViewState(jakarta.faces.context.FacesContext)
      * and then written into the Ajax response during
-     * final encoding (UIViewRoot.encodeEnd(javax.faces.context.FacesContext).
+     * final encoding (UIViewRoot.encodeEnd(jakarta.faces.context.FacesContext).
      */
     public abstract void writeState(FacesContext context) throws IOException;
 

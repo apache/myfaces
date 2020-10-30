@@ -30,9 +30,9 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 @JSFConverter
 public class CharacterConverter implements Converter
 {
-    public static final String CONVERTER_ID = "javax.faces.Character";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String CHARACTER_ID = "javax.faces.converter.CharacterConverter.CHARACTER";
+    public static final String CONVERTER_ID = "jakarta.faces.Character";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String CHARACTER_ID = "jakarta.faces.converter.CharacterConverter.CHARACTER";
 
     public CharacterConverter()
     {

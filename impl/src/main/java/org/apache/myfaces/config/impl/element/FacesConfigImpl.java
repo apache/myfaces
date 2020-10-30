@@ -172,7 +172,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
 
         String oldValidator = validators.get(id);
         // don't log if someone overwrites the built-in converters
-        if (oldValidator != null && !oldValidator.startsWith("javax.faces.validator."))
+        if (oldValidator != null && !oldValidator.startsWith("jakarta.faces.validator."))
         {
             LOG.warning("There is already a validator defined for id: " + id + "."
                     + " old: " + oldValidator

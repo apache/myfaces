@@ -70,8 +70,8 @@ public final class EventHandler extends TagHandler
     @JSFFaceletAttribute(name="listener",
             className="javax.el.MethodExpression",
             deferredMethodSignature=
-            "public void listener(javax.faces.event.ComponentSystemEvent evt) "
-            + "throws javax.faces.event.AbortProcessingException")
+            "public void listener(jakarta.faces.event.ComponentSystemEvent evt) "
+            + "throws jakarta.faces.event.AbortProcessingException")
     private TagAttribute listener;
     
     @JSFFaceletAttribute(name="type",
@@ -252,7 +252,7 @@ public final class EventHandler extends TagHandler
         if (!ComponentSystemEvent.class.isAssignableFrom(eventClass))
         {
             throw new TagAttributeException (type, "Event class " + eventClass.getName() +
-                " is not of type javax.faces.event.ComponentSystemEvent");
+                " is not of type jakarta.faces.event.ComponentSystemEvent");
         }
         
         return (Class<? extends ComponentSystemEvent>) eventClass;

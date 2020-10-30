@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.core.integrationtests;
 
-import static javax.faces.annotation.FacesConfig.Version.JSF_2_3;
+import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.annotation.FacesConfig;
+import jakarta.faces.annotation.FacesConfig;
 import javax.inject.Named;
 
 @FacesConfig(version = JSF_2_3)

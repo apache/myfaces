@@ -30,9 +30,9 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 @JSFConverter
 public class FloatConverter implements Converter
 {
-    public static final String CONVERTER_ID = "javax.faces.Float";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String FLOAT_ID = "javax.faces.converter.FloatConverter.FLOAT";
+    public static final String CONVERTER_ID = "jakarta.faces.Float";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String FLOAT_ID = "jakarta.faces.converter.FloatConverter.FLOAT";
 
     public FloatConverter()
     {

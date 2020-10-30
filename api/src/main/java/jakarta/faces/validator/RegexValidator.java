@@ -76,7 +76,7 @@ import java.util.regex.PatternSyntaxException;
     tagClass="org.apache.myfaces.taglib.core.ValidateRegexTag")
 @JSFJspProperty(
     name="binding",
-    returnType = "javax.faces.validator.RegexValidator",
+    returnType = "jakarta.faces.validator.RegexValidator",
     longDesc = "A ValueExpression that evaluates to a RegexValidator.")
 public class RegexValidator implements Validator, PartialStateHolder
 {
@@ -84,24 +84,24 @@ public class RegexValidator implements Validator, PartialStateHolder
     /**
      * Converter ID, as defined by the JSF 2.0 specification.
      */
-    public static final String VALIDATOR_ID = "javax.faces.RegularExpression";
+    public static final String VALIDATOR_ID = "jakarta.faces.RegularExpression";
 
     /**
      * This message ID is used when the pattern is <code>null</code>, or an empty String.
      */
-    public static final String PATTERN_NOT_SET_MESSAGE_ID = "javax.faces.validator.RegexValidator.PATTERN_NOT_SET";
+    public static final String PATTERN_NOT_SET_MESSAGE_ID = "jakarta.faces.validator.RegexValidator.PATTERN_NOT_SET";
 
     /**
      * This message ID is used when the passed value is not a String, or when
      * the pattern does not match the passed value.
      */
-    public static final String NOT_MATCHED_MESSAGE_ID = "javax.faces.validator.RegexValidator.NOT_MATCHED";
+    public static final String NOT_MATCHED_MESSAGE_ID = "jakarta.faces.validator.RegexValidator.NOT_MATCHED";
 
     /**
      * This message ID is used when the pattern is not a valid regular expression, according
      * to the rules as defined in class {@link java.util.regex.Pattern}
      */
-    public static final String MATCH_EXCEPTION_MESSAGE_ID = "javax.faces.validator.RegexValidator.MATCH_EXCEPTION";
+    public static final String MATCH_EXCEPTION_MESSAGE_ID = "jakarta.faces.validator.RegexValidator.MATCH_EXCEPTION";
 
     //TODO: Find a better place for such a common constant
     private static final String EMPTY_STRING = "";
@@ -135,9 +135,9 @@ public class RegexValidator implements Validator, PartialStateHolder
             // this instanceof check indicates disagreement between local value (converted) 
             // and type expected in validator but behaviour is not specified.
             // We use message for String conversion here:
-            // javax.faces.converter.STRING={1}: Could not convert ''{0}'' to a string
+            // jakarta.faces.converter.STRING={1}: Could not convert ''{0}'' to a string
             Object[] args = {value, MessageUtils.getLabel(context, component)};
-            throw new ValidatorException(MessageUtils.getErrorMessage(context, "javax.faces.converter.STRING", args));
+            throw new ValidatorException(MessageUtils.getErrorMessage(context, "jakarta.faces.converter.STRING", args));
         }
 
         CharSequence charSequence = (CharSequence) value;

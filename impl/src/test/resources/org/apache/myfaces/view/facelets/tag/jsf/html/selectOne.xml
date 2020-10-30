@@ -22,7 +22,7 @@
 
 <ui:composition>
 <form jsfc="h:form" id="testForm">
-    <select id="alignment" name="alignment" jsfc="h:selectOneMenu" value="#{test.integerVal}" converter="javax.faces.Integer" required="true">
+    <select id="alignment" name="alignment" jsfc="h:selectOneMenu" value="#{test.integerVal}" converter="jakarta.faces.Integer" required="true">
         <option jsfc="f:selectItem" itemValue="1" itemLabel="1"/>
         <option jsfc="f:selectItem" itemValue="10" itemLabel="10"/>
         <option jsfc="f:selectItem" itemValue="11" itemLabel="11"/>

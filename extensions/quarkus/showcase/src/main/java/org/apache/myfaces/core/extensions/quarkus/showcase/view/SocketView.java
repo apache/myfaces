@@ -22,9 +22,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.push.Push;
-import javax.faces.push.PushContext;
-import javax.faces.view.ViewScoped;
+import jakarta.faces.push.Push;
+import jakarta.faces.push.PushContext;
+import jakarta.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 

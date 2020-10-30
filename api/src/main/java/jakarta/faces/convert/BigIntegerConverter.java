@@ -32,9 +32,9 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 @JSFConverter
 public class BigIntegerConverter implements Converter
 {
-    public static final String CONVERTER_ID = "javax.faces.BigInteger";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String BIGINTEGER_ID = "javax.faces.converter.BigIntegerConverter.BIGINTEGER";
+    public static final String CONVERTER_ID = "jakarta.faces.BigInteger";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String BIGINTEGER_ID = "jakarta.faces.converter.BigIntegerConverter.BIGINTEGER";
 
     public BigIntegerConverter()
     {

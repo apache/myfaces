@@ -60,12 +60,12 @@ public class IncludeParamTestCase extends FaceletTestCase
     @Override
     protected void setupRenderers() throws Exception
     {
-        renderKit.addRenderer(UIOutput.COMPONENT_FAMILY, "javax.faces.Text",
+        renderKit.addRenderer(UIOutput.COMPONENT_FAMILY, "jakarta.faces.Text",
                 new HtmlTextRenderer());
         renderKit.addRenderer(UINamingContainer.COMPONENT_TYPE,
-                "javax.faces.Composite", new HtmlCompositeComponentRenderer());
+                "jakarta.faces.Composite", new HtmlCompositeComponentRenderer());
         renderKit.addRenderer(UIOutput.COMPONENT_TYPE, 
-                "javax.faces.CompositeFacet", new HtmlCompositeFacetRenderer());
+                "jakarta.faces.CompositeFacet", new HtmlCompositeFacetRenderer());
     }
 
     @Override

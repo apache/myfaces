@@ -68,11 +68,11 @@ public class ActionListenerTag extends GenericListenerTag<ActionSource, ActionLi
     }
 
     /**
-     * Value binding expression that evaluates to an object that implements javax.faces.event.ActionListener.
+     * Value binding expression that evaluates to an object that implements jakarta.faces.event.ActionListener.
      */
     @Override
     @JSFJspAttribute(className="javax.el.ValueExpression",
-            deferredValueType="javax.faces.event.ActionListener")
+            deferredValueType="jakarta.faces.event.ActionListener")
     public void setBinding(ValueExpression binding)
     {
         super.setBinding(binding);

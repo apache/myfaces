@@ -37,13 +37,13 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
 @JSFValidator(name = "f:validateRequired",
         bodyContent = "empty")
 @JSFJspProperty(name = "binding", 
-        returnType = "javax.faces.validator.RequiredValidator",
+        returnType = "jakarta.faces.validator.RequiredValidator",
         longDesc = "A ValueExpression that evaluates to a RequiredValidator.")
 public class RequiredValidator implements Validator
 {
 
     // FIELDS
-    public static final String VALIDATOR_ID = "javax.faces.Required";
+    public static final String VALIDATOR_ID = "jakarta.faces.Required";
 
     // CONSTRUCTORS    
     public RequiredValidator()

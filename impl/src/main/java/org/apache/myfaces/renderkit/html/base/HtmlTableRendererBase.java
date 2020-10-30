@@ -103,7 +103,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
     /**
      * Render the necessary bits that come before any actual <i>rows</i> in the table.
      * 
-     * @see javax.faces.render.Renderer#encodeBegin(FacesContext, UIComponent)
+     * @see jakarta.faces.render.Renderer#encodeBegin(FacesContext, UIComponent)
      */
     @Override
     public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
@@ -194,7 +194,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
     /**
      * Render the TBODY section of the html table. See also method encodeInnerHtml.
      * 
-     * @see javax.faces.render.Renderer#encodeChildren(FacesContext, UIComponent)
+     * @see jakarta.faces.render.Renderer#encodeChildren(FacesContext, UIComponent)
      */
     @Override
     public void encodeChildren(FacesContext facesContext, UIComponent component) throws IOException
@@ -917,7 +917,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
     }
 
     /**
-     * @see javax.faces.render.Renderer#encodeEnd(FacesContext, UIComponent)
+     * @see jakarta.faces.render.Renderer#encodeEnd(FacesContext, UIComponent)
      */
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
@@ -1255,7 +1255,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
             else
             {
                 //This code corrects MYFACES-1790, because HtmlColumnTag
-                //has as component type javax.faces.Column, so as side
+                //has as component type jakarta.faces.Column, so as side
                 //effect it not create HtmlColumn, it create UIColumn
                 //classes.
                 UIColumn column = (UIColumn) uiComponent;                

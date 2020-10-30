@@ -272,7 +272,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
             {
                 String oldConverter = converterByClass.get(converter.getForClass());
                 // don't log if someone overwrites the built-in converters
-                if (oldConverter != null && !oldConverter.startsWith("javax.faces.convert."))
+                if (oldConverter != null && !oldConverter.startsWith("jakarta.faces.convert."))
                 {
                     log.warning("There is already a converter defined for class: " + converter.getForClass() + "."
                             + " old: " + oldConverter
@@ -845,7 +845,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     }
 
     /**
-     * @return Collection over {@link javax.faces.event.PhaseListener} implementation class names
+     * @return Collection over {@link jakarta.faces.event.PhaseListener} implementation class names
      */
     @Override
     public Collection<String> getLifecyclePhaseListeners()

@@ -78,7 +78,7 @@ public abstract class FacesConfigurationProvider
     public abstract List<FacesConfig> getClassloaderFacesConfig(ExternalContext ectx);
     
     /**
-     * Return the FacesConfig object model retrieved from javax.faces.CONFIG_FILES web config attribute
+     * Return the FacesConfig object model retrieved from jakarta.faces.CONFIG_FILES web config attribute
      * 
      * @param ectx
      * @return

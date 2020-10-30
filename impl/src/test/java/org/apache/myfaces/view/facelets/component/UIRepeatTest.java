@@ -60,7 +60,7 @@ public class UIRepeatTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.component.UIData#setValueExpression(java.lang.String, javax.el.ValueExpression)}.
+     * {@link jakarta.faces.component.UIData#setValueExpression(java.lang.String, javax.el.ValueExpression)}.
      */
     public void testValueExpression()
     {

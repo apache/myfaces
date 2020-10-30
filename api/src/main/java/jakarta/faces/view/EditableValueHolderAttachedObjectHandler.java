@@ -19,8 +19,8 @@
 package jakarta.faces.view;
 
 /**
- * A PDL handler that exposes {@link javax.faces.validator.Validator Validator} or
- * {@link javax.faces.event.ValueChangeListener ValueChangeListener} to a <em>page author</em>. The default
+ * A PDL handler that exposes {@link jakarta.faces.validator.Validator Validator} or
+ * {@link jakarta.faces.event.ValueChangeListener ValueChangeListener} to a <em>page author</em>. The default
  * implementation of Facelets must provide an implemention of this in the handler for the
  * <code>&lt;f:validator&gt;</code> (and any tags for any of the standard validators) and
  * <code>&lt;f:valueChangeListener&gt;</code> tags.

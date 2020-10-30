@@ -32,30 +32,30 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  */
 public abstract class ResourceHandler
 {
-    public static final String LOCALE_PREFIX = "javax.faces.resource.localePrefix";
+    public static final String LOCALE_PREFIX = "jakarta.faces.resource.localePrefix";
     public static final String RESOURCE_EXCLUDES_DEFAULT_VALUE = ".class .jsp .jspx .properties .xhtml .groovy";
     
     /**
      * Space separated file extensions that will not be served by the default ResourceHandler implementation.
      */
     @JSFWebConfigParam(defaultValue=".class .jsp .jspx .properties .xhtml .groovy",since="2.0", group="resources")
-    public static final String RESOURCE_EXCLUDES_PARAM_NAME = "javax.faces.RESOURCE_EXCLUDES";
-    public static final String RESOURCE_IDENTIFIER = "/javax.faces.resource";
+    public static final String RESOURCE_EXCLUDES_PARAM_NAME = "jakarta.faces.RESOURCE_EXCLUDES";
+    public static final String RESOURCE_IDENTIFIER = "/jakarta.faces.resource";
     
     /**
      * @since 2.2
      */
-    public static final String RESOURCE_CONTRACT_XML = "javax.faces.contract.xml";
+    public static final String RESOURCE_CONTRACT_XML = "jakarta.faces.contract.xml";
     
     /**
      * @since 2.2
      */
-    public static final String WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME = "javax.faces.WEBAPP_CONTRACTS_DIRECTORY";
+    public static final String WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME = "jakarta.faces.WEBAPP_CONTRACTS_DIRECTORY";
 
     /**
      * @since 2.2
      */
-    public static final String WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME = "javax.faces.WEBAPP_RESOURCES_DIRECTORY";
+    public static final String WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME = "jakarta.faces.WEBAPP_RESOURCES_DIRECTORY";
 
     /**
      * @since 2.3
@@ -65,7 +65,7 @@ public abstract class ResourceHandler
     /**
      * @since 2.3
      */
-    public static final String JSF_SCRIPT_LIBRARY_NAME = "javax.faces";
+    public static final String JSF_SCRIPT_LIBRARY_NAME = "jakarta.faces";
 
     private final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
 

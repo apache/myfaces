@@ -34,9 +34,9 @@ public class BigDecimalConverter
         implements Converter
 {
     // FIELDS
-    public static final String CONVERTER_ID = "javax.faces.BigDecimal";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String DECIMAL_ID = "javax.faces.converter.BigDecimalConverter.DECIMAL";
+    public static final String CONVERTER_ID = "jakarta.faces.BigDecimal";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String DECIMAL_ID = "jakarta.faces.converter.BigDecimalConverter.DECIMAL";
 
     // CONSTRUCTORS
     public BigDecimalConverter()

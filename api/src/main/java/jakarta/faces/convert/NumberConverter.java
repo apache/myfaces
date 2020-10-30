@@ -53,16 +53,16 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
     tagClass="org.apache.myfaces.taglib.core.ConvertNumberTag")
 @JSFJspProperty(
     name="binding", 
-    returnType = "javax.faces.convert.NumberConverter",
+    returnType = "jakarta.faces.convert.NumberConverter",
     longDesc = "A ValueExpression that evaluates to a NumberConverter.")
 public class NumberConverter implements Converter, PartialStateHolder
 {
-    public static final String CONVERTER_ID = "javax.faces.Number";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String CURRENCY_ID = "javax.faces.converter.NumberConverter.CURRENCY";
-    public static final String NUMBER_ID = "javax.faces.converter.NumberConverter.NUMBER";
-    public static final String PATTERN_ID = "javax.faces.converter.NumberConverter.PATTERN";
-    public static final String PERCENT_ID = "javax.faces.converter.NumberConverter.PERCENT";
+    public static final String CONVERTER_ID = "jakarta.faces.Number";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String CURRENCY_ID = "jakarta.faces.converter.NumberConverter.CURRENCY";
+    public static final String NUMBER_ID = "jakarta.faces.converter.NumberConverter.NUMBER";
+    public static final String PATTERN_ID = "jakarta.faces.converter.NumberConverter.PATTERN";
+    public static final String PERCENT_ID = "jakarta.faces.converter.NumberConverter.PERCENT";
 
     private String _currencyCode;
     private String _currencySymbol;

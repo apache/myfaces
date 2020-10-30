@@ -509,8 +509,10 @@ public abstract class Application
      * on it. Convert the returned value (if any) to a String, and use it as the logical outcome.</li>
      * <li>Otherwise, the logical outcome is null.</li>
      * <li>The <code>processAction()</code> method must finally retrieve the <code>NavigationHandler</code> instance 
-     *         for this application and call <code>NavigationHandler.handleNavigation(javax.faces.context.FacesContext, 
-     *                                     java.lang.String, java.lang.String)</code> passing:</li>
+     *   for this application and call
+     *   <code>NavigationHandler.handleNavigation(jakarta.faces.context.FacesContext,
+     *     java.lang.String, java.lang.String)</code> passing:
+     * </li>
      * <li>the {@link FacesContext} for the current request</li>
      * <li>If there is a <code>MethodExpression</code> instance for the <code>action</code> property of this component, 
      * the result of calling {@link javax.el.MethodExpression#getExpressionString()} on it, null otherwise</li>
@@ -663,8 +665,9 @@ public abstract class Application
 
     /**
      * <p>
-     * Return the <code>ExpressionFactory</code> instance for this application. This instance is used by the convenience
-     * method <code>{@link #evaluateExpressionGet(javax.faces.context.FacesContext, java.lang.String, java.lang.Class)}.
+     * Return the <code>ExpressionFactory</code> instance for this application.
+     * This instance is used by the convenience method
+     * <code>{@link #evaluateExpressionGet(jakarta.faces.context.FacesContext, java.lang.String, java.lang.Class)}.
      * </code>
      * </p>
      * 
@@ -859,7 +862,7 @@ public abstract class Application
      * <code>source</code> has been installed, and should return immediately once such a determination has been made.
      * The implementation of <code>publishEvent</code> must honor the requirements stated in
      * <code>{@link #subscribeToEvent(java.lang.Class, java.lang.Class,
-     *                                               javax.faces.event.SystemEventListener)}</code>
+     *                                               jakarta.faces.event.SystemEventListener)}</code>
      * <p>
      * <p>
      * The default implementation must implement an algorithm semantically equivalent to the following to locate
@@ -868,7 +871,7 @@ public abstract class Application
      * <ul>
      * <li>If the <code>source</code> argument implements
      * <code>{@link jakarta.faces.event.SystemEventListenerHolder}</code>, call
-     * <code>{@link javax.faces.event.SystemEventListenerHolder#getListenersForEventClass(java.lang.Class)}</code>
+     * <code>{@link jakarta.faces.event.SystemEventListenerHolder#getListenersForEventClass(java.lang.Class)}</code>
      * on it, passing the
      * <code>systemEventClass</code> argument. If the list is not empty, perform algorithm
      * <code>traverseListenerList</code> on the list.</li>
@@ -902,11 +905,12 @@ public abstract class Application
      * <code>Object</code>. This same event instance must be passed to all listener instances.</li>
      * 
      * <li>Call
-     * <code>{@link SystemEvent#isAppropriateListener(javax.faces.event.FacesListener)}</code>, passing the listener
+     * <code>{@link SystemEvent#isAppropriateListener(jakarta.faces.event.FacesListener)}</code>, passing the listener
      *         instance as the argument. If this returns <code>false</code>, take no action on the listener.</li>
      * 
-     * <li>Call <code>{@link SystemEvent#processListener(javax.faces.event.FacesListener)}</code>, passing the listener
-     * instance.</li>
+     * <li>Call
+     *  <code>{@link SystemEvent#processListener(jakarta.faces.event.FacesListener)}</code>,
+     *  passing the listener instance.</li>
      * </ul>
      * 
      * @param systemEventClass

@@ -75,12 +75,12 @@ public class ValueChangeListenerTag extends GenericListenerTag<EditableValueHold
     }
 
     /**
-     * Value binding expression that evaluates to an implementation of the javax.faces.event.ValueChangeListener
+     * Value binding expression that evaluates to an implementation of the jakarta.faces.event.ValueChangeListener
      * interface.
      */
     @Override
     @JSFJspAttribute(className="javax.el.ValueExpression",
-            deferredValueType="javax.faces.event.ValueChangeListener")
+            deferredValueType="jakarta.faces.event.ValueChangeListener")
     public void setBinding(ValueExpression binding)
     {
         super.setBinding(binding);

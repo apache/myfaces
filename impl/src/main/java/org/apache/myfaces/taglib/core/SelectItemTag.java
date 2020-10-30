@@ -30,7 +30,7 @@ public class SelectItemTag
     @Override
     public String getComponentType()
     {
-        return "javax.faces.SelectItem";
+        return "jakarta.faces.SelectItem";
     }
 
     @Override

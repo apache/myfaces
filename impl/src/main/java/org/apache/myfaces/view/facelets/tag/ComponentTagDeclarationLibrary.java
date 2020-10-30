@@ -127,7 +127,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
      * Add a ComponentHandler with the specified componentType and rendererType, aliased by the tag name.
      * 
      * See ComponentHandler
-     * See javax.faces.application.Application#createComponent(java.lang.String)
+     * See jakarta.faces.application.Application#createComponent(java.lang.String)
      * @param name
      *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param componentType

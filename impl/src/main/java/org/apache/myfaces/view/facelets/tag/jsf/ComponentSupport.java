@@ -81,7 +81,7 @@ public final class ComponentSupport
     /**
      * The UIPanel components, which are dynamically generated to serve as a container for
      * facets with multiple non panel children, are marked with this attribute.
-     * This constant is duplicate in javax.faces.webapp.UIComponentClassicTagBase
+     * This constant is duplicate in jakarta.faces.webapp.UIComponentClassicTagBase
      */
     public final static String FACET_CREATED_UIPANEL_MARKER = "oam.vf.createdUIPanel";
 
@@ -480,7 +480,7 @@ public final class ComponentSupport
     /**
      * Create a new UIPanel for the use as a dynamically 
      * created container for multiple children in a facet.
-     * Duplicate in javax.faces.webapp.UIComponentClassicTagBase.
+     * Duplicate in jakarta.faces.webapp.UIComponentClassicTagBase.
      * @param facesContext
      * @return
      */

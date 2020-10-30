@@ -20,7 +20,7 @@ package org.apache.myfaces.core.extensions.quarkus.showcase.view;
 
 import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.annotation.ManagedProperty;
+import jakarta.faces.annotation.ManagedProperty;
 import javax.inject.Inject;
 import javax.inject.Named;
 

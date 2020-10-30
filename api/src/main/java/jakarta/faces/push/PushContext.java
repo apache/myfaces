@@ -31,11 +31,11 @@ import java.util.concurrent.Future;
 public interface PushContext extends Serializable
 {
     
-    public static final String ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME = "javax.faces.ENABLE_WEBSOCKET_ENDPOINT";
+    public static final String ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME = "jakarta.faces.ENABLE_WEBSOCKET_ENDPOINT";
     
-    public static final String WEBSOCKET_ENDPOINT_PORT_PARAM_NAME = "javax.faces.WEBSOCKET_ENDPOINT_PORT";
+    public static final String WEBSOCKET_ENDPOINT_PORT_PARAM_NAME = "jakarta.faces.WEBSOCKET_ENDPOINT_PORT";
     
-    public static final String URI_PREFIX = "/javax.faces.push";
+    public static final String URI_PREFIX = "/jakarta.faces.push";
     
     public Set<Future<Void>> send(Object message);
             

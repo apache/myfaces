@@ -68,7 +68,7 @@ public class ApplicationImplTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
     public void testGetResourceBundleNPE()
     {
@@ -93,7 +93,7 @@ public class ApplicationImplTest extends TestCase
      * Test if a {@link FacesException} is thrown if the specified resource bundle can not be found.
      * </p>
      * Test method for
-     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
     public void testGetResourceBundleFacesException()
     {
@@ -116,7 +116,7 @@ public class ApplicationImplTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
     public void testGetResourceBundleWithDefaultLocale()
     {
@@ -125,7 +125,7 @@ public class ApplicationImplTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(javax.faces.context.FacesContext, java.lang.String)}.
+     * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
     public void testGetResourceBundleWithUIViewRootLocale()
     {
@@ -210,7 +210,7 @@ public class ApplicationImplTest extends TestCase
 
     /**
      * Test method for
-     * {@link javax.faces.application.Application#createConverter(java.lang.Class)}.
+     * {@link jakarta.faces.application.Application#createConverter(java.lang.Class)}.
      */
     public void testCreateEnumConverter() throws Exception
     {
@@ -250,7 +250,7 @@ public class ApplicationImplTest extends TestCase
 	
     /**
      * Test method for
-     * {@link javax.faces.application.Application#createConverter(java.lang.Class)}.
+     * {@link jakarta.faces.application.Application#createConverter(java.lang.Class)}.
      * <p>
      * Tests the situation when a object is both, an enum and an implementor of an
      * interface for which we have a specific converter registered. 

@@ -88,7 +88,7 @@ if (!window.jsf) {
 
         /**
          * collect and encode data for a given form element (must be of type form)
-         * find the javax.faces.ViewState element and encode its value as well!
+         * find the jakarta.faces.ViewState element and encode its value as well!
          * return a concatenated string of the encoded values!
          *
          * @throws an exception in case of the given element not being of type form!
@@ -469,7 +469,7 @@ if (!myfaces.ab) {
         }
 
         if (eventName) {
-            options["javax.faces.behavior.event"] = eventName;
+            options["jakarta.faces.behavior.event"] = eventName;
         }
         if (execute) {
             options["execute"] = execute;

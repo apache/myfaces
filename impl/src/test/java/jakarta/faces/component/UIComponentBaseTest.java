@@ -100,7 +100,7 @@ public class UIComponentBaseTest
     }
 
     /*
-     * Test method for 'javax.faces.component.UIComponentBase.getAttributes()'
+     * Test method for 'jakarta.faces.component.UIComponentBase.getAttributes()'
      */
     @Test
     public void testGetAttributes()

@@ -44,17 +44,17 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
     tagClass="org.apache.myfaces.taglib.core.ValidateDoubleRangeTag")
 @JSFJspProperty(
     name="binding", 
-    returnType = "javax.faces.validator.DoubleRangeValidator",
+    returnType = "jakarta.faces.validator.DoubleRangeValidator",
     longDesc = "A ValueExpression that evaluates to a DoubleRangeValidator.")
 public class DoubleRangeValidator
         implements Validator, PartialStateHolder
 {
     // FIELDS
-    public static final String VALIDATOR_ID       = "javax.faces.DoubleRange";
-    public static final String MAXIMUM_MESSAGE_ID = "javax.faces.validator.DoubleRangeValidator.MAXIMUM";
-    public static final String MINIMUM_MESSAGE_ID = "javax.faces.validator.DoubleRangeValidator.MINIMUM";
-    public static final String TYPE_MESSAGE_ID    = "javax.faces.validator.DoubleRangeValidator.TYPE";
-    public static final String NOT_IN_RANGE_MESSAGE_ID = "javax.faces.validator.DoubleRangeValidator.NOT_IN_RANGE";
+    public static final String VALIDATOR_ID       = "jakarta.faces.DoubleRange";
+    public static final String MAXIMUM_MESSAGE_ID = "jakarta.faces.validator.DoubleRangeValidator.MAXIMUM";
+    public static final String MINIMUM_MESSAGE_ID = "jakarta.faces.validator.DoubleRangeValidator.MINIMUM";
+    public static final String TYPE_MESSAGE_ID    = "jakarta.faces.validator.DoubleRangeValidator.TYPE";
+    public static final String NOT_IN_RANGE_MESSAGE_ID = "jakarta.faces.validator.DoubleRangeValidator.NOT_IN_RANGE";
     
     private Double _minimum = null;
     private Double _maximum = null;

@@ -34,8 +34,8 @@ public class TableResponseMockups {
 
 
     public static void execteNone(HttpServletRequest request, PrintWriter out, PartialResponse root) {
-        boolean execute = request.getParameter("javax.faces.partial.execute") != null;
-        boolean render = request.getParameter("javax.faces.partial.render") != null;
+        boolean execute = request.getParameter("jakarta.faces.partial.execute") != null;
+        boolean render = request.getParameter("jakarta.faces.partial.render") != null;
 
         Changes changes = new Changes(root);
         changes.addChild(new Update(changes, "result", (!execute && !render) ? "<div " +

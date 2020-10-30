@@ -115,8 +115,8 @@ public class AjaxHandler extends TagHandler implements
     private final TagAttribute _immediate;
 
     @JSFFaceletAttribute(name = "listener", className = "javax.el.MethodExpression",
-            deferredMethodSignature = "public void m(javax.faces.event.AjaxBehaviorEvent evt) "
-                                      + "throws javax.faces.event.AbortProcessingException")
+            deferredMethodSignature = "public void m(jakarta.faces.event.AjaxBehaviorEvent evt) "
+                                      + "throws jakarta.faces.event.AbortProcessingException")
     private final TagAttribute _listener;
 
 
@@ -243,7 +243,7 @@ public class AjaxHandler extends TagHandler implements
     {
         // Register the standard ajax library on the current page in this way:
         //
-        // <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+        // <h:outputScript name="jsf.js" library="jakarta.faces" target="head"/>
         //
         // If no h:head component is in the page, we must anyway render the script inline,
         // so the only way to make sure we are doing this is add a outputScript component.
@@ -254,7 +254,7 @@ public class AjaxHandler extends TagHandler implements
         if (!facesContext.getAttributes().containsKey(STANDARD_JSF_AJAX_LIBRARY_LOADED))
         {
             UIComponent outputScript = facesContext.getApplication().
-                createComponent(facesContext, "javax.faces.Output", ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE);
+                createComponent(facesContext, "jakarta.faces.Output", ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE);
             outputScript.getAttributes().put(JSFAttr.NAME_ATTR, ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
             outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
             outputScript.getAttributes().put(JSFAttr.TARGET_ATTR, "head");

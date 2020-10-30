@@ -147,7 +147,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
         if (encodedActionURL != null && encodedPartialActionURL != null
             && (!encodedActionURL.equals(encodedPartialActionURL)))
         {
-            HtmlRendererUtils.renderHiddenInputField(writer, "javax.faces.encodedURL", encodedPartialActionURL);
+            HtmlRendererUtils.renderHiddenInputField(writer, "jakarta.faces.encodedURL", encodedPartialActionURL);
         }
         
         // not needed in this version as nothing is written to the form tag, but

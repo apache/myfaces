@@ -31,8 +31,8 @@ import org.apache.myfaces.renderkit.html.base.HtmlTableRendererBase;
  */
 @JSFRenderer(
     renderKitId="HTML_BASIC",
-    family="javax.faces.Data",
-    type="javax.faces.Table")
+    family="jakarta.faces.Data",
+    type="jakarta.faces.Table")
 public class HtmlTableRenderer
     extends HtmlTableRendererBase
 {

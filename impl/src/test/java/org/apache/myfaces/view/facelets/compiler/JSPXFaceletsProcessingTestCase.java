@@ -67,13 +67,13 @@ public class JSPXFaceletsProcessingTestCase extends FaceletTestCase {
     protected void setupRenderers() throws Exception
     {
         renderKit.addRenderer(UIForm.COMPONENT_FAMILY,
-                "javax.faces.Form", new HtmlFormRenderer());
+                "jakarta.faces.Form", new HtmlFormRenderer());
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());
+                "jakarta.faces.Text", new HtmlTextRenderer());
         renderKit.addRenderer(UISelectOne.COMPONENT_FAMILY,
-                "javax.faces.Menu", new HtmlMenuRenderer());        
+                "jakarta.faces.Menu", new HtmlMenuRenderer());        
         renderKit.addRenderer(UIPanel.COMPONENT_FAMILY,
-                "javax.faces.Grid", new HtmlGridRenderer());
+                "jakarta.faces.Grid", new HtmlGridRenderer());
         
     } 
     

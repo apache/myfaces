@@ -33,9 +33,9 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 @JSFConverter
 public class DoubleConverter implements Converter
 {
-    public static final String CONVERTER_ID = "javax.faces.Double";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String DOUBLE_ID = "javax.faces.converter.DoubleConverter.DOUBLE";
+    public static final String CONVERTER_ID = "jakarta.faces.Double";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String DOUBLE_ID = "jakarta.faces.converter.DoubleConverter.DOUBLE";
 
     public DoubleConverter()
     {

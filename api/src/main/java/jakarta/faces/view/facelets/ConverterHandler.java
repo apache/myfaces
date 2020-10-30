@@ -28,9 +28,9 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * set/create Converter is the passed UIComponent's parent is null, signifying that it wasn't restored from an existing
  * tree.</p>
  * 
- * @see javax.faces.webapp.ConverterELTag
- * @see javax.faces.convert.Converter
- * @see javax.faces.component.ValueHolder
+ * @see jakarta.faces.webapp.ConverterELTag
+ * @see jakarta.faces.convert.Converter
+ * @see jakarta.faces.component.ValueHolder
  */
 @JSFFaceletTag
 public class ConverterHandler extends FaceletsAttachedObjectHandler implements ValueHolderAttachedObjectHandler

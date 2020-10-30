@@ -45,7 +45,7 @@
                         <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
                         <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
                         <Export-Package>
-                            javax.faces.*;version="${project.version}",
+                            jakarta.faces.*;version="${project.version}",
                             org.apache.myfaces.application.*;version="${project.version}",
                             org.apache.myfaces.cdi.*;version="${project.version}",
                             org.apache.myfaces.component.*;version="${project.version}",

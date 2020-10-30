@@ -124,7 +124,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfConfi
 
     /**
      * Tests the case that the default bean validator is disabled with the config parameter
-     * javax.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR, but it is defined in the faces-config.
+     * jakarta.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR, but it is defined in the faces-config.
      * In this case the bean validator should be installed as a default validator.
      */
     @Test

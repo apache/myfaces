@@ -389,7 +389,7 @@ public class FacesContextImpl extends FacesContextImplBase
             // using f:view renderKitId param, the ResponseStateManager returned
             // will be the one tied to faces-config selected RenderKit. But the usual 
             // method to check if a request is a postback, is always detect the param
-            // javax.faces.ViewState, so there is no problem after all.
+            // jakarta.faces.ViewState, so there is no problem after all.
             String renderKitId = facesContext.getApplication().getViewHandler().calculateRenderKitId(facesContext);
             if (_renderKitFactory == null)
             {

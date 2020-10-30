@@ -30,9 +30,9 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 @JSFConverter
 public class ByteConverter implements Converter
 {
-    public static final String CONVERTER_ID = "javax.faces.Byte";
-    public static final String STRING_ID = "javax.faces.converter.STRING";
-    public static final String BYTE_ID = "javax.faces.converter.ByteConverter.BYTE";
+    public static final String CONVERTER_ID = "jakarta.faces.Byte";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
+    public static final String BYTE_ID = "jakarta.faces.converter.ByteConverter.BYTE";
 
     public ByteConverter()
     {

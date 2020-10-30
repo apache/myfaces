@@ -40,13 +40,13 @@ public class VerbatimTag extends UIComponentELTagBase
     @Override
     public String getComponentType()
     {
-        return "javax.faces.Output";
+        return "jakarta.faces.Output";
     }
 
     @Override
     public String getRendererType()
     {
-        return "javax.faces.Text";
+        return "jakarta.faces.Text";
     }
 
     // HtmlOutputText attributes

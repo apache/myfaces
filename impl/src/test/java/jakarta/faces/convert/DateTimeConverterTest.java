@@ -57,7 +57,7 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
     }
 
     /*
-     * Test method for 'javax.faces.component.UIComponentBase.getAsObject()'
+     * Test method for 'jakarta.faces.component.UIComponentBase.getAsObject()'
      */
     public void testGetAsObject()
     {

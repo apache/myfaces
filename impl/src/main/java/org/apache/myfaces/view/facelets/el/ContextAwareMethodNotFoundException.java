@@ -23,7 +23,7 @@ import jakarta.faces.view.Location;
 
 /**
  * Implementation of types {@link MethodNotFoundException}, {@link ContextAware}
- * and {@link javax.faces.FacesWrapper}
+ * and {@link jakarta.faces.FacesWrapper}
  *
  * @author martinkoci
  *

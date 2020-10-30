@@ -68,44 +68,44 @@ public abstract class MockApplication10 extends Application
         setViewHandler(new MockViewHandler());
 
         // Register the standard by-id converters
-        addConverter("javax.faces.BigDecimal",
-                "javax.faces.convert.BigDecimalConverter");
-        addConverter("javax.faces.BigInteger",
-                "javax.faces.convert.BigIntegerConverter");
-        addConverter("javax.faces.Boolean",
-                "javax.faces.convert.BooleanConverter");
-        addConverter("javax.faces.Byte", "javax.faces.convert.ByteConverter");
-        addConverter("javax.faces.Character",
-                "javax.faces.convert.CharacterConverter");
-        addConverter("javax.faces.DateTime",
-                "javax.faces.convert.DateTimeConverter");
-        addConverter("javax.faces.Double",
-                "javax.faces.convert.DoubleConverter");
-        addConverter("javax.faces.Float", "javax.faces.convert.FloatConverter");
-        addConverter("javax.faces.Integer",
-                "javax.faces.Convert.IntegerConverter");
-        addConverter("javax.faces.Long", "javax.faces.convert.LongConverter");
-        addConverter("javax.faces.Number",
-                "javax.faces.convert.NumberConverter");
-        addConverter("javax.faces.Short", "javax.faces.convert.ShortConverter");
+        addConverter("jakarta.faces.BigDecimal",
+                "jakarta.faces.convert.BigDecimalConverter");
+        addConverter("jakarta.faces.BigInteger",
+                "jakarta.faces.convert.BigIntegerConverter");
+        addConverter("jakarta.faces.Boolean",
+                "jakarta.faces.convert.BooleanConverter");
+        addConverter("jakarta.faces.Byte", "jakarta.faces.convert.ByteConverter");
+        addConverter("jakarta.faces.Character",
+                "jakarta.faces.convert.CharacterConverter");
+        addConverter("jakarta.faces.DateTime",
+                "jakarta.faces.convert.DateTimeConverter");
+        addConverter("jakarta.faces.Double",
+                "jakarta.faces.convert.DoubleConverter");
+        addConverter("jakarta.faces.Float", "jakarta.faces.convert.FloatConverter");
+        addConverter("jakarta.faces.Integer",
+                "jakarta.faces.Convert.IntegerConverter");
+        addConverter("jakarta.faces.Long", "jakarta.faces.convert.LongConverter");
+        addConverter("jakarta.faces.Number",
+                "jakarta.faces.convert.NumberConverter");
+        addConverter("jakarta.faces.Short", "jakarta.faces.convert.ShortConverter");
 
         // Register the standard by-type converters
-        addConverter(Boolean.class, "javax.faces.convert.BooleanConverter");
-        addConverter(Boolean.TYPE, "javax.faces.convert.BooleanConverter");
-        addConverter(Byte.class, "javax.faces.convert.ByteConverter");
-        addConverter(Byte.TYPE, "javax.faces.convert.ByteConverter");
-        addConverter(Character.class, "javax.faces.convert.CharacterConverter");
-        addConverter(Character.TYPE, "javax.faces.convert.CharacterConverter");
-        addConverter(Double.class, "javax.faces.convert.DoubleConverter");
-        addConverter(Double.TYPE, "javax.faces.convert.DoubleConverter");
-        addConverter(Float.class, "javax.faces.convert.FloatConverter");
-        addConverter(Float.TYPE, "javax.faces.convert.FloatConverter");
-        addConverter(Integer.class, "javax.faces.convert.IntegerConverter");
-        addConverter(Integer.TYPE, "javax.faces.convert.IntegerConverter");
-        addConverter(Long.class, "javax.faces.convert.LongConverter");
-        addConverter(Long.TYPE, "javax.faces.convert.LongConverter");
-        addConverter(Short.class, "javax.faces.convert.ShortConverter");
-        addConverter(Short.TYPE, "javax.faces.convert.ShortConverter");
+        addConverter(Boolean.class, "jakarta.faces.convert.BooleanConverter");
+        addConverter(Boolean.TYPE, "jakarta.faces.convert.BooleanConverter");
+        addConverter(Byte.class, "jakarta.faces.convert.ByteConverter");
+        addConverter(Byte.TYPE, "jakarta.faces.convert.ByteConverter");
+        addConverter(Character.class, "jakarta.faces.convert.CharacterConverter");
+        addConverter(Character.TYPE, "jakarta.faces.convert.CharacterConverter");
+        addConverter(Double.class, "jakarta.faces.convert.DoubleConverter");
+        addConverter(Double.TYPE, "jakarta.faces.convert.DoubleConverter");
+        addConverter(Float.class, "jakarta.faces.convert.FloatConverter");
+        addConverter(Float.TYPE, "jakarta.faces.convert.FloatConverter");
+        addConverter(Integer.class, "jakarta.faces.convert.IntegerConverter");
+        addConverter(Integer.TYPE, "jakarta.faces.convert.IntegerConverter");
+        addConverter(Long.class, "jakarta.faces.convert.LongConverter");
+        addConverter(Long.TYPE, "jakarta.faces.convert.LongConverter");
+        addConverter(Short.class, "jakarta.faces.convert.ShortConverter");
+        addConverter(Short.TYPE, "jakarta.faces.convert.ShortConverter");
 
     }
 

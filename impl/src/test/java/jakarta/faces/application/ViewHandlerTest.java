@@ -60,7 +60,7 @@ public class ViewHandlerTest extends TestCase
 
     /**
      * Test method for
-     * {@link javax.faces.application.ViewHandler#calculateCharacterEncoding(javax.faces.context.FacesContext)}.
+     * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
     @SuppressWarnings("unchecked")
     public void testCalculateCharacterEncodingWithRequestHeaderContentType()
@@ -75,7 +75,7 @@ public class ViewHandlerTest extends TestCase
 
     /**
      * Test method for
-     * {@link javax.faces.application.ViewHandler#calculateCharacterEncoding(javax.faces.context.FacesContext)}.
+     * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndNoSession()
     {
@@ -90,7 +90,7 @@ public class ViewHandlerTest extends TestCase
 
     /**
      * Test method for
-     * {@link javax.faces.application.ViewHandler#calculateCharacterEncoding(javax.faces.context.FacesContext)}.
+     * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
     @SuppressWarnings("unchecked")
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionButNoSessionValue()
@@ -109,7 +109,7 @@ public class ViewHandlerTest extends TestCase
 
     /**
      * Test method for
-     * {@link javax.faces.application.ViewHandler#calculateCharacterEncoding(javax.faces.context.FacesContext)}.
+     * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
     @SuppressWarnings("unchecked")
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionAndNoSessionValue()
@@ -127,7 +127,7 @@ public class ViewHandlerTest extends TestCase
     }
 
     /**
-     * Test method for {@link javax.faces.application.ViewHandler#initView(javax.faces.context.FacesContext)}.
+     * Test method for {@link jakarta.faces.application.ViewHandler#initView(jakarta.faces.context.FacesContext)}.
      * 
      * @throws Exception
      */
@@ -148,7 +148,7 @@ public class ViewHandlerTest extends TestCase
     }
 
     /**
-     * Test method for {@link javax.faces.application.ViewHandler#initView(javax.faces.context.FacesContext)}.
+     * Test method for {@link jakarta.faces.application.ViewHandler#initView(jakarta.faces.context.FacesContext)}.
      * 
      * @throws Exception
      */

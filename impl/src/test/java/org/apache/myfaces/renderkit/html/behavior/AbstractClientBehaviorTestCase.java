@@ -135,7 +135,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
             {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
-                //jsf.ajax.request('j_id0',event,{'javax.faces.behavior.event':'click'})
+                //jsf.ajax.request('j_id0',event,{'jakarta.faces.behavior.event':'click'})
                 //Only check if the property starts with jsf.ajax.request( is enough 
                 //Assert.assertTrue("output does not match expected output jsf.ajax.request(.... for property "+attrs[i].getName(),
                 //        output.matches(".+ "+attrs[i].getName()+"=\"jsf\\.ajax\\.request\\(.+"));
@@ -185,7 +185,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
             {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
-                //jsf.ajax.request('j_id0',event,{'javax.faces.behavior.event':'click'})
+                //jsf.ajax.request('j_id0',event,{'jakarta.faces.behavior.event':'click'})
                 //Only check if the property starts with jsf.ajax.request( is enough 
                 //Assert.assertTrue("output does not match expected output jsf.ajax.request(.... for property "+attrs[i].getName(),
                 //        output.matches(".+ "+attrs[i].getName()+"=\"jsf\\.ajax\\.request\\(.+"));

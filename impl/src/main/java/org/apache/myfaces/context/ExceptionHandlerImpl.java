@@ -42,7 +42,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler
 {
     /*
      * PLEASE NOTE!!!
-     * javax.faces.webapp.PreJsf2ExceptionHandlerFactory uses most parts of this implementation
+     * jakarta.faces.webapp.PreJsf2ExceptionHandlerFactory uses most parts of this implementation
      * for its private static inner class, only the handle method differs a bit.
      * Thus, any changes made here should also be applied to PreJsf2ExceptionHandlerFactory
      * in the right way (you can copy everything except handle(), this method needs special treatment).
@@ -138,7 +138,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler
                     Throwable exception = context.getException();
                     
                     // Upon encountering the first such Exception that is not an instance of
-                    // javax.faces.event.AbortProcessingException
+                    // jakarta.faces.event.AbortProcessingException
                     if (!shouldSkip(exception))
                     {
                         // set handledAndThrown so that getHandledExceptionQueuedEvent() returns this event

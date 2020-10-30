@@ -19,7 +19,7 @@
 package jakarta.faces.view;
 
 /**
- * A PDL handler that exposes {@link javax.faces.event.ActionListener ActionListener} to a <em>page author</em>. The
+ * A PDL handler that exposes {@link jakarta.faces.event.ActionListener ActionListener} to a <em>page author</em>. The
  * default implementation of Facelets must provide an implemention of this in the handler for the
  * <code>&lt;f:actionListener&gt;</code> tag.
  * 

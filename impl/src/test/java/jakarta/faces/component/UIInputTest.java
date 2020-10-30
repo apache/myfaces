@@ -155,7 +155,7 @@ public class UIInputTest extends AbstractJsfTestCase
         {
             InitParameterMockExternalContext mockExtCtx =
                     new InitParameterMockExternalContext(servletContext, request, response);
-            mockExtCtx.getInitParameterMap().put("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
+            mockExtCtx.getInitParameterMap().put("jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
             mockExtCtx.getInitParameterMap().put(UIInput.VALIDATE_EMPTY_FIELDS_PARAM_NAME, "true");
             facesContext.setExternalContext(mockExtCtx);
             
@@ -190,7 +190,7 @@ public class UIInputTest extends AbstractJsfTestCase
         {
             InitParameterMockExternalContext mockExtCtx =
                     new InitParameterMockExternalContext(servletContext, request, response);
-            mockExtCtx.getInitParameterMap().put("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
+            mockExtCtx.getInitParameterMap().put("jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
             facesContext.setExternalContext(mockExtCtx);
             
             input.addValidator(new Validator()
@@ -245,7 +245,7 @@ public class UIInputTest extends AbstractJsfTestCase
         {
             InitParameterMockExternalContext mockExtCtx =
                     new InitParameterMockExternalContext(servletContext, request, response);
-            mockExtCtx.getInitParameterMap().put("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
+            mockExtCtx.getInitParameterMap().put("jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
             facesContext.setExternalContext(mockExtCtx);
             input.setValue("asd");
             input.setSubmittedValue("asd");
@@ -266,7 +266,7 @@ public class UIInputTest extends AbstractJsfTestCase
         {
             InitParameterMockExternalContext mockExtCtx =
                     new InitParameterMockExternalContext(servletContext, request, response);
-            mockExtCtx.getInitParameterMap().put("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "false");
+            mockExtCtx.getInitParameterMap().put("jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "false");
             facesContext.setExternalContext(mockExtCtx);
             input.setValue("");
             input.setSubmittedValue("");
@@ -286,7 +286,7 @@ public class UIInputTest extends AbstractJsfTestCase
         {
             InitParameterMockExternalContext mockExtCtx =
                     new InitParameterMockExternalContext(servletContext, request, response);
-            //mockExtCtx.getInitParameterMap().put("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "false");
+            //mockExtCtx.getInitParameterMap().put("jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "false");
             facesContext.setExternalContext(mockExtCtx);
             input.setValue("");
             input.setSubmittedValue("");

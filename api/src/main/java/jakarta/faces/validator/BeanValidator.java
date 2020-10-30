@@ -63,7 +63,7 @@ import org.apache.myfaces.core.api.shared.lang.ClassUtils;
         bodyContent="empty")
 @JSFJspProperty(
         name = "binding",
-        returnType = "javax.faces.validator.BeanValidator",
+        returnType = "jakarta.faces.validator.BeanValidator",
         longDesc = "A ValueExpression that evaluates to a BeanValidator.")
 public class BeanValidator implements Validator, PartialStateHolder
 {
@@ -73,12 +73,12 @@ public class BeanValidator implements Validator, PartialStateHolder
     /**
      * Converter ID, as defined by the JSF 2.0 specification.
      */
-    public static final String VALIDATOR_ID = "javax.faces.Bean";
+    public static final String VALIDATOR_ID = "jakarta.faces.Bean";
 
     /**
      * The message ID for this Validator in the message bundles.
      */
-    public static final String MESSAGE_ID = "javax.faces.validator.BeanValidator.MESSAGE";
+    public static final String MESSAGE_ID = "jakarta.faces.validator.BeanValidator.MESSAGE";
 
     /**
      * If this init parameter is present, no Bean Validators should be added to an UIInput by default.
@@ -86,7 +86,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      */
     @JSFWebConfigParam(defaultValue="true", expectedValues="true, false", since="2.0", group="validation")
     public static final String DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME
-            = "javax.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR";
+            = "jakarta.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR";
 
     /**
      * The key in the ServletContext where the Bean Validation Factory can be found.
@@ -95,7 +95,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      * If not present, the manually instantiated ValidatorFactory is stored in the ServletContext
      * under this key for caching purposes.
      */
-    public static final String VALIDATOR_FACTORY_KEY = "javax.faces.validator.beanValidator.ValidatorFactory";
+    public static final String VALIDATOR_FACTORY_KEY = "jakarta.faces.validator.beanValidator.ValidatorFactory";
 
     /**
      * This is used as a separator so multiple validation groups can be specified in one String.
@@ -113,7 +113,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      */
     @JSFWebConfigParam(since="2.3", defaultValue = "false", expectedValues = "true, false", group="validation")
     public static final String ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME = 
-            "javax.faces.validator.ENABLE_VALIDATE_WHOLE_BEAN";
+            "jakarta.faces.validator.ENABLE_VALIDATE_WHOLE_BEAN";
     
     private static final Class<?>[] DEFAULT_VALIDATION_GROUPS_ARRAY = new Class<?>[] { Default.class };
 

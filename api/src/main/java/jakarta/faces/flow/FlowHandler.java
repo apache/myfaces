@@ -27,7 +27,7 @@ import jakarta.faces.context.FacesContext;
 public abstract class FlowHandler
 {
     public static final String FLOW_ID_REQUEST_PARAM_NAME = "jffi";
-    public static final String NULL_FLOW = "javax.faces.flow.NullFlow";
+    public static final String NULL_FLOW = "jakarta.faces.flow.NullFlow";
     public static final String TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME = "jftfdi";
 
     public abstract java.util.Map<java.lang.Object, java.lang.Object> getCurrentFlowScope();

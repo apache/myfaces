@@ -146,7 +146,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                         //we have to move this into an inner if because chrome otherwise chokes
                         //due to changing the and order instead of relying on left to right
                         //if jsf.js is already registered we do not replace it anymore
-                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
+                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=jakarta.faces") == -1) || (src.indexOf("/jsf.js") == -1
                                 && src.indexOf("/jsf-uncompressed.js") == -1)) {
 
                             if (finalScripts.length) {

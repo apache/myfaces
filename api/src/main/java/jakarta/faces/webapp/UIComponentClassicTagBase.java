@@ -672,7 +672,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     protected UIOutput createVerbatimComponent()
     {
         UIOutput verbatimComp =
-                (UIOutput)getFacesContext().getApplication().createComponent("javax.faces.HtmlOutputText");
+                (UIOutput)getFacesContext().getApplication().createComponent("jakarta.faces.HtmlOutputText");
         verbatimComp.setTransient(true);
         verbatimComp.getAttributes().put("escape", Boolean.FALSE);
         verbatimComp.setId(getFacesContext().getViewRoot().createUniqueId());
@@ -758,7 +758,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     }
 
     /**
-     * @deprecated the ResponseWriter is now set by {@link javax.faces.application.ViewHandler#renderView}
+     * @deprecated the ResponseWriter is now set by {@link jakarta.faces.application.ViewHandler#renderView}
      */
     protected void setupResponseWriter()
     {

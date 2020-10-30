@@ -113,7 +113,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         MyCustomRenderer renderer = new MyCustomRenderer();
         component.setRendererType("org.apache.myfaces.MyCustomRenderer");
-        renderKit.addRenderer("javax.faces.Output", "org.apache.myfaces.MyCustomRenderer", renderer);
+        renderKit.addRenderer("jakarta.faces.Output", "org.apache.myfaces.MyCustomRenderer", renderer);
         //This case happens when @ListenerFor is attached on the renderer class like h:outputScript or h:outputStylesheet
         EventListenerWrapper wrapper = new EventListenerWrapper(component, renderer);
         
@@ -137,7 +137,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         MyCustomRenderer renderer = new MyCustomRenderer();
         component.setRendererType("org.apache.myfaces.MyCustomRenderer");
-        renderKit.addRenderer("javax.faces.Output", "org.apache.myfaces.MyCustomRenderer", renderer);
+        renderKit.addRenderer("jakarta.faces.Output", "org.apache.myfaces.MyCustomRenderer", renderer);
         //This case happens when @ListenerFor is attached on the renderer class like h:outputScript or h:outputStylesheet
         EventListenerWrapper wrapper = new EventListenerWrapper(component, renderer);
         
@@ -163,7 +163,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         MyCustomRenderer renderer = new MyCustomRenderer();
         component.setRendererType("org.apache.myfaces.MyCustomRenderer");
-        renderKit.addRenderer("javax.faces.Output", "org.apache.myfaces.MyCustomRenderer", renderer);
+        renderKit.addRenderer("jakarta.faces.Output", "org.apache.myfaces.MyCustomRenderer", renderer);
         //This case happens when @ListenerFor is attached on the renderer class like h:outputScript or h:outputStylesheet
         EventListenerWrapper wrapper = new EventListenerWrapper(component, renderer);
         

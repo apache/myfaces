@@ -64,7 +64,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     _ajaxType:"POST",
 
     //CONSTANTS
-    ENCODED_URL:"javax.faces.encodedURL",
+    ENCODED_URL:"jakarta.faces.encodedURL",
     /*
      * constants used internally
      */
@@ -280,7 +280,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     /**
      * Spec. 13.3.1
      * Collect and encode input elements.
-     * Additionally the hidden element javax.faces.ViewState
+     * Additionally the hidden element jakarta.faces.ViewState
      * Enhancement partial page submit
      *
      * @return  an element of formDataWrapper

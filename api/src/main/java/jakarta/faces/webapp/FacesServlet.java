@@ -53,19 +53,19 @@ public final class FacesServlet implements Servlet
      * Attention: You do not need to put /WEB-INF/faces-config.xml in here.
      */
     @JSFWebConfigParam(since="1.1")
-    public static final String CONFIG_FILES_ATTR = "javax.faces.CONFIG_FILES";
+    public static final String CONFIG_FILES_ATTR = "jakarta.faces.CONFIG_FILES";
 
     /**
      * Identify the Lifecycle instance to be used.
      */
     @JSFWebConfigParam(since="1.1")
-    public static final String LIFECYCLE_ID_ATTR = "javax.faces.LIFECYCLE_ID";
+    public static final String LIFECYCLE_ID_ATTR = "jakarta.faces.LIFECYCLE_ID";
     
     /**
      * Disable automatic FacesServlet xhtml mapping.
      */
     @JSFWebConfigParam(since="2.3")
-    public static final String DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME = "javax.faces.DISABLE_FACESSERVLET_TO_XHTML";
+    public static final String DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME = "jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML";
 
     private static final String SERVLET_INFO = "FacesServlet of the MyFaces API implementation";
     
@@ -192,10 +192,10 @@ public final class FacesServlet implements Servlet
             // Acquire the ResourceHandler for this request by calling Application.getResourceHandler(). 
             ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
 
-            // Call ResourceHandler.isResourceRequest(javax.faces.context.FacesContext).
+            // Call ResourceHandler.isResourceRequest(jakarta.faces.context.FacesContext).
             if (resourceHandler.isResourceRequest(facesContext))
             {
-                // If this returns true call ResourceHandler.handleResourceRequest(javax.faces.context.FacesContext).
+                // If this returns true call ResourceHandler.handleResourceRequest(jakarta.faces.context.FacesContext).
                 resourceHandler.handleResourceRequest(facesContext);
             }
             else
@@ -203,9 +203,9 @@ public final class FacesServlet implements Servlet
                 //JSF 2.2: attach window
                 _lifecycle.attachWindow(facesContext);
                 // If this returns false, handle as follows:
-                // call Lifecycle.execute(javax.faces.context.FacesContext)
+                // call Lifecycle.execute(jakarta.faces.context.FacesContext)
                 _lifecycle.execute(facesContext);
-                // followed by Lifecycle.render(javax.faces.context.FacesContext).
+                // followed by Lifecycle.render(jakarta.faces.context.FacesContext).
                 _lifecycle.render(facesContext);
             }
         }

@@ -79,13 +79,13 @@ public final class JstlCoreTestCase extends FaceletTestCase {
     protected void setupRenderers() throws Exception
     {
         renderKit.addRenderer(UIForm.COMPONENT_FAMILY,
-                "javax.faces.Form", new HtmlFormRenderer());
+                "jakarta.faces.Form", new HtmlFormRenderer());
         renderKit.addRenderer(HtmlCommandButton.COMPONENT_FAMILY,
-                "javax.faces.Button", new HtmlButtonRenderer());
+                "jakarta.faces.Button", new HtmlButtonRenderer());
         renderKit.addRenderer(HtmlInputText.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());
+                "jakarta.faces.Text", new HtmlTextRenderer());
         renderKit.addRenderer(HtmlOutputText.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());
+                "jakarta.faces.Text", new HtmlTextRenderer());
     }
     
     @Test

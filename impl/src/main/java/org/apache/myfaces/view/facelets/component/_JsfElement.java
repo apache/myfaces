@@ -30,7 +30,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
     clazz = "org.apache.myfaces.view.facelets.component.JsfElement",template=true,
     implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
     defaultEventName = "click",
-    defaultRendererType="javax.faces.passthrough.Element")
+    defaultRendererType="jakarta.faces.passthrough.Element")
 abstract class _JsfElement extends UIPanel implements 
     _EventProperties, _FocusBlurProperties, _ChangeSelectProperties, _StyleProperties
 {

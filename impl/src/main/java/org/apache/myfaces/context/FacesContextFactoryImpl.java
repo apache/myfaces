@@ -65,7 +65,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory implements Rele
     private final PartialViewContextFactory _partialViewContextFactory;
     
     /**
-     * This var is assigned as the same as javax.faces.context.ExternalContext._firstInstance,
+     * This var is assigned as the same as jakarta.faces.context.ExternalContext._firstInstance,
      * and since it is a static reference and does not change, we can cache it here safely.
      * 
      * We need
@@ -79,7 +79,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory implements Rele
         ThreadLocal<ExternalContext> firstExternalContextInstance = null;
         try
         {
-            Class clazz = ClassUtils.classForName("javax.faces.context._MyFacesExternalContextHelper");
+            Class clazz = ClassUtils.classForName("jakarta.faces.context._MyFacesExternalContextHelper");
             Field externalContextFirstInstance = clazz.getDeclaredField("firstInstance");
             externalContextFirstInstance.setAccessible(true);
 

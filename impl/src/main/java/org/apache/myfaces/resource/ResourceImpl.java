@@ -37,7 +37,7 @@ import org.apache.myfaces.config.MyfacesConfig;
  */
 public class ResourceImpl extends Resource implements ContractResource
 {
-    protected final static String JAVAX_FACES_LIBRARY_NAME = "javax.faces";
+    protected final static String JAVAX_FACES_LIBRARY_NAME = "jakarta.faces";
     protected final static String JSF_JS_RESOURCE_NAME = "jsf.js";
 
 

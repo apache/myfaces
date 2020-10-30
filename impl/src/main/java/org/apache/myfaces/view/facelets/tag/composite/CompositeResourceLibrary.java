@@ -267,7 +267,7 @@ public class CompositeResourceLibrary implements TagLibrary
                             Resource compositeComponentResource
                                     = new CompositeResouceWrapper(compositeComponentResourceWrapped);
                             ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
-                                    "javax.faces.NamingContainer", null);
+                                    "jakarta.faces.NamingContainer", null);
 
                             return new CompositeComponentResourceTagHandler(componentConfig,
                                                                             compositeComponentResource);

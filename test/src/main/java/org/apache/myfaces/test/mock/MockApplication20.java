@@ -388,7 +388,7 @@ public abstract class MockApplication20 extends MockApplication12
         // If this annotation is not present on the class in question, no action must be taken.
         if (annotation != null)
         {
-            // Create a UIOutput instance by passing javax.faces.Output. to
+            // Create a UIOutput instance by passing jakarta.faces.Output. to
             // Application.createComponent(java.lang.String).
             UIOutput output = (UIOutput) createComponent(UIOutput.COMPONENT_TYPE);
 
@@ -449,8 +449,10 @@ public abstract class MockApplication20 extends MockApplication12
             }
             else
             {
-                // Otherwise, if target is null, call UIViewRoot.addComponentResource(javax.faces.context.FacesContext,
-                // javax.faces.component.UIComponent), passing the UIOutput instance as the second argument.
+                // Otherwise, if target is null, call
+                // UIViewRoot.addComponentResource(jakarta.faces.context.FacesContext,
+                // jakarta.faces.component.UIComponent),
+                // passing the UIOutput instance as the second argument.
                 context.getViewRoot().addComponentResource(context, output);
             }
         }
@@ -503,11 +505,11 @@ public abstract class MockApplication20 extends MockApplication12
                     // an Object. This same event instance must be passed to all listener instances.
                     event = _createEvent(systemEventClass, source, event);
 
-                    // Call SystemEvent.isAppropriateListener(javax.faces.event.FacesListener), passing the listener
+                    // Call SystemEvent.isAppropriateListener(jakarta.faces.event.FacesListener), passing the listener
                     // instance as the argument. If this returns false, take no action on the listener.
                     if (event.isAppropriateListener(listener))
                     {
-                        // Call SystemEvent.processListener(javax.faces.event.FacesListener), passing the listener
+                        // Call SystemEvent.processListener(jakarta.faces.event.FacesListener), passing the listener
                         // instance.
                         event.processListener(listener);
                     }
@@ -901,7 +903,7 @@ public abstract class MockApplication20 extends MockApplication12
 
         /*
          * Obtain a reference to the ViewDeclarationLanguage for this Application instance by calling
-         * ViewHandler.getViewDeclarationLanguage(javax.faces.context.FacesContext, java.lang.String), passing the
+         * ViewHandler.getViewDeclarationLanguage(jakarta.faces.context.FacesContext, java.lang.String), passing the
          * viewId found by calling UIViewRoot.getViewId() on the UIViewRoot in the argument FacesContext.
          */
         UIViewRoot view = context.getViewRoot();
@@ -911,8 +913,8 @@ public abstract class MockApplication20 extends MockApplication12
 
         /*
          * Obtain a reference to the composite component metadata for this composite component by calling
-         * ViewDeclarationLanguage.getComponentMetadata(javax.faces.context.FacesContext,
-         * javax.faces.application.Resource), passing the facesContext and componentResource arguments to this method.
+         * ViewDeclarationLanguage.getComponentMetadata(jakarta.faces.context.FacesContext,
+         * jakarta.faces.application.Resource), passing the facesContext and componentResource arguments to this method.
          * This version of JSF specification uses JavaBeans as the API to the component metadata.
          */
         BeanInfo metadata = vdl.getComponentMetadata(context, componentResource);
@@ -942,8 +944,8 @@ public abstract class MockApplication20 extends MockApplication12
         {
             /*
              * Otherwise, determine if a script based component for this Resource can be found by calling
-             * ViewDeclarationLanguage.getScriptComponentResource(javax.faces.context.FacesContext,
-             * javax.faces.application.Resource). If the result is non-null, and is a script written in one of the
+             * ViewDeclarationLanguage.getScriptComponentResource(jakarta.faces.context.FacesContext,
+             * jakarta.faces.application.Resource). If the result is non-null, and is a script written in one of the
              * languages listed in JSF 4.3 of the specification prose document, create a UIComponent instance from the
              * script resource.
              */
@@ -1012,7 +1014,7 @@ public abstract class MockApplication20 extends MockApplication12
 
                 /*
                  * If none of the previous steps have yielded a UIComponent instance, call
-                 * createComponent(java.lang.String) passing "javax.faces.NamingContainer" as the argument.
+                 * createComponent(java.lang.String) passing "jakarta.faces.NamingContainer" as the argument.
                  */
                 if (component == null)
                 {
@@ -1024,9 +1026,9 @@ public abstract class MockApplication20 extends MockApplication12
 
         /*
          * Call UIComponent.setRendererType(java.lang.String) on the UIComponent instance, passing
-         * "javax.faces.Composite" as the argument.
+         * "jakarta.faces.Composite" as the argument.
          */
-        component.setRendererType("javax.faces.Composite");
+        component.setRendererType("jakarta.faces.Composite");
 
         /*
          * Store the argument Resource in the attributes Map of the UIComponent under the key,
@@ -1115,7 +1117,7 @@ public abstract class MockApplication20 extends MockApplication12
         {
             Application application = context.getApplication();
             
-            // Create a UIOutput instance by passing javax.faces.Output. to 
+            // Create a UIOutput instance by passing jakarta.faces.Output. to 
             // Application.createComponent(java.lang.String).
             UIOutput output = (UIOutput) application.createComponent(UIOutput.COMPONENT_TYPE);
             
@@ -1163,8 +1165,10 @@ public abstract class MockApplication20 extends MockApplication12
             }
             else
             {
-                // Otherwise, if target is null, call UIViewRoot.addComponentResource(javax.faces.context.FacesContext, 
-                // javax.faces.component.UIComponent), passing the UIOutput instance as the second argument.
+                // Otherwise, if target is null, call
+                // UIViewRoot.addComponentResource(jakarta.faces.context.FacesContext, 
+                // jakarta.faces.component.UIComponent),
+                // passing the UIOutput instance as the second argument.
                 context.getViewRoot().addComponentResource(context, output);
             }
         }

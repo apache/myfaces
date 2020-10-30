@@ -23,9 +23,9 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * The abstract base interface for a handler representing an <em>attached object</em> in a PDL page. Subinterfaces are
- * provided for the common attached objects that expose {@link javax.faces.convert.Converter Converter},
- * {@link javax.faces.validator.Validator Validator}, {@link javax.faces.event.ValueChangeEvent ValueChangeEvent}, and
- * {@link javax.faces.event.ActionListener ActionListener} for use by <em>page authors</em>.
+ * provided for the common attached objects that expose {@link jakarta.faces.convert.Converter Converter},
+ * {@link jakarta.faces.validator.Validator Validator}, {@link jakarta.faces.event.ValueChangeEvent ValueChangeEvent},
+ * and {@link jakarta.faces.event.ActionListener ActionListener} for use by <em>page authors</em>.
  * 
  * @since 2.0
  */

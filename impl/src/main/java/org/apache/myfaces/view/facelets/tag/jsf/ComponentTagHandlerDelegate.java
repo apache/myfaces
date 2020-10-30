@@ -184,8 +184,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * for deletion.</li>
      * </ol>
      * 
-     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext,
-     * javax.faces.component.UIComponent)
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
+     * jakarta.faces.component.UIComponent)
      * 
      * @throws TagException
      *             if the UIComponent parent is null
@@ -485,7 +485,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * createComponent on the Application, otherwise just pass the componentType String. <p> If the binding was used,
      * then set the ValueExpression "binding" on the created UIComponent.</p>
      * 
-     * See Application#createComponent(javax.faces.el.ValueBinding, javax.faces.context.FacesContext, java.lang.String)
+     * See
+     * Application#createComponent(jakarta.faces.el.ValueBinding, jakarta.faces.context.FacesContext, java.lang.String)
      * See Application#createComponent(java.lang.String)
      * @param ctx
      *            FaceletContext to use in creating a component

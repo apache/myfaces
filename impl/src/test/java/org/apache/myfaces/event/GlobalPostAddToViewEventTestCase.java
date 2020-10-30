@@ -38,7 +38,7 @@ public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMoc
         @Override
         public boolean isListenerForSource(Object source)
         {
-            return "javax.faces.Head".equals(((UIComponent) source).getRendererType());
+            return "jakarta.faces.Head".equals(((UIComponent) source).getRendererType());
         }
 
         @Override

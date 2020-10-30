@@ -131,7 +131,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         }
         for (UIComponent child : root.getComponentResources(facesContext, "head"))
         {
-            if ("javax.faces.resource.Stylesheet".equals(child.getRendererType()))
+            if ("jakarta.faces.resource.Stylesheet".equals(child.getRendererType()))
             {
                 Assert.assertEquals("osh", child.getId());
                 linksFound++;
@@ -326,7 +326,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
 
         UIComponent box1 = root.findComponent("myForm:box1");
         Assert.assertNotNull(box1);
-        Assert.assertEquals(box1.getRendererType(), "javax.faces.passthrough.Element");
+        Assert.assertEquals(box1.getRendererType(), "jakarta.faces.passthrough.Element");
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -375,7 +375,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         //       pt:data_up="Going Up">Hello World!</input>
         UIComponent input2 = root.findComponent("myForm:box2");
         Assert.assertFalse(input2 instanceof UIInput);
-        Assert.assertEquals(input2.getRendererType(), "javax.faces.passthrough.Element");
+        Assert.assertEquals(input2.getRendererType(), "jakarta.faces.passthrough.Element");
         
         Assert.assertEquals(input2.getPassThroughAttributes().get("placeholder"), "Enter text");
         //Assert.assertEquals(input2.getAttributes().get("placeholder"), "Enter text");
@@ -404,7 +404,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         //</jsf:element>
         UIComponent input3 = root.findComponent("myForm:box3");
         Assert.assertFalse(input3 instanceof UIInput);
-        Assert.assertEquals(input3.getRendererType(), "javax.faces.passthrough.Element");     
+        Assert.assertEquals(input3.getRendererType(), "jakarta.faces.passthrough.Element");     
 
         Assert.assertEquals(input3.getAttributes().get("placeholder"), "Enter text");
         Assert.assertNull(input3.getPassThroughAttributes().get("placeholder"));
@@ -637,6 +637,6 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
             Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, sw.toString()));
         }
         Assert.assertTrue(sw.toString().contains("<img "));
-        Assert.assertTrue(sw.toString().contains("javax.faces.resource/external.png"));
+        Assert.assertTrue(sw.toString().contains("jakarta.faces.resource/external.png"));
     }      
 }

@@ -41,7 +41,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 @JSFFaceletTag(
         name = "f:facet",
         bodyContent = "JSP", 
-        tagClass="javax.faces.webapp.FacetTag")
+        tagClass="jakarta.faces.webapp.FacetTag")
 public final class FacetHandler extends TagHandler 
     implements jakarta.faces.view.facelets.FacetHandler
 {
@@ -59,8 +59,8 @@ public final class FacetHandler extends TagHandler
     /*
      * (non-Javadoc)
      * 
-     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
-     * javax.faces.component.UIComponent)
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext, 
+     * jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,

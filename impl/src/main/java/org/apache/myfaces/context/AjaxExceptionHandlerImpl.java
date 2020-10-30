@@ -63,8 +63,8 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
     //required an Ajax response (PartialViewContext.isAjaxRequest() returns true)
     //
     //Implementations may choose to include a specialized ExceptionHandler for 
-    //Ajax that extends from javax.faces.context.ExceptionHandlerWrapper, and 
-    //have the javax.faces.context.ExceptionHandlerFactory implementation 
+    //Ajax that extends from jakarta.faces.context.ExceptionHandlerWrapper, and 
+    //have the jakarta.faces.context.ExceptionHandlerFactory implementation 
     //install it if the environment requires it. ..."
     
     private static final Logger log = Logger.getLogger(AjaxExceptionHandlerImpl.class.getName());
@@ -162,7 +162,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
                     Throwable exception = context.getException();
                     
                     // Upon encountering the first such Exception that is not an instance of
-                    // javax.faces.event.AbortProcessingException
+                    // jakarta.faces.event.AbortProcessingException
                     if (!shouldSkip(exception))
                     {
                         // set handledAndThrown so that getHandledExceptionQueuedEvent() returns this event

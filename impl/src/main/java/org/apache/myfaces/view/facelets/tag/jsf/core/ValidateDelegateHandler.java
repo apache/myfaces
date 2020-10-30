@@ -56,8 +56,8 @@ public final class ValidateDelegateHandler extends ValidatorHandler
     /**
      * Uses the specified "validatorId" to get a new Validator instance from the Application.
      * 
-     * See javax.faces.application.Application#createValidator(java.lang.String)
-     * See javax.faces.view.facelets.ValidatorHandler#createValidator(javax.faces.view.facelets.FaceletContext)
+     * See jakarta.faces.application.Application#createValidator(java.lang.String)
+     * See jakarta.faces.view.facelets.ValidatorHandler#createValidator(jakarta.faces.view.facelets.FaceletContext)
      */
     protected Validator createValidator(FaceletContext ctx)
     {

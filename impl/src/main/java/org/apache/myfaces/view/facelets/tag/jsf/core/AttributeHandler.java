@@ -36,8 +36,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * Sets the specified name and attribute on the parent UIComponent. If the "value" specified is not a literal, it will
  * instead set the ValueExpression on the UIComponent. 
  * 
- * See javax.faces.component.UIComponent#getAttributes()
- * See javax.faces.component.UIComponent#setValueExpression(java.lang.String, javax.el.ValueExpression)
+ * See jakarta.faces.component.UIComponent#getAttributes()
+ * See jakarta.faces.component.UIComponent#setValueExpression(java.lang.String, javax.el.ValueExpression)
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -61,8 +61,8 @@ public final class AttributeHandler extends TagHandler
     /*
      * (non-Javadoc)
      * 
-     * See javax.faces.view.facelets.FaceletHandler#apply(
-     *       javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(
+     *       jakarta.faces.view.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,

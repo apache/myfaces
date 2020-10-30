@@ -74,7 +74,7 @@ public class PhaseListenerTag extends TagSupport
      * Value binding expression that evaluates to a PhaseListener.
      */
     @JSFJspAttribute(className="javax.el.ValueExpression",
-            deferredValueType="javax.faces.event.PhaseListener")
+            deferredValueType="jakarta.faces.event.PhaseListener")
     public void setBinding(ValueExpression binding)
     {
         this.binding = binding;
@@ -115,7 +115,7 @@ public class PhaseListenerTag extends TagSupport
         // JSF-Spec 1.2 9.4.9
         // If binding is set, call binding.getValue() to obtain a reference to the
         // PhaseListener instance. If there is no exception thrown, and binding.getValue()
-        // returned a non-null object that implements javax.faces.event.PhaseListener, register
+        // returned a non-null object that implements jakarta.faces.event.PhaseListener, register
         // it by calling addPhaseListener(). If there was an exception thrown, rethrow the
         // exception as a JspException.
 

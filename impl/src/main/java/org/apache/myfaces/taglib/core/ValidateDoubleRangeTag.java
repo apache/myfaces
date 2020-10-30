@@ -33,7 +33,7 @@ public class ValidateDoubleRangeTag extends GenericMinMaxValidatorTag<Double>
 {
     private static final long serialVersionUID = 6396116656224588016L;
 
-    private static final String VALIDATOR_ID = "javax.faces.DoubleRange";
+    private static final String VALIDATOR_ID = "jakarta.faces.DoubleRange";
 
     @Override
     protected Validator createValidator() throws JspException

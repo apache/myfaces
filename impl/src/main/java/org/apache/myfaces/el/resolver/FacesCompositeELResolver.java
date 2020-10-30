@@ -28,7 +28,7 @@ import java.util.Arrays;
 /**
  * <p>
  * This composite el resolver will be used at the top level resolver for faces
- * ({@link javax.faces.application.Application#getELResolver()})
+ * ({@link jakarta.faces.application.Application#getELResolver()})
  * and jsp (the one we add with {@link javax.servlet.jsp.JspApplicationContext#addELResolver(javax.el.ELResolver)}.
  * </p>
  * <p>

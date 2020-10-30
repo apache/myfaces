@@ -98,7 +98,7 @@ public class ClientBehaviorTestCase extends AbstractJsfConfigurableMockTestCase
     {
         public static final String COMPONENT_TYPE = "jakarta.faces.UITestComponentWithBehavior";
         public static final String COMPONENT_FAMILY = "jakarta.faces.UITestComponentWithBehavior";
-        public static final String DEFAULT_RENDERER_TYPE = "javax.faces.UITestComponentWithBehavior";
+        public static final String DEFAULT_RENDERER_TYPE = "jakarta.faces.UITestComponentWithBehavior";
 
         static private final java.util.Collection<String> CLIENT_EVENTS_LIST =
             java.util.Collections.unmodifiableCollection(

@@ -34,7 +34,7 @@ public class ParamTag extends UIComponentELTagBase
     @Override
     public String getComponentType()
     {
-        return "javax.faces.Parameter";
+        return "jakarta.faces.Parameter";
     }
 
     @Override

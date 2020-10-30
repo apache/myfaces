@@ -247,8 +247,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
     /**
      * Resolves a path based on the passed URL. If the path starts with '/', then resolve the path against
-     * {@link javax.faces.context.ExternalContext#getResource(java.lang.String)
-     * javax.faces.context.ExternalContext#getResource(java.lang.String)}. Otherwise create a new URL via
+     * {@link jakarta.faces.context.ExternalContext#getResource(java.lang.String)
+     * jakarta.faces.context.ExternalContext#getResource(java.lang.String)}. Otherwise create a new URL via
      * {@link URL#URL(java.net.URL, java.lang.String) URL(URL, String)}.
      * 
      * @param source

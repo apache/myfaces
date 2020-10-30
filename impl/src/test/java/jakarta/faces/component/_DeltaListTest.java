@@ -46,7 +46,7 @@ public class _DeltaListTest extends AbstractComponentTest
         @Override
         public String getFamily()
         {
-            return "javax.faces.Test";
+            return "jakarta.faces.Test";
         }
         
         public void addTestFacesListener(FacesListener listener)

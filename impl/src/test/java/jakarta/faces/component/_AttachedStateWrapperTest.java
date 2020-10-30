@@ -54,7 +54,7 @@ public class _AttachedStateWrapperTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.component._AttachedStateWrapper._AttachedStateWrapper(Class, Object)'
+     * Test method for 'jakarta.faces.component._AttachedStateWrapper._AttachedStateWrapper(Class, Object)'
      */
     public void test_AttachedStateWrapper()
     {
@@ -64,7 +64,7 @@ public class _AttachedStateWrapperTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.component._AttachedStateWrapper.getClazz()'
+     * Test method for 'jakarta.faces.component._AttachedStateWrapper.getClazz()'
      */
     public void testGetClazz()
     {
@@ -73,7 +73,7 @@ public class _AttachedStateWrapperTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.component._AttachedStateWrapper.getWrappedStateObject()'
+     * Test method for 'jakarta.faces.component._AttachedStateWrapper.getWrappedStateObject()'
      */
     public void testGetWrappedStateObject()
     {

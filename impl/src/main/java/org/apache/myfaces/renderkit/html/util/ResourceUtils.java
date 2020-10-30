@@ -44,9 +44,9 @@ public class ResourceUtils
     private final static String RENDERED_JSF_JS = "org.apache.myfaces.RENDERED_JSF_JS";
 
     public static final String JAVAX_FACES_OUTPUT_COMPONENT_TYPE = "jakarta.faces.Output";
-    public static final String JAVAX_FACES_TEXT_RENDERER_TYPE = "javax.faces.Text";
-    public static final String DEFAULT_SCRIPT_RENDERER_TYPE = "javax.faces.resource.Script";
-    public static final String DEFAULT_STYLESHEET_RENDERER_TYPE = "javax.faces.resource.Stylesheet";
+    public static final String JAVAX_FACES_TEXT_RENDERER_TYPE = "jakarta.faces.Text";
+    public static final String DEFAULT_SCRIPT_RENDERER_TYPE = "jakarta.faces.resource.Script";
+    public static final String DEFAULT_STYLESHEET_RENDERER_TYPE = "jakarta.faces.resource.Stylesheet";
 
     public static void markScriptAsRendered(FacesContext facesContext, String libraryName, String resourceName)
     {

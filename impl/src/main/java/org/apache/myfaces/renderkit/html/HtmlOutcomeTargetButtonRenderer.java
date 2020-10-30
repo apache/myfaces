@@ -29,8 +29,8 @@ import org.apache.myfaces.renderkit.html.base.HtmlOutcomeTargetButtonRendererBas
  * @version $Revision$ $Date$
  */
 @JSFRenderer(renderKitId = "HTML_BASIC",
-        family="javax.faces.OutcomeTarget",
-        type="javax.faces.Button")
+        family="jakarta.faces.OutcomeTarget",
+        type="jakarta.faces.Button")
 public class HtmlOutcomeTargetButtonRenderer extends HtmlOutcomeTargetButtonRendererBase
 {
     @Override

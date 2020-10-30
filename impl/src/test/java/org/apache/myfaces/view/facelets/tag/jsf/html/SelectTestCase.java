@@ -68,15 +68,15 @@ public class SelectTestCase extends FaceletTestCase
     protected void setupRenderers() throws Exception
     {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());        
+                "jakarta.faces.Text", new HtmlTextRenderer());        
         renderKit.addRenderer(UIForm.COMPONENT_FAMILY,
-                "javax.faces.Form", new HtmlFormRenderer());
+                "jakarta.faces.Form", new HtmlFormRenderer());
         renderKit.addRenderer(HtmlSelectOneMenu.COMPONENT_FAMILY,
-                "javax.faces.Menu", new HtmlMenuRenderer());        
+                "jakarta.faces.Menu", new HtmlMenuRenderer());        
         renderKit.addRenderer(HtmlCommandButton.COMPONENT_FAMILY,
-                "javax.faces.Button", new HtmlButtonRenderer());
+                "jakarta.faces.Button", new HtmlButtonRenderer());
         renderKit.addRenderer(HtmlMessages.COMPONENT_FAMILY,
-                "javax.faces.Messages", new HtmlMessagesRenderer());
+                "jakarta.faces.Messages", new HtmlMessagesRenderer());
     }
 
     @Test

@@ -224,7 +224,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
             {
                 // componentType is required by Application.createComponent(FacesContext, Resource)
                 // to instantiate the base component for this composite component. It should be
-                // as family javax.faces.NamingContainer .
+                // as family jakarta.faces.NamingContainer .
                 descriptor.setValue(UIComponent.COMPOSITE_COMPONENT_TYPE_KEY, 
                         _componentType.getValueExpression(ctx, String.class));
             }

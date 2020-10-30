@@ -33,7 +33,7 @@ public class ValidateLengthTag extends GenericMinMaxValidatorTag<Integer>
 {
     private static final long serialVersionUID = 4858632671998693059L;
 
-    private static final String VALIDATOR_ID = "javax.faces.Length";
+    private static final String VALIDATOR_ID = "jakarta.faces.Length";
 
     @Override
     protected Validator createValidator() throws JspException

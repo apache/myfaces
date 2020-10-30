@@ -28,8 +28,8 @@ import java.util.Map;
  */
 public class PartialResponseWriterMockup extends MockupResponseWriter {
 
-    public static final String RENDER_ALL_MARKER = "javax.faces.ViewRoot";
-    public static final String VIEW_STATE_MARKER = "javax.faces.ViewState";
+    public static final String RENDER_ALL_MARKER = "jakarta.faces.ViewRoot";
+    public static final String VIEW_STATE_MARKER = "jakarta.faces.ViewState";
     private boolean hasChanges;
     private String insertType;
 

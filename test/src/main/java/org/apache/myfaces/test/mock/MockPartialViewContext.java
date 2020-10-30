@@ -47,7 +47,7 @@ public class MockPartialViewContext extends PartialViewContext
     private static final String FACES_REQUEST = "Faces-Request";
     private static final String PARTIAL_AJAX = "partial/ajax";
     private static final String PARTIAL_PROCESS = "partial/process";
-    private static final String SOURCE_PARAM_NAME = "javax.faces.source";
+    private static final String SOURCE_PARAM_NAME = "jakarta.faces.source";
     private FacesContext _facesContext = null;
     private Boolean _ajaxRequest = null;
     private Collection<String> _executeClientIds = null;
@@ -178,7 +178,7 @@ public class MockPartialViewContext extends PartialViewContext
                         tempList.add(clientId);
                     }
                 }
-                // The "javax.faces.source" parameter needs to be added to the list of
+                // The "jakarta.faces.source" parameter needs to be added to the list of
                 // execute ids if missing (otherwise, we'd never execute an action associated
                 // with, e.g., a button).
 

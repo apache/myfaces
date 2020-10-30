@@ -77,14 +77,14 @@ import org.apache.myfaces.view.facelets.LocationAware;
  * MyFaces error and debug pages. 
  *
  * @author Jacob Hookom (ICLA with ASF filed)
- * @author Jakob Korherr (refactored and moved here from javax.faces.webapp._ErrorPageWriter)
+ * @author Jakob Korherr (refactored and moved here from jakarta.faces.webapp._ErrorPageWriter)
  */
 public final class ErrorPageWriter
 {
 
     /**
      * This bean aims to generate the error page html for inclusion on a facelet error page via
-     * &lt;ui:include src="javax.faces.error.xhtml" /&gt;. When performing this include the facelet
+     * &lt;ui:include src="jakarta.faces.error.xhtml" /&gt;. When performing this include the facelet
      * "myfaces-dev-error-include.xhtml" will be included. This facelet references to the ErrorPageBean.
      * This also works for custom error page templates.
      * The bean is added to the ViewMap of the UIViewRoot, which is 
@@ -220,7 +220,7 @@ public final class ErrorPageWriter
     /**
      * Extended debug info is stored under this key in the request
      * map for every UIInput component when in Development mode.
-     * ATTENTION: this constant is duplicate in javax.faces.component.UIInput
+     * ATTENTION: this constant is duplicate in jakarta.faces.component.UIInput
      */
     public static final String DEBUG_INFO_KEY = "org.apache.myfaces.debug.DEBUG_INFO";
 

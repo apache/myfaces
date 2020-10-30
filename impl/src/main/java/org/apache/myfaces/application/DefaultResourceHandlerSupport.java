@@ -138,12 +138,13 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
         {
             FacesContext facesContext = FacesContext.getCurrentInstance(); 
             
-            String directory = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(), 
+            String directory = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
                 ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, CONTRACTS);
 
             if (directory.startsWith("/"))
             {
-                throw new IllegalStateException("javax.faces.WEBAPP_CONTRACTS_DIRECTORY cannot start with '/");
+                throw new IllegalStateException(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME
+                        + " cannot start with '/");
             }
             
             if (TempDirFileCacheResourceLoader.isValidCreateTemporalFiles(facesContext))

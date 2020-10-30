@@ -45,7 +45,7 @@ public class FacesMessageTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.FacesMessage.FacesMessage()'
+     * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage()'
      */
     public void testFacesMessage()
     {
@@ -56,7 +56,7 @@ public class FacesMessageTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.FacesMessage.FacesMessage(String)'
+     * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(String)'
      */
     public void testFacesMessageString()
     {
@@ -68,7 +68,7 @@ public class FacesMessageTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.FacesMessage.FacesMessage(String, String)'
+     * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(String, String)'
      */
     public void testFacesMessageStringString()
     {
@@ -81,7 +81,7 @@ public class FacesMessageTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.FacesMessage.FacesMessage(Severity, String, String)'
+     * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(Severity, String, String)'
      */
     public void testFacesMessageSeverityStringString()
     {
@@ -94,7 +94,7 @@ public class FacesMessageTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.FacesMessage.FacesMessage(Severity, String, String)'
+     * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(Severity, String, String)'
      */
     public void testFacesMessageNullSeverityStringString()
     {
@@ -111,7 +111,7 @@ public class FacesMessageTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.FacesMessage.setSeverity(Severity)'
+     * Test method for 'jakarta.faces.application.FacesMessage.setSeverity(Severity)'
      */
     public void testSetSeverity()
     {
@@ -122,7 +122,7 @@ public class FacesMessageTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.FacesMessage.setSeverity(Severity)'
+     * Test method for 'jakarta.faces.application.FacesMessage.setSeverity(Severity)'
      */
     public void testSetNullSeverity()
     {
@@ -138,7 +138,7 @@ public class FacesMessageTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.FacesMessage.setSummary(String)'
+     * Test method for 'jakarta.faces.application.FacesMessage.setSummary(String)'
      */
     public void testSetSummary()
     {
@@ -150,7 +150,7 @@ public class FacesMessageTest extends TestCase
     }
 
     /*
-     * Test method for 'javax.faces.application.FacesMessage.setDetail(String)'
+     * Test method for 'jakarta.faces.application.FacesMessage.setDetail(String)'
      */
     public void testSetDetail()
     {

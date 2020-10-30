@@ -74,7 +74,7 @@ public class IntegrationTest
     {
         webDriver.get(contextPath + "index.xhtml");
 
-        // check if the javax.faces.DISABLE_FACESSERVLET_TO_XHTML works as expected
+        // check if the jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML works as expected
         Assert.assertTrue(!webDriver.getPageSource().contains("ViewState"));
     }
     

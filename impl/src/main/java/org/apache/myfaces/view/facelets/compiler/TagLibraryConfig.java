@@ -249,7 +249,7 @@ public final class TagLibraryConfig
                         if (compositeComponentResource != null)
                         {
                             ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
-                                    "javax.faces.NamingContainer", null);
+                                    "jakarta.faces.NamingContainer", null);
                             
                             return new CompositeComponentResourceTagHandler(
                                     componentConfig, compositeComponentResource);

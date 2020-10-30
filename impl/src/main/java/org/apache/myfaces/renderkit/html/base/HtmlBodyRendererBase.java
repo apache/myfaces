@@ -144,7 +144,7 @@ public class HtmlBodyRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter();
         UIViewRoot root = facesContext.getViewRoot();
         // Perf: use indexes for iteration over children,
-        // componentResources are javax.faces.component._ComponentChildrenList._ComponentChildrenList(UIComponent)  
+        // componentResources are jakarta.faces.component._ComponentChildrenList._ComponentChildrenList(UIComponent)  
         List<UIComponent> componentResources = root.getComponentResources(facesContext, HTML.BODY_TARGET);
         int childrenCount = componentResources.size();
         if (childrenCount > 0)

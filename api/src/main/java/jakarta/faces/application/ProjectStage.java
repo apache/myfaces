@@ -35,5 +35,5 @@ public enum ProjectStage
     @JSFWebConfigParam(defaultValue="Production",
             expectedValues="Development, Production, SystemTest, UnitTest",
             since="2.0")
-    public static final String PROJECT_STAGE_PARAM_NAME = "javax.faces.PROJECT_STAGE";
+    public static final String PROJECT_STAGE_PARAM_NAME = "jakarta.faces.PROJECT_STAGE";
 }

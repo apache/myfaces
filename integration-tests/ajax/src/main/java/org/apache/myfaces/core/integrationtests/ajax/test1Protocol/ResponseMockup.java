@@ -69,7 +69,7 @@ public class ResponseMockup extends HttpServlet {
 
     private static String DEFAULT_RESPONSE = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
             "<partial-response><changes><update id=\"out1\"><![CDATA[<span id=\"out1\">2</span>]]></update><update id" +
-            "=\"javax.faces.ViewState\"><![CDATA[j_id1:j_id3]]></update></changes></partial-response>";
+            "=\"jakarta.faces.ViewState\"><![CDATA[j_id1:j_id3]]></update></changes></partial-response>";
     private static String EMPTY_RESPONSE = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
             "<partial-response><changes></changes></partial-response>";
 
@@ -197,7 +197,7 @@ public class ResponseMockup extends HttpServlet {
         } while (line != null);
         Changes changes = new Changes(root);
         root.addElement(changes);
-        changes.addChild(new Update(changes, "javax.faces.ViewRoot", replacement.toString()));
+        changes.addChild(new Update(changes, "jakarta.faces.ViewRoot", replacement.toString()));
         out.println(root.toString());
     }
 
@@ -217,7 +217,7 @@ public class ResponseMockup extends HttpServlet {
 
         Changes changes = new Changes(root);
         root.addElement(changes);
-        changes.addChild(new Update(changes, "javax.faces.ViewBody", replacement.toString()));
+        changes.addChild(new Update(changes, "jakarta.faces.ViewBody", replacement.toString()));
         out.println(root.toString());
     }
 
@@ -250,7 +250,7 @@ public class ResponseMockup extends HttpServlet {
 
         Changes changes = new Changes(root);
         root.addElement(changes);
-        changes.addChild(new Update(changes, "javax.faces.ViewBody", replacement.toString()));
+        changes.addChild(new Update(changes, "jakarta.faces.ViewBody", replacement.toString()));
         out.println(root.toString());
     }
 
@@ -279,7 +279,7 @@ public class ResponseMockup extends HttpServlet {
 
     private void viewstateHandling(PrintWriter out, PartialResponse root) {
         Changes changes = new Changes(root);
-        changes.addChild(new Update(changes, "javax.faces.ViewState", "hello world"));
+        changes.addChild(new Update(changes, "jakarta.faces.ViewState", "hello world"));
         root.addElement(changes);
         out.println(root.toString());
     }

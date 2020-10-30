@@ -75,7 +75,7 @@ public class UIDataTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.component.UIData#setValueExpression(java.lang.String, javax.el.ValueExpression)}.
+     * {@link jakarta.faces.component.UIData#setValueExpression(java.lang.String, javax.el.ValueExpression)}.
      */
     public void testValueExpression()
     {
@@ -95,7 +95,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getClientId(javax.faces.context.FacesContext)}.
+     * Test method for {@link jakarta.faces.component.UIData#getClientId(jakarta.faces.context.FacesContext)}.
      */
     public void testGetClientId()
     {
@@ -111,7 +111,7 @@ public class UIDataTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.component.UIData#invokeOnComponent(javax.faces.context.FacesContext, java.lang.String, javax.faces.component.ContextCallback)}
+     * {@link jakarta.faces.component.UIData#invokeOnComponent(jakarta.faces.context.FacesContext, java.lang.String, jakarta.faces.component.ContextCallback)}
      * .
      * Tests, if invokeOnComponent also checks the facets of the h:column children (MYFACES-2370)
      */
@@ -148,7 +148,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#broadcast(javax.faces.event.FacesEvent)}.
+     * Test method for {@link jakarta.faces.component.UIData#broadcast(jakarta.faces.event.FacesEvent)}.
      */
     public void testBroadcastFacesEvent()
     {
@@ -213,7 +213,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#encodeBegin(javax.faces.context.FacesContext)}.
+     * Test method for {@link jakarta.faces.component.UIData#encodeBegin(jakarta.faces.context.FacesContext)}.
      */
     public void testEncodeBeginFacesContext()
     {
@@ -221,7 +221,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#encodeEnd(javax.faces.context.FacesContext)}.
+     * Test method for {@link jakarta.faces.component.UIData#encodeEnd(jakarta.faces.context.FacesContext)}.
      */
     public void testEncodeEndFacesContext()
     {
@@ -229,7 +229,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#queueEvent(javax.faces.event.FacesEvent)}.
+     * Test method for {@link jakarta.faces.component.UIData#queueEvent(jakarta.faces.event.FacesEvent)}.
      */
     public void testQueueEventFacesEvent()
     {
@@ -237,7 +237,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#processDecodes(javax.faces.context.FacesContext)}.
+     * Test method for {@link jakarta.faces.component.UIData#processDecodes(jakarta.faces.context.FacesContext)}.
      */
     public void testProcessDecodesFacesContext()
     {
@@ -245,7 +245,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#processValidators(javax.faces.context.FacesContext)}.
+     * Test method for {@link jakarta.faces.component.UIData#processValidators(jakarta.faces.context.FacesContext)}.
      */
     public void testProcessValidatorsFacesContext()
     {
@@ -253,7 +253,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#processUpdates(javax.faces.context.FacesContext)}.
+     * Test method for {@link jakarta.faces.component.UIData#processUpdates(jakarta.faces.context.FacesContext)}.
      */
     public void testProcessUpdatesFacesContext()
     {
@@ -261,7 +261,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#saveState(javax.faces.context.FacesContext)}.
+     * Test method for {@link jakarta.faces.component.UIData#saveState(jakarta.faces.context.FacesContext)}.
      */
     public void testSaveState()
     {
@@ -270,7 +270,7 @@ public class UIDataTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link javax.faces.component.UIData#restoreState(javax.faces.context.FacesContext, java.lang.Object)}.
+     * {@link jakarta.faces.component.UIData#restoreState(jakarta.faces.context.FacesContext, java.lang.Object)}.
      */
     public void testRestoreState()
     {
@@ -278,7 +278,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#UIData()}.
+     * Test method for {@link jakarta.faces.component.UIData#UIData()}.
      */
     public void testUIData()
     {
@@ -286,7 +286,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#setFooter(javax.faces.component.UIComponent)}.
+     * Test method for {@link jakarta.faces.component.UIData#setFooter(jakarta.faces.component.UIComponent)}.
      */
     public void testSetFooter()
     {
@@ -294,7 +294,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getFooter()}.
+     * Test method for {@link jakarta.faces.component.UIData#getFooter()}.
      */
     public void testGetFooter()
     {
@@ -302,7 +302,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#setHeader(javax.faces.component.UIComponent)}.
+     * Test method for {@link jakarta.faces.component.UIData#setHeader(jakarta.faces.component.UIComponent)}.
      */
     public void testSetHeader()
     {
@@ -310,7 +310,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getHeader()}.
+     * Test method for {@link jakarta.faces.component.UIData#getHeader()}.
      */
     public void testGetHeader()
     {
@@ -318,7 +318,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#isRowAvailable()}.
+     * Test method for {@link jakarta.faces.component.UIData#isRowAvailable()}.
      */
     public void testIsRowAvailable()
     {
@@ -326,7 +326,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getRowCount()}.
+     * Test method for {@link jakarta.faces.component.UIData#getRowCount()}.
      */
     public void testGetRowCount()
     {
@@ -334,7 +334,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getRowData()}.
+     * Test method for {@link jakarta.faces.component.UIData#getRowData()}.
      */
     public void testGetRowData()
     {
@@ -342,7 +342,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getRowIndex()}.
+     * Test method for {@link jakarta.faces.component.UIData#getRowIndex()}.
      */
     public void testGetRowIndex()
     {
@@ -350,7 +350,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#setRowIndex(int)}.
+     * Test method for {@link jakarta.faces.component.UIData#setRowIndex(int)}.
      */
     public void testSetRowIndex()
     {
@@ -358,7 +358,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getDataModel()}.
+     * Test method for {@link jakarta.faces.component.UIData#getDataModel()}.
      */
     public void testGetDataModel()
     {
@@ -366,7 +366,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#setDataModel(javax.faces.model.DataModel)}.
+     * Test method for {@link jakarta.faces.component.UIData#setDataModel(jakarta.faces.model.DataModel)}.
      */
     public void testSetDataModel()
     {
@@ -374,7 +374,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#setValue(java.lang.Object)}.
+     * Test method for {@link jakarta.faces.component.UIData#setValue(java.lang.Object)}.
      */
     public void testSetValue()
     {
@@ -382,7 +382,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#setRows(int)}.
+     * Test method for {@link jakarta.faces.component.UIData#setRows(int)}.
      */
     public void testSetRows()
     {
@@ -390,7 +390,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#setFirst(int)}.
+     * Test method for {@link jakarta.faces.component.UIData#setFirst(int)}.
      */
     public void testSetFirst()
     {
@@ -398,7 +398,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getValue()}.
+     * Test method for {@link jakarta.faces.component.UIData#getValue()}.
      */
     public void testGetValue()
     {
@@ -406,7 +406,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getVar()}.
+     * Test method for {@link jakarta.faces.component.UIData#getVar()}.
      */
     public void testGetVar()
     {
@@ -414,7 +414,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#setVar(java.lang.String)}.
+     * Test method for {@link jakarta.faces.component.UIData#setVar(java.lang.String)}.
      */
     public void testSetVar()
     {
@@ -422,7 +422,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getRows()}.
+     * Test method for {@link jakarta.faces.component.UIData#getRows()}.
      */
     public void testGetRows()
     {
@@ -430,7 +430,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getFirst()}.
+     * Test method for {@link jakarta.faces.component.UIData#getFirst()}.
      */
     public void testGetFirst()
     {
@@ -438,7 +438,7 @@ public class UIDataTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link javax.faces.component.UIData#getFamily()}.
+     * Test method for {@link jakarta.faces.component.UIData#getFamily()}.
      */
     public void testGetFamily()
     {
@@ -447,7 +447,7 @@ public class UIDataTest extends AbstractJsfTestCase
     
     /**
      * Test method for 
-     * {@link javax.faces.component.UIData#visitTree(javax.faces.component.visit.VisitContext, javax.faces.component.visit.VisitCallback)}.
+     * {@link jakarta.faces.component.UIData#visitTree(jakarta.faces.component.visit.VisitContext, jakarta.faces.component.visit.VisitCallback)}.
      */
     public void testVisitTree() {
         UIData uidata = new UIData();
@@ -959,7 +959,7 @@ public class UIDataTest extends AbstractJsfTestCase
      */
     public void testSaveAndRestorePortletLifecycleWithPss1() throws Exception
     {
-        facesContext.getRenderKit().addRenderer("javax.faces.Data", "javax.faces.Table",new Renderer(){});
+        facesContext.getRenderKit().addRenderer("jakarta.faces.Data", "jakarta.faces.Table",new Renderer(){});
         
         List<RowData> model = new ArrayList<RowData>();
         model.add(new RowData("text1","style1"));
@@ -1058,7 +1058,7 @@ public class UIDataTest extends AbstractJsfTestCase
      */
     public void testSaveAndRestorePortletLifecycleWithPss2() throws Exception
     {
-        facesContext.getRenderKit().addRenderer("javax.faces.Data", "javax.faces.Table",new Renderer(){});
+        facesContext.getRenderKit().addRenderer("jakarta.faces.Data", "jakarta.faces.Table",new Renderer(){});
         
         List<RowData> model = new ArrayList<RowData>();
         model.add(new RowData("text1","style1"));

@@ -21,7 +21,7 @@ package org.apache.myfaces.view;
 import jakarta.faces.view.ViewMetadata;
 
 /**
- * This class represents the default implementation of javax.faces.view.ViewMetaData.
+ * This class represents the default implementation of jakarta.faces.view.ViewMetaData.
  */
 public abstract class ViewMetadataBase extends ViewMetadata
 {

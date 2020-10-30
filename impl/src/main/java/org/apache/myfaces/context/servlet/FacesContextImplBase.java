@@ -240,10 +240,10 @@ public abstract class FacesContextImplBase extends FacesContext
 
     /**
      * Returns a mutable map of attributes associated with this faces context when
-     * {@link javax.faces.context.FacesContext#release()} is called the map must be cleared!
+     * {@link jakarta.faces.context.FacesContext#release()} is called the map must be cleared!
      * 
      * Note this map is not associated with the request map the request map still is accessible via the
-     * {@link javax.faces.context.ExternalContext#getRequestMap()} method!
+     * {@link jakarta.faces.context.ExternalContext#getRequestMap()} method!
      * 
      * Also the scope is different to the request map, this map has the scope of the context, and is cleared once the
      * release method on the context is called!

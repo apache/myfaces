@@ -54,7 +54,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(jakarta.faces.context.FacesContext)}.
      */
     public void testExecuteWithExistingViewRoot()
     {

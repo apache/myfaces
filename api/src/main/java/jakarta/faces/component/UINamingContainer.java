@@ -47,7 +47,7 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
 {
     public static final String COMPONENT_TYPE = "jakarta.faces.NamingContainer";
     public static final String COMPONENT_FAMILY = "jakarta.faces.NamingContainer";
-    public static final String SEPARATOR_CHAR_PARAM_NAME = "javax.faces.SEPARATOR_CHAR";
+    public static final String SEPARATOR_CHAR_PARAM_NAME = "jakarta.faces.SEPARATOR_CHAR";
 
     /**
      * Construct an instance of the UINamingContainer.

@@ -57,7 +57,7 @@ public final class ConvertNumberHandler extends ConverterHandler
      * 
      * See NumberConverter
      * See org.apache.myfaces.view.facelets.tag.jsf.ConverterHandler#createConverter(
-     * javax.faces.view.facelets.FaceletContext)
+     * jakarta.faces.view.facelets.FaceletContext)
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException
     {
@@ -67,7 +67,7 @@ public final class ConvertNumberHandler extends ConverterHandler
     /*
      * (non-Javadoc)
      * 
-     * See org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(javax.faces.view.facelets.FaceletContext,
+     * See org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(jakarta.faces.view.facelets.FaceletContext,
      * java.lang.Object)
      */
     @Override

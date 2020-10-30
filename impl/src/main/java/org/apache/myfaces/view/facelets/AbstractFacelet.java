@@ -48,7 +48,7 @@ public abstract class AbstractFacelet extends Facelet
     /**
      * Used for delegation by the DefaultFaceletContext.
      * 
-     * @see javax.faces.view.facelets.FaceletContext#includeFacelet(UIComponent, String)
+     * @see jakarta.faces.view.facelets.FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx
      *            FaceletContext to pass to the included Facelet
      * @param parent

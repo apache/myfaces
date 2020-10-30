@@ -35,7 +35,7 @@ public interface FaceletHandler
      * @param ctx the current FaceletContext instance for this execution
      * @param parent the parent UIComponent to operate upon
      * @throws IOException
-     * @throws javax.faces.FacesException
+     * @throws jakarta.faces.FacesException
      * @throws FaceletException
      * @throws javax.el.ELException
      */

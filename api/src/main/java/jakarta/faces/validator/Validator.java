@@ -28,9 +28,11 @@ import java.util.EventListener;
 public interface Validator<T> extends EventListener
 {
     /**
-     * @deprecated
+     * @deprecated use {@link DoubleRangeValidator#NOT_IN_RANGE_MESSAGE_ID} or
+     * {@link LongRangeValidator#NOT_IN_RANGE_MESSAGE_ID}.
      */
-    public static final String NOT_IN_RANGE_MESSAGE_ID = "javax.faces.validator.NOT_IN_RANGE";
+    @Deprecated
+    public static final String NOT_IN_RANGE_MESSAGE_ID = "jakarta.faces.validator.NOT_IN_RANGE";
 
     public void validate(FacesContext context, UIComponent component, T value) throws ValidatorException;
 }

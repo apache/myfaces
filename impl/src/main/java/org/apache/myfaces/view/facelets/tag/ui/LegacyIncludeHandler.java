@@ -64,7 +64,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 public final class LegacyIncludeHandler extends TagHandler implements ComponentContainerHandler
 {
 
-    private static final String ERROR_PAGE_INCLUDE_PATH = "javax.faces.error.xhtml";
+    private static final String ERROR_PAGE_INCLUDE_PATH = "jakarta.faces.error.xhtml";
     private static final String ERROR_FACELET = "META-INF/rsc/myfaces-dev-error-include.xhtml";
     
     /**
@@ -95,7 +95,7 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
@@ -157,7 +157,7 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
                 URL url = null;
                 boolean oldMarkInitialState = false;
                 Boolean isBuildingInitialState = null;
-                // if we are in ProjectStage Development and the path equals "javax.faces.error.xhtml"
+                // if we are in ProjectStage Development and the path equals "jakarta.faces.error.xhtml"
                 // we should include the default error page
                 if (ctx.getFacesContext().isProjectStage(ProjectStage.Development) 
                         && ERROR_PAGE_INCLUDE_PATH.equals(path))

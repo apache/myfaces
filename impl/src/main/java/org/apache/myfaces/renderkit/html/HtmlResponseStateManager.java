@@ -119,7 +119,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         if (myfacesConfig.isRenderViewStateId())
         {
             // responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
-            // JSF 2.2 if javax.faces.ViewState is used as the id, in portlet
+            // JSF 2.2 if jakarta.faces.ViewState is used as the id, in portlet
             // case it will be duplicate ids and that not xml friendly.
             responseWriter.writeAttribute(HTML.ID_ATTR,
                 HtmlResponseStateManager.generateUpdateViewStateId(facesContext),
@@ -160,7 +160,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     }
 
     /**
-     * Reconstructs the state from the "javax.faces.ViewState" request parameter.
+     * Reconstructs the state from the "jakarta.faces.ViewState" request parameter.
      * 
      * @param facesContext
      *            the current FacesContext
@@ -232,7 +232,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         {
             // "... java.lang.IllegalStateException - if this method is invoked 
             // and the statefulness of the preceding call to writeState(
-            // javax.faces.context.FacesContext, java.lang.Object) cannot be determined.
+            // jakarta.faces.context.FacesContext, java.lang.Object) cannot be determined.
             throw new IllegalStateException(
                 "Cannot decide if the view is stateless or not, since the request is "
                 + "not postback (no preceding writeState(...)).");

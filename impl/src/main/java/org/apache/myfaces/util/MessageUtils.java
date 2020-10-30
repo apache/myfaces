@@ -53,7 +53,7 @@ public final class MessageUtils
     }
 
     /** Default bundle for messages (<code>jakarta.faces.Messages</code>) */
-    private static final String DEFAULT_BUNDLE = "javax.faces.Messages";
+    private static final String DEFAULT_BUNDLE = "jakarta.faces.Messages";
 
     /** Suffix for message details (<code>_detail</code>)*/
     private static final String DETAIL_SUFFIX = "_detail";
