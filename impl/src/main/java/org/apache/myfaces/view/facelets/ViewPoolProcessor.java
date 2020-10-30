@@ -590,10 +590,10 @@ public class ViewPoolProcessor
                     // 1. Resources relocated by facelets
                     // 2. Resources created by effect of a @ResourceDependency annotation
                     if (fc.getId() != null
-                            && fc.getId().startsWith(FaceletCompositionContextImpl.JAVAX_FACES_LOCATION_PREFIX))
+                            && fc.getId().startsWith(FaceletCompositionContextImpl.JAKARTA_FACES_LOCATION_PREFIX))
                     {
                         String target = fc.getId().substring(
-                                FaceletCompositionContextImpl.JAVAX_FACES_LOCATION_PREFIX.length());
+                                FaceletCompositionContextImpl.JAKARTA_FACES_LOCATION_PREFIX.length());
                         Map<String, List<ResourceDependency>> addedResources = 
                             viewStructureMetadata.getRequestViewMetadata().
                                 getResourceDependencyAnnotations(context);

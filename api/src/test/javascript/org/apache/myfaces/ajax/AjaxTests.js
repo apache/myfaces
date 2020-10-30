@@ -29,7 +29,7 @@ function AjaxTest(name)
  * test the basic namespacing being active!
  */
 function AjaxTest_testNameSpacing() {
-    this.assertTrue( "namespacing javax exists" , 'undefined' != typeof javax && null != typeof(javax) );
+    this.assertTrue( "namespacing jakarta exists" , 'undefined' != typeof jakarta && null != typeof(jakarta) );
     this.assertTrue( "namespacing jakarta.faces.Ajax exists" , 'undefined' != typeof jakarta.faces && null != typeof(jakarta.faces) );
     this.assertTrue( "namespacing jakarta.faces.Ajax exists" , 'undefined' != typeof jakarta.faces.Ajax && null != typeof(jakarta.faces.Ajax) );
 }

@@ -190,7 +190,7 @@ public class RequestViewContext
         {
             UIComponent facet = entry.getValue();
             if (facet.getId() != null
-                    && facet.getId().startsWith(FaceletCompositionContextImpl.JAVAX_FACES_LOCATION_PREFIX))
+                    && facet.getId().startsWith(FaceletCompositionContextImpl.JAKARTA_FACES_LOCATION_PREFIX))
             {
                 try
                 {
