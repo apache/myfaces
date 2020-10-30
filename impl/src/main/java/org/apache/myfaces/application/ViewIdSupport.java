@@ -45,9 +45,9 @@ public class ViewIdSupport
 {
     private static final String INSTANCE_KEY = ViewIdSupport.class.getName();
     
-    private static final String JAVAX_SERVLET_INCLUDE_SERVLET_PATH = "jakarta.servlet.include.servlet_path";
+    private static final String JAKARTA_SERVLET_INCLUDE_SERVLET_PATH = "jakarta.servlet.include.servlet_path";
 
-    private static final String JAVAX_SERVLET_INCLUDE_PATH_INFO = "jakarta.servlet.include.path_info";
+    private static final String JAKARTA_SERVLET_INCLUDE_PATH_INFO = "jakarta.servlet.include.path_info";
     
     private static final Logger log = Logger.getLogger(ViewIdSupport.class.getName());
     
@@ -564,13 +564,13 @@ public class ViewIdSupport
         }
         else
         {
-            viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_PATH_INFO);
+            viewId = (String) requestMap.get(JAKARTA_SERVLET_INCLUDE_PATH_INFO);
             if (viewId != null)
             {
                 if (traceEnabled)
                 {
                     log.finest("Calculated viewId '" + viewId + "' from request param '"
-                            + JAVAX_SERVLET_INCLUDE_PATH_INFO + '\'');
+                            + JAKARTA_SERVLET_INCLUDE_PATH_INFO + '\'');
                 }
             }
             else
@@ -584,11 +584,11 @@ public class ViewIdSupport
     
             if (viewId == null)
             {
-                viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_SERVLET_PATH);
+                viewId = (String) requestMap.get(JAKARTA_SERVLET_INCLUDE_SERVLET_PATH);
                 if (viewId != null && traceEnabled)
                 {
                     log.finest("Calculated viewId '" + viewId + "' from request param '"
-                            + JAVAX_SERVLET_INCLUDE_SERVLET_PATH + '\'');
+                            + JAKARTA_SERVLET_INCLUDE_SERVLET_PATH + '\'');
                 }
             }
         }

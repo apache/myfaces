@@ -40,7 +40,7 @@ import jakarta.websocket.Session;
 public class EndpointImpl extends Endpoint
 {
 
-    public static final String JAVAX_FACES_PUSH_PATH = PushContext.URI_PREFIX + "/{channel}";
+    public static final String JAKARTA_FACES_PUSH_PATH = PushContext.URI_PREFIX + "/{channel}";
 
     public static final String PUSH_CHANNEL_PARAMETER = "channel";
     

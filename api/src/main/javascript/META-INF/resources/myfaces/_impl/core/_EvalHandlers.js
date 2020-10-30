@@ -120,7 +120,7 @@ if (!myfaces._impl.core._EvalHandlers) {
                     continue;
                 }
                 var src = scriptNode.getAttribute("src") || "";
-                if(src && !src.match(/jsf\.js\?ln\=javax\.faces/gi)) {
+                if(src && !src.match(/jsf\.js\?ln\=jakarta\.faces/gi)) {
                     jsf_js = scriptNode;
                     //the first one is the one we have our code in
                     //subsequent ones do not overwrite our code

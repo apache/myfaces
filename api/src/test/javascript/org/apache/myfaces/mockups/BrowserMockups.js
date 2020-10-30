@@ -233,9 +233,9 @@ if('undefined' == typeof document  || null == document) {
 
 
 
-if('undefined' == typeof javax  || null == javax) {
-    var javax = new Object();
-    document.javax = javax;
+if('undefined' == typeof jakarta  || null == jakarta) {
+    var jakarta = new Object();
+    document.jakarta = jakarta;
 }
 
 if('undefined' == typeof org  || null == org) {

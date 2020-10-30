@@ -707,7 +707,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             try 
             {
                 serverContainer.addEndpoint(ServerEndpointConfig.Builder
-                        .create(EndpointImpl.class, EndpointImpl.JAVAX_FACES_PUSH_PATH)
+                        .create(EndpointImpl.class, EndpointImpl.JAKARTA_FACES_PUSH_PATH)
                         .configurator(new WebsocketConfigurator(externalContext)).build());
 
                 //Init LRU cache

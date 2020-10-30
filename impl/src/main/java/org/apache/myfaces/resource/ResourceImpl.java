@@ -37,7 +37,7 @@ import org.apache.myfaces.config.MyfacesConfig;
  */
 public class ResourceImpl extends Resource implements ContractResource
 {
-    protected final static String JAVAX_FACES_LIBRARY_NAME = "jakarta.faces";
+    protected final static String JAKARTA_FACES_LIBRARY_NAME = "jakarta.faces";
     protected final static String JSF_JS_RESOURCE_NAME = "jsf.js";
 
 
@@ -143,7 +143,7 @@ public class ResourceImpl extends Resource implements ContractResource
 
                 if (!context.isProjectStage(ProjectStage.Production)
                         && JSF_JS_RESOURCE_NAME.equals(getResourceName()) 
-                        && JAVAX_FACES_LIBRARY_NAME.equals(getLibraryName()))
+                        && JAKARTA_FACES_LIBRARY_NAME.equals(getLibraryName()))
                 {
                     // append &stage=?? for all ProjectStages except Production
                     path = path + "&stage=" + context.getApplication().getProjectStage().toString();
