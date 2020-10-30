@@ -541,6 +541,8 @@ class MyFacesProcessor
                 "org/apache/myfaces/resource/web-facesconfig_2_1.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_2_2.dtd", 
                 "org/apache/myfaces/resource/web-facesconfig_2_3.dtd",
+                "org/apache/myfaces/resource/web-facesconfig_3_0.dtd",
+                "org/apache/myfaces/resource/web-facesconfig_4_0.dtd",
                 "org/apache/myfaces/resource/xml.xsd",
                 "META-INF/rsc/myfaces-dev-error-include.xml",
                 "META-INF/services/javax.servlet.ServletContainerInitializer"));

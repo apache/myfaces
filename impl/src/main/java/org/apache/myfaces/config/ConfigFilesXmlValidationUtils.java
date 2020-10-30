@@ -56,6 +56,8 @@ public class ConfigFilesXmlValidationUtils
     private final static String FACES_CONFIG_SCHEMA_PATH_21 = "org/apache/myfaces/resource/web-facesconfig_2_1.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_22 = "org/apache/myfaces/resource/web-facesconfig_2_2.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_23 = "org/apache/myfaces/resource/web-facesconfig_2_3.xsd";
+    private final static String FACES_CONFIG_SCHEMA_PATH_30 = "org/apache/myfaces/resource/web-facesconfig_3_0.xsd";
+    private final static String FACES_CONFIG_SCHEMA_PATH_40 = "org/apache/myfaces/resource/web-facesconfig_4_0.xsd";
     private final static String FACES_TAGLIB_SCHEMA_PATH = "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
 
     public static class LSInputImpl implements LSInput
@@ -251,7 +253,9 @@ public class ConfigFilesXmlValidationUtils
                             ? FACES_CONFIG_SCHEMA_PATH_12
                             : ("2.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_20 
                             : ("2.1".equals(version) ? FACES_CONFIG_SCHEMA_PATH_21
-                            : ("2.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_22 : FACES_CONFIG_SCHEMA_PATH_23)));
+                            : ("2.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_22
+                            : ("2.3".equals(version) ? FACES_CONFIG_SCHEMA_PATH_23
+                            : ("3.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_30 : FACES_CONFIG_SCHEMA_PATH_40)))));
         
         InputStream stream = ClassUtils.getResourceAsStream(xmlSchema);
         
@@ -270,7 +274,7 @@ public class ConfigFilesXmlValidationUtils
 
     public static final String getFacesConfigVersion(URL url)
     {
-        String result = "2.0";
+        String result = "4.0";
 
         try
         {
@@ -301,9 +305,38 @@ public class ConfigFilesXmlValidationUtils
                 }
             }
 
-            result = handler.isVersion23OrLater() ? "2.3" : (handler.isVersion22() ? "2.2" : 
-                        (handler.isVersion21() ? "2.1" : (handler.isVersion20() ? "2.0" : 
-                        (handler.isVersion12() ? "1.2" : "1.1"))));
+            if (handler.isVersion11())
+            {
+                return "1.1";
+            }
+            else if (handler.isVersion12())
+            {
+                return "1.2";
+            }
+            else if (handler.isVersion20())
+            {
+                return "2.0";
+            }
+            else if (handler.isVersion21())
+            {
+                return "2.1";
+            }
+            else if (handler.isVersion22())
+            {
+                return "2.2";
+            }
+            else if (handler.isVersion23())
+            {
+                return "2.3";
+            }
+            else if (handler.isVersion30())
+            {
+                return "3.0";
+            }
+            else if (handler.isVersion40OrLater())
+            {
+                return "4.0";
+            }
         }
         catch (Throwable e)
         {
@@ -315,12 +348,20 @@ public class ConfigFilesXmlValidationUtils
 
     private static class FacesConfigVersionCheckHandler extends DefaultHandler
     {
+        private boolean version11;
         private boolean version12;
         private boolean version20;
         private boolean version21;
         private boolean version22;
-        private boolean version23OrLater;
+        private boolean version23;
+        private boolean version30;
+        private boolean version40OrLater;
 
+        public boolean isVersion11()
+        {
+            return this.version11;
+        }
+        
         public boolean isVersion12()
         {
             return this.version12;
@@ -341,9 +382,31 @@ public class ConfigFilesXmlValidationUtils
             return this.version22;
         }
         
-        public boolean isVersion23OrLater()
+        public boolean isVersion23()
         {
-            return this.version23OrLater;
+            return this.version23;
+        }
+
+        public boolean isVersion30()
+        {
+            return this.version30;
+        }
+        
+        public boolean isVersion40OrLater()
+        {
+            return this.version40OrLater;
+        }
+
+        protected void reset()
+        {
+            this.version11 = false;
+            this.version12 = false;
+            this.version20 = false;
+            this.version21 = false;
+            this.version22 = false;
+            this.version23 = false;
+            this.version30 = false;
+            this.version40OrLater = false;
         }
 
         @Override
@@ -362,45 +425,45 @@ public class ConfigFilesXmlValidationUtils
                             : attributes.getQName(i);
                     if (attrName.equals("version"))
                     {
-                        if (attributes.getValue(i).equals("1.2"))
+                        if (attributes.getValue(i).equals("1.1"))
                         {
+                            reset();
+                            this.version11 = true;
+                        }
+                        else if (attributes.getValue(i).equals("1.2"))
+                        {
+                            reset();
                             this.version12 = true;
-                            this.version20 = false;
-                            this.version21 = false;
-                            this.version22 = false;
-                            this.version23OrLater = false;
                         }
                         else if (attributes.getValue(i).equals("2.0"))
                         {
-                            this.version12 = false;
+                            reset();
                             this.version20 = true;
-                            this.version21 = false;
-                            this.version22 = false;
-                            this.version23OrLater = false;
                         }
                         else if (attributes.getValue(i).equals("2.1"))
                         {
-                            this.version12 = false;
-                            this.version20 = false;
+                            reset();
                             this.version21 = true;
-                            this.version22 = false;
-                            this.version23OrLater = false;
                         }
                         else if (attributes.getValue(i).equals("2.2"))
                         {
-                            this.version12 = false;
-                            this.version20 = false;
-                            this.version21 = false;
+                            reset();
                             this.version22 = true;
-                            this.version23OrLater = false;
+                        }
+                        else if (attributes.getValue(i).equals("2.3"))
+                        {
+                            reset();
+                            this.version23 = true;
+                        }
+                        else if (attributes.getValue(i).equals("3.0"))
+                        {
+                            reset();
+                            this.version30 = true;
                         }
                         else
                         {
-                            this.version12 = false;
-                            this.version20 = false;
-                            this.version21 = false;
-                            this.version22 = false;
-                            this.version23OrLater = true;
+                            reset();
+                            this.version40OrLater = true;
                         }
                     }
                 }
