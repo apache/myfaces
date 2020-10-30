@@ -27,7 +27,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:jakartaee="https://jakarta.ee/xml/ns/jakartaee" attributeFormDefault="unqualified"
     elementFormDefault="qualified" targetNamespace="https://jakarta.ee/xml/ns/jakartaee"
-    version="2.3">
+    version="3.0">
 
     <xsd:include schemaLocation="jakartaee_9.xsd"/>
 
