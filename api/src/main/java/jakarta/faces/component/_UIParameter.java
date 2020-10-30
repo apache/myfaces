@@ -30,8 +30,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * Unless otherwise specified, all attributes accept static values or EL expressions.
  * </p>
  */
-@JSFComponent(clazz = "jakarta.faces.component.UIParameter", template = true,
-              name = "f:param", tagClass = "org.apache.myfaces.taglib.core.ParamTag")
+@JSFComponent(clazz = "jakarta.faces.component.UIParameter", template = true, name = "f:param")
 abstract class _UIParameter extends UIComponentBase
 {
 

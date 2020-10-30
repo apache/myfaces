@@ -40,7 +40,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(clazz = "jakarta.faces.component.UISelectItems",
               template = true,
               name = "f:selectItems",
-              tagClass = "org.apache.myfaces.taglib.core.SelectItemsTag",
               bodyContent = "empty")
 abstract class _UISelectItems extends UIComponentBase
 {

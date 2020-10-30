@@ -172,21 +172,6 @@
                             <goal>make-components</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>make_tags</id>
-                        <configuration>
-                            <jsfVersion>12</jsfVersion>
-                            <templateTagName>tagClass12.vm</templateTagName>
-                            <packageContains>org.apache</packageContains>
-                            <typePrefix>jakarta.faces</typePrefix>
-                            <modelIds>
-                                <modelId>myfaces-api</modelId>
-                            </modelIds>
-                        </configuration>
-                        <goals>
-                            <goal>make-tags</goal>
-                        </goals>
-                    </execution>
 
                     <execution>
                         <id>makecoretld</id>

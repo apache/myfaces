@@ -52,10 +52,7 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
  * @author Jacob Hookom
  * @version $Id$
  */
-@JSFFaceletTag(
-        name = "f:valueChangeListener",
-        bodyContent = "empty", 
-        tagClass="org.apache.myfaces.taglib.core.ValueChangeListenerTag")
+@JSFFaceletTag(name = "f:valueChangeListener", bodyContent = "empty")
 public final class ValueChangeListenerHandler extends TagHandler
     implements EditableValueHolderAttachedObjectHandler
 {

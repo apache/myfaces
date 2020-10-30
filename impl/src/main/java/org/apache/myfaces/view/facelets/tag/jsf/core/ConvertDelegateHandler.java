@@ -36,10 +36,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * @author Jacob Hookom
  * @version $Id$
  */
-@JSFFaceletTag(
-        name = "f:converter",
-        bodyContent = "empty", 
-        tagClass="org.apache.myfaces.taglib.core.ConverterImplTag")
+@JSFFaceletTag(name = "f:converter", bodyContent = "empty")
 public final class ConvertDelegateHandler extends ConverterHandler
 {
     private final TagAttribute converterId;

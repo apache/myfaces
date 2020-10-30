@@ -33,10 +33,7 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
  * @author Adam Winer
  * @version $Id$
  */
-@JSFFaceletTag(
-        name = "f:verbatim",
-        bodyContent = "empty", 
-        tagClass="org.apache.myfaces.taglib.core.VerbatimTag")
+@JSFFaceletTag(name = "f:verbatim", bodyContent = "empty")
 public final class VerbatimHandler extends ComponentHandler
 {
     public VerbatimHandler(ComponentConfig config)

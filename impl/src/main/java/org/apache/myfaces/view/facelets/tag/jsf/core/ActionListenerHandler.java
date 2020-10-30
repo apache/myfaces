@@ -54,10 +54,7 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
  * @author Jacob Hookom
  * @version $Id$
  */
-@JSFFaceletTag(
-            name = "f:actionListener",
-            bodyContent = "empty", 
-            tagClass="org.apache.myfaces.taglib.core.ActionListenerTag")
+@JSFFaceletTag(name = "f:actionListener", bodyContent = "empty")
 public final class ActionListenerHandler extends TagHandler
     implements ActionSource2AttachedObjectHandler 
 {

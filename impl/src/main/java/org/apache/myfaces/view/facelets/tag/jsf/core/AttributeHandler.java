@@ -41,10 +41,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * @author Jacob Hookom
  * @version $Id$
  */
-@JSFFaceletTag(
-        name = "f:attribute",
-        bodyContent = "empty", 
-        tagClass="org.apache.myfaces.taglib.core.AttributeTag")
+@JSFFaceletTag(name = "f:attribute", bodyContent = "empty")
 public final class AttributeHandler extends TagHandler
     implements jakarta.faces.view.facelets.AttributeHandler
 {

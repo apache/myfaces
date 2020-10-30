@@ -44,10 +44,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
-@JSFFaceletTag(
-        name = "f:phaseListener",
-        bodyContent = "empty", 
-        tagClass="org.apache.myfaces.taglib.core.PhaseListenerTag")
+@JSFFaceletTag(name = "f:phaseListener", bodyContent = "empty")
 public class PhaseListenerHandler extends TagHandler
 {
 

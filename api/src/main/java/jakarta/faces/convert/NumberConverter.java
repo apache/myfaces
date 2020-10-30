@@ -47,10 +47,7 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
  * 
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  */
-@JSFConverter(
-    name="f:convertNumber",
-    bodyContent="empty",
-    tagClass="org.apache.myfaces.taglib.core.ConvertNumberTag")
+@JSFConverter(name = "f:convertNumber", bodyContent = "empty")
 @JSFJspProperty(
     name="binding", 
     returnType = "jakarta.faces.convert.NumberConverter",

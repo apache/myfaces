@@ -70,10 +70,7 @@ import java.util.regex.PatternSyntaxException;
  *
  * @since 2.0
  */
-@JSFValidator(
-    name="f:validateRegex",
-    bodyContent="empty",
-    tagClass="org.apache.myfaces.taglib.core.ValidateRegexTag")
+@JSFValidator(name = "f:validateRegex", bodyContent = "empty")
 @JSFJspProperty(
     name="binding",
     returnType = "jakarta.faces.validator.RegexValidator",

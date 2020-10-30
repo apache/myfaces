@@ -39,10 +39,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
  * 
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  */
-@JSFValidator(
-    name="f:validateLength",
-    bodyContent="empty",
-    tagClass="org.apache.myfaces.taglib.core.ValidateLengthTag")
+@JSFValidator(name = "f:validateLength", bodyContent = "empty")
 @JSFJspProperty(
     name="binding", 
     returnType = "jakarta.faces.validator.LengthValidator",

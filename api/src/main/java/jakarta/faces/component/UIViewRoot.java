@@ -78,7 +78,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  * Specification</a> for further details.
  * </p>
  */
-@JSFComponent(name = "f:view", bodyContent = "JSP", tagClass = "org.apache.myfaces.taglib.core.ViewTag")
+@JSFComponent(name = "f:view")
 @JSFJspProperty(name = "binding", returnType = "java.lang.String", tagExcluded = true)
 public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 {

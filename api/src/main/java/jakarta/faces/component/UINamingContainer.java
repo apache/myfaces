@@ -38,11 +38,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * See the javadocs for interface NamingContainer for further details.
  * </p>
  */
-@JSFComponent(
-        name="f:subview",
-        bodyContent="JSP",
-        tagClass="org.apache.myfaces.taglib.core.SubviewTag")
-@JSFJspProperty(name="id",required=true)
+@JSFComponent(name="f:subview")
+@JSFJspProperty(name="id", required=true)
 public class UINamingContainer extends UIComponentBase implements NamingContainer, UniqueIdVendor
 {
     public static final String COMPONENT_TYPE = "jakarta.faces.NamingContainer";

@@ -34,8 +34,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * SelectItem instance to the list of available options for the parent component
  * </p>
  */
-@JSFComponent(clazz = "jakarta.faces.component.UISelectItem", template = true, name = "f:selectItem", 
-              tagClass = "org.apache.myfaces.taglib.core.SelectItemTag", bodyContent = "empty")
+@JSFComponent(clazz = "jakarta.faces.component.UISelectItem", template = true, name = "f:selectItem",
+        bodyContent = "empty")
 abstract class _UISelectItem extends UIComponentBase
 {
 

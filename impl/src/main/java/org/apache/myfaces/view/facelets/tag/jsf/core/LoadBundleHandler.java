@@ -51,10 +51,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @author Jacob Hookom
  * @version $Id$
  */
-@JSFFaceletTag(
-        name = "f:loadBundle",
-        bodyContent = "empty", 
-        tagClass="org.apache.myfaces.taglib.core.LoadBundleTag")
+@JSFFaceletTag(name = "f:loadBundle", bodyContent = "empty")
 public final class LoadBundleHandler extends TagHandler
 {
 

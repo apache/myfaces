@@ -48,8 +48,7 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
  * 
  * @since 2.0
  */
-@JSFComponent(name = "f:viewParam", bodyContent = "JSP", 
-        tagClass = "org.apache.myfaces.taglib.core.ViewParamTag")
+@JSFComponent(name = "f:viewParam")
 @JSFJspProperty(name = "maxlength", returnType = "int",
                 longDesc = "The max number or characters allowed for this param")
 public class UIViewParameter extends UIInput

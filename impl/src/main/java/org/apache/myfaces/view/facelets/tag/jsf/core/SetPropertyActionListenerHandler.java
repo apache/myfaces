@@ -48,10 +48,7 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ContextAware;
 import org.apache.myfaces.view.facelets.el.ContextAwareELException;
 
-@JSFFaceletTag(
-        name = "f:setPropertyActionListener",
-        bodyContent = "empty", 
-        tagClass="org.apache.myfaces.taglib.core.SetPropertyActionListenerTag")
+@JSFFaceletTag(name = "f:setPropertyActionListener", bodyContent = "empty")
 public class SetPropertyActionListenerHandler extends TagHandler
     implements ActionSource2AttachedObjectHandler 
 {

@@ -373,7 +373,6 @@
                             <fileSet>
                                 <directory>${project.build.outputDirectory}</directory>
                                 <excludes>
-                                  <exclude>**/*Tag.class</exclude>
                                 </excludes>
                             </fileSet>
                         </fileSets>
