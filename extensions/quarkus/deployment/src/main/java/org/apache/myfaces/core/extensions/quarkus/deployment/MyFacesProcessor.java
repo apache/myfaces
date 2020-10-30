@@ -532,6 +532,8 @@ class MyFacesProcessor
                 "META-INF/resources/org/apache/myfaces/windowId/windowhandler.html",
                 "org/apache/myfaces/resource/facelet-taglib_1_0.dtd", 
                 "org/apache/myfaces/resource/javaee_5.xsd",
+                "org/apache/myfaces/resource/jakartaee_9.xsd",
+                "org/apache/myfaces/resource/jakartaee_10.xsd",
                 "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd",
                 "org/apache/myfaces/resource/XMLSchema.dtd", 
                 "org/apache/myfaces/resource/facesconfig_1_0.dtd",
