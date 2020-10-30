@@ -31,6 +31,7 @@ import jakarta.faces.component.StateHelper;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;
+import java.util.function.Supplier;
 
 /**
  * A delta enabled state holder implementing the StateHolder Interface. 
@@ -134,7 +135,7 @@ import jakarta.faces.context.FacesContext;
  * validator or listeners should deal with StateHolder or PartialStateHolder
  * on component classes. 
  */
-class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
+class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
 {
 
     /**
@@ -246,6 +247,30 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
             return expression.getValue(_target.getFacesContext().getELContext());
         }
         return defaultValue;
+    }
+
+    /**
+     *
+     * @param key
+     * @param defaultValueSupplier
+     * @return
+     *
+     * @since 4.0
+     */
+    @Override
+    public Object eval(Serializable key, Supplier<Object> defaultValueSupplier)
+    {
+        Object returnValue = _fullState.get(key);
+        if (returnValue != null)
+        {
+            return returnValue;
+        }
+        ValueExpression expression = _target.getValueExpression(key.toString());
+        if (expression != null)
+        {
+            return expression.getValue(_target.getFacesContext().getELContext());
+        }
+        return defaultValueSupplier.get();
     }
 
     @Override

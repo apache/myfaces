@@ -19,6 +19,7 @@
 package jakarta.faces.component;
 
 import java.io.Serializable;
+import java.util.function.Supplier;
 
 /**
  * @since 2.0
@@ -30,6 +31,16 @@ public interface StateHelper extends StateHolder
     public Object eval(Serializable key);
 
     public Object eval(Serializable key, Object defaultValue);
+
+    /**
+     * 
+     * @param key
+     * @param defaultValueSupplier
+     * @return 
+     * 
+     * @since 4.0
+     */
+    public Object eval(Serializable key, Supplier<Object> defaultValueSupplier);
 
     public Object get(Serializable key);
 

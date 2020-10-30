@@ -28,6 +28,7 @@ import java.util.Map;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
+import java.util.function.Supplier;
 
 /**
  * A delta enabled state holder implementing the StateHolder Interface. 
@@ -354,6 +355,31 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             return expression.getValue(_component.getFacesContext().getELContext());
         }
         return defaultValue;
+    }
+    
+
+    /**
+     * 
+     * @param key
+     * @param defaultValueSupplier
+     * @return 
+     * 
+     * @since 4.0
+     */
+    @Override
+    public Object eval(Serializable key, Supplier<Object> defaultValueSupplier)
+    {
+        Object returnValue = _fullState.get(key);
+        if (returnValue != null)
+        {
+            return returnValue;
+        }
+        ValueExpression expression = _component.getValueExpression(key.toString());
+        if (expression != null)
+        {
+            return expression.getValue(_component.getFacesContext().getELContext());
+        }
+        return defaultValueSupplier.get();
     }
 
     @Override

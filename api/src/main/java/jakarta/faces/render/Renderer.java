@@ -27,14 +27,14 @@ import jakarta.faces.convert.ConverterException;
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  */
-public abstract class Renderer
+public abstract class Renderer<T extends UIComponent>
 {
     /**
      * @since 2.2
      */
     public static final String PASSTHROUGH_RENDERER_LOCALNAME_KEY = "elementName";
     
-    public void decode(FacesContext context, UIComponent component)
+    public void decode(FacesContext context, T component)
     {
         if (context == null)
         {
@@ -49,7 +49,7 @@ public abstract class Renderer
     /**
      * @throws IOException if an input/output error occurs while rendering 
      */
-    public void encodeBegin(FacesContext context, UIComponent component) throws IOException
+    public void encodeBegin(FacesContext context, T component) throws IOException
     {
         if (context == null)
         {
@@ -71,7 +71,7 @@ public abstract class Renderer
      * @param component
      * @throws IOException
      */
-    public void encodeChildren(FacesContext context, UIComponent component) throws IOException
+    public void encodeChildren(FacesContext context, T component) throws IOException
     {
         if (context == null)
         {
@@ -100,7 +100,7 @@ public abstract class Renderer
     /**
      * @throws IOException if an input/output error occurs while rendering 
      */
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException
+    public void encodeEnd(FacesContext context, T component) throws IOException
     {
         if (context == null)
         {
@@ -141,7 +141,7 @@ public abstract class Renderer
         return false;
     }
 
-    public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue)
+    public Object getConvertedValue(FacesContext context, T component, Object submittedValue)
             throws ConverterException
     {
         if (context == null)

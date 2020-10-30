@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Delta state helper to deal with the ajax
@@ -151,6 +152,22 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
             return expression.getValue(FacesContext.getCurrentInstance().getELContext());
         }
         return defaultValue;
+    }
+
+    @Override
+    public Object eval(Serializable key, Supplier<Object> defaultValueSupplier)
+    {
+        Object returnValue = _fullState.get(key);
+        if (returnValue != null)
+        {
+            return returnValue;
+        }
+        ValueExpression expression = _target.getValueExpression(key.toString());
+        if (expression != null)
+        {
+            return expression.getValue(FacesContext.getCurrentInstance().getELContext());
+        }
+        return defaultValueSupplier.get();
     }
 
     @Override
