@@ -47,7 +47,7 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
 @JSFRenderer(renderKitId = "HTML_BASIC",
-        family = "jakarta.jakarta.Script",
+        family = "jakarta.faces.Script",
         type = "jakarta.faces.Websocket")
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class WebsocketComponentRenderer extends Renderer implements ComponentSystemEventListener

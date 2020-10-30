@@ -35,9 +35,9 @@ public abstract class RenderKit
 {
     private HashMap<String, ClientBehaviorRenderer> clientBehaviorRenderers;
     
-    public RenderKit ()
+    public RenderKit()
     {
-        this.clientBehaviorRenderers = new HashMap<String, ClientBehaviorRenderer>();
+        this.clientBehaviorRenderers = new HashMap<>();
     }
     
     public void addClientBehaviorRenderer(String type, ClientBehaviorRenderer renderer)

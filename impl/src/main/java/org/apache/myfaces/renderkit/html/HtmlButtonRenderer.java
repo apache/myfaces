@@ -31,7 +31,7 @@ import org.apache.myfaces.renderkit.html.base.HtmlButtonRendererBase;
  */
 @JSFRenderer(
     renderKitId = "HTML_BASIC",
-    family = "jakarta.jakarta.Command",
+    family = "jakarta.faces.Command",
     type = "jakarta.faces.Button")
 public class HtmlButtonRenderer
     extends HtmlButtonRendererBase

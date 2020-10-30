@@ -1076,7 +1076,7 @@ public class FacesConfigurator
 
             if (renderKitClass.isEmpty())
             {
-                renderKitClass = new ArrayList<String>(1);
+                renderKitClass = new ArrayList<>(1);
                 renderKitClass.add(DEFAULT_RENDER_KIT_CLASS);
             }
 
