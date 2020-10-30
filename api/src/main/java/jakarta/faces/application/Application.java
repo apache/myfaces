@@ -233,8 +233,7 @@ public abstract class Application
      * 
      * <p>
      * It is illegal to register an ELResolver after the application has received any requests from the client. If an
-     * attempt is made to register a listener after that time, an IllegalStateException must be thrown. This restriction
-     * is in place to allow the JSP container to optimize for the common case where no additional
+     * attempt is made to register a listener after that time, an IllegalStateException must be thrown. 
      * <code>ELResolvers</code> are in the chain, aside from the standard ones. It is permissible to add
      * <code>ELResolvers</code> before or after initialization to a CompositeELResolver that is already in the chain.
      * <p>
@@ -670,12 +669,7 @@ public abstract class Application
      * <code>{@link #evaluateExpressionGet(jakarta.faces.context.FacesContext, java.lang.String, java.lang.Class)}.
      * </code>
      * </p>
-     * 
-     * <p>
-     * The implementation must return the <code>ExpressionFactory</code> from the JSP container by calling <code>
-     * JspFactory.getDefaultFactory().getJspApplicationContext(servletContext).getExpressionFactory()</code>.
-     * </p>
-     * 
+     *
      * <p>
      * An implementation is provided that throws <code>UnsupportedOperationException</code> so that users that decorate
      * the <code>Application</code> continue to work.

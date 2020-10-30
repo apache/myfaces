@@ -428,13 +428,7 @@ public class ViewHandlerImpl extends ViewHandler
             {
                 stateWriter.writingState();
             }
-            
-            
         }
-        //else
-        //{
-            //we're in a JSP, let the JSPStatemanager know that we need to actually write the state
-        //}        
     }
     
     private Map<String, List<String>> getViewParameterList(FacesContext context,
@@ -456,10 +450,8 @@ public class ViewHandlerImpl extends ViewHandler
             //ViewDeclarationLanguage vdl = getViewHandler(context).
             //        getViewDeclarationLanguage(context, calculatedViewId);
             // -= Leonardo Uribe =- Temporally reverted by TCK issues.
-            ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
+            ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context, calculatedViewId);
             ViewMetadata viewMetadata = vdl.getViewMetadata(context, viewId);
-            
-            // getViewMetadata() returns null on JSP
             if (viewMetadata != null)
             {
                 UIViewRoot viewFromMetaData = viewMetadata.createMetadataView(context);

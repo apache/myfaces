@@ -26,7 +26,6 @@ package org.apache.myfaces.view.facelets.compiler;
 public final class FaceletsProcessingInstructions
 {
     public static final String PROCESS_AS_HTML5 = "html5";
-    public static final String PROCESS_AS_JSPX = "jspx";
     public static final String PROCESS_AS_XHTML = "xhtml";
     public static final String PROCESS_AS_XML = "xml";
     
@@ -41,10 +40,6 @@ public final class FaceletsProcessingInstructions
     private static final FaceletsProcessingInstructions FACELETS_PROCESSING_XML =
         new FaceletsProcessingInstructions(
                 true, true, true, true, true, true, true);
-
-    private static final FaceletsProcessingInstructions FACELETS_PROCESSING_JSPX =
-        new FaceletsProcessingInstructions(
-                true, true, true, true, false, true, false);
     
     private static final FaceletsProcessingInstructions FACELETS_PROCESSING_HTML5_COMPRESS_SPACES =
         new FaceletsProcessingInstructions(
@@ -57,10 +52,6 @@ public final class FaceletsProcessingInstructions
     private static final FaceletsProcessingInstructions FACELETS_PROCESSING_XML_COMPRESS_SPACES =
         new FaceletsProcessingInstructions(
                 true, true, true, true, true, true, true, true);
-
-    private static final FaceletsProcessingInstructions FACELETS_PROCESSING_JSPX_COMPRESS_SPACES =
-        new FaceletsProcessingInstructions(
-                true, true, true, true, false, true, false, true);
 
     private final boolean consumeXmlDocType;
     private final boolean consumeXmlDeclaration;
@@ -90,10 +81,6 @@ public final class FaceletsProcessingInstructions
         {
             return FACELETS_PROCESSING_XML;
         }
-        else if (PROCESS_AS_JSPX.equals(processAs))
-        {
-            return FACELETS_PROCESSING_JSPX;
-        }
         else
         {
             return FACELETS_PROCESSING_XHTML;
@@ -122,10 +109,6 @@ public final class FaceletsProcessingInstructions
         else if (PROCESS_AS_XML.equals(processAs))
         {
             return FACELETS_PROCESSING_XML_COMPRESS_SPACES;
-        }
-        else if (PROCESS_AS_JSPX.equals(processAs))
-        {
-            return FACELETS_PROCESSING_JSPX_COMPRESS_SPACES;
         }
         else
         {

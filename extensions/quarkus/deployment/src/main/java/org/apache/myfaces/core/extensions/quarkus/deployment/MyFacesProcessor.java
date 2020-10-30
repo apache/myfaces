@@ -127,7 +127,7 @@ import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProvider;
-import org.apache.myfaces.el.ELResolverBuilderForFaces;
+import org.apache.myfaces.el.DefaultELResolverBuilder;
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.spi.FactoryFinderProviderFactory;
 import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
@@ -139,7 +139,7 @@ import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
 import org.apache.myfaces.view.facelets.tag.MethodRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
-import org.apache.myfaces.webapp.FaceletsInitilializer;
+import org.apache.myfaces.webapp.DefaultFacesInitilializer;
 import org.apache.myfaces.webapp.MyFacesContainerInitializer;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
@@ -283,8 +283,6 @@ class MyFacesProcessor
                 MyfacesConfig.INJECTION_PROVIDER, QuarkusInjectionProvider.class.getName()));
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.FACES_INITIALIZER, QuarkusFacesInitilializer.class.getName()));
-        initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.SUPPORT_JSP, "false"));
     }
 
     @BuildStep
@@ -449,14 +447,13 @@ class MyFacesProcessor
             "jakarta.faces.component._DeltaStateHelper",
             "jakarta.faces.component._DeltaStateHelper$InternalMap"));
 
-        classes.addAll(Arrays.asList(
-                ApplicationImplEventManager.class,
+        classes.addAll(Arrays.asList(ApplicationImplEventManager.class,
                 DefaultWebConfigProviderFactory.class,
                 ErrorPageWriter.class,
                 MyFacesContainerInitializer.class,
                 ExceptionQueuedEventContext.class,
                 FacesConfigurator.class,
-                FaceletsInitilializer.class,
+                DefaultFacesInitilializer.class,
                 TagLibraryConfig.class,
                 String.class,
                 ViewScopeProxyMap.class,
@@ -493,12 +490,11 @@ class MyFacesProcessor
         classNames.addAll(collectImplementors(combinedIndex, Validator.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, Behavior.class.getName()));
 
-        classes.addAll(Arrays.asList(
-                ClassUtils.class,
+        classes.addAll(Arrays.asList(ClassUtils.class,
                 FactoryFinderProviderFactory.class,
                 ComponentSupport.class,
                 QuarkusFactoryFinderProvider.class,
-                ELResolverBuilderForFaces.class,
+                DefaultELResolverBuilder.class,
                 AbstractFacesInitializer.class,
                 ExternalContextUtils.class,
                 BeanEntry.class));

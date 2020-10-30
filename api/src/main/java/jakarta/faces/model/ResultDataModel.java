@@ -22,7 +22,6 @@ import java.util.SortedMap;
 
 import jakarta.servlet.jsp.jstl.sql.Result;
 
-//import jakarta.servlet.jsp.
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  */

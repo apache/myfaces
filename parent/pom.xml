@@ -350,12 +350,6 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
-                <artifactId>tomcat-jsp-api</artifactId>
-                <version>10.0.0-M4</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-websocket-api</artifactId>
                 <version>10.0.0-M9</version>
                 <scope>provided</scope>

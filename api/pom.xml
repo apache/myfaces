@@ -337,10 +337,6 @@
                                     javax.validation*;version="[1.0.0, 2.0.0)",
                                     javax.servlet;version="[3, 5)",
                                     javax.servlet.http;version="[3, 5)",
-                                    javax.servlet.jsp;version="[2.1.0, 3.1)",
-                                    javax.servlet.jsp.jstl.core;version="[1.1.2, 2.0.0)",
-                                    javax.servlet.jsp.jstl.sql;version="[1.1.2, 2.0.0)",
-                                    javax.servlet.jsp.tagext;version="[2.1.0, 3.2)",
                                     jakarta.faces.*;version="${project.version}"
                                 </Import-Package>
                                 <Require-Bundle>
@@ -356,31 +352,6 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
-
-            <!-- generate jandex file for Quarkus but skip classes which depends on JSP dependency -->
-            <plugin>
-                <groupId>org.jboss.jandex</groupId>
-                <artifactId>jandex-maven-plugin</artifactId>
-                <version>1.0.6</version>
-                <executions>
-                  <execution>
-                    <id>make-index</id>
-                    <goals>
-                        <goal>jandex</goal>
-                    </goals>
-                    <configuration>
-                        <fileSets>
-                            <fileSet>
-                                <directory>${project.build.outputDirectory}</directory>
-                                <excludes>
-                                </excludes>
-                            </fileSet>
-                        </fileSets>
-                    </configuration>
-                  </execution>
-                </executions>
-            </plugin>
-
         </plugins>
 
     </build>
@@ -402,16 +373,6 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
-                            <tags>
-                                <tag>
-                                    <name>JSFJspTag</name>
-                                    <placement>X</placement>
-                                </tag>
-                                <tag>
-                                    <name>JSFJspAttribute</name>
-                                    <placement>X</placement>
-                                </tag>
-                            </tags>
                         </configuration>
                         <executions>
                             <execution>
@@ -522,10 +483,6 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jsp-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>

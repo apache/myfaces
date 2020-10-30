@@ -32,14 +32,12 @@ import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.el.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  * The ELResolverBuilder is responsible to build the el resolver which is used by the application through
  * {@link jakarta.faces.application.Application#getELResolver()} according to 1.2 spec
- * section 5.6.2 or to be used as the el resolver for jsp
- * according to 1.2 spec section 5.6.1
+ * section 5.6.2
  * 
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -81,10 +79,9 @@ public class ELResolverBuilder
     /**
      * Sort the ELResolvers with a custom Comparator provided by the user.
      * @param resolvers
-     * @param scope scope of ELResolvers (Faces,JSP)  
      * @since 1.2.10, 2.0.2
      */
-    protected void sortELResolvers(List<ELResolver> resolvers, FacesCompositeELResolver.Scope scope)
+    protected void sortELResolvers(List<ELResolver> resolvers)
     {
         if (runtimeConfig.getELResolverComparator() != null)
         {
@@ -95,8 +92,8 @@ public class ELResolverBuilder
                 
                 if (log.isLoggable(Level.INFO))
                 {
-                    log.log(Level.INFO, "Chain of EL resolvers for {0} sorted with: {1} and the result order is {2}", 
-                            new Object [] {scope, runtimeConfig.getELResolverComparator(), resolvers});
+                    log.log(Level.INFO, "Chain of EL resolvers sorted with: {1} and the result order is {2}", 
+                            new Object [] { runtimeConfig.getELResolverComparator(), resolvers});
                 }
             }
             catch (Exception e)
@@ -110,10 +107,9 @@ public class ELResolverBuilder
     /**
      * Filters the ELResolvers  with a custom Predicate provided by the user.
      * @param resolvers list of ELResolvers
-     * @param scope scope of ELResolvers (Faces,JSP)
      * @return Iterable instance of Iterable containing filtered ELResolvers 
      */
-    protected Iterable<ELResolver> filterELResolvers(List<ELResolver> resolvers, FacesCompositeELResolver.Scope scope)
+    protected Iterable<ELResolver> filterELResolvers(List<ELResolver> resolvers)
     {
         
         Predicate<ELResolver> predicate = runtimeConfig.getELResolverPredicate();
@@ -126,8 +122,8 @@ public class ELResolverBuilder
 
                 if (log.isLoggable(Level.INFO))
                 {
-                    log.log(Level.INFO, "Chain of EL resolvers for {0} filtered with: {1} and the result is {2}", 
-                            new Object [] {scope, predicate, resolvers});
+                    log.log(Level.INFO, "Chain of EL resolvers filtered with: {1} and the result is {2}", 
+                            new Object [] {predicate, resolvers});
                 }
             }
             catch (Exception e)

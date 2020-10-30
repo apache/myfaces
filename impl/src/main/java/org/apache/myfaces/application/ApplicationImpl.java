@@ -111,9 +111,7 @@ import org.apache.myfaces.config.element.Property;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.context.RequestViewMetadata;
-import org.apache.myfaces.el.ELResolverBuilderForFaces;
-import org.apache.myfaces.el.resolver.FacesCompositeELResolver;
-import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
+import org.apache.myfaces.el.DefaultELResolverBuilder;
 import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.config.MyfacesConfig;
@@ -272,18 +270,11 @@ public class ApplicationImpl extends Application
             _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = true;
         }
         
-        elResolver = new Lazy<>(() -> {
-            CompositeELResolver celr;
-            if (_myfacesConfig.isSupportJSP())
-            {
-                celr = new FacesCompositeELResolver(Scope.Faces);
-            }
-            else
-            {
-                celr = new CompositeELResolver();
-            }
+        elResolver = new Lazy<>(() ->
+        {
+            CompositeELResolver celr = new CompositeELResolver();
 
-            new ELResolverBuilderForFaces(_runtimeConfig, _myfacesConfig)
+            new DefaultELResolverBuilder(_runtimeConfig, _myfacesConfig)
                     .build(getFacesContext(), celr);
 
             return celr;

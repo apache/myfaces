@@ -23,7 +23,6 @@ import jakarta.servlet.ServletContext;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
-import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Simple Factory to get a FacesInitializer implementation either from a web.xml
@@ -41,10 +40,10 @@ public class FacesInitializerFactory
      */
     public static FacesInitializer getFacesInitializer(ServletContext context)
     {
-        FacesInitializer initializer = _getFacesInitializerFromInitParam(context);
+        FacesInitializer initializer = getFacesInitializerFromInitParam(context);
         if (initializer == null)
         {
-            initializer = _getDefaultFacesInitializer(context);
+            initializer = new DefaultFacesInitilializer();
         }
         return initializer;
     }
@@ -54,7 +53,7 @@ public class FacesInitializerFactory
      * @param context
      * @return
      */
-    private static FacesInitializer _getFacesInitializerFromInitParam(ServletContext context)
+    private static FacesInitializer getFacesInitializerFromInitParam(ServletContext context)
     {
         String initializerClassName = context.getInitParameter(MyfacesConfig.FACES_INITIALIZER);
         if (initializerClassName != null)
@@ -79,25 +78,4 @@ public class FacesInitializerFactory
         }
         return null;
     }
-    
-    /**
-     * Returns a FacesInitializer that fits for the current environment (JSP 2.0 or 2.1).
-     * @param context
-     * @return
-     */
-    private static FacesInitializer _getDefaultFacesInitializer(ServletContext context)
-    {
-        // No MyfacesConfig available yet, we must read the parameter directly:
-        String initParameter = context.getInitParameter(MyfacesConfig.SUPPORT_JSP);
-        if (StringUtils.isBlank(initParameter) || Boolean.TRUE.toString().equals(initParameter))
-        {
-            if (ClassUtils.simpleClassForName("jakarta.servlet.jsp.JspApplicationContext", false) != null)
-            {
-                return new JspFacesInitializer();
-            }
-        }
-
-        return new FaceletsInitilializer();
-    }
-    
 }

@@ -25,6 +25,7 @@ import java.net.URL;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ViewIdSupportTest extends AbstractJsfTestCase
@@ -76,16 +77,6 @@ public class ViewIdSupportTest extends AbstractJsfTestCase
         {
             throw new RuntimeException("Error Initializing Context", e);
         }
-    }
-    
-    @Test
-    public void testDeriveViewId1() throws Exception
-    {
-        request.setPathElements("/testwebapp", "/view1.jsf", null , null);
-        
-        String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view1.jsf");
-        
-        Assert.assertNotNull(derivedViewId);
     }
     
     @Test

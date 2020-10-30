@@ -647,8 +647,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      *
      * @return the new afterPhaseListener value
      */
-    @JSFProperty(returnSignature = "void", methodSignature = "jakarta.faces.event.PhaseEvent",
-                 jspName = "afterPhase", stateHolder=true)
+    @JSFProperty(returnSignature = "void", methodSignature = "jakarta.faces.event.PhaseEvent", stateHolder=true)
     public MethodExpression getAfterPhaseListener()
     {
         return (MethodExpression) getStateHelper().eval(PropertyKeys.afterPhaseListener);
@@ -660,8 +659,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      *
      * @return the new beforePhaseListener value
      */
-    @JSFProperty(returnSignature = "void", methodSignature = "jakarta.faces.event.PhaseEvent",
-                 jspName = "beforePhase", stateHolder=true)
+    @JSFProperty(returnSignature = "void", methodSignature = "jakarta.faces.event.PhaseEvent", stateHolder=true)
     public MethodExpression getBeforePhaseListener()
     {
         return (MethodExpression) getStateHelper().eval(PropertyKeys.beforePhaseListener);

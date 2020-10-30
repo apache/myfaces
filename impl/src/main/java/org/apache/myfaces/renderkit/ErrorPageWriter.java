@@ -509,7 +509,7 @@ public final class ErrorPageWriter
             // throw an IllegalArgumentException instead of a FileNotFoundException,
             // because when using <ui:debug /> this error is hard to trace,
             // because the Exception is thrown in the Renderer and so it seems like
-            // the facelet (or jsp) does not exist.
+            // the facelet does not exist.
             throw new IllegalArgumentException("Could not find resource " + rsc);
         }
 

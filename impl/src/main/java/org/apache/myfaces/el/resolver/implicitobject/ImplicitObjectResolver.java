@@ -36,30 +36,12 @@ import java.util.Map;
  */
 public class ImplicitObjectResolver extends ELResolver
 {
-
     private Map<String, ImplicitObject> implicitObjects;
-
-    /**
-     * Static factory for an ELResolver for resolving implicit objects in JSPs. See JSF 1.2 spec section 5.6.1.1
-     */
-    public static ELResolver makeResolverForJSP()
-    {
-        Map<String, ImplicitObject> forJSPList = new HashMap<>(8); //4
-        ImplicitObject io1 = new FacesContextImplicitObject();
-        forJSPList.put(io1.getName(), io1);
-        ImplicitObject io2 = new ViewImplicitObject();
-        forJSPList.put(io2.getName(), io2);
-        ImplicitObject io3 = new ResourceImplicitObject();
-        forJSPList.put(io3.getName(), io3);
-        ImplicitObject io4 = new ViewScopeImplicitObject();
-        forJSPList.put(io4.getName(), io4);
-        return new ImplicitObjectResolver(forJSPList);
-    }
 
     /**
      * Static factory for an ELResolver for resolving implicit objects in all of Faces. See JSF 1.2 spec section 5.6.1.2
      */
-    public static ELResolver makeResolverForFaces()
+    public static ELResolver makeResolver()
     {
         Map<String, ImplicitObject> forFacesList = new HashMap<>(30); //19
         ImplicitObject io1 = new ApplicationImplicitObject();
@@ -103,7 +85,7 @@ public class ImplicitObjectResolver extends ELResolver
         return new ImplicitObjectResolver(forFacesList);
     }
     
-    public static ELResolver makeResolverForFacesCDI()
+    public static ELResolver makeResolverForCDI()
     {
         Map<String, ImplicitObject> forFacesCDIList = new HashMap<>(4); //2
         ImplicitObject io;
@@ -123,7 +105,6 @@ public class ImplicitObjectResolver extends ELResolver
         this.implicitObjects = new HashMap<>();
     }
 
-    /** Creates a new instance of ImplicitObjectResolverForJSP */
     private ImplicitObjectResolver(Map<String, ImplicitObject> implicitObjects)
     {
         this();

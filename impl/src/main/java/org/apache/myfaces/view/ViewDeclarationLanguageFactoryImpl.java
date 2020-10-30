@@ -21,20 +21,13 @@ package org.apache.myfaces.view;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewDeclarationLanguageFactory;
 
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy;
-import org.apache.myfaces.view.jsp.JspViewDeclarationLanguageStrategy;
 
 /**
- * This is the default VDL factory used as of JSF 2.0, it tries to use Facelet VDL whenever possible, 
- * but fallback on JSP if required.
+ * This is the default VDL factory used as of JSF 2.0, it tries to use Facelet VDL whenever possible.
  * 
  * @author Simon Lessard (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -42,11 +35,7 @@ import org.apache.myfaces.view.jsp.JspViewDeclarationLanguageStrategy;
  * @since 2.0
  */
 public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageFactory
-{
-    private static final String FACELETS_1_VIEW_HANDLER = "com.sun.facelets.FaceletViewHandler";
-
-    private static final Logger LOGGER = Logger.getLogger(ViewDeclarationLanguageFactoryImpl.class.getName());
-    
+{    
     private volatile boolean _initialized;
     private volatile ViewDeclarationLanguageStrategy[] _supportedLanguages;
     
@@ -103,43 +92,12 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     {
         if (!_initialized)
         {
-            FacesContext context = FacesContext.getCurrentInstance();
-
-            logWarningIfLegacyFaceletViewHandlerIsPresent(context);
-
-            if (MyfacesConfig.getCurrentInstance(context).isSupportJSP())
+            _supportedLanguages = new ViewDeclarationLanguageStrategy[]
             {
-                _supportedLanguages = new ViewDeclarationLanguageStrategy[2];
-                _supportedLanguages[0] = new FaceletViewDeclarationLanguageStrategy();
-                _supportedLanguages[1] = new JspViewDeclarationLanguageStrategy();
-            }
-            else
-            {
-                _supportedLanguages = new ViewDeclarationLanguageStrategy[1];
-                _supportedLanguages[0] = new FaceletViewDeclarationLanguageStrategy();
-            }
+                new FaceletViewDeclarationLanguageStrategy()
+            };
 
             _initialized = true;
-        }
-    }
-    
-    /**
-     * If the Facelets-1 ViewHandler com.sun.facelets.FaceletViewHandler is present, log a error.
-     * 
-     * @param context the <code>FacesContext</code>
-     */
-    private void logWarningIfLegacyFaceletViewHandlerIsPresent(FacesContext context)
-    {
-        boolean facelets1ViewHandlerPresent
-                = context.getApplication().getViewHandler().getClass().getName().equals(FACELETS_1_VIEW_HANDLER);
-
-        if (facelets1ViewHandlerPresent)
-        {
-            if (LOGGER.isLoggable(Level.WARNING))
-            {
-                LOGGER.log(Level.WARNING, "Your faces-config.xml contains the " + FACELETS_1_VIEW_HANDLER + " class."
-                    + "\nYou need to remove it since it's not supported anymore since JSF 2.0");
-            }
         }
     }
 }

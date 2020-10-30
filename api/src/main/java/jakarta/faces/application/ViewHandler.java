@@ -54,8 +54,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  * <p>
  * Examples:
  * <ul>
- * <li>A JSP ViewHandler exists for using "jsp" pages as the presentation technology. This class then works together
- * with a taghandler class and a jsp servlet class to implement the methods on this abstract class definition.
  * <li>A Facelets ViewHandler instead uses an xml file to define the components and non-component data that make up a
  * specific view.
  * </ul>
@@ -71,13 +69,13 @@ public abstract class ViewHandler
 {
     public static final String CHARACTER_ENCODING_KEY = "jakarta.faces.request.charset";
     public static final String DEFAULT_FACELETS_SUFFIX = ".xhtml";
-    public static final String DEFAULT_SUFFIX = ".xhtml .view.xml .jsp";
+    public static final String DEFAULT_SUFFIX = ".xhtml";
     
     /**
      * Indicate the default suffixes, separated by spaces to derive the default file URI 
      * used by JSF to create views and render pages. 
      */
-    @JSFWebConfigParam(defaultValue=".xhtml .view.xml .jsp", since="1.1", group="viewhandler")
+    @JSFWebConfigParam(defaultValue=".xhtml", since="1.1", group="viewhandler")
     public static final String DEFAULT_SUFFIX_PARAM_NAME = "jakarta.faces.DEFAULT_SUFFIX";
     
     /**

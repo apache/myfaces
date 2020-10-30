@@ -212,7 +212,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
         getStateHelper().put(PropertyKeys.immediate, immediate );
     }
 
-    @JSFProperty(stateHolder=true, returnSignature = "java.lang.Object", jspName = "action", clientEvent="action")
+    @JSFProperty(stateHolder=true, returnSignature = "java.lang.Object", clientEvent="action")
     @Override
     public MethodExpression getActionExpression()
     {

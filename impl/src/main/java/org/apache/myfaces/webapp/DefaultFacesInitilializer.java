@@ -31,9 +31,9 @@ import jakarta.servlet.ServletContext;
  * 
  * @author Martin Koci
  */
-public class FaceletsInitilializer extends org.apache.myfaces.webapp.AbstractFacesInitializer
+public class DefaultFacesInitilializer extends org.apache.myfaces.webapp.AbstractFacesInitializer
 {
-    private static final Logger log = Logger.getLogger(FaceletsInitilializer.class.getName());
+    private static final Logger log = Logger.getLogger(DefaultFacesInitilializer.class.getName());
 
     @Override
     protected void initContainerIntegration(ServletContext servletContext, ExternalContext externalContext)

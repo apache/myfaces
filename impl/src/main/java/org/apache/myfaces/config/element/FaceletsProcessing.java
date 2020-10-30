@@ -30,7 +30,6 @@ public abstract class FaceletsProcessing implements Serializable
     public static final String PROCESS_AS_HTML5 = "html5";
     public static final String PROCESS_AS_XHTML = "xhtml";
     public static final String PROCESS_AS_XML = "xml";
-    public static final String PROCESS_AS_JSPX = "jspx";
     
     public abstract String getFileExtension();
     

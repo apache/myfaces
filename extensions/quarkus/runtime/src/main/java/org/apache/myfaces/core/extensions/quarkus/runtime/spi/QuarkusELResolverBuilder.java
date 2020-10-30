@@ -22,14 +22,14 @@ import javax.el.ELResolver;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.el.ELResolverBuilderForFaces;
+import org.apache.myfaces.el.DefaultELResolverBuilder;
 
 /**
  * Custom {@link org.apache.myfaces.el.ELResolverBuilder} which only works with EL3.x+
  * and replaces the {@link javax.enterprise.inject.spi.BeanManager#getELResolver()}
  * with our own {@link QuarkusCdiELResolver}
  */
-public class QuarkusELResolverBuilder extends ELResolverBuilderForFaces
+public class QuarkusELResolverBuilder extends DefaultELResolverBuilder
 {
 
     public QuarkusELResolverBuilder(RuntimeConfig runtimeConfig, MyfacesConfig myfacesConfig)

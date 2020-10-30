@@ -57,10 +57,6 @@
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-el-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jsp-api</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>

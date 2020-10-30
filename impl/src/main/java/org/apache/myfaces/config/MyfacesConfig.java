@@ -231,17 +231,6 @@ public class MyfacesConfig
     private static final int COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT = 200;
 
     /**
-    * If set false, myfaces won't support JSP. JSP are deprecated in JSF 2.X. Default value is true. 
-    * If this property is set is false, all related logic for JSP is skipped.
-    */
-    @JSFWebConfigParam(since="2.0.13,2.1.7", expectedValues="true,false", defaultValue="true",
-         desc="If set false, myfaces won't support JSP. JSP are deprecated in " +
-         "JSF 2.X. Default value is true.",
-         group="EL", tags="performance ")
-    public final static String SUPPORT_JSP = "org.apache.myfaces.SUPPORT_JSP";
-    private final static boolean SUPPORT_JSP_DEFAULT = true;
-
-    /**
      * If this param is set to true, a check will be done in Restore View Phase to check
      * if the viewId exists or not and if it does not exists, a 404 response will be thrown.
      * 
@@ -619,10 +608,6 @@ public class MyfacesConfig
             desc="Enable or disable the cache used to 'remember' the derived viewId from the rawViewId.")
     public static final String VIEWID_DERIVE_CACHE_ENABLED = "org.apache.myfaces.VIEWID_DERIVE_CACHE_ENABLED";
     private static final boolean VIEWID_DERIVE_CACHE_ENABLED_DEFAULT = true;
-    
-    @JSFWebConfigParam(defaultValue=".jsp", since="2.3", group="viewhandler")
-    public static final String JSP_SUFFIX = "org.apache.myfaces.JSP_SUFFIX";
-    private static final String JSP_SUFFIX_DEFAULT = ".jsp";
 
     /**
      * Enforce f:validateBean to be called first before any JSF validator.
@@ -836,7 +821,6 @@ public class MyfacesConfig
     private String defaultResponseWriterContentTypeMode = DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT;
     private boolean viewUniqueIdsCacheEnabled = VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT;
     private int componentUniqueIdsCacheSize = COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT;
-    private boolean supportJSP = SUPPORT_JSP_DEFAULT;
     private boolean strictJsf2ViewNotFound = STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT;
     private boolean earlyFlushEnabled = EARLY_FLUSH_ENABLED_DEFAULT;
     private boolean strictJsf2FaceletsCompatibility = STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT;
@@ -876,7 +860,6 @@ public class MyfacesConfig
     private boolean viewIdProtectedCacheEnabled = VIEWID_PROTECTED_CACHE_ENABLED_DEFAULT;
     private boolean viewIdDeriveCacheEnabled = VIEWID_DERIVE_CACHE_ENABLED_DEFAULT;
     private int viewIdCacheSize = VIEWID_CACHE_SIZE_DEFAULT;
-    private String jspSuffix = JSP_SUFFIX_DEFAULT;
     private boolean beanBeforeJsfValidation = BEAN_BEFORE_JSF_VALIDATION_DEFAULT;
     private String facesInitPlugins;
     private boolean initializeSkipJarFacesConfigScan = INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN_DEFAULT;
@@ -1038,13 +1021,6 @@ public class MyfacesConfig
 
         cfg.componentUniqueIdsCacheSize = getInt(extCtx, COMPONENT_UNIQUE_IDS_CACHE_SIZE, 
                 COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT);
-        
-        cfg.supportJSP = getBoolean(extCtx, SUPPORT_JSP,
-                SUPPORT_JSP_DEFAULT);
-        if (cfg.supportJSP && ClassUtils.simpleClassForName("jakarta.servlet.jsp.JspApplicationContext", false) == null)
-        {
-            cfg.supportJSP = false;
-        }
 
         cfg.strictJsf2ViewNotFound = getBoolean(extCtx, STRICT_JSF_2_VIEW_NOT_FOUND,
                 STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT);
@@ -1240,10 +1216,7 @@ public class MyfacesConfig
         
         cfg.viewIdCacheSize = getInt(extCtx, VIEWID_CACHE_SIZE,
                 VIEWID_CACHE_SIZE_DEFAULT);
-        
-        cfg.jspSuffix = getString(extCtx, JSP_SUFFIX,
-                JSP_SUFFIX_DEFAULT);
-        
+
         cfg.beanBeforeJsfValidation = getBoolean(extCtx, BEAN_BEFORE_JSF_VALIDATION,
                 BEAN_BEFORE_JSF_VALIDATION_DEFAULT);
         
@@ -1493,11 +1466,6 @@ public class MyfacesConfig
         return componentUniqueIdsCacheSize;
     }
 
-    public boolean isSupportJSP()
-    {
-        return supportJSP;
-    }
-
     public boolean isStrictJsf2ViewNotFound()
     {
         return strictJsf2ViewNotFound;
@@ -1666,11 +1634,6 @@ public class MyfacesConfig
     public int getViewIdCacheSize()
     {
         return viewIdCacheSize;
-    }
-
-    public String getJspSuffix()
-    {
-        return jspSuffix;
     }
 
     public boolean isBeanBeforeJsfValidation()

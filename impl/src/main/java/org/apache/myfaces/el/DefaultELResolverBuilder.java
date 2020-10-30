@@ -39,7 +39,6 @@ import org.apache.myfaces.cdi.util.CDIUtils;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.resolver.CompositeComponentELResolver;
-import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.el.resolver.ImportConstantsELResolver;
 import org.apache.myfaces.el.resolver.ImportHandlerResolver;
 import org.apache.myfaces.el.resolver.ResourceBundleResolver;
@@ -58,7 +57,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ELResolverBuilderForFaces extends ELResolverBuilder
+public class DefaultELResolverBuilder extends ELResolverBuilder
 {
     private static final Class STATIC_FIELD_EL_RESOLVER_CLASS;
     private static final Method GET_STREAM_EL_RESOLVER_METHOD;
@@ -81,7 +80,7 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
         GET_STREAM_EL_RESOLVER_METHOD = getStreamELResolverMethod;
     }
     
-    public ELResolverBuilderForFaces(RuntimeConfig runtimeConfig, MyfacesConfig myfacesConfig)
+    public DefaultELResolverBuilder(RuntimeConfig runtimeConfig, MyfacesConfig myfacesConfig)
     {
         super(runtimeConfig, myfacesConfig);
     }
@@ -97,12 +96,12 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
         // Add CDI ELResolver for JSF 2.3
         if (isReplaceImplicitObjectResolverWithCDIResolver(facesContext))
         {
-            list.add(ImplicitObjectResolver.makeResolverForFacesCDI());
+            list.add(ImplicitObjectResolver.makeResolverForCDI());
             list.add(getCDIELResolver());
         }
         else
         {
-            list.add(ImplicitObjectResolver.makeResolverForFaces());
+            list.add(ImplicitObjectResolver.makeResolver());
         }
             
         list.add(new CompositeComponentELResolver(config));
@@ -159,10 +158,10 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
         }
 
         // give the user a chance to sort the resolvers
-        sortELResolvers(list, Scope.Faces);
+        sortELResolvers(list);
         
         // give the user a chance to filter the resolvers
-        Iterable<ELResolver> filteredELResolvers = filterELResolvers(list, Scope.Faces);
+        Iterable<ELResolver> filteredELResolvers = filterELResolvers(list);
         
         // add the resolvers from the list to the CompositeELResolver
         for (ELResolver resolver : filteredELResolvers)

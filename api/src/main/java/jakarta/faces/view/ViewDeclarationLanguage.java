@@ -42,11 +42,6 @@ public abstract class ViewDeclarationLanguage
     /**
      * @since 2.1
      */
-    public static final String JSP_VIEW_DECLARATION_LANGUAGE_ID = "java.faces.JSP";
-
-    /**
-     * @since 2.1
-     */
     public static final String FACELETS_VIEW_DECLARATION_LANGUAGE_ID = "java.faces.Facelets";
     
     public abstract void buildView(FacesContext context, UIViewRoot view) throws IOException;
