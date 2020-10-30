@@ -55,7 +55,7 @@ public class ClientBehaviorHandler extends TagHandler implements InterfaceDescri
      * words, this is the "real" event name.
      */
     @JSFFaceletAttribute(name="event",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String",
             required=true)
     protected final TagAttribute _event;
@@ -68,7 +68,7 @@ public class ClientBehaviorHandler extends TagHandler implements InterfaceDescri
      * 
      */
     @JSFFaceletAttribute(name="name",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String",
             required=true)
     protected final TagAttribute _name;
@@ -80,7 +80,7 @@ public class ClientBehaviorHandler extends TagHandler implements InterfaceDescri
      * a composite component interface description.
      */
     @JSFFaceletAttribute(name="default",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="boolean")
     protected final TagAttribute _default;
 
@@ -91,7 +91,7 @@ public class ClientBehaviorHandler extends TagHandler implements InterfaceDescri
      * 
      */
     @JSFFaceletAttribute(name="targets",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     protected final TagAttribute _targets;
 

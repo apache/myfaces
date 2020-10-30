@@ -20,9 +20,9 @@ package jakarta.faces.model;
 
 import java.util.SortedMap;
 
-import javax.servlet.jsp.jstl.sql.Result;
+import jakarta.servlet.jsp.jstl.sql.Result;
 
-//import javax.servlet.jsp.
+//import jakarta.servlet.jsp.
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  */

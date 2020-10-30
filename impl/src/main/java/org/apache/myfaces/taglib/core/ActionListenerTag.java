@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.event.ActionListener;
 
@@ -60,7 +60,7 @@ public class ActionListenerTag extends GenericListenerTag<ActionSource, ActionLi
      * The fully qualified class name of the ActionListener class.
      */
     @Override
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     public void setType(ValueExpression type)
     {
@@ -71,7 +71,7 @@ public class ActionListenerTag extends GenericListenerTag<ActionSource, ActionLi
      * Value binding expression that evaluates to an object that implements jakarta.faces.event.ActionListener.
      */
     @Override
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="jakarta.faces.event.ActionListener")
     public void setBinding(ValueExpression binding)
     {

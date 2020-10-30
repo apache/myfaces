@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.cdi.bean;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.convert.Converter;

@@ -28,7 +28,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ProjectStage;

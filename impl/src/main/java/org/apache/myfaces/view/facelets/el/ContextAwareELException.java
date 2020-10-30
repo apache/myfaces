@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.view.Location;
 
 /**

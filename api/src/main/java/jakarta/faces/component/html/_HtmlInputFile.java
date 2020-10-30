@@ -143,9 +143,9 @@ abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
                 return true;
             }
         }
-        else if (value instanceof javax.servlet.http.Part) 
+        else if (value instanceof jakarta.servlet.http.Part) 
         {
-            if (((javax.servlet.http.Part)value).getSize() <= 0) 
+            if (((jakarta.servlet.http.Part)value).getSize() <= 0) 
             {
                 return true;
             }

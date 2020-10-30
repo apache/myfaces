@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.tag.jsf;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponentBase;

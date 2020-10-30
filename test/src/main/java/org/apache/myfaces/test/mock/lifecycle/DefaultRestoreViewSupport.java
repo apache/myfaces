@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ExternalContext;
@@ -37,9 +37,9 @@ import jakarta.faces.context.FacesContext;
  */
 public class DefaultRestoreViewSupport implements RestoreViewSupport
 {
-    private static final String JAVAX_SERVLET_INCLUDE_SERVLET_PATH = "javax.servlet.include.servlet_path";
+    private static final String JAVAX_SERVLET_INCLUDE_SERVLET_PATH = "jakarta.servlet.include.servlet_path";
 
-    private static final String JAVAX_SERVLET_INCLUDE_PATH_INFO = "javax.servlet.include.path_info";
+    private static final String JAVAX_SERVLET_INCLUDE_PATH_INFO = "jakarta.servlet.include.path_info";
 
     private static final Logger log = Logger.getLogger(DefaultRestoreViewSupport.class.getName());
 

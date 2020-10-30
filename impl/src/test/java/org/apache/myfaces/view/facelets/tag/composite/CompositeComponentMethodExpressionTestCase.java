@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;

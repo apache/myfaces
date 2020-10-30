@@ -23,7 +23,7 @@ import jakarta.faces.convert.NumberConverter;
 import jakarta.faces.convert.ConverterException;
 import java.math.BigInteger;
 import java.util.Locale;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;

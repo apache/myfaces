@@ -24,9 +24,9 @@ import static org.easymock.EasyMock.expect;
 
 import java.util.Locale;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;

@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;

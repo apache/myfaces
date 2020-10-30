@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -48,7 +48,7 @@ import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewMetadata;
 import jakarta.faces.webapp.FacesServlet;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 
@@ -124,9 +124,9 @@ class RestoreViewExecutor extends PhaseExecutor
         // Determine if the current request is an attempt by the 
         // servlet container to display an error page.
         // If the request is an error page request, the servlet container
-        // is required to set the request parameter "javax.servlet.error.message".
+        // is required to set the request parameter "jakarta.servlet.error.message".
         final boolean errorPageRequest = facesContext.getExternalContext().getRequestMap()
-                                                 .get("javax.servlet.error.message") != null;
+                                                 .get("jakarta.servlet.error.message") != null;
         
         // Determine if this request is a postback or an initial request.
         // But if it is an error page request, do not treat it as a postback (since 2.0)

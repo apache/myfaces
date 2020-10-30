@@ -35,8 +35,8 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.visit.VisitCallback;

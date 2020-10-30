@@ -33,7 +33,7 @@
  */
 package ${component.packageName};
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import java.util.Collections;
 import org.apache.myfaces.core.api.shared.MessageUtils;

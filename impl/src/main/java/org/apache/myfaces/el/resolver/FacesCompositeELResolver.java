@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.el.resolver;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import jakarta.faces.context.FacesContext;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
@@ -29,7 +29,7 @@ import java.util.Arrays;
  * <p>
  * This composite el resolver will be used at the top level resolver for faces
  * ({@link jakarta.faces.application.Application#getELResolver()})
- * and jsp (the one we add with {@link javax.servlet.jsp.JspApplicationContext#addELResolver(javax.el.ELResolver)}.
+ * and jsp (the one we add with {@link jakarta.servlet.jsp.JspApplicationContext#addELResolver(jakarta.el.ELResolver)}.
  * </p>
  * <p>
  * This implementation does nothing if there is no actual faces context. This is necessarry since we registered our

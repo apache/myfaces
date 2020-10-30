@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.el.FunctionMapper;
+import jakarta.el.FunctionMapper;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 
@@ -35,7 +35,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
  * Default implementation of the FunctionMapper
  * 
  * @see java.lang.reflect.Method
- * @see javax.el.FunctionMapper
+ * @see jakarta.el.FunctionMapper
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -49,7 +49,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.FunctionMapper#resolveFunction(java.lang.String, java.lang.String)
+     * @see jakarta.el.FunctionMapper#resolveFunction(java.lang.String, java.lang.String)
      */
     @Override
     public Method resolveFunction(String prefix, String localName)

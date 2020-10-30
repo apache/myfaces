@@ -21,11 +21,11 @@ package org.apache.myfaces.el;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.EvaluationListener;
-import javax.el.FunctionMapper;
-import javax.el.VariableMapper;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.EvaluationListener;
+import jakarta.el.FunctionMapper;
+import jakarta.el.VariableMapper;
 import jakarta.faces.context.FacesContext;
 
 /**

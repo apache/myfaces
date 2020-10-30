@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.el.MethodNotFoundException;
+import jakarta.el.MethodNotFoundException;
 import jakarta.faces.view.Location;
 
 /**

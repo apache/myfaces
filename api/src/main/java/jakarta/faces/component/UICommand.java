@@ -18,7 +18,7 @@
  */
 package jakarta.faces.component;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;

@@ -47,15 +47,15 @@ import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.ResponseStateManager;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.context.flash.FlashImpl;
@@ -393,7 +393,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<Object, Object> attributes = facesContext.getAttributes();
 
-        javax.servlet.http.PushBuilder pushBuilder = null;
+        jakarta.servlet.http.PushBuilder pushBuilder = null;
         
         if (!attributes.containsKey(PUSH_SUPPORTED))
         {

@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.view.facelets.MetadataTarget;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.util.lang.ClassUtils;

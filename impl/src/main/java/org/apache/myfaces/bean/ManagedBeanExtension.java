@@ -18,14 +18,14 @@
  */
 package org.apache.myfaces.bean;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 import org.apache.myfaces.bean.literal.ApplicationScopedLiteral;
 import org.apache.myfaces.bean.literal.DependentScopeLiteral;
 import org.apache.myfaces.bean.literal.RequestScopedLiteral;
@@ -42,23 +42,23 @@ public class ManagedBeanExtension implements Extension
     public ManagedBeanExtension()
     {
         mappings.put(jakarta.faces.bean.ApplicationScoped.class,
-                javax.enterprise.context.ApplicationScoped.class);
+                jakarta.enterprise.context.ApplicationScoped.class);
         mappings.put(jakarta.faces.bean.SessionScoped.class,
-                javax.enterprise.context.SessionScoped.class);
+                jakarta.enterprise.context.SessionScoped.class);
         mappings.put(jakarta.faces.bean.RequestScoped.class,
-                javax.enterprise.context.RequestScoped.class);
+                jakarta.enterprise.context.RequestScoped.class);
         mappings.put(jakarta.faces.bean.NoneScoped.class,
-                javax.enterprise.context.Dependent.class);
+                jakarta.enterprise.context.Dependent.class);
         mappings.put(jakarta.faces.bean.ViewScoped.class,
                 jakarta.faces.view.ViewScoped.class);
         
-        literals.put(javax.enterprise.context.ApplicationScoped.class,
+        literals.put(jakarta.enterprise.context.ApplicationScoped.class,
                 new ApplicationScopedLiteral());
-        literals.put(javax.enterprise.context.SessionScoped.class,
+        literals.put(jakarta.enterprise.context.SessionScoped.class,
                 new SessionScopedLiteral());
-        literals.put(javax.enterprise.context.RequestScoped.class,
+        literals.put(jakarta.enterprise.context.RequestScoped.class,
                 new RequestScopedLiteral());
-        literals.put(javax.enterprise.context.Dependent.class,
+        literals.put(jakarta.enterprise.context.Dependent.class,
                 new DependentScopeLiteral());
         literals.put(jakarta.faces.view.ViewScoped.class,
                 new ViewScopedLiteral());

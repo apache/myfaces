@@ -23,15 +23,15 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.servlet.ServletContext;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
@@ -46,7 +46,7 @@ public class ViewScopeBeanHolder implements Serializable
     /**
      * key: the windowId for the browser tab or window
      * value: the {@link ViewScopeContextualStorage} which holds all the
-     * {@link javax.enterprise.inject.spi.Bean}s.
+     * {@link jakarta.enterprise.inject.spi.Bean}s.
      */
     private Map<String, ViewScopeContextualStorage> storageMap;
     
@@ -97,7 +97,7 @@ public class ViewScopeBeanHolder implements Serializable
      *
      * This method will replace the storageMap and with a new empty one.
      * This method can be used to properly destroy the BeanHolder beans without having to sync heavily.
-     * Any {@link javax.enterprise.inject.spi.Bean#destroy(Object, javax.enterprise.context.spi.CreationalContext)}
+     * Any {@link jakarta.enterprise.inject.spi.Bean#destroy(Object, jakarta.enterprise.context.spi.CreationalContext)}
      * should be performed on the returned old storage map.
      *
      * @return the old storageMap.

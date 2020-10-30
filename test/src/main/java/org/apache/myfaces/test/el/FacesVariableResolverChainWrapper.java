@@ -21,8 +21,8 @@ package org.apache.myfaces.test.el;
 
 import java.util.Iterator;
 
-import javax.el.ELContext;
-import javax.el.PropertyNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.PropertyNotFoundException;
 import jakarta.faces.FacesException;
 
 /**

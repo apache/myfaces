@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;

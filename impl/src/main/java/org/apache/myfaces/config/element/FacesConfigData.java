@@ -219,7 +219,7 @@ public abstract class FacesConfigData implements Serializable
     public abstract Collection<ResourceBundle> getResourceBundles();
 
     /**
-     * @return Iterator over {@link javax.el.ELResolver} implementation class names
+     * @return Iterator over {@link jakarta.el.ELResolver} implementation class names
      */
     public abstract Collection<String> getElResolvers();
     

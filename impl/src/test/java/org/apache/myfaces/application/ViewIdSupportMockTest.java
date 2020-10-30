@@ -51,8 +51,8 @@ public class ViewIdSupportMockTest extends FacesTestCase
     public void testCalculateViewIdFromRequestAttributeIncludePathInfo()
     {
         Map<String, Object> map = new HashMap<String, Object>();
-        String expectedValue = "javax.servlet.include.path_info_VIEWID";
-        map.put("javax.servlet.include.path_info", expectedValue);        
+        String expectedValue = "jakarta.servlet.include.path_info_VIEWID";
+        map.put("jakarta.servlet.include.path_info", expectedValue);        
         Mockito.when(_externalContext.getRequestMap()).thenReturn(map);
 
         Assert.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
@@ -71,8 +71,8 @@ public class ViewIdSupportMockTest extends FacesTestCase
     public void testCalculateViewIdFromRequestAttributeIncludeServletPath()
     {
         Map<String, Object> map = new HashMap<String, Object>();
-        String expectedValue = "javax.servlet.include.servlet_path_VIEWID";
-        map.put("javax.servlet.include.servlet_path", expectedValue);
+        String expectedValue = "jakarta.servlet.include.servlet_path_VIEWID";
+        map.put("jakarta.servlet.include.servlet_path", expectedValue);
         Mockito.when(_externalContext.getRequestMap()).thenReturn(map);
         
         Mockito.when(_externalContext.getRequestPathInfo()).thenReturn(null);

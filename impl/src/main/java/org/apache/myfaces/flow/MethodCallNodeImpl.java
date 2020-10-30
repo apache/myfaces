@@ -21,8 +21,8 @@ package org.apache.myfaces.flow;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.flow.MethodCallNode;
 import jakarta.faces.flow.Parameter;
 

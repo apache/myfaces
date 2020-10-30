@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.view.Location;
 import jakarta.faces.view.facelets.CompositeFaceletHandler;

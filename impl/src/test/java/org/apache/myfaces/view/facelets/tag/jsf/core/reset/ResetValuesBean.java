@@ -19,9 +19,9 @@
 package org.apache.myfaces.view.facelets.tag.jsf.core.reset;
 
 import java.io.Serializable;
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.event.ActionEvent;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 /**
  *

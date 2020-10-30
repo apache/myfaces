@@ -22,7 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.BiConsumer;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.MetaRule;
 import jakarta.faces.view.facelets.Metadata;

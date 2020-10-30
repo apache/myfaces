@@ -19,7 +19,7 @@
 package org.apache.myfaces.webapp;
 
 import jakarta.faces.context.FacesContext;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)

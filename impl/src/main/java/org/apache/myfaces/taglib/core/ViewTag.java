@@ -23,17 +23,17 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELContext;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.webapp.UIComponentELTag;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.jstl.core.Config;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.jstl.core.Config;
 
 import org.apache.myfaces.view.ServletViewResponseWrapper;
 import org.apache.myfaces.util.LocaleUtils;

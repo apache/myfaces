@@ -20,9 +20,9 @@ package org.apache.myfaces.view.facelets.pool;
 
 import java.io.Serializable;
 import java.util.Locale;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 
 /**
  *

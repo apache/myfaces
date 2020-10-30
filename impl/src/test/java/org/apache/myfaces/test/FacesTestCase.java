@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.test;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;

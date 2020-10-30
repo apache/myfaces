@@ -19,7 +19,7 @@
 package jakarta.faces.component;
 
 import jakarta.faces.component.UIGraphic;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import org.easymock.classextension.EasyMock;
 import org.junit.Assert;

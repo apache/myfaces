@@ -20,7 +20,7 @@ package org.apache.myfaces.taglib.core;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 
 public class SelectItemTag

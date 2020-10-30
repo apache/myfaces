@@ -20,8 +20,8 @@ package org.apache.myfaces.view.facelets.compiler;
 
 import java.io.IOException;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 

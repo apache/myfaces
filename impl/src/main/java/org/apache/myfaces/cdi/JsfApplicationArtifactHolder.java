@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.cdi;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.ServletContext;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.ServletContext;
 
 /**
  * This bean is used to store the ServletContext, so CDI beans can get it later. This is

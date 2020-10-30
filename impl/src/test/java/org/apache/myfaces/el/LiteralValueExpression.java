@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.el;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 public class LiteralValueExpression extends ValueExpression
 {

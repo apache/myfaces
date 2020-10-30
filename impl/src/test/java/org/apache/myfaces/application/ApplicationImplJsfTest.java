@@ -20,7 +20,7 @@ package org.apache.myfaces.application;
 
 import java.beans.BeanInfo;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationWrapper;

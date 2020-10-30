@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.el.ELException;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.UIComponent;

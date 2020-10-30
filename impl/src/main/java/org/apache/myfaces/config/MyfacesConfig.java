@@ -723,7 +723,7 @@ public class MyfacesConfig
      * the location, expression string and tag name can be retrieved by
      * the ExceptionHandler implementation and used to output meaningful information about itself.
      * 
-     * <p>Note in some cases this will wrap the original javax.el.ELException,
+     * <p>Note in some cases this will wrap the original jakarta.el.ELException,
      * so the information will not be on the stack trace unless ExceptionHandler
      * retrieve checking if the exception implements ContextAware interface and calling getWrapped() method.
      * </p>
@@ -1041,7 +1041,7 @@ public class MyfacesConfig
         
         cfg.supportJSP = getBoolean(extCtx, SUPPORT_JSP,
                 SUPPORT_JSP_DEFAULT);
-        if (cfg.supportJSP && ClassUtils.simpleClassForName("javax.servlet.jsp.JspApplicationContext", false) == null)
+        if (cfg.supportJSP && ClassUtils.simpleClassForName("jakarta.servlet.jsp.JspApplicationContext", false) == null)
         {
             cfg.supportJSP = false;
         }

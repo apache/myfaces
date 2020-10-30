@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;

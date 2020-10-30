@@ -43,7 +43,7 @@ public final class ExternalSpecifications
             {
                 try
                 {
-                    beanValidationAvailable = (Class.forName("javax.validation.Validation") != null);
+                    beanValidationAvailable = (Class.forName("jakarta.validation.Validation") != null);
                 }
                 catch(ClassNotFoundException e)
                 {

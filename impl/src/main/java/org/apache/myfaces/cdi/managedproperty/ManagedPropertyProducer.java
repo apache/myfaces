@@ -20,11 +20,11 @@
 package org.apache.myfaces.cdi.managedproperty;
 
 import java.lang.reflect.ParameterizedType;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.FacesException;
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.context.FacesContext;

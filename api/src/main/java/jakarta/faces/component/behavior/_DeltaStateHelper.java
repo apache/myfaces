@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.StateHelper;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponentBase;

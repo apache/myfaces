@@ -20,7 +20,7 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UIViewRoot;
 
 import org.junit.Assert;

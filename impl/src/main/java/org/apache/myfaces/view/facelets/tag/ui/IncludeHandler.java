@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
@@ -72,7 +72,7 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
      * would like to include into your document.
      */
     @JSFFaceletAttribute(
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String",
             required=true)
     private final TagAttribute src;

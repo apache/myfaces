@@ -69,7 +69,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
      * 
      */
     @JSFFaceletAttribute(name="name",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _name;
     
@@ -77,7 +77,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
      * 
      */
     @JSFFaceletAttribute(name="componentType",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _componentType;
     
@@ -85,7 +85,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
      * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="displayName",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _displayName;
     
@@ -93,7 +93,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
      * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="preferred",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="boolean")
     private final TagAttribute _preferred;
     
@@ -101,7 +101,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
      * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="expert",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="boolean")
     private final TagAttribute _expert;
     
@@ -109,7 +109,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
      * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="shortDescription",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _shortDescription;
     
@@ -119,7 +119,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
      * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="hidden",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="boolean")
     protected final TagAttribute _hidden;
     

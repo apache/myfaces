@@ -21,10 +21,10 @@ package org.apache.myfaces.view.facelets.tag.jsf.core;
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;

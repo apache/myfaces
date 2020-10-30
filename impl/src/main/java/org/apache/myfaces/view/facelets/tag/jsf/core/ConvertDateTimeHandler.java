@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.tag.jsf.core;
 
 import java.util.TimeZone;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.DateTimeConverter;

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.el.ELResolver;
+import jakarta.el.ELResolver;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.config.RuntimeConfig;

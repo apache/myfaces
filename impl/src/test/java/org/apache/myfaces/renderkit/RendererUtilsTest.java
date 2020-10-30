@@ -22,7 +22,7 @@ import org.apache.myfaces.renderkit.RendererUtils;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.Resource;

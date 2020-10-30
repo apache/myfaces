@@ -22,7 +22,7 @@ import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitResult;

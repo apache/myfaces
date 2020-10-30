@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import javax.el.ELContext;
-import javax.el.PropertyNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.PropertyNotFoundException;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 

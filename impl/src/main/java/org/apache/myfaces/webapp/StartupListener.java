@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.webapp;
 
-import javax.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextEvent;
 
 
 /**

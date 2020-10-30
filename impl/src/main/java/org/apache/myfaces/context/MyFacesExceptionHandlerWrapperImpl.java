@@ -36,7 +36,7 @@ import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.SystemEvent;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.renderkit.ErrorPageWriter;

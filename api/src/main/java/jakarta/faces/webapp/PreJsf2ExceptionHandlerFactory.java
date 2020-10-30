@@ -24,7 +24,7 @@ import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;

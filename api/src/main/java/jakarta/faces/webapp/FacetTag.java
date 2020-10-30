@@ -18,8 +18,8 @@
  */
 package jakarta.faces.webapp;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * This tag adds its child as a facet of the nearest parent UIComponent. A child consisting of multiple elements should

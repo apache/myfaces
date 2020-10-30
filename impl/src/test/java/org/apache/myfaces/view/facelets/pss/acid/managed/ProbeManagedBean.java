@@ -20,10 +20,10 @@ package org.apache.myfaces.view.facelets.pss.acid.managed;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 import jakarta.faces.event.ActionEvent;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named("testManagedBean")
 @RequestScoped

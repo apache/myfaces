@@ -23,10 +23,10 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.MethodExpression;
-import javax.el.MethodNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodNotFoundException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
@@ -68,14 +68,14 @@ public final class EventHandler extends TagHandler
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
     
     @JSFFaceletAttribute(name="listener",
-            className="javax.el.MethodExpression",
+            className="jakarta.el.MethodExpression",
             deferredMethodSignature=
             "public void listener(jakarta.faces.event.ComponentSystemEvent evt) "
             + "throws jakarta.faces.event.AbortProcessingException")
     private TagAttribute listener;
     
     @JSFFaceletAttribute(name="type",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private TagAttribute type;
     

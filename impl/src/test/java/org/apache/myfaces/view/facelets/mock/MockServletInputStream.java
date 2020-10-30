@@ -22,9 +22,9 @@ package org.apache.myfaces.view.facelets.mock;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.servlet.ReadListener;
+import jakarta.servlet.ReadListener;
 
-import javax.servlet.ServletInputStream;
+import jakarta.servlet.ServletInputStream;
 
 /**
  * 

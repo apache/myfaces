@@ -54,7 +54,7 @@ public class RenderFacetHandler extends ComponentHandler
      * The name that identify the current facet.
      */
     @JSFFaceletAttribute(name="name",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String",
             required=true)
     protected final TagAttribute _name;
@@ -64,7 +64,7 @@ public class RenderFacetHandler extends ComponentHandler
      * this composite component.
      */
     @JSFFaceletAttribute(name="required",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="boolean")
     protected final TagAttribute _required;
     

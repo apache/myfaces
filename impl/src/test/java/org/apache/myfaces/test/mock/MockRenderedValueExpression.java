@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.test.mock;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.context.FacesContext;

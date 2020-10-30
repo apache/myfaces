@@ -29,7 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import jakarta.faces.context.Flash;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * An ExternalContext implementation for Servlet environments, which is used

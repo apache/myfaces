@@ -31,10 +31,10 @@ import java.util.Set;
 
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.el.ValueExpression;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.tagext.TagSupport;
+import jakarta.el.ValueExpression;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
@@ -66,7 +66,7 @@ public class LoadBundleTag extends TagSupport
     /**
      * The base name of the resource bundle.
      */
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     public void setBasename(ValueExpression basename)
     {

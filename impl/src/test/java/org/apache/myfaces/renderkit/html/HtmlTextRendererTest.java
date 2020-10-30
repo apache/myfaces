@@ -21,7 +21,7 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIViewRoot;

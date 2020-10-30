@@ -22,12 +22,12 @@ package org.apache.myfaces.test.el;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.MethodExpression;
-import javax.el.MethodInfo;
-import javax.el.MethodNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodInfo;
+import jakarta.el.MethodNotFoundException;
 import jakarta.faces.context.FacesContext;
 
 /**

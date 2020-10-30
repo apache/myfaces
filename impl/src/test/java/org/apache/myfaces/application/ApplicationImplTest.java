@@ -28,8 +28,8 @@ import java.util.ListResourceBundle;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;

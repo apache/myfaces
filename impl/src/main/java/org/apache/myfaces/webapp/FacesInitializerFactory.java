@@ -19,7 +19,7 @@
 package org.apache.myfaces.webapp;
 
 import jakarta.faces.FacesException;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
@@ -91,7 +91,7 @@ public class FacesInitializerFactory
         String initParameter = context.getInitParameter(MyfacesConfig.SUPPORT_JSP);
         if (StringUtils.isBlank(initParameter) || Boolean.TRUE.toString().equals(initParameter))
         {
-            if (ClassUtils.simpleClassForName("javax.servlet.jsp.JspApplicationContext", false) != null)
+            if (ClassUtils.simpleClassForName("jakarta.servlet.jsp.JspApplicationContext", false) != null)
             {
                 return new JspFacesInitializer();
             }

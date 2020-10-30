@@ -34,9 +34,9 @@ import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.render.ResponseStateManager;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 
 import org.apache.myfaces.renderkit.RendererUtils;

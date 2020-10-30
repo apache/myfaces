@@ -18,15 +18,15 @@
  */
 package org.apache.myfaces.bean;
 
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Named;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Named;
 import org.apache.myfaces.bean.literal.NamedLiteral;
 
 class ManagedBeanWrapper implements AnnotatedType<Object>

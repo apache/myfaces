@@ -33,10 +33,10 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.render.ResponseStateManager;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.jstl.core.Config;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.jstl.core.Config;
 
 import org.apache.myfaces.view.ServletViewResponseWrapper;
 import org.apache.myfaces.application.viewstate.StateCacheUtils;

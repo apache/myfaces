@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.bean.literal;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * Literal for {@link Dependent}

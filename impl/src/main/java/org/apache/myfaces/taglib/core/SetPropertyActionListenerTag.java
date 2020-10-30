@@ -21,13 +21,13 @@ package org.apache.myfaces.taglib.core;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.event.ActionListener;
 import jakarta.faces.webapp.UIComponentClassicTagBase;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
@@ -100,7 +100,7 @@ public class SetPropertyActionListenerTag extends TagSupport
      * ValueExpression for the destination of the value attribute.
      */
     @JSFJspAttribute(required = true,
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.Object")
     public ValueExpression getTarget()
     {
@@ -118,7 +118,7 @@ public class SetPropertyActionListenerTag extends TagSupport
      * @return
      */
     @JSFJspAttribute(required = true,
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.Object")
     public ValueExpression getValue()
     {

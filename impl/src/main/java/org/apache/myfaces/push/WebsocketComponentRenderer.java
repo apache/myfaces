@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIWebsocket;
@@ -47,7 +47,7 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
 @JSFRenderer(renderKitId = "HTML_BASIC",
-        family = "javax.jakarta.Script",
+        family = "jakarta.jakarta.Script",
         type = "jakarta.faces.Websocket")
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class WebsocketComponentRenderer extends Renderer implements ComponentSystemEventListener

@@ -22,9 +22,9 @@ import org.apache.myfaces.el.resolver.FlashELResolver;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.el.CompositeELResolver;
-import javax.el.ELResolver;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELResolver;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;

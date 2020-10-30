@@ -22,10 +22,10 @@ package org.apache.myfaces.test.el;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
-import javax.el.VariableMapper;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.FunctionMapper;
+import jakarta.el.VariableMapper;
 import jakarta.faces.context.FacesContext;
 
 /**

@@ -21,8 +21,8 @@ package org.apache.myfaces.test.el;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 
 /**
  * <p>Mock implementation of <code>VariableMapper</code>.</p>

@@ -26,7 +26,7 @@ public abstract class ReturnBuilder implements NodeBuilder
 {
     public abstract ReturnBuilder fromOutcome(String outcome);
     
-    public abstract ReturnBuilder fromOutcome(javax.el.ValueExpression outcome);
+    public abstract ReturnBuilder fromOutcome(jakarta.el.ValueExpression outcome);
     
     public abstract ReturnBuilder markAsStartNode();
     

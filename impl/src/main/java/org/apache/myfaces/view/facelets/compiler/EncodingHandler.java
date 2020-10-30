@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.io.IOException;
 import java.util.List;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;

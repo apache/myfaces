@@ -20,12 +20,12 @@ package org.apache.myfaces.cdi;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Typed;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.context.ContextNotActiveException;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.Typed;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;

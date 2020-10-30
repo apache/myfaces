@@ -21,7 +21,7 @@ package org.apache.myfaces.taglib.core;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -30,9 +30,9 @@ import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 import jakarta.faces.webapp.UIComponentELTag;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
@@ -63,7 +63,7 @@ public class PhaseListenerTag extends TagSupport
     /**
      * Class name of the PhaseListener to be created and registered.
      */
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     public void setType(ValueExpression type)
     {
@@ -73,7 +73,7 @@ public class PhaseListenerTag extends TagSupport
     /**
      * Value binding expression that evaluates to a PhaseListener.
      */
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="jakarta.faces.event.PhaseListener")
     public void setBinding(ValueExpression binding)
     {

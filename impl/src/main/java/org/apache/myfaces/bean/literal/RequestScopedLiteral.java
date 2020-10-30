@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.bean.literal;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * Literal for {@link RequestScoped}

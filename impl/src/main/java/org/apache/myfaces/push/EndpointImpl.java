@@ -21,18 +21,18 @@ package org.apache.myfaces.push;
 import org.apache.myfaces.push.cdi.WebsocketApplicationSessionHolder;
 import java.io.IOException;
 import java.io.Serializable;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.event.WebsocketEvent;
 import jakarta.faces.event.WebsocketEvent.Closed;
 import jakarta.faces.event.WebsocketEvent.Opened;
 import jakarta.faces.push.PushContext;
-import javax.websocket.CloseReason;
-import javax.websocket.CloseReason.CloseCodes;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.Session;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.CloseReason.CloseCodes;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.Session;
 
 /**
  *

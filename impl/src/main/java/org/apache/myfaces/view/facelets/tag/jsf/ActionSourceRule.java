@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.ActionSource2;
 import jakarta.faces.event.ActionEvent;

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;

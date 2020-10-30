@@ -23,8 +23,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 

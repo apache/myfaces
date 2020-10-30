@@ -36,7 +36,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 public class WebsocketHandler extends ComponentHandler
 {
 
-    @JSFFaceletAttribute(name = "channel", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "channel", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.String")
     private final TagAttribute _channel;
 

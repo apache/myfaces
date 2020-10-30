@@ -18,11 +18,11 @@
  */
 package jakarta.faces.event;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.MethodNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodNotFoundException;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 

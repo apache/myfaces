@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.el.VariableMapper;
+import jakarta.el.VariableMapper;
 
 /**
  * Defines an interface to detect when an EL expression has been

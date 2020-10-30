@@ -58,8 +58,8 @@
             <artifactId>tomcat-el-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jsp_2.2_spec</artifactId>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jsp-api</artifactId>
         </dependency>
 
         <dependency>

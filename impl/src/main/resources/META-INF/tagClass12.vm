@@ -21,8 +21,8 @@
 package ${component.tagPackage};
 
 import jakarta.faces.component.UIComponent;
-import javax.el.ValueExpression;
-import javax.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.el.MethodExpression;
 ## import jakarta.faces.context.FacesContext;
 $utils.importTagClasses12($component)
 

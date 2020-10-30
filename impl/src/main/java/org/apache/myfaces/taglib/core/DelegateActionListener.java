@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;

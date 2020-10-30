@@ -18,8 +18,8 @@
  */
 package jakarta.faces.view.facelets;
 
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.view.Location;
 
 /**
@@ -73,7 +73,7 @@ public abstract class TagAttribute
     /**
      * Create a MethodExpression, using this attribute's value as the expression String.
      * 
-     * @see javax.el.ExpressionFactory#createMethodExpression(javax.el.ELContext, java.lang.String, java.lang.Class,
+     * @see jakarta.el.ExpressionFactory#createMethodExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class,
      *      java.lang.Class[])
      * @see MethodExpression
      * @param ctx
@@ -107,8 +107,8 @@ public abstract class TagAttribute
      * If literal, simply coerce our String literal value using an ExpressionFactory, otherwise create a ValueExpression
      * and evaluate it.
      * 
-     * @see javax.el.ExpressionFactory#coerceToType(java.lang.Object, java.lang.Class)
-     * @see javax.el.ExpressionFactory#createValueExpression(javax.el.ELContext, java.lang.String, java.lang.Class)
+     * @see jakarta.el.ExpressionFactory#coerceToType(java.lang.Object, java.lang.Class)
+     * @see jakarta.el.ExpressionFactory#createValueExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class)
      * @see ValueExpression
      * @param ctx
      *            FaceletContext to use
@@ -145,7 +145,7 @@ public abstract class TagAttribute
     /**
      * Create a ValueExpression, using this attribute's literal value and the passed expected type.
      * 
-     * @see javax.el.ExpressionFactory#createValueExpression(javax.el.ELContext, java.lang.String, java.lang.Class)
+     * @see jakarta.el.ExpressionFactory#createValueExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class)
      * @see ValueExpression
      * @param ctx
      *            FaceletContext to use

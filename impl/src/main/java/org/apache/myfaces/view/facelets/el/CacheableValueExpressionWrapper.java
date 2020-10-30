@@ -22,9 +22,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import javax.el.ELContext;
-import javax.el.ValueExpression;
-import javax.el.ValueReference;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.el.ValueReference;
 import jakarta.faces.FacesWrapper;
 
 public class CacheableValueExpressionWrapper extends ValueExpression

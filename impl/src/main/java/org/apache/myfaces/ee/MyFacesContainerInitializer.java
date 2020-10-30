@@ -34,7 +34,7 @@ import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
-import javax.servlet.annotation.HandlesTypes;
+import jakarta.servlet.annotation.HandlesTypes;
 
 // TODO: backward compatibility for TomEE
 @HandlesTypes({

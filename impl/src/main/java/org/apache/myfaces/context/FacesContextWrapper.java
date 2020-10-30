@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.context;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.FacesMessage.Severity;

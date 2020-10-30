@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -55,10 +55,10 @@ import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.webapp.FacesServlet;
 import javax.naming.Context;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.myfaces.config.ConfigFilesXmlValidationUtils;
 import org.apache.myfaces.config.DefaultFacesConfigurationProvider;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -1549,7 +1549,7 @@ public class AbstractJsfTestContainer
         }
         
         private static final String CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE = 
-            "javax.enterprise.inject.spi.BeanManager";
+            "jakarta.enterprise.inject.spi.BeanManager";
 
         protected void initCDIIntegration(
                 ServletContext servletContext, ExternalContext externalContext)

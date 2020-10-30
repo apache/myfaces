@@ -22,11 +22,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.el.BeanELResolver;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
+import jakarta.el.BeanELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;

@@ -28,7 +28,7 @@ public abstract class SwitchBuilder implements NodeBuilder
     
     public abstract SwitchCaseBuilder defaultOutcome(String outcome);
     
-    public abstract SwitchCaseBuilder defaultOutcome(javax.el.ValueExpression outcome);
+    public abstract SwitchCaseBuilder defaultOutcome(jakarta.el.ValueExpression outcome);
     
     public abstract SwitchBuilder markAsStartNode();
 }

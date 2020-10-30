@@ -20,14 +20,14 @@ package org.apache.myfaces.view.facelets.pss.acid.managed;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.html.HtmlPanelGroup;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewDeclarationLanguage;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 /**
  *

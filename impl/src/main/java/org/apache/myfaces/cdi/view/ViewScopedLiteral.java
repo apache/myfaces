@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.cdi.view;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.view.ViewScoped;
 
 /**

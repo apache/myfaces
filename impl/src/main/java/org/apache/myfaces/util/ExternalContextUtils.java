@@ -23,9 +23,9 @@ import org.apache.myfaces.util.lang.ClassUtils;
 
 
 import jakarta.faces.context.ExternalContext;
-import javax.servlet.ServletResponseWrapper;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletResponseWrapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This provides some functionality for determining some things about the

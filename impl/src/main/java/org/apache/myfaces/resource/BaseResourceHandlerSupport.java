@@ -27,7 +27,7 @@ import org.apache.myfaces.config.MyfacesConfig;
 
 /**
  * A ResourceHandlerSupport implementation for use with standard Java Servlet engines,
- * ie an engine that supports javax.servlet, and uses a standard web.xml file.
+ * ie an engine that supports jakarta.servlet, and uses a standard web.xml file.
  */
 public class BaseResourceHandlerSupport extends ResourceHandlerSupport
 {    

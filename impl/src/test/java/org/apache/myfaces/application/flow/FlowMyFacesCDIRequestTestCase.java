@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.application.flow;
 
-import javax.enterprise.context.ContextNotActiveException;
+import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.StateManager;

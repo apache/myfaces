@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
 import jakarta.faces.context.FacesContext;

@@ -22,8 +22,8 @@ package org.apache.myfaces.test.mock;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>Mock implementation of <code>ServletConfig</code>.</p>

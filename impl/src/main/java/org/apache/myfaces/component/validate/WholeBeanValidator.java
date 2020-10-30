@@ -32,9 +32,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.el.ELContext;
-import javax.el.ValueExpression;
-import javax.el.ValueReference;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.el.ValueReference;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
@@ -48,11 +48,11 @@ import static jakarta.faces.validator.BeanValidator.VALIDATION_GROUPS_DELIMITER;
 import static jakarta.faces.validator.BeanValidator.VALIDATOR_FACTORY_KEY;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import javax.validation.groups.Default;
-import javax.validation.metadata.BeanDescriptor;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.groups.Default;
+import jakarta.validation.metadata.BeanDescriptor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.core.api.shared.ELContextDecorator;
 import org.apache.myfaces.core.api.shared.FacesMessageInterpolator;
@@ -100,7 +100,7 @@ public class WholeBeanValidator implements Validator
 
         // Initialize Bean Validation.
         ValidatorFactory validatorFactory = createValidatorFactory(context);
-        javax.validation.Validator validator = createValidator(validatorFactory, context, 
+        jakarta.validation.Validator validator = createValidator(validatorFactory, context, 
                 (ValidateWholeBeanComponent)component);
         BeanDescriptor beanDescriptor = validator.getConstraintsForClass(valueBaseClass);
         if (!beanDescriptor.isBeanConstrained())
@@ -234,7 +234,7 @@ public class WholeBeanValidator implements Validator
         return null;
     }    
     
-    private javax.validation.Validator createValidator(final ValidatorFactory validatorFactory, 
+    private jakarta.validation.Validator createValidator(final ValidatorFactory validatorFactory, 
             FacesContext context, ValidateWholeBeanComponent component)
     {
         // Set default validation group when setValidationGroups has not been called.

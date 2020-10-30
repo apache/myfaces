@@ -36,8 +36,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.el.ELContext;
-import javax.el.MethodExpression;
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -401,7 +401,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link jakarta.faces.component.UIViewRoot#setBeforePhaseListener(javax.el.MethodExpression)}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#setBeforePhaseListener(jakarta.el.MethodExpression)}.
     // */
     // public void testSetBeforePhaseListener()
     // {
@@ -417,7 +417,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
     // /**
-    // * Test method for {@link jakarta.faces.component.UIViewRoot#setAfterPhaseListener(javax.el.MethodExpression)}.
+    // * Test method for {@link jakarta.faces.component.UIViewRoot#setAfterPhaseListener(jakarta.el.MethodExpression)}.
     // */
     // public void testSetAfterPhaseListener()
     // {

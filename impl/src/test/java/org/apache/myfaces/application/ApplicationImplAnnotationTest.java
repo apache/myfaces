@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ResourceDependency;
 import jakarta.faces.component.UIComponent;

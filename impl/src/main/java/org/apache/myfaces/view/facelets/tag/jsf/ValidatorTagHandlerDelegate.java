@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;

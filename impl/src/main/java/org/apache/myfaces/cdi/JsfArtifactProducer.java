@@ -19,8 +19,8 @@
 package org.apache.myfaces.cdi;
 
 import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 import jakarta.faces.annotation.ApplicationMap;
 import jakarta.faces.annotation.HeaderMap;
 import jakarta.faces.annotation.HeaderValuesMap;
@@ -37,7 +37,7 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.Flash;
-import javax.inject.Named;
+import jakarta.inject.Named;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
 
 @ApplicationScoped

@@ -18,14 +18,14 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.JspException;
 import jakarta.faces.webapp.UIComponentClassicTagBase;
 import jakarta.faces.webapp.UIComponentELTag;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-import javax.el.ValueExpression;
-import javax.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.el.ELContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
@@ -67,7 +67,7 @@ public class AttributeTag extends TagSupport
      * 
      * @param nameExpression
      */
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     public void setName(ValueExpression nameExpression)
     {
@@ -79,7 +79,7 @@ public class AttributeTag extends TagSupport
      * 
      * @param valueExpression
      */
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.Object")
     public void setValue(ValueExpression valueExpression)
     {

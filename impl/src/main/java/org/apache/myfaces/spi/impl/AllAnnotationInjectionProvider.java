@@ -20,10 +20,10 @@ package org.apache.myfaces.spi.impl;
 
 import javax.naming.NamingException;
 import javax.naming.Context;
-import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
+import jakarta.annotation.Resource;
+import jakarta.ejb.EJB;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceUnit;
 
 
 import java.lang.reflect.Method;

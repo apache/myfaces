@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.push.cdi;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactory;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactoryRandom;

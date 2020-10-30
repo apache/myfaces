@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * This is the base Tag for all ValidatorTags which got a minimum and a maimum attribute.

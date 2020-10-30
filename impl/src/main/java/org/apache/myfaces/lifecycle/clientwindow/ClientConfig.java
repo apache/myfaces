@@ -21,8 +21,8 @@ package org.apache.myfaces.lifecycle.clientwindow;
 
 import jakarta.faces.context.FacesContext;
 import java.io.Serializable;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**

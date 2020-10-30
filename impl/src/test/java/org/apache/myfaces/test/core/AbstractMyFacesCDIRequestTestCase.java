@@ -20,7 +20,7 @@ package org.apache.myfaces.test.core;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;

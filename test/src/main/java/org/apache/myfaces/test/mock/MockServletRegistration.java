@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.ServletRegistration;
+import jakarta.servlet.ServletRegistration;
 
 /**
  *

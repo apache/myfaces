@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.flow.cdi;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 import jakarta.faces.flow.builder.FlowBuilder;
 import jakarta.faces.flow.builder.FlowBuilderParameter;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import org.apache.myfaces.flow.builder.FlowBuilderImpl;
 

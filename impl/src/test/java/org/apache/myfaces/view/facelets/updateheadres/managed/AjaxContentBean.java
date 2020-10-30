@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.view.ViewScoped;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named("ajaxContentBean")
 @ViewScoped

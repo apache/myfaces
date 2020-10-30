@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.bean.literal;
 
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Named;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Named;
 
 /**
  * Literal for {@link Named}

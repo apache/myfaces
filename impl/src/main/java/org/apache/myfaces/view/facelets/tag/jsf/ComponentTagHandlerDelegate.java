@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -757,7 +757,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 //{
                     // no validationGroups on the stack
                     // --> set the default validationGroup
-                    validationGroups = javax.validation.groups.Default.class.getName();
+                    validationGroups = jakarta.validation.groups.Default.class.getName();
                 //}
                 beanValidator.setValidationGroups(validationGroups);
             }
@@ -867,7 +867,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                         //{
                             // no validationGroups on the stack
                             // --> set the default validationGroup
-                            validationGroups = javax.validation.groups.Default.class.getName();
+                            validationGroups = jakarta.validation.groups.Default.class.getName();
                         //}
                         beanValidator.setValidationGroups(validationGroups);
                     }

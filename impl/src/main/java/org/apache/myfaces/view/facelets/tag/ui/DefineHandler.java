@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.io.IOException;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -49,7 +49,7 @@ public final class DefineHandler extends TagHandler
      * a &lt;ui:insert/&gt; tag in a target template.
      */
     @JSFFaceletAttribute(
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String",
             required=true)
     private final String name;

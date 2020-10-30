@@ -24,11 +24,11 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.webapp.FacesServlet;
-import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspApplicationContext;
-import javax.servlet.jsp.JspFactory;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.jsp.JspApplicationContext;
+import jakarta.servlet.jsp.JspFactory;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver;
@@ -44,7 +44,7 @@ import org.easymock.classextension.IMocksControl;
 public class JspFacesInitializerTest extends AbstractJsfTestCase
 {
     /**
-     * Test method for {@link org.apache.myfaces.webapp.DefaultFacesInitializer#initFaces(javax.servlet.ServletContext)}.
+     * Test method for {@link org.apache.myfaces.webapp.DefaultFacesInitializer#initFaces(jakarta.servlet.ServletContext)}.
      * @throws Exception 
      */
     public void testInitFaces() throws Exception

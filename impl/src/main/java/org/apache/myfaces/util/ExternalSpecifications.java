@@ -23,8 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.context.ExternalContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Validation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Validation;
 import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
@@ -50,7 +50,7 @@ public final class ExternalSpecifications
         {
             try
             {
-                available = ClassUtils.classForName("javax.validation.Validation") != null;
+                available = ClassUtils.classForName("jakarta.validation.Validation") != null;
             }
             catch(ClassNotFoundException e)
             {
@@ -89,7 +89,7 @@ public final class ExternalSpecifications
         boolean available;
         try
         {
-            available = ClassUtils.classForName("javax.enterprise.inject.spi.BeanManager") != null;
+            available = ClassUtils.classForName("jakarta.enterprise.inject.spi.BeanManager") != null;
         }
         catch (Throwable t)
         {
@@ -107,7 +107,7 @@ public final class ExternalSpecifications
         boolean available;
         try
         {
-            available = ClassUtils.classForName("javax.el.StaticFieldELResolver") != null ;
+            available = ClassUtils.classForName("jakarta.el.StaticFieldELResolver") != null ;
         }
         catch (Throwable t)
         {
@@ -123,7 +123,7 @@ public final class ExternalSpecifications
         boolean available;
         try
         {
-            available = ClassUtils.classForName("javax.servlet.http.PushBuilder") != null
+            available = ClassUtils.classForName("jakarta.servlet.http.PushBuilder") != null
                     && HttpServletRequest.class.getMethod("newPushBuilder", (Class[]) null) != null;
         }
         catch (Throwable t)

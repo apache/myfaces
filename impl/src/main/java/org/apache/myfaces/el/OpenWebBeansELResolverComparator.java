@@ -20,7 +20,7 @@ package org.apache.myfaces.el;
 
 import java.util.Comparator;
 
-import javax.el.ELResolver;
+import jakarta.el.ELResolver;
 
 /**
  * Comparator for ELResolvers that shifts the Resolver from OWB to the last place.

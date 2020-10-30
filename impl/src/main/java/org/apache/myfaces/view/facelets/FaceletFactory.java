@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.view.facelets.FaceletException;
 import java.io.IOException;

@@ -25,7 +25,7 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.StateHelper;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorListener;

@@ -19,9 +19,9 @@
 
 package org.apache.myfaces.test.el;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 
 /**

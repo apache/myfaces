@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ELContext;
-import javax.el.ELContextEvent;
-import javax.el.ELContextListener;
+import jakarta.el.ELContext;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;

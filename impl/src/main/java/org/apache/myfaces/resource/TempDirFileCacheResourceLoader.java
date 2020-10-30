@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
 import jakarta.faces.context.FacesContext;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.WebConfigParamUtils;

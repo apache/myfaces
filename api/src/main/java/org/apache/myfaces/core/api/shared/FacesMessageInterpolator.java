@@ -20,7 +20,7 @@ package org.apache.myfaces.core.api.shared;
 
 import java.util.Locale;
 import jakarta.faces.context.FacesContext;
-import javax.validation.MessageInterpolator;
+import jakarta.validation.MessageInterpolator;
 
 /**
  * Note: Before 2.1.5/2.0.11 there was another strategy for this point to minimize

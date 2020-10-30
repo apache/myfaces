@@ -35,7 +35,7 @@ import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.view.StateManagementStrategy;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewMetadata;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.application.InvalidViewIdException;
 

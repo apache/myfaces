@@ -20,9 +20,9 @@
 package org.apache.myfaces.view.facelets.tag.jstl.core;
 
 import java.io.IOException;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;

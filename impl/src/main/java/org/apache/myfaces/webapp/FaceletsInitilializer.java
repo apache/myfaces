@@ -20,10 +20,10 @@ package org.apache.myfaces.webapp;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * This initializer initializes only Facelets. Specially checks for

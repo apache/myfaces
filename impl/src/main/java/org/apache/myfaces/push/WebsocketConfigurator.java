@@ -19,12 +19,12 @@
 package org.apache.myfaces.push;
 
 import java.io.Serializable;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.context.ExternalContext;
-import javax.websocket.HandshakeResponse;
-import javax.websocket.server.HandshakeRequest;
-import javax.websocket.server.ServerEndpointConfig;
+import jakarta.websocket.HandshakeResponse;
+import jakarta.websocket.server.HandshakeRequest;
+import jakarta.websocket.server.ServerEndpointConfig;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.push.cdi.WebsocketSessionBean;

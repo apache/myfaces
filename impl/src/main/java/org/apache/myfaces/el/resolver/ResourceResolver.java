@@ -21,9 +21,9 @@ package org.apache.myfaces.el.resolver;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIComponent;

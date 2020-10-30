@@ -28,7 +28,7 @@ import java.text.ParsePosition;
 import java.util.Currency;
 import java.util.Locale;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;

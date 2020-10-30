@@ -39,15 +39,15 @@ import org.apache.myfaces.util.UrlPatternMatcher;
 
 /**
  * A ViewHandlerSupport implementation for use with standard Java Servlet engines,
- * ie an engine that supports javax.servlet, and uses a standard web.xml file.
+ * ie an engine that supports jakarta.servlet, and uses a standard web.xml file.
  */
 public class ViewIdSupport
 {
     private static final String INSTANCE_KEY = ViewIdSupport.class.getName();
     
-    private static final String JAVAX_SERVLET_INCLUDE_SERVLET_PATH = "javax.servlet.include.servlet_path";
+    private static final String JAVAX_SERVLET_INCLUDE_SERVLET_PATH = "jakarta.servlet.include.servlet_path";
 
-    private static final String JAVAX_SERVLET_INCLUDE_PATH_INFO = "javax.servlet.include.path_info";
+    private static final String JAVAX_SERVLET_INCLUDE_PATH_INFO = "jakarta.servlet.include.path_info";
     
     private static final Logger log = Logger.getLogger(ViewIdSupport.class.getName());
     
@@ -543,9 +543,9 @@ public class ViewIdSupport
      * Calculates the view id from the given faces context by the following algorithm
      * </p>
      * <ul>
-     * <li>lookup the viewid from the request attribute "javax.servlet.include.path_info"
+     * <li>lookup the viewid from the request attribute "jakarta.servlet.include.path_info"
      * <li>if null lookup the value for viewid by {@link jakarta.faces.context.ExternalContext#getRequestPathInfo()}
-     * <li>if null lookup the value for viewid from the request attribute "javax.servlet.include.servlet_path"
+     * <li>if null lookup the value for viewid from the request attribute "jakarta.servlet.include.servlet_path"
      * <li>if null lookup the value for viewid by {@link jakarta.faces.context.ExternalContext#getRequestServletPath()}
      * <li>if null throw a {@link jakarta.faces.FacesException}
      * </ul>

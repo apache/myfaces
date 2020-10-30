@@ -27,7 +27,7 @@ import org.apache.myfaces.view.facelets.LocationAware;
  * 
  *  <ol>
  *      <li>Location -  location instance - see {@link LocationAware}</li>
- *      <li>expressionString - expression String {@link javax.el.Expression#getExpressionString()}</li>
+ *      <li>expressionString - expression String {@link jakarta.el.Expression#getExpressionString()}</li>
  *      <li>qName - the qualified name for attribute
  *      {@link jakarta.faces.view.facelets.TagAttribute#getQName()}</li>
  *  </ol>   

@@ -23,8 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.view.Location;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;

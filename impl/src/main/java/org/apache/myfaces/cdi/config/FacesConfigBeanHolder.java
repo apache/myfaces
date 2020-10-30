@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.cdi.config;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.faces.annotation.FacesConfig;
 
 @ApplicationScoped

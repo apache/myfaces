@@ -25,14 +25,14 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class CompositeELResolver extends javax.el.CompositeELResolver
+public class CompositeELResolver extends jakarta.el.CompositeELResolver
 {
     private Collection<ELResolver> _elResolvers;
 

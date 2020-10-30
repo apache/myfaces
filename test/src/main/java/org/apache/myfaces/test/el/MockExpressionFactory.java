@@ -21,10 +21,10 @@ package org.apache.myfaces.test.el;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 
 /**
  * <p>Mock implementation of <code>ExpressionFactory</code>.</p>

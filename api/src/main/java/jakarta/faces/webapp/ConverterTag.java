@@ -23,9 +23,9 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>

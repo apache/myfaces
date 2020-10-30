@@ -26,7 +26,7 @@ public abstract class SwitchCaseBuilder
 {
     public abstract SwitchCaseBuilder condition(String expression);
     
-    public abstract SwitchCaseBuilder condition(javax.el.ValueExpression expression);
+    public abstract SwitchCaseBuilder condition(jakarta.el.ValueExpression expression);
     
     public abstract SwitchCaseBuilder fromOutcome(String outcome);
     

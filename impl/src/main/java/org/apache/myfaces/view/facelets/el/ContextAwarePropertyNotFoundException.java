@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.el;
 import jakarta.faces.view.Location;
 
 /**
- * Implementation of types {@link javax.el.PropertyNotFoundException},
+ * Implementation of types {@link jakarta.el.PropertyNotFoundException},
  * {@link ContextAware} and {@link jakarta.faces.FacesWrapper}
  *
  * @author martinkoci
@@ -29,7 +29,7 @@ import jakarta.faces.view.Location;
  * @see ContextAware
  */
 public class ContextAwarePropertyNotFoundException
-        extends javax.el.PropertyNotFoundException
+        extends jakarta.el.PropertyNotFoundException
         implements ContextAwareExceptionWrapper
 {
 

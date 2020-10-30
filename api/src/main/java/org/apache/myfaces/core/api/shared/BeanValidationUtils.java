@@ -20,10 +20,10 @@ package org.apache.myfaces.core.api.shared;
 
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.validator.Validator;
-import javax.validation.Validation;
+import jakarta.validation.Validation;
 
 /**
- * Utility class that isolates javax.validation, to prevent ClassNotFoundException
+ * Utility class that isolates jakarta.validation, to prevent ClassNotFoundException
  * 
  * @since 2.0
  */

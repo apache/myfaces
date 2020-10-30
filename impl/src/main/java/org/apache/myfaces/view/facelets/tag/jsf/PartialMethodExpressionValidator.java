@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.MethodExpressionValidator;

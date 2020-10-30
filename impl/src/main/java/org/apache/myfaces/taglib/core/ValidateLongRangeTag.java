@@ -22,7 +22,7 @@ import org.apache.myfaces.util.ConverterUtils;
 
 import jakarta.faces.validator.LongRangeValidator;
 import jakarta.faces.validator.Validator;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)

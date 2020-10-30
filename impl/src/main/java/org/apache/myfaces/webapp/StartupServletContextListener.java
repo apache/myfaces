@@ -23,9 +23,9 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.FacesContext;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 import java.util.ArrayList;
 import java.util.Iterator;

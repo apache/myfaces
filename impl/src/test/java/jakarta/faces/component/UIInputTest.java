@@ -31,7 +31,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
@@ -42,9 +42,9 @@ import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.validator.LengthValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.test.mock.MockRenderedValueExpression;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;

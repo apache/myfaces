@@ -21,7 +21,7 @@ package org.apache.myfaces.flow;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.FlowCallNode;
 import jakarta.faces.flow.Parameter;

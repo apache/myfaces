@@ -19,7 +19,7 @@
 package jakarta.faces.component;
 
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 

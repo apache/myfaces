@@ -21,7 +21,7 @@ package org.apache.myfaces.context.servlet;
 import java.util.Enumeration;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.myfaces.util.lang.AbstractAttributeMap;
 

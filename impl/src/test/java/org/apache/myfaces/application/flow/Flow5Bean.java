@@ -22,7 +22,7 @@ package org.apache.myfaces.application.flow;
 import java.io.Serializable;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.FlowScoped;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 /**
  *

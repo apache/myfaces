@@ -18,7 +18,7 @@
  */
 package jakarta.faces.context;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 
 public class MockFacesContext extends org.apache.myfaces.test.mock.MockFacesContext
 {
