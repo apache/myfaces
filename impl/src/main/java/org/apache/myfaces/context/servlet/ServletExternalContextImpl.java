@@ -138,6 +138,9 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         _flashFactory = flashFactory;
     }
 
+    /**
+     * @since 4.0
+     */
     @Override
     public void release()
     {

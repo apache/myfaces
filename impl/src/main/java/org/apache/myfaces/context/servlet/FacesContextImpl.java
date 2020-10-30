@@ -151,7 +151,7 @@ public class FacesContextImpl extends FacesContextImplBase
             _facesContextFactory.release();
             _facesContextFactory = null;
         }
-
+        
         // release FacesContextImplBase (sets current instance to null)
         super.release();
     }

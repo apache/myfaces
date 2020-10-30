@@ -120,6 +120,10 @@ public abstract class FacesContextImplBase extends FacesContext
         }
         
         _application = null;
+        if (_externalContext != null)
+        {
+            _externalContext.release();
+        }
         _externalContext = null;
         _viewRoot = null;
         _renderKitFactory = null;

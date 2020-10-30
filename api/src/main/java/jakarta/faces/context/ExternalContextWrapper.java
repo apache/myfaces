@@ -514,4 +514,13 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
     {
         return getWrapped().encodeWebsocketURL(url);
     }
+
+    /**
+     * @since 4.0
+     */
+    @Override
+    public void release()
+    {
+        getWrapped().release();
+    }
 }
