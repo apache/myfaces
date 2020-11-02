@@ -127,5 +127,9 @@
             </xsd:restriction>
         </xsd:simpleContent>
     </xsd:complexType>
+    <xsd:complexType name="url-patternType">
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string"/>
+      </xsd:simpleContent>
+    </xsd:complexType>
 </xsd:schema>
-
