@@ -77,15 +77,5 @@ public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
             "        <to-view-id>/doesNotExist2.jsp</to-view-id>" +
             "    </navigation-case>" +
             "</navigation-rule>" +
-            "<managed-bean>" +
-            "    <managed-bean-name>exist</managed-bean-name>" +
-            "    <managed-bean-class>org.apache.myfaces.config.FacesConfigValidatorTestCase</managed-bean-class>" +
-            "    <managed-bean-scope>request</managed-bean-scope>" +
-            "</managed-bean>" +
-            "<managed-bean>" +
-            "    <managed-bean-name>nonExist</managed-bean-name>" +
-            "    <managed-bean-class>org.apache.myfaces.config.NonExist</managed-bean-class>" +
-            "    <managed-bean-scope>request</managed-bean-scope>" +
-            "</managed-bean>" +
        "</faces-config>";
 }

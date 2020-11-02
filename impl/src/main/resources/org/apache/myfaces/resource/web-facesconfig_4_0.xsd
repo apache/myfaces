@@ -48,10 +48,6 @@
             <xsd:selector xpath="jakartaee:validator"/>
             <xsd:field xpath="jakartaee:validator-id"/>
         </xsd:unique>
-        <xsd:unique name="faces-config-managed-bean-name-uniqueness">
-            <xsd:selector xpath="jakartaee:managed-bean"/>
-            <xsd:field xpath="jakartaee:managed-bean-name"/>
-        </xsd:unique>
     </xsd:element>
 
     <xsd:complexType name="faces-configType">
@@ -62,13 +58,11 @@
             <xsd:element name="factory" type="jakartaee:faces-config-factoryType"/>
             <xsd:element name="component" type="jakartaee:faces-config-componentType"/>
             <xsd:element name="converter" type="jakartaee:faces-config-converterType"/>
-            <xsd:element name="managed-bean" type="jakartaee:faces-config-managed-beanType"/>
             <xsd:element name="flow-definition" type="jakartaee:faces-config-flow-definitionType"/>
             <xsd:element name="name" type="jakartaee:java-identifierType" minOccurs="0"/>
             <xsd:element name="navigation-rule" type="jakartaee:faces-config-navigation-ruleType"/>
             <xsd:element name="protected-views" type="jakartaee:faces-config-protected-viewsType"
                 minOccurs="0" maxOccurs="unbounded"/>
-            <xsd:element name="referenced-bean" type="jakartaee:faces-config-referenced-beanType"/>
             <xsd:element name="render-kit" type="jakartaee:faces-config-render-kitType"/>
             <xsd:element name="lifecycle" type="jakartaee:faces-config-lifecycleType"/>
             <xsd:element name="validator" type="jakartaee:faces-config-validatorType"/>
@@ -365,56 +359,6 @@
         <xsd:attribute name="id" type="xsd:ID"/>
     </xsd:complexType>
 
-    <xsd:complexType name="faces-config-managed-beanType">
-        <xsd:sequence>
-            <xsd:group ref="jakartaee:descriptionGroup"/>
-            <xsd:element name="managed-bean-name" type="jakartaee:java-identifierType"/>
-            <xsd:element name="managed-bean-class" type="jakartaee:fully-qualified-classType"/>
-            <xsd:element name="managed-bean-scope"
-                type="jakartaee:faces-config-managed-bean-scopeOrNoneType"/>
-            <xsd:choice>
-                <xsd:element maxOccurs="unbounded" minOccurs="0" name="managed-property"
-                    type="jakartaee:faces-config-managed-propertyType"/>
-                <xsd:element name="map-entries" type="jakartaee:faces-config-map-entriesType"/>
-                <xsd:element name="list-entries" type="jakartaee:faces-config-list-entriesType"/>
-            </xsd:choice>
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="managed-bean-extension"
-                type="jakartaee:faces-config-managed-bean-extensionType"/>
-        </xsd:sequence>
-        <xsd:attribute name="id" type="xsd:ID"/>
-        <xsd:attribute name="eager" type="xsd:boolean" use="optional"/>
-    </xsd:complexType>
-
-    <xsd:complexType name="faces-config-managed-bean-extensionType">
-        <xsd:sequence>
-            <xsd:any maxOccurs="unbounded" minOccurs="0" namespace="##any" processContents="lax"/>
-        </xsd:sequence>
-        <xsd:attribute name="id" type="xsd:ID"/>
-    </xsd:complexType>
-
-    <xsd:complexType name="faces-config-managed-bean-scopeOrNoneType">
-        <xsd:simpleContent>
-            <xsd:restriction base="jakartaee:string">
-                <xsd:pattern value="view|request|session|application|none|#\{.*\}"/>
-            </xsd:restriction>
-        </xsd:simpleContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="faces-config-managed-propertyType">
-        <xsd:sequence>
-            <xsd:group ref="jakartaee:descriptionGroup"/>
-            <xsd:element name="property-name" type="jakartaee:string"/>
-            <xsd:element minOccurs="0" name="property-class" type="jakartaee:java-typeType"/>
-            <xsd:choice>
-                <xsd:element name="map-entries" type="jakartaee:faces-config-map-entriesType"/>
-                <xsd:element name="null-value" type="jakartaee:faces-config-null-valueType"/>
-                <xsd:element name="value" type="jakartaee:faces-config-valueType"/>
-                <xsd:element name="list-entries" type="jakartaee:faces-config-list-entriesType"/>
-            </xsd:choice>
-        </xsd:sequence>
-        <xsd:attribute name="id" type="xsd:ID"/>
-    </xsd:complexType>
-
     <xsd:complexType name="faces-config-flow-definitionType">
         <xsd:sequence>
             <xsd:group ref="jakartaee:descriptionGroup"/>
@@ -667,15 +611,6 @@
         <xsd:sequence>
             <xsd:element name="name" type="jakartaee:string" minOccurs="1" maxOccurs="1"/>
             <xsd:element name="value" type="jakartaee:string" minOccurs="1" maxOccurs="1"/>
-        </xsd:sequence>
-        <xsd:attribute name="id" type="xsd:ID"/>
-    </xsd:complexType>
-
-    <xsd:complexType name="faces-config-referenced-beanType">
-        <xsd:sequence>
-            <xsd:group ref="jakartaee:descriptionGroup"/>
-            <xsd:element name="referenced-bean-name" type="jakartaee:java-identifierType"/>
-            <xsd:element name="referenced-bean-class" type="jakartaee:fully-qualified-classType"/>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:ID"/>
     </xsd:complexType>
