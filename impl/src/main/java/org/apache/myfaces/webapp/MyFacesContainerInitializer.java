@@ -119,8 +119,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         MyFacesHttpSessionListener httpSessionListener = new MyFacesHttpSessionListener();
         servletContext.addListener(httpSessionListener);
         // Publishes the MyFacesHttpSessionListener instance into the servletContext.
-        // This allows the FacesConfigurator to access the instance and to set the
-        // correct ManagedBeanDestroyer instance on it.
+        // This allows the FacesConfigurator to access the instance
         servletContext.setAttribute(MyFacesHttpSessionListener.APPLICATION_MAP_KEY, httpSessionListener);
         
         

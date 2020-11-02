@@ -227,7 +227,6 @@ public abstract class MockApplication12 extends MockApplication10
             }
             composite.add(nested);
 
-            // composite.add(new faces.ManagedBeanELResolver()); // FIXME
             composite.add(new ResourceBundleELResolver());
             composite.add(new FacesResourceBundleELResolver());
             composite.add(new MapELResolver());
