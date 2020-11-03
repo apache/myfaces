@@ -48,8 +48,9 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class ConfigFilesXmlValidationUtils
 {
-    public final static LSResourceResolver JAVAEE_5_LS_RESOURCE_RESOLVER = new ValidatorLSResourceResolver();
-    public final static ErrorHandler VALIDATION_ERROR_HANDLER = new ValidationErrorHandler(); 
+    // Used for versions 1.2 to 3.0 -- May be should split for 3.0?
+    public final static LSResourceResolver LS_RESOURCE_RESOLVER = new ValidatorLSResourceResolver();
+    public final static ErrorHandler VALIDATION_ERROR_HANDLER = new ValidationErrorHandler();
 
     private final static String FACES_CONFIG_SCHEMA_PATH_12 = "org/apache/myfaces/resource/web-facesconfig_1_2.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_20 = "org/apache/myfaces/resource/web-facesconfig_2_0.xsd";
@@ -65,7 +66,7 @@ public class ConfigFilesXmlValidationUtils
         private final String _systemId;
         private final String _baseURI;
         private final InputStream _input;
-        
+
         public LSInputImpl(String publicId,
                 String systemId, String baseURI, InputStream input)
         {
@@ -148,7 +149,7 @@ public class ConfigFilesXmlValidationUtils
         {
         }
     }
-    
+
     public static class ValidatorLSResourceResolver implements LSResourceResolver
     {
 
@@ -173,6 +174,26 @@ public class ConfigFilesXmlValidationUtils
                             ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_5.xsd"));
                 }
             }
+
+
+            if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespaceURI))
+            {
+                if ("javaee_7.xsd".equals(systemId))
+                {
+                    return new LSInputImpl(publicId, systemId, baseURI,
+                            ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_7.xsd"));
+                }
+            }
+
+            if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespaceURI))
+            {
+                if ("jakartaee_9.xsd".equals(systemId))
+                {
+                    return new LSInputImpl(publicId, systemId, baseURI,
+                            ClassUtils.getResourceAsStream("org/apache/myfaces/resource/jakartaee_9.xsd"));
+                }
+            }
+
             if ("http://www.w3.org/XML/1998/namespace".equals(namespaceURI))
             {
                 return new LSInputImpl(publicId, systemId, baseURI,
@@ -180,16 +201,16 @@ public class ConfigFilesXmlValidationUtils
             }
             return null;
         }
-        
-    } 
-    
+
+    }
+
     public static class ValidationErrorHandler implements ErrorHandler
     {
         public void fatalError(SAXParseException exception) throws SAXException
         {
             throw exception;
         }
-        
+
         public void error(SAXParseException exception) throws SAXException
         {
             Logger log = Logger.getLogger(ConfigFilesXmlValidationUtils.class.getName());
@@ -202,7 +223,7 @@ public class ConfigFilesXmlValidationUtils
             log.log(Level.WARNING, exception.getMessage(), exception);
         }
     }
-    
+
     public static void validateFacesConfigFile(URL xmlFile,
             ExternalContext externalContext, String version) throws SAXException, IOException
     {
@@ -214,8 +235,8 @@ public class ConfigFilesXmlValidationUtils
         {
             throw new IOException("Could not find schema file for validation.");
         }
-        
-        schemaFactory.setResourceResolver(JAVAEE_5_LS_RESOURCE_RESOLVER);
+
+        schemaFactory.setResourceResolver(LS_RESOURCE_RESOLVER);
         Schema schema = schemaFactory.newSchema(schemaFile);
 
         Validator validator = schema.newValidator();
@@ -229,15 +250,35 @@ public class ConfigFilesXmlValidationUtils
 
     private static Source getFacesConfigSchemaFileAsSource(ExternalContext externalContext, String version)
     {
-        String xmlSchema = "1.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_12
-                            : ("2.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_20 
-                            : ("2.1".equals(version) ? FACES_CONFIG_SCHEMA_PATH_21
-                            : ("2.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_22
-                            : ("2.3".equals(version) ? FACES_CONFIG_SCHEMA_PATH_23
-                            : FACES_CONFIG_SCHEMA_PATH_30))));
+
+      String xmlSchema = null;
+
+      switch (version)
+      {
+        case "1.2":
+          xmlSchema = FACES_CONFIG_SCHEMA_PATH_12;
+          break;
+        case "2.0":
+          xmlSchema = FACES_CONFIG_SCHEMA_PATH_20;
+          break;
+        case "2.1":
+          xmlSchema = FACES_CONFIG_SCHEMA_PATH_21;
+          break;
+        case "2.2":
+          xmlSchema = FACES_CONFIG_SCHEMA_PATH_22;
+          break;
+        case "2.3":
+          xmlSchema = FACES_CONFIG_SCHEMA_PATH_23;
+          break;
+        case "3.0":
+          xmlSchema = FACES_CONFIG_SCHEMA_PATH_30;
+          break;
+        default:
+          xmlSchema = FACES_CONFIG_SCHEMA_PATH_30;
+      }
 
         InputStream stream = ClassUtils.getResourceAsStream(xmlSchema);
-        
+
         if (stream == null)
         {
            stream = externalContext.getResourceAsStream(xmlSchema);
@@ -247,7 +288,7 @@ public class ConfigFilesXmlValidationUtils
         {
             return null;
         }
-        
+
         return new StreamSource(stream);
     }
 
@@ -286,9 +327,7 @@ public class ConfigFilesXmlValidationUtils
                 // This is as a result of our aborted parse, so ignore.
             }
 
-            result = handler.isVersion23OrLater() ? "2.3" : (handler.isVersion22() ? "2.2" : 
-                        (handler.isVersion21() ? "2.1" : (handler.isVersion20() ? "2.0" : 
-                        (handler.isVersion12() ? "1.2" : "1.1"))));
+            result = handler.getParsedFacesConfigVersion();
         }
 
         catch (Throwable e)
@@ -316,35 +355,11 @@ public class ConfigFilesXmlValidationUtils
 
     private static class FacesConfigVersionCheckHandler extends DefaultHandler
     {
-        private boolean version12;
-        private boolean version20;
-        private boolean version21;
-        private boolean version22;
-        private boolean version23OrLater;
+        private String version = null;
 
-        public boolean isVersion12()
+        public String getParsedFacesConfigVersion()
         {
-            return this.version12;
-        }
-
-        public boolean isVersion20()
-        {
-            return this.version20;
-        }
-
-        public boolean isVersion21()
-        {
-            return this.version21;
-        }
-
-        public boolean isVersion22()
-        {
-            return this.version22;
-        }
-        
-        public boolean isVersion23OrLater()
-        {
-            return this.version23OrLater;
+          return this.version;
         }
 
         @Override
@@ -363,65 +378,48 @@ public class ConfigFilesXmlValidationUtils
                             : attributes.getQName(i);
                     if (attrName.equals("version"))
                     {
-                        if (attributes.getValue(i).equals("1.2"))
+                        switch (attributes.getValue(i))
                         {
-                            this.version12 = true;
-                            this.version20 = false;
-                            this.version21 = false;
-                            this.version22 = false;
-                            this.version23OrLater = false;
-                        }
-                        else if (attributes.getValue(i).equals("2.0"))
-                        {
-                            this.version12 = false;
-                            this.version20 = true;
-                            this.version21 = false;
-                            this.version22 = false;
-                            this.version23OrLater = false;
-                        }
-                        else if (attributes.getValue(i).equals("2.1"))
-                        {
-                            this.version12 = false;
-                            this.version20 = false;
-                            this.version21 = true;
-                            this.version22 = false;
-                            this.version23OrLater = false;
-                        }
-                        else if (attributes.getValue(i).equals("2.2"))
-                        {
-                            this.version12 = false;
-                            this.version20 = false;
-                            this.version21 = false;
-                            this.version22 = true;
-                            this.version23OrLater = false;
-                        }
-                        else
-                        {
-                            this.version12 = false;
-                            this.version20 = false;
-                            this.version21 = false;
-                            this.version22 = false;
-                            this.version23OrLater = true;
+                          case "1.2":
+                            version = "1.2";
+                            break;
+                          case "2.0":
+                            version = "2.0";
+                            break;
+                          case "2.1":
+                            version = "2.1";
+                            break;
+                          case "2.2":
+                            version = "2.2";
+                            break;
+                          case "2.3":
+                            version = "2.3";
+                            break;
+                          case "3.0":
+                            version = "3.0";
+                            break;
+                          default:
+                            version = "1.2";
                         }
                     }
                 }
             }
         }
     }
-    
+
     public static void validateFaceletTagLibFile(URL xmlFile, ExternalContext externalContext, String version)
         throws SAXException, IOException, ParserConfigurationException
     {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        
+
         Source schemaFile = getFaceletSchemaFileAsSource(externalContext);
         if (schemaFile == null)
         {
             throw new IOException("Could not find schema file for validation.");
         }
-        schemaFactory.setResourceResolver(ConfigFilesXmlValidationUtils.JAVAEE_5_LS_RESOURCE_RESOLVER);
+        schemaFactory.setResourceResolver(ConfigFilesXmlValidationUtils.LS_RESOURCE_RESOLVER);
         Schema schema = schemaFactory.newSchema(schemaFile);
-    
+
         Validator validator = schema.newValidator();
         URLConnection conn = xmlFile.openConnection();
         conn.setUseCaches(false);
@@ -430,24 +428,24 @@ public class ConfigFilesXmlValidationUtils
         validator.setErrorHandler(VALIDATION_ERROR_HANDLER);
         validator.validate(source);
     }
-    
+
     private static Source getFaceletSchemaFileAsSource(ExternalContext externalContext)
     {
         InputStream stream = ClassUtils.getResourceAsStream(FACES_TAGLIB_SCHEMA_PATH);
-        
+
         if (stream == null)
         {
            stream = externalContext.getResourceAsStream(FACES_TAGLIB_SCHEMA_PATH);
         }
-    
+
         if (stream == null)
         {
             return null;
         }
-        
+
         return new StreamSource(stream);
     }
-    
+
     public static final String getFaceletTagLibVersion(URL url)
     {
         if (isTaglibDocument20OrLater(url))
@@ -465,44 +463,44 @@ public class ConfigFilesXmlValidationUtils
         URLConnection conn = null;
         InputStream input = null;
         boolean result = false;
-        
+
         try
         {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser;
             VersionCheckHandler handler = new VersionCheckHandler();
-            
+
             // We need to create a non-validating, non-namespace aware parser used to simply check
             // which version of the facelets taglib document we are dealing with.
 
             factory.setNamespaceAware(false);
             factory.setFeature("http://xml.org/sax/features/validation", false);
             factory.setValidating(false);
-            
+
             parser = factory.newSAXParser();
-            
+
             conn = url.openConnection();
             conn.setUseCaches(false);
             input = conn.getInputStream();
-            
+
             try
             {
                 parser.parse (input, handler);
             }
-            
+
             catch (SAXException e)
             {
                 // This is as a result of our aborted parse, so ignore.
             }
-            
+
             result = handler.isVersion20OrLater();
         }
-        
+
         catch (Throwable e)
         {
             // Most likely a result of our aborted parse, so ignore.
         }
-        
+
         finally
         {
             if (input != null)
@@ -511,17 +509,17 @@ public class ConfigFilesXmlValidationUtils
                 {
                     input.close();
                 }
-                
+
                 catch (Throwable e)
                 {
                 }
             }
         }
-        
+
         return result;
     }
 
-    
+
     /*
      * We need this class to do a quick check on a facelets taglib document to see if it's
      * a pre-2.0 document.  If it is, we really need to construct a DTD validating, non-namespace
@@ -530,19 +528,19 @@ public class ConfigFilesXmlValidationUtils
     private static class VersionCheckHandler extends DefaultHandler
     {
         private boolean version20OrLater;
-        
+
         public boolean isVersion20OrLater ()
         {
             return this.version20OrLater;
         }
-        
+
         @Override
         public void startElement (String uri, String localName, String name, Attributes attributes) throws SAXException
         {
             if (name.equals ("facelet-taglib"))
             {
                 int length = attributes.getLength();
-                
+
                 for (int i = 0; i < length; i++)
                 {
                     String attrName = attributes.getLocalName(i);
@@ -557,7 +555,7 @@ public class ConfigFilesXmlValidationUtils
                         this.version20OrLater = true;
                     }
                 }
-                
+
                 // Throw a dummy parsing exception to terminate parsing as there really isn't any need to go any
                 // further.
                 // -= Leonardo Uribe =- THIS IS NOT GOOD PRACTICE! It is better to let the checker continue that
