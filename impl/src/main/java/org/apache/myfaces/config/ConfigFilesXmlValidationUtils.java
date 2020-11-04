@@ -48,8 +48,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class ConfigFilesXmlValidationUtils
 {
-    public final static LSResourceResolver JAVAEE_5_LS_RESOURCE_RESOLVER = new ValidatorLSResourceResolver();
-    public final static ErrorHandler VALIDATION_ERROR_HANDLER = new ValidationErrorHandler(); 
+    public final static LSResourceResolver LS_RESOURCE_RESOLVER = new ValidatorLSResourceResolver();
+    public final static ErrorHandler VALIDATION_ERROR_HANDLER = new ValidationErrorHandler();
 
     private final static String FACES_CONFIG_SCHEMA_PATH_12 = "org/apache/myfaces/resource/web-facesconfig_1_2.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_20 = "org/apache/myfaces/resource/web-facesconfig_2_0.xsd";
@@ -66,7 +66,7 @@ public class ConfigFilesXmlValidationUtils
         private final String _systemId;
         private final String _baseURI;
         private final InputStream _input;
-        
+
         public LSInputImpl(String publicId,String systemId, String baseURI, InputStream input)
         {
             super();
@@ -164,7 +164,7 @@ public class ConfigFilesXmlValidationUtils
         {
         }
     }
-    
+
     public static class ValidatorLSResourceResolver implements LSResourceResolver
     {
         @Override
@@ -189,6 +189,27 @@ public class ConfigFilesXmlValidationUtils
                             ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_5.xsd"));
                 }
             }
+            if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespaceURI))
+            {
+                 if ("javaee_7.xsd".equals(systemId))
+                 {
+                     return new LSInputImpl(publicId, systemId, baseURI,
+                             ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_7.xsd"));
+                 }
+             }
+             if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespaceURI))
+             {
+                 if ("jakartaee_9.xsd".equals(systemId))
+                 {
+                     return new LSInputImpl(publicId, systemId, baseURI,
+                             ClassUtils.getResourceAsStream("org/apache/myfaces/resource/jakartaee_9.xsd"));
+                 }
+                 if ("jakartaee_10.xsd".equals(systemId))
+                 {
+                     return new LSInputImpl(publicId, systemId, baseURI,
+                             ClassUtils.getResourceAsStream("org/apache/myfaces/resource/jakartaee_10.xsd"));
+                 }
+             }
             if ("http://www.w3.org/XML/1998/namespace".equals(namespaceURI))
             {
                 return new LSInputImpl(publicId, systemId, baseURI,
@@ -196,9 +217,9 @@ public class ConfigFilesXmlValidationUtils
             }
             return null;
         }
-        
-    } 
-    
+
+    }
+
     public static class ValidationErrorHandler implements ErrorHandler
     {
         @Override
@@ -206,7 +227,7 @@ public class ConfigFilesXmlValidationUtils
         {
             throw exception;
         }
-        
+
         @Override
         public void error(SAXParseException exception) throws SAXException
         {
@@ -221,7 +242,7 @@ public class ConfigFilesXmlValidationUtils
             log.log(Level.WARNING, exception.getMessage(), exception);
         }
     }
-    
+
     public static void validateFacesConfigFile(URL xmlFile,ExternalContext externalContext, String version)
             throws SAXException, IOException
     {
@@ -232,8 +253,8 @@ public class ConfigFilesXmlValidationUtils
         {
             throw new IOException("Could not find schema file for validation.");
         }
-        
-        schemaFactory.setResourceResolver(JAVAEE_5_LS_RESOURCE_RESOLVER);
+
+        schemaFactory.setResourceResolver(LS_RESOURCE_RESOLVER);
         Schema schema = schemaFactory.newSchema(schemaFile);
 
         Validator validator = schema.newValidator();
@@ -251,14 +272,14 @@ public class ConfigFilesXmlValidationUtils
     {
         String xmlSchema = "1.2".equals(version)
                             ? FACES_CONFIG_SCHEMA_PATH_12
-                            : ("2.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_20 
+                            : ("2.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_20
                             : ("2.1".equals(version) ? FACES_CONFIG_SCHEMA_PATH_21
                             : ("2.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_22
                             : ("2.3".equals(version) ? FACES_CONFIG_SCHEMA_PATH_23
                             : ("3.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_30 : FACES_CONFIG_SCHEMA_PATH_40)))));
-        
+
         InputStream stream = ClassUtils.getResourceAsStream(xmlSchema);
-        
+
         if (stream == null)
         {
            stream = externalContext.getResourceAsStream(xmlSchema);
@@ -268,7 +289,7 @@ public class ConfigFilesXmlValidationUtils
         {
             return null;
         }
-        
+
         return new StreamSource(stream);
     }
 
@@ -361,7 +382,7 @@ public class ConfigFilesXmlValidationUtils
         {
             return this.version11;
         }
-        
+
         public boolean isVersion12()
         {
             return this.version12;
@@ -381,7 +402,7 @@ public class ConfigFilesXmlValidationUtils
         {
             return this.version22;
         }
-        
+
         public boolean isVersion23()
         {
             return this.version23;
@@ -391,7 +412,7 @@ public class ConfigFilesXmlValidationUtils
         {
             return this.version30;
         }
-        
+
         public boolean isVersion40OrLater()
         {
             return this.version40OrLater;
@@ -470,20 +491,20 @@ public class ConfigFilesXmlValidationUtils
             }
         }
     }
-    
+
     public static void validateFaceletTagLibFile(URL xmlFile, ExternalContext externalContext, String version)
         throws SAXException, IOException, ParserConfigurationException
     {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        
+
         Source schemaFile = getFaceletSchemaFileAsSource(externalContext);
         if (schemaFile == null)
         {
             throw new IOException("Could not find schema file for validation.");
         }
-        schemaFactory.setResourceResolver(ConfigFilesXmlValidationUtils.JAVAEE_5_LS_RESOURCE_RESOLVER);
+        schemaFactory.setResourceResolver(ConfigFilesXmlValidationUtils.LS_RESOURCE_RESOLVER);
         Schema schema = schemaFactory.newSchema(schemaFile);
-    
+
         Validator validator = schema.newValidator();
         URLConnection conn = xmlFile.openConnection();
         conn.setUseCaches(false);
@@ -494,24 +515,24 @@ public class ConfigFilesXmlValidationUtils
             validator.validate(source);
         }
     }
-    
+
     private static Source getFaceletSchemaFileAsSource(ExternalContext externalContext)
     {
         InputStream stream = ClassUtils.getResourceAsStream(FACES_TAGLIB_SCHEMA_PATH);
-        
+
         if (stream == null)
         {
            stream = externalContext.getResourceAsStream(FACES_TAGLIB_SCHEMA_PATH);
         }
-    
+
         if (stream == null)
         {
             return null;
         }
-        
+
         return new StreamSource(stream);
     }
-    
+
     public static final String getFaceletTagLibVersion(URL url)
     {
         if (isTaglibDocument20OrLater(url))
@@ -531,15 +552,15 @@ public class ConfigFilesXmlValidationUtils
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser;
             VersionCheckHandler handler = new VersionCheckHandler();
-            
+
             // We need to create a non-validating, non-namespace aware parser used to simply check
             // which version of the facelets taglib document we are dealing with.
             factory.setNamespaceAware(false);
             factory.setFeature("http://xml.org/sax/features/validation", false);
             factory.setValidating(false);
-            
+
             parser = factory.newSAXParser();
-            
+
             URLConnection conn = url.openConnection();
             conn.setUseCaches(false);
             try (InputStream input = conn.getInputStream())
@@ -553,18 +574,18 @@ public class ConfigFilesXmlValidationUtils
                     // This is as a result of our aborted parse, so ignore.
                 }
             }
-            
+
             return handler.isVersion20OrLater();
         }
         catch (Throwable e)
         {
             // Most likely a result of our aborted parse, so ignore.
         }
-        
+
         return false;
     }
 
-    
+
     /*
      * We need this class to do a quick check on a facelets taglib document to see if it's
      * a pre-2.0 document.  If it is, we really need to construct a DTD validating, non-namespace
@@ -573,19 +594,19 @@ public class ConfigFilesXmlValidationUtils
     private static class VersionCheckHandler extends DefaultHandler
     {
         private boolean version20OrLater;
-        
+
         public boolean isVersion20OrLater()
         {
             return this.version20OrLater;
         }
-        
+
         @Override
         public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException
         {
             if (name.equals("facelet-taglib"))
             {
                 int length = attributes.getLength();
-                
+
                 for (int i = 0; i < length; i++)
                 {
                     String attrName = attributes.getLocalName(i);
@@ -599,7 +620,7 @@ public class ConfigFilesXmlValidationUtils
                         this.version20OrLater = true;
                     }
                 }
-                
+
                 // Throw a dummy parsing exception to terminate parsing as there really isn't any need to go any
                 // further.
                 // -= Leonardo Uribe =- THIS IS NOT GOOD PRACTICE! It is better to let the checker continue that
