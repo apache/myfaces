@@ -37,6 +37,7 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.Flash;
+import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.inject.Named;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
 
@@ -213,4 +214,11 @@ public class JsfArtifactProducer
        return FacesContext.getCurrentInstance().getViewRoot().getViewMap();
    }
 
+   @Produces
+   @Named("clientWindow")
+   @FacesScoped 
+   public ClientWindow getClientWindow()
+   {
+      return FacesContext.getCurrentInstance().getExternalContext().getClientWindow();
+   }
 }

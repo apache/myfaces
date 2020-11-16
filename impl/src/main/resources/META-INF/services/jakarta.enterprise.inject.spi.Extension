@@ -10,3 +10,4 @@ org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension
 org.apache.myfaces.push.cdi.PushContextCDIExtension
 org.apache.myfaces.flow.cdi.FlowBuilderExtension
 org.apache.myfaces.flow.cdi.FlowScopeExtension
+org.apache.myfaces.cdi.clientwindow.ClientWindowScopeExtension
