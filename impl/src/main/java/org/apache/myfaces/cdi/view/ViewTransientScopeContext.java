@@ -58,7 +58,7 @@ public class ViewTransientScopeContext implements Context
     {
         if (facesContext == null)
         {
-            throw new ContextNotActiveException(this.getClass().getName() + ": no current active facesContext");
+            throw new ContextNotActiveException(this.getClass().getName() + ": no current active FacesContext");
         }
 
         ContextualStorage contextualStorage = (ContextualStorage) 
@@ -177,9 +177,10 @@ public class ViewTransientScopeContext implements Context
     }
 
     /**
-     * Make sure that the Context is really active.
-     * @throws ContextNotActiveException if there is no active
-     *         Context for the current Thread.
+     * Make sure that the context is really active.
+     * 
+     * @param facesContext the current {@link FacesContext}.
+     * @throws ContextNotActiveException if there is no active context for the current thread.
      */
     protected void checkActive(FacesContext facesContext)
     {

@@ -32,8 +32,8 @@ import jakarta.enterprise.context.NormalScope;
 @NormalScope
 @Inherited
 @Documented
-@Target(value={ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
-@Retention(value= RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
 public @interface ViewTransientScoped
 {
     
