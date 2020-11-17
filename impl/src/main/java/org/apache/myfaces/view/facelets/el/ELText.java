@@ -504,6 +504,16 @@ public class ELText
         }
     }
 
+    public static String parseAsString(ExpressionFactory fact, ELContext ctx, String in) throws ELException
+    {
+        if (isLiteral(fact, ctx, in))
+        {
+            return in;
+        }
+
+        return parse(fact, ctx, in, null).toString(ctx);
+    }
+
     public static ELText parse(ExpressionFactory fact, ELContext ctx, String in) throws ELException
     {
         return parse(fact, ctx, in, null);
@@ -535,8 +545,8 @@ public class ELText
         boolean esc = false;
         int vlen = 0;
 
-        StringBuilder buff = new StringBuilder(128);
-        List<ELText> text = new ArrayList<>();
+        StringBuilder buff = null;
+        List<ELText> text = null;
         ELText t = null;
         ValueExpression ve = null;
 
@@ -558,8 +568,12 @@ public class ELText
                 {
                     if ('{' == ca[i + 1])
                     {
-                        if (buff.length() > 0)
+                        if (buff != null && buff.length() > 0)
                         {
+                            if (text == null)
+                            {
+                                text = new ArrayList<>();
+                            }
                             text.add(new ELText(buff.toString()));
                             buff.setLength(0);
                         }
@@ -582,24 +596,37 @@ public class ELText
                             }
                             t = new ELCacheableTextVariable(ve);
                         }
+                        if (text == null)
+                        {
+                            text = new ArrayList<>();
+                        }
                         text.add(t);
                         i += vlen;
                         continue;
                     }
                 }
             }
+
             esc = false;
+            if (buff == null)
+            {
+                buff = new StringBuilder(128);
+            }
             buff.append(c);
             i++;
         }
 
-        if (buff.length() > 0)
+        if (buff != null && buff.length() > 0)
         {
+            if (text == null)
+            {
+                text = new ArrayList<>();
+            }
             text.add(new ELText(buff.toString()));
             buff.setLength(0);
         }
 
-        if (text.isEmpty())
+        if (text == null || text.isEmpty())
         {
             return null;
         }
@@ -630,8 +657,8 @@ public class ELText
         boolean esc = false;
         int vlen = 0;
 
-        StringBuilder buff = new StringBuilder(128);
-        List<ELText> text = new ArrayList<>();
+        StringBuilder buff = null;
+        List<ELText> text = null;
         ELText t = null;
         ValueExpression ve = null;
 
@@ -653,8 +680,12 @@ public class ELText
                 {
                     if ('{' == ca[i + 1])
                     {
-                        if (buff.length() > 0)
+                        if (buff != null && buff.length() > 0)
                         {
+                            if (text == null)
+                            {
+                                text = new ArrayList<>();
+                            }
                             text.add(new ELText(buff.toString()));
                             buff.setLength(0);
                         }
@@ -677,24 +708,37 @@ public class ELText
                             }
                             t = new ELCacheableTextVariable(ve);
                         }
+                        if (text == null)
+                        {
+                            text = new ArrayList<>();
+                        }
                         text.add(t);
                         i += vlen;
                         continue;
                     }
                 }
             }
+            
             esc = false;
+            if (buff == null)
+            {
+                buff = new StringBuilder(128);
+            }
             buff.append(c);
             i++;
         }
 
-        if (buff.length() > 0)
+        if (buff != null && buff.length() > 0)
         {
+            if (text == null)
+            {
+                text = new ArrayList<>();
+            }
             text.add(new ELText(buff.toString()));
             buff.setLength(0);
         }
 
-        if (text.isEmpty())
+        if (text == null || text.isEmpty())
         {
             return null;
         }
@@ -788,7 +832,7 @@ public class ELText
             }
             i++;
         }
-        throw new ELException("EL Expression Unbalanced: ... " + new String(ca, s, i - s));
+        throw new ELException("EL Expression unbalanced: ... " + new String(ca, s, i - s));
     }
 
 }

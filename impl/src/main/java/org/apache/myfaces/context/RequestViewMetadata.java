@@ -130,8 +130,8 @@ public class RequestViewMetadata implements Serializable
                 String target = annotation.target();
                 if (target != null && target.length() > 0)
                 {
-                    target = ELText.parse(context.getApplication().getExpressionFactory(),
-                                          context.getELContext(), target).toString(context.getELContext());
+                    target = ELText.parseAsString(context.getApplication().getExpressionFactory(),
+                            context.getELContext(), target);
                 }
                 else
                 {
@@ -149,8 +149,8 @@ public class RequestViewMetadata implements Serializable
                 String target = annotation.target();
                 if (target != null && target.length() > 0)
                 {
-                    target = ELText.parse(context.getApplication().getExpressionFactory(),
-                                          context.getELContext(), target).toString(context.getELContext());
+                    target = ELText.parseAsString(context.getApplication().getExpressionFactory(),
+                            context.getELContext(), target);
                 }
                 else
                 {

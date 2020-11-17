@@ -30,8 +30,10 @@ public class ELTextTest {
         ExpressionFactory expressionFactory = new org.apache.el.ExpressionFactoryImpl();
         
         ELText elText = ELText.parse(expressionFactory, null, "blub", null);
-        
         Assert.assertEquals("blub", elText.toString());
+        
+        elText = ELText.parse(expressionFactory, null, "", null);
+        Assert.assertEquals(null, elText);
     }
 
     @Test
@@ -49,4 +51,31 @@ public class ELTextTest {
         Assert.assertEquals(3, ((ELText.ELTextComposite) elText).getElements().length);
         Assert.assertEquals(" blub ", ((ELText.ELTextComposite) elText).getElements()[1].toString());
     }
+
+    @Test
+    public void parseAsArrayLiteral()
+    {
+        ExpressionFactory expressionFactory = new org.apache.el.ExpressionFactoryImpl();
+        
+        ELText[] elText = ELText.parseAsArray(expressionFactory, null, "blub", null);
+        Assert.assertEquals("blub", elText[0].toString());
+        
+        elText = ELText.parseAsArray(expressionFactory, null, "", null);
+        Assert.assertTrue(elText == null);
+    }
+
+    @Test
+    public void parseAsArrayValueExpressionAndLiteral()
+    {
+        ExpressionFactory expressionFactory = new org.apache.el.ExpressionFactoryImpl();
+        
+        ELText[] elText = ELText.parseAsArray(expressionFactory, null, "#{myblub.blub} blub", null);
+        Assert.assertEquals(2, elText.length);
+        Assert.assertEquals(" blub", elText[1].toString());
+        
+        elText = ELText.parseAsArray(expressionFactory, null, "#{myblub.blub} blub #{myblub.blub}", null);
+        Assert.assertEquals(3, elText.length);
+        Assert.assertEquals(" blub ", elText[1].toString());
+    }
+    
 }
