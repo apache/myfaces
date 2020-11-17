@@ -1766,8 +1766,7 @@ public class ApplicationImpl extends Application
             String name = annotation.name();
             if (StringUtils.isNotEmpty(name))
             {
-                name = ELText.parse(getExpressionFactory(), context.getELContext(), name)
-                        .toString(context.getELContext());
+                name = ELText.parseAsString(getExpressionFactory(), context.getELContext(), name);
             }
             
             // Obtain the renderer-type for the resource name by passing name to 
@@ -1791,8 +1790,7 @@ public class ApplicationImpl extends Application
             String library = annotation.library();
             if (StringUtils.isNotEmpty(library))
             {
-                library = ELText.parse(getExpressionFactory(), context.getELContext(), library)
-                        .toString(context.getELContext());
+                library = ELText.parseAsString(getExpressionFactory(), context.getELContext(), library);
                 // If library is non-null, store it under the key "library".
                 attributes.put("library", library);
             }
@@ -1805,8 +1803,7 @@ public class ApplicationImpl extends Application
             String target = annotation.target();
             if (StringUtils.isNotEmpty(target))
             {
-                target = ELText.parse(getExpressionFactory(),context.getELContext(), target)
-                        .toString(context.getELContext());
+                target = ELText.parseAsString(getExpressionFactory(),context.getELContext(), target);
                 // If target is non-null, store it under the key "target".
                 attributes.put("target", target);
                 context.getViewRoot().addComponentResource(context, output, target);
@@ -2182,8 +2179,7 @@ public class ApplicationImpl extends Application
             String name = annotation.name();
             if (StringUtils.isNotEmpty(name))
             {
-                name = ELText.parse(getExpressionFactory(), context.getELContext(), name)
-                        .toString(context.getELContext());
+                name = ELText.parseAsString(getExpressionFactory(), context.getELContext(), name);
             }
 
             // Obtain the renderer-type for the resource name by passing name to
@@ -2208,8 +2204,7 @@ public class ApplicationImpl extends Application
             String library = annotation.library();
             if (StringUtils.isNotEmpty(library))
             {
-                library = ELText.parse(getExpressionFactory(), context.getELContext(), library)
-                        .toString(context.getELContext());
+                library = ELText.parseAsString(getExpressionFactory(), context.getELContext(), library);
                 // If library is non-null, store it under the key "library".
                 if ("this".equals(library))
                 {
@@ -2234,8 +2229,7 @@ public class ApplicationImpl extends Application
             String target = annotation.target();
             if (StringUtils.isNotEmpty(target))
             {
-                target = ELText.parse(getExpressionFactory(), context.getELContext(), target)
-                        .toString(context.getELContext());
+                target = ELText.parseAsString(getExpressionFactory(), context.getELContext(), target);
                 // If target is non-null, store it under the key "target".
                 attributes.put("target", target);
                 context.getViewRoot().addComponentResource(context, output, target);
