@@ -66,7 +66,7 @@ import jakarta.faces.view.ViewMetadata;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.flow.FlowHandlerImpl;
-import org.apache.myfaces.util.SharedStringBuilder;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.HashMapUtils;
 import org.apache.myfaces.util.lang.StringUtils;

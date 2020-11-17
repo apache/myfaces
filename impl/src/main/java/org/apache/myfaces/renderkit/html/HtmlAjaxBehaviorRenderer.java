@@ -30,7 +30,7 @@ import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.ClientBehaviorRenderer;
 import org.apache.myfaces.renderkit.html.util.AjaxScriptBuilder;
-import org.apache.myfaces.util.SharedStringBuilder;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 
 /**
  * @author Werner Punz  (latest modification by $Author$)

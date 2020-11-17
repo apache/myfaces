@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import jakarta.faces.event.PhaseId;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 
 
 /**
@@ -2440,22 +2441,7 @@ public abstract class UIComponentBase extends UIComponent
      */
     static StringBuilder _getSharedStringBuilder(FacesContext facesContext)
     {
-        Map<Object, Object> attributes = facesContext.getAttributes();
-
-        StringBuilder sb = (StringBuilder) attributes.get(_STRING_BUILDER_KEY);
-
-        if (sb == null)
-        {
-            sb = new StringBuilder();
-            attributes.put(_STRING_BUILDER_KEY, sb);
-        }
-        else
-        {
-            // clear out the stringBuilder by setting the length to 0
-            sb.setLength(0);
-        }
-
-        return sb;
+        return SharedStringBuilder.get(facesContext, _STRING_BUILDER_KEY);
     }
 
     // ------------------ GENERATED CODE BEGIN (do not modify!) --------------------

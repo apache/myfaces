@@ -47,7 +47,7 @@ import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.util.SharedStringBuilder;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 
 public class HtmlButtonRendererBase extends HtmlRenderer
 {

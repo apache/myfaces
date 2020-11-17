@@ -34,7 +34,7 @@ import jakarta.faces.component.search.SearchExpressionHint;
 import jakarta.faces.component.search.SearchKeywordContext;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
-import org.apache.myfaces.util.SharedStringBuilder;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.lang.StringUtils;
 
 /**

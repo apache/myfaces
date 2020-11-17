@@ -62,7 +62,7 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.LocaleUtils;
-import org.apache.myfaces.util.SharedStringBuilder;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.resource.ContractResource;
 import org.apache.myfaces.resource.ContractResourceLoader;
 import org.apache.myfaces.resource.ResourceCachedInfo;

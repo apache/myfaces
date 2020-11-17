@@ -42,7 +42,7 @@ import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.lang.StringUtils;
-import org.apache.myfaces.util.SharedStringBuilder;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Command", type = "jakarta.faces.Script")
 public class HtmlCommandScriptRenderer extends HtmlRenderer
