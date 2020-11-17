@@ -308,8 +308,8 @@ public final class StringUtils
             return str.substring(begin, end);
         }
 
-        StringBuilder sb     = new StringBuilder(end - begin);
-        int          beginInt = begin; // need begin later
+        StringBuilder sb = new StringBuilder(end - begin);
+        int beginInt = begin; // need begin later
         do
         {
             if (((endInt + 1) >= end) || (str.charAt(endInt + 1) != quote))
@@ -387,12 +387,12 @@ public final class StringUtils
             return str;
         }
 
-        int          len     = repl.length();
-        int          lendiff = with.length() - repl.length();
-        StringBuilder out     =
-            new StringBuilder((lendiff <= 0) ? str.length()
+        int len = repl.length();
+        int lendiff = with.length() - repl.length();
+        StringBuilder out = new StringBuilder((lendiff <= 0)
+                ? str.length()
                 : (str.length() + (10 * lendiff)));
-        while(pos >= 0)
+        while (pos >= 0)
         {
             out.append(substring(str, lastindex, pos)).append(with);
             lastindex = pos + len;
@@ -413,13 +413,13 @@ public final class StringUtils
             return str;
         }
 
-        int          len       = str.length();
-        int          lendiff   = with.length() - 1;
-        StringBuilder out       =
-            new StringBuilder((lendiff <= 0) ? str.length()
+        int len = str.length();
+        int lendiff = with.length() - 1;
+        StringBuilder out = new StringBuilder((lendiff <= 0)
+                ? str.length()
                 : (str.length() + (10 * lendiff)));
-        int          lastindex = 0;
-        while( pos >= 0)
+        int lastindex = 0;
+        while (pos >= 0)
         {
             out.append(substring(str, lastindex, pos)).append(with);
             lastindex = pos + 1;
@@ -480,16 +480,15 @@ public final class StringUtils
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
 
-        int       oldPos = 0;
+        int oldPos = 0;
         ArrayList list = new ArrayList();
         int pos = str.indexOf(separator);
-        while(pos >= 0)
+        while (pos >= 0)
         {
             list.add(substring(str, oldPos, pos));
             oldPos = (pos + 1);
             pos = str.indexOf(separator, oldPos);
         }
-
 
         list.add(substring(str, oldPos, len));
 
@@ -518,7 +517,7 @@ public final class StringUtils
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
 
-        int       oldPos = 0;
+        int oldPos = 0;
         ArrayList list = new ArrayList();
         for (int pos = 0; pos < len; oldPos = ++pos)
         {
@@ -549,16 +548,16 @@ public final class StringUtils
             }
             else
             {
-                quoted     = false;
-                pos        = str.indexOf(separator, pos);
+                quoted = false;
+                pos = str.indexOf(separator, pos);
                 if (pos < 0)
                 {
                     pos = len;
                 }
             }
 
-            list.add(
-                quoted ? dequote(str, oldPos + 1, pos - 1, quote)
+            list.add(quoted
+                    ? dequote(str, oldPos + 1, pos - 1, quote)
                     : substring(str, oldPos, pos));
         }
 

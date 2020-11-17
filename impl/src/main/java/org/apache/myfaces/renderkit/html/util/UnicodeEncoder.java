@@ -31,7 +31,7 @@ public abstract class UnicodeEncoder
      * Encodes the given string, so that it can be used within a html page.
      * @param string the string to convert
      */
-    public static String encode (String string)
+    public static String encode(String string)
     {
         if (string == null)
         {
@@ -47,8 +47,8 @@ public abstract class UnicodeEncoder
             {
                 if( sb == null )
                 {
-                    sb = new StringBuilder( string.length()+4 );
-                    sb.append( string.substring(0,i) );
+                    sb = new StringBuilder(string.length() + 4);
+                    sb.append(string.substring(0,i));
                 }
                 //encode all non basic latin characters
                 sb.append("&#");
@@ -76,7 +76,7 @@ public abstract class UnicodeEncoder
         for (int i = 0; i < string.length (); ++i)
         {
             c = string.charAt(i);
-            if (((int)c) >= 0x80)
+            if (((int) c) >= 0x80)
             {
                 if (start < i)
                 {
@@ -112,7 +112,7 @@ public abstract class UnicodeEncoder
         for (int i = off; i < off+len; ++i)
         {
             c = cbuf[i];
-            if (((int)c) >= 0x80)
+            if (((int) c) >= 0x80)
             {
                 if (start < i)
                 {
