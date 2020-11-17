@@ -303,15 +303,13 @@ public abstract class FacesContextImplBase extends FacesContext
     @Override
     public final RenderKit getRenderKit()
     {
-        assertNotReleased();
-
-        if (getViewRoot() == null)
+        UIViewRoot viewRoot = getViewRoot();
+        if (viewRoot == null)
         {
             return null;
         }
 
-        String renderKitId = getViewRoot().getRenderKitId();
-
+        String renderKitId = viewRoot.getRenderKitId();
         if (renderKitId == null)
         {
             return null;
