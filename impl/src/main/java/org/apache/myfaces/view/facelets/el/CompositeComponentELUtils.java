@@ -459,10 +459,8 @@ public final class CompositeComponentELUtils
         {
             return CC_EXPRESSION_REGEX.matcher(expression).matches();
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
     
     /**
@@ -479,10 +477,8 @@ public final class CompositeComponentELUtils
         {
             return CC_ATTRS_METHOD_EXPRESSION_REGEX.matcher(expression).matches();
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
     
 }
