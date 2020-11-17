@@ -45,7 +45,7 @@ import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 public class ELText
 {
 
-    private static final class LiteralValueExpression extends ValueExpression
+    protected static final class LiteralValueExpression extends ValueExpression
     {
         private static final long serialVersionUID = 1L;
 
@@ -110,7 +110,7 @@ public class ELText
         }
     }
 
-    private static final class ELTextComposite extends ELText
+    protected static final class ELTextComposite extends ELText
     {
         private final ELText[] txt;
 
@@ -181,9 +181,14 @@ public class ELText
             }
             return new ELTextComposite(nt);
         }
+
+        public ELText[] getElements()
+        {
+            return this.txt;
+        }
     }
 
-    private static final class ELTextVariable extends ELText
+    protected static final class ELTextVariable extends ELText
     {
         private final ValueExpression ve;
 
@@ -238,7 +243,7 @@ public class ELText
         }
     }
     
-    private static final class ELCacheableTextVariable extends ELText
+    protected static final class ELCacheableTextVariable extends ELText
     {
         //Just like TagAttributeImpl
         private final static int EL_CC = 2;
