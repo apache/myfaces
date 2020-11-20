@@ -43,7 +43,8 @@ public abstract class FaceletFactory
 
     /**
      * Return a Facelet instance as specified by the file at the passed URI.
-     * 
+     *
+     * @param context
      * @param uri
      * @return
      * @throws IOException
@@ -73,8 +74,8 @@ public abstract class FaceletFactory
      * the context, instead take the one from the cache, like for example when the EL expression
      * cache is used.
      * 
-     * @param url
-     *            source url
+     * @param ctx 
+     * @param url source url
      * @return Facelet instance
      * @throws IOException
      * @throws FaceletException
@@ -94,10 +95,12 @@ public abstract class FaceletFactory
      * This method should be called from FaceletViewMetadata.createMetadataView(FacesContext context)  
      * </p>
      * 
-     * @since 2.0
+     * @param context 
      * @param uri
      * @return
      * @throws IOException
+     *
+     * @since 2.0
      */
     public abstract Facelet getViewMetadataFacelet(
         FacesContext context, String uri) throws IOException;
@@ -106,13 +109,14 @@ public abstract class FaceletFactory
      * Create a Facelet used to create view metadata from the passed URL. This method checks if the 
      * cached Facelet needs to be refreshed before returning. If so, uses the passed URL to build a new instance;
      * 
-     * @since 2.0
      * @param url source url
      * @return Facelet instance
      * @throws IOException
      * @throws FaceletException
      * @throws FacesException
      * @throws ELException
+     *
+     * @since 2.0
      */
     public abstract Facelet getViewMetadataFacelet(URL url)
             throws IOException, FaceletException, FacesException, ELException;
@@ -124,10 +128,12 @@ public abstract class FaceletFactory
      * This method should be called from vdl.getComponentMetadata(FacesContext context)  
      * </p>
      * 
-     * @since 2.0.1
+     * @param context
      * @param uri
      * @return
      * @throws IOException
+     *
+     * @since 2.0.1
      */
     public abstract Facelet getCompositeComponentMetadataFacelet(FacesContext context, String uri) 
         throws IOException;
@@ -136,13 +142,14 @@ public abstract class FaceletFactory
      * Create a Facelet used to create composite component metadata from the passed URL. This method checks if the 
      * cached Facelet needs to be refreshed before returning. If so, uses the passed URL to build a new instance.
      * 
-     * @since 2.0.1
      * @param url source url
      * @return Facelet instance
      * @throws IOException
      * @throws FaceletException
      * @throws FacesException
      * @throws ELException
+     *
+     * @since 2.0.1
      */
     public abstract Facelet getCompositeComponentMetadataFacelet(URL url)
             throws IOException, FaceletException, FacesException, ELException;
