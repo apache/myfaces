@@ -102,10 +102,13 @@ public abstract class UIComponent
 
     /**
      * Constant used to store the current component that is being processed.
-     *
+     * 
      * @see #pushComponentToEL(FacesContext, UIComponent)
      * @see #popComponentFromEL(FacesContext)
+     * 
+     * @deprecated
      */
+    @Deprecated
     public static final String CURRENT_COMPONENT = "jakarta.faces.component.CURRENT_COMPONENT";
 
     /**
@@ -113,7 +116,10 @@ public abstract class UIComponent
      *
      * @see #pushComponentToEL(FacesContext, UIComponent)
      * @see #popComponentFromEL(FacesContext)
+     * 
+     * @deprecated
      */
+    @Deprecated
     public static final String CURRENT_COMPOSITE_COMPONENT = "jakarta.faces.component.CURRENT_COMPOSITE_COMPONENT";
 
     /**
@@ -367,6 +373,7 @@ public abstract class UIComponent
     /**
      * @deprecated Replaced by setValueExpression
      */
+    @Deprecated
     public abstract void setValueBinding(String name, ValueBinding binding);
 
     public void setValueExpression(String name, ValueExpression expression)
@@ -717,6 +724,7 @@ public abstract class UIComponent
     /**
      * @deprecated Replaced by getValueExpression
      */
+    @Deprecated
     public abstract ValueBinding getValueBinding(String name);
 
     public ValueExpression getValueExpression(String name)
