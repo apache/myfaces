@@ -72,6 +72,7 @@ public abstract class ResponseStateManager
      * @throws IOException 
      * @deprecated
      */
+    @Deprecated
     public void writeState(FacesContext context, StateManager.SerializedView state) throws IOException
     {
         // does nothing as per JSF 1.2 javadoc
