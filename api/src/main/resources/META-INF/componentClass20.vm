@@ -424,6 +424,7 @@ $innersource
 #end
 
 #if ($component.className.startsWith("jakarta.faces.component.html") && $overrideSetValueExpression)
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

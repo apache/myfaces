@@ -29,18 +29,25 @@ public interface ActionSource
     /**
      * @deprecated Replaced by ActionSource2.getActionExpression
      */
+    @Deprecated
     public MethodBinding getAction();
 
     /**
      * @deprecated Replaced by ActionSource2.setActionExpression
      */
+    @Deprecated
     public void setAction(MethodBinding action);
 
     /**
      * @deprecated Replaced by getActionListeners
      */
+    @Deprecated
     public MethodBinding getActionListener();
 
+    /**
+     * @deprecated  Replaced by addActionListener
+     */
+    @Deprecated
     public void setActionListener(MethodBinding actionListener);
 
     public boolean isImmediate();
