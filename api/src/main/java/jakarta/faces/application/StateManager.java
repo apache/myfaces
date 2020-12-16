@@ -266,7 +266,10 @@ public abstract class StateManager
     {
         return context.getRenderKit().getResponseStateManager().getViewState(context, saveView(context));
     }
-
+    
+    /**
+     * @deprecated
+     */
     @Deprecated
     public abstract UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId);
 
