@@ -63,6 +63,11 @@ public class SharedStringBuilder
         return get(FacesContext.getCurrentInstance(), stringBuilderKey);
     }
 
+    public static StringBuilder get(String stringBuilderKey, String initialText)
+    {
+        return get(FacesContext.getCurrentInstance(), stringBuilderKey, initialText);
+    }
+
     public static StringBuilder get(FacesContext facesContext, String stringBuilderKey)
     {
         Map<Object, Object> attributes = facesContext.getAttributes();
@@ -78,6 +83,27 @@ public class SharedStringBuilder
         {
             // clear out the stringBuilder by setting the length to 0
             sb.setLength(0);
+        }
+
+        return sb;
+    }
+    
+    public static StringBuilder get(FacesContext facesContext, String stringBuilderKey, String initialText)
+    {
+        Map<Object, Object> attributes = facesContext.getAttributes();
+
+        StringBuilder sb = (StringBuilder) attributes.get(stringBuilderKey);
+
+        if (sb == null)
+        {
+            sb = new StringBuilder(initialText);
+            attributes.put(stringBuilderKey, sb);
+        }
+        else
+        {
+            // clear out the stringBuilder by setting the length to 0
+            sb.setLength(0);
+            sb.append(initialText);
         }
 
         return sb;

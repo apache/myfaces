@@ -18,9 +18,11 @@
  */
 package org.apache.myfaces.renderkit.html.util;
 
+import jakarta.faces.context.FacesContext;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.lang.FastByteArrayOutputStream;
 
 /**
@@ -28,41 +30,67 @@ import org.apache.myfaces.util.lang.FastByteArrayOutputStream;
  */
 public abstract class HTMLEncoder
 {
+    private static final String SB_ENCODE = HTMLEncoder.class.getName() + "#SB_ENCODE";
+    private static final String SB_ENCODE_URI_ATTR = HTMLEncoder.class.getName() + "#SB_ENCODE_URI_ATTR";
+    private static final String SB_ENCODE_URI_QUERY = HTMLEncoder.class.getName() + "#SB_ENCODE_URI_QUERY";
+    private static final String SB_ENCODE_PERCENT = HTMLEncoder.class.getName() + "#SB_ENCODE_PERCENT";
+
     /**
      * Variant of {@link #encode} where encodeNewline is false and encodeNbsp is true.
+     * 
+     * @param context
+     * @param string the string to convert
+     * 
+     * @return the encoded string
      */
-    public static String encode(String string)
+    public static String encode(FacesContext context, String string)
     {
-        return encode(string, false, true);
+        return encode(context, string, false, true);
     }
 
     /**
      * Variant of {@link #encode} where encodeNbsp is true.
+     * 
+     * @param context
+     * @param string the string to convert
+     * @param encodeNewline if true newline characters are converted to &lt;br&gt;'s
+     * 
+     * @return the encoded string
      */
-    public static String encode(String string, boolean encodeNewline)
+    public static String encode(FacesContext context, String string, boolean encodeNewline)
     {
-        return encode(string, encodeNewline, true);
+        return encode(context, string, encodeNewline, true);
     }
 
     /**
      * Variant of {@link #encode} where encodeNbsp and encodeNonLatin are true 
+     * 
+     * @param context
+     * @param string the string to convert
+     * @param encodeNewline if true newline characters are converted to &lt;br&gt;'s
+     * @param encodeSubsequentBlanksToNbsp if true subsequent blanks are converted to &amp;nbsp;'s
+     * 
+     * @return the encoded string
      */
-    public static String encode(String string, boolean encodeNewline, boolean encodeSubsequentBlanksToNbsp)
+    public static String encode(FacesContext context, String string, boolean encodeNewline,
+            boolean encodeSubsequentBlanksToNbsp)
     {
-        return encode(string, encodeNewline, encodeSubsequentBlanksToNbsp, true);
+        return encode(context, string, encodeNewline, encodeSubsequentBlanksToNbsp, true);
     }
 
     /**
      * Encodes the given string, so that it can be used within a html page.
+     * 
+     * @param context
      * @param string the string to convert
      * @param encodeNewline if true newline characters are converted to &lt;br&gt;'s
      * @param encodeSubsequentBlanksToNbsp if true subsequent blanks are converted to &amp;nbsp;'s
      * @param encodeNonLatin if true encode non-latin characters as numeric character references
+     * 
+     * @return the encoded string
      */
-    public static String encode(String string,
-                                boolean encodeNewline,
-                                boolean encodeSubsequentBlanksToNbsp,
-                                boolean encodeNonLatin)
+    public static String encode(FacesContext context, String string,
+                                boolean encodeNewline, boolean encodeSubsequentBlanksToNbsp, boolean encodeNonLatin)
     {
         if (string == null)
         {
@@ -144,7 +172,7 @@ public abstract class HTMLEncoder
             {
                 if (sb == null)
                 {
-                    sb = new StringBuilder(string.substring(0, i));
+                    sb = SharedStringBuilder.get(context, SB_ENCODE, string.substring(0, i));
                 }
                 sb.append(app);
             }
@@ -169,6 +197,10 @@ public abstract class HTMLEncoder
     
     /**
      * Variant of {@link #encode} where encodeNewline is false and encodeNbsp is true.
+     *
+     * @param writer
+     * @param string
+     * @throws IOException 
      */
     public static void encode(Writer writer, String string) throws IOException
     {
@@ -177,6 +209,11 @@ public abstract class HTMLEncoder
 
     /**
      * Variant of {@link #encode} where encodeNbsp is true.
+     * 
+     * @param writer
+     * @param string
+     * @param encodeNewline
+     * @throws IOException 
      */
     public static void encode(Writer writer, String string, boolean encodeNewline) throws IOException
     {
@@ -185,6 +222,12 @@ public abstract class HTMLEncoder
 
     /**
      * Variant of {@link #encode} where encodeNbsp and encodeNonLatin are true 
+     * 
+     * @param writer
+     * @param string
+     * @param encodeNewline
+     * @param encodeSubsequentBlanksToNbsp
+     * @throws IOException 
      */
     public static void encode(Writer writer, String string, 
             boolean encodeNewline, boolean encodeSubsequentBlanksToNbsp) throws IOException
@@ -192,6 +235,16 @@ public abstract class HTMLEncoder
         encode(writer, string, encodeNewline, encodeSubsequentBlanksToNbsp, true);
     }
     
+    /**
+     * Encodes and writes the given string, so that it can be used within a html page.
+     * 
+     * @param writer
+     * @param string
+     * @param encodeNewline
+     * @param encodeSubsequentBlanksToNbsp
+     * @param encodeNonLatin
+     * @throws IOException 
+     */
     public static void encode(Writer writer, String string,
                                  boolean encodeNewline,
                                  boolean encodeSubsequentBlanksToNbsp,
@@ -298,6 +351,13 @@ public abstract class HTMLEncoder
 
     /**
      * Variant of {@link #encode} where encodeNewline is false and encodeNbsp is true.
+     * 
+     * @param string the string to convert
+     * @param offset
+     * @param length
+     * @param writer 
+     * 
+     * @throws IOException
      */
     public static void encode(char[] string, int offset, int length, Writer writer) throws IOException
     {
@@ -306,6 +366,14 @@ public abstract class HTMLEncoder
 
     /**
      * Variant of {@link #encode} where encodeNbsp is true.
+     * 
+     * @param string the string to convert
+     * @param offset
+     * @param length
+     * @param encodeNewline if true newline characters are converted to &lt;br&gt;'s
+     * @param writer 
+     * 
+     * @throws IOException
      */
     public static void encode(char[] string, int offset, int length, boolean encodeNewline, Writer writer)
         throws IOException
@@ -314,7 +382,16 @@ public abstract class HTMLEncoder
     }
 
     /**
-     * Variant of {@link #encode} where encodeNbsp and encodeNonLatin are true 
+     * Variant of {@link #encode} where encodeNbsp and encodeNonLatin are true
+     * 
+     * @param string the string to convert
+     * @param offset
+     * @param length
+     * @param encodeNewline if true newline characters are converted to &lt;br&gt;'s
+     * @param encodeSubsequentBlanksToNbsp if true subsequent blanks are converted to &amp;nbsp;'s
+     * @param writer 
+     * 
+     * @throws IOException
      */
     public static void encode(char[] string, int offset, int length, boolean encodeNewline, 
             boolean encodeSubsequentBlanksToNbsp, Writer writer) throws IOException
@@ -325,10 +402,16 @@ public abstract class HTMLEncoder
 
     /**
      * Encodes the given string, so that it can be used within a html page.
+     *
      * @param string the string to convert
+     * @param offset
+     * @param length
      * @param encodeNewline if true newline characters are converted to &lt;br&gt;'s
      * @param encodeSubsequentBlanksToNbsp if true subsequent blanks are converted to &amp;nbsp;'s
      * @param encodeNonLatin if true encode non-latin characters as numeric character references
+     * @param writer 
+     * 
+     * @throws IOException
      */
     public static void encode(char[] string, int offset, int length,
                                  boolean encodeNewline,
@@ -443,12 +526,13 @@ public abstract class HTMLEncoder
      * Encode an URI, escaping or percent-encoding all required characters and
      * following the rules mentioned on RFC 3986.  
      * 
+     * @param context
      * @param string
      * @param characterEncoding
      * @return
      * @throws IOException
      */
-    public static String encodeURIAttribute(final String string, final String characterEncoding)
+    public static String encodeURIAttribute(FacesContext context, final String string, final String characterEncoding)
         throws IOException
     {
         StringBuilder sb = null;    //create later on demand
@@ -593,7 +677,7 @@ public abstract class HTMLEncoder
                 // http://www.w3.org/TR/html40/appendix/notes.html#non-ascii-chars
                 // that recommend use of UTF-8 instead the document character encoding.
                 // Jetty set by default UTF-8 (see http://jira.codehaus.org/browse/JETTY-113)
-                app = percentEncode(c, "UTF-8");
+                app = percentEncode(context, c, "UTF-8");
             }
             else if (c == '%')
             {
@@ -609,12 +693,12 @@ public abstract class HTMLEncoder
                     }
                     else
                     {
-                        app = percentEncode(c, UTF8);
+                        app = percentEncode(context, c, UTF8);
                     }
                 }
                 else
                 {
-                    app = percentEncode(c, UTF8);
+                    app = percentEncode(context, c, UTF8);
                 }
             }
             else if (c == '?' || c == '#')
@@ -623,7 +707,7 @@ public abstract class HTMLEncoder
                 {
                     // The remaining part of the URI are data that should be encoded
                     // using the document character encoding.
-                    app = c + encodeURIQuery(string.substring(i+1), characterEncoding);
+                    app = c + encodeURIQuery(context, string.substring(i+1), characterEncoding);
                     endLoop = true;
                 }
             }
@@ -636,7 +720,7 @@ public abstract class HTMLEncoder
             {
                 if (sb == null)
                 {
-                    sb = new StringBuilder(string.substring(0, i));
+                    sb = SharedStringBuilder.get(context, SB_ENCODE_URI_ATTR, string.substring(0, i));
                 }
                 sb.append(app);
             }
@@ -666,27 +750,28 @@ public abstract class HTMLEncoder
      * Encode a unicode char value in percentEncode, decoding its bytes using a specified 
      * characterEncoding.
      * 
+     * @param context
      * @param c
      * @param characterEncoding
      * @return
      */
-    private static String percentEncode(char c, String characterEncoding)
+    private static String percentEncode(FacesContext context, char c, String characterEncoding)
     {
-        String app = null;
+        String app;
         if (c > (char)((short)0x007F))
         {
             //percent encode in the proper encoding to be consistent
-            app = percentEncodeNonUsAsciiCharacter(c, characterEncoding);
+            app = percentEncodeNonUsAsciiCharacter(context, c, characterEncoding);
         }
         else
         {
             //percent encode US-ASCII char (0x00-0x7F range)
-            app = "%" + HEX_CHARSET.charAt( ((c >> 0x4) % 0x10)) +HEX_CHARSET.charAt(c % 0x10);
+            app = "%" + HEX_CHARSET.charAt( ((c >> 0x4) % 0x10)) + HEX_CHARSET.charAt(c % 0x10);
         }
         return app;
     }
     
-    private static String percentEncodeNonUsAsciiCharacter(char c, String characterEncoding)
+    private static String percentEncodeNonUsAsciiCharacter(FacesContext context, char c, String characterEncoding)
     {
         FastByteArrayOutputStream baos = new FastByteArrayOutputStream(10);
         try
@@ -702,7 +787,7 @@ public abstract class HTMLEncoder
             return null;
         }
 
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = SharedStringBuilder.get(context, SB_ENCODE_PERCENT);
 
         byte[] byteArray = baos.getByteArray();
         for (int i = 0; i < baos.getSize(); i++)
@@ -718,12 +803,12 @@ public abstract class HTMLEncoder
     /**
      * Encode the query part using the document charset encoding provided.
      * 
-     * 
+     * @param context
      * @param string
      * @param characterEncoding
      * @return
      */
-    private static String encodeURIQuery(final String string, final String characterEncoding)
+    private static String encodeURIQuery(FacesContext context, final String string, final String characterEncoding)
     {
         StringBuilder sb = null;    //create later on demand
         String app;
@@ -755,7 +840,7 @@ public abstract class HTMLEncoder
             {
                 // The percent encoding on this part should be done using UTF-8 charset
                 // as RFC 3986 Section 3.2.2 says
-                app = percentEncode(c, characterEncoding);
+                app = percentEncode(context, c, characterEncoding);
             }
             else if (c == '%')
             {
@@ -770,12 +855,12 @@ public abstract class HTMLEncoder
                     }
                     else
                     {
-                        app = percentEncode(c, characterEncoding);
+                        app = percentEncode(context, c, characterEncoding);
                     }
                 }
                 else
                 {
-                    app = percentEncode(c, characterEncoding);
+                    app = percentEncode(context, c, characterEncoding);
                 }
             }
             else if (c == '&')
@@ -808,7 +893,7 @@ public abstract class HTMLEncoder
             {
                 if (sb == null)
                 {
-                    sb = new StringBuilder(string.substring(0, i));
+                    sb = SharedStringBuilder.get(context, SB_ENCODE_URI_QUERY, string.substring(0, i));
                 }
                 sb.append(app);
             }

@@ -33,6 +33,7 @@ import jakarta.faces.component.html.HtmlInputText;
 import java.util.*;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
+import org.apache.myfaces.test.mock.MockFacesContext;
 
 public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 {
@@ -132,11 +133,15 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
     
     public void testEscapeJavaScriptForChain()
     {
+        MockFacesContext facesContext = new MockFacesContext();
         
-        Assert.assertEquals("var foo = &quot; \\\\&quot; test &quot;; alert(foo);", ClientBehaviorRendererUtils.escapeJavaScriptForChain("var foo = &quot; \\&quot; test &quot;; alert(foo);"));
+        Assert.assertEquals("var foo = &quot; \\\\&quot; test &quot;; alert(foo);",
+                ClientBehaviorRendererUtils.escapeJavaScriptForChain(facesContext, "var foo = &quot; \\&quot; test &quot;; alert(foo);"));
         
-        Assert.assertEquals("var foo = \\'bar \\'", ClientBehaviorRendererUtils.escapeJavaScriptForChain("var foo = 'bar '"));
+        Assert.assertEquals("var foo = \\'bar \\'",
+                ClientBehaviorRendererUtils.escapeJavaScriptForChain(facesContext, "var foo = 'bar '"));
         
-        Assert.assertEquals("var foo = \\'bar \\\\\\' \\'", ClientBehaviorRendererUtils.escapeJavaScriptForChain("var foo = 'bar \\' '"));
+        Assert.assertEquals("var foo = \\'bar \\\\\\' \\'",
+                ClientBehaviorRendererUtils.escapeJavaScriptForChain(facesContext, "var foo = 'bar \\' '"));
     }
 }

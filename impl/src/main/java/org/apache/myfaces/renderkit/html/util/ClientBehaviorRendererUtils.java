@@ -31,11 +31,15 @@ import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 
 public class ClientBehaviorRendererUtils
 {
+    private static final String SB_ESCAPE_JS_FOR_CHAIN = ClientBehaviorRendererUtils.class.getName()
+            + "#ESCAPE_JS_FOR_CHAIN";
+    
     public static void decodeClientBehaviors(FacesContext facesContext, UIComponent component)
     {
         if (!(component instanceof ClientBehaviorHolder))
@@ -178,7 +182,7 @@ public class ClientBehaviorRendererUtils
             for (int i = 0, size = attachedEventBehaviors.size(); i < size; i++)
             {
                 ClientBehavior clientBehavior = attachedEventBehaviors.get(i);
-                submitting = appendClientBehaviourScript(target, context, 
+                submitting = appendClientBehaviourScript(facesContext, target, context, 
                         submitting, i < (size -1), clientBehavior, config);   
             }
         }
@@ -188,7 +192,7 @@ public class ClientBehaviorRendererUtils
             while (clientIterator.hasNext())
             {
                 ClientBehavior clientBehavior = clientIterator.next();
-                submitting = appendClientBehaviourScript(target, context, submitting, 
+                submitting = appendClientBehaviourScript(facesContext, target, context, submitting, 
                         clientIterator.hasNext(), clientBehavior, config);
             }
         }
@@ -196,15 +200,16 @@ public class ClientBehaviorRendererUtils
         return submitting;
     }
 
-    private static boolean appendClientBehaviourScript(JavascriptContext target, ClientBehaviorContext context, 
-            boolean submitting, boolean hasNext, ClientBehavior clientBehavior, MyfacesConfig config)
+    private static boolean appendClientBehaviourScript(FacesContext facesContext, JavascriptContext target,
+            ClientBehaviorContext context, boolean submitting, boolean hasNext, ClientBehavior clientBehavior,
+            MyfacesConfig config)
     {
         String script = clientBehavior.getScript(context);
 
         // The script _can_ be null, and in fact is for <f:ajax disabled="true" />
         if (script != null)
         {
-            addFunction(script, target, config);
+            addFunction(facesContext, script, target, config);
 
             if (hasNext)
             {
@@ -246,7 +251,7 @@ public class ClientBehaviorRendererUtils
         List<String> functions = new ArrayList<>(3);
         if (StringUtils.isNotBlank(userEventCode))
         {
-            addFunction(userEventCode, functions, config);
+            addFunction(facesContext, userEventCode, functions, config);
         }
         
         JavascriptContext chainContext = new JavascriptContext();
@@ -262,7 +267,7 @@ public class ClientBehaviorRendererUtils
         }
         if (StringUtils.isNotBlank(serverEventCode))
         {
-            addFunction(serverEventCode, functions, config);
+            addFunction(facesContext, serverEventCode, functions, config);
         }
 
         // It's possible that there are no behaviors to render.
@@ -329,7 +334,7 @@ public class ClientBehaviorRendererUtils
         List<String> functions = new ArrayList<>(3);
         if (StringUtils.isNotBlank(userEventCode))
         {
-            addFunction(userEventCode, functions, config);
+            addFunction(facesContext, userEventCode, functions, config);
         }
 
         JavascriptContext chainContext = new JavascriptContext();
@@ -361,7 +366,7 @@ public class ClientBehaviorRendererUtils
 
         if (StringUtils.isNotBlank(serverEventCode))
         {
-            addFunction(serverEventCode, functions, config);
+            addFunction(facesContext, serverEventCode, functions, config);
         }
         
         // It's possible that there are no behaviors to render.  For example, if we have
@@ -410,10 +415,11 @@ public class ClientBehaviorRendererUtils
      * for the use in the jsf.util.chain() JavaScript function.
      * It also handles double-escaping correclty.
      *
+     * @param facesContext
      * @param javaScript
      * @return
      */
-    public static String escapeJavaScriptForChain(String javaScript)
+    public static String escapeJavaScriptForChain(FacesContext facesContext, String javaScript)
     {
         StringBuilder out = null;
         for (int pos = 0; pos < javaScript.length(); pos++)
@@ -424,7 +430,7 @@ public class ClientBehaviorRendererUtils
             {
                 if (out == null)
                 {
-                    out = new StringBuilder(javaScript.length() + 8);
+                    out = SharedStringBuilder.get(facesContext, SB_ESCAPE_JS_FOR_CHAIN, javaScript.length() + 8);
                     if (pos > 0)
                     {
                         out.append(javaScript, 0, pos);
@@ -448,7 +454,8 @@ public class ClientBehaviorRendererUtils
         }
     }
     
-    private static void addFunction(String function, List<String> functions, MyfacesConfig config)
+    private static void addFunction(FacesContext facesContext, String function, List<String> functions,
+            MyfacesConfig config)
     {
         if (StringUtils.isNotBlank(function))
         {
@@ -456,7 +463,7 @@ public class ClientBehaviorRendererUtils
             if (config.isRenderClientBehaviorScriptsAsString())
             {
                 // escape every ' in the user event code since it will be a string attribute of jsf.util.chain
-                functions.add('\'' + escapeJavaScriptForChain(function) + '\'');
+                functions.add('\'' + escapeJavaScriptForChain(facesContext, function) + '\'');
             }
             else
             {
@@ -465,7 +472,8 @@ public class ClientBehaviorRendererUtils
         }
     }
     
-    private static void addFunction(String function, JavascriptContext target, MyfacesConfig config)
+    private static void addFunction(FacesContext facesContext, String function, JavascriptContext target,
+            MyfacesConfig config)
     {
         if (StringUtils.isNotBlank(function))
         {
@@ -474,7 +482,7 @@ public class ClientBehaviorRendererUtils
             {
                 // escape every ' in the user event code since it will be a string attribute of jsf.util.chain
                 target.append('\'');
-                target.append(escapeJavaScriptForChain(function));
+                target.append(escapeJavaScriptForChain(facesContext, function));
                 target.append('\'');
             }
             else

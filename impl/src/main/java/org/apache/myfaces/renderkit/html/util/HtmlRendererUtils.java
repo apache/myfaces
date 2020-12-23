@@ -1066,7 +1066,7 @@ public final class HtmlRendererUtils
         writeIdIfNecessary(writer, input, facesContext);
 
         String strValue = RendererUtils.getStringValue(facesContext, input);
-        writer.write(HTMLEncoder.encode(strValue, true, true));
+        writer.write(HTMLEncoder.encode(facesContext, strValue, true, true));
         writer.endElement(HTML.SPAN_ELEM);
     }
 

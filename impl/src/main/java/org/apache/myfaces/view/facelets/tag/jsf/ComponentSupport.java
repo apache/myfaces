@@ -39,6 +39,7 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.view.facelets.ComponentState;
 import org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
@@ -53,7 +54,9 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageBase;
 public final class ComponentSupport
 {
     private static final Logger LOG = Logger.getLogger(ComponentSupport.class.getName());
-    
+    private static final String SB_GET_FIND_COMPONENT_EXPR = ComponentSupport.class.getName()
+            + "#getFindComponentExpression";
+
     private static final Method SET_CACHED_FACES_CONTEXT;
         
     static
@@ -686,7 +689,7 @@ public final class ComponentSupport
     {
         char separatorChar = facesContext.getNamingContainerSeparatorChar();
         UIComponent parent = component.getParent();
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = SharedStringBuilder.get(facesContext, SB_GET_FIND_COMPONENT_EXPR);
         sb.append(component.getId());
         while (parent != null)
         {
