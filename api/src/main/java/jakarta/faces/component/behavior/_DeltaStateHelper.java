@@ -270,7 +270,11 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
         {
             return expression.getValue(_target.getFacesContext().getELContext());
         }
-        return defaultValueSupplier.get();
+        if (defaultValueSupplier != null)
+        {
+            return defaultValueSupplier.get();
+        }
+        return null;
     }
 
     @Override
