@@ -379,7 +379,11 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         {
             return expression.getValue(_component.getFacesContext().getELContext());
         }
-        return defaultValueSupplier.get();
+        if (defaultValueSupplier != null)
+        {
+            return defaultValueSupplier.get();
+        }
+        return null;
     }
 
     @Override
