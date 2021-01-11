@@ -133,11 +133,11 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * Adds a random key to the generated view state session token.
      */
     @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random", 
-            defaultValue="random", group="state")
+            defaultValue="secureRandom", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT = 
-            RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM;
+            RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM;
 
     /**
      * Set the default length of the random key added to the view state session token.
