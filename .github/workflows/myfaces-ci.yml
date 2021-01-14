@@ -20,9 +20,13 @@ name: MyFaces CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - 3.0.x
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+      - 3.0.x
   workflow_dispatch:
 
 jobs:
