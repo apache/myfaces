@@ -92,7 +92,25 @@
                     <headerLocation>default/myfaces-header.txt</headerLocation>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/README.md</exclude>
+                        <exclude>**/target/**/*</exclude>
+                        <exclude>DEPENDENCIES</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- attach -sources.jar to all our modules -->
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
@@ -295,18 +313,6 @@
                         <configuration>
                             <arguments>-DprepareRelease</arguments>
                         </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.rat</groupId>
-                        <artifactId>apache-rat-plugin</artifactId>
-                        <executions>
-                          <execution>
-                            <phase>verify</phase>
-                            <goals>
-                              <goal>check</goal>
-                            </goals>
-                          </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
