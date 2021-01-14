@@ -835,14 +835,19 @@
         <xsd:attribute name="id" type="xsd:ID"/>
     </xsd:complexType>
 
-    <xsd:simpleType name="faces-config-versionType">
-        <xsd:restriction base="xsd:token">
-            <xsd:enumeration value="1.2"/>
-            <xsd:enumeration value="2.0"/>
-            <xsd:enumeration value="2.1"/>
-            <xsd:enumeration value="2.2"/>
-            <xsd:enumeration value="2.3"/>
-        </xsd:restriction>
-    </xsd:simpleType>
-
+  <xsd:simpleType name="faces-config-versionType">
+    <xsd:annotation>
+      <xsd:documentation>
+        <![CDATA[
+        <p> This type contains the recognized versions of
+        faces-config supported.</p>
+        
+        ]]>
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:token">
+      <xsd:enumeration value="3.0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
 </xsd:schema>
