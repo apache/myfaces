@@ -104,19 +104,19 @@ class StateCacheServerSide extends StateCache<Object, Object>
             {
                 log.warning(MyfacesConfig.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN + " \""
                         + randomMode + "\" is not supported (anymore)."
-                        + " Fallback to \"random\"");
+                        + " Fallback to \"secureRandom\"");
             }
-            sessionViewStorageFactory = new SessionViewStorageFactoryImpl(new KeyFactoryRandom(facesContext));
+            sessionViewStorageFactory = new SessionViewStorageFactoryImpl(new KeyFactorySecureRandom(facesContext));
         }
         
         String csrfRandomMode = config.getRandomKeyInCsrfSessionToken();
-        if (MyfacesConfig.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
+        if (MyfacesConfig.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM.equals(csrfRandomMode))
         {
-            csrfSessionTokenFactory = new CsrfSessionTokenFactorySecureRandom(facesContext);
+            csrfSessionTokenFactory = new CsrfSessionTokenFactoryRandom(facesContext);
         }
         else
         {
-            csrfSessionTokenFactory = new CsrfSessionTokenFactoryRandom(facesContext);
+            csrfSessionTokenFactory = new CsrfSessionTokenFactorySecureRandom(facesContext);
         }
         
         stateTokenProcessor = new StateTokenProcessorServerSide();

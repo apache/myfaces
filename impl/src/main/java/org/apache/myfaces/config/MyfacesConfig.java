@@ -464,18 +464,18 @@ public class MyfacesConfig
     public static final String CLIENT_VIEW_STATE_TIMEOUT = 
             "org.apache.myfaces.CLIENT_VIEW_STATE_TIMEOUT";
     private static final Long CLIENT_VIEW_STATE_TIMEOUT_DEFAULT = 0L;
-   
-    
+
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
+
     /**
      * Adds a random key to the generated view state session token.
      */
     @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random", 
-            defaultValue="random", group="state")
+            defaultValue="secureRandom", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_DEFAULT = "random";
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
+    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_DEFAULT = RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM;
     
     /**
      * Set the default length of the random key added to the view state session token.
@@ -510,16 +510,17 @@ public class MyfacesConfig
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM";
     private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT = "SHA1PRNG";
     
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM = "random";
+
     /**
      * Defines how to generate the csrf session token.
      */
-    @JSFWebConfigParam(since="2.2.0", expectedValues="secureRandom, random", defaultValue="none", group="state")
+    @JSFWebConfigParam(since="2.2.0", expectedValues="secureRandom, random", defaultValue="secureRandom", group="state")
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN
             = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN";
-    private static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_DEFAULT = "random";
+    private static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_DEFAULT = RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM;
     
-    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
-    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM = "random";
     
     /**
      * Indicates that the serialized state will be compressed before it is written to the session. By default true.
