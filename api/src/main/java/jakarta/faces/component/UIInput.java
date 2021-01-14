@@ -1018,11 +1018,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * <p>
      * The phase in which this method is invoked can be controlled via the immediate attribute.
      * </p>
-     * 
-     * @deprecated
-     * 
      */
-    @Deprecated
     @JSFProperty(stateHolder=true, returnSignature = "void",
                  methodSignature = "jakarta.faces.event.ValueChangeEvent", clientEvent="valueChange")
     public MethodBinding getValueChangeListener()
@@ -1032,7 +1028,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     /**
      * See getValueChangeListener.
+     * 
+     * @deprecated Use addValueChangeListener instead
      */
+    @Deprecated
     public void setValueChangeListener(MethodBinding valueChangeListener)
     {
         getStateHelper().put(PropertyKeys.valueChangeListener, valueChangeListener);
