@@ -81,7 +81,48 @@
                     <headerLocation>default/myfaces-header.txt</headerLocation>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/README.md</exclude>
+                        <exclude>**/*/MANIFEST.MF</exclude>
+                        <exclude>**/*.iml</exclude>
+                        <exclude>src/main/resources/META-INF/licenses/*-LICENSE.txt</exclude>
+                        <exclude>src/main/resources/META-INF/licenses/*-LICENSE.TXT</exclude>
+                        <exclude>src/main/resources/META-INF/services/**</exclude>
+                        <exclude>.git</exclude>
+                        <exclude>.gitignore</exclude>
+                        <exclude>**/target/**/*</exclude>
+                        <!-- The xsd files are CDDL+GLP:
+               Category B: Reciprocal Licenses
+              "For small amounts of source that is directly consumed by the ASF product
+               at runtime in source form, and for which that source is unlikely to be
+               changed anyway (say, by virtue of being specified by a standard), this
+               action is sufficient. An example of this is the web-facesconfig_1_0.dtd,
+               whose inclusion is mandated by the JSR 127: JavaServer Faces specification."
+               http://www.apache.org/legal/3party.html
+             -->
+                        <exclude>src/main/resources/org/apache/myfaces/resource/javaee_5.xsd</exclude>
+                        <exclude>src/main/resources/org/apache/myfaces/resource/javaee_web_services_client_1_2.xsd</exclude>
 
+                        <!-- This file probably needs a license, but I don't know if it's safe to put it in there -->
+                        <exclude>src/test/resources/org/apache/myfaces/context/nestedScriptCDATA.xml</exclude>
+                        <exclude>src/test/resources/META-INF/openwebbeans/openwebbeans.properties</exclude>
+
+                        <exclude>DEPENDENCIES</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- attach -sources.jar to all our modules -->
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
@@ -246,30 +287,6 @@
                         <configuration>
                             <arguments>-DprepareRelease</arguments>
                         </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.rat</groupId>
-                        <artifactId>apache-rat-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/*/MANIFEST.MF</exclude>
-                                <exclude>.git</exclude>
-                                <exclude>.gitignore</exclude>
-                                <exclude>**/target/**/*</exclude>
-                                <exclude>src/main/resources/META-INF/licenses/*-LICENSE.txt</exclude>
-                                <exclude>src/main/resources/META-INF/licenses/*-LICENSE.TXT</exclude>
-                                <exclude>src/main/resources/META-INF/services/**</exclude>
-                                <exclude>DEPENDENCIES</exclude>
-                            </excludes>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
