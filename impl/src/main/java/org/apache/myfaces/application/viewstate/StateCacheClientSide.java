@@ -44,13 +44,13 @@ class StateCacheClientSide extends StateCache<Object, Object>
         MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
         
         String csrfRandomMode = config.getRandomKeyInCsrfSessionToken();
-        if (MyfacesConfig.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
+        if (MyfacesConfig.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM.equals(csrfRandomMode))
         {
-            csrfSessionTokenFactory = new CsrfSessionTokenFactorySecureRandom(facesContext);
+            csrfSessionTokenFactory = new CsrfSessionTokenFactoryRandom(facesContext);
         }
         else
         {
-            csrfSessionTokenFactory = new CsrfSessionTokenFactoryRandom(facesContext);
+            csrfSessionTokenFactory = new CsrfSessionTokenFactorySecureRandom(facesContext);
         }
         
         stateTokenProcessor = new StateTokenProcessorClientSide();
