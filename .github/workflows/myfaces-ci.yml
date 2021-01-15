@@ -16,6 +16,8 @@
 # under the License.
 #
 
+# NOTE https://infra.apache.org/github-actions-secrets.html
+
 name: MyFaces CI
 
 on:
