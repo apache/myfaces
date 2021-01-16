@@ -35,14 +35,14 @@ public class WebsocketChannelTokenBuilderBean
      * Defines how to generate the csrf session token.
      */
     @JSFWebConfigParam(since="2.2.0", expectedValues="secureRandom, random", 
-            defaultValue="none", group="state")
+            defaultValue="secureRandom", group="state")
     private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN";
-    private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_PARAM_DEFAULT = "random";
-    
+
     private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_RANDOM = "random";
-    
+    private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_PARAM_DEFAULT = RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM;
+
     private CsrfSessionTokenFactory csrfSessionTokenFactory;
     
     private boolean initialized;
@@ -66,13 +66,13 @@ public class WebsocketChannelTokenBuilderBean
         String csrfRandomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
                 RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_PARAM, 
                 RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_PARAM_DEFAULT);
-        if (RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
+        if (RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_RANDOM.equals(csrfRandomMode))
         {
-            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
         }
         else
         {
-            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
         }        
         initialized=true;
     }
