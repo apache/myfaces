@@ -50,13 +50,13 @@ public class WebsocketChannelTokenBuilderBean
     private synchronized void internalInit(FacesContext facesContext)
     {
         String csrfRandomMode = MyfacesConfig.getCurrentInstance(facesContext).getRandomKeyInViewStateSessionToken();
-        if (MyfacesConfig.RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
+        if (MyfacesConfig.RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_RANDOM.equals(csrfRandomMode))
         {
-            csrfSessionTokenFactory = new CsrfSessionTokenFactorySecureRandom(facesContext);
+            csrfSessionTokenFactory = new CsrfSessionTokenFactoryRandom(facesContext);
         }
         else
         {
-            csrfSessionTokenFactory = new CsrfSessionTokenFactoryRandom(facesContext);
+            csrfSessionTokenFactory = new CsrfSessionTokenFactorySecureRandom(facesContext);
         }        
         initialized = true;
     }
