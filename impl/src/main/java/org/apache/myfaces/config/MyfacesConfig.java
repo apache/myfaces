@@ -447,14 +447,14 @@ public class MyfacesConfig
      * Defines how to generate the csrf session token.
      */
     @JSFWebConfigParam(since="2.2.0", expectedValues="secureRandom, random", 
-            defaultValue="none", group="state")
+            defaultValue="secureRandom", group="state")
     public static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN
             = "org.apache.myfaces.RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN";
-    private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_DEFAULT = "random";
-  
+
     public static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_RANDOM = "random";
-    
+    private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_DEFAULT = RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM;
+
     /**
      * Define the time in minutes where the view state is valid when
      * client side state saving is used. By default it is set to 0
