@@ -58,13 +58,13 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
         String csrfRandomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
                 RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM, 
                 RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM_DEFAULT);
-        if (RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
+        if (RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM.equals(csrfRandomMode))
         {
-            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
         }
         else
         {
-            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
         }
         
         stateTokenProcessor = new ClientSideStateTokenProcessor();
@@ -95,7 +95,7 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
                 //If no timestamp, state is invalid.
                 return null;
             }
-            long passedTime = (System.currentTimeMillis() - timeStamp.longValue()) / 60000;
+            long passedTime = (System.currentTimeMillis() - timeStamp) / 60000;
             
             if (passedTime > clientViewStateTimeout)
             {
@@ -137,9 +137,9 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
     public Object encodeSerializedState(FacesContext facesContext,
             Object serializedView)
     {
-        Object[] state = null;
+        Object[] state;
         
-        if (getClientViewStateTimeout(facesContext.getExternalContext()).longValue() > 0L)
+        if (getClientViewStateTimeout(facesContext.getExternalContext()) > 0L)
         {
             state = new Object[3];
             state[TIMESTAMP_PARAM] = System.currentTimeMillis();
@@ -188,7 +188,7 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
             _clientViewStateTimeout = WebConfigParamUtils.getLongInitParameter(
                     context, INIT_PARAM_CLIENT_VIEW_STATE_TIMEOUT,
                     INIT_PARAM_CLIENT_VIEW_STATE_TIMEOUT_DEFAULT);
-            if (_clientViewStateTimeout.longValue() < 0L)
+            if (_clientViewStateTimeout < 0L)
             {
                 _clientViewStateTimeout = 0L;
             }
