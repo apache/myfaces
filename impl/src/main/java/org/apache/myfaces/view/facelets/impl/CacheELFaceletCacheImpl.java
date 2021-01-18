@@ -20,7 +20,6 @@ package org.apache.myfaces.view.facelets.impl;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -225,8 +224,7 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
             // Should check for file modification
             try
             {
-                URLConnection conn = facelet.getSource().openConnection();
-                long lastModified = ResourceLoaderUtils.getResourceLastModified(conn);
+                long lastModified = ResourceLoaderUtils.getResourceLastModified(facelet.getSource());
 
                 return lastModified == 0 || lastModified > target;
             }
