@@ -21,7 +21,6 @@ package org.apache.myfaces.view.facelets.impl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -332,32 +331,15 @@ public final class DefaultFaceletFactory extends FaceletFactory
         if (System.currentTimeMillis() > target)
         {
             // Should check for file modification
-
-            URLConnection conn = null;
             try
             {
-                conn = facelet.getSource().openConnection();
-                long lastModified = ResourceLoaderUtils.getResourceLastModified(conn);
+                long lastModified = ResourceLoaderUtils.getResourceLastModified(facelet.getSource());
 
                 return lastModified == 0 || lastModified > target;
             }
             catch (IOException e)
             {
                 throw new FaceletException("Error Checking Last Modified for " + facelet.getAlias(), e);
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    try
-                    {
-                        conn.getInputStream().close();
-                    }
-                    catch (Exception e)
-                    {
-                        // Ignored
-                    }
-                }
             }
         }
 

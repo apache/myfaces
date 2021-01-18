@@ -19,9 +19,7 @@
 package org.apache.myfaces.view.facelets.impl;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -154,37 +152,15 @@ class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
         if (System.currentTimeMillis() > target)
         {
             // Should check for file modification
-
-            URLConnection conn = null;
             try
             {
-                conn = facelet.getSource().openConnection();
-                long lastModified = ResourceLoaderUtils.getResourceLastModified(conn);
+                long lastModified = ResourceLoaderUtils.getResourceLastModified(facelet.getSource());
 
                 return lastModified == 0 || lastModified > target;
             }
             catch (IOException e)
             {
                 throw new FaceletException("Error Checking Last Modified for " + facelet.getAlias(), e);
-            }
-            finally
-            {
-                // finally close input stream when finished, if fails just continue.
-                if (conn != null)
-                {
-                    try 
-                    {
-                        InputStream is = conn.getInputStream();
-                        if (is != null)
-                        {
-                            is.close();
-                        }
-                    }
-                    catch (IOException e)
-                    {
-                        // Ignore 
-                    }
-                }
             }
         }
 
