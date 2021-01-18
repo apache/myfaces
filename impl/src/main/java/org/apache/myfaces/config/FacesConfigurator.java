@@ -277,7 +277,7 @@ public class FacesConfigurator
         }
         catch (IOException e)
         {
-            log.log(Level.SEVERE, "Could not read resource " + resource, e);
+            log.log(Level.SEVERE, "Could not read lastModified " + resource, e);
         }
         return 0;
     }
