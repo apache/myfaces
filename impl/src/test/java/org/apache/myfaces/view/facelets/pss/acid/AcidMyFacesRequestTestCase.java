@@ -2201,4 +2201,26 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
 
         endRequest();
     }
+
+    @Test
+    public void testOnloadScript() throws Exception
+    {
+        startViewRequest("/onloadscript.xhtml");
+        processLifecycleExecuteAndRender();
+
+        MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
+        Assert.assertTrue(new String(writer2.content()).contains("onloadScript successfully executed"));
+        Assert.assertTrue(new String(writer2.content()).contains("Remove this c:if and it will work."));
+
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+        processLifecycleExecuteAndRender();
+        
+        writer2 = (MockPrintWriter) response.getWriter();
+        Assert.assertTrue(new String(writer2.content()).contains("onloadScript successfully executed"));
+        Assert.assertTrue(new String(writer2.content()).contains("Remove this c:if and it will work."));
+        
+
+        endRequest();
+    }
 }

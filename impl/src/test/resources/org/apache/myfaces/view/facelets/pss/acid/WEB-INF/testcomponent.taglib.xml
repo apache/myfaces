@@ -24,6 +24,13 @@
 	</tag>
 
 	<tag>
+		<tag-name>onloadScript</tag-name>
+		<component>
+			<component-type>com.myapp.OnloadScript</component-type>
+		</component>
+	</tag>
+
+	<tag>
 		<tag-name>togglecomponent</tag-name>
 		<component>
 			<component-type>com.myapp.UIToggleComponent</component-type>
@@ -64,14 +71,14 @@
 			<component-type>com.myapp.UISelfRenderComponent</component-type>
 		</component>
 	</tag>
-    
+
     <tag>
 		<tag-name>rdcomponent</tag-name>
 		<component>
 			<component-type>com.myapp.UIRDComponent</component-type>
 		</component>
 	</tag>
-    
+
 	<tag>
 		<tag-name>addSimpleComponentVDL</tag-name>
 		<component>
@@ -99,7 +106,7 @@
 			<component-type>com.myapp.UIAddSimpleCCVDL</component-type>
 		</component>
 	</tag>
-        
+
 	<tag>
 		<tag-name>dynamicFormComponent</tag-name>
 		<component>
