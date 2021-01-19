@@ -41,7 +41,9 @@ public class WebsocketChannelTokenBuilderBean
 
     private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_RANDOM = "random";
-    private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_PARAM_DEFAULT = RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM;
+    private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_PARAM_DEFAULT 
+            = RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM;
+            
     private CsrfSessionTokenFactory csrfSessionTokenFactory;
     
     private boolean initialized;
