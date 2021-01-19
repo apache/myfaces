@@ -51,6 +51,8 @@ public class ConfigFilesXmlValidationUtils
     public final static LSResourceResolver LS_RESOURCE_RESOLVER = new ValidatorLSResourceResolver();
     public final static ErrorHandler VALIDATION_ERROR_HANDLER = new ValidationErrorHandler();
 
+    private final static Logger log = Logger.getLogger(ConfigFilesXmlValidationUtils.class.getName());
+
     private final static String FACES_CONFIG_SCHEMA_PATH_12 = "org/apache/myfaces/resource/web-facesconfig_1_2.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_20 = "org/apache/myfaces/resource/web-facesconfig_2_0.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_21 = "org/apache/myfaces/resource/web-facesconfig_2_1.xsd";
@@ -309,6 +311,18 @@ public class ConfigFilesXmlValidationUtils
             factory.setNamespaceAware(false);
             factory.setFeature("http://xml.org/sax/features/validation", false);
             factory.setValidating(false);
+            try
+            {
+                factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+                factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+                factory.setXIncludeAware(false);
+            }
+            catch (Throwable e)
+            {
+                log.log(Level.WARNING, "SAXParserFactory#setFeature not implemented. Skipping...", e);
+            }
 
             parser = factory.newSAXParser();
 
@@ -558,6 +572,9 @@ public class ConfigFilesXmlValidationUtils
             factory.setNamespaceAware(false);
             factory.setFeature("http://xml.org/sax/features/validation", false);
             factory.setValidating(false);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
             parser = factory.newSAXParser();
 
