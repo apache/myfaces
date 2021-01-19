@@ -53,10 +53,10 @@ import org.apache.myfaces.spi.SerialFactory;
  * <li>ISO-8859-1 is the character set used.</li>
  * <li>GZIP is used for all compression/decompression.</li>
  * <li>Base64 is used for all encoding and decoding.</li>
- * <li>DES is the default encryption algorithm</li>
+ * <li>AES is the default encryption algorithm</li>
  * <li>ECB is the default mode</li>
  * <li>PKCS5Padding is the default padding</li>
- * <li>HmacSHA1 is the default MAC algorithm</li>
+ * <li>HmacSHA256 is the default MAC algorithm</li>
  * <li>The default algorithm can be overridden using the
  * <i>org.apache.myfaces.ALGORITHM</i> parameter</li>
  * <li>The default mode and padding can be overridden using the
@@ -68,7 +68,7 @@ import org.apache.myfaces.spi.SerialFactory;
  * <i>org.apache.myfaces.MAC_ALGORITHM</i> parameter</li>
  * </ul>
  *
- * <p>The secret is interpretted as base 64 encoded.  In other
+ * <p>The secret is interpreted as base 64 encoded.  In other
  * words, if your secret is "76543210", you would put "NzY1NDMyMTA=" in
  * the deployment descriptor.  This is needed so that key values are not
  * limited to just values composed of printable characters.</p>
@@ -79,7 +79,10 @@ import org.apache.myfaces.spi.SerialFactory;
  * <p>If you are using the AES algorithm and getting a SecurityException
  * complaining about keysize, you most likely need to get the unlimited
  * strength jurisdiction policy files from a place like
- * http://java.sun.com/j2se/1.4.2/download.html .</p>
+ * http://java.sun.com/j2se/1.4.2/download.html .</br>
+ * Since https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8170157
+ * unlimited cryptographic policy is enabled by default.</p>
+ *
  *
  * See org.apache.myfaces.webapp.StartupServletContextListener
  */
@@ -89,7 +92,7 @@ public final class StateUtils
 
     public static final String ZIP_CHARSET = "ISO-8859-1";
 
-    public static final String DEFAULT_ALGORITHM = "DES";
+    public static final String DEFAULT_ALGORITHM = "AES";
     public static final String DEFAULT_ALGORITHM_PARAMS = "ECB/PKCS5Padding";
 
     public static final String INIT_PREFIX = "org.apache.myfaces.";
@@ -114,7 +117,7 @@ public final class StateUtils
      * Indicate the encryption algorithm used for encrypt the view state.
      */
     @JSFWebConfigParam(name="org.apache.myfaces.ALGORITHM",since="1.1",
-            defaultValue="DES",group="state",tags="performance")
+            defaultValue="AES",group="state",tags="performance")
     public static final String INIT_ALGORITHM = INIT_PREFIX + "ALGORITHM";
 
     /**
@@ -152,13 +155,13 @@ public final class StateUtils
             expectedValues="true,false",group="state",tags="performance")
     public static final String COMPRESS_STATE_IN_CLIENT = INIT_PREFIX + "COMPRESS_STATE_IN_CLIENT";
 
-    public static final String DEFAULT_MAC_ALGORITHM = "HmacSHA1";
+    public static final String DEFAULT_MAC_ALGORITHM = "HmacSHA256";
 
     /**
      * Indicate the algorithm used to calculate the Message Authentication Code that is
      * added to the view state.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.MAC_ALGORITHM",defaultValue="HmacSHA1",
+    @JSFWebConfigParam(name="org.apache.myfaces.MAC_ALGORITHM",defaultValue="HmacSHA256",
             group="state",tags="performance")
     public static final String INIT_MAC_ALGORITHM = "org.apache.myfaces.MAC_ALGORITHM";
     
@@ -673,8 +676,8 @@ public final class StateUtils
             }
             catch (NoSuchAlgorithmException e)
             {
-                // Generate random password length 8, 
-                int length = 8;
+                // Generate random password length 16,
+                int length = 16;
                 bytes = new byte[length];
                 new Random().nextBytes(bytes);
                 
