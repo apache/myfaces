@@ -108,7 +108,7 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             {
                 factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
                 factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-                factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
                 factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
                 factory.setXIncludeAware(false);
                 factory.setExpandEntityReferences(false);
