@@ -94,10 +94,19 @@
                 <artifactId>apache-rat-plugin</artifactId>
                 <configuration>
                     <excludes>
+                        <exclude>**/target/**/*</exclude>
                         <!-- This file is created during a release and needs no licensing text -->
                         <exclude>DEPENDENCIES</exclude>
                     </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
           </plugin>
 
           <plugin>
