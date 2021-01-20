@@ -25,10 +25,14 @@ on:
     branches:
       - master
       - 3.0.x
+      - 2.3-next
+      - 2.3.x
   pull_request:
     branches:
       - master
       - 3.0.x
+      - 2.3-next
+      - 2.3.x
   workflow_dispatch:
 
 jobs:
@@ -50,7 +54,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: |
-          if ! mvn -B clean verify -Dformats=XML -f pom.xml; then
+          if ! mvn -B clean checkstyle:check verify -Dformats=XML -f pom.xml; then
             find . \( -path '*/target/surefire-reports/*.xml' -o -path '*/target/failsafe-reports/*.xml' -o -path '*/target/rat.txt' -o -path '*/target/checkstyle-result.xml' -o -path '*/target/dependency-check-report.xml' \) | zip -q reports.zip -@
             exit 1
           fi
