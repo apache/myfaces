@@ -97,6 +97,9 @@
                 <artifactId>apache-rat-plugin</artifactId>
                 <configuration>
                     <excludes>
+                        <exclude>**/README.md</exclude>
+                        <exclude>**/target/**/*</exclude>
+                        <exclude>**/*.iml</exclude>
                         <!-- This file is created during a release and needs no licensing text -->
                         <exclude>DEPENDENCIES</exclude>
                     </excludes>
