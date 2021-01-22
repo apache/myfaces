@@ -22,7 +22,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jakarta.faces.context.ExternalContext;
+
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -52,7 +57,8 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class TagLibraryConfigUnmarshallerImpl
 {
-    
+    private static final Logger log = Logger.getLogger(TagLibraryConfigUnmarshallerImpl.class.getName());
+
     public static FaceletTagLibrary create(ExternalContext externalContext, URL url) throws IOException
     {
         InputStream is = null;
@@ -109,7 +115,18 @@ public class TagLibraryConfigUnmarshallerImpl
             throws SAXException, ParserConfigurationException
     {
         SAXParserFactory factory = SAXParserFactory.newInstance();
-
+        try
+        {
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            factory.setXIncludeAware(false);
+        }
+        catch (Throwable e)
+        {
+            log.log(Level.WARNING, "SAXParserFactory#setFeature not implemented. Skipping...", e);
+        }
         if (MyfacesConfig.getCurrentInstance(externalContext).isValidateXML() && !schemaValidating)
         {
             // DTD validating

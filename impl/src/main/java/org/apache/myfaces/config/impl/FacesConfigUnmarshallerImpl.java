@@ -23,9 +23,15 @@ import jakarta.faces.context.ExternalContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jakarta.faces.FacesException;
+
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
 import org.apache.myfaces.config.impl.element.AbsoluteOrderingImpl;
@@ -72,6 +78,8 @@ import org.xml.sax.SAXException;
 
 public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<FacesConfigImpl>
 {
+    private static final Logger log = Logger.getLogger(FacesConfigUnmarshallerImpl.class.getName());
+
     private ExternalContext externalContext;
     
     public FacesConfigUnmarshallerImpl(ExternalContext externalContext)
@@ -95,7 +103,21 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             factory.setNamespaceAware(true);
-            
+
+            try
+            {
+                factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+                factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+                factory.setXIncludeAware(false);
+                factory.setExpandEntityReferences(false);
+            }
+            catch (Throwable e)
+            {
+                log.log(Level.WARNING, "DocumentBuilderFactory#setFeature not implemented. Skipping...", e);
+            }
+
             DocumentBuilder builder = factory.newDocumentBuilder();
             builder.setEntityResolver(new FacesConfigEntityResolver(externalContext));
             Document document;

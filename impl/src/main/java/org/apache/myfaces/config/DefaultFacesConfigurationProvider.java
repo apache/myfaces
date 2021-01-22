@@ -52,6 +52,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.faces.application.ApplicationConfigurationPopulator;
 import jakarta.faces.application.ViewHandler;
+
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -467,7 +469,19 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             factory.setNamespaceAware(true);
             // no validation
             factory.setValidating(false);
-            
+            try
+            {
+                factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+                factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+                factory.setXIncludeAware(false);
+                factory.setExpandEntityReferences(false);
+            }
+            catch (Throwable e)
+            {
+                log.log(Level.WARNING, "DocumentBuilderFactory#setFeature not implemented. Skipping...", e);
+            }
             DocumentBuilder builder = null;
             DOMImplementation domImpl = null;
             try
