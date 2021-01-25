@@ -32,5 +32,6 @@ matrix:
   allow_failures:
     - jdk: openjdk-ea
 
+
 script:
   - mvn clean test
