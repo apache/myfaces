@@ -23,15 +23,12 @@ import jakarta.faces.context.ExternalContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Consumer;
+import jakarta.faces.FacesException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.faces.FacesException;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
 import org.apache.myfaces.config.impl.element.AbsoluteOrderingImpl;
@@ -103,7 +100,7 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             factory.setNamespaceAware(true);
-
+            
             try
             {
                 factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
@@ -306,22 +303,21 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
         
         onChild("locale-config", node, (n) -> {
             LocaleConfigImpl lc = new LocaleConfigImpl();
-            obj.addLocaleConfig(lc);
             onChild("default-locale", n, (cn) -> { lc.setDefaultLocale(getTextContent(cn)); });
             onChild("supported-locale", n, (cn) -> { lc.addSupportedLocale(getTextContent(cn)); });
+            obj.addLocaleConfig(lc);
         });
 
         onChild("resource-bundle", node, (n) -> {
             ResourceBundleImpl rb = new ResourceBundleImpl();
-            obj.addResourceBundle(rb);
             onChild("base-name", n, (cn) -> { rb.setBaseName(getTextContent(cn)); });
             onChild("var", n, (cn) -> { rb.setVar(getTextContent(cn)); });
             onChild("display-name", n, (cn) -> { rb.setDisplayName(getTextContent(cn)); });
+            obj.addResourceBundle(rb);
         });
         
         onChild("system-event-listener", node, (n) -> {
             SystemEventListenerImpl sel = new SystemEventListenerImpl();
-            obj.addSystemEventListener(sel);
             onChild("system-event-listener-class", n, (cn) -> {
                 sel.setSystemEventListenerClass(getTextContent(cn));
             });
@@ -331,18 +327,19 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             onChild("source-class", n, (cn) -> {
                 sel.setSourceClass(getTextContent(cn));
             });
+            obj.addSystemEventListener(sel);
         });
 
         onChild("resource-library-contracts", node, (n) -> {
             onChild("contract-mapping", n, (cn) -> {
                 ContractMappingImpl cm = new ContractMappingImpl();
-                obj.addResourceLibraryContractMapping(cm);
                 onChild("url-pattern", cn, (ccn) -> {
                     cm.addUrlPattern(getTextContent(ccn));
                 });
                 onChild("contracts", cn, (ccn) -> {
                     cm.addContract(getTextContent(ccn));
                 });
+                obj.addResourceLibraryContractMapping(cm);
             });
         });
 
@@ -389,17 +386,17 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
 
         onChild("renderer", node, (n) -> {
             RendererImpl r = new RendererImpl();
-            obj.addRenderer(r);
             onChild("component-family", n, (cn) -> { r.setComponentFamily(getTextContent(cn)); });
             onChild("renderer-type", n, (cn) -> { r.setRendererType(getTextContent(cn)); });
             onChild("renderer-class", n, (cn) -> { r.setRendererClass(getTextContent(cn)); });
+            obj.addRenderer(r);
         });
         
         onChild("client-behavior-renderer", node, (n) -> {
             ClientBehaviorRendererImpl r = new ClientBehaviorRendererImpl();
-            obj.addClientBehaviorRenderer(r);
             onChild("client-behavior-renderer-type", n, (cn) -> { r.setRendererType(getTextContent(cn)); });
             onChild("client-behavior-renderer-class", n, (cn) -> { r.setRendererClass(getTextContent(cn)); });
+            obj.addClientBehaviorRenderer(r);
         });
 
         return obj;
@@ -414,7 +411,6 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
                 
         onChild("attribute", node, (n) -> {
             AttributeImpl a = new AttributeImpl();
-            obj.addAttribute(a);
             onChild("description", n, (cn) -> { a.addDescription(getTextContent(cn)); });
             onChild("display-name", n, (cn) -> { a.addDisplayName(getTextContent(cn)); });
             onChild("icon", n, (cn) -> { a.addIcon(getTextContent(cn)); });
@@ -423,11 +419,11 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             onChild("default-value", n, (cn) -> { a.setDefaultValue(getTextContent(cn)); });
             onChild("suggested-value", n, (cn) -> { a.setSuggestedValue(getTextContent(cn)); });
             onChild("attribute-extension", n, (cn) -> { a.addAttributeExtension(getTextContent(cn)); });
+            obj.addAttribute(a);
         });
         
         onChild("property", node, (n) -> {
             PropertyImpl p = new PropertyImpl();
-            obj.addProperty(p);
             onChild("description", n, (cn) -> { p.addDescription(getTextContent(cn)); });
             onChild("display-name", n, (cn) -> { p.addDisplayName(getTextContent(cn)); });
             onChild("icon", n, (cn) -> { p.addIcon(getTextContent(cn)); });
@@ -436,6 +432,7 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             onChild("default-value", n, (cn) -> { p.setDefaultValue(getTextContent(cn)); });
             onChild("suggested-value", n, (cn) -> { p.setSuggestedValue(getTextContent(cn)); });
             onChild("property-extension", n, (cn) -> { p.addPropertyExtension(getTextContent(cn)); });
+            obj.addProperty(p);
         });
         
         return obj;
@@ -451,7 +448,6 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
                 
         onChild("attribute", node, (n) -> {
             AttributeImpl a = new AttributeImpl();
-            obj.addAttribute(a);
             onChild("description", n, (cn) -> { a.addDescription(getTextContent(cn)); });
             onChild("display-name", n, (cn) -> { a.addDisplayName(getTextContent(cn)); });
             onChild("icon", n, (cn) -> { a.addIcon(getTextContent(cn)); });
@@ -460,11 +456,11 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             onChild("default-value", n, (cn) -> { a.setDefaultValue(getTextContent(cn)); });
             onChild("suggested-value", n, (cn) -> { a.setSuggestedValue(getTextContent(cn)); });
             onChild("attribute-extension", n, (cn) -> { a.addAttributeExtension(getTextContent(cn)); });
+            obj.addAttribute(a);
         });
         
         onChild("property", node, (n) -> {
             PropertyImpl p = new PropertyImpl();
-            obj.addProperty(p);
             onChild("description", n, (cn) -> { p.addDescription(getTextContent(cn)); });
             onChild("display-name", n, (cn) -> { p.addDisplayName(getTextContent(cn)); });
             onChild("icon", n, (cn) -> { p.addIcon(getTextContent(cn)); });
@@ -473,6 +469,7 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             onChild("default-value", n, (cn) -> { p.setDefaultValue(getTextContent(cn)); });
             onChild("suggested-value", n, (cn) -> { p.setSuggestedValue(getTextContent(cn)); });
             onChild("property-extension", n, (cn) -> { p.addPropertyExtension(getTextContent(cn)); });
+            obj.addProperty(p);
         });
 
         return obj;
@@ -484,28 +481,28 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
         
         onChild("facelets-processing", node, (n) -> {
             FaceletsProcessingImpl fp = new FaceletsProcessingImpl();
-            obj.addFaceletsProcessing(fp);
             onChild("file-extension", n, (cn) -> { fp.setFileExtension(getTextContent(cn)); });
             onChild("process-as", n, (cn) -> { fp.setProcessAs(getTextContent(cn)); });
             onChild("oam-compress-spaces", n, (cn) -> { fp.setOamCompressSpaces(getTextContent(cn)); });
+            obj.addFaceletsProcessing(fp);
         });
 
         onChild("view-pool-mapping", node, (n) -> {
             ViewPoolMappingImpl vpm = new ViewPoolMappingImpl();
-            obj.addViewPoolMapping(vpm);
             onChild("url-pattern", n, (cn) -> { vpm.setUrlPattern(getTextContent(cn)); });
             onChild("parameter", n, (cn) -> {
                 ViewPoolParameterImpl vpp = new ViewPoolParameterImpl();
-                vpm.addParameter(vpp);
                 onChild("name", cn, (ccn) -> { vpp.setName(getTextContent(ccn)); });
                 onChild("value", cn, (ccn) -> { vpp.setValue(getTextContent(ccn)); });
+                vpm.addParameter(vpp);
             });
+            obj.addViewPoolMapping(vpm);
         });
 
         onChild("facelets-template-mapping", node, (n) -> {
             FaceletsTemplateMappingImpl ftm = new FaceletsTemplateMappingImpl();
-            obj.addFaceletsTemplateMapping(ftm);
             onChild("url-pattern", n, (cn) -> { ftm.setUrlPattern(getTextContent(cn)); });
+            obj.addFaceletsTemplateMapping(ftm);
         });  
         
         return obj;
@@ -535,78 +532,78 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
         
         onChild("view", node, (n) -> {
             FacesFlowViewImpl ffv = new FacesFlowViewImpl();
-            obj.addView(ffv);
             onAttribute("id", n, (v) -> { ffv.setId(v); });
             onChild("vdl-document", n, (cn) -> { ffv.setVdlDocument(getTextContent(cn)); });
+            obj.addView(ffv);
         });
         
         onChild("switch", node, (n) -> {
             FacesFlowSwitchImpl ffs = new FacesFlowSwitchImpl();
-            obj.addSwitch(ffs);
             onAttribute("id", n, (v) -> { ffs.setId(v); });
             onChild("case", n, (cn) -> { ffs.addNavigationCase(processNavigationCase(cn)); });
             onChild("default-outcome", n, (cn) -> {
                 NavigationCaseImpl nc = new NavigationCaseImpl();
-                ffs.setDefaultOutcome(nc);
                 nc.setFromAction(getTextContent(cn));
+                ffs.setDefaultOutcome(nc);
             });
+            obj.addSwitch(ffs);
         });
         
         onChild("flow-return", node, (n) -> {
             FacesFlowReturnImpl ffr = new FacesFlowReturnImpl();
-            obj.addReturn(ffr);
             onAttribute("id", n, (v) -> { ffr.setId(v); });
             onChild("from-outcome", n, (cn) -> {
                 NavigationCaseImpl nc = new NavigationCaseImpl();
-                ffr.setNavigationCase(nc);
                 nc.setFromOutcome(getTextContent(cn));
+                ffr.setNavigationCase(nc);
             });
+            obj.addReturn(ffr);
         });
  
         onChild("navigation-rule", node, (n) -> {
             NavigationRuleImpl nr = new NavigationRuleImpl();
-            obj.addNavigationRule(nr);
             onChild("from-view-id", n, (cn) -> { nr.setFromViewId(getTextContent(cn)); });
             onChild("navigation-case", n, (cn) -> { nr.addNavigationCase(processNavigationCase(cn)); });
+            obj.addNavigationRule(nr);
         });
                 
         onChild("flow-call", node, (n) -> {
             FacesFlowCallImpl ffc = new FacesFlowCallImpl();
-            obj.addFlowCall(ffc);
             onAttribute("id", n, (v) -> { ffc.setId(v); });
             onChild("flow-reference", n, (cn) -> {
                 FacesFlowReferenceImpl ffr = new FacesFlowReferenceImpl();
-                ffc.setFlowReference(ffr);
                 onChild("flow-document-id", cn, (ccn) -> { ffr.setFlowDocumentId(getTextContent(ccn)); });
                 onChild("flow-id", cn, (ccn) -> { ffr.setFlowId(getTextContent(ccn)); });
+                ffc.setFlowReference(ffr);
             });
             onChild("outbound-parameter", n, (cn) -> {
                 FacesFlowParameterImpl ffp = new FacesFlowParameterImpl();
-                ffc.addOutboundParameter(ffp);
                 onChild("name", cn, (ccn) -> { ffp.setName(getTextContent(ccn)); });
                 onChild("value", cn, (ccn) -> { ffp.setValue(getTextContent(ccn)); });
+                ffc.addOutboundParameter(ffp);
             });
+            obj.addFlowCall(ffc);
         });
         
         onChild("method-call", node, (n) -> {
             FacesFlowMethodCallImpl ffmc = new FacesFlowMethodCallImpl();
-            obj.addMethodCall(ffmc);
             onAttribute("id", n, (v) -> { ffmc.setId(v); });
             onChild("method", n, (cn) -> { ffmc.setMethod(getTextContent(cn)); });
             onChild("default-outcome", n, (cn) -> { ffmc.setDefaultOutcome(getTextContent(cn)); });
             onChild("parameter", n, (cn) -> {
                 FacesFlowMethodParameterImpl ffmp = new FacesFlowMethodParameterImpl();
-                ffmc.addParameter(ffmp);
                 onChild("class", cn, (ccn) -> { ffmp.setClassName(getTextContent(ccn)); });
                 onChild("value", cn, (ccn) -> { ffmp.setValue(getTextContent(ccn)); });
+                ffmc.addParameter(ffmp);
             });
+            obj.addMethodCall(ffmc);
         });
        
         onChild("inbound-parameter", node, (n) -> {
             FacesFlowParameterImpl ffp = new FacesFlowParameterImpl();
-            obj.addInboundParameter(ffp);
             onChild("name", n, (cn) -> { ffp.setName(getTextContent(cn)); });
             onChild("value", n, (cn) -> { ffp.setValue(getTextContent(cn)); });
+            obj.addInboundParameter(ffp);
         });
        
         return obj;
@@ -623,20 +620,20 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
        
         onChild("redirect", node, (n) -> {
             RedirectImpl r = new RedirectImpl();
-            obj.setRedirect(r);
             onChild("include-view-params", n, (cn) -> { r.setIncludeViewParams("true"); });
             onChild("view-param", n, (cn) -> {
                 ViewParamImpl vp = new ViewParamImpl();
-                r.addViewParam(vp);
                 onChild("name", cn, (ccn) -> { vp.setName(getTextContent(ccn)); });
                 onChild("value", cn, (ccn) -> { vp.setValue(getTextContent(ccn)); });
+                r.addViewParam(vp);
             });
             onChild("redirect-param", n, (cn) -> {
                 ViewParamImpl vp = new ViewParamImpl();
-                r.addViewParam(vp);
                 onChild("name", cn, (ccn) -> { vp.setName(getTextContent(ccn)); });
                 onChild("value", cn, (ccn) -> { vp.setValue(getTextContent(ccn)); });
+                r.addViewParam(vp);
             });
+            obj.setRedirect(r);
         });
         
         return obj;
