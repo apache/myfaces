@@ -132,6 +132,10 @@ public final class NavigationUtils
         for (int i = 0; i < values.size(); i++)
         {
             String value = values.get(i);
+            if (value == null)
+            {
+                continue;
+            }
             if (_isExpression(value))
             {
                 // evaluate the ValueExpression
@@ -144,6 +148,6 @@ public final class NavigationUtils
     
     private static boolean _isExpression(String text)
     {
-        return text.contains("#{");
+        return text != null && text.contains("#{");
     }
 }

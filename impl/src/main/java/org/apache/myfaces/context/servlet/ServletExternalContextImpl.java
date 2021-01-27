@@ -988,15 +988,18 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 
                     newUrl.append(pair.getKey());
                     newUrl.append(URL_NAME_VALUE_PAIR_SEPERATOR);
-                    try
+                    if (value != null)
                     {
-                        newUrl.append(URLEncoder.encode(value, getResponseCharacterEncoding()));
-                    }
-                    catch (UnsupportedEncodingException e)
-                    {
-                        //shouldn't ever get here
-                        throw new UnsupportedOperationException("Encoding type=" + getResponseCharacterEncoding()
-                                                                + " not supported", e);
+                        try
+                        {
+                            newUrl.append(URLEncoder.encode(value, getResponseCharacterEncoding()));
+                        }
+                        catch (UnsupportedEncodingException e)
+                        {
+                            //shouldn't ever get here
+                            throw new UnsupportedOperationException("Encoding type=" + getResponseCharacterEncoding()
+                                                                    + " not supported", e);
+                        }
                     }
                 }
             }
