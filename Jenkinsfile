@@ -32,38 +32,34 @@ pipeline {
         pollSCM('@hourly')
     }
 
-    stage ('Build and Test - Java 8') {
-        options {
-        timeout(time: 4, unit: 'HOURS')
-            retry(2)
-        }
-        steps {
-            sh 'mvn -V clean verify checkstyle:check apache-rat:check'
-        }
-        post {
-            always {
-                junit '**/target/surefire-reports/*.xml'
-                deleteDir()
+    stages {
+        stage ('Build & Test') {
+            tools {
+                maven "maven_latest"
+                jdk "jdk_1.8_latest"
+            }
+            options {
+                timeout(time: 2, unit: 'HOURS')
+                retry(2)
+            }
+            steps {
+                sh 'mvn -V clean verify checkstyle:check apache-rat:check'
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                    archiveArtifacts '**/target/*.jar'
+                }
             }
         }
-    }
 
-    stage ('Deploy') {
-        options {
-            timeout(time: 2, unit: 'HOURS')
-            retry(2)
-        }
-        tools {
-            maven "maven_latest"
-            jdk "jdk_8_latest"
-        }
-        steps {
-            sh "mvn clean deploy -Pgenerate-assembly"
-        }
-        post {
-            always {
-                junit(testResults: '**/surefire-reports/*.xml', allowEmptyResults: true)
-                archiveArtifacts '**/target/*.jar'
+        stage('Deploy') {
+            tools {
+                maven "maven_latest"
+                jdk "jdk_1.8_latest"
+            }
+            steps {
+                sh "mvn clean deploy -Pgenerate-assembly"
             }
         }
     }
@@ -71,44 +67,44 @@ pipeline {
     post {
         // Build Failed
         failure {
-        mail to: "notifications@myfaces.apache.org",
-        subject: "Jenkins pipeline failed: ${currentBuild.fullDisplayName}",
-        body: 
-        """
-        Jenkins build URL: ${env.BUILD_URL}
-        The build for ${env.JOB_NAME} completed successfully and is back to normal.
-        Build: ${env.BUILD_URL}
-        Logs: ${env.BUILD_URL}console
-        Changes: ${env.BUILD_URL}changes
-        """
+            mail to: "notifications@myfaces.apache.org",
+            subject: "Jenkins pipeline failed: ${currentBuild.fullDisplayName}",
+            body: 
+            """
+            Jenkins build URL: ${env.BUILD_URL}
+            The build for ${env.JOB_NAME} completed successfully and is back to normal.
+            Build: ${env.BUILD_URL}
+            Logs: ${env.BUILD_URL}console
+            Changes: ${env.BUILD_URL}changes
+            """
         }
 
         // Build succeeded, but some tests failed
         unstable {
-        mail to: "notifications@myfaces.apache.org",
-        subject: "Jenkins pipeline failed: ${currentBuild.fullDisplayName}",
-        body: 
-        """
-        Jenkins build URL: ${env.BUILD_URL}
-        The build for ${env.JOB_NAME} completed successfully and is back to normal.
-        Build: ${env.BUILD_URL}
-        Logs: ${env.BUILD_URL}console
-        Changes: ${env.BUILD_URL}changes
-        """
+            mail to: "notifications@myfaces.apache.org",
+            subject: "Jenkins pipeline failed: ${currentBuild.fullDisplayName}",
+            body: 
+            """
+            Jenkins build URL: ${env.BUILD_URL}
+            The build for ${env.JOB_NAME} completed successfully and is back to normal.
+            Build: ${env.BUILD_URL}
+            Logs: ${env.BUILD_URL}console
+            Changes: ${env.BUILD_URL}changes
+            """
         }
 
         // Last build failed, but current one was successful
         fixed {
-        mail to: "notifications@myfaces.apache.org",
-        subject: "Jenkins pipeline is back to normal: ${currentBuild.fullDisplayName}",
-        body: 
-        """
-        Jenkins build URL: ${env.BUILD_URL}
-        The build for ${env.JOB_NAME} completed successfully and is back to normal.
-        Build: ${env.BUILD_URL}
-        Logs: ${env.BUILD_URL}console
-        Changes: ${env.BUILD_URL}changes
-        """
+            mail to: "notifications@myfaces.apache.org",
+            subject: "Jenkins pipeline is back to normal: ${currentBuild.fullDisplayName}",
+            body: 
+            """
+            Jenkins build URL: ${env.BUILD_URL}
+            The build for ${env.JOB_NAME} completed successfully and is back to normal.
+            Build: ${env.BUILD_URL}
+            Logs: ${env.BUILD_URL}console
+            Changes: ${env.BUILD_URL}changes
+            """
         }
     }
 }
