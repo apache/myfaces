@@ -114,7 +114,7 @@
                 <artifactId>apache-rat-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>**/README.md</exclude>
+                        <exclude>**/*.md</exclude>
                         <exclude>**/*/MANIFEST.MF</exclude>
                         <exclude>**/*.iml</exclude>
                         <exclude>src/main/resources/META-INF/licenses/*-LICENSE.txt</exclude>
