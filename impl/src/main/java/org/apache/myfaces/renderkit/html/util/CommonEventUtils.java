@@ -27,6 +27,7 @@ import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+import org.apache.myfaces.core.api.shared.CommonEventConstants;
 import org.apache.myfaces.core.api.shared.CommonPropertyConstants;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
@@ -148,21 +149,21 @@ public class CommonEventUtils
         }
         
         if ((commonPropertiesMarked & CommonPropertyConstants.ONCLICK_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.CLICK_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.CLICK) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONCLICK_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.CLICK,
                     clientBehaviors, HTML.ONCLICK_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONDBLCLICK_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.DBLCLICK_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.DBLCLICK) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONDBLCLICK_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.DBLCLICK,
                     clientBehaviors, HTML.ONDBLCLICK_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEDOWN_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEDOWN_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.MOUSEDOWN) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEDOWN_ATTR, uiComponent, sourceId,
@@ -170,14 +171,14 @@ public class CommonEventUtils
                     HTML.ONMOUSEDOWN_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEUP_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEUP_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.MOUSEUP) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONMOUSEUP_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.MOUSEUP,
                     clientBehaviors, HTML.ONMOUSEUP_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOVER_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEOVER_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.MOUSEOVER) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEOVER_ATTR, uiComponent, sourceId,
@@ -185,7 +186,7 @@ public class CommonEventUtils
                     HTML.ONMOUSEOVER_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEMOVE_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEMOVE_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.MOUSEMOVE) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEMOVE_ATTR, uiComponent, sourceId,
@@ -193,28 +194,28 @@ public class CommonEventUtils
                     HTML.ONMOUSEMOVE_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOUT_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEOUT_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.MOUSEOUT) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONMOUSEOUT_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.MOUSEOUT,
                     clientBehaviors, HTML.ONMOUSEOUT_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYPRESS_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYPRESS_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.KEYPRESS) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYPRESS_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYPRESS,
                     clientBehaviors, HTML.ONKEYPRESS_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYDOWN_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYDOWN_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.KEYDOWN) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYDOWN_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYDOWN,
                     clientBehaviors, HTML.ONKEYDOWN_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYUP_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYUP_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.KEYUP) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYUP_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYUP,
@@ -254,14 +255,14 @@ public class CommonEventUtils
         }
         
         if ((commonPropertiesMarked & CommonPropertyConstants.ONDBLCLICK_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.DBLCLICK_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.DBLCLICK) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONDBLCLICK_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.DBLCLICK,
                     clientBehaviors, HTML.ONDBLCLICK_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEDOWN_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEDOWN_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.MOUSEDOWN) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEDOWN_ATTR, uiComponent, sourceId,
@@ -269,14 +270,14 @@ public class CommonEventUtils
                     HTML.ONMOUSEDOWN_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEUP_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEUP_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.MOUSEUP) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONMOUSEUP_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.MOUSEUP,
                     clientBehaviors, HTML.ONMOUSEUP_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOVER_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEOVER_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.MOUSEOVER) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEOVER_ATTR, uiComponent, sourceId,
@@ -284,7 +285,7 @@ public class CommonEventUtils
                     HTML.ONMOUSEOVER_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEMOVE_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEMOVE_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.MOUSEMOVE) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEMOVE_ATTR, uiComponent, sourceId,
@@ -292,28 +293,28 @@ public class CommonEventUtils
                     HTML.ONMOUSEMOVE_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOUT_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEOUT_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.MOUSEOUT) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONMOUSEOUT_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.MOUSEOUT,
                     clientBehaviors, HTML.ONMOUSEOUT_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYPRESS_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYPRESS_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.KEYPRESS) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYPRESS_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYPRESS,
                     clientBehaviors, HTML.ONKEYPRESS_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYDOWN_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYDOWN_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.KEYDOWN) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYDOWN_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYDOWN,
                     clientBehaviors, HTML.ONKEYDOWN_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYUP_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYUP_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.KEYUP) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYUP_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYUP,
@@ -341,28 +342,28 @@ public class CommonEventUtils
         }
         
         if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.FOCUS_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.FOCUS) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONFOCUS_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.FOCUS, clientBehaviors,
                     HTML.ONFOCUS_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.BLUR_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.BLUR) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONBLUR_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.BLUR, clientBehaviors,
                     HTML.ONBLUR_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONCHANGE_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.CHANGE_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.CHANGE) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONCHANGE_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.CHANGE, clientBehaviors,
                     HTML.ONCHANGE_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONSELECT_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.SELECT_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.SELECT) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONSELECT_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.SELECT, clientBehaviors,
@@ -383,21 +384,21 @@ public class CommonEventUtils
         }
 
         if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.BLUR_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.BLUR) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONBLUR_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.BLUR, clientBehaviors,
                     HTML.ONBLUR_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONCHANGE_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.CHANGE_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.CHANGE) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONCHANGE_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.CHANGE, clientBehaviors,
                     HTML.ONCHANGE_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONSELECT_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.SELECT_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.SELECT) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONSELECT_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.SELECT, clientBehaviors,
@@ -430,21 +431,21 @@ public class CommonEventUtils
         }
         
         if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.FOCUS_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.FOCUS) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONFOCUS_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.FOCUS, clientBehaviors,
                     HTML.ONFOCUS_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.BLUR_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.BLUR) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONBLUR_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.BLUR, clientBehaviors,
                     HTML.ONBLUR_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONSELECT_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.SELECT_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.SELECT) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONSELECT_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.SELECT, clientBehaviors,
@@ -479,14 +480,14 @@ public class CommonEventUtils
         }
 
         if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.FOCUS_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.FOCUS) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONFOCUS_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.FOCUS, clientBehaviors,
                     HTML.ONFOCUS_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.BLUR_EVENT) != 0)
+            (commonEventsMarked & CommonEventConstants.BLUR) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONBLUR_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.BLUR, clientBehaviors,
