@@ -20,7 +20,6 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyConstants;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +32,7 @@ import jakarta.faces.component.html.HtmlOutcomeTargetButton;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+import org.apache.myfaces.core.api.shared.CommonPropertyConstants;
 
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.view.facelets.component;
+package org.apache.myfaces.core.api.shared;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,17 +30,14 @@ import jakarta.faces.component.UIComponent;
  * Note there is a copy of this class on 
  * org.apache.myfaces.shared.renderkit.html.CommonPropertyConstants.
  * Any changes here should be committed there too.
- * 
- * @author Leonardo Uribe
- *
  */
-class _CommonPropertyConstants
+public class CommonPropertyConstants
 {
     public static final String COMMON_PROPERTIES_MARKED = "oam.COMMON_PROPERTIES_MARKED";
     
     //_StyleProperties
     public static final long STYLE_PROP       = 0x1L;
-    public static final long STYLECLASS_PROP = 0x2L;
+    public static final long STYLECLASS_PROP  = 0x2L;
     
     //_UniversalProperties
     //_TitleProperty
@@ -105,6 +102,32 @@ class _CommonPropertyConstants
     public static final long MAXLENGTH_PROP   = 0x2000000000L;
     public static final long SIZE_PROP        = 0x4000000000L;
     
+    public static final long ROLE_PROP        = 0x8000000000L;
+    
+    //HTML5
+    public static final long ONINPUT_PROP        = 0x1000000000L;
+    public static final long ONINVALID_PROP      = 0x2000000000L;
+    public static final long ONRESET_PROP        = 0x4000000000L;
+    
+    public static final long ONCONTEXTMENU_PROP  = 0x8000000000L;
+    
+    public static final long ONSUBMIT_PROP       = 0x10000000000L;
+
+    public static final long ONWHEEL_PROP        = 0x20000000000L;
+    
+    public static final long ONCOPY_PROP         = 0x40000000000L;
+    public static final long ONCUT_PROP          = 0x80000000000L;
+    public static final long ONPASTE_PROP        = 0x100000000000L;
+    
+    public static final long ONDRAG_PROP         = 0x200000000000L;
+    public static final long ONDRAGEND_PROP      = 0x400000000000L;
+    public static final long ONDRAGENTER_PROP    = 0x800000000000L;
+    public static final long ONDRAGLEAVE_PROP    = 0x1000000000000L;
+    public static final long ONDRAGOVER_PROP     = 0x2000000000000L;
+    public static final long ONDRAGSTART_PROP    = 0x4000000000000L;
+    public static final long ONDROP_PROP         = 0x8000000000000L;
+    public static final long ONSCROLL_PROP       = 0x10000000000000L;
+
     public static final Map<String, Long> COMMON_PROPERTIES_KEY_BY_NAME = new HashMap<String, Long>(64,1);
     
     static
@@ -175,8 +198,35 @@ class _CommonPropertyConstants
         COMMON_PROPERTIES_KEY_BY_NAME.put("checked",    CHECKED_PROP);
         COMMON_PROPERTIES_KEY_BY_NAME.put("maxlength",  MAXLENGTH_PROP);
         COMMON_PROPERTIES_KEY_BY_NAME.put("size",       SIZE_PROP);
+        
+        // HTML5 role
+        COMMON_PROPERTIES_KEY_BY_NAME.put("role",   ROLE_PROP);
+
+        // HTML 5
+        COMMON_PROPERTIES_KEY_BY_NAME.put("oninput",       ONINPUT_PROP);  
+        COMMON_PROPERTIES_KEY_BY_NAME.put("oninvalid",     ONINVALID_PROP);  
+        COMMON_PROPERTIES_KEY_BY_NAME.put("onreset",       ONRESET_PROP);  
+
+        COMMON_PROPERTIES_KEY_BY_NAME.put("oncontextmenu", ONCONTEXTMENU_PROP);  
+
+        COMMON_PROPERTIES_KEY_BY_NAME.put("onsubmit",      ONSUBMIT_PROP);
+        
+        COMMON_PROPERTIES_KEY_BY_NAME.put("onwheel",       ONWHEEL_PROP);
+        
+        COMMON_PROPERTIES_KEY_BY_NAME.put("oncopy",        ONCOPY_PROP);  
+        COMMON_PROPERTIES_KEY_BY_NAME.put("oncut",         ONCUT_PROP);  
+        COMMON_PROPERTIES_KEY_BY_NAME.put("onpaste",       ONPASTE_PROP);
+        
+        COMMON_PROPERTIES_KEY_BY_NAME.put("ondrag",        ONDRAG_PROP); 
+        COMMON_PROPERTIES_KEY_BY_NAME.put("ondragend",     ONDRAGEND_PROP); 
+        COMMON_PROPERTIES_KEY_BY_NAME.put("ondragenter",   ONDRAGENTER_PROP); 
+        COMMON_PROPERTIES_KEY_BY_NAME.put("ondragleave",   ONDRAGLEAVE_PROP); 
+        COMMON_PROPERTIES_KEY_BY_NAME.put("ondragover",    ONDRAGOVER_PROP); 
+        COMMON_PROPERTIES_KEY_BY_NAME.put("ondragstart",   ONDRAGSTART_PROP); 
+        COMMON_PROPERTIES_KEY_BY_NAME.put("ondrop",        ONDROP_PROP); 
+        COMMON_PROPERTIES_KEY_BY_NAME.put("onscroll",      ONSCROLL_PROP);         
     }
-    
+
     public static void markProperty(UIComponent component, String name)
     {
         Long propertyConstant = COMMON_PROPERTIES_KEY_BY_NAME.get(name);

@@ -22,7 +22,6 @@ import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
 import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyConstants;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +38,7 @@ import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
+import org.apache.myfaces.core.api.shared.CommonPropertyConstants;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;

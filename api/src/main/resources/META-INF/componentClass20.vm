@@ -37,6 +37,8 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import java.util.Collections;
 import org.apache.myfaces.core.api.shared.MessageUtils;
+import org.apache.myfaces.core.api.shared.CommonEventConstants;
+import org.apache.myfaces.core.api.shared.CommonPropertyConstants;
 $utils.importTagClasses($component)
 
 #if ($component.isTemplate())
@@ -126,7 +128,7 @@ $innersource
     public void addClientBehavior(String eventName, jakarta.faces.component.behavior.ClientBehavior behavior)
     {
         super.addClientBehavior(eventName, behavior);
-        _CommonEventConstants.markEvent(this, eventName);
+        CommonEventConstants.markEvent(this, eventName);
     }
 #end
 #end
@@ -319,10 +321,28 @@ $innersource
      $property.name == "checked" ||
      $property.name == "maxlength" ||
      $property.name == "size" ||
-     $property.name == "role"
+     $property.name == "role" ||
+     $property.name == "oninput" ||
+     $property.name == "oncontextmenu" ||
+     $property.name == "oninvalid" ||
+     $property.name == "onreset" ||
+     $property.name == "onsearch" ||
+     $property.name == "onsubmit" ||
+     $property.name == "onwheel" ||
+     $property.name == "oncopy" ||
+     $property.name == "oncut" ||
+     $property.name == "onpaste" ||
+     $property.name == "ondrag" ||
+     $property.name == "ondragend" ||
+     $property.name == "ondragenter" ||
+     $property.name == "ondragleave" ||
+     $property.name == "ondragover" ||
+     $property.name == "ondragstart" ||
+     $property.name == "ondrop" ||
+     $property.name == "onscroll"
       )
 #set($overrideSetValueExpression = true)
-        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.${property.name.toUpperCase()}_PROP);
+        CommonPropertyConstants.markProperty(this, CommonPropertyConstants.${property.name.toUpperCase()}_PROP);
 #end
     }
 #end
@@ -332,7 +352,7 @@ $innersource
     public void setValueExpression(String name, ValueExpression expression)
     {
         super.setValueExpression(name, expression);
-        _CommonPropertyConstants.markProperty(this, name);
+        CommonPropertyConstants.markProperty(this, name);
     }
 #end
 

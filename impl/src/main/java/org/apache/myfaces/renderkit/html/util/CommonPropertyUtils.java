@@ -23,6 +23,7 @@ import java.io.IOException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ResponseWriter;
+import org.apache.myfaces.core.api.shared.CommonPropertyConstants;
 
 public final class CommonPropertyUtils
 {
