@@ -24,12 +24,7 @@ import java.util.Map;
 import jakarta.faces.component.UIComponent;
 
 /**
- * This is a list of the most common properties used by a JSF html
- * component, organized by interfaces.
- * 
- * Note there is a copy of this class on 
- * org.apache.myfaces.shared.renderkit.html.CommonPropertyConstants.
- * Any changes here should be committed there too.
+ * This is a list of the most common properties used by a JSF html component, organized by interfaces.
  */
 public class CommonPropertyConstants
 {
