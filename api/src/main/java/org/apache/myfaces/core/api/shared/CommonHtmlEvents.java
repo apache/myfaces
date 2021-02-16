@@ -99,11 +99,11 @@ public class CommonHtmlEvents
         COMMON_EVENTS_KEY_BY_NAME.put("dragover",    DRAGOVER);
         COMMON_EVENTS_KEY_BY_NAME.put("dragstart",   DRAGSTART);
         COMMON_EVENTS_KEY_BY_NAME.put("drop",        DROP);
-        COMMON_EVENTS_KEY_BY_NAME.put("scroll",    SCROLL);
+        COMMON_EVENTS_KEY_BY_NAME.put("scroll",      SCROLL);
         
         //virtual
         COMMON_EVENTS_KEY_BY_NAME.put("valueChange", VALUECHANGE);
-        COMMON_EVENTS_KEY_BY_NAME.put("action", ACTION);
+        COMMON_EVENTS_KEY_BY_NAME.put("action",      ACTION);
     }
     
     public static void markEvent(UIComponent component, String name)
