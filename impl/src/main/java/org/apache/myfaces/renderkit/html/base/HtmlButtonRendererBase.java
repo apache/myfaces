@@ -20,7 +20,7 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -223,8 +223,8 @@ public class HtmlButtonRendererBase extends HtmlRenderer
         
         if (isCommonPropertiesOptimizationEnabled(facesContext))
         {
-            CommonPropertyUtils.renderButtonPassthroughPropertiesWithoutDisabledAndEvents(writer, 
-                    CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+            CommonHtmlAttributesUtil.renderButtonPassthroughPropertiesWithoutDisabledAndEvents(writer, 
+                    CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
         }
         else
         {
@@ -242,9 +242,11 @@ public class HtmlButtonRendererBase extends HtmlRenderer
         {
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
-                CommonPropertyUtils.renderEventPropertiesWithoutOnclick(writer, commonPropertiesMarked, uiComponent);
-                CommonPropertyUtils.renderCommonFieldEventProperties(writer, commonPropertiesMarked, uiComponent);
+                long commonAttributesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
+                CommonHtmlAttributesUtil.renderEventPropertiesWithoutOnclick(writer,
+                        commonAttributesMarked, uiComponent);
+                CommonHtmlAttributesUtil.renderCommonFieldEventProperties(writer,
+                        commonAttributesMarked, uiComponent);
             }
             else
             {

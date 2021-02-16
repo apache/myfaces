@@ -19,8 +19,8 @@
 package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -88,15 +88,15 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderChangeEventProperty(writer, commonPropertiesMarked, uiComponent);
-                CommonPropertyUtils.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
+                CommonHtmlAttributesUtil.renderChangeEventProperty(writer, commonPropertiesMarked, uiComponent);
+                CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
                 // Note that on JSF 2.3, selectable components don't need onselect attribute
                 // Please see https://issues.apache.org/jira/browse/MYFACES-4190
-                CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchangeAndOnselect(writer, 
+                CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchangeAndOnselect(writer, 
                         commonPropertiesMarked, uiComponent);
             }
             else
@@ -104,10 +104,10 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
                 HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
-                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                    Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                             commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
-                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                    CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
                         facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
                 }
                 else
@@ -120,8 +120,8 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
             
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderSelectPassthroughPropertiesWithoutDisabledAndEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                CommonHtmlAttributesUtil.renderSelectPassthroughPropertiesWithoutDisabledAndEvents(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
             }
             else
             {
@@ -135,8 +135,8 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         {
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderSelectPassthroughPropertiesWithoutDisabled(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                CommonHtmlAttributesUtil.renderSelectPassthroughPropertiesWithoutDisabled(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
             }
             else
             {

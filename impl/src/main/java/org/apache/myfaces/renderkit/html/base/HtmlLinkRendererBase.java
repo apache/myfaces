@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -255,7 +255,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 long commonPropertiesMarked = 0L;
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
                 }
                 
                 // only render onclick if != disabled
@@ -263,19 +263,19 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 {
                     if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                     {
-                        CommonPropertyUtils.renderEventProperties(writer, 
+                        CommonHtmlAttributesUtil.renderEventProperties(writer, 
                                 commonPropertiesMarked, component);
-                        CommonPropertyUtils.renderFocusBlurEventProperties(writer,
+                        CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer,
                                 commonPropertiesMarked, component);
                     }
                     else
                     {
                         if (isCommonEventsOptimizationEnabled(facesContext))
                         {
-                            Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(component);
-                            CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                            Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
+                            CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                     commonPropertiesMarked, commonEventsMarked, component, behaviors);
-                            CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                            CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
                                 facesContext, writer, commonPropertiesMarked, commonEventsMarked, component, behaviors);
                         }
                         else
@@ -291,19 +291,19 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 {
                     if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                     {
-                        CommonPropertyUtils.renderEventPropertiesWithoutOnclick(writer, 
+                        CommonHtmlAttributesUtil.renderEventPropertiesWithoutOnclick(writer, 
                                 commonPropertiesMarked, component);
-                        CommonPropertyUtils.renderFocusBlurEventProperties(writer,
+                        CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer,
                                 commonPropertiesMarked, component);
                     }
                     else
                     {
                         if (isCommonEventsOptimizationEnabled(facesContext))
                         {
-                            Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(component);
-                            CommonEventUtils.renderBehaviorizedEventHandlersWithoutOnclick(facesContext, writer, 
+                            Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
+                            CommonHtmlEventsUtil.renderBehaviorizedEventHandlersWithoutOnclick(facesContext, writer, 
                                     commonPropertiesMarked, commonEventsMarked, component, behaviors);
-                            CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                            CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
                                 facesContext, writer, commonPropertiesMarked, commonEventsMarked, component, behaviors);
                         }
                         else
@@ -317,7 +317,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
                             commonPropertiesMarked, component);
                 }
                 else
@@ -331,8 +331,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabled(writer, 
-                            CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabled(writer, 
+                            CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
                 }
                 else
                 {
@@ -380,13 +380,13 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 long commonPropertiesMarked = 0L;
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
                 }
                 if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderEventPropertiesWithoutOnclick(writer,
+                    CommonHtmlAttributesUtil.renderEventPropertiesWithoutOnclick(writer,
                         commonPropertiesMarked, component);
-                    CommonPropertyUtils.renderFocusBlurEventProperties(writer,
+                    CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer,
                             commonPropertiesMarked, component);
                 }
                 else
@@ -398,7 +398,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutStyleAndEvents(writer, 
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesWithoutStyleAndEvents(writer, 
                             commonPropertiesMarked, component);
                 }
                 else
@@ -413,8 +413,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutOnclickAndStyle(writer, 
-                            CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesWithoutOnclickAndStyle(writer, 
+                            CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
                 }
                 else
                 {
@@ -739,24 +739,24 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 long commonPropertiesMarked = 0L;
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(output);
+                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(output);
                 }
 
                 if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderEventProperties(writer, 
+                    CommonHtmlAttributesUtil.renderEventProperties(writer, 
                             commonPropertiesMarked, output);
-                    CommonPropertyUtils.renderFocusBlurEventProperties(writer,
+                    CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer,
                             commonPropertiesMarked, output);
                 }
                 else
                 {
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(output);
-                        CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
+                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
-                        CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
                             facesContext, writer, commonPropertiesMarked, commonEventsMarked, output, behaviors);
                     }
                     else
@@ -768,7 +768,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
                             commonPropertiesMarked, output);
                 }
                 else
@@ -782,8 +782,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 HtmlRendererUtils.writeIdIfNecessary(writer, output, facesContext);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabled(writer, 
-                            CommonPropertyUtils.getCommonPropertiesMarked(output), output);
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabled(writer, 
+                            CommonHtmlAttributesUtil.getMarkedAttributes(output), output);
                 }
                 else
                 {
@@ -851,23 +851,23 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 long commonPropertiesMarked = 0L;
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(output);
+                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(output);
                 }
                 if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderEventProperties(writer, 
+                    CommonHtmlAttributesUtil.renderEventProperties(writer, 
                             commonPropertiesMarked, output);
-                    CommonPropertyUtils.renderFocusBlurEventProperties(writer,
+                    CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer,
                             commonPropertiesMarked, output);
                 }
                 else
                 {
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(output);
-                        CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
+                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
-                        CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
                             facesContext, writer, commonPropertiesMarked, commonEventsMarked, output, behaviors);
                     }
                     else
@@ -879,7 +879,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
                             commonPropertiesMarked, output);
                 }
                 else
@@ -893,8 +893,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 HtmlRendererUtils.writeIdAndNameIfNecessary(writer, output, facesContext);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughProperties(writer, 
-                            CommonPropertyUtils.getCommonPropertiesMarked(output), output);
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughProperties(writer, 
+                            CommonHtmlAttributesUtil.getMarkedAttributes(output), output);
                 }
                 else
                 {
@@ -935,23 +935,23 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 long commonPropertiesMarked = 0L;
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(output);
+                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(output);
                 }
                 if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderEventProperties(writer, 
+                    CommonHtmlAttributesUtil.renderEventProperties(writer, 
                             commonPropertiesMarked, output);
-                    CommonPropertyUtils.renderFocusBlurEventProperties(writer,
+                    CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer,
                             commonPropertiesMarked, output);
                 }
                 else
                 {
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(output);
-                        CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
+                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
-                        CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
                             facesContext, writer, commonPropertiesMarked, commonEventsMarked, output, behaviors);
                     }
                     else
@@ -963,7 +963,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
                             commonPropertiesMarked, output);
                 }
                 else
@@ -977,8 +977,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 HtmlRendererUtils.writeIdIfNecessary(writer, output, facesContext);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabled(writer, 
-                            CommonPropertyUtils.getCommonPropertiesMarked(output), output);
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabled(writer, 
+                            CommonHtmlAttributesUtil.getMarkedAttributes(output), output);
                 }
                 else
                 {
@@ -1012,23 +1012,23 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 long commonPropertiesMarked = 0L;
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(output);
+                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(output);
                 }
                 if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderEventProperties(writer, 
+                    CommonHtmlAttributesUtil.renderEventProperties(writer, 
                             commonPropertiesMarked, output);
-                    CommonPropertyUtils.renderFocusBlurEventProperties(writer,
+                    CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer,
                             commonPropertiesMarked, output);
                 }
                 else
                 {
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(output);
-                        CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
+                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
-                        CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
                             facesContext, writer, commonPropertiesMarked, commonEventsMarked, output, behaviors);
                     }
                     else
@@ -1040,7 +1040,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
                             commonPropertiesMarked, output);
                 }
                 else
@@ -1054,8 +1054,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 HtmlRendererUtils.writeIdAndNameIfNecessary(writer, output, facesContext);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughProperties(writer, 
-                            CommonPropertyUtils.getCommonPropertiesMarked(output), output);
+                    CommonHtmlAttributesUtil.renderAnchorPassthroughProperties(writer, 
+                            CommonHtmlAttributesUtil.getMarkedAttributes(output), output);
                 }
                 else
                 {

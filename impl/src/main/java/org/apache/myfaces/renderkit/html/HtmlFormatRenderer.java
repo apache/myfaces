@@ -33,11 +33,11 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.core.api.shared.CommonPropertyConstants;
+import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
@@ -99,23 +99,23 @@ public class HtmlFormatRenderer extends HtmlRenderer
 
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+                long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
                 
-                if ( (commonPropertiesMarked & ~(CommonPropertyConstants.ESCAPE_PROP)) > 0)
+                if ( (commonPropertiesMarked & ~(CommonHtmlAttributes.ESCAPE)) > 0)
                 {
                     span = true;
                     writer.startElement(HTML.SPAN_ELEM, component);
                     HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                 }
-                else if (CommonPropertyUtils.isIdRenderingNecessary(component))
+                else if (CommonHtmlAttributesUtil.isIdRenderingNecessary(component))
                 {
                     span = true;
                     writer.startElement(HTML.SPAN_ELEM, component);
                     writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext), null);
                 }
                 
-                CommonPropertyUtils.renderUniversalProperties(writer, commonPropertiesMarked, component);
-                CommonPropertyUtils.renderStyleProperties(writer, commonPropertiesMarked, component);
+                CommonHtmlAttributesUtil.renderUniversalProperties(writer, commonPropertiesMarked, component);
+                CommonHtmlAttributesUtil.renderStyleProperties(writer, commonPropertiesMarked, component);
             }
             else
             {

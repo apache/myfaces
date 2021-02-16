@@ -19,7 +19,7 @@
 package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,7 @@ import jakarta.faces.component.html.HtmlOutcomeTargetButton;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-import org.apache.myfaces.core.api.shared.CommonPropertyConstants;
+import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
@@ -132,7 +132,7 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
 
         if (isCommonPropertiesOptimizationEnabled(facesContext))
         {
-            long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+            long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
             
             if (behaviors != null && !behaviors.isEmpty() && uiComponent instanceof ClientBehaviorHolder)
             {
@@ -143,14 +143,14 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
             }
             else
             {
-                CommonPropertyUtils.renderEventPropertiesWithoutOnclick(
+                CommonHtmlAttributesUtil.renderEventPropertiesWithoutOnclick(
                         writer, commonPropertiesMarked, uiComponent);
-                CommonPropertyUtils.renderFocusBlurEventProperties(writer, commonPropertiesMarked, uiComponent);
+                CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer, commonPropertiesMarked, uiComponent);
             }
             
-            CommonPropertyUtils.renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(
+            CommonHtmlAttributesUtil.renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(
                     writer, commonPropertiesMarked, uiComponent);
-            if ((commonPropertiesMarked & CommonPropertyConstants.ALT_PROP) != 0)
+            if ((commonPropertiesMarked & CommonHtmlAttributes.ALT) != 0)
             {
                 HtmlRendererUtils.renderHTMLStringAttribute(writer, uiComponent,
                         HTML.ALT_ATTR, HTML.ALT_ATTR);

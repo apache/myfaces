@@ -39,8 +39,8 @@ import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
@@ -111,21 +111,21 @@ public class HtmlLabelRenderer extends HtmlRenderer
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
-                CommonPropertyUtils.renderFocusBlurEventProperties(writer,commonPropertiesMarked, uiComponent);
+                CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
+                CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer,commonPropertiesMarked, uiComponent);
             }
             else
             {
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
-                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                    Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                             commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
-                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                    CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
                         facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
                 }
                 else
@@ -137,7 +137,7 @@ public class HtmlLabelRenderer extends HtmlRenderer
             }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderLabelPassthroughPropertiesWithoutEvents(writer, 
+                CommonHtmlAttributesUtil.renderLabelPassthroughPropertiesWithoutEvents(writer, 
                         commonPropertiesMarked, uiComponent);
             }
             else
@@ -151,8 +151,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
             HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderLabelPassthroughProperties(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                CommonHtmlAttributesUtil.renderLabelPassthroughProperties(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
             }
             else
             {

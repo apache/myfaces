@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
@@ -112,15 +112,15 @@ public class HtmlSecretRendererBase extends HtmlRenderer
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderChangeEventProperty(writer, 
+                CommonHtmlAttributesUtil.renderChangeEventProperty(writer, 
                         commonPropertiesMarked, uiComponent);
-                CommonPropertyUtils.renderEventProperties(writer, 
+                CommonHtmlAttributesUtil.renderEventProperties(writer, 
                         commonPropertiesMarked, uiComponent);
-                CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(writer, 
                         commonPropertiesMarked, uiComponent);
             }
             else
@@ -128,10 +128,10 @@ public class HtmlSecretRendererBase extends HtmlRenderer
                 HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
-                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                    Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                             commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
-                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                    CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(
                         facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
                 }
                 else
@@ -143,7 +143,7 @@ public class HtmlSecretRendererBase extends HtmlRenderer
             }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
+                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
                         commonPropertiesMarked, uiComponent);
             }
             else
@@ -156,8 +156,8 @@ public class HtmlSecretRendererBase extends HtmlRenderer
         {
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabled(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabled(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
             }
             else
             {

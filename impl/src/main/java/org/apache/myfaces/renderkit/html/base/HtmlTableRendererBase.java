@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -146,16 +146,16 @@ public class HtmlTableRendererBase extends HtmlRenderer
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderEventProperties(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                CommonHtmlAttributesUtil.renderEventProperties(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
             }
             else
             {
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
-                           CommonPropertyUtils.getCommonPropertiesMarked(uiComponent),
-                           CommonEventUtils.getCommonEventsMarked(uiComponent), uiComponent, behaviors);
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
+                           CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent),
+                           CommonHtmlEventsUtil.getMarkedEvents(uiComponent), uiComponent, behaviors);
                 }
                 else
                 {
@@ -165,8 +165,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TABLE_ATTRIBUTES);
-                CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
             }
             else
             {
@@ -180,8 +180,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TABLE_ATTRIBUTES);
-                CommonPropertyUtils.renderCommonPassthroughProperties(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
             }
             else
             {

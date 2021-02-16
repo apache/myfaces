@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 import jakarta.faces.component.UIComponent;
 
-public class CommonEventConstants
+public class CommonHtmlEvents
 {
-    public static final String COMMON_EVENTS_MARKED = "oam.COMMON_EVENTS_MARKED";
+    public static final String EVENTS_MARKED = "oam.EVENTS_MARKED";
     
     public static final long ACTION        = 0x1L;
     public static final long CLICK         = 0x2L;
@@ -113,11 +113,21 @@ public class CommonEventConstants
         {
             return;
         }
-        Long commonPropertiesSet = (Long) component.getAttributes().get(COMMON_EVENTS_MARKED);
+        Long commonPropertiesSet = (Long) component.getAttributes().get(EVENTS_MARKED);
         if (commonPropertiesSet == null)
         {
             commonPropertiesSet = 0L;
         }
-        component.getAttributes().put(COMMON_EVENTS_MARKED, commonPropertiesSet | propertyConstant);
+        component.getAttributes().put(EVENTS_MARKED, commonPropertiesSet | propertyConstant);
+    }
+
+    public static long getMarkedEvents(UIComponent component)
+    {
+        Long commonEvents = (Long) component.getAttributes().get(CommonHtmlEvents.EVENTS_MARKED);
+        if (commonEvents == null)
+        {
+            commonEvents = 0L;
+        }
+        return commonEvents;
     }
 }

@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -348,26 +348,26 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
                 
                 if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
-                    CommonPropertyUtils.renderChangeEventProperty(writer, 
+                    long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
+                    CommonHtmlAttributesUtil.renderChangeEventProperty(writer, 
                             commonPropertiesMarked, uiComponent);
-                    CommonPropertyUtils.renderEventProperties(writer, 
+                    CommonHtmlAttributesUtil.renderEventProperties(writer, 
                             commonPropertiesMarked, uiComponent);
-                    CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                    CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(writer, 
                             commonPropertiesMarked, uiComponent);
                 }
                 else
                 {
-                    long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+                    long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
                     HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(
                             facesContext, writer, uiComponent, itemId != null ? itemId : clientId,  behaviors);
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
-                        CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
+                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, uiComponent,
                                 itemId != null ? itemId : clientId, behaviors);
-                        CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                        CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(
                             facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, 
                                 itemId != null ? itemId : clientId, behaviors);
                     }
@@ -397,26 +397,26 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
                 
                 if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
-                    CommonPropertyUtils.renderChangeEventProperty(writer, 
+                    long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
+                    CommonHtmlAttributesUtil.renderChangeEventProperty(writer, 
                             commonPropertiesMarked, uiComponent);
-                    CommonPropertyUtils.renderEventProperties(writer, 
+                    CommonHtmlAttributesUtil.renderEventProperties(writer, 
                             commonPropertiesMarked, uiComponent);
-                    CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                    CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(writer, 
                             commonPropertiesMarked, uiComponent);
                 }
                 else
                 {
-                    long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+                    long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
                     HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(
                             facesContext, writer, uiComponent, itemId != null ? itemId : clientId, behaviors);
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
-                        CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
+                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, uiComponent, 
                                 itemId != null ? itemId : clientId, behaviors);
-                        CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                        CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(
                             facesContext, writer, commonPropertiesMarked, commonEventsMarked,
                             uiComponent, itemId != null ? itemId : clientId, behaviors);
                     }

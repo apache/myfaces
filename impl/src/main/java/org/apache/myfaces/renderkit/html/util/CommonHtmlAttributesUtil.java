@@ -23,22 +23,15 @@ import java.io.IOException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ResponseWriter;
-import org.apache.myfaces.core.api.shared.CommonPropertyConstants;
+import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 
-public final class CommonPropertyUtils
+public final class CommonHtmlAttributesUtil
 {
-    public static long getCommonPropertiesMarked(UIComponent component)
+    public static long getMarkedAttributes(UIComponent component)
     {
-        Long commonProperties = (Long) component.getAttributes().get(CommonPropertyConstants.COMMON_PROPERTIES_MARKED);
-        
-        if (commonProperties == null)
-        {
-            commonProperties = 0L;
-        }
-
-        return commonProperties;
+        return CommonHtmlAttributes.getMarkedAttributes(component);
     }
-    
+
     public static boolean isIdRenderingNecessary(UIComponent component)
     {
         String id = component.getId();
@@ -54,22 +47,22 @@ public final class CommonPropertyUtils
             return;
         }
 
-        if ((commonPropertiesMarked & CommonPropertyConstants.DIR_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.DIR) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.DIR_ATTR, HTML.DIR_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.LANG_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.LANG) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.LANG_ATTR, HTML.LANG_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.TITLE_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.TITLE) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.TITLE_ATTR, HTML.TITLE_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ROLE_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ROLE) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ROLE_ATTR, HTML.ROLE_ATTR);
@@ -85,17 +78,17 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.DIR_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.DIR) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.DIR_ATTR, HTML.DIR_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.LANG_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.LANG) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.LANG_ATTR, HTML.LANG_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ROLE_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ROLE) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ROLE_ATTR, HTML.ROLE_ATTR);
@@ -111,12 +104,12 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.STYLE_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.STYLE) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.STYLE_ATTR, HTML.STYLE_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.STYLECLASS_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.STYLECLASS) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.STYLE_CLASS_ATTR, HTML.CLASS_ATTR);
@@ -132,7 +125,7 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.STYLECLASS_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.STYLECLASS) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.STYLE_CLASS_ATTR, HTML.CLASS_ATTR);
@@ -148,7 +141,7 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONCLICK_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONCLICK) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONCLICK_ATTR, HTML.ONCLICK_ATTR);
@@ -165,47 +158,47 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONDBLCLICK_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONDBLCLICK) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONDBLCLICK_ATTR, HTML.ONDBLCLICK_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEDOWN_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONMOUSEDOWN) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONMOUSEDOWN_ATTR, HTML.ONMOUSEDOWN_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEUP_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONMOUSEUP) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONMOUSEUP_ATTR, HTML.ONMOUSEUP_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOVER_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONMOUSEOVER) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONMOUSEOVER_ATTR, HTML.ONMOUSEOVER_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEMOVE_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONMOUSEMOVE) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONMOUSEMOVE_ATTR, HTML.ONMOUSEMOVE_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOUT_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONMOUSEOUT) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONMOUSEOUT_ATTR, HTML.ONMOUSEOUT_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYPRESS_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONKEYPRESS) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONKEYPRESS_ATTR, HTML.ONKEYPRESS_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYDOWN_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONKEYDOWN) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONKEYDOWN_ATTR, HTML.ONKEYDOWN_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYUP_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONKEYUP) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONKEYUP_ATTR, HTML.ONKEYUP_ATTR);
@@ -222,12 +215,12 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONCHANGE_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONCHANGE) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONCHANGE_ATTR, HTML.ONCHANGE_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONSELECT_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONSELECT) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONSELECT_ATTR, HTML.ONSELECT_ATTR);
@@ -243,12 +236,12 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONFOCUS) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONFOCUS_ATTR, HTML.ONFOCUS_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONBLUR) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONBLUR_ATTR, HTML.ONBLUR_ATTR);
@@ -263,12 +256,12 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONFOCUS) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONFOCUS_ATTR, HTML.ONFOCUS_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONBLUR) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONBLUR_ATTR, HTML.ONBLUR_ATTR);
@@ -283,17 +276,17 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONFOCUS) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONFOCUS_ATTR, HTML.ONFOCUS_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONBLUR) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONBLUR_ATTR, HTML.ONBLUR_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONSELECT_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONSELECT) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONSELECT_ATTR, HTML.ONSELECT_ATTR);
@@ -308,7 +301,7 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONCHANGE_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ONCHANGE) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONCHANGE_ATTR, HTML.ONCHANGE_ATTR);
@@ -324,12 +317,12 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ACCESSKEY_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ACCESSKEY) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ACCESSKEY_ATTR, HTML.ACCESSKEY_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.TABINDEX_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.TABINDEX) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.TABINDEX_ATTR, HTML.TABINDEX_ATTR);
@@ -345,12 +338,12 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ALIGN_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ALIGN) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ALIGN_ATTR, HTML.ALIGN_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ALT_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ALT) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ALT_ATTR, HTML.ALT_ATTR);
@@ -365,32 +358,32 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ALIGN_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ALIGN) != 0)
         {
             HtmlRendererUtils.renderHTMLAttribute(writer, component,
                     HTML.ALIGN_ATTR, HTML.ALIGN_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ALT_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ALT) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ALT_ATTR, HTML.ALT_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.CHECKED_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.CHECKED) != 0)
         {
             HtmlRendererUtils.renderHTMLAttribute(writer, component,
                     HTML.CHECKED_ATTR, HTML.CHECKED_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.MAXLENGTH_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.MAXLENGTH) != 0)
         {
             HtmlRendererUtils.renderHTMLAttribute(writer, component,
                     HTML.MAXLENGTH_ATTR, HTML.MAXLENGTH_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.READONLY_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.READONLY) != 0)
         {
             HtmlRendererUtils.renderHTMLAttribute(writer, component,
                     HTML.READONLY_ATTR, HTML.READONLY_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.SIZE_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.SIZE) != 0)
         {
             HtmlRendererUtils.renderHTMLAttribute(writer, component,
                     HTML.SIZE_ATTR, HTML.SIZE_ATTR);
@@ -406,42 +399,42 @@ public final class CommonPropertyUtils
         }
         
         renderAccesskeyTabindexProperties(writer, commonPropertiesMarked, component);
-        if ((commonPropertiesMarked & CommonPropertyConstants.CHARSET_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.CHARSET) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.CHARSET_ATTR, HTML.CHARSET_ATTR);
         }        
-        if ((commonPropertiesMarked & CommonPropertyConstants.COORDS_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.COORDS) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.COORDS_ATTR, HTML.COORDS_ATTR);
         }        
-        if ((commonPropertiesMarked & CommonPropertyConstants.HREFLANG_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.HREFLANG) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.HREFLANG_ATTR, HTML.HREFLANG_ATTR);
         }        
-        if ((commonPropertiesMarked & CommonPropertyConstants.REL_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.REL) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.REL_ATTR, HTML.REL_ATTR);
         }        
-        if ((commonPropertiesMarked & CommonPropertyConstants.REV_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.REV) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.REV_ATTR, HTML.REV_ATTR);
         }        
-        if ((commonPropertiesMarked & CommonPropertyConstants.SHAPE_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.SHAPE) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.SHAPE_ATTR, HTML.SHAPE_ATTR);
         }        
-        if ((commonPropertiesMarked & CommonPropertyConstants.TARGET_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.TARGET) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.TARGET_ATTR, HTML.TARGET_ATTR);
         }        
-        if ((commonPropertiesMarked & CommonPropertyConstants.TYPE_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.TYPE) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.TYPE_ATTR, HTML.TYPE_ATTR);
@@ -650,7 +643,7 @@ public final class CommonPropertyUtils
         }
         
         renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
-        if ((commonPropertiesMarked & CommonPropertyConstants.ACCESSKEY_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ACCESSKEY) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ACCESSKEY_ATTR, HTML.ACCESSKEY_ATTR);
@@ -678,7 +671,7 @@ public final class CommonPropertyUtils
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ACCESSKEY_PROP) != 0)
+        if ((commonPropertiesMarked & CommonHtmlAttributes.ACCESSKEY) != 0)
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ACCESSKEY_ATTR, HTML.ACCESSKEY_ATTR);

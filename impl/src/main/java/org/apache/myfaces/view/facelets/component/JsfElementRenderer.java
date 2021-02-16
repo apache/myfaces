@@ -30,8 +30,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
@@ -97,23 +97,23 @@ public class JsfElementRenderer extends HtmlRenderer
         }
         
         // Write in the optimized way, because this is a renderer for internal use only
-        long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+        long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
         if (behaviors.isEmpty())
         {
-            CommonPropertyUtils.renderEventProperties(writer, commonPropertiesMarked, component);
-            CommonPropertyUtils.renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
-            CommonPropertyUtils.renderChangeSelectEventProperties(writer, commonPropertiesMarked, component);
+            CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, component);
+            CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
+            CommonHtmlAttributesUtil.renderChangeSelectEventProperties(writer, commonPropertiesMarked, component);
         }
         else
         {
-            long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(component);
-            CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+            long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
+            CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                    commonPropertiesMarked, commonEventsMarked, component, behaviors);
-            CommonEventUtils.renderBehaviorizedFieldEventHandlers(facesContext, writer, 
+            CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlers(facesContext, writer, 
                    commonPropertiesMarked, commonEventsMarked, component, 
                    component.getClientId(facesContext), behaviors);
         }
-        CommonPropertyUtils.renderStyleProperties(writer, commonPropertiesMarked, component);
+        CommonHtmlAttributesUtil.renderStyleProperties(writer, commonPropertiesMarked, component);
         HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONLOAD_ATTR, component,
                 ClientBehaviorEvents.LOAD, behaviors, HTML.ONLOAD_ATTR);
         HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONUNLOAD_ATTR, component,

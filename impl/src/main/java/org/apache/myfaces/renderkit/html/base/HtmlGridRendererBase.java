@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -132,20 +132,20 @@ public class HtmlGridRendererBase extends HtmlRenderer
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderEventProperties(writer, 
+                CommonHtmlAttributesUtil.renderEventProperties(writer, 
                         commonPropertiesMarked, component);
             }
             else
             {
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                            commonPropertiesMarked,
-                           CommonEventUtils.getCommonEventsMarked(component), component, behaviors);
+                           CommonHtmlEventsUtil.getMarkedEvents(component), component, behaviors);
                 }
                 else
                 {
@@ -155,7 +155,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.TABLE_ATTRIBUTES);
-                CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer, 
                         commonPropertiesMarked, component);
             }
             else
@@ -170,8 +170,8 @@ public class HtmlGridRendererBase extends HtmlRenderer
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.TABLE_ATTRIBUTES);
-                CommonPropertyUtils.renderCommonPassthroughProperties(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
             }
             else
             {

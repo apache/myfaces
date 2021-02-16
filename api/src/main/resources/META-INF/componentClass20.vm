@@ -37,8 +37,8 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import java.util.Collections;
 import org.apache.myfaces.core.api.shared.MessageUtils;
-import org.apache.myfaces.core.api.shared.CommonEventConstants;
-import org.apache.myfaces.core.api.shared.CommonPropertyConstants;
+import org.apache.myfaces.core.api.shared.CommonHtmlEvents;
+import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 $utils.importTagClasses($component)
 
 #if ($component.isTemplate())
@@ -128,7 +128,7 @@ $innersource
     public void addClientBehavior(String eventName, jakarta.faces.component.behavior.ClientBehavior behavior)
     {
         super.addClientBehavior(eventName, behavior);
-        CommonEventConstants.markEvent(this, eventName);
+        CommonHtmlEvents.markEvent(this, eventName);
     }
 #end
 #end
@@ -342,7 +342,7 @@ $innersource
      $property.name == "onscroll"
       )
 #set($overrideSetValueExpression = true)
-        CommonPropertyConstants.markProperty(this, CommonPropertyConstants.${property.name.toUpperCase()}_PROP);
+        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.${property.name.toUpperCase()});
 #end
     }
 #end
@@ -352,7 +352,7 @@ $innersource
     public void setValueExpression(String name, ValueExpression expression)
     {
         super.setValueExpression(name, expression);
-        CommonPropertyConstants.markProperty(this, name);
+        CommonHtmlAttributes.markAttribute(this, name);
     }
 #end
 

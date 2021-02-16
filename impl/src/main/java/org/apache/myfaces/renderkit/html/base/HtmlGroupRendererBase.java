@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.renderkit.RendererUtils;
 
 import jakarta.faces.component.UIComponent;
@@ -100,8 +100,8 @@ public class HtmlGroupRendererBase extends HtmlRenderer
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(context))
             {
-                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
-                CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
+                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer, 
                         commonPropertiesMarked, component);
             }
             else
@@ -110,16 +110,16 @@ public class HtmlGroupRendererBase extends HtmlRenderer
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(context))
             {
-                CommonPropertyUtils.renderEventProperties(writer, 
+                CommonHtmlAttributesUtil.renderEventProperties(writer, 
                         commonPropertiesMarked, component);
             }
             else
             {
                 if (isCommonEventsOptimizationEnabled(context))
                 {
-                    CommonEventUtils.renderBehaviorizedEventHandlers(context, writer, 
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(context, writer, 
                            commonPropertiesMarked,
-                           CommonEventUtils.getCommonEventsMarked(component), component, behaviors);
+                           CommonHtmlEventsUtil.getMarkedEvents(component), component, behaviors);
                 }
                 else
                 {
@@ -131,14 +131,15 @@ public class HtmlGroupRendererBase extends HtmlRenderer
         {
             if (isCommonPropertiesOptimizationEnabled(context))
             {
-                long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
-                if (commonPropertiesMarked > 0)
+                long commonAttributesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
+                if (commonAttributesMarked > 0)
                 {
                     span = true;
                     writer.startElement(layoutElement, component);
                     HtmlRendererUtils.writeIdIfNecessary(writer, component, context);
 
-                    CommonPropertyUtils.renderCommonPassthroughProperties(writer, commonPropertiesMarked, component);
+                    CommonHtmlAttributesUtil.renderCommonPassthroughProperties(writer,
+                            commonAttributesMarked, component);
                 }
             }
             else

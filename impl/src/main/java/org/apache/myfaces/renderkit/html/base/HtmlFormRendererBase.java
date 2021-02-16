@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -98,16 +98,16 @@ public class HtmlFormRendererBase extends HtmlRenderer
             behaviors = ((ClientBehaviorHolder) htmlForm).getClientBehaviors();
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderEventProperties(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(htmlForm), htmlForm);
+                CommonHtmlAttributesUtil.renderEventProperties(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(htmlForm), htmlForm);
             }
             else
             {
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
-                           CommonPropertyUtils.getCommonPropertiesMarked(htmlForm),
-                           CommonEventUtils.getCommonEventsMarked(htmlForm), htmlForm, behaviors);
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
+                           CommonHtmlAttributesUtil.getMarkedAttributes(htmlForm),
+                           CommonHtmlEventsUtil.getMarkedEvents(htmlForm), htmlForm, behaviors);
                 }
                 else
                 {
@@ -116,8 +116,8 @@ public class HtmlFormRendererBase extends HtmlRenderer
             }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
                 HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_ATTRIBUTES);
             }
             else
@@ -130,8 +130,8 @@ public class HtmlFormRendererBase extends HtmlRenderer
         {
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderCommonPassthroughProperties(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
                 HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_ATTRIBUTES);
             }
             else

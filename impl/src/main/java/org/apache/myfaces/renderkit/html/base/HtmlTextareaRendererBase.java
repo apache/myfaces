@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -95,15 +95,15 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderChangeEventProperty(writer, 
+                CommonHtmlAttributesUtil.renderChangeEventProperty(writer, 
                         commonPropertiesMarked, uiComponent);
-                CommonPropertyUtils.renderEventProperties(writer, 
+                CommonHtmlAttributesUtil.renderEventProperties(writer, 
                         commonPropertiesMarked, uiComponent);
-                CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(writer, 
                         commonPropertiesMarked, uiComponent);
             }
             else
@@ -111,10 +111,10 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
                 HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
-                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                    Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                             commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
-                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                    CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(
                         facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
                 }
                 else
@@ -126,8 +126,8 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
             }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                CommonHtmlAttributesUtil.renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
                 HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TEXTAREA_ATTRIBUTES);
             }
             else
@@ -142,8 +142,8 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.NAME_ATTR, uiComponent.getClientId(facesContext), null);
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderCommonFieldPassthroughPropertiesWithoutDisabled(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                CommonHtmlAttributesUtil.renderCommonFieldPassthroughPropertiesWithoutDisabled(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
                 HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TEXTAREA_ATTRIBUTES);
             }
             else

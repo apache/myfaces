@@ -27,22 +27,16 @@ import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-import org.apache.myfaces.core.api.shared.CommonEventConstants;
-import org.apache.myfaces.core.api.shared.CommonPropertyConstants;
+import org.apache.myfaces.core.api.shared.CommonHtmlEvents;
+import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
 
-public class CommonEventUtils
+public class CommonHtmlEventsUtil
 {
-    public static long getCommonEventsMarked(UIComponent component)
+    public static long getMarkedEvents(UIComponent component)
     {
-        Long commonEvents = (Long) component.getAttributes().get(CommonEventConstants.COMMON_EVENTS_MARKED);
-        
-        if (commonEvents == null)
-        {
-            commonEvents = 0L;
-        }
-        return commonEvents;
+        return CommonHtmlEvents.getMarkedEvents(component);
     }
 
     public static boolean renderBehaviorizedAttribute(
@@ -126,96 +120,96 @@ public class CommonEventUtils
 
     public static void renderBehaviorizedEventHandlers(
             FacesContext facesContext, ResponseWriter writer,
-            long commonPropertiesMarked, long commonEventsMarked,
+            long commonAttributesMarked, long commonEventsMarked,
             UIComponent uiComponent,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
         renderBehaviorizedEventHandlers(facesContext, writer, 
-                commonPropertiesMarked, commonEventsMarked, uiComponent,
+                commonAttributesMarked, commonEventsMarked, uiComponent,
                 null, clientBehaviors);
     }
     
     public static void renderBehaviorizedEventHandlers(
             FacesContext facesContext, ResponseWriter writer,
-            long commonPropertiesMarked, long commonEventsMarked,
+            long commonAttributesMarked, long commonEventsMarked,
             UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
-        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        if (commonAttributesMarked == 0 && commonEventsMarked == 0)
         {
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONCLICK_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.CLICK) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONCLICK) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.CLICK) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONCLICK_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.CLICK,
                     clientBehaviors, HTML.ONCLICK_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONDBLCLICK_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.DBLCLICK) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONDBLCLICK) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.DBLCLICK) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONDBLCLICK_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.DBLCLICK,
                     clientBehaviors, HTML.ONDBLCLICK_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEDOWN_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEDOWN) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONMOUSEDOWN) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.MOUSEDOWN) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEDOWN_ATTR, uiComponent, sourceId,
                     ClientBehaviorEvents.MOUSEDOWN, clientBehaviors,
                     HTML.ONMOUSEDOWN_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEUP_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEUP) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONMOUSEUP) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.MOUSEUP) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONMOUSEUP_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.MOUSEUP,
                     clientBehaviors, HTML.ONMOUSEUP_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOVER_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEOVER) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONMOUSEOVER) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.MOUSEOVER) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEOVER_ATTR, uiComponent, sourceId,
                     ClientBehaviorEvents.MOUSEOVER, clientBehaviors,
                     HTML.ONMOUSEOVER_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEMOVE_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEMOVE) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONMOUSEMOVE) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.MOUSEMOVE) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEMOVE_ATTR, uiComponent, sourceId,
                     ClientBehaviorEvents.MOUSEMOVE, clientBehaviors,
                     HTML.ONMOUSEMOVE_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOUT_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEOUT) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONMOUSEOUT) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.MOUSEOUT) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONMOUSEOUT_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.MOUSEOUT,
                     clientBehaviors, HTML.ONMOUSEOUT_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYPRESS_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYPRESS) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONKEYPRESS) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.KEYPRESS) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYPRESS_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYPRESS,
                     clientBehaviors, HTML.ONKEYPRESS_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYDOWN_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYDOWN) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONKEYDOWN) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.KEYDOWN) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYDOWN_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYDOWN,
                     clientBehaviors, HTML.ONKEYDOWN_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYUP_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYUP) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONKEYUP) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.KEYUP) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYUP_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYUP,
@@ -225,13 +219,13 @@ public class CommonEventUtils
 
     public static void renderBehaviorizedEventHandlersWithoutOnclick(
             FacesContext facesContext, ResponseWriter writer,
-            long commonPropertiesMarked, long commonEventsMarked,
+            long commonAttributesMarked, long commonEventsMarked,
             UIComponent uiComponent, 
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
         renderBehaviorizedEventHandlersWithoutOnclick(facesContext, writer, 
-                commonPropertiesMarked, commonEventsMarked, uiComponent,
+                commonAttributesMarked, commonEventsMarked, uiComponent,
                 null, clientBehaviors);
     }
 
@@ -244,77 +238,77 @@ public class CommonEventUtils
      */
     public static void renderBehaviorizedEventHandlersWithoutOnclick(
             FacesContext facesContext, ResponseWriter writer,
-            long commonPropertiesMarked, long commonEventsMarked,
+            long commonAttributesMarked, long commonEventsMarked,
             UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
-        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        if (commonAttributesMarked == 0 && commonEventsMarked == 0)
         {
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONDBLCLICK_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.DBLCLICK) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONDBLCLICK) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.DBLCLICK) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONDBLCLICK_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.DBLCLICK,
                     clientBehaviors, HTML.ONDBLCLICK_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEDOWN_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEDOWN) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONMOUSEDOWN) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.MOUSEDOWN) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEDOWN_ATTR, uiComponent, sourceId,
                     ClientBehaviorEvents.MOUSEDOWN, clientBehaviors,
                     HTML.ONMOUSEDOWN_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEUP_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEUP) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONMOUSEUP) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.MOUSEUP) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONMOUSEUP_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.MOUSEUP,
                     clientBehaviors, HTML.ONMOUSEUP_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOVER_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEOVER) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONMOUSEOVER) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.MOUSEOVER) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEOVER_ATTR, uiComponent, sourceId,
                     ClientBehaviorEvents.MOUSEOVER, clientBehaviors,
                     HTML.ONMOUSEOVER_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEMOVE_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEMOVE) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONMOUSEMOVE) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.MOUSEMOVE) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer,
                     HTML.ONMOUSEMOVE_ATTR, uiComponent, sourceId,
                     ClientBehaviorEvents.MOUSEMOVE, clientBehaviors,
                     HTML.ONMOUSEMOVE_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOUT_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.MOUSEOUT) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONMOUSEOUT) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.MOUSEOUT) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONMOUSEOUT_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.MOUSEOUT,
                     clientBehaviors, HTML.ONMOUSEOUT_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYPRESS_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYPRESS) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONKEYPRESS) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.KEYPRESS) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYPRESS_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYPRESS,
                     clientBehaviors, HTML.ONKEYPRESS_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYDOWN_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYDOWN) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONKEYDOWN) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.KEYDOWN) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYDOWN_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYDOWN,
                     clientBehaviors, HTML.ONKEYDOWN_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYUP_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.KEYUP) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONKEYUP) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.KEYUP) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYUP_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.KEYUP,
@@ -331,39 +325,39 @@ public class CommonEventUtils
      */
     public static void renderBehaviorizedFieldEventHandlers(
             FacesContext facesContext, ResponseWriter writer,
-            long commonPropertiesMarked, long commonEventsMarked,
+            long commonAttributesMarked, long commonEventsMarked,
             UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
-        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        if (commonAttributesMarked == 0 && commonEventsMarked == 0)
         {
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.FOCUS) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONFOCUS) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.FOCUS) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONFOCUS_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.FOCUS, clientBehaviors,
                     HTML.ONFOCUS_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.BLUR) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONBLUR) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.BLUR) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONBLUR_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.BLUR, clientBehaviors,
                     HTML.ONBLUR_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONCHANGE_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.CHANGE) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONCHANGE) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.CHANGE) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONCHANGE_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.CHANGE, clientBehaviors,
                     HTML.ONCHANGE_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONSELECT_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.SELECT) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONSELECT) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.SELECT) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONSELECT_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.SELECT, clientBehaviors,
@@ -373,32 +367,32 @@ public class CommonEventUtils
 
     public static void renderBehaviorizedFieldEventHandlersWithoutOnfocus(
             FacesContext facesContext, ResponseWriter writer,
-            long commonPropertiesMarked, long commonEventsMarked,
+            long commonAttributesMarked, long commonEventsMarked,
             UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
-        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        if (commonAttributesMarked == 0 && commonEventsMarked == 0)
         {
             return;
         }
 
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.BLUR) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONBLUR) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.BLUR) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONBLUR_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.BLUR, clientBehaviors,
                     HTML.ONBLUR_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONCHANGE_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.CHANGE) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONCHANGE) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.CHANGE) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONCHANGE_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.CHANGE, clientBehaviors,
                     HTML.ONCHANGE_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONSELECT_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.SELECT) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONSELECT) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.SELECT) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONSELECT_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.SELECT, clientBehaviors,
@@ -408,44 +402,44 @@ public class CommonEventUtils
 
     public static void renderBehaviorizedFieldEventHandlersWithoutOnchange(
             FacesContext facesContext, ResponseWriter writer,
-            long commonPropertiesMarked, long commonEventsMarked,
+            long commonAttributesMarked, long commonEventsMarked,
             UIComponent uiComponent, 
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
         renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                facesContext, writer, commonPropertiesMarked, commonEventsMarked, 
+                facesContext, writer, commonAttributesMarked, commonEventsMarked, 
                 uiComponent, null, clientBehaviors);
     }
     
     public static void renderBehaviorizedFieldEventHandlersWithoutOnchange(
             FacesContext facesContext, ResponseWriter writer,
-            long commonPropertiesMarked, long commonEventsMarked,
+            long commonAttributesMarked, long commonEventsMarked,
             UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
-        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        if (commonAttributesMarked == 0 && commonEventsMarked == 0)
         {
             return;
         }
         
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.FOCUS) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONFOCUS) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.FOCUS) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONFOCUS_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.FOCUS, clientBehaviors,
                     HTML.ONFOCUS_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.BLUR) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONBLUR) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.BLUR) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONBLUR_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.BLUR, clientBehaviors,
                     HTML.ONBLUR_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONSELECT_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.SELECT) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONSELECT) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.SELECT) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONSELECT_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.SELECT, clientBehaviors,
@@ -455,39 +449,39 @@ public class CommonEventUtils
 
     public static void renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
             FacesContext facesContext, ResponseWriter writer,
-            long commonPropertiesMarked, long commonEventsMarked,
+            long commonAttributesMarked, long commonEventsMarked,
             UIComponent uiComponent,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
         renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
                 facesContext, writer, 
-                commonPropertiesMarked, commonEventsMarked, 
+                commonAttributesMarked, commonEventsMarked, 
                 uiComponent, null, 
                 clientBehaviors);
     }
     
     public static void renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
             FacesContext facesContext, ResponseWriter writer,
-            long commonPropertiesMarked, long commonEventsMarked,
+            long commonAttributesMarked, long commonEventsMarked,
             UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
-        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        if (commonAttributesMarked == 0 && commonEventsMarked == 0)
         {
             return;
         }
 
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.FOCUS) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONFOCUS) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.FOCUS) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONFOCUS_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.FOCUS, clientBehaviors,
                     HTML.ONFOCUS_ATTR);
         }
-        if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0 ||
-            (commonEventsMarked & CommonEventConstants.BLUR) != 0)
+        if ((commonAttributesMarked & CommonHtmlAttributes.ONBLUR) != 0 ||
+            (commonEventsMarked & CommonHtmlEvents.BLUR) != 0)
         {
             renderBehaviorizedAttribute(facesContext, writer, HTML.ONBLUR_ATTR,
                     uiComponent, sourceId, ClientBehaviorEvents.BLUR, clientBehaviors,

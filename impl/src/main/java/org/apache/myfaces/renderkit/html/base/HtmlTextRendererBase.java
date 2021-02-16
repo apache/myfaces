@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +38,7 @@ import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
-import org.apache.myfaces.core.api.shared.CommonPropertyConstants;
+import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
@@ -106,22 +106,22 @@ public class HtmlTextRendererBase
 
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
-                if (commonPropertiesMarked > 0 && (commonPropertiesMarked & ~(CommonPropertyConstants.ESCAPE_PROP)) > 0)
+                long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
+                if (commonPropertiesMarked > 0 && (commonPropertiesMarked & ~(CommonHtmlAttributes.ESCAPE)) > 0)
                 {
                     span = true;
                     writer.startElement(HTML.SPAN_ELEM, component);
                     HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                 }
-                else if (CommonPropertyUtils.isIdRenderingNecessary(component))
+                else if (CommonHtmlAttributesUtil.isIdRenderingNecessary(component))
                 {
                     span = true;
                     writer.startElement(HTML.SPAN_ELEM, component);
                     writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext), null);
                 }
                 
-                CommonPropertyUtils.renderUniversalProperties(writer, commonPropertiesMarked, component);
-                CommonPropertyUtils.renderStyleProperties(writer, commonPropertiesMarked, component);
+                CommonHtmlAttributesUtil.renderUniversalProperties(writer, commonPropertiesMarked, component);
+                CommonHtmlAttributesUtil.renderStyleProperties(writer, commonPropertiesMarked, component);
                 
                 if (isRenderOutputEventAttributes())
                 {
@@ -206,15 +206,15 @@ public class HtmlTextRendererBase
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderChangeEventProperty(writer, 
+                CommonHtmlAttributesUtil.renderChangeEventProperty(writer, 
                         commonPropertiesMarked, component);
-                CommonPropertyUtils.renderEventProperties(writer, 
+                CommonHtmlAttributesUtil.renderEventProperties(writer, 
                         commonPropertiesMarked, component);
-                CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(writer, 
                         commonPropertiesMarked, component);
             }
             else
@@ -222,10 +222,10 @@ public class HtmlTextRendererBase
                 HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, component, behaviors);
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(component);
-                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                    Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                             commonPropertiesMarked, commonEventsMarked, component, behaviors);
-                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                    CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(
                         facesContext, writer, commonPropertiesMarked, commonEventsMarked, component, behaviors);
                 }
                 else
@@ -237,7 +237,7 @@ public class HtmlTextRendererBase
             }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
+                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
                         commonPropertiesMarked, component);
             }
             else
@@ -250,8 +250,8 @@ public class HtmlTextRendererBase
         {
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabled(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabled(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
             }
             else
             {

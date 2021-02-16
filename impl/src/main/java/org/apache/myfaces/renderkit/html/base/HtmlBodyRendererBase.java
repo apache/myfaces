@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
-import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -81,16 +81,16 @@ public class HtmlBodyRendererBase extends HtmlRenderer
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderEventProperties(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                CommonHtmlAttributesUtil.renderEventProperties(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
             }
             else
             {
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
-                           CommonPropertyUtils.getCommonPropertiesMarked(component),
-                           CommonEventUtils.getCommonEventsMarked(component), component, behaviors);
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
+                           CommonHtmlAttributesUtil.getMarkedAttributes(component),
+                           CommonHtmlEventsUtil.getMarkedEvents(component), component, behaviors);
                 }
                 else
                 {
@@ -105,8 +105,8 @@ public class HtmlBodyRendererBase extends HtmlRenderer
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, component,
                         HTML.BODY_ATTRIBUTES_WITHOUT_EVENTS);
-                CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
             }
             else
             {
@@ -124,8 +124,8 @@ public class HtmlBodyRendererBase extends HtmlRenderer
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, component,
                         HTML.BODY_ATTRIBUTES);
-                CommonPropertyUtils.renderCommonPassthroughProperties(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(writer, 
+                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
             }
             else
             {
