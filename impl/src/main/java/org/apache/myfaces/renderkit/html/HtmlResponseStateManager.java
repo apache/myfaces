@@ -277,17 +277,21 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         // multiple sections for update. In servlet case there is only one update section per
         // ajax request.
         
-        String id;
         char separator = facesContext.getNamingContainerSeparatorChar();
+
         Integer count = (Integer) facesContext.getAttributes().get(CLIENT_WINDOW_COUNTER);
         if (count == null)
         {
-            count = Integer.valueOf(0);
+            count = Integer.valueOf(1);
         }
-        count += 1;
-        id = facesContext.getViewRoot().getContainerClientId(facesContext) + 
-            separator + ResponseStateManager.CLIENT_WINDOW_PARAM + separator + count;
+        else
+        {
+            count += 1;
+        }
         facesContext.getAttributes().put(CLIENT_WINDOW_COUNTER, count);
+
+        String id = facesContext.getViewRoot().getContainerClientId(facesContext) + 
+            separator + ResponseStateManager.CLIENT_WINDOW_PARAM + separator + count;
         return id;
     }
     
@@ -304,18 +308,22 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         // UNIQUE_PER_VIEW_NUMBER aim for portlet case. In that case it is possible to have
         // multiple sections for update. In servlet case there is only one update section per
         // ajax request.
-        
-        String id;
+
         char separator = facesContext.getNamingContainerSeparatorChar();
+
         Integer count = (Integer) facesContext.getAttributes().get(VIEW_STATE_COUNTER);
         if (count == null)
         {
-            count = Integer.valueOf(0);
+            count = Integer.valueOf(1);
         }
-        count += 1;
-        id = facesContext.getViewRoot().getContainerClientId(facesContext) + 
-            separator + ResponseStateManager.VIEW_STATE_PARAM + separator + count;
+        else
+        {
+            count += 1;
+        }
         facesContext.getAttributes().put(VIEW_STATE_COUNTER, count);
+
+        String id = facesContext.getViewRoot().getContainerClientId(facesContext) + 
+            separator + ResponseStateManager.VIEW_STATE_PARAM + separator + count;
         return id;
     }
 }
