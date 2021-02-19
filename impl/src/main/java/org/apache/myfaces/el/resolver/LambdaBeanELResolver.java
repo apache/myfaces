@@ -156,7 +156,7 @@ public class LambdaBeanELResolver extends BeanELResolver
         }
 
         PropertyDescriptorWrapper pd = beanCache.get((String) property);
-        if (property == null)
+        if (pd == null)
         {
             throw new PropertyNotFoundException("Property [" + property
                     + "] not found on type [" + base.getClass().getName() + "]");
