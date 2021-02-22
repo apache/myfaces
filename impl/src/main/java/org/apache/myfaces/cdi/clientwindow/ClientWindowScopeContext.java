@@ -226,7 +226,7 @@ public class ClientWindowScopeContext implements Context
                 facesContext.getExternalContext().getSessionMap();
         Map<String, ContextualStorage> contextualStorageMap =
                 (Map<String, ContextualStorage>) sessionMap.get(CLIENT_WINDOW_SCOPE_MAP);
-        if (contextualStorageMap == null)
+        if (contextualStorageMap == null || contextualStorageMap.isEmpty())
         {
             return;
         }
@@ -253,7 +253,7 @@ public class ClientWindowScopeContext implements Context
                 facesContext.getExternalContext().getSessionMap();
         Map<String, ContextualStorage> contextualStorageMap =
                 (Map<String, ContextualStorage>) sessionMap.get(CLIENT_WINDOW_SCOPE_MAP);
-        if (contextualStorageMap == null)
+        if (contextualStorageMap == null || contextualStorageMap.isEmpty())
         {
             return;
         }

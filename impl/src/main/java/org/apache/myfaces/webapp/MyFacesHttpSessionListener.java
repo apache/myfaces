@@ -24,6 +24,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
+import org.apache.myfaces.cdi.clientwindow.ClientWindowScopeContext;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
@@ -72,6 +73,7 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
             {
                 facesFlowProvider.onSessionDestroyed();
             }
+            ClientWindowScopeContext.destroyAllActive(facesContext);
         }
         else
         {
@@ -93,6 +95,7 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
                 {
                     facesFlowProvider.onSessionDestroyed();
                 }
+                ClientWindowScopeContext.destroyAllActive(facesContext);
             }
             finally
             {
