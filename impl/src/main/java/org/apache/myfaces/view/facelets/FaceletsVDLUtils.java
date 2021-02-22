@@ -50,7 +50,7 @@ public class FaceletsVDLUtils
         // Check for exact match
         if (path.equals(pattern))
         {
-            return (true);
+            return true;
         }
 
         // Check for path prefix matching
@@ -59,7 +59,7 @@ public class FaceletsVDLUtils
             pattern = pattern.substring(0, pattern.length() - 2);
             if (pattern.length() == 0)
             {
-                return (true);  // "/*" is the same as "/"
+                return true;  // "/*" is the same as "/"
             }
             if (path.endsWith("/"))
             {
@@ -69,7 +69,7 @@ public class FaceletsVDLUtils
             {
                 if (pattern.equals(path))
                 {
-                    return (true);
+                    return true;
                 }
                 int slash = path.lastIndexOf('/');
                 if (slash <= 0)
@@ -78,16 +78,16 @@ public class FaceletsVDLUtils
                 }
                 path = path.substring(0, slash);
             }
-            return (false);
+            return false;
         }
 
         // Check for universal mapping
         if (pattern.equals("*"))
         {
-            return (true);
+            return true;
         }
 
-        return (false);
+        return false;
     }
     
     public static final class KeyComparator implements Comparator<String>

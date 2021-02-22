@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.view.facelets;
 
-
 /**
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
