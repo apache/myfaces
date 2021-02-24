@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.flow.cdi;
 
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,9 +27,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.Producer;
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.builder.FlowDefinition;
+import java.util.Set;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.flow.FlowUtils;
 import org.apache.myfaces.spi.FacesFlowProvider;
@@ -80,23 +84,24 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
     @Override
     public Iterator<Flow> getAnnotatedFlows(FacesContext facesContext)
     {
-        BeanManager beanManager = getBeanManager(facesContext);
-        if (beanManager == null)
-        {
-            Logger.getLogger(DefaultCDIFacesFlowProvider.class.getName()).log(Level.INFO,
-                "CDI BeanManager not found");
-            return null;
-        }
-
         if (flows == null)
         {
             flows = new ArrayList<>();
 
-            FlowBuilderExtension extension = CDIUtils.get(beanManager, FlowBuilderExtension.class);
-            for (Producer<Flow> producer : extension.getFlowProducers())
+            BeanManager beanManager = getBeanManager(facesContext);
+            if (beanManager == null)
             {
-                Flow flow = producer.produce(beanManager.<Flow>createCreationalContext(null));
-                flows.add(flow);
+                Logger.getLogger(DefaultCDIFacesFlowProvider.class.getName()).log(Level.INFO,
+                        "CDI BeanManager not found");
+                return null;
+            }
+
+            Set<Bean<?>> beans = beanManager.getBeans(Flow.class, new AnnotationLiteral<FlowDefinition>(){ });
+            for (Bean bean : beans)
+            {
+                // TODO we should actually remember the CC and destroy on shutdown
+                CreationalContext<Flow> cc = beanManager.createCreationalContext(bean);
+                flows.add((Flow) beanManager.getReference(bean, Flow.class, cc));
             }
         }
 

@@ -18,18 +18,11 @@
  */
 package org.apache.myfaces.flow.cdi;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
-import jakarta.enterprise.inject.spi.ProcessProducer;
-import jakarta.enterprise.inject.spi.Producer;
-import jakarta.faces.flow.Flow;
-import jakarta.faces.flow.builder.FlowDefinition;
 
 /**
  * This extension is responsible of scan flow definitions through CDI. For example:
@@ -43,13 +36,6 @@ import jakarta.faces.flow.builder.FlowDefinition;
  */
 public class FlowBuilderExtension implements Extension
 {
-    private List<Producer<Flow>> flowProducers = new ArrayList<Producer<Flow>>();
-
-    public List<Producer<Flow>> getFlowProducers()
-    {
-        return flowProducers;
-    }
-
     void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
         // Register FlowBuilderFactoryBean as a bean with CDI annotations, so the system
@@ -57,16 +43,5 @@ public class FlowBuilderExtension implements Extension
         AnnotatedType<FlowBuilderFactoryBean> flowDiscoveryHelper =
                         beanManager.createAnnotatedType(FlowBuilderFactoryBean.class);
         event.addAnnotatedType(flowDiscoveryHelper, flowDiscoveryHelper.getJavaClass().getName());
-    }
-
-    /**
-     * Stores any producer method that is annotated with &#64;FlowDefinition.
-     */
-    <T> void findFlowDefinition(@Observes ProcessProducer<T, Flow> processProducer)
-    {
-        if (processProducer.getAnnotatedMember().isAnnotationPresent(FlowDefinition.class))
-        {
-            flowProducers.add(processProducer.getProducer());
-        }
     }
 }
