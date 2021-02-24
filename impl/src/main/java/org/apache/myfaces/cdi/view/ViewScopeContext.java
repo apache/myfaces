@@ -57,24 +57,26 @@ public class ViewScopeContext implements Context
         this.passivatingScope = beanManager.isPassivatingScope(getScope());
     }
 
-    protected ViewScopeBeanHolder getViewScopeBeanHolder()
+    protected ViewScopeBeanHolder getOrCreateViewScopeBeanHolder()
     {
-        return getViewScopeBeanHolder(FacesContext.getCurrentInstance());
-    }
-    
-    protected ViewScopeBeanHolder getViewScopeBeanHolder(FacesContext facesContext)
-    {
-        ViewScopeBeanHolder beanHolder = (ViewScopeBeanHolder) facesContext.getExternalContext().getApplicationMap()
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ViewScopeBeanHolder beanHolder = (ViewScopeBeanHolder) facesContext.getExternalContext().getSessionMap()
                 .get(ViewScopeBeanHolder.class.getName());
         if (beanHolder == null)
         {
             beanHolder = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
-            facesContext.getExternalContext().getApplicationMap().put(
+            facesContext.getExternalContext().getSessionMap().put(
                     ViewScopeBeanHolder.class.getName(),
                     beanHolder);
         }
 
         return beanHolder;
+    }
+
+    protected static ViewScopeBeanHolder getViewScopeBeanHolder(FacesContext facesContext)
+    {
+        return (ViewScopeBeanHolder) facesContext.getExternalContext().getSessionMap()
+                .get(ViewScopeBeanHolder.class.getName());
     }
 
     public String getCurrentViewScopeId(boolean create)
@@ -105,7 +107,7 @@ public class ViewScopeContext implements Context
         }
         if (viewScopeId != null)
         {
-            return getViewScopeBeanHolder().getContextualStorage(beanManager, viewScopeId);
+            return getOrCreateViewScopeBeanHolder().getContextualStorage(beanManager, viewScopeId);
         }
         return null;
     }
@@ -231,6 +233,20 @@ public class ViewScopeContext implements Context
         destroyAllActive(storage);
     }
 
+    
+    public static void destroyAllActive(FacesContext context, String viewScopeId)
+    {
+        if (isViewScopeBeanHolderCreated(context))
+        {
+            ViewScopeBeanHolder beanHolder = getViewScopeBeanHolder(context);
+            if (beanHolder != null)
+            {
+                beanHolder.destroyBeans(viewScopeId);
+            }
+        }
+    }
+
+    
     public static void destroyAllActive(ViewScopeContextualStorage storage)
     {
         destroyAllActive(storage, FacesContext.getCurrentInstance());
@@ -271,4 +287,37 @@ public class ViewScopeContext implements Context
         }
     }
 
+    private static boolean isViewScopeBeanHolderCreated(FacesContext facesContext)
+    {
+        if (facesContext.getExternalContext().getSession(false) == null)
+        {
+            return false;
+        }
+        
+        return facesContext.getExternalContext().
+            getSessionMap().containsKey(ViewScopeBeanHolder.CREATED);
+    }
+    
+    public static void onSessionDestroyed(FacesContext facesContext)
+    {
+        if (facesContext == null)
+        {
+            return;
+        }
+        
+        // In CDI case, the best way to deal with this is use a method 
+        // with @PreDestroy annotation on a session scope bean 
+        // ( ViewScopeBeanHolder.destroyBeans() ). There is no need
+        // to do anything else in this location, but it is advised
+        // in CDI the beans are destroyed at the end of the request,
+        // not when invalidateSession() is called.
+        if (isViewScopeBeanHolderCreated(facesContext))
+        {
+            ViewScopeBeanHolder beanHolder = getViewScopeBeanHolder(facesContext);
+            if (beanHolder != null)
+            {
+                beanHolder.destroyBeans();                
+            }
+        }
+    }
 }

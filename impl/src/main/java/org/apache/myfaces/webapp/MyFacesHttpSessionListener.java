@@ -25,24 +25,18 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 import org.apache.myfaces.cdi.clientwindow.ClientWindowScopeContext;
+import org.apache.myfaces.cdi.view.ViewScopeContext;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.spi.FacesFlowProvider;
-import org.apache.myfaces.spi.ViewScopeProvider;
 
 public class MyFacesHttpSessionListener implements HttpSessionListener
 {
     public static final String APPLICATION_MAP_KEY = MyFacesHttpSessionListener.class.getName();
 
-    private ViewScopeProvider viewScopeProvider = null;
     private FacesFlowProvider facesFlowProvider = null;
-    
-    public void setViewScopeProvider(ViewScopeProvider viewScopeProvider)
-    {
-        this.viewScopeProvider = viewScopeProvider;
-    }
-    
+
     public void setFacesFlowProvider(FacesFlowProvider facesFlowProvider)
     {
         this.facesFlowProvider = facesFlowProvider;
@@ -65,15 +59,12 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null)
         {
-            if (viewScopeProvider != null)
-            {
-                viewScopeProvider.onSessionDestroyed();
-            }
             if (facesFlowProvider != null)
             {
                 facesFlowProvider.onSessionDestroyed();
             }
-            ClientWindowScopeContext.destroyAllActive(facesContext);
+            ViewScopeContext.onSessionDestroyed(facesContext);
+            ClientWindowScopeContext.onSessionDestroyed(facesContext);
         }
         else
         {
@@ -87,15 +78,12 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
                 ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                 facesContext = new StartupFacesContextImpl(externalContext, externalContext, exceptionHandler, false);
 
-                if (viewScopeProvider != null)
-                {
-                    viewScopeProvider.onSessionDestroyed();
-                }
                 if (facesFlowProvider != null)
                 {
                     facesFlowProvider.onSessionDestroyed();
                 }
-                ClientWindowScopeContext.destroyAllActive(facesContext);
+                ViewScopeContext.onSessionDestroyed(facesContext);
+                ClientWindowScopeContext.onSessionDestroyed(facesContext);
             }
             finally
             {

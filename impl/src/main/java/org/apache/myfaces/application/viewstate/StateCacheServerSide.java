@@ -45,8 +45,6 @@ import jakarta.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.util.MyFacesObjectInputStream;
-import org.apache.myfaces.spi.ViewScopeProvider;
-import org.apache.myfaces.spi.ViewScopeProviderFactory;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 
 class StateCacheServerSide extends StateCache<Object, Object>
@@ -193,11 +191,8 @@ class StateCacheServerSide extends StateCache<Object, Object>
         }
         if (viewScopeProxyMap != null)
         {
-            ViewScopeProviderFactory factory = ViewScopeProviderFactory.getViewScopeHandlerFactory(
-                context.getExternalContext());
-            ViewScopeProvider handler = factory.getViewScopeHandler(context.getExternalContext());
             viewCollection.put(context, serializeView(context, serializedView), nextKey, key,
-                    handler, viewScopeProxyMap.getViewScopeId());
+                    viewScopeProxyMap.getViewScopeId());
         }
         else
         {

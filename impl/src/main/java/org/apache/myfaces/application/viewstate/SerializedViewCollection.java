@@ -25,8 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import jakarta.faces.context.FacesContext;
+import java.util.function.Consumer;
+import org.apache.myfaces.cdi.view.ViewScopeContext;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.util.lang.LRULinkedHashMap;
 
 /**
@@ -59,12 +60,20 @@ class SerializedViewCollection implements Serializable
 
     public void put(FacesContext context, Object state, SerializedViewKey key, SerializedViewKey previousRestoredKey)
     {
-        put(context, state, key, previousRestoredKey, null, null);
+        put(context, state, key, previousRestoredKey, null,
+                (oldViewScopeId) -> ViewScopeContext.destroyAllActive(context, oldViewScopeId));
     }
     
     public synchronized void put(FacesContext context, Object state, 
-        SerializedViewKey key, SerializedViewKey previousRestoredKey,
-        ViewScopeProvider viewScopeProvider, String viewScopeId)
+        SerializedViewKey key, SerializedViewKey previousRestoredKey, String viewScopeId)
+    {
+        put(context, state, key, previousRestoredKey, viewScopeId,
+            (oldViewScopeId) -> ViewScopeContext.destroyAllActive(context, oldViewScopeId));
+    }
+
+    public synchronized void put(FacesContext context, Object state, 
+        SerializedViewKey key, SerializedViewKey previousRestoredKey, String viewScopeId,
+        Consumer<String> destroyCallback)
     {
         if (state == null)
         {
@@ -115,7 +124,7 @@ class SerializedViewCollection implements Serializable
         }
         _serializedViews.put(key, state);
         
-        if (viewScopeProvider != null && viewScopeId != null)
+        if (viewScopeId != null)
         {
             if (_viewScopeIds == null)
             {
@@ -163,7 +172,7 @@ class SerializedViewCollection implements Serializable
 
                     _serializedViews.remove(keyToRemove);
                     
-                    if (viewScopeProvider != null && _viewScopeIds != null)
+                    if (_viewScopeIds != null)
                     {
                         String oldViewScopeId = _viewScopeIds.remove(keyToRemove);
                         if (oldViewScopeId != null)
@@ -173,7 +182,7 @@ class SerializedViewCollection implements Serializable
                             if (vscount < 1)
                             {
                                 _viewScopeIdCounts.remove(oldViewScopeId);
-                                viewScopeProvider.destroyViewScopeMap(context, oldViewScopeId);
+                                destroyCallback.accept(oldViewScopeId);
                             }
                             else
                             {
@@ -206,7 +215,7 @@ class SerializedViewCollection implements Serializable
 
             _serializedViews.remove(key);
             
-            if (viewScopeProvider != null && _viewScopeIds != null)
+            if (_viewScopeIds != null)
             {
                 String oldViewScopeId = _viewScopeIds.remove(key);
                 if (oldViewScopeId != null)
@@ -216,7 +225,7 @@ class SerializedViewCollection implements Serializable
                     if (vscount < 1)
                     {
                         _viewScopeIdCounts.remove(oldViewScopeId);
-                        viewScopeProvider.destroyViewScopeMap(context, oldViewScopeId);
+                        destroyCallback.accept(oldViewScopeId);
                     }
                     else
                     {

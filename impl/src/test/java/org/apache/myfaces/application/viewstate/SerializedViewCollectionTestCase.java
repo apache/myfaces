@@ -16,10 +16,8 @@
 
 package org.apache.myfaces.application.viewstate;
 
-import java.util.Map;
-import jakarta.faces.context.FacesContext;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,15 +37,15 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         String viewId = "/test.xhtml";
         SerializedViewKey key1 = new SerializedViewKeyIntInt(viewId.hashCode(), 1);
         SerializedViewKey key2 = new SerializedViewKeyIntInt(viewId.hashCode(), 2);
+                
+        AtomicInteger destroyed = new AtomicInteger();
         
-        TestViewScopeProvider provider = new TestViewScopeProvider();
-        
-        collection.put(facesContext, new Object[]{null,null,2}, key1, null, provider, "1");
+        collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
-        collection.put(facesContext, new Object[]{null,null,2}, key2, null, provider, "2");
+        collection.put(facesContext, new Object[]{null,null,2}, key2, null, "2", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNull(collection.get(key1));
-        Assert.assertEquals(provider.getDestroyCount(), 1);
+        Assert.assertEquals(destroyed.get(), 1);
         
     }
     
@@ -63,18 +61,18 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         SerializedViewKey key2 = new SerializedViewKeyIntInt(viewId.hashCode(), 2);
         SerializedViewKey key3 = new SerializedViewKeyIntInt(viewId.hashCode(), 3);
         
-        TestViewScopeProvider provider = new TestViewScopeProvider();
+        AtomicInteger destroyed = new AtomicInteger();
         
-        collection.put(facesContext, new Object[]{null,null,2}, key1, null, provider, "1");
+        collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
-        collection.put(facesContext, new Object[]{null,null,2}, key3, null, provider, "3");
+        collection.put(facesContext, new Object[]{null,null,2}, key3, null, "3", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key3));
-        collection.put(facesContext, new Object[]{null,null,2}, key2, key1, provider, "2");
+        collection.put(facesContext, new Object[]{null,null,2}, key2, key1, "2", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNotNull(collection.get(key3));
         Assert.assertNull(collection.get(key1));
-        Assert.assertEquals(provider.getDestroyCount(), 1);
+        Assert.assertEquals(destroyed.get(), 1);
         
     }    
     
@@ -89,20 +87,20 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         SerializedViewKey key2 = new SerializedViewKeyIntInt(viewId.hashCode(), 2);
         SerializedViewKey key3 = new SerializedViewKeyIntInt(viewId.hashCode(), 3);
         
-        TestViewScopeProvider provider = new TestViewScopeProvider();
+        AtomicInteger destroyed = new AtomicInteger();
         
-        collection.put(facesContext, new Object[]{null,null,2}, key1, null, provider, "1");
+        collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
-        collection.put(facesContext, new Object[]{null,null,2}, key2, null, provider, "1");
+        collection.put(facesContext, new Object[]{null,null,2}, key2, null, "1", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNull(collection.get(key1));
         // Destroy should not happen, because there is still one view holding the viewScopeId.
-        Assert.assertEquals(provider.getDestroyCount(), 0);
-        collection.put(facesContext, new Object[]{null,null,2}, key3, null, provider, "2");
+        Assert.assertEquals(destroyed.get(), 0);
+        collection.put(facesContext, new Object[]{null,null,2}, key3, null, "2", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key3));
         Assert.assertNull(collection.get(key2));
         // Now it should be destroyed the view 1
-        Assert.assertEquals(provider.getDestroyCount(), 1);
+        Assert.assertEquals(destroyed.get(), 1);
     }
     
     @Test
@@ -117,18 +115,18 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         SerializedViewKey key2 = new SerializedViewKeyIntInt(viewId.hashCode(), 2);
         SerializedViewKey key3 = new SerializedViewKeyIntInt(viewId.hashCode(), 3);
         
-        TestViewScopeProvider provider = new TestViewScopeProvider();
+        AtomicInteger destroyed = new AtomicInteger();
         
-        collection.put(facesContext, new Object[]{null,null,2}, key1, null, provider, "1");
+        collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
-        collection.put(facesContext, new Object[]{null,null,2}, key3, null, provider, "3");
+        collection.put(facesContext, new Object[]{null,null,2}, key3, null, "3", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key3));
-        collection.put(facesContext, new Object[]{null,null,2}, key2, key1, provider, "1");
+        collection.put(facesContext, new Object[]{null,null,2}, key2, key1, "1", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNotNull(collection.get(key3));
         Assert.assertNull(collection.get(key1));
-        Assert.assertEquals(provider.getDestroyCount(), 0);
+        Assert.assertEquals(destroyed.get(), 0);
         
     }   
     
@@ -145,32 +143,32 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         SerializedViewKey key3 = new SerializedViewKeyIntInt(viewId.hashCode(), 3);
         SerializedViewKey key4 = new SerializedViewKeyIntInt(viewId.hashCode(), 4);
         
-        TestViewScopeProvider provider = new TestViewScopeProvider();
+        AtomicInteger destroyed = new AtomicInteger();
         
-        collection.put(facesContext, new Object[]{null,null,2}, key1, null, provider, "1");
+        collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
-        collection.put(facesContext, new Object[]{null,null,2}, key2, null, provider, "2");
+        collection.put(facesContext, new Object[]{null,null,2}, key2, null, "2", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key2));
-        collection.put(facesContext, new Object[]{null,null,2}, key3, null, provider, "3");
+        collection.put(facesContext, new Object[]{null,null,2}, key3, null, "3", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNotNull(collection.get(key3));
-        collection.put(facesContext, new Object[]{null,null,2}, key1, null, provider, "1");
+        collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNotNull(collection.get(key3));
         
         // The are 3 slots, and when enters key4 the algorithm should not discard the most
         // recently used, so key1 and key3 should be preserved and key2 discarded.
-        collection.put(facesContext, new Object[]{null,null,2}, key4, null, provider, "4");
+        collection.put(facesContext, new Object[]{null,null,2}, key4, null, "4", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
         Assert.assertNull(collection.get(key2));
         Assert.assertNotNull(collection.get(key3));
         Assert.assertNotNull(collection.get(key4));
         
 
-        Assert.assertEquals(provider.getDestroyCount(), 1);
+        Assert.assertEquals(destroyed.get(), 1);
     }
     
     @Test
@@ -191,30 +189,30 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         SerializedViewKey key8 = new SerializedViewKeyIntInt(viewId.hashCode(), 8);
         SerializedViewKey key9 = new SerializedViewKeyIntInt(viewId.hashCode(), 9);
         
-        TestViewScopeProvider provider = new TestViewScopeProvider();
+        AtomicInteger destroyed = new AtomicInteger();
         
-        collection.put(facesContext, new Object[]{null,null,2}, key1, null, provider, "1");
+        collection.put(facesContext, new Object[]{null,null,2}, key1, null, "1", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
-        collection.put(facesContext, new Object[]{null,null,2}, key2, key1, provider, "2");
+        collection.put(facesContext, new Object[]{null,null,2}, key2, key1, "2", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key2));
-        collection.put(facesContext, new Object[]{null,null,2}, key3, null, provider, "3");
+        collection.put(facesContext, new Object[]{null,null,2}, key3, null, "3", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNotNull(collection.get(key3));
-        collection.put(facesContext, new Object[]{null,null,2}, key4, key3, provider, "4");
+        collection.put(facesContext, new Object[]{null,null,2}, key4, key3, "4", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNotNull(collection.get(key3));
         Assert.assertNotNull(collection.get(key4));
-        collection.put(facesContext, new Object[]{null,null,2}, key2, null, provider, "2");
+        collection.put(facesContext, new Object[]{null,null,2}, key2, null, "2", (id) -> destroyed.incrementAndGet());
         Assert.assertNotNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNotNull(collection.get(key3));
         Assert.assertNotNull(collection.get(key4));
         
         // The collection is full, but under a new key should remove key1
-        collection.put(facesContext, new Object[]{null,null,2}, key5, null, provider, "5");
+        collection.put(facesContext, new Object[]{null,null,2}, key5, null, "5", (id) -> destroyed.incrementAndGet());
         Assert.assertNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNotNull(collection.get(key3));
@@ -222,7 +220,7 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         Assert.assertNotNull(collection.get(key5));
         
         // The next oldest is key2, but it was refreshed, so the next one in age is key3
-        collection.put(facesContext, new Object[]{null,null,2}, key6, null, provider, "6");
+        collection.put(facesContext, new Object[]{null,null,2}, key6, null, "6", (id) -> destroyed.incrementAndGet());
         Assert.assertNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNull(collection.get(key3));
@@ -231,7 +229,7 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         Assert.assertNotNull(collection.get(key6));
         
         // There is a sequential view for key6, destroy the oldest one, which is key4
-        collection.put(facesContext, new Object[]{null,null,2}, key7, key6, provider, "7");
+        collection.put(facesContext, new Object[]{null,null,2}, key7, key6, "7", (id) -> destroyed.incrementAndGet());
         Assert.assertNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNull(collection.get(key3));
@@ -242,7 +240,7 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         
         // Since org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION is 2, and we have
         // the sequence [key6, key7, key8] , the one to destroy is key6. 
-        collection.put(facesContext, new Object[]{null,null,2}, key8, key7, provider, "8");
+        collection.put(facesContext, new Object[]{null,null,2}, key8, key7, "8", (id) -> destroyed.incrementAndGet());
         Assert.assertNull(collection.get(key1));
         Assert.assertNotNull(collection.get(key2));
         Assert.assertNull(collection.get(key3));
@@ -254,7 +252,7 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         
         // This is a sequence [key2, key9], but the oldest one is key2, so in this case
         // key2 should be removed.
-        collection.put(facesContext, new Object[]{null,null,2}, key9, key2, provider, "9");
+        collection.put(facesContext, new Object[]{null,null,2}, key9, key2, "9", (id) -> destroyed.incrementAndGet());
         Assert.assertNull(collection.get(key1));
         Assert.assertNull(collection.get(key2));
         Assert.assertNull(collection.get(key3));
@@ -265,58 +263,6 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         Assert.assertNotNull(collection.get(key8));
         Assert.assertNotNull(collection.get(key9));
         
-        Assert.assertEquals(provider.getDestroyCount(), 5);
-    }
-    
-    private static class TestViewScopeProvider extends ViewScopeProvider
-    {
-        private int destroyCount = 0;
-
-        @Override
-        public void onSessionDestroyed()
-        {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public String generateViewScopeId(FacesContext facesContext)
-        {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Map<String, Object> createViewScopeMap(FacesContext facesContext, String viewScopeId)
-        {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Map<String, Object> restoreViewScopeMap(FacesContext facesContext, String viewScopeId)
-        {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void destroyViewScopeMap(FacesContext facesContext, String viewScopeId)
-        {
-            destroyCount++;
-        }
-
-        /**
-         * @return the destroyCount
-         */
-        public int getDestroyCount()
-        {
-            return destroyCount;
-        }
-
-        /**
-         * @param destroyCount the destroyCount to set
-         */
-        public void setDestroyCount(int destroyCount)
-        {
-            this.destroyCount = destroyCount;
-        }
-        
+        Assert.assertEquals(destroyed.get(), 5);
     }
 }

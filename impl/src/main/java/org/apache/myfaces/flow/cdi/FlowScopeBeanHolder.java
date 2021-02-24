@@ -42,6 +42,7 @@ import jakarta.servlet.ServletContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
+import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.flow.FlowUtils;
@@ -92,8 +93,19 @@ public class FlowScopeBeanHolder implements Serializable
         FacesContext facesContext = FacesContext.getCurrentInstance();
         this.refreshClientWindow(facesContext);
         facesContext.getExternalContext().getSessionMap().put(CREATED, true);
+        
+        Object context = facesContext.getExternalContext().getContext();
+        if (context instanceof ServletContext)
+        {
+            BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+            JsfApplicationArtifactHolder appBean = CDIUtils.get(beanManager, JsfApplicationArtifactHolder.class);
+            if (appBean.getServletContext() != null)
+            {
+                appBean.setServletContext((ServletContext) context);
+            }
+        }
     }
-    
+
     /**
      * This method will return the ContextualStorage or create a new one
      * if no one is yet assigned to the current flowClientWindowId.

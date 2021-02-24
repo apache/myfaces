@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.view;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +26,10 @@ import java.util.Set;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PreDestroyViewMapEvent;
-import org.apache.myfaces.spi.ViewScopeProvider;
-import org.apache.myfaces.spi.ViewScopeProviderFactory;
+import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
+import org.apache.myfaces.cdi.view.ViewScopeCDIMap;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  * This wrapper has these objectives:
@@ -69,27 +72,20 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
             
             if (facesContext != null)
             {
-                ViewScopeProviderFactory factory = ViewScopeProviderFactory.getViewScopeHandlerFactory(
-                    facesContext.getExternalContext());
-
-                ViewScopeProvider handler = factory.getViewScopeHandler(facesContext.getExternalContext());
-
                 // for unittests without CDI
-                if (handler == null)
+                if (!ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
                 {
                     _delegate = new ViewScope();
                     return _delegate;
                 }
-                
+
                 if (_viewScopeId == null)
                 {
-                    _viewScopeId = handler.generateViewScopeId(facesContext);
-                    _delegate = handler.createViewScopeMap(facesContext, _viewScopeId);
+                    BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+                    ViewScopeBeanHolder beanHolder = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
+                    _viewScopeId = beanHolder.generateUniqueViewScopeId();
                 }
-                else
-                {
-                    _delegate = handler.restoreViewScopeMap(facesContext, _viewScopeId);
-                }
+                _delegate = new ViewScopeCDIMap(facesContext, _viewScopeId);
             }
             else
             {

@@ -31,8 +31,6 @@ import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.spi.InjectionProviderFactory;
-import org.apache.myfaces.spi.ViewScopeProvider;
-import org.apache.myfaces.spi.ViewScopeProviderFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
@@ -166,10 +164,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             ExternalSpecifications.isCDIAvailable(externalContext);
             ExternalSpecifications.isEL3Available();
             ExternalSpecifications.isServlet4Available();
-            
-            ViewScopeProviderFactory viewScopeProviderFactory =
-                    ViewScopeProviderFactory.getViewScopeHandlerFactory(externalContext);
-            ViewScopeProvider viewScopeProvider = viewScopeProviderFactory.getViewScopeHandler(externalContext);
 
             FacesFlowProviderFactory facesFlowProviderFactory =
                     FacesFlowProviderFactory.getFacesFlowProviderFactory(externalContext);
@@ -179,7 +173,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                     .get(MyFacesHttpSessionListener.APPLICATION_MAP_KEY);
             if (listener != null)
             {
-                listener.setViewScopeProvider(viewScopeProvider);
                 listener.setFacesFlowProvider(facesFlowProvider);
             }
             

@@ -215,6 +215,11 @@ public class ClientWindowScopeContext implements Context
         }
     }
 
+    public static void onSessionDestroyed(FacesContext facesContext)
+    {
+        destroyAllActive(facesContext);
+    }
+    
     public static void destroyAllActive(FacesContext facesContext)
     {
         if (facesContext == null)

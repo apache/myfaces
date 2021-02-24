@@ -32,6 +32,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContext;
+import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
@@ -67,6 +68,17 @@ public class ViewScopeBeanHolder implements Serializable
         storageMap = new ConcurrentHashMap<>();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.getExternalContext().getSessionMap().put(CREATED, true);
+
+        Object context = facesContext.getExternalContext().getContext();
+        if (context instanceof ServletContext)
+        {
+            BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+            JsfApplicationArtifactHolder appBean = CDIUtils.get(beanManager, JsfApplicationArtifactHolder.class);
+            if (appBean.getServletContext() != null)
+            {
+                appBean.setServletContext((ServletContext) context);
+            }
+        }
     }
 
     /**
