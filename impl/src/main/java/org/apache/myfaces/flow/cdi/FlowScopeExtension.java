@@ -36,13 +36,13 @@ import org.apache.myfaces.flow.FlowReference;
  */
 public class FlowScopeExtension implements Extension
 {
-    private FlowScopedContextImpl flowScopedContext;
+    private FlowScopeContext flowScopedContext;
     
     private Map<Class, FlowReference> flowBeanReferences;
     
     public FlowScopeExtension()
     {
-        flowBeanReferences = new ConcurrentHashMap<Class, FlowReference>();
+        flowBeanReferences = new ConcurrentHashMap<>();
     }
     
     void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
@@ -73,7 +73,7 @@ public class FlowScopeExtension implements Extension
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager)
     {
-        flowScopedContext = new FlowScopedContextImpl(manager, flowBeanReferences);
+        flowScopedContext = new FlowScopeContext(manager, flowBeanReferences);
         event.addContext(flowScopedContext);
     }
 

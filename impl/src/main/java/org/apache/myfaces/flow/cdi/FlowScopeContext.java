@@ -45,7 +45,7 @@ import org.apache.myfaces.flow.FlowUtils;
  * @author Leonardo Uribe
  */
 @Typed()
-public class FlowScopedContextImpl implements Context
+public class FlowScopeContext implements Context
 {
     /**
      * Whether the Context is for a passivating scope.
@@ -59,7 +59,7 @@ public class FlowScopedContextImpl implements Context
     
     private Map<Class, FlowReference> flowBeanReferences;
 
-    public FlowScopedContextImpl(BeanManager beanManager, 
+    public FlowScopeContext(BeanManager beanManager, 
         Map<Class, FlowReference> flowBeanReferences)
     {
         this.beanManager = beanManager;

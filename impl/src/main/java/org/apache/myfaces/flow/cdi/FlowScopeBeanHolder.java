@@ -172,7 +172,7 @@ public class FlowScopeBeanHolder implements Serializable
     public Map<String, ContextualStorage> forceNewStorage()
     {
         Map<String, ContextualStorage> oldStorageMap = storageMap;
-        storageMap = new ConcurrentHashMap<String, ContextualStorage>();
+        storageMap = new ConcurrentHashMap<>();
         return oldStorageMap;
     }
 
@@ -192,7 +192,7 @@ public class FlowScopeBeanHolder implements Serializable
 
         for (ContextualStorage contextualStorage : oldContextStorages.values())
         {
-            FlowScopedContextImpl.destroyAllActive(contextualStorage);
+            FlowScopeContext.destroyAllActive(contextualStorage);
         }
     }
     
@@ -231,7 +231,7 @@ public class FlowScopeBeanHolder implements Serializable
                             false);
                     for (ContextualStorage contextualStorage : oldContextStorages.values())
                     {
-                        FlowScopedContextImpl.destroyAllActive(contextualStorage);
+                        FlowScopeContext.destroyAllActive(contextualStorage);
                     }
                 }
                 finally
@@ -243,7 +243,7 @@ public class FlowScopeBeanHolder implements Serializable
             {
                 for (ContextualStorage contextualStorage : oldContextStorages.values())
                 {
-                    FlowScopedContextImpl.destroyAllActive(contextualStorage);
+                    FlowScopeContext.destroyAllActive(contextualStorage);
                 }
             }
         }
@@ -275,7 +275,7 @@ public class FlowScopeBeanHolder implements Serializable
                 ContextualStorage contextualStorage = storageMap.remove(flowMapKey);
                 if (contextualStorage != null)
                 {
-                    FlowScopedContextImpl.destroyAllActive(contextualStorage);
+                    FlowScopeContext.destroyAllActive(contextualStorage);
                 }
             }
         }
@@ -321,7 +321,7 @@ public class FlowScopeBeanHolder implements Serializable
         ContextualStorage contextualStorage = storageMap.remove(flowMapKey);
         if (contextualStorage != null)
         {
-            FlowScopedContextImpl.destroyAllActive(contextualStorage);
+            FlowScopeContext.destroyAllActive(contextualStorage);
         }
         
         List<String> activeFlowKeys = activeFlowMapKeys.get(baseKey);
