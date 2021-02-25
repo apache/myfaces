@@ -43,7 +43,7 @@ public class FlowScopeMap implements Map
         this.currentClientWindowFlowId = currentClientWindowFlowId;
     }
 
-    private Map<Object, Object> getFlowScopeMap(boolean create)
+    private Map<Object, Object> getWrapped(boolean create)
     {
         if (beanHolder == null)
         {
@@ -68,88 +68,88 @@ public class FlowScopeMap implements Map
     @Override
     public int size()
     {
-        Map<Object, Object> map = getFlowScopeMap(false);
-        return map == null ? 0 : map.size();
+        Map<Object, Object> wrapped = getWrapped(false);
+        return wrapped == null ? 0 : wrapped.size();
     }
     
     @Override
     public boolean isEmpty()
     {
-        Map<Object, Object> map = getFlowScopeMap(false);
-        return map == null ? true : map.isEmpty();
+        Map<Object, Object> wrapped = getWrapped(false);
+        return wrapped == null ? true : wrapped.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key)
     {
-        Map<Object, Object> map = getFlowScopeMap(false);
-        return map == null ? false : map.containsKey(key);
+        Map<Object, Object> wrapped = getWrapped(false);
+        return wrapped == null ? false : wrapped.containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value)
     {
-        Map<Object, Object> map = getFlowScopeMap(false);
-        return map == null ? false : map.containsValue(value);
+        Map<Object, Object> wrapped = getWrapped(false);
+        return wrapped == null ? false : wrapped.containsValue(value);
     }
 
     @Override
     public Object get(Object key)
     {
-        Map<Object, Object> map = getFlowScopeMap(false);
-        return map == null ? null : map.get(key);
+        Map<Object, Object> wrapped = getWrapped(false);
+        return wrapped == null ? null : wrapped.get(key);
     }
 
     @Override
     public Object put(Object key, Object value)
     {
-        Map<Object, Object> map = getFlowScopeMap(true);
-        return map.put(key, value);
+        Map<Object, Object> wrapped = getWrapped(true);
+        return wrapped.put(key, value);
     }
 
     @Override
     public Object remove(Object key)
     {
-        Map<Object, Object> map = getFlowScopeMap(false);
-        return map == null ? null : map.remove(key);
+        Map<Object, Object> wrapped = getWrapped(false);
+        return wrapped == null ? null : wrapped.remove(key);
     }
 
     @Override
     public void putAll(Map m)
     {
-        Map<Object, Object> map = getFlowScopeMap(true);
-        map.putAll(m);
+        Map<Object, Object> wrapped = getWrapped(true);
+        wrapped.putAll(m);
     }
 
     @Override
     public void clear()
     {
-        Map<Object, Object> map = getFlowScopeMap(false);
-        if (map == null)
+        Map<Object, Object> wrapped = getWrapped(false);
+        if (wrapped == null)
         {
             return;
         }
-        map.clear();
+        wrapped.clear();
     }
 
     @Override
     public Set keySet()
     {
-        Map<Object, Object> map = getFlowScopeMap(false);
-        return map == null ? Collections.emptySet() : map.keySet();
+        Map<Object, Object> wrapped = getWrapped(false);
+        return wrapped == null ? Collections.emptySet() : wrapped.keySet();
     }
 
     @Override
     public Collection values()
     {
-        Map<Object, Object> map = getFlowScopeMap(false);
-        return map == null ? Collections.emptyList() : map.values();
+        Map<Object, Object> wrapped = getWrapped(false);
+        return wrapped == null ? Collections.emptyList() : wrapped.values();
     }
 
     @Override
     public Set entrySet()
     {
-        Map<Object, Object> map = getFlowScopeMap(false);
-        return map == null ? Collections.emptySet() : map.entrySet();
+        Map<Object, Object> wrapped = getWrapped(false);
+        return wrapped == null ? Collections.emptySet() : wrapped.entrySet();
     }
 }
