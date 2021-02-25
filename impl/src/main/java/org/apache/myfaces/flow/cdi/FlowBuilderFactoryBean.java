@@ -22,7 +22,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.faces.flow.builder.FlowBuilder;
 import jakarta.faces.flow.builder.FlowBuilderParameter;
-import jakarta.inject.Named;
 
 import org.apache.myfaces.flow.builder.FlowBuilderImpl;
 
@@ -31,13 +30,9 @@ import org.apache.myfaces.flow.builder.FlowBuilderImpl;
  *
  * @author Leonardo Uribe
  */
-@Named(FlowBuilderFactoryBean.FLOW_BUILDER_FACTORY_BEAN_NAME)
 @ApplicationScoped
 public class FlowBuilderFactoryBean
 {
-    public static final String FLOW_BUILDER_FACTORY_BEAN_NAME =
-        "oam_FLOW_BUILDER_FACTORY_BEAN_NAME";
-
     public FlowBuilderFactoryBean()
     {
     }

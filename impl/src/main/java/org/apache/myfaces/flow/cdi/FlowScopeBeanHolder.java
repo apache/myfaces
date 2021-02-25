@@ -109,17 +109,22 @@ public class FlowScopeBeanHolder implements Serializable
     /**
      * This method will return the ContextualStorage or create a new one
      * if no one is yet assigned to the current flowClientWindowId.
+     * 
      * @param beanManager we need the CDI {@link BeanManager} for serialisation.
      * @param flowClientWindowId the flowClientWindowId for the current flow.
+     * @param create create if not existent
+     *
+     * @return the ContextualStorage or null
      */
-    public ContextualStorage getContextualStorage(BeanManager beanManager, String flowClientWindowId)
+    public ContextualStorage getContextualStorage(BeanManager beanManager, String flowClientWindowId, boolean create)
     {
-        return storageMap.computeIfAbsent(flowClientWindowId, k -> new ContextualStorage(beanManager, true));
-    }
-    
-    public ContextualStorage getContextualStorageNoCreate(BeanManager beanManager, String flowClientWindowId)
-    {
-        return storageMap.get(flowClientWindowId);
+        ContextualStorage storage = storageMap.get(flowClientWindowId);
+        if (storage == null && create)
+        {
+            storage = new ContextualStorage(beanManager, true);
+            storageMap.put(flowClientWindowId, storage);
+        }
+        return storage;
     }
 
     public Map<String, ContextualStorage> getStorageMap()
@@ -129,32 +134,28 @@ public class FlowScopeBeanHolder implements Serializable
     
     public Map<Object, Object> getFlowScopeMap(BeanManager beanManager, String flowClientWindowId, boolean create)
     {
-        Map<Object, Object> map = null;
-        if (create)
+        ContextualStorage contextualStorage = getContextualStorage(beanManager, flowClientWindowId, create);
+        if (contextualStorage == null)
         {
-            ContextualStorage contextualStorage = getContextualStorage(beanManager, flowClientWindowId);
-            ContextualInstanceInfo info = contextualStorage.getStorage().computeIfAbsent(CURRENT_FLOW_SCOPE_MAP,
-                    k -> new ContextualInstanceInfo<>());
-
-            map = (Map<Object, Object>) info.getContextualInstance();
-            if (map == null)
-            {
-                map = new HashMap<>();
-                info.setContextualInstance(map);
-            }
+            return null;
         }
-        else
+
+        ContextualInstanceInfo info = contextualStorage.getStorage().get(CURRENT_FLOW_SCOPE_MAP);
+        if (info == null && create)
         {
-            ContextualStorage contextualStorage = getContextualStorageNoCreate(
-                beanManager, flowClientWindowId);
-            if (contextualStorage != null)
-            {
-                ContextualInstanceInfo info = contextualStorage.getStorage().get(CURRENT_FLOW_SCOPE_MAP);
-                if (info != null)
-                {
-                    map = (Map<Object, Object>) info.getContextualInstance();
-                }
-            }
+            info = new ContextualInstanceInfo<>();
+            contextualStorage.getStorage().put(CURRENT_FLOW_SCOPE_MAP, info);
+        }
+        if (info == null)
+        {
+            return null;
+        }
+
+        Map<Object, Object> map = (Map<Object, Object>) info.getContextualInstance();
+        if (map == null && create)
+        {
+            map = new HashMap<>();
+            info.setContextualInstance(map);
         }
         return map;
     }
@@ -253,9 +254,9 @@ public class FlowScopeBeanHolder implements Serializable
     {
         if (windowCollection == null)
         {
-            Integer ft = MyfacesConfig.getCurrentInstance(facesContext).
-                    getNumberOfFacesFlowClientWindowIdsInSession();
-            windowCollection = new FacesFlowClientWindowCollection(new ClientWindowFacesFlowLRUMap(ft));
+            Integer numberOfFacesFlowClientWindowIdsInSession =
+                    MyfacesConfig.getCurrentInstance(facesContext).getNumberOfFacesFlowClientWindowIdsInSession();
+            windowCollection = new FacesFlowClientWindowCollection(numberOfFacesFlowClientWindowIdsInSession);
         }
         ClientWindow cw = facesContext.getExternalContext().getClientWindow();
         if (cw != null && cw.getId() != null)
@@ -303,7 +304,7 @@ public class FlowScopeBeanHolder implements Serializable
         Flow flow = flowHandler.getCurrentFlow(facesContext);
         String flowMapKey = FlowUtils.getFlowMapKey(facesContext, flow);
 
-        List<String> activeFlowKeys = activeFlowMapKeys.computeIfAbsent(baseKey, k -> new ArrayList<String>());
+        List<String> activeFlowKeys = activeFlowMapKeys.computeIfAbsent(baseKey, k -> new ArrayList<>());
         activeFlowKeys.add(0, flowMapKey);
         activeFlowMapKeys.put(baseKey, activeFlowKeys);
         refreshClientWindow(facesContext);

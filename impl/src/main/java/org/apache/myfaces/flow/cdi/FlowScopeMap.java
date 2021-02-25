@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import jakarta.enterprise.inject.spi.BeanManager;
+import java.util.Collections;
 
 /**
  * 
@@ -31,164 +32,99 @@ import jakarta.enterprise.inject.spi.BeanManager;
  */
 public class FlowScopeMap implements Map
 {
-    private BeanManager _beanManager;
-    private String _currentClientWindowFlowId;
-    private FlowScopeBeanHolder _flowScopeBeanHolder;
-    private boolean _initOptional = false;
+    private BeanManager beanManager;
+    private String currentClientWindowFlowId;
+    private FlowScopeBeanHolder beanHolder;
+    private boolean beanHolderInitialized = false;
     
-    public FlowScopeMap(BeanManager beanManager, String currentFlowMapKey)
+    public FlowScopeMap(BeanManager beanManager, String currentClientWindowFlowId)
     {
-        this._beanManager = beanManager;
-        this._currentClientWindowFlowId = currentFlowMapKey;
+        this.beanManager = beanManager;
+        this.currentClientWindowFlowId = currentClientWindowFlowId;
     }
-    
-    private FlowScopeBeanHolder getFlowScopeBeanHolder(boolean create)
+
+    private Map<Object, Object> getFlowScopeMap(boolean create)
     {
-        if (_flowScopeBeanHolder == null)
+        if (beanHolder == null)
         {
             if (create)
             {
-                _flowScopeBeanHolder = CDIUtils.get(_beanManager, FlowScopeBeanHolder.class);
+                beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
             }
-            else if (!_initOptional)
+            else if (!beanHolderInitialized)
             {
-                _flowScopeBeanHolder = CDIUtils.get(_beanManager, FlowScopeBeanHolder.class, false);
-                _initOptional = true;
+                beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class, false);
+                beanHolderInitialized = true;
             }
         }
-        return _flowScopeBeanHolder;
+
+        if (beanHolder == null)
+        {
+            return null;
+        }
+        return beanHolder.getFlowScopeMap(beanManager, currentClientWindowFlowId, create);
     }
     
     @Override
     public int size()
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
-        if (flowScopeBeanHolder == null)
-        {
-            return 0;
-        }
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
-            _currentClientWindowFlowId, false);
-        if (map == null)
-        {
-            return 0;
-        }
-        return map.size();
+        Map<Object, Object> map = getFlowScopeMap(false);
+        return map == null ? 0 : map.size();
     }
     
     @Override
     public boolean isEmpty()
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
-        if (flowScopeBeanHolder == null)
-        {
-            return true;
-        }
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
-            _currentClientWindowFlowId, false);
-        if (map == null)
-        {
-            return true;
-        }
-        return map.isEmpty();
+        Map<Object, Object> map = getFlowScopeMap(false);
+        return map == null ? true : map.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key)
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
-        if (flowScopeBeanHolder == null)
-        {
-            return false;
-        }
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
-            _currentClientWindowFlowId, false);
-        if (map == null)
-        {
-            return false;
-        }
-        return map.containsKey(key);
+        Map<Object, Object> map = getFlowScopeMap(false);
+        return map == null ? false : map.containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value)
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
-        if (flowScopeBeanHolder == null)
-        {
-            return false;
-        }
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
-            _currentClientWindowFlowId, false);
-        if (map == null)
-        {
-            return false;
-        }
-        return map.containsValue(value);
+        Map<Object, Object> map = getFlowScopeMap(false);
+        return map == null ? false : map.containsValue(value);
     }
 
     @Override
     public Object get(Object key)
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
-        if (flowScopeBeanHolder == null)
-        {
-            return null;
-        }
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
-            _currentClientWindowFlowId, false);
-        if (map == null)
-        {
-            return null;
-        }
-        return map.get(key);
+        Map<Object, Object> map = getFlowScopeMap(false);
+        return map == null ? null : map.get(key);
     }
 
     @Override
     public Object put(Object key, Object value)
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(true);
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(
-            _beanManager, _currentClientWindowFlowId, true);
+        Map<Object, Object> map = getFlowScopeMap(true);
         return map.put(key, value);
     }
 
     @Override
     public Object remove(Object key)
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
-        if (flowScopeBeanHolder == null)
-        {
-            return null;
-        }
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
-            _currentClientWindowFlowId, false);
-        if (map == null)
-        {
-            return null;
-        }
-        return map.remove(key);
+        Map<Object, Object> map = getFlowScopeMap(false);
+        return map == null ? null : map.remove(key);
     }
 
     @Override
     public void putAll(Map m)
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(true);
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(
-            _beanManager, _currentClientWindowFlowId, true);
+        Map<Object, Object> map = getFlowScopeMap(true);
         map.putAll(m);
     }
 
     @Override
     public void clear()
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
-        if (flowScopeBeanHolder == null)
-        {
-            return;
-        }
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
-            _currentClientWindowFlowId, false);
+        Map<Object, Object> map = getFlowScopeMap(false);
         if (map == null)
         {
             return;
@@ -199,27 +135,21 @@ public class FlowScopeMap implements Map
     @Override
     public Set keySet()
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(true);
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(
-            _beanManager, _currentClientWindowFlowId, true);
-        return map.keySet();
+        Map<Object, Object> map = getFlowScopeMap(false);
+        return map == null ? Collections.emptySet() : map.keySet();
     }
 
     @Override
     public Collection values()
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(true);
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(
-            _beanManager, _currentClientWindowFlowId, true);
-        return map.values();
+        Map<Object, Object> map = getFlowScopeMap(false);
+        return map == null ? Collections.emptyList() : map.values();
     }
 
     @Override
     public Set entrySet()
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(true);
-        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(
-            _beanManager, _currentClientWindowFlowId, true);
-        return map.entrySet();
+        Map<Object, Object> map = getFlowScopeMap(false);
+        return map == null ? Collections.emptySet() : map.entrySet();
     }
 }

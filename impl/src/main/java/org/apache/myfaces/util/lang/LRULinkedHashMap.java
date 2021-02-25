@@ -18,13 +18,16 @@
  */
 package org.apache.myfaces.util.lang;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class LRULinkedHashMap<K,V> extends LinkedHashMap<K,V>
+public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> implements Serializable
 {
     private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+
     private final int capacity;
+    private SerializableConsumer<Map.Entry<K, V>> expiredCallback;
 
     public LRULinkedHashMap(int capacity)
     {
@@ -34,9 +37,20 @@ public class LRULinkedHashMap<K,V> extends LinkedHashMap<K,V>
         this.capacity = capacity;
     }
 
-    @Override
-    protected boolean removeEldestEntry(Map.Entry<K,V> eldest)
+    public LRULinkedHashMap(int capacity, SerializableConsumer<Map.Entry<K, V>> expiredCallback)
     {
-        return size() > capacity;
+        this(capacity);
+        this.expiredCallback = expiredCallback;
+    }
+    
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest)
+    {
+        boolean remove = size() > capacity;
+        if (remove && expiredCallback != null)
+        {
+            expiredCallback.accept(eldest);
+        }
+        return remove;
     }
 }

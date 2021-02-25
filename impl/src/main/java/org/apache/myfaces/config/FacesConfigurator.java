@@ -59,6 +59,7 @@ import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.faces.event.PhaseListener;
 import jakarta.faces.event.PostConstructApplicationEvent;
 import jakarta.faces.event.SystemEvent;
+import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.flow.FlowHandlerFactory;
 import jakarta.faces.lifecycle.ClientWindow;
@@ -109,7 +110,6 @@ import org.apache.myfaces.flow.ReturnNodeImpl;
 import org.apache.myfaces.flow.SwitchCaseImpl;
 import org.apache.myfaces.flow.SwitchNodeImpl;
 import org.apache.myfaces.flow.ViewNodeImpl;
-import org.apache.myfaces.flow.impl.AnnotatedFlowConfigurator;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
@@ -131,6 +131,8 @@ import org.apache.myfaces.spi.impl.DefaultSerialFactory;
 import org.apache.myfaces.spi.SerialFactory;
 import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
+import org.apache.myfaces.spi.FacesFlowProvider;
+import org.apache.myfaces.spi.FacesFlowProviderFactory;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.spi.InjectionProviderFactory;
@@ -1402,7 +1404,34 @@ public class FacesConfigurator
             application.getFlowHandler().addFlow(facesContext, flow);
         }
         
-        AnnotatedFlowConfigurator.configureAnnotatedFlows(facesContext);
+        configureAnnotatedFlows(facesContext);
+    }
+    
+    public static void configureAnnotatedFlows(FacesContext facesContext)
+    {
+        FacesFlowProviderFactory factory = 
+            FacesFlowProviderFactory.getFacesFlowProviderFactory(facesContext.getExternalContext());
+        FacesFlowProvider provider = factory.getFacesFlowProvider(facesContext.getExternalContext());
+        
+        Iterator<Flow> it = provider.getAnnotatedFlows(facesContext);
+        if (it == null)
+        {
+            return;
+        }
+
+        if (it.hasNext())
+        {
+            enableDefaultWindowMode(facesContext);
+        }
+        while (it.hasNext())
+        {
+            Flow flow = it.next();
+            if (flow instanceof FlowImpl)
+            {
+                ((FlowImpl) flow).freeze();
+            }
+            facesContext.getApplication().getFlowHandler().addFlow(facesContext, flow);
+        }
     }
     
     public static void enableDefaultWindowMode(FacesContext facesContext)

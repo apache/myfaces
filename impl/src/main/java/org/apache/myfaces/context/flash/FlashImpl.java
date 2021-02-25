@@ -1113,10 +1113,11 @@ public class FlashImpl extends Flash implements ReleasableFlash
                 sessionMap.get(FLASH_CW_LRU_MAP);
         if (lruMap == null)
         {
-            Integer ft = MyfacesConfig.getCurrentInstance(externalContext).getNumberOfFlashTokensInSession();
-            lruMap = new FlashClientWindowTokenCollection(new ClientWindowFlashTokenLRUMap(ft));
+            Integer numberOfFlashTokensInSession =
+                    MyfacesConfig.getCurrentInstance(externalContext).getNumberOfFlashTokensInSession();
+            lruMap = new FlashClientWindowTokenCollection(numberOfFlashTokensInSession);
         }    
-        
+
         if (create)
         {
             sessionMap.put(FLASH_CW_LRU_MAP, lruMap);

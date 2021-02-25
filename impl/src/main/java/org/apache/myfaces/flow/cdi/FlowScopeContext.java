@@ -112,14 +112,7 @@ public class FlowScopeContext implements Context
             throw new ContextNotActiveException(this.getClass().getName() + ": no current active flow");
         }
 
-        if (createIfNotExist)
-        {
-            return getFlowScopeBeanHolder().getContextualStorage(beanManager, clientWindowFlowId);
-        }
-        else
-        {
-            return getFlowScopeBeanHolder().getContextualStorageNoCreate(beanManager, clientWindowFlowId);
-        }
+        return getFlowScopeBeanHolder().getContextualStorage(beanManager, clientWindowFlowId, createIfNotExist);
     }
 
     @Override

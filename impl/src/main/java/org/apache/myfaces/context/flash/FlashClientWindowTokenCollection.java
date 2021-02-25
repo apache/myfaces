@@ -18,18 +18,50 @@
  */
 package org.apache.myfaces.context.flash;
 
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
 import java.io.Serializable;
+import org.apache.myfaces.util.lang.LRULinkedHashMap;
 
 /**
  * This class is a wrapper used to deal with concurrency issues when accessing the inner LRUMap.
  */
 class FlashClientWindowTokenCollection implements Serializable
 {
-    private ClientWindowFlashTokenLRUMap map;
+    private LRULinkedHashMap<String, String> map;
 
-    public FlashClientWindowTokenCollection(ClientWindowFlashTokenLRUMap map)
+    public FlashClientWindowTokenCollection(int capacity)
     {
-        this.map = map;
+        this.map = new LRULinkedHashMap<>(capacity, (eldest) ->
+        {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            Flash flash = facesContext.getExternalContext().getFlash();
+            if (flash != null)
+            {
+                ReleasableFlash rf = null;
+                while (flash != null)
+                {
+                    if (flash instanceof ReleasableFlash)
+                    {
+                        rf = (ReleasableFlash) flash;
+                        break;
+                    }
+                    if (flash instanceof FacesWrapper)
+                    {
+                        flash = ((FacesWrapper<? extends Flash>) flash).getWrapped();
+                    }
+                    else
+                    {
+                        flash = null;
+                    }
+                }
+                if (rf != null)
+                {
+                    rf.clearFlashMap(facesContext, eldest.getKey(), eldest.getValue());
+                }
+            }
+        });
     }
 
     public FlashClientWindowTokenCollection()

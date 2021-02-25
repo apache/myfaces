@@ -155,7 +155,7 @@ class FlowScopeMap implements Map<Object,Object>
     }
 
     @Override
-    public Set<Entry<Object, Object>> entrySet()
+    public Set<Map.Entry<Object, Object>> entrySet()
     {
         return getWrapped(true).entrySet();
     }

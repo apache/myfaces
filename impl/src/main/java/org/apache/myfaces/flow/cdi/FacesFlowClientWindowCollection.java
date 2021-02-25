@@ -19,23 +19,30 @@
 package org.apache.myfaces.flow.cdi;
 
 import java.io.Serializable;
+import org.apache.myfaces.util.lang.LRULinkedHashMap;
 
 /**
  * This class is a wrapper used to deal with concurrency issues when accessing the inner LRUMap.
  */
 class FacesFlowClientWindowCollection implements Serializable
 {
-    private ClientWindowFacesFlowLRUMap map;
+    private static final long serialVersionUID = 1L;
 
-    public FacesFlowClientWindowCollection(ClientWindowFacesFlowLRUMap map)
-    {
-        this.map = map;
-    }
+    private LRULinkedHashMap<String, String> map;
+    private FlowScopeBeanHolder holder;
 
     public FacesFlowClientWindowCollection()
     {
     }
     
+    public FacesFlowClientWindowCollection(int capacity)
+    {
+        this.map = new LRULinkedHashMap<>(capacity, (eldest) ->
+        {
+            holder.clearFlowMap(eldest.getKey());
+        });
+    }
+
     public synchronized void put(String key, String value)
     {
         map.put(key, value);
@@ -58,7 +65,6 @@ class FacesFlowClientWindowCollection implements Serializable
     
     public void setFlowScopeBeanHolder(FlowScopeBeanHolder holder)
     {
-        map.setFlowScopeBeanHolder(holder);
+        this.holder = holder;
     }
-    
 }
