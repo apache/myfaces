@@ -38,6 +38,15 @@
 
     <asfext:implements>
       <asfext:Standard>
+        <asfext:title>Jakarta Server Faces 3.0</asfext:title>
+        <asfext:body>Jakarta EE</asfext:body>
+        <asfext:id>3.0</asfext:id>
+        <asfext:url rdf:resource="https://jakarta.ee/specifications/faces/3.0/" />
+      </asfext:Standard>
+    </asfext:implements>
+
+    <asfext:implements>
+      <asfext:Standard>
         <asfext:title>Jakarta Server Faces 2.3</asfext:title>
         <asfext:body>Jakarta EE</asfext:body>
         <asfext:id>2.3</asfext:id>
