@@ -65,15 +65,6 @@
 
     <asfext:implements>
       <asfext:Standard>
-        <asfext:title>Jakarta Server Faces 2.3</asfext:title>
-        <asfext:body>Jakarta EE</asfext:body>
-        <asfext:id>2.3</asfext:id>
-        <asfext:url rdf:resource="https://jakarta.ee/specifications/faces/2.3/" />
-      </asfext:Standard>
-    </asfext:implements>
-
-    <asfext:implements>
-      <asfext:Standard>
         <asfext:title>JavaServer Faces 2.0</asfext:title>
         <asfext:body>JCP</asfext:body>
         <asfext:id>JSR 314</asfext:id>
