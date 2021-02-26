@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl"?>
+<rdf:RDF xml:lang="en"
+         xmlns="http://usefulinc.com/ns/doap#" 
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+         xmlns:asfext="http://projects.apache.org/ns/asfext#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/">
+<!--
+  =======================================================================
+
+   Copyright (c) 2006 The Apache Software Foundation.  
+   All rights reserved.
+
+  =======================================================================
+-->
+  <Project rdf:about="http://MyFaces.rdf.apache.org/">
+
+    <created>2006-02-28</created>
+    <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
+    <name>Apache MyFaces</name>
+    <homepage rdf:resource="http://myfaces.apache.org" />
+    <asfext:pmc rdf:resource="http://myfaces.apache.org" />
+    <shortdesc>The first free open source JSF implementation.</shortdesc>
+    <description>MyFaces is the free open source implementation of Jakarta Server Faces, a web application framework that accomplishes the MVC paradigm. It is comparable to the well-known Struts Framework but has features and concepts that are beyond those of Struts - especially the component orientation.</description>
+    <bug-database rdf:resource="http://issues.apache.org/jira/browse/MYFACES" />
+    <mailing-list rdf:resource="http://myfaces.apache.org/mail-lists.html" />
+    <download-page rdf:resource="http://myfaces.apache.org/download.html" />
+    <programming-language>Java</programming-language>
+    <category rdf:resource="http://projects.apache.org/category/web-framework" />
+    <category rdf:resource="http://projects.apache.org/category/javaee" />
+
+    <repository>
+      <GitRepository>
+        <location rdf:resource="https://gitbox.apache.org/repos/asf/myfaces.git"/>
+        <browse rdf:resource="https://gitbox.apache.org/repos/asf?p=myfaces.git"/>
+      </GitRepository>
+    </repository>
+
+    <asfext:implements>
+      <asfext:Standard>
+        <asfext:title>Jakarta Server Faces 2.3</asfext:title>
+        <asfext:body>Jakarta EE</asfext:body>
+        <asfext:id>2.3</asfext:id>
+        <asfext:url rdf:resource="https://jakarta.ee/specifications/faces/2.3/" />
+      </asfext:Standard>
+    </asfext:implements>
+
+    <asfext:implements>
+      <asfext:Standard>
+        <asfext:title>JavaServer Faces 2.2</asfext:title>
+        <asfext:body>JCP</asfext:body>
+        <asfext:id>JSR 344</asfext:id>
+        <asfext:url rdf:resource="http://www.jcp.org/en/jsr/detail?id=344" />
+      </asfext:Standard>
+    </asfext:implements>
+
+    <asfext:implements>
+      <asfext:Standard>
+        <asfext:title>Jakarta Server Faces 2.3</asfext:title>
+        <asfext:body>Jakarta EE</asfext:body>
+        <asfext:id>2.3</asfext:id>
+        <asfext:url rdf:resource="https://jakarta.ee/specifications/faces/2.3/" />
+      </asfext:Standard>
+    </asfext:implements>
+
+    <asfext:implements>
+      <asfext:Standard>
+        <asfext:title>JavaServer Faces 2.0</asfext:title>
+        <asfext:body>JCP</asfext:body>
+        <asfext:id>JSR 314</asfext:id>
+        <asfext:url rdf:resource="http://www.jcp.org/en/jsr/detail?id=314" />
+      </asfext:Standard>
+    </asfext:implements>
+
+    <asfext:implements>
+      <asfext:Standard>
+        <asfext:title>JavaServer Faces 1.2</asfext:title>
+        <asfext:body>JCP</asfext:body>
+        <asfext:id>JSR 252</asfext:id>
+        <asfext:url rdf:resource="https://jcp.org/en/jsr/detail?id=252"/>
+      </asfext:Standard>
+    </asfext:implements>
+
+    <asfext:implements>
+      <asfext:Standard>
+        <asfext:title>JavaServer Faces 1.0</asfext:title>
+        <asfext:body>JCP</asfext:body>
+        <asfext:id>JSR 127</asfext:id>
+        <asfext:url rdf:resource="http://www.jcp.org/en/jsr/detail?id=127"/>
+      </asfext:Standard>
+    </asfext:implements>
+
+  </Project>
+</rdf:RDF>
