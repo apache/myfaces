@@ -510,14 +510,9 @@ public final class ComponentSupport
 
         if (uniqueIdVendor != null)
         {
-            // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
-            // and call createUniqueId(). See ComponentTagHandlerDelegate
-            int index = facetName.indexOf('.');
-            String cleanFacetName = facetName;
-            if (index >= 0)
-            {
-                cleanFacetName = facetName.replace('.', '_');
-            }
+            String cleanFacetName = facetName.replace('.', '_')
+                    .replace('{', '_')
+                    .replace('}', '_');
             panel.setId(uniqueIdVendor.createUniqueId(facesContext, 
                     mctx.getSharedStringBuilder()
                       .append(parent.getId())
