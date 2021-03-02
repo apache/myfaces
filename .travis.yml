@@ -21,20 +21,8 @@ cache:
 
 jdk:
   - openjdk8
-  - openjdk11
-  - openjdk13
-  - openjdk-ea
 
 matrix:
-  exclude:
-    - if: type = pull_request
-      jdk: openjdk11
-    - if: type = pull_request
-      jdk: openjdk13
-    - if: type = pull_request
-      jdk: openjdk-ea
-    - if: type = pull_request
-      os: linux-ppc64le
   include:
     - os: linux-ppc64le
       jdk: openjdk8
