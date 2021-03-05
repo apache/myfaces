@@ -31,8 +31,8 @@ import jakarta.enterprise.inject.spi.PassivationCapable;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 
-import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
+import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 
 /**
@@ -57,26 +57,15 @@ public class ViewScopeContext implements Context
         this.passivatingScope = beanManager.isPassivatingScope(getScope());
     }
 
-    protected ViewScopeBeanHolder getOrCreateViewScopeBeanHolder()
+    protected ViewScopeContextualStorageHolder getContextManager(FacesContext facesContext)
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ViewScopeBeanHolder beanHolder = (ViewScopeBeanHolder) facesContext.getExternalContext().getSessionMap()
-                .get(ViewScopeBeanHolder.class.getName());
-        if (beanHolder == null)
-        {
-            beanHolder = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
-            facesContext.getExternalContext().getSessionMap().put(
-                    ViewScopeBeanHolder.class.getName(),
-                    beanHolder);
-        }
-
-        return beanHolder;
+        return AbstractContextualStorageHolder.getInstance(facesContext, ViewScopeContextualStorageHolder.class);
     }
 
-    protected static ViewScopeBeanHolder getViewScopeBeanHolder(FacesContext facesContext)
+    protected static ViewScopeContextualStorageHolder getViewScopeBeanHolder(FacesContext facesContext)
     {
-        return (ViewScopeBeanHolder) facesContext.getExternalContext().getSessionMap()
-                .get(ViewScopeBeanHolder.class.getName());
+        return (ViewScopeContextualStorageHolder) facesContext.getExternalContext().getSessionMap()
+                .get(ViewScopeContextualStorageHolder.class.getName());
     }
 
     public String getCurrentViewScopeId(boolean create)
@@ -97,7 +86,7 @@ public class ViewScopeContext implements Context
         return null;
     }
 
-    protected ViewScopeContextualStorage getContextualStorage(boolean createIfNotExist)
+    protected ViewScopeContextualStorage getContextualStorage(FacesContext facesContext, boolean createIfNotExist)
     {
         String viewScopeId = getCurrentViewScopeId(createIfNotExist);
         if (createIfNotExist && viewScopeId == null)
@@ -107,7 +96,7 @@ public class ViewScopeContext implements Context
         }
         if (viewScopeId != null)
         {
-            return getOrCreateViewScopeBeanHolder().getContextualStorage(beanManager, viewScopeId);
+            return getContextManager(facesContext).getContextualStorage(viewScopeId, createIfNotExist);
         }
         return null;
     }
@@ -118,34 +107,33 @@ public class ViewScopeContext implements Context
         return ViewScoped.class;
     }
 
-    /**
-     * The WindowContext is active once a current windowId is set for the current Thread.
-     * @return
-     */
     @Override
     public boolean isActive()
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext != null)
+        return isActive(FacesContext.getCurrentInstance());
+    }
+
+    public boolean isActive(FacesContext facesContext)
+    {
+        if (facesContext == null || facesContext.getViewRoot() == null)
         {
-            return facesContext.getViewRoot() != null;
-        }
-        else
-        {
-            // No FacesContext means no view scope active.
             return false;
         }
+
+        return true;
     }
 
     @Override
     public <T> T get(Contextual<T> bean)
     {
-        checkActive();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        
+        checkActive(facesContext);
 
         // force session creation if ViewScoped is used
-        FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        facesContext.getExternalContext().getSession(true);
         
-        ViewScopeContextualStorage storage = getContextualStorage(false);
+        ViewScopeContextualStorage storage = getContextualStorage(facesContext, false);
         if (storage == null)
         {
             return null;
@@ -164,7 +152,9 @@ public class ViewScopeContext implements Context
     @Override
     public <T> T get(Contextual<T> bean, CreationalContext<T> creationalContext)
     {
-        checkActive();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        
+        checkActive(facesContext);
 
         if (passivatingScope && !(bean instanceof PassivationCapable))
         {
@@ -173,9 +163,9 @@ public class ViewScopeContext implements Context
         }
 
         // force session creation if ViewScoped is used
-        FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        facesContext.getExternalContext().getSession(true);
         
-        ViewScopeContextualStorage storage = getContextualStorage(true);
+        ViewScopeContextualStorage storage = getContextualStorage(facesContext, true);
 
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
         ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
@@ -193,131 +183,32 @@ public class ViewScopeContext implements Context
         return storage.createContextualInstance(bean, creationalContext);
     }
 
-    /**
-     * Destroy the Contextual Instance of the given Bean.
-     * @param bean dictates which bean shall get cleaned up
-     * @return <code>true</code> if the bean was destroyed, <code>false</code> if there was no such bean.
-     */
-    public boolean destroy(Contextual bean)
+    protected void checkActive(FacesContext facesContext)
     {
-        ViewScopeContextualStorage storage = getContextualStorage(false);
-        if (storage == null)
-        {
-            return false;
-        }
-        
-        ContextualInstanceInfo<?> contextualInstanceInfo = storage.getStorage().get(storage.getBeanKey(bean));
-        if (contextualInstanceInfo == null)
-        {
-            return false;
-        }
-
-        bean.destroy(contextualInstanceInfo.getContextualInstance(), 
-            contextualInstanceInfo.getCreationalContext());
-
-        return true;
-    }
-
-    /**
-     * destroys all the Contextual Instances in the Storage returned by
-     * {@link #getContextualStorage(boolean)}.
-     */
-    public void destroyAllActive()
-    {
-        ViewScopeContextualStorage storage = getContextualStorage(false);
-        if (storage == null)
-        {
-            return;
-        }
-
-        destroyAllActive(storage);
-    }
-
-    
-    public static void destroyAllActive(FacesContext context, String viewScopeId)
-    {
-        if (isViewScopeBeanHolderCreated(context))
-        {
-            ViewScopeBeanHolder beanHolder = getViewScopeBeanHolder(context);
-            if (beanHolder != null)
-            {
-                beanHolder.destroyBeans(viewScopeId);
-            }
-        }
-    }
-
-    
-    public static void destroyAllActive(ViewScopeContextualStorage storage)
-    {
-        destroyAllActive(storage, FacesContext.getCurrentInstance());
-    }
-
-    public static void destroyAllActive(ViewScopeContextualStorage storage, FacesContext facesContext)
-    {
-        Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
-
-        for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
-        {
-            if (!(entry.getKey() instanceof ViewScopeContextualKey))
-            {            
-                Contextual bean = storage.getBean(entry.getKey());
-
-                ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
-                bean.destroy(contextualInstanceInfo.getContextualInstance(), 
-                    contextualInstanceInfo.getCreationalContext());
-            }
-        }
-
-        contextMap.clear();
-        
-        storage.deactivate();
-    }
-    
-    /**
-     * Make sure that the Context is really active.
-     * @throws ContextNotActiveException if there is no active
-     *         Context for the current Thread.
-     */
-    protected void checkActive()
-    {
-        if (!isActive())
+        if (!isActive(facesContext))
         {
             throw new ContextNotActiveException("CDI context with scope annotation @"
                 + getScope().getName() + " is not active with respect to the current thread");
         }
     }
 
-    private static boolean isViewScopeBeanHolderCreated(FacesContext facesContext)
+    public static void destroyAll(FacesContext facesContext)
     {
-        if (facesContext.getExternalContext().getSession(false) == null)
+        ViewScopeContextualStorageHolder manager = AbstractContextualStorageHolder.getInstance(facesContext,
+                ViewScopeContextualStorageHolder.class);
+        if (manager != null)
         {
-            return false;
+            manager.destroyAll(facesContext);
         }
-        
-        return facesContext.getExternalContext().
-            getSessionMap().containsKey(ViewScopeBeanHolder.CREATED);
     }
-    
-    public static void onSessionDestroyed(FacesContext facesContext)
+
+    public static void destroyAll(FacesContext facesContext, String viewScopeId)
     {
-        if (facesContext == null)
+        ViewScopeContextualStorageHolder manager = AbstractContextualStorageHolder.getInstance(facesContext,
+                ViewScopeContextualStorageHolder.class);
+        if (manager != null)
         {
-            return;
-        }
-        
-        // In CDI case, the best way to deal with this is use a method 
-        // with @PreDestroy annotation on a session scope bean 
-        // ( ViewScopeBeanHolder.destroyBeans() ). There is no need
-        // to do anything else in this location, but it is advised
-        // in CDI the beans are destroyed at the end of the request,
-        // not when invalidateSession() is called.
-        if (isViewScopeBeanHolderCreated(facesContext))
-        {
-            ViewScopeBeanHolder beanHolder = getViewScopeBeanHolder(facesContext);
-            if (beanHolder != null)
-            {
-                beanHolder.destroyBeans();                
-            }
+            manager.destroyAll(facesContext, viewScopeId);
         }
     }
 }

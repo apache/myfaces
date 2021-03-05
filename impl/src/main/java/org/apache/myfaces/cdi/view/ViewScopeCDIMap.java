@@ -35,32 +35,19 @@ import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
  */
 public class ViewScopeCDIMap implements Map<String, Object>
 {
-    private String _viewScopeId;
-    
+    private String viewScopeId;
     private ViewScopeContextualStorage storage;
 
     public ViewScopeCDIMap(FacesContext facesContext)
     {
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
-
-        ViewScopeBeanHolder bean = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
-
-        // 1. get a new view scope id
-        _viewScopeId = bean.generateUniqueViewScopeId();
-
-        storage = bean.getContextualStorage(beanManager, _viewScopeId);
+        ViewScopeContextualStorageHolder bean = CDIUtils.get(beanManager, ViewScopeContextualStorageHolder.class);
+        viewScopeId = bean.generateUniqueViewScopeId();
     }
     
     public ViewScopeCDIMap(FacesContext facesContext, String viewScopeId)
     {
-        BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
-
-        ViewScopeBeanHolder bean = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
-
-        // 1. get a new view scope id
-        _viewScopeId = viewScopeId;
-
-        storage = bean.getContextualStorage(beanManager, _viewScopeId);
+        this.viewScopeId = viewScopeId;
     }
     
     private ViewScopeContextualStorage getStorage()
@@ -74,9 +61,9 @@ public class ViewScopeCDIMap implements Map<String, Object>
             FacesContext facesContext = FacesContext.getCurrentInstance();
             BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
 
-            ViewScopeBeanHolder bean = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
+            ViewScopeContextualStorageHolder bean = CDIUtils.get(beanManager, ViewScopeContextualStorageHolder.class);
             
-            storage = bean.getContextualStorage(beanManager, _viewScopeId);
+            storage = bean.getContextualStorage(viewScopeId);
         }
         return storage;
     }
@@ -93,9 +80,9 @@ public class ViewScopeCDIMap implements Map<String, Object>
     
     public String getViewScopeId()
     {
-        return _viewScopeId;
+        return viewScopeId;
     }
-    
+
     @Override
     public int size()
     {
@@ -172,34 +159,11 @@ public class ViewScopeCDIMap implements Map<String, Object>
     @Override
     public void clear()
     {
-        boolean destroyed = false;
         // If the scope was already destroyed through an invalidateSession(), the storage instance
         // that is holding this map could be obsolete, so we need to grab the right instance from
         // the bean holder.
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext != null)
-        {
-            BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
-
-            if (beanManager != null)
-            {
-                ViewScopeBeanHolder bean = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
-                if (bean != null)
-                {
-                    ViewScopeContextualStorage st = bean.getContextualStorage(beanManager, _viewScopeId);
-                    if (st != null)
-                    {
-                        ViewScopeContext.destroyAllActive(st);
-                        storage = null;
-                        destroyed = true;
-                    }
-                }
-            }
-        }
-        if (!destroyed)
-        {
-            ViewScopeContext.destroyAllActive(storage);
-        }
+        ViewScopeContext.destroyAll(facesContext, viewScopeId);
     }
 
     @Override

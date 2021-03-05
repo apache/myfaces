@@ -28,10 +28,9 @@ import jakarta.enterprise.inject.Typed;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindowScoped;
-import java.util.Iterator;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
+import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
 
 /**
  * Minimal implementation of ClientWindowScope.
@@ -39,60 +38,11 @@ import org.apache.myfaces.cdi.util.ContextualStorage;
 @Typed()
 public class ClientWindowScopeContext implements Context
 {
-    public static final String CLIENT_WINDOW_SCOPE_MAP = "oam.CLIENT_WINDOW_SCOPE_MAP";
-
     private BeanManager beanManager;
     
     public ClientWindowScopeContext(BeanManager beanManager)
     {
         this.beanManager = beanManager;
-    }
-
-    /**
-     * An implementation has to return the underlying storage which
-     * contains the items held in the Context.
-     *
-     * @param createIfNotExist whether a ContextualStorage shall get created if it doesn't yet exist.
-     * @param facesContext 
-     * 
-     * @return the underlying storage
-     */
-    protected ContextualStorage getContextualStorage(boolean createIfNotExist, FacesContext facesContext)
-    {
-        if (facesContext == null)
-        {
-            throw new ContextNotActiveException(this.getClass().getName() + ": no current active FacesContext");
-        }
-
-        Map<String, Object> sessionMap =
-                facesContext.getExternalContext().getSessionMap();
-        Map<String, ContextualStorage> contextualStorageMap =
-                (Map<String, ContextualStorage>) sessionMap.get(CLIENT_WINDOW_SCOPE_MAP);
-        if (contextualStorageMap == null)
-        {
-            if (!createIfNotExist)
-            {
-                return null;
-            }
-
-            contextualStorageMap = new ConcurrentHashMap<>();
-            sessionMap.put(CLIENT_WINDOW_SCOPE_MAP, contextualStorageMap);
-        }
-
-        String clientWindowId = getCurrentClientWindowId();
-        ContextualStorage contextualStorage = contextualStorageMap.get(clientWindowId);
-        if (contextualStorage == null)
-        {
-            if (!createIfNotExist)
-            {
-                return null;
-            }
-
-            contextualStorage = new ContextualStorage(beanManager, false);
-            contextualStorageMap.put(clientWindowId, contextualStorage);
-        }
-
-        return contextualStorage;
     }
 
     @Override
@@ -116,11 +66,6 @@ public class ClientWindowScopeContext implements Context
 
         return true;
     }
-    
-    protected String getCurrentClientWindowId()
-    {
-        return FacesContext.getCurrentInstance().getExternalContext().getClientWindow().getId();
-    }
 
     @Override
     public <T> T get(Contextual<T> bean)
@@ -131,7 +76,8 @@ public class ClientWindowScopeContext implements Context
 
         if (facesContext != null)
         {
-            ContextualStorage storage = getContextualStorage(false, facesContext);
+            ContextualStorage storage = getContextManager(facesContext).getContextualStorage(
+                    getCurrentClientWindowId(facesContext), false);
             if (storage != null)
             {
                 Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
@@ -157,7 +103,8 @@ public class ClientWindowScopeContext implements Context
         
         checkActive(facesContext);
 
-        ContextualStorage storage = getContextualStorage(true, facesContext);
+        ContextualStorage storage = getContextManager(facesContext).getContextualStorage(
+                getCurrentClientWindowId(facesContext), true);
 
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
         ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
@@ -176,36 +123,6 @@ public class ClientWindowScopeContext implements Context
         return storage.createContextualInstance(bean, creationalContext);
     }
 
-    /**
-     * Destroy the Contextual Instance of the given Bean.
-     * @param bean dictates which bean shall get cleaned up
-     * @return <code>true</code> if the bean was destroyed, <code>false</code> if there was no such bean.
-     */
-    public boolean destroy(Contextual bean)
-    {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ContextualStorage storage = getContextualStorage(false, facesContext);
-        if (storage == null)
-        {
-            return false;
-        }
-        ContextualInstanceInfo<?> contextualInstanceInfo = storage.getStorage().get(storage.getBeanKey(bean));
-
-        if (contextualInstanceInfo == null)
-        {
-            return false;
-        }
-
-        bean.destroy(contextualInstanceInfo.getContextualInstance(), contextualInstanceInfo.getCreationalContext());
-        return true;
-    }
-
-    /**
-     * Make sure that the context is really active.
-     *
-     * @param facesContext the current {@link FacesContext}.
-     * @throws ContextNotActiveException if there is no active context for the current thread.
-     */
     protected void checkActive(FacesContext facesContext)
     {
         if (!isActive(facesContext))
@@ -215,73 +132,34 @@ public class ClientWindowScopeContext implements Context
         }
     }
 
-    public static void onSessionDestroyed(FacesContext facesContext)
+    protected ClientWindowScopeContextualStorageHolder getContextManager(FacesContext context)
     {
-        destroyAllActive(facesContext);
+        return AbstractContextualStorageHolder.getInstance(context, ClientWindowScopeContextualStorageHolder.class);
     }
-    
-    public static void destroyAllActive(FacesContext facesContext)
+
+    protected String getCurrentClientWindowId(FacesContext context)
     {
-        if (facesContext == null)
-        {
-            return;
-        }
-        
-        Map<String, Object> sessionMap =
-                facesContext.getExternalContext().getSessionMap();
-        Map<String, ContextualStorage> contextualStorageMap =
-                (Map<String, ContextualStorage>) sessionMap.get(CLIENT_WINDOW_SCOPE_MAP);
-        if (contextualStorageMap == null || contextualStorageMap.isEmpty())
-        {
-            return;
-        }
+        return context.getExternalContext().getClientWindow().getId();
+    }
 
-        Iterator<String> iterator = contextualStorageMap.keySet().iterator();
-        while (iterator.hasNext())
-        {
-            String clientWindowId = iterator.next();
-            iterator.remove();
 
-            ContextualStorage contextualStorage = contextualStorageMap.get(clientWindowId);
-            destroyAllActive(facesContext, contextualStorage);
+    public static void destroyAll(FacesContext facesContext)
+    {
+        ClientWindowScopeContextualStorageHolder manager = AbstractContextualStorageHolder.getInstance(facesContext,
+                ClientWindowScopeContextualStorageHolder.class);
+        if (manager != null)
+        {
+            manager.destroyAll(facesContext);
         }
     }
     
-    public static void destroyAllActive(FacesContext facesContext, String clientWindowId)
+    public static void destroyAll(FacesContext context, String clientWindowId)
     {
-        if (facesContext == null)
+        ClientWindowScopeContextualStorageHolder manager = AbstractContextualStorageHolder.getInstance(context,
+                ClientWindowScopeContextualStorageHolder.class);
+        if (manager != null)
         {
-            return;
-        }
-        
-        Map<String, Object> sessionMap =
-                facesContext.getExternalContext().getSessionMap();
-        Map<String, ContextualStorage> contextualStorageMap =
-                (Map<String, ContextualStorage>) sessionMap.get(CLIENT_WINDOW_SCOPE_MAP);
-        if (contextualStorageMap == null || contextualStorageMap.isEmpty())
-        {
-            return;
-        }
-        
-        ContextualStorage contextualStorage = contextualStorageMap.remove(clientWindowId);
-        destroyAllActive(facesContext, contextualStorage);
-    }
-    
-    protected static void destroyAllActive(FacesContext facesContext, ContextualStorage contextualStorage)
-    {
-        if (contextualStorage == null)
-        {
-            return;
-        }
-        
-        Map<Object, ContextualInstanceInfo<?>> contextMap = contextualStorage.getStorage();
-        for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
-        {
-            Contextual bean = contextualStorage.getBean(entry.getKey());
-
-            ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
-            bean.destroy(contextualInstanceInfo.getContextualInstance(), 
-                contextualInstanceInfo.getCreationalContext());
+            manager.destroyAll(context, clientWindowId);
         }
     }
 }

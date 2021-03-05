@@ -38,13 +38,10 @@ public class ViewScopeContextualStorage extends ContextualStorage
     
     private final Map<String, Object> nameBeanKeyMap;
 
-    private transient volatile boolean activated;
-
     public ViewScopeContextualStorage(BeanManager beanManager)
     {
         super(beanManager, false);
         this.nameBeanKeyMap = new HashMap<>();
-        this.activated = true;
     }
 
     public Map<String, Object> getNameBeanKeyMap()
@@ -67,20 +64,5 @@ public class ViewScopeContextualStorage extends ContextualStorage
         }
 
         return instance;
-    }
-
-    public boolean isActivated()
-    {
-        return activated;
-    }
-
-    public void activate()
-    {
-        activated = true;
-    }
-
-    public void deactivate()
-    {
-        activated = false;
     }
 }

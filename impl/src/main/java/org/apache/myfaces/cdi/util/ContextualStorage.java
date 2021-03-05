@@ -39,10 +39,16 @@ public class ContextualStorage implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    protected final Map<Object, ContextualInstanceInfo<?>> contextualInstances;
-    protected final BeanManager beanManager;
-    protected final boolean concurrent;
+    protected Map<Object, ContextualInstanceInfo<?>> contextualInstances;
+    protected BeanManager beanManager;
+    protected boolean concurrent;
+    protected transient volatile boolean activated;
 
+    public ContextualStorage()
+    {
+        this.activated = true;
+    }
+    
     /**
      * @param beanManager is needed for serialisation
      * @param concurrent whether the ContextualStorage might get accessed concurrently by different threads
@@ -59,6 +65,7 @@ public class ContextualStorage implements Serializable
         {
             contextualInstances = new HashMap<>();
         }
+        this.activated = true;
     }
 
     /**
@@ -164,4 +171,18 @@ public class ContextualStorage implements Serializable
         return (Contextual<?>) beanKey;
     }
 
+    public boolean isActivated()
+    {
+        return activated;
+    }
+
+    public void activate()
+    {
+        activated = true;
+    }
+
+    public void deactivate()
+    {
+        activated = false;
+    }
 }

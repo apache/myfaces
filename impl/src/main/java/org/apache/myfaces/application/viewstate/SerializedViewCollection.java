@@ -61,14 +61,14 @@ class SerializedViewCollection implements Serializable
     public void put(FacesContext context, Object state, SerializedViewKey key, SerializedViewKey previousRestoredKey)
     {
         put(context, state, key, previousRestoredKey, null,
-                (oldViewScopeId) -> ViewScopeContext.destroyAllActive(context, oldViewScopeId));
+                (oldViewScopeId) -> ViewScopeContext.destroyAll(context, oldViewScopeId));
     }
     
     public synchronized void put(FacesContext context, Object state, 
         SerializedViewKey key, SerializedViewKey previousRestoredKey, String viewScopeId)
     {
         put(context, state, key, previousRestoredKey, viewScopeId,
-            (oldViewScopeId) -> ViewScopeContext.destroyAllActive(context, oldViewScopeId));
+            (oldViewScopeId) -> ViewScopeContext.destroyAll(context, oldViewScopeId));
     }
 
     public synchronized void put(FacesContext context, Object state, 

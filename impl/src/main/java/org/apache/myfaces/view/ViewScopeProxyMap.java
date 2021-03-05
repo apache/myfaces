@@ -27,7 +27,7 @@ import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PreDestroyViewMapEvent;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
+import org.apache.myfaces.cdi.view.ViewScopeContextualStorageHolder;
 import org.apache.myfaces.cdi.view.ViewScopeCDIMap;
 import org.apache.myfaces.util.ExternalSpecifications;
 
@@ -82,7 +82,8 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
                 if (_viewScopeId == null)
                 {
                     BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
-                    ViewScopeBeanHolder beanHolder = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
+                    ViewScopeContextualStorageHolder beanHolder =
+                            CDIUtils.get(beanManager, ViewScopeContextualStorageHolder.class);
                     _viewScopeId = beanHolder.generateUniqueViewScopeId();
                 }
                 _delegate = new ViewScopeCDIMap(facesContext, _viewScopeId);

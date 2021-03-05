@@ -63,8 +63,8 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
             {
                 facesFlowProvider.onSessionDestroyed();
             }
-            ViewScopeContext.onSessionDestroyed(facesContext);
-            ClientWindowScopeContext.onSessionDestroyed(facesContext);
+            ViewScopeContext.destroyAll(facesContext);
+            ClientWindowScopeContext.destroyAll(facesContext);
         }
         else
         {
@@ -82,8 +82,8 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
                 {
                     facesFlowProvider.onSessionDestroyed();
                 }
-                ViewScopeContext.onSessionDestroyed(facesContext);
-                ClientWindowScopeContext.onSessionDestroyed(facesContext);
+                ViewScopeContext.destroyAll(facesContext);
+                ClientWindowScopeContext.destroyAll(facesContext);
             }
             finally
             {
