@@ -100,7 +100,8 @@ public class CDIViewScopeProviderImpl extends ViewScopeProvider
     
     private boolean isViewScopeBeanHolderCreated(FacesContext facesContext)
     {
-        if (facesContext.getExternalContext().getSession(false) == null)
+        if (facesContext.getExternalContext().getSession(false) == null ||
+                !CDIUtils.isSessionScopeActive(beanManager))
         {
             return false;
         }
