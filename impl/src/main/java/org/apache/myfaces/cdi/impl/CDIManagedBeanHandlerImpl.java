@@ -106,7 +106,8 @@ public class CDIManagedBeanHandlerImpl extends ViewScopeProvider
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null)
         {
-            if (facesContext.getExternalContext().getSession(false) != null)
+            if (facesContext.getExternalContext().getSession(false) != null &&
+                    CDIUtils.isSessionScopeActive(beanManager))
             {
                 if (isViewScopeBeanHolderCreated(facesContext))
                 {
