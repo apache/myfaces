@@ -30,7 +30,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindowScoped;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
-import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
 
 /**
  * Minimal implementation of ClientWindowScope.
@@ -76,7 +75,7 @@ public class ClientWindowScopeContext implements Context
 
         if (facesContext != null)
         {
-            ContextualStorage storage = getContextManager(facesContext).getContextualStorage(
+            ContextualStorage storage = getStorageHolder(facesContext).getContextualStorage(
                     getCurrentClientWindowId(facesContext), false);
             if (storage != null)
             {
@@ -103,7 +102,7 @@ public class ClientWindowScopeContext implements Context
         
         checkActive(facesContext);
 
-        ContextualStorage storage = getContextManager(facesContext).getContextualStorage(
+        ContextualStorage storage = getStorageHolder(facesContext).getContextualStorage(
                 getCurrentClientWindowId(facesContext), true);
 
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
@@ -132,9 +131,9 @@ public class ClientWindowScopeContext implements Context
         }
     }
 
-    protected ClientWindowScopeContextualStorageHolder getContextManager(FacesContext context)
+    protected ClientWindowScopeContextualStorageHolder getStorageHolder(FacesContext context)
     {
-        return AbstractContextualStorageHolder.getInstance(context, ClientWindowScopeContextualStorageHolder.class);
+        return ClientWindowScopeContextualStorageHolder.getInstance(context, true);
     }
 
     protected String getCurrentClientWindowId(FacesContext context)
@@ -145,8 +144,8 @@ public class ClientWindowScopeContext implements Context
 
     public static void destroyAll(FacesContext facesContext)
     {
-        ClientWindowScopeContextualStorageHolder manager = AbstractContextualStorageHolder.getInstance(facesContext,
-                ClientWindowScopeContextualStorageHolder.class);
+        ClientWindowScopeContextualStorageHolder manager =
+                ClientWindowScopeContextualStorageHolder.getInstance(facesContext);
         if (manager != null)
         {
             manager.destroyAll(facesContext);
@@ -155,8 +154,8 @@ public class ClientWindowScopeContext implements Context
     
     public static void destroyAll(FacesContext context, String clientWindowId)
     {
-        ClientWindowScopeContextualStorageHolder manager = AbstractContextualStorageHolder.getInstance(context,
-                ClientWindowScopeContextualStorageHolder.class);
+        ClientWindowScopeContextualStorageHolder manager = ClientWindowScopeContextualStorageHolder
+                .getInstance(context);
         if (manager != null)
         {
             manager.destroyAll(context, clientWindowId);

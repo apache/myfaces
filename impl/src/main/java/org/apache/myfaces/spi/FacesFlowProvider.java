@@ -29,8 +29,6 @@ import jakarta.faces.flow.Flow;
  */
 public abstract class FacesFlowProvider
 {
-    public abstract void onSessionDestroyed();
-    
     public abstract Iterator<Flow> getAnnotatedFlows(FacesContext facesContext);
     
     public abstract void doAfterEnterFlow(FacesContext context, Flow flow);

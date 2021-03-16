@@ -163,7 +163,7 @@ public class FacesDataModelManager
 
     public static DataModel createDataModel(FacesContext facesContext, Class<?> forClass, Object value)
     {
-        BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
         FacesDataModelManager facesDataModelManager = CDIUtils.get(beanManager, FacesDataModelManager.class);
         return facesDataModelManager.tryToCreateDataModel(facesContext, forClass, value);
     }

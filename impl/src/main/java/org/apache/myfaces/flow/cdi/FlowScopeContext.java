@@ -33,7 +33,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.flow.FlowScoped;
-import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 import org.apache.myfaces.flow.FlowReference;
@@ -67,24 +66,9 @@ public class FlowScopeContext implements Context
         this.passivatingScope = beanManager.isPassivatingScope(getScope());
     }
 
-    protected FlowScopeBeanHolder getFlowScopeBeanHolder()
+    protected FlowScopeContextualStorageHolder getStorageHolder(FacesContext facesContext)
     {
-        return getFlowScopeBeanHolder(FacesContext.getCurrentInstance());
-    }
-    
-    protected FlowScopeBeanHolder getFlowScopeBeanHolder(FacesContext facesContext)
-    {
-        FlowScopeBeanHolder beanHolder = (FlowScopeBeanHolder) facesContext.getExternalContext().getApplicationMap()
-                .get(FlowScopeBeanHolder.class.getName());
-        if (beanHolder == null)
-        {
-            beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
-            facesContext.getExternalContext().getApplicationMap().put(
-                    FlowScopeBeanHolder.class.getName(),
-                    beanHolder);
-        }
-
-        return beanHolder;
+        return FlowScopeContextualStorageHolder.getInstance(facesContext, true);
     }
     
     public String getCurrentClientWindowFlowId(FacesContext facesContext)
@@ -97,22 +81,6 @@ public class FlowScopeContext implements Context
             flowMapKey = FlowUtils.getFlowMapKey(facesContext, flow);
         }
         return flowMapKey;
-    }
-
-    /**
-     * An implementation has to return the underlying storage which
-     * contains the items held in the Context.
-     * @param createIfNotExist whether a ContextualStorage shall get created if it doesn't yet exist.
-     * @return the underlying storage
-     */
-    protected ContextualStorage getContextualStorage(boolean createIfNotExist, String clientWindowFlowId)
-    {
-        if (clientWindowFlowId == null)
-        {
-            throw new ContextNotActiveException(this.getClass().getName() + ": no current active flow");
-        }
-
-        return getFlowScopeBeanHolder().getContextualStorage(beanManager, clientWindowFlowId, createIfNotExist);
     }
 
     @Override
@@ -138,9 +106,15 @@ public class FlowScopeContext implements Context
         return flow != null;
     }
 
-    /**
-     * @return whether the served scope is a passivating scope
-     */
+    protected void checkActive(FacesContext facesContext)
+    {
+        if (!isActive(facesContext))
+        {
+            throw new ContextNotActiveException("CDI context with scope annotation @"
+                + getScope().getName() + " is not active with respect to the current thread");
+        }
+    }
+
     public boolean isPassivatingScope()
     {
         return passivatingScope;
@@ -159,7 +133,7 @@ public class FlowScopeContext implements Context
             String flowMapKey = FlowUtils.getFlowMapKey(facesContext, reference);
             if (flowMapKey != null)
             {
-                ContextualStorage storage = getContextualStorage(false, flowMapKey);
+                ContextualStorage storage = getContextualStorage(facesContext, false, flowMapKey);
                 if (storage != null)
                 {
                     Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
@@ -178,13 +152,12 @@ public class FlowScopeContext implements Context
             }
         }
         
-        List<String> activeFlowMapKeys = getFlowScopeBeanHolder().getActiveFlowMapKeys(facesContext);
+        List<String> activeFlowMapKeys = getStorageHolder(facesContext).getActiveFlowMapKeys(facesContext);
         for (String flowMapKey : activeFlowMapKeys)
         {
-            ContextualStorage storage = getContextualStorage(false, flowMapKey);
+            ContextualStorage storage = getContextualStorage(facesContext, false, flowMapKey);
             if (storage == null)
             {
-                //return null;
                 continue;
             }
 
@@ -213,30 +186,28 @@ public class FlowScopeContext implements Context
                     " doesn't implement " + PassivationCapable.class.getName());
         }
         
-        FlowReference reference = flowBeanReferences.get(((Bean)bean).getBeanClass());
+        FlowReference reference = flowBeanReferences.get(((Bean) bean).getBeanClass());
         if (reference != null)
         {
             String flowMapKey = FlowUtils.getFlowMapKey(facesContext, reference);
-            if (flowMapKey != null)
-            {
-                ContextualStorage storage = getContextualStorage(false, flowMapKey);
-                if (storage != null)
-                {
-                    Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
-                    ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
-
-                    if (contextualInstanceInfo != null)
-                    {
-                        return (T) contextualInstanceInfo.getContextualInstance();
-                    }
-                }
-            }
-            else
+            if (flowMapKey == null)
             {
                 throw new IllegalStateException("Flow " + reference.getId()+
                     " cannot be found when resolving bean " + bean.toString());
             }
-            
+
+            ContextualStorage storage = getContextualStorage(facesContext, false, flowMapKey);
+            if (storage != null)
+            {
+                Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
+                ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
+
+                if (contextualInstanceInfo != null)
+                {
+                    return (T) contextualInstanceInfo.getContextualInstance();
+                }
+            }
+
             FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
             // Since it is possible to have only the flow id without documentId, the best
             // is first get the flow using flowHandler.getFlow and then check if the flow is
@@ -253,11 +224,10 @@ public class FlowScopeContext implements Context
                 throw new IllegalStateException(bean.toString() + "cannot be created if flow "
                         + reference.getId() + " is not active");
             }
-            
-            ContextualStorage storage = getContextualStorage(true, flowMapKey);
+
+            storage = getContextualStorage(facesContext, true, flowMapKey); // now create it
             Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
             ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
-
             if (contextualInstanceInfo != null)
             {
                 @SuppressWarnings("unchecked")
@@ -271,14 +241,13 @@ public class FlowScopeContext implements Context
             return storage.createContextualInstance(bean, creationalContext);
         }
 
-        List<String> activeFlowMapKeys = getFlowScopeBeanHolder().getActiveFlowMapKeys(facesContext);
+        List<String> activeFlowMapKeys = getStorageHolder(facesContext).getActiveFlowMapKeys(facesContext);
         for (String flowMapKey : activeFlowMapKeys)
         {
-            ContextualStorage storage = getContextualStorage(false, flowMapKey);
+            ContextualStorage storage = getContextualStorage(facesContext, false, flowMapKey);
 
             Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
             ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
-
             if (contextualInstanceInfo != null)
             {
                 @SuppressWarnings("unchecked")
@@ -288,13 +257,12 @@ public class FlowScopeContext implements Context
                     return instance;
                 }
             }
-
         }
         
-        ContextualStorage storage = getContextualStorage(true, getCurrentClientWindowFlowId(facesContext));
+        ContextualStorage storage = getContextualStorage(facesContext, true,
+                getCurrentClientWindowFlowId(facesContext));
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
         ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
-
         if (contextualInstanceInfo != null)
         {
             @SuppressWarnings("unchecked")
@@ -304,72 +272,27 @@ public class FlowScopeContext implements Context
                 return instance;
             }
         }
-            
+
         return storage.createContextualInstance(bean, creationalContext);
     }
 
-    /**
-     * Destroy the Contextual Instance of the given Bean.
-     * @param bean dictates which bean shall get cleaned up
-     * @return <code>true</code> if the bean was destroyed, <code>false</code> if there was no such bean.
-     */
-    public boolean destroy(Contextual bean)
+    protected ContextualStorage getContextualStorage(FacesContext context, boolean createIfNotExist,
+            String clientWindowFlowId)
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        List<String> activeFlowMapKeys = getFlowScopeBeanHolder().getActiveFlowMapKeys(facesContext);
-        for (String flowMapKey : activeFlowMapKeys)
+        if (clientWindowFlowId == null)
         {
-            ContextualStorage storage = getContextualStorage(false, flowMapKey);
-            if (storage == null)
-            {
-                continue;
-            }
-            ContextualInstanceInfo<?> contextualInstanceInfo = storage.getStorage().get(storage.getBeanKey(bean));
-
-            if (contextualInstanceInfo == null)
-            {
-                continue;
-            }
-
-            bean.destroy(contextualInstanceInfo.getContextualInstance(), contextualInstanceInfo.getCreationalContext());
-            return true;
+            throw new ContextNotActiveException(this.getClass().getName() + ": no current active flow");
         }
-        return false;
+
+        return getStorageHolder(context).getContextualStorage(clientWindowFlowId, createIfNotExist);
     }
 
-    /**
-     * Destroys all the Contextual Instances in the specified ContextualStorage.
-     * This is a static method to allow various holder objects to cleanup
-     * properly in &#064;PreDestroy.
-     */
-    public static void destroyAllActive(ContextualStorage storage)
+    public static void destroyAll(FacesContext facesContext)
     {
-        Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
-        for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
+        FlowScopeContextualStorageHolder manager = FlowScopeContextualStorageHolder.getInstance(facesContext);
+        if (manager != null)
         {
-            if (!FlowScopeBeanHolder.CURRENT_FLOW_SCOPE_MAP.equals(entry.getKey()))
-            {
-                Contextual bean = storage.getBean(entry.getKey());
-
-                ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
-                bean.destroy(contextualInstanceInfo.getContextualInstance(), 
-                    contextualInstanceInfo.getCreationalContext());
-            }
+            manager.destroyAll(facesContext);
         }
     }
-
-    /**
-     * Make sure that the Context is really active.
-     * @throws ContextNotActiveException if there is no active
-     *         Context for the current Thread.
-     */
-    protected void checkActive(FacesContext facesContext)
-    {
-        if (!isActive(facesContext))
-        {
-            throw new ContextNotActiveException("CDI context with scope annotation @"
-                + getScope().getName() + " is not active with respect to the current thread");
-        }
-    }
-
 }

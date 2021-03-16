@@ -142,7 +142,7 @@ public class ELResolverBuilder
             return false;
         }
 
-        BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
         if (beanManager != null)
         {
             FacesConfigBeanHolder holder = CDIUtils.get(beanManager, FacesConfigBeanHolder.class);

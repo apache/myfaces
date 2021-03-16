@@ -182,8 +182,7 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
     
     protected ELResolver getCDIELResolver()
     {
-        BeanManager beanManager = CDIUtils.getBeanManager(
-                FacesContext.getCurrentInstance().getExternalContext());
+        BeanManager beanManager = CDIUtils.getBeanManager(FacesContext.getCurrentInstance());
         return beanManager.getELResolver();
     }
 }

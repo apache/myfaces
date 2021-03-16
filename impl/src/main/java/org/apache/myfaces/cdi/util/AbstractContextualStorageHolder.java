@@ -202,11 +202,15 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
 
             for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
             {  
-                Contextual bean = contextualStorage.getBean(entry.getKey());
+                boolean skip = isSkipDestroy(entry);
+                if (!skip)
+                {
+                    Contextual bean = contextualStorage.getBean(entry.getKey());
 
-                ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
-                bean.destroy(contextualInstanceInfo.getContextualInstance(), 
-                    contextualInstanceInfo.getCreationalContext());
+                    ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
+                    bean.destroy(contextualInstanceInfo.getContextualInstance(), 
+                        contextualInstanceInfo.getCreationalContext());
+                }
             }
 
             contextMap.clear();
@@ -221,6 +225,11 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
             }
         }
     }
+    
+    protected boolean isSkipDestroy(Map.Entry<Object, ContextualInstanceInfo<?>> entry)
+    {
+        return false;
+    }
 
     public void destroyAll(FacesContext context, String slotId)
     {
@@ -233,8 +242,14 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
         destroyAll(contextualStorage, context);
     }
 
-    public static <T extends AbstractContextualStorageHolder> T getInstance(FacesContext facesContext,
+    protected static <T extends AbstractContextualStorageHolder> T getInstance(FacesContext facesContext,
             Class<T> contextManagerClass)
+    {
+        return getInstance(facesContext, contextManagerClass, false);
+    }
+    
+    protected static <T extends AbstractContextualStorageHolder> T getInstance(FacesContext facesContext,
+            Class<T> contextManagerClass, boolean create)
     {
         if (facesContext == null
                 || facesContext.getExternalContext() == null
@@ -243,7 +258,7 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
             return null;
         }
 
-        BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
         if (beanManager == null)
         {
             return null;
@@ -257,7 +272,14 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
         T cached = (T) facesContext.getExternalContext().getSessionMap().get(contextManagerClass.getClass().getName());
         if (cached == null)
         {
-            cached = CDIUtils.getOptional(beanManager, contextManagerClass);
+            if (create)
+            {
+                cached = CDIUtils.get(beanManager, contextManagerClass);
+            }
+            else
+            {
+                cached = CDIUtils.getOptional(beanManager, contextManagerClass);
+            }
             if (cached != null)
             {
                 facesContext.getExternalContext().getSessionMap().put(contextManagerClass.getClass().getName(),
@@ -267,4 +289,5 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
 
         return cached;
     }
+
 }

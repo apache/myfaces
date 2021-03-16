@@ -63,7 +63,7 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
     {
         if (delegate == null)
         {
-            BeanManager bm = CDIUtils.getBeanManager(FacesContext.getCurrentInstance().getExternalContext());
+            BeanManager bm = CDIUtils.getBeanManager(FacesContext.getCurrentInstance());
             FacesValidatorAnnotationLiteral literal = new FacesValidatorAnnotationLiteral(validatorId);
             delegate = (Validator) CDIUtils.get(bm, VALIDATOR_TYPE, true, literal);
             

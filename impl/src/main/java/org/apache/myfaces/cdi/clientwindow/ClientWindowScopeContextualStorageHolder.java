@@ -56,4 +56,14 @@ public class ClientWindowScopeContextualStorageHolder
     {
         return new ContextualStorage(beanManager, true);
     }
+    
+    protected static ClientWindowScopeContextualStorageHolder getInstance(FacesContext facesContext)
+    {
+        return getInstance(facesContext, false);
+    }
+    
+    protected static ClientWindowScopeContextualStorageHolder getInstance(FacesContext facesContext, boolean create)
+    {
+        return getInstance(facesContext, ClientWindowScopeContextualStorageHolder.class, create);
+    }
 }

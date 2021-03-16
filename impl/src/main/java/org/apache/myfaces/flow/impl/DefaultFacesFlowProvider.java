@@ -125,12 +125,6 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
         return map;
     }
 
-    @Override
-    public void onSessionDestroyed()
-    {
-        
-    }
-
     protected String getFlowKey(Flow flow)
     {
         return CURRENT_FLOW_SCOPE_MAP + SEPARATOR_CHAR

@@ -72,7 +72,7 @@ class StateCacheServerSide extends StateCache<Object, Object>
     private final int numberOfSequentialViewsInSession;
     private final boolean serializeStateInSession;
     private final boolean compressStateInSession;
-    
+
     private final SessionViewStorageFactory sessionViewStorageFactory;
     private final CsrfSessionTokenFactory csrfSessionTokenFactory;
     private final StateTokenProcessor stateTokenProcessor;

@@ -30,6 +30,7 @@ import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
@@ -38,6 +39,11 @@ import org.apache.myfaces.webapp.AbstractFacesInitializer;
  */
 public class CDIUtils
 {
+    public static BeanManager getBeanManager(FacesContext facesContext)
+    {
+        return getBeanManager(facesContext.getExternalContext());
+    }
+
     public static BeanManager getBeanManager(ExternalContext externalContext)
     {
         return (BeanManager) externalContext.getApplicationMap().get(

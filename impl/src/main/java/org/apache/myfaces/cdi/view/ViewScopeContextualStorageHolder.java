@@ -21,6 +21,7 @@ package org.apache.myfaces.cdi.view;
 import java.io.Serializable;
 import java.util.Random;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
 
 /**
@@ -56,4 +57,13 @@ public class ViewScopeContextualStorageHolder
         return new ViewScopeContextualStorage(beanManager);
     }
 
+    protected static ViewScopeContextualStorageHolder getInstance(FacesContext facesContext)
+    {
+        return getInstance(facesContext, false);
+    }
+    
+    protected static ViewScopeContextualStorageHolder getInstance(FacesContext facesContext, boolean create)
+    {
+        return getInstance(facesContext, ViewScopeContextualStorageHolder.class, create);
+    }
 }

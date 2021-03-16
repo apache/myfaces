@@ -34,10 +34,6 @@ public class PushContextCDIExtension implements Extension
     {
         // Register PushContextFactoryBean as a bean with CDI annotations, so the system
         // can take it into account, and use it later when necessary.
-        AnnotatedType<PushContextFactoryBean> pushContextFactoryBean =
-                        beanManager.createAnnotatedType(PushContextFactoryBean.class);
-        event.addAnnotatedType(pushContextFactoryBean, pushContextFactoryBean.getJavaClass().getName());
-        
         AnnotatedType wcbean = beanManager.createAnnotatedType(WebsocketChannelTokenBuilderBean.class);
         event.addAnnotatedType(wcbean, wcbean.getJavaClass().getName());
         

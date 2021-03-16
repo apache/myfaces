@@ -32,7 +32,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
-import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 
 /**
@@ -57,15 +56,9 @@ public class ViewScopeContext implements Context
         this.passivatingScope = beanManager.isPassivatingScope(getScope());
     }
 
-    protected ViewScopeContextualStorageHolder getContextManager(FacesContext facesContext)
+    protected ViewScopeContextualStorageHolder getStorageHolder(FacesContext facesContext)
     {
-        return AbstractContextualStorageHolder.getInstance(facesContext, ViewScopeContextualStorageHolder.class);
-    }
-
-    protected static ViewScopeContextualStorageHolder getViewScopeBeanHolder(FacesContext facesContext)
-    {
-        return (ViewScopeContextualStorageHolder) facesContext.getExternalContext().getSessionMap()
-                .get(ViewScopeContextualStorageHolder.class.getName());
+        return ViewScopeContextualStorageHolder.getInstance(facesContext, true);
     }
 
     public String getCurrentViewScopeId(boolean create)
@@ -96,7 +89,7 @@ public class ViewScopeContext implements Context
         }
         if (viewScopeId != null)
         {
-            return getContextManager(facesContext).getContextualStorage(viewScopeId, createIfNotExist);
+            return getStorageHolder(facesContext).getContextualStorage(viewScopeId, createIfNotExist);
         }
         return null;
     }
@@ -194,8 +187,7 @@ public class ViewScopeContext implements Context
 
     public static void destroyAll(FacesContext facesContext)
     {
-        ViewScopeContextualStorageHolder manager = AbstractContextualStorageHolder.getInstance(facesContext,
-                ViewScopeContextualStorageHolder.class);
+        ViewScopeContextualStorageHolder manager = ViewScopeContextualStorageHolder.getInstance(facesContext);
         if (manager != null)
         {
             manager.destroyAll(facesContext);
@@ -204,8 +196,7 @@ public class ViewScopeContext implements Context
 
     public static void destroyAll(FacesContext facesContext, String viewScopeId)
     {
-        ViewScopeContextualStorageHolder manager = AbstractContextualStorageHolder.getInstance(facesContext,
-                ViewScopeContextualStorageHolder.class);
+        ViewScopeContextualStorageHolder manager = ViewScopeContextualStorageHolder.getInstance(facesContext);
         if (manager != null)
         {
             manager.destroyAll(facesContext, viewScopeId);

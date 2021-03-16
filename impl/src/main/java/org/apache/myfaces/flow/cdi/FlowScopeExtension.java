@@ -48,9 +48,8 @@ public class FlowScopeExtension implements Extension
     void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
         event.addScope(FlowScoped.class, true, true);
-        // Register FlowBuilderFactoryBean as a bean with CDI annotations, so the system
-        // can take it into account, and use it later when necessary.
-        AnnotatedType bean = beanManager.createAnnotatedType(FlowScopeBeanHolder.class);
+
+        AnnotatedType bean = beanManager.createAnnotatedType(FlowScopeContextualStorageHolder.class);
         event.addAnnotatedType(bean, bean.getJavaClass().getName());
     }
     
@@ -76,5 +75,4 @@ public class FlowScopeExtension implements Extension
         flowScopedContext = new FlowScopeContext(manager, flowBeanReferences);
         event.addContext(flowScopedContext);
     }
-
 }

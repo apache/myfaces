@@ -81,7 +81,7 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
 
                 if (_viewScopeId == null)
                 {
-                    BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+                    BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
                     ViewScopeContextualStorageHolder beanHolder =
                             CDIUtils.get(beanManager, ViewScopeContextualStorageHolder.class);
                     _viewScopeId = beanHolder.generateUniqueViewScopeId();

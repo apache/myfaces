@@ -26,7 +26,7 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import java.util.Collections;
 
 /**
- * 
+ *
  *
  * @author Leonardo Uribe
  */
@@ -34,9 +34,9 @@ public class FlowScopeMap implements Map
 {
     private BeanManager beanManager;
     private String currentClientWindowFlowId;
-    private FlowScopeBeanHolder beanHolder;
+    private FlowScopeContextualStorageHolder storageHolder;
     private boolean beanHolderInitialized = false;
-    
+
     public FlowScopeMap(BeanManager beanManager, String currentClientWindowFlowId)
     {
         this.beanManager = beanManager;
@@ -45,33 +45,33 @@ public class FlowScopeMap implements Map
 
     private Map<Object, Object> getWrapped(boolean create)
     {
-        if (beanHolder == null)
+        if (storageHolder == null)
         {
             if (create)
             {
-                beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
+                storageHolder = CDIUtils.get(beanManager, FlowScopeContextualStorageHolder.class);
             }
             else if (!beanHolderInitialized)
             {
-                beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class, false);
+                storageHolder = CDIUtils.get(beanManager, FlowScopeContextualStorageHolder.class, false);
                 beanHolderInitialized = true;
             }
         }
 
-        if (beanHolder == null)
+        if (storageHolder == null)
         {
             return null;
         }
-        return beanHolder.getFlowScopeMap(beanManager, currentClientWindowFlowId, create);
+        return storageHolder.getFlowScopeMap(beanManager, currentClientWindowFlowId, create);
     }
-    
+
     @Override
     public int size()
     {
         Map<Object, Object> wrapped = getWrapped(false);
         return wrapped == null ? 0 : wrapped.size();
     }
-    
+
     @Override
     public boolean isEmpty()
     {

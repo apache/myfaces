@@ -119,7 +119,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         String channel = component.getChannel();
 
         // TODO: use a single bean and entry point for this algorithm.
-        BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
 
         WebsocketChannelTokenBuilderBean channelTokenBean = CDIUtils.get(
                 beanManager,
@@ -169,7 +169,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         else if (scope.equals("session"))
         {
             sessionTokenBean = (sessionTokenBean != null) ? sessionTokenBean : CDIUtils.get(
-                    CDIUtils.getBeanManager(facesContext.getExternalContext()),
+                    CDIUtils.getBeanManager(facesContext),
                     WebsocketSessionBean.class);
 
             sessionTokenBean.registerWebsocketSession(channelToken, metadata);
@@ -178,7 +178,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         {
             //Default application
             appTokenBean = (appTokenBean != null) ? appTokenBean : CDIUtils.get(
-                    CDIUtils.getBeanManager(facesContext.getExternalContext()),
+                    CDIUtils.getBeanManager(facesContext),
                     WebsocketApplicationBean.class);
 
             appTokenBean.registerWebsocketSession(channelToken, metadata);

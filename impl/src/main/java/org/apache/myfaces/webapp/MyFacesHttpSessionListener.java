@@ -29,24 +29,17 @@ import org.apache.myfaces.cdi.view.ViewScopeContext;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
-import org.apache.myfaces.spi.FacesFlowProvider;
+import org.apache.myfaces.flow.cdi.FlowScopeContext;
 
 public class MyFacesHttpSessionListener implements HttpSessionListener
 {
     public static final String APPLICATION_MAP_KEY = MyFacesHttpSessionListener.class.getName();
 
-    private FacesFlowProvider facesFlowProvider = null;
-
-    public void setFacesFlowProvider(FacesFlowProvider facesFlowProvider)
-    {
-        this.facesFlowProvider = facesFlowProvider;
-    }
-    
     @Override
     public void sessionCreated(HttpSessionEvent event)
     {
     }
-    
+
     @Override
     public void sessionDestroyed(HttpSessionEvent event)
     {
@@ -59,10 +52,7 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null)
         {
-            if (facesFlowProvider != null)
-            {
-                facesFlowProvider.onSessionDestroyed();
-            }
+            FlowScopeContext.destroyAll(facesContext);
             ViewScopeContext.destroyAll(facesContext);
             ClientWindowScopeContext.destroyAll(facesContext);
         }
@@ -78,10 +68,7 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
                 ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                 facesContext = new StartupFacesContextImpl(externalContext, externalContext, exceptionHandler, false);
 
-                if (facesFlowProvider != null)
-                {
-                    facesFlowProvider.onSessionDestroyed();
-                }
+                FlowScopeContext.destroyAll(facesContext);
                 ViewScopeContext.destroyAll(facesContext);
                 ClientWindowScopeContext.destroyAll(facesContext);
             }

@@ -44,43 +44,9 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
 {
     private final static String CURRENT_FLOW_SCOPE_MAP = "oam.flow.SCOPE_MAP";
     private final static char SEPARATOR_CHAR = '.';
-    
-    private BeanManager _beanManager;
-    private boolean _initialized;
+
     private List<Flow> flows;
-    
-    private boolean isFlowScopeBeanHolderCreated(FacesContext facesContext)
-    {
-        if (facesContext.getExternalContext().getSession(false) == null)
-        {
-            return false;
-        }
-        
-        return facesContext.getExternalContext().getSessionMap()
-                .containsKey(FlowScopeBeanHolder.CREATED);
-    }
-    
-    @Override
-    public void onSessionDestroyed()
-    {
-        // In CDI case, the best way to deal with this is use a method 
-        // with @PreDestroy annotation on a session scope bean 
-        // ( ViewScopeBeanHolder.destroyBeans() ). There is no need
-        // to do anything else in this location, but it is advised
-        // in CDI the beans are destroyed at the end of the request,
-        // not when invalidateSession() is called.
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext != null && isFlowScopeBeanHolderCreated(facesContext))
-        {
-            FlowScopeBeanHolder flowScopeBeanHolder = CDIUtils.get(
-                _beanManager, FlowScopeBeanHolder.class, false);
-            if (flowScopeBeanHolder != null)
-            {
-                flowScopeBeanHolder.destroyBeans();
-            }
-        }
-    }
-    
+
     @Override
     public Iterator<Flow> getAnnotatedFlows(FacesContext facesContext)
     {
@@ -88,7 +54,7 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         {
             flows = new ArrayList<>();
 
-            BeanManager beanManager = getBeanManager(facesContext);
+            BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
             if (beanManager == null)
             {
                 Logger.getLogger(DefaultCDIFacesFlowProvider.class.getName()).log(Level.INFO,
@@ -111,12 +77,8 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
     @Override
     public void doAfterEnterFlow(FacesContext context, Flow flow)
     {
-        BeanManager beanManager = getBeanManager(context);
-        if (beanManager != null)
-        {
-            FlowScopeBeanHolder beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
-            beanHolder.createCurrentFlowScope(context);
-        }
+        FlowScopeContextualStorageHolder storageHolder = FlowScopeContextualStorageHolder.getInstance(context, true);
+        storageHolder.createCurrentFlowScope(context);
 
         String mapKey = getFlowKey(flow);
         context.getAttributes().remove(mapKey);
@@ -125,12 +87,8 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
     @Override
     public void doBeforeExitFlow(FacesContext context, Flow flow)
     {
-        BeanManager beanManager = getBeanManager(context);
-        if (beanManager != null)
-        {
-            FlowScopeBeanHolder beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
-            beanHolder.destroyCurrentFlowScope(context);
-        }
+        FlowScopeContextualStorageHolder storageHolder = FlowScopeContextualStorageHolder.getInstance(context, true);
+        storageHolder.destroyCurrentFlowScope(context);
 
         String mapKey = getFlowKey(flow);
         context.getAttributes().remove(mapKey);
@@ -144,7 +102,9 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         {
             String mapKey = getFlowKey(flow);
             return (Map<Object, Object>) facesContext.getAttributes().computeIfAbsent(mapKey,
-                    k -> new FlowScopeMap(getBeanManager(facesContext), FlowUtils.getFlowMapKey(facesContext, flow)));
+                    k -> new FlowScopeMap(
+                            CDIUtils.getBeanManager(facesContext),
+                            FlowUtils.getFlowMapKey(facesContext, flow)));
         }
 
         return null;
@@ -158,26 +118,11 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
             Flow flow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
             if (flow != null)
             {
-                BeanManager beanManager = getBeanManager(facesContext);
-                if (beanManager != null)
-                {
-                    FlowScopeBeanHolder beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
-
-                    //Refresh client window for flow scope
-                    beanHolder.refreshClientWindow(facesContext);
-                }
+                FlowScopeContextualStorageHolder storageHolder = FlowScopeContextualStorageHolder
+                        .getInstance(facesContext, true);
+                storageHolder.refreshClientWindow(facesContext);
             }
         }
-    }
-    
-    public BeanManager getBeanManager(FacesContext facesContext)
-    {
-        if (_beanManager == null && !_initialized)
-        {
-            _beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
-            _initialized = true;
-        }
-        return _beanManager;
     }
 
     protected String getFlowKey(Flow flow)

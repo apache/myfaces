@@ -57,7 +57,7 @@ public class PushContextImpl implements PushContext
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null)
         {
-            beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+            beanManager = CDIUtils.getBeanManager(facesContext);
         }
         else
         {
@@ -143,7 +143,7 @@ public class PushContextImpl implements PushContext
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null)
         {
-            beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+            beanManager = CDIUtils.getBeanManager(facesContext);
         }
         else
         {

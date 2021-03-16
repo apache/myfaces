@@ -40,7 +40,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
 
     public ViewScopeCDIMap(FacesContext facesContext)
     {
-        BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
         ViewScopeContextualStorageHolder bean = CDIUtils.get(beanManager, ViewScopeContextualStorageHolder.class);
         viewScopeId = bean.generateUniqueViewScopeId();
     }
@@ -59,7 +59,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
         if (storage == null)
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+            BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
 
             ViewScopeContextualStorageHolder bean = CDIUtils.get(beanManager, ViewScopeContextualStorageHolder.class);
             
