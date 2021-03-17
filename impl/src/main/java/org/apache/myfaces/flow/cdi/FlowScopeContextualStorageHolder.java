@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Typed;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
@@ -46,6 +47,7 @@ import org.apache.myfaces.util.lang.LRULinkedHashMap;
  * 
  * @author lu4242
  */
+@Typed(FlowScopeContextualStorageHolder.class)
 @SessionScoped
 public class FlowScopeContextualStorageHolder 
         extends AbstractContextualStorageHolder<ContextualStorage>
@@ -121,6 +123,7 @@ public class FlowScopeContextualStorageHolder
         ClientWindow cw = facesContext.getExternalContext().getClientWindow();
         if (cw != null && cw.getId() != null)
         {
+            clientWindowExpirationStack.remove(cw.getId());
             clientWindowExpirationStack.put(cw.getId(), "");
         }
     }

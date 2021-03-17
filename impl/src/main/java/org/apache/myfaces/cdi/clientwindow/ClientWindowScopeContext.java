@@ -27,6 +27,7 @@ import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Typed;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.lifecycle.ClientWindowScoped;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
@@ -159,6 +160,16 @@ public class ClientWindowScopeContext implements Context
         if (manager != null)
         {
             manager.destroyAll(context, clientWindowId);
+        }
+    }
+
+    public static void pushClientWindow(FacesContext context, ClientWindow clientWindow)
+    {
+        ClientWindowScopeContextualStorageHolder manager = ClientWindowScopeContextualStorageHolder
+                .getInstance(context, true);
+        if (manager != null)
+        {
+            manager.pushClientWindow(context, clientWindow);
         }
     }
 }

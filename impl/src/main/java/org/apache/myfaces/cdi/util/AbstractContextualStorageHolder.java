@@ -269,7 +269,7 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
             return null;
         }
 
-        T cached = (T) facesContext.getExternalContext().getSessionMap().get(contextManagerClass.getClass().getName());
+        T cached = (T) facesContext.getExternalContext().getSessionMap().get(contextManagerClass.getName());
         if (cached == null)
         {
             if (create)
@@ -282,7 +282,7 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
             }
             if (cached != null)
             {
-                facesContext.getExternalContext().getSessionMap().put(contextManagerClass.getClass().getName(),
+                facesContext.getExternalContext().getSessionMap().put(contextManagerClass.getName(),
                         cached);
             }
         }

@@ -21,6 +21,7 @@ package org.apache.myfaces.cdi.view;
 import java.io.Serializable;
 import java.util.Random;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Typed;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
 
@@ -28,6 +29,7 @@ import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
  *
  * @author Leonardo Uribe
  */
+@Typed(ViewScopeContextualStorageHolder.class)
 @SessionScoped
 public class ViewScopeContextualStorageHolder
         extends AbstractContextualStorageHolder<ViewScopeContextualStorage>

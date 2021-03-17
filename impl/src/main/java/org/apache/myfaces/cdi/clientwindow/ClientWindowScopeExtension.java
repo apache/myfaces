@@ -20,6 +20,7 @@ package org.apache.myfaces.cdi.clientwindow;
 
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
@@ -31,9 +32,13 @@ public class ClientWindowScopeExtension implements Extension
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
-        event.addScope(ClientWindowScoped.class, true, false);
+        event.addScope(ClientWindowScoped.class, true, true);
+
+        AnnotatedType<ClientWindowScopeContextualStorageHolder> annotatedType = 
+                beanManager.createAnnotatedType(ClientWindowScopeContextualStorageHolder.class);
+        event.addAnnotatedType(annotatedType, annotatedType.getJavaClass().getName());
     }
-    
+
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
         clientWindowScopedContext = new ClientWindowScopeContext(beanManager);

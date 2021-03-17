@@ -18,20 +18,46 @@
  */
 package org.apache.myfaces.cdi.clientwindow;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.inject.Typed;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
 import java.io.Serializable;
 import java.util.Map;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
+import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.util.lang.LRULinkedHashMap;
 
+@Typed(ClientWindowScopeContextualStorageHolder.class)
 @SessionScoped
 public class ClientWindowScopeContextualStorageHolder
         extends AbstractContextualStorageHolder<ContextualStorage>
         implements Serializable
 {
+    private LRULinkedHashMap<String, String> clientWindowExpirationStack;
+
+    @PostConstruct
+    @Override
+    public void init()
+    {
+        super.init();
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+
+        Integer numberOfClientWindowsInSession =
+                MyfacesConfig.getCurrentInstance(facesContext).getNumberOfClientWindowsInSession();
+        clientWindowExpirationStack = new LRULinkedHashMap<>(numberOfClientWindowsInSession, (eldest) ->
+        {
+            destroyAll(FacesContext.getCurrentInstance(), eldest.getKey());
+        });
+
+        pushClientWindow(facesContext, facesContext.getExternalContext().getClientWindow());
+    }
+    
     @Override
     public void destroyAll(ContextualStorage contextualStorage, FacesContext facesContext)
     {
@@ -56,13 +82,22 @@ public class ClientWindowScopeContextualStorageHolder
     {
         return new ContextualStorage(beanManager, true);
     }
-    
-    protected static ClientWindowScopeContextualStorageHolder getInstance(FacesContext facesContext)
+
+    public void pushClientWindow(FacesContext facesContext, ClientWindow clientWindow)
+    {
+        if (clientWindow != null && clientWindow.getId() != null)
+        {
+            clientWindowExpirationStack.remove(clientWindow.getId());
+            clientWindowExpirationStack.put(clientWindow.getId(), "");
+        }
+    }
+
+    public static ClientWindowScopeContextualStorageHolder getInstance(FacesContext facesContext)
     {
         return getInstance(facesContext, false);
     }
     
-    protected static ClientWindowScopeContextualStorageHolder getInstance(FacesContext facesContext, boolean create)
+    public static ClientWindowScopeContextualStorageHolder getInstance(FacesContext facesContext, boolean create)
     {
         return getInstance(facesContext, ClientWindowScopeContextualStorageHolder.class, create);
     }

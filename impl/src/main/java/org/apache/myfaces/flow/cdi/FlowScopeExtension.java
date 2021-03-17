@@ -49,10 +49,11 @@ public class FlowScopeExtension implements Extension
     {
         event.addScope(FlowScoped.class, true, true);
 
-        AnnotatedType bean = beanManager.createAnnotatedType(FlowScopeContextualStorageHolder.class);
-        event.addAnnotatedType(bean, bean.getJavaClass().getName());
+        AnnotatedType<FlowScopeContextualStorageHolder> annotatedType = 
+                beanManager.createAnnotatedType(FlowScopeContextualStorageHolder.class);
+        event.addAnnotatedType(annotatedType, annotatedType.getJavaClass().getName());
     }
-    
+
     void onProcessBean(@Observes ProcessBean event, BeanManager manager)
     {
         // Register all beans who are annotated with FlowScoped and has a flow reference

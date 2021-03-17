@@ -343,6 +343,16 @@ public class MyfacesConfig
             "org.apache.myfaces.FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION";
     
     /**
+     * Indicate the max number of ClientWindows stored into session. It is only active when 
+     * jakarta.faces.CLIENT_WINDOW_MODE is enabled and jakarta.faces.STATE_SAVING_METHOD is set
+     * to "server".
+     */
+    @JSFWebConfigParam(since="4.0", group="state", tags="performance")
+    public static final String NUMBER_OF_CLIENT_WINDOWS_IN_SESSION = 
+            "org.apache.myfaces.NUMBER_OF_CLIENT_WINDOWS_IN_SESSION";
+    private final static int NUMBER_OF_CLIENT_WINDOWS_IN_SESSION_DEFAULT = 10;
+
+    /**
      * This parameter specifies whether or not the ImportHandler will be supported
      */
     @JSFWebConfigParam(since="2.2.9", defaultValue="false", expectedValues="true,false", group="EL")
@@ -829,6 +839,7 @@ public class MyfacesConfig
     private Integer numberOfViewsInSession = NUMBER_OF_VIEWS_IN_SESSION_DEFAULT;
     private Integer numberOfSequentialViewsInSession = NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT;
     private Integer numberOfFlashTokensInSession;
+    private Integer numberOfClientWindowsInSession;
     private Integer numberOfFacesFlowClientWindowIdsInSession;
     private boolean supportEL3ImportHandler = SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT;
     private boolean strictJsf2OriginHeaderAppPath = STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT;
@@ -1087,7 +1098,7 @@ public class MyfacesConfig
         }
 
         Integer numberOfFlashTokensInSessionDefault;
-        if (cfg.numberOfSequentialViewsInSession != null&& cfg.numberOfSequentialViewsInSession > 0)
+        if (cfg.numberOfSequentialViewsInSession != null && cfg.numberOfSequentialViewsInSession > 0)
         {
             numberOfFlashTokensInSessionDefault = (cfg.numberOfViewsInSession
                     / cfg.numberOfSequentialViewsInSession) + 1;
@@ -1103,6 +1114,10 @@ public class MyfacesConfig
         cfg.numberOfFacesFlowClientWindowIdsInSession = getInt(extCtx,
                 NUMBER_OF_FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION, 
                 numberOfFlashTokensInSessionDefault);
+        
+        cfg.numberOfClientWindowsInSession = getInt(extCtx,
+                NUMBER_OF_CLIENT_WINDOWS_IN_SESSION, 
+                NUMBER_OF_CLIENT_WINDOWS_IN_SESSION_DEFAULT);
                         
         cfg.supportEL3ImportHandler = getBoolean(extCtx, SUPPORT_EL_3_IMPORT_HANDLER, 
                 SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT); 
@@ -1771,5 +1786,9 @@ public class MyfacesConfig
         return automaticExtensionlessMapping;
     }
 
+    public Integer getNumberOfClientWindowsInSession()
+    {
+        return numberOfClientWindowsInSession;
+    }
 }
 
