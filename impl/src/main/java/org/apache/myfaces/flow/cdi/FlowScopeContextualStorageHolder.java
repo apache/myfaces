@@ -123,8 +123,11 @@ public class FlowScopeContextualStorageHolder
         ClientWindow cw = facesContext.getExternalContext().getClientWindow();
         if (cw != null && cw.getId() != null)
         {
-            clientWindowExpirationStack.remove(cw.getId());
-            clientWindowExpirationStack.put(cw.getId(), "");
+            synchronized (clientWindowExpirationStack)
+            {
+                clientWindowExpirationStack.remove(cw.getId());
+                clientWindowExpirationStack.put(cw.getId(), "");
+            }
         }
     }
     

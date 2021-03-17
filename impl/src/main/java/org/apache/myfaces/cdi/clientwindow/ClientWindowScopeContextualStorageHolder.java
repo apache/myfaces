@@ -87,8 +87,11 @@ public class ClientWindowScopeContextualStorageHolder
     {
         if (clientWindow != null && clientWindow.getId() != null)
         {
-            clientWindowExpirationStack.remove(clientWindow.getId());
-            clientWindowExpirationStack.put(clientWindow.getId(), "");
+            synchronized (clientWindowExpirationStack)
+            {
+                clientWindowExpirationStack.remove(clientWindow.getId());
+                clientWindowExpirationStack.put(clientWindow.getId(), "");
+            }
         }
     }
 
