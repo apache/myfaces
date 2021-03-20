@@ -193,18 +193,15 @@ public class ResourceImpl extends Resource implements ContractResource
             if (lastModified >= 0)
             {
                 headers.put("Last-Modified", ResourceLoaderUtils.formatDateHeader(lastModified));
-                
-                long expires;
+
                 if (facesContext.isProjectStage(ProjectStage.Development))
                 {
-                    // Force to expire now to prevent caching on development time.
-                    expires = System.currentTimeMillis();
+                    headers.put("Cache-Control", "no-cache");
                 }
                 else
                 {
-                    expires = System.currentTimeMillis() + _resourceHandlerSupport.getMaxTimeExpires();
+                    headers.put("Cache-Control", "max-age=" + (_resourceHandlerSupport.getMaxTimeExpires()/1000));
                 }
-                headers.put("Expires", ResourceLoaderUtils.formatDateHeader(expires));
             }
             
             return headers;
