@@ -214,6 +214,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                 initAutomaticExtensionlessMapping(facesContext, servletContext);
             }
 
+            // cache ServletMappings, this is required later for our resource handling
+            FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext, true);
+
             // publish resourceBundleControl to applicationMap, to make it available to the API
             ResourceBundle.Control resourceBundleControl = config.getResourceBundleControl();
             if (resourceBundleControl != null)
