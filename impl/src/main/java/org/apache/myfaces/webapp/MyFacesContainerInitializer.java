@@ -96,6 +96,8 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
      */
     public static final String FACES_SERVLET_ADDED_ATTRIBUTE = "org.apache.myfaces.DYNAMICALLY_ADDED_FACES_SERVLET";
 
+    public static final String INITIALIZED = "org.apache.myfaces.INITIALIZED";
+    
     /**
      * If the servlet mapping for the FacesServlet is found on the ServletContext, Boolean.TRUE 
      * is stored under this key in the ServletContext.

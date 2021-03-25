@@ -256,6 +256,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             }
 
             cleanupAfterStartup(facesContext);
+            
+            servletContext.setAttribute(MyFacesContainerInitializer.INITIALIZED, Boolean.TRUE);
         }
         catch (Exception ex)
         {
@@ -310,40 +312,13 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     @Override
     public void destroyFaces(ServletContext servletContext)
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-
-        if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                                                         MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE, false))
+        if (!Boolean.TRUE.equals(servletContext.getAttribute(MyFacesContainerInitializer.INITIALIZED)))
         {
-            FacesServletMappingUtils.ServletRegistrationInfo facesServletRegistration =
-                    FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext, false);
-            if (facesServletRegistration == null
-                    || facesServletRegistration.getMappings() == null
-                    || facesServletRegistration.getMappings().length == 0)
-            {
-                // check to see if the FacesServlet was found by MyFacesContainerInitializer
-                Boolean mappingAdded = (Boolean) servletContext.getAttribute(
-                    MyFacesContainerInitializer.FACES_SERVLET_FOUND);
-
-                if (mappingAdded == null || !mappingAdded)
-                {
-                    // check if the FacesServlet has been added dynamically
-                    // in a Servlet 3.0 environment by MyFacesContainerInitializer
-                    mappingAdded = (Boolean) servletContext.getAttribute(
-                        MyFacesContainerInitializer.FACES_SERVLET_ADDED_ATTRIBUTE);
-
-                    if (mappingAdded == null || !mappingAdded)
-                    {
-                        if (log.isLoggable(Level.WARNING))
-                        {
-                            log.warning("No mappings of FacesServlet found. Abort destroy MyFaces.");
-                        }
-                        return;
-                    }
-                }
-            }
+            return;
         }
 
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        
         _dispatchApplicationEvent(servletContext, PreDestroyApplicationEvent.class);
 
         _callPreDestroyOnInjectedJSFArtifacts(facesContext);
@@ -713,7 +688,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                 //Init LRU cache
                 WebsocketFacesInit.initWebsocketSessionLRUCache(externalContext);
 
-                externalContext.getApplicationMap().put("org.apache.myfaces.push", "true");
+                externalContext.getApplicationMap().put("org.apache.myfaces.push", Boolean.TRUE);
             }
             catch (DeploymentException e)
             {
