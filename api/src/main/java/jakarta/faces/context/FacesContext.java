@@ -30,6 +30,7 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 
 /**
@@ -473,4 +474,11 @@ public abstract class FacesContext
         }
         return ctx.getNamingContainerSeparatorChar();
     }
+    
+    /**
+     * 
+     * @return the current Lifecycle
+     * @since 4.0
+     */
+    public abstract Lifecycle getLifecycle();
 }

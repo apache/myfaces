@@ -118,4 +118,10 @@ public class MockFacesContext extends MockFacesContext20
         super.release();
         _released = true;
     }
+
+    @Override
+    public Lifecycle getLifecycle()
+    {
+        return null;
+    }
 }

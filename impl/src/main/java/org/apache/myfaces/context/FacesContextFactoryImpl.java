@@ -154,7 +154,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory implements Rele
         }
 
         FacesContext facesContext = new FacesContextImpl(externalContext, defaultExternalContext, this,
-            _applicationFactory, _renderKitFactory, _partialViewContextFactory);
+            _applicationFactory, _renderKitFactory, _partialViewContextFactory, lifecycle);
         facesContext.setExceptionHandler(_exceptionHandlerFactory.getExceptionHandler());
 
         return facesContext;

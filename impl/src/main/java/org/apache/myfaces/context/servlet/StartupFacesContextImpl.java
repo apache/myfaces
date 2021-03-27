@@ -28,6 +28,7 @@ import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.context.ResponseStream;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.Lifecycle;
 
 /**
  * A FacesContext implementation which will be set as the current instance
@@ -229,6 +230,12 @@ public class StartupFacesContextImpl extends FacesContextImplBase
     private String _getTime()
     {
         return _startup ? "startup" : "shutdown";
+    }
+
+    @Override
+    public Lifecycle getLifecycle()
+    {
+        return null;
     }
     
 }

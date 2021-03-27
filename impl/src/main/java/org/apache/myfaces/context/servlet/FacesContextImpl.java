@@ -35,6 +35,7 @@ import jakarta.faces.context.PartialViewContextFactory;
 import jakarta.faces.context.ResponseStream;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.servlet.ServletContext;
@@ -71,6 +72,7 @@ public class FacesContextImpl extends FacesContextImplBase
     
     private PartialViewContextFactory _partialViewContextFactory = null;
     private RenderKitFactory _renderKitFactory = null;
+    private Lifecycle _lifecycle = null;
 
     // ~ Constructors -------------------------------------------------------------------------------
     
@@ -114,7 +116,8 @@ public class FacesContextImpl extends FacesContextImplBase
             final ReleasableFacesContextFactory facesContextFactory,
             final ApplicationFactory applicationFactory,
             final RenderKitFactory renderKitFactory,
-            final PartialViewContextFactory partialViewContextFactory)
+            final PartialViewContextFactory partialViewContextFactory,
+            final Lifecycle lifecycle)
     {
         // setCurrentInstance is called in constructor of super class
         super(externalContext, defaultExternalContext, applicationFactory, 
@@ -123,6 +126,7 @@ public class FacesContextImpl extends FacesContextImplBase
         _facesContextFactory = facesContextFactory;
         _renderKitFactory = renderKitFactory;
         _partialViewContextFactory = partialViewContextFactory;
+        _lifecycle = lifecycle;
     }
 
     // ~ Methods ------------------------------------------------------------------------------------
@@ -145,6 +149,7 @@ public class FacesContextImpl extends FacesContextImplBase
         _partialViewContext = null;
         _renderKitFactory = null;
         _partialViewContextFactory = null;
+        _lifecycle = null;
 
         if (_facesContextFactory != null)
         {
@@ -416,5 +421,11 @@ public class FacesContextImpl extends FacesContextImplBase
         
         return _validationFailed;
     }
-    
+
+    @Override
+    public Lifecycle getLifecycle()
+    {
+        assertNotReleased();
+        return _lifecycle;
+    }
 }

@@ -30,6 +30,7 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.FacesMessage.Severity;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 
 /**
@@ -283,4 +284,14 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
         return getWrapped().getResourceLibraryContracts();
     }
 
+    /**
+     * 
+     * @return
+     * @since 4.0
+     */
+    @Override
+    public Lifecycle getLifecycle()
+    {
+        return getWrapped().getLifecycle();
+    }
 }
