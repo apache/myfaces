@@ -34,13 +34,11 @@ import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIForm;
-import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.component.html.HtmlForm;
@@ -49,7 +47,6 @@ import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.util.lang.Assert;
 
 public class HtmlInputFileRendererBase extends HtmlRenderer
@@ -236,48 +233,5 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter(); 
 
         writer.endElement(HTML.INPUT_ELEM);
-    }
-
-    public static void renderOutputText(FacesContext facesContext, UIComponent component, String text, boolean escape)
-            throws IOException
-    {
-        if (text != null)
-        {
-            ResponseWriter writer = facesContext.getResponseWriter();
-            boolean span = false;
-
-            if (component.getId() != null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
-            {
-                span = true;
-
-                writer.startElement(HTML.SPAN_ELEM, component);
-
-                HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
-            }
-            else
-            {
-                span = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
-                                component, HTML.SPAN_ELEM, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
-            }
-
-            if (escape)
-            {
-                if (log.isLoggable(Level.FINE))
-                {
-                    log.fine("renderOutputText writing '" + text + '\'');
-                }
-                writer.writeText(text, JSFAttr.VALUE_ATTR);
-            }
-            else
-            {
-                writer.write(text);
-            }
-
-            if (span)
-            {
-                writer.endElement(HTML.SPAN_ELEM);
-            }
-        }
     }
 }
