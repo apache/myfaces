@@ -44,9 +44,8 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.component.html.HtmlForm;
-import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlInputFile;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
-import org.apache.myfaces.renderkit.RendererUtils;
 
 import org.apache.myfaces.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.renderkit.html.util.HTML;
@@ -119,15 +118,6 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         return submittedValue;
     }
 
-    /**
-     * Returns the HTML type attribute of HTML input element, which is being rendered.
-     */
-    protected String getInputHtmlType(UIComponent component)
-    {
-        //subclasses may act on properties of the component
-        return HTML.INPUT_TYPE_FILE;
-    }
-
     protected void renderValue(FacesContext facesContext, UIComponent component, ResponseWriter writer)
             throws IOException
     {
@@ -157,10 +147,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         writer.startElement(HTML.INPUT_ELEM, component);
         writer.writeAttribute(HTML.ID_ATTR, clientId, null);
         writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
-        
-        //allow extending classes to modify html input element's type
-        String inputHtmlType = getInputHtmlType(component);
-        writer.writeAttribute(HTML.TYPE_ATTR, inputHtmlType, null);
+        writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_FILE, null);
 
         renderValue(facesContext, component, writer);
 
@@ -226,14 +213,21 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
             }
         }
 
-        if (isDisabled(facesContext, component))
+        HtmlInputFile inputFile = (HtmlInputFile) component;
+        
+        if (inputFile.isDisabled())
         {
             writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, null);
         }
 
-        if (isAutocompleteOff(facesContext, component))
+        if (AUTOCOMPLETE_VALUE_OFF.equals(inputFile.getAutocomplete()))
         {
             writer.writeAttribute(HTML.AUTOCOMPLETE_ATTR, AUTOCOMPLETE_VALUE_OFF, HTML.AUTOCOMPLETE_ATTR);
+        }
+
+        if (inputFile.getAccept() != null)
+        {
+            writer.writeAttribute(HTML.ACCEPT_ATTR, inputFile.getAccept(), HTML.ACCEPT_ATTR);
         }
     }
 
@@ -242,33 +236,6 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter(); 
 
         writer.endElement(HTML.INPUT_ELEM);
-    }
-
-    protected boolean isDisabled(FacesContext facesContext, UIComponent component)
-    {
-        if (component instanceof HtmlInputText)
-        {
-            return ((HtmlInputText)component).isDisabled();
-        }
-
-        return RendererUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
-    }
-
-    /**
-     * If autocomplete is "on" or not set, do not render it
-     */
-    protected boolean isAutocompleteOff(FacesContext facesContext, UIComponent component)
-    {
-        if (component instanceof HtmlInputText)
-        {
-            String autocomplete = ((HtmlInputText)component).getAutocomplete();
-            if (autocomplete != null)
-            {
-                return autocomplete.equals(AUTOCOMPLETE_VALUE_OFF);
-            }
-        }
-
-        return false;
     }
 
     public static void renderOutputText(FacesContext facesContext, UIComponent component, String text, boolean escape)

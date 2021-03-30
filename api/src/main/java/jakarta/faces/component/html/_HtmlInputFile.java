@@ -74,6 +74,15 @@ abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
     @JSFProperty
     public abstract String getAutocomplete();
 
+    /**
+     * Comma separated string of mime types of files to filter in client side file browse dialog.
+     * NOTE: this is not validated in server side.
+     *
+     * @return
+     */
+    @JSFProperty
+    public abstract String getAccept();
+
     @Override
     protected void validateValue(FacesContext context, Object convertedValue)
     {
