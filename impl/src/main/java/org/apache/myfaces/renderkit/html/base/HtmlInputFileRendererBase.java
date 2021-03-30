@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
@@ -115,17 +114,6 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         return submittedValue;
     }
 
-    protected void renderValue(FacesContext facesContext, UIComponent component, ResponseWriter writer)
-            throws IOException
-    {
-        //the input file element cannot render a value it is readonly
-    }
-    
-    protected boolean isRenderOutputEventAttributes()
-    {
-        return true;
-    }
-
     protected void renderInput(FacesContext facesContext, UIComponent component)
         throws IOException
     {
@@ -145,8 +133,6 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         writer.writeAttribute(HTML.ID_ATTR, clientId, null);
         writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_FILE, null);
-
-        renderValue(facesContext, component, writer);
 
         Map<String, List<ClientBehavior>> behaviors = null;
         if (component instanceof ClientBehaviorHolder)
