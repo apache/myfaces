@@ -4,7 +4,7 @@ This sample application shows Quarkus Myfaces extension usage
 
 ## Running
 
-`mvn clean package -DskipTests && java -jar ./target/quarkus-myfaces-showcase-1.0-SNAPSHOT-runner.jar`
+`mvn clean package -DskipTests && java -jar ./target/quarkus-app/quarkus-run.jar`
 
 ## Dev mode
 
@@ -22,7 +22,7 @@ For native mode you need [graalvm 19.3.1](https://github.com/graalvm/graalvm-ce-
 
 Following is how to `build and run` the native image:
 
-`mvn clean package -Pnative && ./target/quarkus-myfaces-showcase-1.0-SNAPSHOT-runner`
+`mvn clean package -Pnative && java -jar ./target/quarkus-app/quarkus-run.jar`
 
 ## Testing 
 
