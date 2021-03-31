@@ -231,7 +231,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
 
         if (isDisabled(facesContext, component))
         {
-            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, null);
+            writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
         }
 
         if (isAutocompleteOff(facesContext, component))
