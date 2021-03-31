@@ -232,7 +232,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         
         if (inputFile.isDisabled())
         {
-            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, null);
+            writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
         }
 
         if (inputFile.isMultiple())
