@@ -83,6 +83,16 @@ abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
     @JSFProperty
     public abstract String getAccept();
 
+    /**
+     * Flag indicating that this element must allow multiple file selection. A value
+     * of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as
+     * multiple="multiple".
+     *
+     * @return the multiple value
+     */
+    @JSFProperty(defaultValue="false")
+    public abstract boolean isMultiple();
+
     @Override
     protected void validateValue(FacesContext context, Object convertedValue)
     {

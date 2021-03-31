@@ -31,9 +31,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
@@ -59,14 +64,26 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
     {
         try
         {
-           Part part = ((HttpServletRequest) facesContext.getExternalContext().getRequest()).
-                   getPart(component.getClientId());
-           if (part == null)
-           {
-               return;
-           }
-
-           ((UIInput) component).setSubmittedValue(new HttpPartWrapper(part));
+            String clientId = component.getClientId();
+            HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+            Collection<Part> parts = request.getParts();
+            Collection<Part> submittedValues = new ArrayList<>(parts.size());
+            for (Part part : parts)
+            {
+                if (clientId.equals(part.getName()))
+                {
+                    HttpPartWrapper wrapper = new HttpPartWrapper(part);
+                    submittedValues.add(wrapper);
+                }
+            }
+            if (((HtmlInputFile) component).isMultiple())
+            {
+                ((UIInput) component).setSubmittedValue(submittedValues);
+            }
+            else if (!submittedValues.isEmpty())
+            {
+                ((UIInput) component).setSubmittedValue(submittedValues.iterator().next());
+            }
         }
         catch (IOException | ServletException e)
         {
@@ -111,6 +128,21 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         Assert.notNull(context, "context");
         Assert.notNull(component, "component");
 
+        if (submittedValue instanceof Part)
+        {
+            Part part = (Part) submittedValue;
+            if (isEmpty(part))
+            {
+                return null;
+            }
+        }
+        else if (submittedValue instanceof Collection)
+        {
+            Collection<Part> parts = (Collection<Part>) submittedValue;
+            return Collections.unmodifiableList(parts.stream()
+                        .filter(part -> !isEmpty(part))
+                        .collect(Collectors.toList()));
+        }
         return submittedValue;
     }
 
@@ -203,6 +235,11 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, null);
         }
 
+        if (inputFile.isMultiple())
+        {
+            writer.writeAttribute(HTML.MULTIPLE_ATTR, HTML.MULTIPLE_ATTR, null);
+        }
+
         if (AUTOCOMPLETE_VALUE_OFF.equals(inputFile.getAutocomplete()))
         {
             writer.writeAttribute(HTML.AUTOCOMPLETE_ATTR, AUTOCOMPLETE_VALUE_OFF, HTML.AUTOCOMPLETE_ATTR);
@@ -219,5 +256,10 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter(); 
 
         writer.endElement(HTML.INPUT_ELEM);
+    }
+
+    private static boolean isEmpty(Part part)
+    {
+        return part.getSubmittedFileName() == null || part.getSubmittedFileName().isEmpty() || part.getSize() <= 0;
     }
 }
