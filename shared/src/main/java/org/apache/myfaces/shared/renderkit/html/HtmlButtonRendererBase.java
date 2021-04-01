@@ -280,13 +280,13 @@ public class HtmlButtonRendererBase
 
         if (isDisabled(facesContext, uiComponent))
         {
-            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, 
+            writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR,
                     org.apache.myfaces.shared.renderkit.JSFAttr.DISABLED_ATTR);
         }
         
         if (isReadonly(facesContext, uiComponent))
         {
-            writer.writeAttribute(HTML.READONLY_ATTR, Boolean.TRUE, 
+            writer.writeAttribute(HTML.READONLY_ATTR, HTML.READONLY_ATTR,
                     org.apache.myfaces.shared.renderkit.JSFAttr.READONLY_ATTR);
         }
     }
