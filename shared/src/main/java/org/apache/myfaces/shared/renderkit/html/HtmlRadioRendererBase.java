@@ -515,7 +515,7 @@ public class HtmlRadioRendererBase
 
         if (isDisabled(facesContext, uiComponent))
         {
-            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, null);
+            writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
         }
 
         writer.endElement(HTML.INPUT_ELEM);

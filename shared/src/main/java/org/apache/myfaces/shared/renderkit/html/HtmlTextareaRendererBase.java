@@ -154,7 +154,7 @@ public class HtmlTextareaRendererBase
 
         if (isDisabled(facesContext, uiComponent))
         {
-            writer.writeAttribute(org.apache.myfaces.shared.renderkit.html.HTML.DISABLED_ATTR, Boolean.TRUE, null);
+            writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
         }
     }
 
