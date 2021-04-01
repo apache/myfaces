@@ -257,12 +257,12 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
         if (isDisabled(facesContext, uiComponent))
         {
-            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, JSFAttr.DISABLED_ATTR);
+            writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, JSFAttr.DISABLED_ATTR);
         }
         
         if (isReadonly(facesContext, uiComponent))
         {
-            writer.writeAttribute(HTML.READONLY_ATTR, Boolean.TRUE, JSFAttr.READONLY_ATTR);
+            writer.writeAttribute(HTML.READONLY_ATTR, HTML.READONLY_ATTR, JSFAttr.READONLY_ATTR);
         }
     }
     
