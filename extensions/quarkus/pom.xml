@@ -43,7 +43,7 @@
     </modules>
 
     <properties>
-        <quarkus.version>1.7.0.Final</quarkus.version>
+        <quarkus.version>1.13.0.Final</quarkus.version>
     </properties>
 
     <build>
