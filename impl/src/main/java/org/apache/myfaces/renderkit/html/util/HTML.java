@@ -607,8 +607,6 @@ public interface HTML
     String SCRIPT_TYPE_ATTR = "type";
     String SCRIPT_TYPE_TEXT_JAVASCRIPT = "text/javascript";
     String STYLE_TYPE_TEXT_CSS = "text/css";
-    String SCRIPT_LANGUAGE_ATTR = "language";
-    String SCRIPT_LANGUAGE_JAVASCRIPT = "JavaScript";
     String SCRIPT_ELEM_DEFER_ATTR = "defer";
     String LINK_ELEM = "link";
     String STYLESHEET_VALUE = "stylesheet";

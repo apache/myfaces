@@ -44,6 +44,7 @@ import org.apache.myfaces.push.cdi.WebsocketSessionBean;
 import org.apache.myfaces.push.cdi.WebsocketViewBean;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
 @JSFRenderer(renderKitId = "HTML_BASIC",
@@ -183,9 +184,8 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
 
             appTokenBean.registerWebsocketSession(channelToken, metadata);
         }
-
         writer.startElement(HTML.SCRIPT_ELEM, component);
-        writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
+        HtmlRendererUtils.renderScriptType(facesContext, writer);
 
         StringBuilder sb = new StringBuilder(50);
         sb.append("jsf.push.init(");
