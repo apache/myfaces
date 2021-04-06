@@ -40,9 +40,6 @@ import jakarta.faces.lifecycle.Lifecycle;
  */
 public class StartupFacesContextImpl extends FacesContextImplBase
 {
-    
-    public static final String EXCEPTION_TEXT = "This method is not supported during ";
-
     private boolean _startup;
     
     public StartupFacesContextImpl(
@@ -60,9 +57,9 @@ public class StartupFacesContextImpl extends FacesContextImplBase
 
     // ~ Methods which are valid by spec to be called during startup and shutdown------
     
-    // public final UIViewRoot getViewRoot() implemented in super-class
+    // public UIViewRoot getViewRoot() implemented in super-class
     // public void release() implemented in super-class
-    // public final ExternalContext getExternalContext() implemented in super-class
+    // public ExternalContext getExternalContext() implemented in super-class
     // public Application getApplication() implemented in super-class
     // public boolean isProjectStage(ProjectStage stage) implemented in super-class
     
@@ -74,162 +71,151 @@ public class StartupFacesContextImpl extends FacesContextImplBase
     // ~ Methods which are unsupported during startup and shutdown-------------
 
     @Override
-    public final FacesMessage.Severity getMaximumSeverity()
+    public FacesMessage.Severity getMaximumSeverity()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
     
     @Override
     public List<FacesMessage> getMessageList()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
     public List<FacesMessage> getMessageList(String clientId)
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
-    public final Iterator<FacesMessage> getMessages()
+    public Iterator<FacesMessage> getMessages()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
     
     
     @Override
-    public final Iterator<String> getClientIdsWithMessages()
+    public Iterator<String> getClientIdsWithMessages()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
-    public final Iterator<FacesMessage> getMessages(final String clientId)
+    public Iterator<FacesMessage> getMessages(String clientId)
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
-    public final void addMessage(final String clientId, final FacesMessage message)
+    public void addMessage(String clientId, FacesMessage message)
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
     public PartialViewContext getPartialViewContext()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
     
     @Override
     public boolean isPostback()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
     
     @Override
     public void validationFailed()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
     public boolean isValidationFailed()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
-    public final void renderResponse()
+    public void renderResponse()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
-    public final void responseComplete()
+    public void responseComplete()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
     public PhaseId getCurrentPhaseId()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
    
     @Override
     public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
         
     @Override
-    public final boolean getRenderResponse()
+    public boolean getRenderResponse()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
-    public final boolean getResponseComplete()
+    public boolean getResponseComplete()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
-    public final void setResponseStream(final ResponseStream responseStream)
+    public void setResponseStream(ResponseStream responseStream)
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
-    public final ResponseStream getResponseStream()
+    public ResponseStream getResponseStream()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
-    public final void setResponseWriter(final ResponseWriter responseWriter)
+    public void setResponseWriter(ResponseWriter responseWriter)
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw constructUnsupportedOperationException();
     }
 
     @Override
-    public final ResponseWriter getResponseWriter()
+    public ResponseWriter getResponseWriter()
     {
         assertNotReleased();
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
-    }
-    
-    // ~ private Methods ------------------------------------------------------
-    
-    /**
-     * Returns startup or shutdown as String according to the field _startup.
-     * @return
-     */
-    private String _getTime()
-    {
-        return _startup ? "startup" : "shutdown";
+        throw constructUnsupportedOperationException();
     }
 
     @Override
@@ -237,5 +223,10 @@ public class StartupFacesContextImpl extends FacesContextImplBase
     {
         return null;
     }
-    
+
+    private UnsupportedOperationException constructUnsupportedOperationException()
+    {
+        throw new UnsupportedOperationException("This method is not supported during "
+                + (_startup ? "startup" : "shutdown"));
+    }
 }
