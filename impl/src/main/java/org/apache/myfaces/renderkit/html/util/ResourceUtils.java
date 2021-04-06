@@ -82,7 +82,7 @@ public class ResourceUtils
                     resourceName, libraryName);
             markScriptAsRendered(facesContext, libraryName, resourceName);
             writer.startElement(HTML.SCRIPT_ELEM, null);
-            writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT , null);
+            HtmlRendererUtils.renderScriptType(facesContext, writer);
             writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);
             writer.endElement(HTML.SCRIPT_ELEM);
         }
@@ -120,7 +120,7 @@ public class ResourceUtils
         markScriptAsRendered(facesContext, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME,
                 ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
         writer.startElement(HTML.SCRIPT_ELEM, null);
-        writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
+        HtmlRendererUtils.renderScriptType(facesContext, writer);
         writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);
         writer.endElement(HTML.SCRIPT_ELEM);
 

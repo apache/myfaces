@@ -38,6 +38,7 @@ import jakarta.faces.render.Renderer;
 import jakarta.faces.view.Location;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
@@ -144,7 +145,7 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
                 // </script>
                 ResponseWriter writer = facesContext.getResponseWriter();
                 writer.startElement(HTML.SCRIPT_ELEM, component);
-                writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
+                HtmlRendererUtils.renderScriptType(facesContext, writer);
                 RendererUtils.renderChildren(facesContext, component);
                 writer.endElement(HTML.SCRIPT_ELEM);
             }
@@ -229,9 +230,7 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
             ResourceUtils.markScriptAsRendered(facesContext, resource.getLibraryName(), resource.getResourceName());
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.startElement(HTML.SCRIPT_ELEM, component);
-            // We can't render the content type, because usually it returns "application/x-javascript"
-            // and this is not compatible with IE. We should force render "text/javascript".
-            writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
+            HtmlRendererUtils.renderScriptType(facesContext, writer);
             String path = resource.getRequestPath();
             if (additionalQueryParams != null)
             {

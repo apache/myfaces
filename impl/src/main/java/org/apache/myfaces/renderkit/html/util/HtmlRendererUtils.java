@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
@@ -1925,5 +1926,43 @@ public final class HtmlRendererUtils
         messages.setRedisplay(false);
         // render the component
         messages.encodeAll(facesContext);
+    }
+
+    /**
+     * Returns <code>true</code> if the view root associated with the given faces context will be rendered with a HTML5 doctype.
+     * @param context Involved faces context.
+     * @return <code>true</code> if the view root associated with the given faces context will be rendered with a HTML5 doctype.
+     */
+    public static boolean isOutputHtml5Doctype(FacesContext context) {
+        UIViewRoot viewRoot = context.getViewRoot();
+
+        if (viewRoot == null) {
+            return false;
+        }
+
+        Doctype doctype = viewRoot.getDoctype();
+
+        if (doctype == null) {
+            return false;
+        }
+
+        return "html".equalsIgnoreCase(doctype.getRootElement())
+                && doctype.getPublic() == null
+                && doctype.getSystem() == null;
+    }
+
+    /**
+     * If HTML5 doctype do not render the "type='text/javascript`" attribute as its not necessary.
+     *
+     * @param context Involved faces context.
+     * @param writer Involved response writer.
+     * @throws IOException if any error occurs writing the response.
+     */
+    public static void renderScriptType(FacesContext context, ResponseWriter writer) throws IOException
+    {
+        if (!HtmlRendererUtils.isOutputHtml5Doctype(context))
+        {
+            writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
+        }
     }
 }
