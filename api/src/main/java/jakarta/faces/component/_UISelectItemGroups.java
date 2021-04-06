@@ -18,16 +18,7 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.model.SelectItem;
-import jakarta.faces.model.SelectItemGroup;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
-import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 
 @JSFComponent(clazz = "jakarta.faces.component.UISelectItemGroups",
               template = true,
