@@ -90,6 +90,8 @@ public final class CoreLibrary extends AbstractTagLibrary
         this.addComponent("selectItem", UISelectItem.COMPONENT_TYPE, null, SelectItemHandler.class);
 
         this.addComponent("selectItems", UISelectItems.COMPONENT_TYPE, null, SelectItemsHandler.class);
+        
+        this.addComponent("selectItemGroups", UISelectItems.COMPONENT_TYPE, null, SelectItemGroupsHandler.class);
 
         this.addTagHandler("setPropertyActionListener", SetPropertyActionListenerHandler.class);
 
