@@ -26,7 +26,7 @@ import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.spi.impl.CDIAnnotationDelegateInjectionProvider;
-import org.apache.myfaces.webapp.AbstractFacesInitializer;
+import org.apache.myfaces.webapp.FacesInitializerImpl;
 
 public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTestCase
 {
@@ -66,7 +66,7 @@ public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTes
     }
 
     @Override
-    protected AbstractFacesInitializer createFacesInitializer()
+    protected FacesInitializerImpl createFacesInitializer()
     {
         return new CDIJUnitFacesInitializer(this);
     }

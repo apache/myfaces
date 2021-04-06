@@ -26,7 +26,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Validation;
 import org.apache.myfaces.util.lang.Lazy;
-import org.apache.myfaces.webapp.AbstractFacesInitializer;
+import org.apache.myfaces.webapp.FacesInitializerImpl;
 
 /**
  * <p>
@@ -150,7 +150,7 @@ public final class ExternalSpecifications
     public static boolean isCDIAvailable(ExternalContext externalContext)
     {
         return cdiAvailable.get() && 
-                externalContext.getApplicationMap().containsKey(AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
+                externalContext.getApplicationMap().containsKey(FacesInitializerImpl.CDI_BEAN_MANAGER_INSTANCE);
     }
     
     public static boolean isEL3Available()

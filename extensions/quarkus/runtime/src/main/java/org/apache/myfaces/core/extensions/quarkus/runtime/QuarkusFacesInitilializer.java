@@ -28,7 +28,7 @@ import javax.servlet.ServletContext;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
 import org.apache.myfaces.spi.FactoryFinderProviderFactory;
-import org.apache.myfaces.webapp.DefaultFacesInitilializer;
+import org.apache.myfaces.webapp.FacesInitializerImpl;
 
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProviderFactory;
 
@@ -36,7 +36,7 @@ import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFind
  * Custom FacesInitializer to execute our integration code, always before MyFaces starts.
  * With ServletListeners or other ways, we would have order/priority problems.
  */
-public class QuarkusFacesInitilializer extends DefaultFacesInitilializer
+public class QuarkusFacesInitilializer extends FacesInitializerImpl
 {
 
     @Override

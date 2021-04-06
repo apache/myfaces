@@ -43,7 +43,7 @@ public class FacesInitializerFactory
         FacesInitializer initializer = getFacesInitializerFromInitParam(context);
         if (initializer == null)
         {
-            initializer = new DefaultFacesInitilializer();
+            initializer = new FacesInitializerImpl();
         }
         return initializer;
     }

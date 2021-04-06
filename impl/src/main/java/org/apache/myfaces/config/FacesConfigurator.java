@@ -145,7 +145,7 @@ import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
-import org.apache.myfaces.webapp.AbstractFacesInitializer;
+import org.apache.myfaces.webapp.FacesInitializerImpl;
 
 /**
  * Configures everything for a given context. The FacesConfigurator is independent of the concrete implementations that
@@ -213,9 +213,9 @@ public class FacesConfigurator
         // In dev mode a new Faces Configurator is created for every request so only
         // create a new bean storage list if we don't already have one which will be
         // the case first time through during init.
-        if (_externalContext.getApplicationMap().get(AbstractFacesInitializer.INJECTED_BEAN_STORAGE_KEY) == null)
+        if (_externalContext.getApplicationMap().get(FacesInitializerImpl.INJECTED_BEAN_STORAGE_KEY) == null)
         {
-            _externalContext.getApplicationMap().put(AbstractFacesInitializer.INJECTED_BEAN_STORAGE_KEY,
+            _externalContext.getApplicationMap().put(FacesInitializerImpl.INJECTED_BEAN_STORAGE_KEY,
                     new CopyOnWriteArrayList());
         }
         
@@ -815,8 +815,8 @@ public class FacesConfigurator
                     _callInjectAndPostConstruct(innerInstance);
                 }
             }
-            List<BeanEntry> injectedBeanStorage = (List<BeanEntry>) _externalContext.getApplicationMap().get(
-                            AbstractFacesInitializer.INJECTED_BEAN_STORAGE_KEY);
+            List<BeanEntry> injectedBeanStorage = (List<BeanEntry>) _externalContext.getApplicationMap()
+                    .get(FacesInitializerImpl.INJECTED_BEAN_STORAGE_KEY);
 
             Object creationMetaData = getInjectionProvider().inject(instance);
 

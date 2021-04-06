@@ -18,8 +18,7 @@
  */
 package org.apache.myfaces.webapp;
 
-import jakarta.servlet.ServletContextEvent;
-
+import jakarta.servlet.ServletContext;
 
 /**
  * Startup Listener for the myfaces init process
@@ -33,32 +32,32 @@ import jakarta.servlet.ServletContextEvent;
 public interface StartupListener
 {
     /**
-     * This method is called before myfaces initializes
+     * This method is called before MyFaces initializes
      *
-     * @param evt the corresponding servlet context event keeping all the servlet context data and references
+     * @param context the ServletContext
      */
-    public void preInit(ServletContextEvent evt);
+    public void preInit(ServletContext context);
 
     /**
-     * This method is called after myfaces has initialized
+     * This method is called after MyFaces has initialized
      *
-     * @param evt the corresponding servlet context event keeping all the servlet context data and references
+     * @param context the ServletContext
      */
-    public void postInit(ServletContextEvent evt);
+    public void postInit(ServletContext context);
 
     /**
-     * This method is called before myfaces is destroyed
+     * This method is called before MyFaces is destroyed
      *
-     * @param evt the corresponding servlet context event keeping all the servlet context data and references
+     * @param context the ServletContext
      */
-    public void preDestroy(ServletContextEvent evt);
+    public void preDestroy(ServletContext context);
 
     /**
-     * This method is called after myfaces is destroyed
+     * This method is called after MyFaces is destroyed
      *
-     * @param evt the corresponding servlet context event keeping all the servlet context data and references
+     * @param context the ServletContext
      */
-    public void postDestroy(ServletContextEvent evt);
+    public void postDestroy(ServletContext context);
 
 }
 

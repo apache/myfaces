@@ -81,14 +81,15 @@ import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.impl.CDIAnnotationDelegateInjectionProvider;
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationProviderFactory;
 import org.apache.myfaces.spi.impl.NoInjectionAnnotationInjectionProvider;
+import org.apache.myfaces.test.core.TestStartupServletContextListener;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockWebContainer;
 import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.webapp.AbstractFacesInitializer;
-import static org.apache.myfaces.webapp.AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE;
+import org.apache.myfaces.webapp.FacesInitializerImpl;
+import static org.apache.myfaces.webapp.FacesInitializerImpl.CDI_BEAN_MANAGER_INSTANCE;
 import org.apache.myfaces.webapp.FacesInitializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.junit.runners.model.FrameworkMethod;
@@ -408,7 +409,7 @@ public class AbstractJsfTestContainer
         return new MyFacesMockFacesConfigurationProvider(); 
     }
     
-    protected AbstractFacesInitializer createFacesInitializer()
+    protected FacesInitializerImpl createFacesInitializer()
     {
         return new JUnitFacesInitializer(this);
     }
@@ -422,8 +423,7 @@ public class AbstractJsfTestContainer
         servletContext.setAttribute(
                 DefaultFacesConfigurationProviderFactory.FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY, 
                 facesConfigurationProvider);
-        listener = new StartupServletContextListener();
-        listener.setFacesInitializer(getFacesInitializer());
+        listener = new TestStartupServletContextListener(getFacesInitializer());
         webContainer.subscribeListener(listener);
         //listener.contextInitialized(new ServletContextEvent(servletContext));
     }
@@ -1314,7 +1314,7 @@ public class AbstractJsfTestContainer
     protected MockWebContainer webContainer = null;
 
     // MyFaces specific objects created by the servlet environment
-    protected StartupServletContextListener listener = null;
+    protected TestStartupServletContextListener listener = null;
     protected FacesConfigurationProvider facesConfigurationProvider = null;
     private FacesInitializer facesInitializer = null;
     
@@ -1511,7 +1511,7 @@ public class AbstractJsfTestContainer
         }
     }
     
-    protected class JUnitFacesInitializer extends AbstractFacesInitializer
+    protected class JUnitFacesInitializer extends FacesInitializerImpl
     {
         private final AbstractJsfTestContainer testCase;
         

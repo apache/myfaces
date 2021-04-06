@@ -22,11 +22,9 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -44,17 +42,45 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
 
     private final FacesServlet delegate = new FacesServlet();
     
-    private FacesInitializer _facesInitializer;
-    
-    
-    public void setFacesInitializer(FacesInitializer facesInitializer) // TODO who uses this method?
-    {
-        _facesInitializer = facesInitializer;
-    }
+    private FacesInitializer facesInitializer;
 
+    @Override
+    public void init(ServletConfig servletConfig) throws ServletException
+    {
+        if (facesInitializer == null)
+        {
+            facesInitializer = FacesInitializerFactory.getFacesInitializer(servletConfig.getServletContext());
+        }
+        facesInitializer.initFaces(servletConfig.getServletContext());
+        
+        delegate.init(servletConfig);
+    }
+    
+    @Override
+    public void service(ServletRequest request, ServletResponse response) throws IOException, ServletException
+    {
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("MyFacesServlet service start");
+        }
+        
+        delegate.service(request, response);
+        
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("MyFacesServlet service finished");
+        }
+    }
+    
     @Override
     public void destroy()
     {
+        if (facesInitializer == null)
+        {
+            facesInitializer = FacesInitializerFactory.getFacesInitializer(getServletConfig().getServletContext());
+        }
+        facesInitializer.destroyFaces(getServletConfig().getServletContext());
+
         delegate.destroy();
     }
 
@@ -69,51 +95,4 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
     {
         return delegate.getServletInfo();
     }
-
-    @Override
-    public void init(ServletConfig servletConfig) throws ServletException
-    {
-        ServletContext servletContext = servletConfig.getServletContext();
-        
-        if (_facesInitializer == null)
-        {
-            _facesInitializer = FacesInitializerFactory.getFacesInitializer(servletContext);
-        }
-        
-        // Create startup FacesContext before initializing
-        FacesContext facesContext = _facesInitializer.initStartupFacesContext(servletContext);
-              
-        // Check, if ServletContextListener was already called
-        Boolean b = (Boolean)servletContext.getAttribute(StartupServletContextListener.FACES_INIT_DONE);
-        if (b == null || b == false)
-        {
-            if(log.isLoggable(Level.WARNING))
-            {
-                log.warning("ServletContextListener not yet called");
-            }
-            _facesInitializer.initFaces(servletConfig.getServletContext());
-        }
-        
-        // Destroy startup FacesContext
-        _facesInitializer.destroyStartupFacesContext(facesContext);
-        
-        delegate.init(servletConfig);
-        log.info("MyFacesServlet for context '" + servletConfig.getServletContext().getRealPath("/")
-                 + "' initialized.");
-    }
-    
-    @Override
-    public void service(ServletRequest request, ServletResponse response) throws IOException, ServletException
-    {
-        if (log.isLoggable(Level.FINEST))
-        {
-            log.finest("MyFacesServlet service start");
-        }
-        delegate.service(request, response);
-        if (log.isLoggable(Level.FINEST))
-        {
-            log.finest("MyFacesServlet service finished");
-        }
-    }
-
 }

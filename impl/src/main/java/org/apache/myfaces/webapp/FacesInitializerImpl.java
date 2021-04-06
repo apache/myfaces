@@ -54,11 +54,17 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.push.PushContext;
 import jakarta.websocket.DeploymentException;
 import jakarta.websocket.server.ServerContainer;
 import jakarta.websocket.server.ServerEndpointConfig;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ServiceLoader;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
@@ -74,9 +80,9 @@ import org.apache.myfaces.util.lang.StringUtils;
 /**
  * Performs common initialization tasks.
  */
-public abstract class AbstractFacesInitializer implements FacesInitializer
+public class FacesInitializerImpl implements FacesInitializer
 {
-    private static final Logger log = Logger.getLogger(AbstractFacesInitializer.class.getName());
+    private static final Logger log = Logger.getLogger(FacesInitializerImpl.class.getName());
 
     public static final String CDI_BEAN_MANAGER_INSTANCE = "oam.cdi.BEAN_MANAGER_INSTANCE";
     
@@ -85,6 +91,13 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
     public static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
 
+    public static final String INITIALIZED = "org.apache.myfaces.INITIALIZED";
+    
+    private static final byte FACES_INIT_PHASE_PREINIT = 0;
+    private static final byte FACES_INIT_PHASE_POSTINIT = 1;
+    private static final byte FACES_INIT_PHASE_PREDESTROY = 2;
+    private static final byte FACES_INIT_PHASE_POSTDESTROY = 3;
+    
     /**
      * Performs all necessary initialization tasks like configuring this JSF
      * application.
@@ -94,12 +107,23 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     @Override
     public void initFaces(ServletContext servletContext)
     {
+        if (Boolean.TRUE.equals(servletContext.getAttribute(INITIALIZED)))
+        {
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("MyFaces already initialized");
+            }
+            return;
+        }
+        
         try
         {
             if (log.isLoggable(Level.FINEST))
             {
                 log.finest("Initializing MyFaces");
             }
+            
+            long start = System.currentTimeMillis();
 
             // Some parts of the following configuration tasks have been implemented 
             // by using an ExternalContext. However, that's no problem as long as no 
@@ -107,8 +131,10 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             // the ServletResponse.
             // JSF 2.0: FacesInitializer now has some new methods to
             // use proper startup FacesContext and ExternalContext instances.
-            FacesContext facesContext = FacesContext.getCurrentInstance();
+            FacesContext facesContext = initStartupFacesContext(servletContext);
             ExternalContext externalContext = facesContext.getExternalContext();
+            
+            dispatchInitializationEvent(servletContext, FACES_INIT_PHASE_PREINIT);
 
             // Setup ServiceProviderFinder
             ServiceProviderFinder spf = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext);
@@ -178,11 +204,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             
             initWebsocketIntegration(servletContext, externalContext);
 
-            if (log.isLoggable(Level.FINEST))
-            {
-                log.finest("ServletContext initialized");
-            }
-
             WebConfigParamsLogger.logWebContextParams(facesContext);
             
             //Start ViewPoolProcessor if necessary
@@ -236,6 +257,16 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             }
 
             cleanupAfterStartup(facesContext);
+            
+            dispatchInitializationEvent(servletContext, FACES_INIT_PHASE_POSTINIT);
+            
+            destroyStartupFacesContext(facesContext);
+            
+            servletContext.setAttribute(INITIALIZED, Boolean.TRUE);
+            
+            log.log(Level.INFO, "MyFaces Core has started, it took ["
+                    + (System.currentTimeMillis() - start)
+                    + "] ms.");
         }
         catch (Exception ex)
         {
@@ -290,39 +321,14 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     @Override
     public void destroyFaces(ServletContext servletContext)
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-
-        if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                                                         MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE, false))
+        if (!Boolean.TRUE.equals(servletContext.getAttribute(INITIALIZED)))
         {
-            FacesServletMappingUtils.ServletRegistrationInfo facesServletRegistration =
-                    FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext, false);
-            if (facesServletRegistration == null
-                    || facesServletRegistration.getMappings() == null
-                    || facesServletRegistration.getMappings().length == 0)
-            {
-                // check to see if the FacesServlet was found by MyFacesContainerInitializer
-                Boolean mappingAdded = (Boolean) servletContext.getAttribute(
-                    MyFacesContainerInitializer.FACES_SERVLET_FOUND);
-
-                if (mappingAdded == null || !mappingAdded)
-                {
-                    // check if the FacesServlet has been added dynamically
-                    // in a Servlet 3.0 environment by MyFacesContainerInitializer
-                    mappingAdded = (Boolean) servletContext.getAttribute(
-                        MyFacesContainerInitializer.FACES_SERVLET_ADDED_ATTRIBUTE);
-
-                    if (mappingAdded == null || !mappingAdded)
-                    {
-                        if (log.isLoggable(Level.WARNING))
-                        {
-                            log.warning("No mappings of FacesServlet found. Abort destroy MyFaces.");
-                        }
-                        return;
-                    }
-                }
-            }
+            return;
         }
+
+        FacesContext facesContext = initShutdownFacesContext(servletContext);
+        
+        dispatchInitializationEvent(servletContext, FACES_INIT_PHASE_PREDESTROY);
 
         _dispatchApplicationEvent(servletContext, PreDestroyApplicationEvent.class);
 
@@ -330,7 +336,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         
         // clear the cache of MetaRulesetImpl in order to prevent a memory leak
         MetaRulesetImpl.clearMetadataTargetCache();
-        
+
         if (facesContext.getExternalContext().getApplicationMap().containsKey("org.apache.myfaces.push"))
         {
             WebsocketFacesInit.clearWebsocketSessionLRUCache(facesContext.getExternalContext());
@@ -348,9 +354,18 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         {
             log.log(Level.SEVERE, e.getMessage(), e);
         }
-
-
+        
         // TODO is it possible to make a real cleanup?
+
+        // Destroy startup FacesContext, but note we do before publish postdestroy event on
+        // plugins and before release factories.
+        destroyShutdownFacesContext(facesContext);
+        
+        FactoryFinder.releaseFactories();
+
+        dispatchInitializationEvent(servletContext, FACES_INIT_PHASE_POSTDESTROY);
+
+        servletContext.removeAttribute(INITIALIZED);
     }
 
     /**
@@ -436,7 +451,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             ClassLoader cl = ClassUtils.getContextClassLoader();
             if (cl == null)
             {
-                cl = AbstractFacesInitializer.class.getClassLoader();
+                cl = FacesInitializerImpl.class.getClassLoader();
             }
 
             Class<?> expressionFactoryClass = cl.loadClass(expressionFactoryClassName);
@@ -505,15 +520,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             facesContext.release();
         }        
     }
-    
-    /**
-     * Performs initialization tasks depending on the current environment.
-     *
-     * @param servletContext  the current ServletContext
-     * @param externalContext the current ExternalContext
-     */
-    protected abstract void initContainerIntegration(
-            ServletContext servletContext, ExternalContext externalContext);
 
     /**
      * The intention of this method is provide a point where CDI integration is done.
@@ -721,5 +727,151 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         }
     }
 
+    protected void initContainerIntegration(ServletContext servletContext, ExternalContext externalContext)
+    {
+        ExpressionFactory expressionFactory = getUserDefinedExpressionFactory(externalContext);
+        if (expressionFactory == null)
+        {
+            String[] candidates = new String[] { "org.apache.el.ExpressionFactoryImpl",
+                "com.sun.el.ExpressionFactoryImpl", "de.odysseus.el.ExpressionFactoryImpl",
+                "org.jboss.el.ExpressionFactoryImpl", "com.caucho.el.ExpressionFactoryImpl" };
+            
+            for (String candidate : candidates)
+            {
+                expressionFactory = loadExpressionFactory(candidate, false);
+                if (expressionFactory != null)
+                {
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine(ExpressionFactory.class.getName() + " implementation found: " + candidate);
+                    }
+                    break;
+                }
+            }
+        }
 
+        if (expressionFactory == null)
+        {
+            throw new FacesException("No " + ExpressionFactory.class.getName() + " implementation found. "
+                    + "Please provide <context-param> in web.xml: org.apache.myfaces.EXPRESSION_FACTORY");
+        }
+        
+        buildConfiguration(servletContext, externalContext, expressionFactory);
+    }
+    
+
+    /**
+     * the central initialisation event dispatcher which calls
+     * our listeners
+     *
+     * @param context
+     * @param operation
+     */
+    private void dispatchInitializationEvent(ServletContext context, int operation)
+    {
+        if (operation == FACES_INIT_PHASE_PREINIT)
+        {
+            if (!loadFacesInitPluginsViaServiceLoader(context))
+            {
+                loadFacesInitViaContextParam(context);
+            }
+        }
+
+        List<StartupListener> pluginEntries = (List<StartupListener>)
+                context.getAttribute(MyfacesConfig.FACES_INIT_PLUGINS);
+        if (pluginEntries == null)
+        {
+            return;
+        }
+
+        //now we process the plugins
+        for (StartupListener initializer : pluginEntries)
+        {
+            log.info("Processing plugin");
+
+            //for now the initializers have to be stateless to
+            //so that we do not have to enforce that the initializer
+            //must be serializable
+            switch (operation)
+            {
+                case FACES_INIT_PHASE_PREINIT:
+                    initializer.preInit(context);
+                    break;
+                case FACES_INIT_PHASE_POSTINIT:
+                    initializer.postInit(context);
+                    break;
+                case FACES_INIT_PHASE_PREDESTROY:
+                    initializer.preDestroy(context);
+                    break;
+                case FACES_INIT_PHASE_POSTDESTROY:
+                    initializer.postDestroy(context);
+                    break;
+                default:
+                    break;
+            }
+        }
+        log.info("Processing MyFaces plugins done");
+    }
+    
+   /**
+     * Loads the faces init plugins per Service loader.
+     * 
+     * @return false if there are not plugins defined via ServiceLoader.
+     */
+    private boolean loadFacesInitPluginsViaServiceLoader(ServletContext servletContext)
+    {   
+        ServiceLoader<StartupListener> loader = ServiceLoader.load(StartupListener.class,
+                ClassUtils.getContextClassLoader());
+
+        Iterator<StartupListener> it = (Iterator<StartupListener>) loader.iterator();
+        if (!it.hasNext())
+        {
+            return false;
+        }
+        
+        List<StartupListener> listeners = new LinkedList<>();
+        while (it.hasNext())
+        {
+            listeners.add(it.next());
+        }
+
+        servletContext.setAttribute(MyfacesConfig.FACES_INIT_PLUGINS, listeners);
+        
+        return true;
+    }
+
+    /**
+     * loads the faces init plugins per reflection from the context param.
+     */
+    private void loadFacesInitViaContextParam(ServletContext servletContext)
+    {
+        String plugins = (String) servletContext.getInitParameter(MyfacesConfig.FACES_INIT_PLUGINS);
+        if (plugins == null)
+        {
+            return;
+        }
+        log.info("MyFaces Plugins found");
+        
+        String[] pluginEntries = plugins.split(",");
+        List<StartupListener> listeners = new ArrayList<>(pluginEntries.length);
+        for (String pluginEntry : pluginEntries)
+        {
+            try
+            {
+                Class pluginClass = ClassUtils.getContextClassLoader().loadClass(pluginEntry);
+                if (pluginClass == null)
+                {
+                    pluginClass = this.getClass().getClassLoader().loadClass(pluginEntry);
+                }
+
+                listeners.add((StartupListener) pluginClass.newInstance());
+            }
+            catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
+            {
+                log.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+
+        servletContext.setAttribute(MyfacesConfig.FACES_INIT_PLUGINS, listeners);
+    }
 }

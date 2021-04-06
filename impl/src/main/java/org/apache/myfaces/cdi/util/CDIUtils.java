@@ -32,7 +32,7 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
-import org.apache.myfaces.webapp.AbstractFacesInitializer;
+import org.apache.myfaces.webapp.FacesInitializerImpl;
 
 /**
  * Lookup code for Contextual Instances.
@@ -46,8 +46,7 @@ public class CDIUtils
 
     public static BeanManager getBeanManager(ExternalContext externalContext)
     {
-        return (BeanManager) externalContext.getApplicationMap().get(
-            AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
+        return (BeanManager) externalContext.getApplicationMap().get(FacesInitializerImpl.CDI_BEAN_MANAGER_INSTANCE);
     }
 
     public static <T> T get(BeanManager bm, Class<T> clazz)

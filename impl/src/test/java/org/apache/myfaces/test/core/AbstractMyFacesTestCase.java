@@ -82,7 +82,7 @@ import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockWebContainer;
-import org.apache.myfaces.webapp.AbstractFacesInitializer;
+import org.apache.myfaces.webapp.FacesInitializerImpl;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -339,7 +339,7 @@ public abstract class AbstractMyFacesTestCase
         return new MyFacesMockFacesConfigurationProvider(this); 
     }
     
-    protected AbstractFacesInitializer createFacesInitializer()
+    protected FacesInitializerImpl createFacesInitializer()
     {
         return new JUnitNoCDIFacesInitializer(this);
     }
@@ -353,8 +353,7 @@ public abstract class AbstractMyFacesTestCase
         servletContext.setAttribute(
                 DefaultFacesConfigurationProviderFactory.FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY, 
                 facesConfigurationProvider);
-        listener = new StartupServletContextListener();
-        listener.setFacesInitializer(createFacesInitializer());
+        listener = new TestStartupServletContextListener(createFacesInitializer());
         webContainer.subscribeListener(listener);
         //listener.contextInitialized(new ServletContextEvent(servletContext));
     }
@@ -1225,7 +1224,7 @@ public abstract class AbstractMyFacesTestCase
     protected MockWebContainer webContainer = null;
 
     // MyFaces specific objects created by the servlet environment
-    protected StartupServletContextListener listener = null;
+    protected TestStartupServletContextListener listener = null;
     protected FacesConfigurationProvider facesConfigurationProvider = null;
     
     protected FacesContextFactory facesContextFactory = null;
@@ -1399,7 +1398,7 @@ public abstract class AbstractMyFacesTestCase
         }
     }
     
-    protected class JUnitFacesInitializer extends AbstractFacesInitializer
+    protected class JUnitFacesInitializer extends FacesInitializerImpl
     {
         private final AbstractMyFacesTestCase testCase;
         

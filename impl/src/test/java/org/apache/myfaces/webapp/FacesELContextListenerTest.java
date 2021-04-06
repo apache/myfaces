@@ -26,8 +26,6 @@ import jakarta.el.ELContextListener;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
-
-import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.IMocksControl;
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;
