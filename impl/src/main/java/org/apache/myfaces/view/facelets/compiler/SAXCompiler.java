@@ -247,24 +247,6 @@ public final class SAXCompiler extends Compiler
             if (this.inDocument && !unit.getFaceletsProcessingInstructions().isConsumeXmlDocType())
             {
                 this.unit.writeDoctype(name, publicId, systemId);
-                /*
-                StringBuffer sb = new StringBuffer(64);
-                sb.append("<!DOCTYPE ").append(name);
-                if (publicId != null)
-                {
-                    sb.append(" PUBLIC \"").append(publicId).append("\"");
-                    if (systemId != null)
-                    {
-                        sb.append(" \"").append(systemId).append("\"");
-                    }
-                }
-                else if (systemId != null)
-                {
-                    sb.append(" SYSTEM \"").append(systemId).append("\"");
-                }
-                sb.append(" >\n");
-                this.unit.writeInstruction(sb.toString());
-                */
             }
             this.inDocument = false;
         }
@@ -813,7 +795,7 @@ public final class SAXCompiler extends Compiler
     }
 
     @Override
-    public FaceletHandler doCompile(URL src, String alias)
+    public CompilerResult doCompile(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException
     {
         CompilationManager mngr = null;
@@ -843,14 +825,14 @@ public final class SAXCompiler extends Compiler
                 is.close();
             }
         }
-        return new EncodingHandler(mngr.createFaceletHandler(), encoding);
+        return new CompilerResult(new EncodingHandler(mngr.createFaceletHandler(), encoding), mngr.getDoctype());
     }
 
     /**
      * @since 2.0
      */
     @Override
-    protected FaceletHandler doCompileViewMetadata(URL src, String alias)
+    protected CompilerResult doCompileViewMetadata(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException
     {
         CompilationManager mngr = null;
@@ -907,14 +889,14 @@ public final class SAXCompiler extends Compiler
                 is.close();
             }
         }
-        return new EncodingHandler(mngr.createFaceletHandler(), encoding);
+        return new CompilerResult(new EncodingHandler(mngr.createFaceletHandler(), encoding), mngr.getDoctype());
     }
 
     /**
      * @since 2.0.1
      */
     @Override
-    protected FaceletHandler doCompileCompositeComponentMetadata(URL src, String alias)
+    protected CompilerResult doCompileCompositeComponentMetadata(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException
     {
         CompilationManager mngr = null;
@@ -928,6 +910,8 @@ public final class SAXCompiler extends Compiler
             CompositeComponentMetadataHandler handler = new CompositeComponentMetadataHandler(mngr, alias);
             SAXParser parser = this.createSAXParser(handler);
             parser.parse(is, handler);
+            
+            
         }
         catch (SAXException e)
         {
@@ -944,11 +928,11 @@ public final class SAXCompiler extends Compiler
                 is.close();
             }
         }
-        return new EncodingHandler(mngr.createFaceletHandler(), encoding);
+        return new CompilerResult(new EncodingHandler(mngr.createFaceletHandler(), encoding), mngr.getDoctype());
     }
     
     @Override
-    protected FaceletHandler doCompileComponent(
+    protected CompilerResult doCompileComponent(
         String taglibURI, String tagName, Map<String, Object> attributes)
     {
         String alias = tagName;
@@ -1026,7 +1010,7 @@ public final class SAXCompiler extends Compiler
         mngr.popNamespace(prefix);
         
         FaceletHandler handler = new DynamicComponentFacelet((NamespaceHandler) mngr.createFaceletHandler());
-        return handler;
+        return new CompilerResult(handler, mngr.getDoctype());
     }
     
     protected FaceletsProcessingInstructions getDefaultFaceletsProcessingInstructions()

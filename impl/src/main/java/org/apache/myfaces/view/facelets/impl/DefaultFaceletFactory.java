@@ -38,7 +38,6 @@ import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
-import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.view.facelets.ResourceResolver;
 import org.apache.myfaces.config.MyfacesConfig;
 
@@ -337,9 +336,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
         String alias = '/' + _removeFirst(url.getFile(), baseUrl == null ? "" : baseUrl.getFile());
         try
         {
-            FaceletHandler h = _compiler.compile(url, alias);
-            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, alias, h,
-                viewUniqueIdsCacheEnabled);
+            Compiler.CompilerResult result = _compiler.compile(url, alias);
+            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, alias,
+                    result.getFaceletHandler(), viewUniqueIdsCacheEnabled, result.getDoctype());
             return f;
         }
         catch (FileNotFoundException fnfe)
@@ -372,9 +371,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
         String alias = "/viewMetadata" + faceletId;
         try
         {
-            FaceletHandler h = _compiler.compileViewMetadata(url, alias);
+            Compiler.CompilerResult result = _compiler.compileViewMetadata(url, alias);
             DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, 
-                    faceletId, h, viewUniqueIdsCacheEnabled);
+                    faceletId, result.getFaceletHandler(), viewUniqueIdsCacheEnabled, result.getDoctype());
             return f;
         }
         catch (FileNotFoundException fnfe)
@@ -407,9 +406,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
                 baseUrl == null ? "" : baseUrl.getFile());
         try
         {
-            FaceletHandler h = _compiler.compileCompositeComponentMetadata(url, alias);
+            Compiler.CompilerResult result = _compiler.compileCompositeComponentMetadata(url, alias);
             DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias,
-                    alias, h, true, viewUniqueIdsCacheEnabled);
+                    alias, result.getFaceletHandler(), true, viewUniqueIdsCacheEnabled, result.getDoctype());
             return f;
         }
         catch (FileNotFoundException fnfe)
@@ -558,10 +557,10 @@ public final class DefaultFaceletFactory extends FaceletFactory
     @Override
     public Facelet compileComponentFacelet(String taglibURI, String tagName, Map<String,Object> attributes)
     {
-        FaceletHandler handler = _compiler.compileComponent(taglibURI, tagName, attributes);
+        Compiler.CompilerResult result = _compiler.compileComponent(taglibURI, tagName, attributes);
         String alias = "/component/oamf:"+tagName;
-        return new DefaultFacelet(this, _compiler.createExpressionFactory(), getBaseUrl(), alias, alias, handler,
-                viewUniqueIdsCacheEnabled);
+        return new DefaultFacelet(this, _compiler.createExpressionFactory(), getBaseUrl(), alias, alias,
+                result.getFaceletHandler(), viewUniqueIdsCacheEnabled, result.getDoctype());
     }
     
     /**

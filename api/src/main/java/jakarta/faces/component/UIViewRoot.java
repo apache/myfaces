@@ -171,6 +171,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     private transient boolean _resourceDependencyUniqueId;
     private transient Map<String,Object> _attributesMap;
     
+    private Doctype doctype;
+    
     /**
      * Construct an instance of the UIViewRoot.
      */
@@ -470,7 +472,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
         // Generate an identifier for a component. The identifier will be prefixed with
         // UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot.
-        if(seed==null)
+        if(seed == null)
         {
             if (isResourceDependencyUniqueId())
             {
@@ -972,7 +974,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
     public void setLocale(Locale locale)
     {
-        getStateHelper().put(PropertyKeys.locale, locale );
+        getStateHelper().put(PropertyKeys.locale, locale);
     }
 
     /**
@@ -1986,4 +1988,28 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
         return alwaysPerformValidationWhenRequiredTrue;
     }    
+
+    /**
+     * <p>
+     * Return the doctype of this view.
+     * </p>
+     *
+     * @return the doctype of this view.
+     * @since 4.0
+     */
+    public Doctype getDoctype() {
+        return doctype;
+    }
+
+    /**
+     * <p>
+     * Set the doctype of this view.
+     * </p>
+     *
+     * @param doctype The doctype.
+     * @since 4.0
+     */
+    public void setDoctype(Doctype doctype) {
+        this.doctype = doctype;
+    }
 }

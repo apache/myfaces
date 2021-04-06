@@ -25,6 +25,7 @@ import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.Facelet;
@@ -107,4 +108,6 @@ public abstract class AbstractFacelet extends Facelet
     {
         return getAlias(); 
     }
+    
+    public abstract Doctype getDoctype();
 }

@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.view.Location;
 import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.view.facelets.Tag;
@@ -32,6 +33,7 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagDecorator;
 import jakarta.faces.view.facelets.TagException;
+import org.apache.myfaces.view.facelets.DoctypeImpl;
 
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
@@ -74,6 +76,8 @@ final class CompilationManager
     private CompilationUnit interfaceCompilationUnit;
     
     private final FaceletsProcessingInstructions faceletsProcessingInstructions;
+    
+    private Doctype doctype;
 
     public CompilationManager(String alias, Compiler compiler, FaceletsProcessingInstructions instructions)
     {
@@ -141,6 +145,7 @@ final class CompilationManager
 
         DoctypeUnit unit = new DoctypeUnit(this.alias, this.nextTagId(),
             name, publicId, systemId, faceletsProcessingInstructions.isHtml5Doctype());
+        this.doctype = new DoctypeImpl(name, publicId, systemId);
         this.startUnit(unit);
     }
 
@@ -597,6 +602,11 @@ final class CompilationManager
     public FaceletsProcessingInstructions getFaceletsProcessingInstructions()
     {
         return faceletsProcessingInstructions;
+    }
+
+    public Doctype getDoctype()
+    {
+        return doctype;
     }
 }
 

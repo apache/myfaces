@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletException;
 import jakarta.faces.view.facelets.FaceletHandler;
@@ -74,40 +75,40 @@ public abstract class Compiler
 
     }
 
-    public final FaceletHandler compile(URL src, String alias) throws IOException, FaceletException, ELException,
+    public final CompilerResult compile(URL src, String alias) throws IOException, FaceletException, ELException,
             FacesException
     {
         return this.doCompile(src, alias);
     }
     
-    public final FaceletHandler compileViewMetadata(URL src, String alias)
+    public final CompilerResult compileViewMetadata(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException
     {
         return this.doCompileViewMetadata(src, alias);
     }
     
-    public final FaceletHandler compileCompositeComponentMetadata(URL src, String alias)
+    public final CompilerResult compileCompositeComponentMetadata(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException
     {
         return this.doCompileCompositeComponentMetadata(src, alias);
     }
     
-    public final FaceletHandler compileComponent(
+    public final CompilerResult compileComponent(
         String taglibURI, String tagName, Map<String,Object> attributes)
     {
         return this.doCompileComponent(taglibURI, tagName, attributes);
     }
 
-    protected abstract FaceletHandler doCompile(URL src, String alias)
+    protected abstract CompilerResult doCompile(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException;
 
-    protected abstract FaceletHandler doCompileViewMetadata(URL src, String alias)
+    protected abstract CompilerResult doCompileViewMetadata(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException;
     
-    protected abstract FaceletHandler doCompileCompositeComponentMetadata(URL src, String alias)
+    protected abstract CompilerResult doCompileCompositeComponentMetadata(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException;
     
-    protected abstract FaceletHandler doCompileComponent(
+    protected abstract CompilerResult doCompileComponent(
         String taglibURI, String tagName, Map<String,Object> attributes);
 
     public final TagDecorator createTagDecorator()
@@ -260,6 +261,38 @@ public abstract class Compiler
             Collection<FaceletsProcessing> faceletsProcessingConfigurations)
     {
         this.faceletsProcessingConfigurations = faceletsProcessingConfigurations;
+    }
+    
+    public static class CompilerResult
+    {
+        private FaceletHandler faceletHandler;
+        private Doctype doctype;
+
+        CompilerResult(FaceletHandler faceletHandler, Doctype doctype)
+        {
+            this.faceletHandler = faceletHandler;
+            this.doctype = doctype;
+        }
+
+        public FaceletHandler getFaceletHandler()
+        {
+            return faceletHandler;
+        }
+
+        public void setFaceletHandler(FaceletHandler faceletHandler)
+        {
+            this.faceletHandler = faceletHandler;
+        }
+
+        public Doctype getDoctype()
+        {
+            return doctype;
+        }
+
+        public void setDoctypeUnit(Doctype doctype)
+        {
+            this.doctype = doctype;
+        }
     }
 }
 

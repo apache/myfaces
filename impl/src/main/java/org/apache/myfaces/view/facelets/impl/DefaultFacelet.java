@@ -40,6 +40,7 @@ import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ViewResource;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.UniqueIdVendor;
@@ -80,9 +81,10 @@ final class DefaultFacelet extends AbstractFacelet
     private final boolean _isBuildingCompositeComponentMetadata; 
     private final boolean _encodingHandler;
     private final boolean viewUniqueIdsCacheEnabled;
+    private final Doctype doctype;
 
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias,
-                          String faceletId, FaceletHandler root, boolean viewUniqueIdsCacheEnabled)
+                          String faceletId, FaceletHandler root, boolean viewUniqueIdsCacheEnabled, Doctype doctype)
     {
         _factory = factory;
         _elFactory = el;
@@ -97,11 +99,12 @@ final class DefaultFacelet extends AbstractFacelet
         _isBuildingCompositeComponentMetadata = false;
         _encodingHandler = (root instanceof EncodingHandler);
         this.viewUniqueIdsCacheEnabled = viewUniqueIdsCacheEnabled;
+        this.doctype = doctype;
     }
 
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias,
             String faceletId, FaceletHandler root, boolean isBuildingCompositeComponentMetadata,
-            boolean viewUniqueIdsCacheEnabled)
+            boolean viewUniqueIdsCacheEnabled, Doctype doctype)
     {
         _factory = factory;
         _elFactory = el;
@@ -116,6 +119,7 @@ final class DefaultFacelet extends AbstractFacelet
         _isBuildingCompositeComponentMetadata = isBuildingCompositeComponentMetadata;
         _encodingHandler = (root instanceof EncodingHandler);
         this.viewUniqueIdsCacheEnabled = viewUniqueIdsCacheEnabled;
+        this.doctype = doctype;
     }    
 
     /**
@@ -152,8 +156,8 @@ final class DefaultFacelet extends AbstractFacelet
             }
             if (parent instanceof UIViewRoot)
             {
-                myFaceletContext.setViewRoot((UIViewRoot)parent);
-                ComponentSupport.setCachedFacesContext((UIViewRoot)parent, facesContext);
+                myFaceletContext.setViewRoot((UIViewRoot) parent);
+                ComponentSupport.setCachedFacesContext((UIViewRoot) parent, facesContext);
             }
         }
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this, myFaceletContext);
@@ -177,6 +181,11 @@ final class DefaultFacelet extends AbstractFacelet
                 pushedUniqueIdVendor = true;
             }
             
+            if (parent instanceof UIViewRoot)
+            {
+                ((UIViewRoot) parent).setDoctype(getDoctype());
+            }
+
             this.refresh(parent);
             myFaceletContext.markForDeletion(parent);
             _root.apply(ctx, parent);
@@ -214,7 +223,7 @@ final class DefaultFacelet extends AbstractFacelet
             {
                 if (parent instanceof UIViewRoot)
                 {
-                    ComponentSupport.setCachedFacesContext((UIViewRoot)parent, null);
+                    ComponentSupport.setCachedFacesContext((UIViewRoot) parent, null);
                 }
                 myFaceletContext.release(facesContext);
                 List<String> uniqueIdList = ((EncodingHandler)_root).getUniqueIdList();
@@ -655,5 +664,11 @@ final class DefaultFacelet extends AbstractFacelet
     public boolean isBuildingCompositeComponentMetadata()
     {
         return _isBuildingCompositeComponentMetadata;
+    }
+
+    @Override
+    public Doctype getDoctype()
+    {
+        return doctype;
     }
 }

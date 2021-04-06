@@ -62,7 +62,7 @@ class CompilationUnit
     {
         if (this.children == null)
         {
-            this.children = new ArrayList<CompilationUnit>();
+            this.children = new ArrayList<>();
         }
         this.children.add(unit);
     }

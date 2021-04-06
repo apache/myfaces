@@ -18,6 +18,7 @@
  */
 package jakarta.faces.component.html;
 
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIOutput;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
@@ -28,31 +29,22 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  */
 @JSFComponent(name="h:doctype", clazz = "jakarta.faces.component.html.HtmlDoctype",
         defaultRendererType="jakarta.faces.Doctype",template=true)
-abstract class _HtmlDoctype extends UIOutput
+abstract class _HtmlDoctype extends UIOutput implements Doctype
 {
 
-  static public final String COMPONENT_FAMILY = "jakarta.faces.Output";
-  static public final String COMPONENT_TYPE = "jakarta.faces.OutputDoctype";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.Output";
+    static public final String COMPONENT_TYPE = "jakarta.faces.OutputDoctype";
 
-  /**
-   * 
-   * @return
-   */
-  @JSFProperty
-  public abstract String getPublic();
-  
-  /**
-   * 
-   * @return
-   */
-  @JSFProperty
-  public abstract String getRootElement(); 
-  
-  /**
-   * 
-   * @return
-   */
-  @JSFProperty
-  public abstract String getSystem(); 
+    @JSFProperty
+    @Override
+    public abstract String getPublic();
+
+    @JSFProperty
+    @Override
+    public abstract String getRootElement(); 
+
+    @JSFProperty
+    @Override
+    public abstract String getSystem(); 
 
 }
