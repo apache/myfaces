@@ -18,6 +18,7 @@
  */
 package jakarta.faces.component;
 
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
 @JSFComponent(clazz = "jakarta.faces.component.UISelectItemGroups",
@@ -34,8 +35,20 @@ abstract class _UISelectItemGroups extends UISelectItems
 
     @Override
     public Object getValue() {
+        FacesContext context = getFacesContext();
         java.util.List<jakarta.faces.model.SelectItemGroup> groups = new java.util.ArrayList<>();
 
+        org.apache.myfaces.core.api.shared.SelectItemsUtil.createSelectItems(context,
+                this,
+                super.getValue(),
+                jakarta.faces.model.SelectItemGroup::new,
+                selectItemGroup ->
+        {
+            selectItemGroup.setSelectItems(
+                    org.apache.myfaces.core.api.shared.SelectItemsUtil.collectSelectItems(context, this));
+            groups.add(selectItemGroup);
+        });
+        
         return groups;
     }
 }

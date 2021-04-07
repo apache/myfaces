@@ -40,9 +40,6 @@ public class SelectItemsIterator implements Iterator<SelectItem>
 {
     private static final Logger log = Logger.getLogger(SelectItemsIterator.class.getName());
 
-    // org.apache.myfaces.util.SelectItemsIterator uses JSFAttr
-    private static final String VAR_ATTR = "var";
-    
     private final Iterator<UIComponent> _children;
     private Iterator<?> _nestedItems;
     private SelectItem _nextItem;
@@ -221,7 +218,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 // write the current item into the request map under the key listed in var, if available
                 boolean wroteRequestMapVarValue = false;
                 Object oldRequestMapVarValue = null;
-                String var = (String) attributeMap.get(VAR_ATTR);
+                String var = (String) attributeMap.get(SelectItemsUtil.ATTR_VAR);
                 if (var != null && !var.isEmpty())
                 {
                     // save the current value of the key listed in var from the request map

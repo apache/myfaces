@@ -26,7 +26,6 @@ import org.junit.Test;
 public class SelectOneItemsTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Test
-    @org.junit.Ignore
     public void testIndex() throws Exception
     {
         startViewRequest("/selectOneItems.xhtml");

@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets.tag.jsf.core;
 import jakarta.faces.component.UIImportConstants;
 import jakarta.faces.component.UIParameter;
 import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectItemGroups;
 import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UIViewAction;
 import jakarta.faces.component.UIViewParameter;
@@ -91,7 +92,7 @@ public final class CoreLibrary extends AbstractTagLibrary
 
         this.addComponent("selectItems", UISelectItems.COMPONENT_TYPE, null, SelectItemsHandler.class);
         
-        this.addComponent("selectItemGroups", UISelectItems.COMPONENT_TYPE, null, SelectItemGroupsHandler.class);
+        this.addComponent("selectItemGroups", UISelectItemGroups.COMPONENT_TYPE, null, SelectItemGroupsHandler.class);
 
         this.addTagHandler("setPropertyActionListener", SetPropertyActionListenerHandler.class);
 
