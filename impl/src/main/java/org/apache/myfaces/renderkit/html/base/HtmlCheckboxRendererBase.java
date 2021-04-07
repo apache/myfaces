@@ -42,6 +42,7 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.renderkit.RendererUtils;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
@@ -458,7 +459,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             return ((HtmlSelectManyCheckbox) component).isDisabled();
         }
 
-        return RendererUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
     }
 
     @Override

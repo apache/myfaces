@@ -50,6 +50,7 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
@@ -524,7 +525,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
             return ((HtmlSelectOneRadio)uiComponent).isDisabled();
         }
 
-        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
     @Override

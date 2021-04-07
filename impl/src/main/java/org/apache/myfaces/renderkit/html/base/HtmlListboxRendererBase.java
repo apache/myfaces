@@ -37,6 +37,7 @@ import jakarta.faces.convert.ConverterException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
 
@@ -111,7 +112,7 @@ public class HtmlListboxRendererBase
             return ((HtmlSelectOneListbox)uiComponent).isDisabled();
         }
 
-        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
     @Override

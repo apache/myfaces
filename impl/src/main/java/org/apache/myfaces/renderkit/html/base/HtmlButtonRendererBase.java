@@ -39,6 +39,7 @@ import jakarta.faces.component.html.HtmlCommandLink;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
@@ -485,7 +486,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
             return ((HtmlCommandButton) uiComponent).isDisabled();
         }
 
-        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
     protected boolean isReadonly(FacesContext facesContext, UIComponent uiComponent)
@@ -494,7 +495,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
         {
             return ((HtmlCommandButton)uiComponent).isReadonly();
         }
-        return RendererUtils.getBooleanAttribute(
+        return AttributeUtils.getBooleanAttribute(
                 uiComponent, HTML.READONLY_ATTR, false);
     }
 

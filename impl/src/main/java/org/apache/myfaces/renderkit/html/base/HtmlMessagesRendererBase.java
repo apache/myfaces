@@ -39,10 +39,10 @@ import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
-import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
 public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
@@ -366,7 +366,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            return RendererUtils.getBooleanAttribute(component, JSFAttr.TOOLTIP_ATTR, false);
+            return AttributeUtils.getBooleanAttribute(component, JSFAttr.TOOLTIP_ATTR, false);
         }
     }
 
@@ -379,7 +379,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            return RendererUtils.getBooleanAttribute(component, JSFAttr.SHOW_SUMMARY_ATTR, false);
+            return AttributeUtils.getBooleanAttribute(component, JSFAttr.SHOW_SUMMARY_ATTR, false);
         }
     }
 
@@ -392,7 +392,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            return RendererUtils.getBooleanAttribute(component, JSFAttr.SHOW_DETAIL_ATTR, false);
+            return AttributeUtils.getBooleanAttribute(component, JSFAttr.SHOW_DETAIL_ATTR, false);
         }
     }
 
@@ -404,7 +404,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            return RendererUtils.getBooleanAttribute(
+            return AttributeUtils.getBooleanAttribute(
                     component, JSFAttr.GLOBAL_ONLY_ATTR, false);
         }
     }
@@ -440,7 +440,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
             return ((UIMessages) component).isRedisplay();
         }
 
-        return RendererUtils.getBooleanAttribute(
+        return AttributeUtils.getBooleanAttribute(
                 component, JSFAttr.REDISPLAY_ATTR, true);
         
     }

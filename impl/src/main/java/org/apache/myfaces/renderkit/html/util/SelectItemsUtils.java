@@ -31,8 +31,8 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.SelectItemsIterator;
-import org.apache.myfaces.renderkit.RendererUtils;
 import static org.apache.myfaces.renderkit.html.util.HtmlRendererUtils.isHideNoSelectionOption;
 
 /**
@@ -167,7 +167,7 @@ public class SelectItemsUtils
                     writer.writeAttribute("class", labelClass, "labelClass");
                 }
 
-                boolean escape = RendererUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, false);
+                boolean escape = AttributeUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, false);
                 //default is to escape
                 //In JSF 1.2, when a SelectItem is created by default 
                 //selectItem.isEscape() returns true (this property

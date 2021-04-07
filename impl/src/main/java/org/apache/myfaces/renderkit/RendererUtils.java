@@ -831,20 +831,6 @@ public final class RendererUtils
                 selectMany, (String[]) submittedValue, considerValueType);
     }
 
-    public static boolean getBooleanAttribute(UIComponent component,
-            String attrName, boolean defaultValue)
-    {
-        Boolean b = (Boolean) component.getAttributes().get(attrName);
-        return b != null ? b : defaultValue;
-    }
-
-    public static int getIntegerAttribute(UIComponent component,
-            String attrName, int defaultValue)
-    {
-        Integer i = (Integer) component.getAttributes().get(attrName);
-        return i != null ? i : defaultValue;
-    }
-
     public static boolean getBooleanValue(String attribute, Object value, boolean defaultValue)
     {
         if (value instanceof Boolean)

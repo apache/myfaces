@@ -33,6 +33,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
@@ -90,7 +91,7 @@ public class HtmlFormatRenderer extends HtmlRenderer
         }
         else
         {
-            escape = RendererUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, true);
+            escape = AttributeUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, true);
         }
         if (text != null)
         {

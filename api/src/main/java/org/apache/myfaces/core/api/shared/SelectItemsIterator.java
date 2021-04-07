@@ -42,12 +42,6 @@ public class SelectItemsIterator implements Iterator<SelectItem>
 
     // org.apache.myfaces.util.SelectItemsIterator uses JSFAttr
     private static final String VAR_ATTR = "var";
-    private static final String ITEM_VALUE_ATTR = "itemValue";
-    private static final String ITEM_LABEL_ATTR = "itemLabel";
-    private static final String ITEM_DESCRIPTION_ATTR = "itemDescription";
-    private static final String ITEM_DISABLED_ATTR = "itemDisabled";
-    private static final String ITEM_LABEL_ESCAPED_ATTR = "itemLabelEscaped";
-    private static final String NO_SELECTION_VALUE_ATTR = "noSelectionValue";
     
     private final Iterator<UIComponent> _children;
     private Iterator<?> _nestedItems;
@@ -244,47 +238,11 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     oldRequestMapVarValue = _facesContext.getExternalContext().getRequestMap().put(var, item);
                     wroteRequestMapVarValue = true;
                 }
-                
-                // check the itemValue attribute
-                Object itemValue = attributeMap.get(ITEM_VALUE_ATTR);
-                if (itemValue == null)
-                {
-                    // the itemValue attribute was not provided
-                    // --> use the current item as the itemValue
-                    itemValue = item;
-                }
-                
-                // Spec: When iterating over the select items, toString() 
-                // must be called on the string rendered attribute values
-                Object itemLabel = attributeMap.get(ITEM_LABEL_ATTR);
-                if (itemLabel == null)
-                {
-                    if (itemValue != null)
-                    {
-                        itemLabel = itemValue.toString();
-                    }
-                }
-                else
-                {
-                    itemLabel = itemLabel.toString();
-                }
-                Object itemDescription = attributeMap.get(ITEM_DESCRIPTION_ATTR);
-                if (itemDescription != null)
-                {
-                    itemDescription = itemDescription.toString();
-                }
-                Boolean itemDisabled = getBooleanAttribute(_currentUISelectItems, ITEM_DISABLED_ATTR, false);
-                Boolean itemLabelEscaped = getBooleanAttribute(_currentUISelectItems, ITEM_LABEL_ESCAPED_ATTR, true);
-                Object noSelectionValue = attributeMap.get(NO_SELECTION_VALUE_ATTR);
-                item = new SelectItem(itemValue,
-                        (String) itemLabel,
-                        (String) itemDescription,
-                        itemDisabled,
-                        itemLabelEscaped,
-                        itemValue.equals(noSelectionValue)); 
+
+                item = SelectItemsUtil.createSelectItem(_currentUISelectItems, item, SelectItem::new);
                     
                 // remove the value with the key from var from the request map, if previously written
-                if(wroteRequestMapVarValue)
+                if (wroteRequestMapVarValue)
                 {
                     // If there was a previous value stored with the key from var in the request map, restore it
                     if (oldRequestMapVarValue != null)
@@ -318,25 +276,5 @@ public class SelectItemsIterator implements Iterator<SelectItem>
     public Object getCurrentValue()
     {
         return _currentValue;
-    }
-
-    private boolean getBooleanAttribute(UIComponent component, String attrName, boolean defaultValue)
-    {
-        Object value = component.getAttributes().get(attrName);
-        if (value == null)
-        {
-            return defaultValue;
-        }
-        else if (value instanceof Boolean)
-        {
-            return (Boolean) value;
-        }
-        else
-        {
-            // If the value is a String, parse the boolean.
-            // This makes the following code work: <tag attribute="true" />,
-            // otherwise you would have to write <tag attribute="#{true}" />.
-            return Boolean.valueOf(value.toString());
-        }
     }
 }

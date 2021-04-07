@@ -39,10 +39,10 @@ import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
-import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
 public abstract class HtmlMessageRendererBase
@@ -443,7 +443,7 @@ public abstract class HtmlMessageRendererBase
             return ((HtmlMessage) component).isTooltip();
         }
 
-        return RendererUtils.getBooleanAttribute(component, JSFAttr.TOOLTIP_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(component, JSFAttr.TOOLTIP_ATTR, false);
     }
 
     protected boolean isShowSummary(UIComponent component)
@@ -453,7 +453,7 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isShowSummary();
         }
 
-        return RendererUtils.getBooleanAttribute(component, JSFAttr.SHOW_SUMMARY_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(component, JSFAttr.SHOW_SUMMARY_ATTR, false);
     }
 
     protected boolean isShowDetail(UIComponent component)
@@ -463,7 +463,7 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isShowDetail();
         }
 
-        return RendererUtils.getBooleanAttribute(component, JSFAttr.SHOW_DETAIL_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(component, JSFAttr.SHOW_DETAIL_ATTR, false);
     }
     
     protected boolean isRedisplay(UIComponent component)
@@ -473,7 +473,7 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isRedisplay();
         }
 
-        return RendererUtils.getBooleanAttribute(component, JSFAttr.REDISPLAY_ATTR, true);
+        return AttributeUtils.getBooleanAttribute(component, JSFAttr.REDISPLAY_ATTR, true);
     }
 
 }

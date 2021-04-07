@@ -35,6 +35,7 @@ import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
@@ -190,7 +191,7 @@ public class HtmlLabelRenderer extends HtmlRenderer
                 }
                 else
                 {
-                    escape = RendererUtils.getBooleanAttribute(uiComponent, JSFAttr.ESCAPE_ATTR, true);
+                    escape = AttributeUtils.getBooleanAttribute(uiComponent, JSFAttr.ESCAPE_ATTR, true);
                 }
 
                 if (escape)

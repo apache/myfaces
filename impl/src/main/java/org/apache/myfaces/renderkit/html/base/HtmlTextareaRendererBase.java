@@ -35,6 +35,7 @@ import jakarta.faces.component.html.HtmlInputTextarea;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
@@ -202,7 +203,7 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
             return ((HtmlInputTextarea)uiComponent).isDisabled();
         }
 
-        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
     @Override

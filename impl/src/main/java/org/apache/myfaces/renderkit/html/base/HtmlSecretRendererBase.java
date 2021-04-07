@@ -38,6 +38,7 @@ import jakarta.faces.convert.ConverterException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
 /**
@@ -97,7 +98,7 @@ public class HtmlSecretRendererBase extends HtmlRenderer
         }
         else
         {
-            isRedisplay = RendererUtils.getBooleanAttribute(uiComponent, JSFAttr.REDISPLAY_ATTR, false);
+            isRedisplay = AttributeUtils.getBooleanAttribute(uiComponent, JSFAttr.REDISPLAY_ATTR, false);
         }
         if (isRedisplay)
         {
@@ -191,7 +192,7 @@ public class HtmlSecretRendererBase extends HtmlRenderer
             return ((HtmlInputSecret)uiComponent).isDisabled();
         }
 
-        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
     /**

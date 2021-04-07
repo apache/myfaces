@@ -38,6 +38,7 @@ import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
@@ -96,7 +97,7 @@ public class HtmlTextRendererBase
         }
         else
         {
-            escape = RendererUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, true); //default is to escape
+            escape = AttributeUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, true); //default is to escape
         }
 
         if (text != null)
@@ -300,7 +301,7 @@ public class HtmlTextRendererBase
             return ((HtmlInputText)component).isDisabled();
         }
 
-        return RendererUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
     }
 
     /**

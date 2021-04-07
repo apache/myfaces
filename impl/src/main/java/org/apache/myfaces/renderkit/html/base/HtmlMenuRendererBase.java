@@ -34,6 +34,7 @@ import jakarta.faces.component.html.HtmlSelectOneMenu;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
 
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
@@ -102,7 +103,7 @@ public class HtmlMenuRendererBase
             return ((HtmlSelectOneMenu) uiComponent).isDisabled();
         }
 
-        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
     @Override
