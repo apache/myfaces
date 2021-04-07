@@ -19,6 +19,7 @@
 package org.apache.myfaces.core.api.shared;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectItem;
 import jakarta.faces.model.SelectItem;
 import java.util.Map;
 import java.util.Objects;
@@ -26,12 +27,33 @@ import java.util.function.Supplier;
 
 public class SelectItemsUtil
 {
-    private static final String ITEM_VALUE_ATTR = "itemValue";
-    private static final String ITEM_LABEL_ATTR = "itemLabel";
-    private static final String ITEM_DESCRIPTION_ATTR = "itemDescription";
-    private static final String ITEM_DISABLED_ATTR = "itemDisabled";
-    private static final String ITEM_LABEL_ESCAPED_ATTR = "itemLabelEscaped";
-    private static final String NO_SELECTION_VALUE_ATTR = "noSelectionValue";
+    private static final String ATTR_ITEM_VALUE = "itemValue";
+    private static final String ATTR_ITEM_LABEL = "itemLabel";
+    private static final String ATTR_ITEM_DESCRIPTION = "itemDescription";
+    private static final String ATTR_ITEM_DISABLED = "itemDisabled";
+    private static final String ATTR_ITEM_LABEL_ESCAPED = "itemLabelEscaped";
+    private static final String ATTR_NO_SELECTION_VALUE = "noSelectionValue";
+    
+    public static <S extends SelectItem> S createSelectItem(UISelectItem uiSelectItem, Supplier<S> supplier)
+    {
+        Object value = uiSelectItem.getItemValue();
+ 
+        String label = uiSelectItem.getItemLabel();
+        if (label == null && value != null)
+        {
+            label = value.toString();
+        }
+
+        S selectItem = supplier.get();
+        selectItem.setValue(value);
+        selectItem.setLabel(label);
+        selectItem.setDescription(uiSelectItem.getItemDescription());
+        selectItem.setDisabled(uiSelectItem.isItemDisabled());
+        selectItem.setEscape(uiSelectItem.isItemEscaped());
+        selectItem.setNoSelectionOption(uiSelectItem.isNoSelectionOption());
+        
+        return selectItem;
+    }
     
     public static <S extends SelectItem> S createSelectItem(UIComponent component, Object value, Supplier<S> supplier)
     {
@@ -41,7 +63,7 @@ public class SelectItemsUtil
         Map<String, Object> attributeMap = component.getAttributes();
 
         // check the itemValue attribute
-        Object itemValue = attributeMap.get(ITEM_VALUE_ATTR);
+        Object itemValue = attributeMap.get(ATTR_ITEM_VALUE);
         if (itemValue == null)
         {
             itemValue = value;
@@ -49,7 +71,7 @@ public class SelectItemsUtil
 
         // Spec: When iterating over the select items, toString() 
         // must be called on the string rendered attribute values
-        Object itemLabel = attributeMap.get(ITEM_LABEL_ATTR);
+        Object itemLabel = attributeMap.get(ATTR_ITEM_LABEL);
         if (itemLabel == null)
         {
             if (itemValue != null)
@@ -62,17 +84,17 @@ public class SelectItemsUtil
             itemLabel = itemLabel.toString();
         }
 
-        Object itemDescription = attributeMap.get(ITEM_DESCRIPTION_ATTR);
+        Object itemDescription = attributeMap.get(ATTR_ITEM_DESCRIPTION);
         if (itemDescription != null)
         {
             itemDescription = itemDescription.toString();
         }
 
         Boolean itemDisabled = AttributeUtils.getBooleanAttribute(component,
-                ITEM_DISABLED_ATTR, false);
+                ATTR_ITEM_DISABLED, false);
         Boolean itemLabelEscaped = AttributeUtils.getBooleanAttribute(component,
-                ITEM_LABEL_ESCAPED_ATTR, true);
-        Object noSelectionValue = attributeMap.get(NO_SELECTION_VALUE_ATTR);
+                ATTR_ITEM_LABEL_ESCAPED, true);
+        Object noSelectionValue = attributeMap.get(ATTR_NO_SELECTION_VALUE);
 
         S selectItem = supplier.get();
         selectItem.setValue(itemValue);

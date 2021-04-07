@@ -108,17 +108,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 if (item == null)
                 {
                     // no value attribute --> create the SelectItem out of the other attributes
-                    Object itemValue = uiSelectItem.getItemValue();
-                    String label = uiSelectItem.getItemLabel();
-                    String description = uiSelectItem.getItemDescription();
-                    boolean disabled = uiSelectItem.isItemDisabled();
-                    boolean escape = uiSelectItem.isItemEscaped();
-                    boolean noSelectionOption = uiSelectItem.isNoSelectionOption();
-                    if (label == null && itemValue != null)
-                    {
-                        label = itemValue.toString();
-                    }
-                    item = new SelectItem(itemValue, label, description, disabled, escape, noSelectionOption);
+                    item = SelectItemsUtil.createSelectItem(uiSelectItem, SelectItem::new);
                 }
                 else if (!(item instanceof SelectItem))
                 {
@@ -232,7 +222,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 boolean wroteRequestMapVarValue = false;
                 Object oldRequestMapVarValue = null;
                 String var = (String) attributeMap.get(VAR_ATTR);
-                if(var != null && !var.isEmpty())
+                if (var != null && !var.isEmpty())
                 {
                     // save the current value of the key listed in var from the request map
                     oldRequestMapVarValue = _facesContext.getExternalContext().getRequestMap().put(var, item);
@@ -247,13 +237,11 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     // If there was a previous value stored with the key from var in the request map, restore it
                     if (oldRequestMapVarValue != null)
                     {
-                        _facesContext.getExternalContext()
-                                .getRequestMap().put(var, oldRequestMapVarValue);
+                        _facesContext.getExternalContext().getRequestMap().put(var, oldRequestMapVarValue);
                     }
                     else
                     {
-                        _facesContext.getExternalContext()
-                                .getRequestMap().remove(var);
+                        _facesContext.getExternalContext().getRequestMap().remove(var);
                     }
                 } 
             }
