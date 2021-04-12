@@ -31,8 +31,8 @@ import jakarta.el.ValueReference;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 
 public class FaceletStateValueExpression extends ValueExpression 
     implements Externalizable, FacesWrapper<ValueExpression>

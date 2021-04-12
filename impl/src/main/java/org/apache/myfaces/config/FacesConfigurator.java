@@ -143,7 +143,7 @@ import org.apache.myfaces.util.NavigationUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
-import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
+import org.apache.myfaces.view.facelets.tag.faces.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
 import org.apache.myfaces.webapp.FacesInitializerImpl;
 

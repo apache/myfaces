@@ -118,7 +118,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
 
             /**
-             * jsf 2.3 naming mode partial response,
+             * faces 2.3 naming mode partial response,
              * we either viewstate all forms (non id mode)
              * or the forms under the viewroot defined by id
              *
@@ -194,10 +194,10 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
 
         /**
-         * JSF 2.3 we set all the viewstates under a given declared viewRoot or all forms
+         * faces 2.3 we set all the viewstates under a given declared viewRoot or all forms
          * if none is given
          */
-        this._updateJSFClientArtifacts(context,  mfInternal.appliedViewState, this.P_VIEWSTATE);
+        this._updateFacesClientArtifacts(context,  mfInternal.appliedViewState, this.P_VIEWSTATE);
     },
 
 
@@ -210,22 +210,22 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
 
         /**
-         * JSF 2.3 we set all the viewstates under a given declared viewRoot or all forms
+         * faces 2.3 we set all the viewstates under a given declared viewRoot or all forms
          * if none is given
          */
 
-        this._updateJSFClientArtifacts(context, mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
+        this._updateFacesClientArtifacts(context, mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
 
     },
 
 
     /**
-     * sets the a jsf artifact element with a given identifier to a new value or adds this element
+     * sets the a faces artifact element with a given identifier to a new value or adds this element
      *
      * @param theForm {Node} the form to which the element has to be set to
      * @param context the current request context
      */
-    _applyJSFArtifactValueToForm: function (context, theForm, value, identifier) {
+    _applyFacesArtifactValueToForm: function (context, theForm, value, identifier) {
 
         if (!theForm) return;
         var _Lang = this._Lang;
@@ -256,7 +256,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         } else {
             var element = this._Dom.getDummyPlaceHolder();
 
-            //per JSF 2.3 spec the identifier of the element must be unique in the dom tree
+            //per faces 2.3 spec the identifier of the element must be unique in the dom tree
             //otherwise we will break the html spec here
             element.innerHTML = ["<input type='hidden'", "id='", this._fetchUniqueId(prefix, identifier), "' name='", identifier, "' value='", value, "' />"].join("");
             //now we go to proper dom handling after having to deal with another ie screw-up
@@ -270,16 +270,16 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
     _fetchUniqueId: function(prefix, identifier) {
         var cnt = 0;
-        var retVal = prefix + identifier + jsf.separatorchar + cnt;
+        var retVal = prefix + identifier + faces.separatorchar + cnt;
         while(this._Dom.byId(retVal) != null) {
             cnt++;
-            retVal = prefix + identifier + jsf.separatorchar + cnt;
+            retVal = prefix + identifier + faces.separatorchar + cnt;
         }
         return retVal;
     },
 
     /**
-     * updates/inserts the jsf client artifacts under a given viewroot element
+     * updates/inserts the faces client artifacts under a given viewroot element
      *
      * @param context the client context holding all request context data and some internal data
      * @param elem the root to start with, must be a dom node not an identifier
@@ -288,7 +288,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      *
      * @private
      */
-    _updateJSFClientArtifacts: function (context, value, identifier) {
+    _updateFacesClientArtifacts: function (context, value, identifier) {
 
         //elem not found for whatever reason
         //https://issues.apache.org/jira/browse/MYFACES-3544
@@ -296,14 +296,14 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var prefix = this._getPrefix(context);
 
         //do we still need the issuing form update? I guess it is needed.
-        //jsf spec 2.3 and earlier all issuing forms must update
+        //faces spec 2.3 and earlier all issuing forms must update
         var sourceForm = (context._mfInternal._mfSourceFormId) ? this._Dom.byId(context._mfInternal._mfSourceFormId) : null;
         if (sourceForm) {
             sourceForm = this._Dom.byId(sourceForm);
             if (sourceForm) {
                 //some cases where the source form cannot be updated
                 //because it is gone
-                this._applyJSFArtifactValueToForm(context, sourceForm, value, identifier);
+                this._applyFacesArtifactValueToForm(context, sourceForm, value, identifier);
             }
         }
 
@@ -320,18 +320,18 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         if(this._RT.getLocalOrGlobalConfig(context, "no_portlet_env", false)) {
 
             //We update all elements under viewroot
-            //this clearly violates the jsf 2.3 jsdocs
+            //this clearly violates the faces 2.3 jsdocs
             //however I think that the jsdocs were sloppily updated
             //because just updating the render targets under one viewroot and the issuing form
             //again would leave broken viewstates, in the end the portlet spec is at fault here
             //which came late to the game and expected all frameworks to adapt to their needs.
             //instead of properly adapting to the frameworks
             //now the viewroot mechanism per se would work, but people are dropping
-            //jsf 2.3 into old portlet containers which then expose the legacy behavior
+            //faces 2.3 into old portlet containers which then expose the legacy behavior
             //of having just one view root.
             this._Lang.arrForEach(forms, this._Lang.hitch(this, function (elem) {
                 //update all forms which start with prefix (all render and execute targets
-                this._applyJSFArtifactValueToForm(context, elem, value, identifier);
+                this._applyFacesArtifactValueToForm(context, elem, value, identifier);
             }));
         } else {
 
@@ -358,7 +358,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                 if(updateForm.indexOf(viewRootId) != 0) {
                     continue;
                 } else { //either an empty viewroot, or a namespace match
-                    this._applyJSFArtifactValueToForm(context, this._Dom.byId(updateForm), value, identifier);
+                    this._applyFacesArtifactValueToForm(context, this._Dom.byId(updateForm), value, identifier);
                 }
             }
 
@@ -384,7 +384,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var mfInternal = context._mfInternal;
         var prefix = mfInternal.namingModeId;
         if (prefix != "") {
-            prefix = prefix + jsf.separatorchar;
+            prefix = prefix + faces.separatorchar;
         }
         return prefix;
     },
@@ -457,7 +457,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                     this.processUpdate(request, context, changes[i]);
                     break;
                 //this one needs a csp spec extension for the global eval
-                //for now we recycle the csp for this case from the jsf.js file
+                //for now we recycle the csp for this case from the faces.js file
                 case this.CMD_EVAL:
                     _Lang.globalEval(changes[i].firstChild.data);
                     break;

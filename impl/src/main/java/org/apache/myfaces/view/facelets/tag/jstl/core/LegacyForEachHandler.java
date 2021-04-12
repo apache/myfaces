@@ -40,7 +40,7 @@ import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.PageContext;
 import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 
 /**
  * The basic iteration tag, accepting many different

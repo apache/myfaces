@@ -77,7 +77,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
                 inputText.getRendererType(),
                 new HtmlTextRenderer());
         
-        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
     public void tearDown() throws Exception
@@ -231,7 +231,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         {
             inputText.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            // onchange="jsf.util.chain(document.getElementById(&apos;j_id0&apos;), event,
+            // onchange="faces.util.chain(document.getElementById(&apos;j_id0&apos;), event,
             //                          &apos;alert(\&apos;test\&apos;)&apos;);"
             Assert.assertTrue(output.contains("&apos;alert(\\&apos;test\\&apos;)&apos;"));
         }
@@ -253,7 +253,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         {
             inputText.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            // onchange="jsf.util.chain(document.getElementById(&apos;j_id0&apos;), event,
+            // onchange="faces.util.chain(document.getElementById(&apos;j_id0&apos;), event,
             //               &apos;var test = \&apos;a\\\&apos;b\&apos;; alert(test);&apos;);"
             Assert.assertTrue(output.contains("&apos;var test = \\&apos;a\\\\\\&apos;b\\&apos;; alert(test);&apos;"));
         }

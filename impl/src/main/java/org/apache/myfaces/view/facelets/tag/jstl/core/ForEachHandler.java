@@ -46,8 +46,8 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.PageContext;
 import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
 import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 
 /**
  * The basic iteration tag, accepting many different

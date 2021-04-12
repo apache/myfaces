@@ -289,7 +289,7 @@ public class AjaxBehavior extends ClientBehaviorBase
         }
         if(create)
         {
-            _stateHelper = new _DeltaStateHelper<AjaxBehavior>(this);
+            _stateHelper = new _DeltaStateHelper<>(this);
         }
         return _stateHelper;
     }

@@ -30,7 +30,7 @@ import org.apache.myfaces.view.facelets.pool.RestoreViewFromPoolResult;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 import org.apache.myfaces.view.facelets.pool.ViewEntry;
 import org.apache.myfaces.view.facelets.pool.ViewStructureMetadata;
-import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
+import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 
 /**
  *

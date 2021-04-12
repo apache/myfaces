@@ -275,15 +275,15 @@ public class ClientBehaviorRendererUtils
         int size = functions.size();
         if (size > 0)
         {
-            //according to the spec jsf.util.chain has to be used to build up the 
+            //according to the spec faces.util.chain has to be used to build up the 
             //behavior and scripts
             if (sourceId == null)
             {
-                chainContext.append("jsf.util.chain(this, event,");
+                chainContext.append("faces.util.chain(this, event,");
             }
             else
             {
-                chainContext.append("jsf.util.chain(document.getElementById('" + sourceId + "'), event,");
+                chainContext.append("faces.util.chain(document.getElementById('" + sourceId + "'), event,");
             }
 
             for (int i = 0; i < size; i++)
@@ -379,15 +379,15 @@ public class ClientBehaviorRendererUtils
             {
                 chainContext.append("return ");
             }
-            //according to the spec jsf.util.chain has to be used to build up the 
+            //according to the spec faces.util.chain has to be used to build up the 
             //behavior and scripts
             if (sourceId == null)
             {
-                chainContext.append("jsf.util.chain(this, event,");
+                chainContext.append("faces.util.chain(this, event,");
             }
             else
             {
-                chainContext.append("jsf.util.chain(document.getElementById('" + sourceId + "'), event,");
+                chainContext.append("faces.util.chain(document.getElementById('" + sourceId + "'), event,");
             }
             
             for (int i = 0; i < size; i++)
@@ -412,7 +412,7 @@ public class ClientBehaviorRendererUtils
 
     /**
      * This function correctly escapes the given JavaScript code
-     * for the use in the jsf.util.chain() JavaScript function.
+     * for the use in the faces.util.chain() JavaScript function.
      * It also handles double-escaping correclty.
      *
      * @param facesContext
@@ -462,7 +462,7 @@ public class ClientBehaviorRendererUtils
             // either strings or functions are allowed
             if (config.isRenderClientBehaviorScriptsAsString())
             {
-                // escape every ' in the user event code since it will be a string attribute of jsf.util.chain
+                // escape every ' in the user event code since it will be a string attribute of faces.util.chain
                 functions.add('\'' + escapeJavaScriptForChain(facesContext, function) + '\'');
             }
             else
@@ -480,7 +480,7 @@ public class ClientBehaviorRendererUtils
             // either strings or functions are allowed
             if (config.isRenderClientBehaviorScriptsAsString())
             {
-                // escape every ' in the user event code since it will be a string attribute of jsf.util.chain
+                // escape every ' in the user event code since it will be a string attribute of faces.util.chain
                 target.append('\'');
                 target.append(escapeJavaScriptForChain(facesContext, function));
                 target.append('\'');

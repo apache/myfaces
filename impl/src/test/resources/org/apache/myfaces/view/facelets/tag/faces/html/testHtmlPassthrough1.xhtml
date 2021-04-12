@@ -1,0 +1,75 @@
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ $Id: defineInclude.xml 804043 2009-08-13 22:08:44Z lu4242 $
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:faces="http://java.sun.com/jsf">
+<head faces:id="idHead">
+    <link rel="stylesheet" type="text/css" href="custom.css"/>
+    <script type="text/javascript">
+        function hello(){
+            alert("Hello");
+        }
+    </script>
+    <link faces:id="osh" rel="stylesheet" type="text/css" faces:library="mylib" faces:name="resource.css"/>
+    <script faces:id="osc" type="text/javascript">
+        function hello(){
+            alert("Hello");
+        }
+    </script>
+</head>
+<body faces:id="idBody">
+    <form faces:id="myForm">
+        <a faces:id="link1" faces:action="#{test.testAction}"/>
+        <a faces:id="link2" faces:actionListener="#{test.testActionListener}"/>
+        <a faces:id="link3" faces:value="/my/new/location.txt"/>
+        <a faces:id="link4" faces:outcome="rollback"/>
+        <button faces:id="button1" faces:action="#{test.testAction}"/>
+        <button faces:id="button2" faces:outcome="rollback"/>
+        <img faces:id="img1" faces:url="/my/image.png"/>
+        <input faces:id="input1" type="button"/>
+        <input faces:id="input2" type="checkbox"/>
+        <input faces:id="input3" type="color"/>
+        <input faces:id="input4" type="date"/>
+        <input faces:id="input5" type="datetime"/>
+        <input faces:id="input6" type="datetime-local"/>
+        <input faces:id="input7" type="email"/>
+        <input faces:id="input8" type="month"/>
+        <input faces:id="input9" type="number"/>
+        <input faces:id="input10" type="range"/>
+        <input faces:id="input11" type="search"/>
+        <input faces:id="input12" type="time"/>
+        <input faces:id="input13" type="url"/>
+        <input faces:id="input14" type="week"/>
+        <input faces:id="input15" type="file"/>
+        <input faces:id="input16" type="hidden"/>
+        <input faces:id="input17" type="password"/>
+        <input faces:id="input18" type="reset"/>
+        <input faces:id="input19" type="submit"/>
+        <input faces:id="input20" type="anything"/>
+        <label faces:id="label1" />
+        <select faces:id="select1">
+            <f:selectItem itemValue="option1"/>
+        </select>
+        <select faces:id="select2" multiple="multiple">
+            <f:selectItem itemValue="option1"/>
+            <f:selectItem itemValue="option2"/>
+        </select>
+        <textarea faces:id="textarea1"/>
+    </form>
+</body>
+</html>

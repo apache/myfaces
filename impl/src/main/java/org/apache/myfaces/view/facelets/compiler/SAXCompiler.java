@@ -52,7 +52,7 @@ import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.ImplementationHandler;
 import org.apache.myfaces.view.facelets.tag.composite.InterfaceHandler;
-import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
+import org.apache.myfaces.view.facelets.tag.faces.core.CoreLibrary;
 import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;

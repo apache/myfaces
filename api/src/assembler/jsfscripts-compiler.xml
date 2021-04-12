@@ -27,7 +27,7 @@
         -->
 
         <script>
-            <fileName>jsf.js</fileName>
+            <fileName>faces.js</fileName>
             <includes>
 
                 <include>**/_impl/core/_EvalHandlers.js</include>
@@ -52,7 +52,7 @@
                 <include>**/_impl/_util/_HtmlStripper.js</include>
                 <include>**/_impl/_util/_OamSubmit.js</include>
 
-                <!-- the jsf.js independend xhr core engine -->
+                <!-- the faces.js independend xhr core engine -->
                 <include>**/_impl/xhrCore/engine/XhrConst.js</include>
                 <include>**/_impl/xhrCore/engine/BaseRequest.js</include>
 
@@ -69,7 +69,7 @@
                 <!-- optimization helper -->
                 <include>**/_impl/core/_EndImpl.js</include>
                 <!-- api -->
-                <include>**/api/jsf.js</include>
+                <include>**/api/faces.js</include>
 
 
             </includes>

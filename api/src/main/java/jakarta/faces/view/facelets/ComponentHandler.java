@@ -44,7 +44,7 @@ public class ComponentHandler extends DelegatingMetaTagHandler
 
     public static boolean isNew(UIComponent component)
     {
-        // -= Leonardo Uribe =- It seems org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport.isNew(UIComponent)
+        // -= Leonardo Uribe =- It seems org.apache.myfaces.view.facelets.tag.faces.ComponentSupport.isNew(UIComponent)
         // has been moved to this location.
         // Originally this method was called from all tags that generate any kind of listeners
         // (f:actionListener, f:phaseListener, f:setPropertyActionListener, f:valueChangeListener).

@@ -45,7 +45,7 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 
 /**
  * Renderer used by h:outputScript component

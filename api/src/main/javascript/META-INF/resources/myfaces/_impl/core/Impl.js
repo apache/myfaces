@@ -19,7 +19,7 @@
  * @name Impl
  * @memberOf myfaces._impl.core
  * @description Implementation singleton which implements all interface method
- * defined by our jsf.js API
+ * defined by our faces.js API
  * */
 _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.prototype */ {
 
@@ -124,7 +124,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      *  <li> all requests must be queued with a client side request queue to ensure the request ordering!</li>
      * </ul>
      *
-     * @param {String|Node} elem any dom element no matter being it html or jsf, from which the event is emitted
+     * @param {String|Node} elem any dom element no matter being it html or faces, from which the event is emitted
      * @param {|Event|} event any javascript event supported by that object
      * @param {|Object|} options  map of options being pushed into the ajax cycle
      *
@@ -162,7 +162,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
         //improve the error messages if an empty elem is passed
         if (!elem) {
-            throw _Lang.makeException(new Error(), "ArgNotSet", null, this._nameSpace, "request", _Lang.getMessage("ERR_MUST_BE_PROVIDED1", "{0}: source  must be provided", "jsf.ajax.request", "source element id"));
+            throw _Lang.makeException(new Error(), "ArgNotSet", null, this._nameSpace, "request", _Lang.getMessage("ERR_MUST_BE_PROVIDED1", "{0}: source  must be provided", "faces.ajax.request", "source element id"));
         }
         var oldElem = elem;
         elem = _Dom.byIdOrName(elem);
@@ -197,7 +197,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             myfaces:options.myfaces,
             _mfInternal:{}
         };
-        //additional meta information to speed things up, note internal non jsf
+        //additional meta information to speed things up, note internal non faces
         //pass through options are stored under _mfInternal in the context
         var mfInternal = context._mfInternal;
 
@@ -213,11 +213,11 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
                 this._getForm(elem, event);
 
         /**
-         * JSF2.2 client window must be part of the issuing form so it is encoded
+         * faces2.2 client window must be part of the issuing form so it is encoded
          * automatically in the request
          */
-        //we set the client window before encoding by a call to jsf.getClientWindow
-        var clientWindow = jsf.getClientWindow(form);
+        //we set the client window before encoding by a call to faces.getClientWindow
+        var clientWindow = faces.getClientWindow(form);
         //in case someone decorates the getClientWindow we reset the value from
         //what we are getting
         if ('undefined' != typeof clientWindow && null != clientWindow) {
@@ -225,9 +225,9 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             if (formElem) {
                 //we store the value for later processing during the ajax phase
                 //job so that we do not get double values
-                context._mfInternal._clientWindow = jsf.getClientWindow(form);
+                context._mfInternal._clientWindow = faces.getClientWindow(form);
             } else {
-                passThrgh[this.P_CLIENTWINDOW] = jsf.getClientWindow(form);
+                passThrgh[this.P_CLIENTWINDOW] = faces.getClientWindow(form);
             }
         } /*  spec proposal
         else {
@@ -278,7 +278,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         }
 
         /**
-         * multiple transports upcoming jsf 2.x feature currently allowed
+         * multiple transports upcoming faces 2.x feature currently allowed
          * default (no value) xhrQueuedPost
          *
          * xhrQueuedPost
@@ -302,7 +302,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //wont hurt but for the sake of compatibility we are going to add it
         passThrgh[form.id] = form.id;
 
-        /* jsf2.2 only: options.delay || */
+        /* faces2.2 only: options.delay || */
         var delayTimeout = options.delay || this._RT.getLocalOrGlobalConfig(context, "delay", false);
         if (delayTimeout) {
             if (this._delayTimeout) {
@@ -380,7 +380,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         }
         var isMultipart = multiPartCandidate && multipartForm;
         /**
-         * multiple transports upcoming jsf 2.2 feature currently allowed
+         * multiple transports upcoming faces 2.2 feature currently allowed
          * default (no value) xhrQueuedPost
          *
          * xhrQueuedPost
@@ -516,7 +516,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             // silently ignore: user can find out by examining the event data
         }
         //extended error message only in dev mode
-        if (jsf.getProjectStage() === "Development") {
+        if (faces.getProjectStage() === "Development") {
             eventData.errorMessage = eventData.errorMessage || "";
             eventData.errorMessage = (caller) ? eventData.errorMessage + "\nCalling class: " + caller : eventData.errorMessage;
             eventData.errorMessage = (callFunc) ? eventData.errorMessage + "\n Calling function: " + callFunc : eventData.errorMessage;
@@ -530,7 +530,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         /*now we serve the queue as well*/
         this._errListeners.broadcastEvent(eventData);
 
-        if (jsf.getProjectStage() === "Development" && this._errListeners.length() == 0 && !context["onerror"]) {
+        if (faces.getProjectStage() === "Development" && this._errListeners.length() == 0 && !context["onerror"]) {
             var DIVIDER = "--------------------------------------------------------",
                     defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert),
                     finalMessage = [],
@@ -583,7 +583,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
                 eventData.responseXML = getValue(request, "responseXML");
 
             } catch (e) {
-                var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+                var impl = myfaces._impl.core._Runtime.getGlobalConfig("facesAjaxImpl", myfaces._impl.core.Impl);
                 impl.sendError(request, context, this.CLIENT_ERROR, "ErrorRetrievingResponse",
                         _Lang.getMessage("ERR_CONSTRUCT", e.toString()));
 
@@ -627,7 +627,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
                 getConfig = myfaces._impl.core._Runtime.getGlobalConfig,
                 scriptTags = document.getElementsByTagName("script");
         for (var i = 0; i < scriptTags.length && !found; i++) {
-            if (scriptTags[i].src.search(/\/jakarta\.faces\.resource.*\/jsf\.js.*separator/) != -1) {
+            if (scriptTags[i].src.search(/\/jakarta\.faces\.resource.*\/faces\.js.*separator/) != -1) {
                 found = true;
                 var result = scriptTags[i].src.match(/separator=([^&;]*)/);
                 this._separator = decodeURIComponent(result[1]);
@@ -640,7 +640,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
     /**
      * @return the project stage also emitted by the server:
      * it cannot be cached and must be delivered over the server
-     * The value for it comes from the request parameter of the jsf.js script called "stage".
+     * The value for it comes from the request parameter of the faces.js script called "stage".
      */
     getProjectStage:function () {
         //since impl is a singleton we only have to do it once at first access
@@ -655,9 +655,9 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
                     found = false,
                     allowedProjectStages = {STG_PROD:1, "Development":1, "SystemTest":1, "UnitTest":1};
 
-            /* run through all script tags and try to find the one that includes jsf.js */
+            /* run through all script tags and try to find the one that includes faces.js */
             for (var i = 0; i < scriptTags.length && !found; i++) {
-                if (scriptTags[i].src.search(/\/jakarta\.faces\.resource\/jsf\.js.*ln=jakarta\.faces/) != -1) {
+                if (scriptTags[i].src.search(/\/jakarta\.faces\.resource\/faces\.js.*ln=jakarta\.faces/) != -1) {
                     var result = scriptTags[i].src.match(/stage=([^&;]*)/);
                     found = true;
                     if (result) {
@@ -703,7 +703,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         var len = arguments.length;
         var _Lang = this._Lang;
         var throwErr = function (msgKey) {
-            throw Error("jsf.util.chain: " + _Lang.getMessage(msgKey));
+            throw Error("faces.util.chain: " + _Lang.getMessage(msgKey));
         };
         /**
          * generic error condition checker which raises

@@ -19,7 +19,7 @@
 package org.apache.myfaces.view.facelets.pool.impl;
 
 import java.io.Serializable;
-import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
+import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 
 /**
  *

@@ -78,7 +78,7 @@ if (!myfaces._impl.core._EvalHandlers) {
          * @param cspMeta optional csp metadata, only allowed key atm nonce
          */
         _T.globalEval = function(code, cspMeta) {
-            //check for jsf nonce
+            //check for faces nonce
             var nonce = cspMeta ? cspMeta.nonce : this._currentScriptNonce();
 
             var element = document.createElement("script");
@@ -95,7 +95,7 @@ if (!myfaces._impl.core._EvalHandlers) {
         };
 
         /*
-        * determines the jsfjs nonce and adds them to the namespace
+        * determines the facesjs nonce and adds them to the namespace
         * this is done once and only lazily
         */
         _T._currentScriptNonce = function() {
@@ -111,7 +111,7 @@ if (!myfaces._impl.core._EvalHandlers) {
             }
 
             var scripts = document.querySelectorAll("script[src], link[src]");
-            var jsf_js = null;
+            var faces_js = null;
 
             //we search all scripts
             for(var cnt = 0; scripts && cnt < scripts.length; cnt++) {
@@ -120,8 +120,8 @@ if (!myfaces._impl.core._EvalHandlers) {
                     continue;
                 }
                 var src = scriptNode.getAttribute("src") || "";
-                if(src && !src.match(/jsf\.js\?ln\=jakarta\.faces/gi)) {
-                    jsf_js = scriptNode;
+                if(src && !src.match(/faces\.js\?ln\=jakarta\.faces/gi)) {
+                    faces_js = scriptNode;
                     //the first one is the one we have our code in
                     //subsequent ones do not overwrite our code
                     break;
@@ -132,8 +132,8 @@ if (!myfaces._impl.core._EvalHandlers) {
             myfaces.config.cspMeta = myfaces.config.cspMeta || {
                 nonce: null
             };
-            if(jsf_js) {
-                myfaces.config.cspMeta.nonce = jsf_js.getAttribute("nonce") || null;
+            if(faces_js) {
+                myfaces.config.cspMeta.nonce = faces_js.getAttribute("nonce") || null;
             }
             return myfaces.config.cspMeta.nonce;
         };

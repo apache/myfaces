@@ -32,7 +32,7 @@ import java.io.*;
 /**
  * A generic jsf simulating response servlet.
  * The reason for this is twofold. Parts of this code
- * and some tests were written even before the jsf.js implementation existed in myfaces.
+ * and some tests were written even before the faces.js implementation existed in myfaces.
  * The other reason is, we can test conditions which are not yet exposed in the jsf impl
  * but allowed by protocol (insert before and after or delete for instance)
  *

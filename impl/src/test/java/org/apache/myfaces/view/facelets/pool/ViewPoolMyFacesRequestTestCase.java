@@ -37,8 +37,8 @@ import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.pool.impl.ViewPoolImpl;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 import org.junit.Assert;
 import org.junit.Test;
 

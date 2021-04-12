@@ -157,9 +157,9 @@ public class IntegrationTest
         webDriver.get(contextPath + "foo");
 
         // check if resources are loaded via non-exact-mapping
-        Assert.assertTrue(webDriver.getPageSource().contains("jakarta.faces.resource/jsf.js.jsf")
-                || webDriver.getPageSource().contains("jakarta.faces.resource/faces/jsf.js")
-                || webDriver.getPageSource().contains("faces/jakarta.faces.resource/jsf.js"));
+        Assert.assertTrue(webDriver.getPageSource().contains("jakarta.faces.resource/faces.js.jsf")
+                || webDriver.getPageSource().contains("jakarta.faces.resource/faces/faces.js")
+                || webDriver.getPageSource().contains("faces/jakarta.faces.resource/faces.js"));
     }
     
     @Test

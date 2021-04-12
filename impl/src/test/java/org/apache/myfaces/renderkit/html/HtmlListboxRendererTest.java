@@ -68,7 +68,7 @@ public class HtmlListboxRendererTest extends AbstractJsfTestCase
                 selectManyListbox.getFamily(),
                 selectManyListbox.getRendererType(),
                 new HtmlListboxRenderer());
-        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
     public void tearDown() throws Exception

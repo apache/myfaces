@@ -43,8 +43,8 @@ import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
 import org.apache.myfaces.view.facelets.impl.TemplateContextImpl;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
 
 /**

@@ -38,7 +38,7 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.PassthroughRule;
-import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
+import org.apache.myfaces.view.facelets.tag.faces.PassThroughLibrary;
 
 /**
  * 

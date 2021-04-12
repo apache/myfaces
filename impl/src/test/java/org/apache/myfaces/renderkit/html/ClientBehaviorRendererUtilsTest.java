@@ -58,7 +58,7 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
                 ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, null,
                 null));
 
-        Assert.assertEquals("return jsf.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'suppe');",
+        Assert.assertEquals("return faces.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'suppe');",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, component.getClientId(facesContext), ClientBehaviorEvents.CLICK, 
                         params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
@@ -81,7 +81,7 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 
         behaviors.put(ClientBehaviorEvents.CLICK, Arrays.asList(submittingBehavior));
 
-        Assert.assertEquals("jsf.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'script()', 'suppe'); return false;",
+        Assert.assertEquals("faces.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'script()', 'suppe'); return false;",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, component.getClientId(facesContext),
                         ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
@@ -101,7 +101,7 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
                 ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, null,
                 null));
 
-        Assert.assertEquals("return jsf.util.chain(this, event,'huhn', 'suppe');",
+        Assert.assertEquals("return faces.util.chain(this, event,'huhn', 'suppe');",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
@@ -123,7 +123,7 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 
         behaviors.put(ClientBehaviorEvents.CLICK, Arrays.asList(submittingBehavior));
 
-        Assert.assertEquals("jsf.util.chain(this, event,'huhn', 'script()', 'suppe'); return false;",
+        Assert.assertEquals("faces.util.chain(this, event,'huhn', 'script()', 'suppe'); return false;",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, 
                         ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",

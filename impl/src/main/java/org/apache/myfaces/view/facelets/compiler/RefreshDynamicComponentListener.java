@@ -32,7 +32,7 @@ import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 
 /**
  * This listener must be attached to PostRestoreStateEvent so when the view is restored, 
@@ -105,7 +105,7 @@ public final class RefreshDynamicComponentListener implements ComponentSystemEve
             {
                 if (facetName != null)
                 {
-                    parent.getAttributes().put(org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY, 
+                    parent.getAttributes().put(org.apache.myfaces.view.facelets.tag.faces.core.FacetHandler.KEY, 
                             facetName);
                 }            
                 // The trick here is restore MARK_CREATED, just to allow ComponentTagHandlerDelegate to
@@ -136,7 +136,7 @@ public final class RefreshDynamicComponentListener implements ComponentSystemEve
             {
                 if (facetName != null)
                 {
-                    parent.getAttributes().remove(org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY);
+                    parent.getAttributes().remove(org.apache.myfaces.view.facelets.tag.faces.core.FacetHandler.KEY);
                 }
             }
         }

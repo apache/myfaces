@@ -66,7 +66,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
         outputWriter = new FastWriter();
         writer = new HtmlResponseWriterImpl(outputWriter, null, null);
         facesContext.setResponseWriter(writer);
-        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", true);
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", true);
     }
     
     @Override
@@ -135,10 +135,10 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
             {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
-                //jsf.ajax.request('j_id0',event,{'jakarta.faces.behavior.event':'click'})
-                //Only check if the property starts with jsf.ajax.request( is enough 
-                //Assert.assertTrue("output does not match expected output jsf.ajax.request(.... for property "+attrs[i].getName(),
-                //        output.matches(".+ "+attrs[i].getName()+"=\"jsf\\.ajax\\.request\\(.+"));
+                //faces.ajax.request('j_id0',event,{'jakarta.faces.behavior.event':'click'})
+                //Only check if the property starts with faces.ajax.request( is enough 
+                //Assert.assertTrue("output does not match expected output faces.ajax.request(.... for property "+attrs[i].getName(),
+                //        output.matches(".+ "+attrs[i].getName()+"=\"faces\\.ajax\\.request\\(.+"));
                 int index = checkClientBehaviorRenderedOnClientEventProperty(output, 0, attrs[i]);
                 outputWriter.reset();
             }
@@ -185,10 +185,10 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
             {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
-                //jsf.ajax.request('j_id0',event,{'jakarta.faces.behavior.event':'click'})
-                //Only check if the property starts with jsf.ajax.request( is enough 
-                //Assert.assertTrue("output does not match expected output jsf.ajax.request(.... for property "+attrs[i].getName(),
-                //        output.matches(".+ "+attrs[i].getName()+"=\"jsf\\.ajax\\.request\\(.+"));
+                //faces.ajax.request('j_id0',event,{'jakarta.faces.behavior.event':'click'})
+                //Only check if the property starts with faces.ajax.request( is enough 
+                //Assert.assertTrue("output does not match expected output faces.ajax.request(.... for property "+attrs[i].getName(),
+                //        output.matches(".+ "+attrs[i].getName()+"=\"faces\\.ajax\\.request\\(.+"));
                 int index = checkClientBehaviorRenderedOnClientEventPropertyAndHtmlValue(output, 0, attrs[i], "htmlValue");
                 outputWriter.reset();
             }
@@ -209,7 +209,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
             int startPropIndex = propIndex + propStart.length(); 
             int endPropIndex = output.indexOf('"' , startPropIndex );
             String propertyValue = output.substring(startPropIndex, endPropIndex);
-            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.startsWith("jsf.util.chain("));
+            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.startsWith("faces.util.chain("));
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains("myfaces.ab("));
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(attr.getClientEvent()));
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(value));

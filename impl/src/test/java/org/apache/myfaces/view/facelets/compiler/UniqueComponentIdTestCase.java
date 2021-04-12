@@ -38,7 +38,7 @@ import org.apache.myfaces.spi.impl.DefaultSerialFactory;
 import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.view.facelets.FaceletMultipleRequestsTestCase;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 import org.junit.Assert;
 import org.junit.Test;
 

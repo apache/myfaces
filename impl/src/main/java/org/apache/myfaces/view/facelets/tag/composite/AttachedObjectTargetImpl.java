@@ -28,7 +28,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.AttachedObjectTarget;
 import org.apache.myfaces.util.lang.ArrayUtils;
 import org.apache.myfaces.util.lang.StringUtils;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 
 /**
  * 

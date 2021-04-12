@@ -51,7 +51,7 @@ import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.TemplateManager;
 import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
 import org.apache.myfaces.view.facelets.el.VariableMapperBase;
-import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
+import org.apache.myfaces.view.facelets.tag.faces.core.AjaxHandler;
 
 /**
  * Default FaceletContext implementation.

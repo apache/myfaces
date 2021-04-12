@@ -1,5 +1,5 @@
 ongoing work in progress not finished yet
-the final build will have one single jsf.js file
+the final build will have one single faces.js file
 if you want to include the files manually follow following order:
 
 <script type="text/javascript" src="./myfaces/_impl/core/_Runtime.js"></script>
@@ -14,4 +14,4 @@ if you want to include the files manually follow following order:
 <script type = "text/javascript" src = "./myfaces/_impl/xhrCore/_AjaxResponse.js"></script>
 <script type = "text/javascript" src = "./myfaces/_impl/xhrCore/_Transports.js"></script>
 <script type = "text/javascript" src = "./myfaces/_impl/core/Impl.js"></script>
-<script type = "text/javascript" src = "./myfaces/api/jsf.js"></script>
+<script type = "text/javascript" src = "./myfaces/api/faces.js"></script>

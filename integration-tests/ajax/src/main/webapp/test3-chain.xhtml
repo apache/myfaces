@@ -23,7 +23,7 @@
 
 <h:head>
     <title>test</title>
-    <h:outputScript library="jakarta.faces" name="jsf.js"/>
+    <h:outputScript library="jakarta.faces" name="faces.js"/>
     <script type="text/javascript" src="./scripts/testhelpers.js"></script>
 
 </h:head>
@@ -32,7 +32,7 @@
     <div id="centerDiv">
         <h1>Chain Test</h1>
 
-        <h2>This test case tests the jsf.util.chain function</h2>
+        <h2>This test case tests the faces.util.chain function</h2>
         <script type="text/javascript">
             function testFunc1(event) {
                 var element = document.getElementById("testResults");
@@ -60,6 +60,6 @@
 
 
     <input type="button" id="chaincall" value="press for chaintest"
-           onclick="jsf.util.chain(this, event, testFunc1,testFunc2,testFunc3,testFunc4);"/>
+           onclick="faces.util.chain(this, event, testFunc1,testFunc2,testFunc3,testFunc4);"/>
 </h:body>
 </html>

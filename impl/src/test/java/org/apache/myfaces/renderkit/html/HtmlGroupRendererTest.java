@@ -75,7 +75,7 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
         facesContext.getRenderKit().addClientBehaviorRenderer(
                 AjaxBehavior.BEHAVIOR_ID, new HtmlAjaxBehaviorRenderer());
         
-        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
     public void tearDown()throws Exception

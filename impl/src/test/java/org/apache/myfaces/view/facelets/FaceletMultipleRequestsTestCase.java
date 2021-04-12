@@ -62,7 +62,7 @@ import org.apache.myfaces.test.mock.MockFacesContextFactory;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
-import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
+import org.apache.myfaces.view.facelets.tag.faces.TagHandlerDelegateFactoryImpl;
 
 public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigurableMultipleRequestsTestCase
 {

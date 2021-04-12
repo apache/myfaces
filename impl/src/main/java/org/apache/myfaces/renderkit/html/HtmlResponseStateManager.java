@@ -266,7 +266,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     public static String generateUpdateClientWindowId(FacesContext facesContext)
     {
         // JSF 2.2 section 2.2.6.1 Partial State Rendering
-        // According to the javascript doc of jsf.ajax.response,
+        // According to the javascript doc of faces.ajax.response,
         //
         // The new syntax looks like this:
         // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>jakarta.faces.ClientWindow<SEP><UNIQUE_PER_VIEW_NUMBER>">
@@ -298,7 +298,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     public static String generateUpdateViewStateId(FacesContext facesContext)
     {
         // JSF 2.2 section 2.2.6.1 Partial State Rendering
-        // According to the javascript doc of jsf.ajax.response,
+        // According to the javascript doc of faces.ajax.response,
         //
         // The new syntax looks like this:
         // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>jakarta.faces.ViewState<SEP><UNIQUE_PER_VIEW_NUMBER>">

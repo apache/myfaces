@@ -60,7 +60,7 @@ import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
-import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
+import org.apache.myfaces.view.facelets.tag.faces.TagHandlerDelegateFactoryImpl;
 
 public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCase
 {

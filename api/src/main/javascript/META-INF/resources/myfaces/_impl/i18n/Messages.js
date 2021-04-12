@@ -63,7 +63,7 @@ _MF_CLS && _MF_CLS(_PFX_I18N+"Messages", Object,
     /** @constant */
     ERR_FORM:               "Sourceform could not be determined, either because element is not attached to a form or we have multiple forms with named elements of the same identifier or name, stopping the ajax processing",
     /** @constant */
-    ERR_VIEWSTATE:          "jsf.viewState: param value not of type form!",
+    ERR_VIEWSTATE:          "faces.viewState: param value not of type form!",
     /** @constant */
     ERR_TRANSPORT:          "Transport type {0} does not exist",
     /** @constant */

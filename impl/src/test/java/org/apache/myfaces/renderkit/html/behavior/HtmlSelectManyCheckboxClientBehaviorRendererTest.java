@@ -78,8 +78,8 @@ public class HtmlSelectManyCheckboxClientBehaviorRendererTest extends AbstractCl
             {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
-                Assert.assertTrue(output.matches(".+ id=\".+\".+"));
-                Assert.assertTrue(output.matches(".+ name=\".+\".+"));
+                Assert.assertTrue(output.contains("id=\"j_id__"));
+                Assert.assertTrue(output.contains("name=\"j_id__"));
                 outputWriter.reset();
             }
             catch (Exception e)

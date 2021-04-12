@@ -26,7 +26,7 @@
 
     <h:head>
         <title>test</title>
-        <h:outputScript library="jakarta.faces" name="jsf.js" />
+        <h:outputScript library="jakarta.faces" name="faces.js" />
         <script type="text/javascript" src="./scripts/testhelpers.js"></script>
 
     </h:head>
@@ -40,7 +40,7 @@
             </h:commandLink>
             <script type="text/javascript">
             //<!--
-                if(window.jsf && window.jsf.ajax) {
+                if(window.faces && window.faces.ajax) {
                     let node = document.createElement("span");
                     node.innerHTML = "_ajax_found";
                     document.body.append(node);

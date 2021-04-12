@@ -130,7 +130,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         //ie6 and 7 fallback
         evt = this.getEvent(evt);
         /**
-         * evt source is defined in the jsf events
+         * evt source is defined in the faces events
          * seems like some component authors use our code
          * so we add it here see also
          * https://issues.apache.org/jira/browse/MYFACES-2458

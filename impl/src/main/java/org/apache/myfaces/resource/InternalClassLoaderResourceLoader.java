@@ -49,10 +49,10 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             = "org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS";
 
     /**
-     * Define the mode used for jsf.js file:
+     * Define the mode used for faces.js file:
      * <ul>
-     * <li>normal : contains everything, including i18n (jsf-i18n.js)</li>
-     * <li>minimal: contains everything, excluding i18n (jsf-i18n.js)</li>
+     * <li>normal : contains everything, including i18n (faces-i18n.js)</li>
+     * <li>minimal: contains everything, excluding i18n (faces-i18n.js)</li>
      * </ul>
      * <p>If org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS param is set to true and project stage
      * is Development, this param is ignored.</p>
@@ -152,7 +152,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     public ResourceMeta createResourceMeta(String prefix, String libraryName, String libraryVersion,
                                            String resourceName, String resourceVersion)
     {
-        //handle jsf.js
+        //handle faces.js
         final boolean jakartaFacesLib = libraryName != null &&
                 ResourceHandler.JSF_SCRIPT_LIBRARY_NAME.equals(libraryName);
         final boolean jakartaFaces = jakartaFacesLib &&
@@ -165,27 +165,27 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                 if (_useMultipleJsFilesForJsfUncompressedJs)
                 {
                     return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
-                            resourceName, resourceVersion, ResourceUtils.JSF_UNCOMPRESSED_JS_RESOURCE_NAME, true);
+                            resourceName, resourceVersion, ResourceUtils.FACES_UNCOMPRESSED_JS_RESOURCE_NAME, true);
                 }
                 else
                 {
-                    //normall we would have to take care about the standard jsf.js case also
+                    //normall we would have to take care about the standard faces.js case also
                     //but our standard resource loader takes care of it,
                     // because this part is only called in debugging mode
                     //in production only in debugging
                     return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
-                                                     ResourceUtils.JSF_UNCOMPRESSED_FULL_JS_RESOURCE_NAME, false);
+                                                     ResourceUtils.FACES_UNCOMPRESSED_FULL_JS_RESOURCE_NAME, false);
                 }
             }
             else if (_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_MINIMAL) )
             {
                 return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
-                        ResourceUtils.JSF_MINIMAL_JS_RESOURCE_NAME, false);
+                        ResourceUtils.FACES_MINIMAL_JS_RESOURCE_NAME, false);
             }
             return null;
         }
         else if (jakartaFacesLib && !_developmentStage && !_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL) &&
-                                   (ResourceUtils.JSF_MYFACES_JSFJS_I18N.equals(resourceName)))
+                                   (ResourceUtils.FACES_MYFACES_JSFJS_I18N.equals(resourceName)))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
         }

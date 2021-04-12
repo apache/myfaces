@@ -355,9 +355,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 else 
                 {
                     // If onclick is not null, both onclick and server side script are rendered 
-                    // using jsf.util.chain(...) js function. We need to check that case and force
+                    // using faces.util.chain(...) js function. We need to check that case and force
                     // id/name rendering. It is possible to do something else in that case and 
-                    // do not render the script using jsf.util.chain, but for now it is ok.
+                    // do not render the script using faces.util.chain, but for now it is ok.
                     String commandOnclick;
                     if (component instanceof HtmlCommandLink)
                     {

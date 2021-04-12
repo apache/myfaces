@@ -49,7 +49,7 @@ import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.util.lang.Assert;
 
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 
 class UILeaf extends UIComponent implements UntargetableComponent, Map<String, Object>
 {

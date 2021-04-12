@@ -65,7 +65,7 @@ _MF_SINGLTN(_PFX_XHR + "_Transports", _MF_OBJECT,
         _q: new myfaces._impl.xhrCore._AjaxRequestQueue(),
 
         /**
-         * xhr post with enqueuing as defined by the jsf 2.0 specification
+         * xhr post with enqueuing as defined by the faces 2.0 specification
          *
          * mapped options already have the exec and view properly in place
          * myfaces specifics can be found under mappedOptions.myFaces

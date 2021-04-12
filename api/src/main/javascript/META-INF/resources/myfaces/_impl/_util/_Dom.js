@@ -145,9 +145,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                             ) {
                         //we have to move this into an inner if because chrome otherwise chokes
                         //due to changing the and order instead of relying on left to right
-                        //if jsf.js is already registered we do not replace it anymore
-                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=jakarta.faces") == -1) || (src.indexOf("/jsf.js") == -1
-                                && src.indexOf("/jsf-uncompressed.js") == -1)) {
+                        //if faces.js is already registered we do not replace it anymore
+                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=jakarta.faces") == -1) || (src.indexOf("/faces.js") == -1
+                                && src.indexOf("/faces-uncompressed.js") == -1)) {
 
                             if (finalScripts.length) {
                                 //script source means we have to eval the existing
@@ -209,7 +209,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             //window.myfaces = window.myfaces || {};
             //myfaces.config =  myfaces.config || {};
             //myfaces.config.defaultErrorOutput = console.error;
-            if(jsf.getProjectStage() === "Development") {
+            if(faces.getProjectStage() === "Development") {
                 var defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert);
                 defaultErrorOutput("Error in evaluated javascript:"+ (e.message || e.description || e));
             }
@@ -263,7 +263,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             // anymore, in case of a framework induced detachment the element.name should
             // be shared if the identifier is not determinable anymore
             //the downside of this method is the element name must be unique
-            //which in case of jsf it is
+            //which in case of faces it is
             var elementId = elem.id || elem.name;
             if ((elem.id == null || elem.id == '') && elem.name) {
                 elementId = elem.name;
@@ -406,7 +406,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     detectAttributes: function(element) {
         //test if 'hasAttribute' method is present and its native code is intact
         //for example, Prototype can add its own implementation if missing
-        //JSF 2.4 we now can reduce the complexity here, one of the functions now
+        //Faces 2.4 we now can reduce the complexity here, one of the functions now
         //is definitely implemented
         if (element.hasAttribute && this.isFunctionNative(element.hasAttribute)) {
             return function(name) {
@@ -1052,7 +1052,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      * The problem is some Javascript libraries simply try to
      * detach controls by reusing the names
      * of the detached input controls. Most of the times,
-     * the name is unique in a jsf scenario, due to the inherent form mapping.
+     * the name is unique in a faces scenario, due to the inherent form mapping.
      * One way or the other, we will try to fix that by
      * identifying the proper form over the name
      *
@@ -1234,7 +1234,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     },
 
     /**
-     * jsf2.2
+     * faces2.2
      * checks if there is a fileupload element within
      * the executes list
      *

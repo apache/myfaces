@@ -55,7 +55,7 @@ _MF_CLS(_PFX_CORE+"Object", Object, {
     },
 
     getImpl: function() {
-        this._Impl = this._Impl || this._RT.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+        this._Impl = this._Impl || this._RT.getGlobalConfig("facesAjaxImpl", myfaces._impl.core.Impl);
         return this._Impl;
     },
 

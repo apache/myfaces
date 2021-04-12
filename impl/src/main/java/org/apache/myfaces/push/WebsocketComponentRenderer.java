@@ -188,7 +188,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         HtmlRendererUtils.renderScriptType(facesContext, writer);
 
         StringBuilder sb = new StringBuilder(50);
-        sb.append("jsf.push.init(");
+        sb.append("faces.push.init(");
         sb.append('\'');
         sb.append(component.getClientId());
         sb.append('\'');

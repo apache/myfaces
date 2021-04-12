@@ -62,14 +62,14 @@ import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
-import org.apache.myfaces.view.facelets.tag.jsf.ActionSourceRule;
-import org.apache.myfaces.view.facelets.tag.jsf.ClearBindingValueExpressionListener;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentBuilderHandler;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.tag.jsf.EditableValueHolderRule;
-import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
-import org.apache.myfaces.view.facelets.tag.jsf.ValueHolderRule;
-import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
+import org.apache.myfaces.view.facelets.tag.faces.ActionSourceRule;
+import org.apache.myfaces.view.facelets.tag.faces.ClearBindingValueExpressionListener;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentBuilderHandler;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.EditableValueHolderRule;
+import org.apache.myfaces.view.facelets.tag.faces.PreDisposeViewEvent;
+import org.apache.myfaces.view.facelets.tag.faces.ValueHolderRule;
+import org.apache.myfaces.view.facelets.tag.faces.core.AjaxHandler;
 
 /**
  * This handler is responsible for apply composite components. It
@@ -583,10 +583,9 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                     if (innerCompositeComponent.getChildCount() > 0)
                     {
                         String facetName = (String) parent.getAttributes().get(
-                                org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY);
+                                org.apache.myfaces.view.facelets.tag.faces.core.FacetHandler.KEY);
                         // Insert children
-                        List<UIComponent> children = new ArrayList<UIComponent>(
-                            innerCompositeComponent.getChildCount());
+                        List<UIComponent> children = new ArrayList<>(innerCompositeComponent.getChildCount());
                         while (innerCompositeComponent.getChildCount() > 0)
                         {
                             children.add(innerCompositeComponent.getChildren().remove(0));
@@ -615,14 +614,14 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 if (name == null)
                 {
                     String facetName = (String) parent.getAttributes().get(
-                            org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY);
+                            org.apache.myfaces.view.facelets.tag.faces.core.FacetHandler.KEY);
                     // refresh case, remember the inserted children does not have any
                     // associated tag handler, so in this case we just need to remove and add them in the same order 
                     // we found them
                     List<UIComponent> children = null;
                     if (facetName == null)
                     {
-                        children = new ArrayList<UIComponent>(parent.getChildCount());
+                        children = new ArrayList<>(parent.getChildCount());
                         int i = 0;
                         while (parent.getChildCount()-i > 0)
                         {

@@ -24,7 +24,7 @@
 
 
         <script>
-            <fileName>jsf-i18n.js</fileName>
+            <fileName>faces-i18n.js</fileName>
             <includes>
                 <include>**/_impl/core/_StartImpl.js</include>
                 <include>**/_impl/i18n/Messages_de.js</include>

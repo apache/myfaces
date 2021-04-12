@@ -29,7 +29,7 @@ import jakarta.faces.view.facelets.MetadataTarget;
 import jakarta.faces.view.facelets.TagAttribute;
 
 /**
- * Copy of org.apache.myfaces.view.facelets.tag.jsf.ComponentRule
+ * Copy of org.apache.myfaces.view.facelets.tag.faces.ComponentRule
  * used for composite components.
  * 
  * @author Leonardo Uribe (latest modification by $Author$)

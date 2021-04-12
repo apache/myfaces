@@ -38,7 +38,7 @@ import org.apache.myfaces.config.MyfacesConfig;
 public class ResourceImpl extends Resource implements ContractResource
 {
     protected final static String JAKARTA_FACES_LIBRARY_NAME = "jakarta.faces";
-    protected final static String JSF_JS_RESOURCE_NAME = "jsf.js";
+    protected final static String FACES_JS_RESOURCE_NAME = "faces.js";
 
 
     private ResourceMeta _resourceMeta;
@@ -142,7 +142,7 @@ public class ResourceImpl extends Resource implements ContractResource
                 useAmp = true;
 
                 if (!context.isProjectStage(ProjectStage.Production)
-                        && JSF_JS_RESOURCE_NAME.equals(getResourceName()) 
+                        && FACES_JS_RESOURCE_NAME.equals(getResourceName()) 
                         && JAKARTA_FACES_LIBRARY_NAME.equals(getLibraryName()))
                 {
                     // append &stage=?? for all ProjectStages except Production

@@ -73,7 +73,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
                 label.getFamily(),
                 label.getRendererType(),
                 new HtmlLabelRenderer());
-        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
         
         
         //Application _testApplication = new ApplicationImplJsfTest.TestApplicationWrapper(new ApplicationImpl());
@@ -174,8 +174,8 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         {
             label.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assert.assertTrue(output.matches(".+id=\".+\".+"));
-            Assert.assertTrue(output.matches(".+name=\".+\".+"));
+            Assert.assertTrue(output.contains("id=\"j_id__"));
+            Assert.assertTrue(output.contains("name=\"j_id__"));
         }
         catch (Exception e)
         {

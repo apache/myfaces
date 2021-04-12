@@ -23,7 +23,7 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.view.facelets.TextHandler;
 
-import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
+import org.apache.myfaces.view.facelets.tag.faces.core.FacetHandler;
 
 public abstract class AbstractUIHandler implements FaceletHandler, TextHandler
 {

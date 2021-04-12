@@ -769,11 +769,11 @@ public class MyfacesConfig
     
     
     /**
-     * Defines if the clientbehavior scripts are passed as string or function to the jsf.util.chain.
+     * Defines if the clientbehavior scripts are passed as string or function to the faces.util.chain.
      * "As string" is actually the default behavior of both MyFaces (until 2.3-next) and Mojarra.
      * "As function" is quite usefull for CSP as no string needs to be evaluated as function.
      * 
-     * Our jsf.util.chain supports both of course.
+     * Our faces.util.chain supports both of course.
      */
     @JSFWebConfigParam(name="org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING", since="2.3-next", defaultValue = "false")
     public static final String RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING = "org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING";

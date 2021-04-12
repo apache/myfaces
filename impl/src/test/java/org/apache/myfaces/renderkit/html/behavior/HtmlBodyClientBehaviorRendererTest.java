@@ -84,7 +84,7 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
             {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
-                Assert.assertTrue(output.matches(".+ id=\".+\".+"));
+                Assert.assertTrue(output.contains("id=\"j_id__"));
                 outputWriter.reset();
             }
             catch (Exception e)

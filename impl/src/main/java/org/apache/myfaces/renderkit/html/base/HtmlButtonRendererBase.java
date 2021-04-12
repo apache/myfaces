@@ -326,8 +326,8 @@ public class HtmlButtonRendererBase extends HtmlRenderer
             //}
         }
 
-        //according to the specification in jsf.util.chain jdocs and the spec document we have to use
-        //jsf.util.chain to chain the functions and
+        //according to the specification in faces.util.chain jdocs and the spec document we have to use
+        //faces.util.chain to chain the functions and
         Collection<ClientBehaviorContext.Parameter> paramList =
                 ClientBehaviorRendererUtils.getClientBehaviorContextParameters(
                         HtmlRendererUtils.mapAttachedParamsToStringValues(facesContext, uiComponent));

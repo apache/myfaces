@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.pool;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
+import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 
 /**
  * This class defines the necessary operations that a view pool should comply in

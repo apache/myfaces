@@ -117,8 +117,8 @@ import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorAttachedObjectTarget;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectEventComponentWrapper;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
 
 import static org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy.*;
@@ -130,9 +130,9 @@ import org.apache.myfaces.view.facelets.pool.ViewEntry;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 import org.apache.myfaces.view.facelets.pool.ViewStructureMetadata;
 import org.apache.myfaces.view.facelets.tag.composite.CreateDynamicCompositeComponentListener;
-import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionActionListener;
-import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValidator;
-import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValueChangeListener;
+import org.apache.myfaces.view.facelets.tag.faces.PartialMethodExpressionActionListener;
+import org.apache.myfaces.view.facelets.tag.faces.PartialMethodExpressionValidator;
+import org.apache.myfaces.view.facelets.tag.faces.PartialMethodExpressionValueChangeListener;
 import org.apache.myfaces.view.facelets.util.FaceletsTemplateMappingUtils;
 import org.apache.myfaces.view.facelets.util.FaceletsViewDeclarationLanguageUtils;
 

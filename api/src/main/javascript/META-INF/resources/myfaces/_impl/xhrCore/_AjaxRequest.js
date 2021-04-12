@@ -16,7 +16,7 @@
 
 /**
  * An implementation of an xhr request object
- * with partial page submit functionality, and jsf
+ * with partial page submit functionality, and faces
  * ppr request and timeout handling capabilities
  *
  * Author: Werner Punz (latest modification by $Author: ganeshpuri $)
@@ -196,7 +196,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             //because users might want to decorate it, we will split it apart afterwards
 
             context._mfInternal = context._mfInternal || {};
-            jsf.ajax.response((xhr.getXHRObject) ? xhr.getXHRObject() : xhr, context);
+            faces.ajax.response((xhr.getXHRObject) ? xhr.getXHRObject() : xhr, context);
 
 
 
@@ -263,7 +263,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     },
 
     /**
-     * change for jsf 2.3 since we drop legacy browser support
+     * change for faces 2.3 since we drop legacy browser support
      * there is no need anymore to support xhr level 1.
      * @returns {XMLHttpRequest} the transport object
      * @private
@@ -293,7 +293,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
 
         if (!this._partialIdsArray || !this._partialIdsArray.length) {
             var _AJAXUTIL = this._AJAXUTIL, myfacesOptions = this._context.myfaces;
-            return this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
+            return this._Lang.createFormDataDecorator(faces.getViewState(this._sourceForm));
         } else {
             //now this is less performant but we have to call it to allow viewstate decoration
             ret = this._Lang.createFormDataDecorator(new Array());

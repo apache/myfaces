@@ -25,7 +25,7 @@
  * @name _ListenerQueue
  * @extends myfaces._impl._util._Queue
  * @memberOf myfaces._impl._util
- * @description Implementation of the listener queue for jsf.js
+ * @description Implementation of the listener queue for faces.js
  * <p>It is based upon our high performance queue and adds dedicated
  * methods for listener based closures to the mix </p>
  * */

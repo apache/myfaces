@@ -60,7 +60,7 @@ public abstract class ResourceHandler
     /**
      * @since 2.3
      */
-    public static final String JSF_SCRIPT_RESOURCE_NAME = "jsf.js";
+    public static final String JSF_SCRIPT_RESOURCE_NAME = "faces.js";
 
     /**
      * @since 2.3

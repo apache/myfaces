@@ -36,7 +36,7 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageBase;
 import org.apache.myfaces.view.facelets.LocationAwareFacesException;
 import org.apache.myfaces.view.facelets.compiler.RefreshDynamicComponentListener;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 
 /**
  * This listener must be attached to PostAddToViewEvent, so when composite component is
@@ -123,7 +123,7 @@ public class CreateDynamicCompositeComponentListener
             {
                 if (facetName != null)
                 {
-                    parent.getAttributes().put(org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY, 
+                    parent.getAttributes().put(org.apache.myfaces.view.facelets.tag.faces.core.FacetHandler.KEY, 
                             facetName);
                 }
                 // The trick here is restore MARK_CREATED, just to allow ComponentTagHandlerDelegate to
@@ -172,7 +172,7 @@ public class CreateDynamicCompositeComponentListener
             {
                 if (facetName != null)
                 {
-                    parent.getAttributes().remove(org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY);
+                    parent.getAttributes().remove(org.apache.myfaces.view.facelets.tag.faces.core.FacetHandler.KEY);
                 }
             }
         }

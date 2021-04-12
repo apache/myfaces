@@ -36,12 +36,12 @@ public class ResourceUtils
     public final static String JSF_MYFACES_JSFJS_MINIMAL = "minimal";
     public final static String JSF_MYFACES_JSFJS_NORMAL = "normal";
     
-    public final static String JSF_UNCOMPRESSED_JS_RESOURCE_NAME = "jsf-uncompressed.js";
-    public final static String JSF_UNCOMPRESSED_FULL_JS_RESOURCE_NAME = "jsf-uncompressed-full.js";
-    public final static String JSF_MINIMAL_JS_RESOURCE_NAME = "jsf-minimal.js";
-    public final static String JSF_MYFACES_JSFJS_I18N = "jsf-i18n.js";
+    public final static String FACES_UNCOMPRESSED_JS_RESOURCE_NAME = "faces-uncompressed.js";
+    public final static String FACES_UNCOMPRESSED_FULL_JS_RESOURCE_NAME = "faces-uncompressed-full.js";
+    public final static String FACES_MINIMAL_JS_RESOURCE_NAME = "faces-minimal.js";
+    public final static String FACES_MYFACES_JSFJS_I18N = "faces-i18n.js";
 
-    private final static String RENDERED_JSF_JS = "org.apache.myfaces.RENDERED_JSF_JS";
+    private final static String RENDERED_FACES_JS = "org.apache.myfaces.RENDERED_FACES_JS";
 
     public static final String JAKARTA_FACES_OUTPUT_COMPONENT_TYPE = "jakarta.faces.Output";
     public static final String JAKARTA_FACES_TEXT_RENDERER_TYPE = "jakarta.faces.Text";
@@ -91,7 +91,7 @@ public class ResourceUtils
     public static void renderDefaultJsfJsInlineIfNecessary(FacesContext facesContext, ResponseWriter writer) 
         throws IOException
     {
-        if (facesContext.getAttributes().containsKey(RENDERED_JSF_JS))
+        if (facesContext.getAttributes().containsKey(RENDERED_FACES_JS))
         {
             return;
         }
@@ -101,7 +101,7 @@ public class ResourceUtils
         if (isRenderedScript(facesContext, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME,
                 ResourceHandler.JSF_SCRIPT_RESOURCE_NAME))
         {
-            facesContext.getAttributes().put(RENDERED_JSF_JS, Boolean.TRUE);
+            facesContext.getAttributes().put(RENDERED_FACES_JS, Boolean.TRUE);
             return;
         }
 
@@ -125,7 +125,7 @@ public class ResourceUtils
         writer.endElement(HTML.SCRIPT_ELEM);
 
         //mark as rendered
-        facesContext.getAttributes().put(RENDERED_JSF_JS, Boolean.TRUE);
+        facesContext.getAttributes().put(RENDERED_FACES_JS, Boolean.TRUE);
     }
 
     public static String getContractName(Resource resource)

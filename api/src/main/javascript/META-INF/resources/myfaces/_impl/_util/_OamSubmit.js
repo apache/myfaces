@@ -18,7 +18,7 @@
 /**
  * legacy code to enable various aspects
  * of myfaces, used to be rendered inline
- * for jsf 2.0 we can externalized it into its own custom resource
+ * for faces 2.0 we can externalized it into its own custom resource
  */
 
 (!window.myfaces) ? window.myfaces = {} : null;

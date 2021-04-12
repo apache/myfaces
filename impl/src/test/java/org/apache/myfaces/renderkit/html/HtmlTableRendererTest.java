@@ -68,7 +68,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
                 text.getRendererType(),
                 new HtmlTextRenderer());
 
-        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
+        facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
     public void tearDown() throws Exception

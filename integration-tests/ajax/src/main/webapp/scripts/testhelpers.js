@@ -24,7 +24,7 @@
 /**
  * /**
  * ppr emitting function, which encapsules
- * jsf.ajax.request with additioonal helpers
+ * faces.ajax.request with additioonal helpers
  *
  * @param source the source item triggering the event
  * @param event an outer html event object
@@ -41,7 +41,7 @@ function emitPPR(source, event, action, formId, target, onError, onEvent) {
 
 
     try {
-        jsf.ajax.request(/*String|Dom Node*/ source, /*|EVENT|*/ (window.event) ? window.event : event, /*{|OPTIONS|}*/ {
+        faces.ajax.request(/*String|Dom Node*/ source, /*|EVENT|*/ (window.event) ? window.event : event, /*{|OPTIONS|}*/ {
             op: action,
             origin: window.location.href,
             onerror: onError || function (data) {

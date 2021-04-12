@@ -74,7 +74,7 @@ import org.apache.myfaces.util.lang.FilenameUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.util.NavigationUtils;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
-import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
+import org.apache.myfaces.view.facelets.tag.faces.PreDisposeViewEvent;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)
