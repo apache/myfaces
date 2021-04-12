@@ -44,7 +44,7 @@ import org.apache.myfaces.view.facelets.tag.BaseTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
-import org.apache.myfaces.view.facelets.tag.jsf.html.DefaultTagDecorator;
+import org.apache.myfaces.view.facelets.tag.faces.html.DefaultTagDecorator;
 
 /**
  * A Compiler instance may handle compiling multiple sources
