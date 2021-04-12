@@ -24,10 +24,10 @@ import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.StringUtils;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * Utility methods used in FaceletsViewDeclarationLanguage
@@ -137,8 +137,8 @@ public class FaceletsViewDeclarationLanguageUtils
                 if (ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE.equals(component.getRendererType()) ||
                     ResourceUtils.DEFAULT_STYLESHEET_RENDERER_TYPE.equals(component.getRendererType()))
                 {
-                    String resourceName = (String) component.getAttributes().get(JSFAttr.NAME_ATTR);
-                    String libraryName = (String) component.getAttributes().get(JSFAttr.LIBRARY_ATTR);
+                    String resourceName = (String) component.getAttributes().get(ComponentAttrs.NAME_ATTR);
+                    String libraryName = (String) component.getAttributes().get(ComponentAttrs.LIBRARY_ATTR);
                     
                     if (resourceName == null || resourceName.isEmpty())
                     {

@@ -41,10 +41,10 @@ import jakarta.faces.convert.ConverterException;
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class HtmlTextRendererBase
         extends HtmlRenderer
@@ -97,7 +97,8 @@ public class HtmlTextRendererBase
         }
         else
         {
-            escape = AttributeUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, true); //default is to escape
+            //default is to escape
+            escape = AttributeUtils.getBooleanAttribute(component, ComponentAttrs.ESCAPE_ATTR, true);
         }
 
         if (text != null)
@@ -155,7 +156,7 @@ public class HtmlTextRendererBase
                 {
                     log.fine("renderOutputText writing '" + text + '\'');
                 }
-                writer.writeText(text, JSFAttr.VALUE_ATTR);
+                writer.writeText(text, ComponentAttrs.VALUE_ATTR);
             }
             else
             {
@@ -283,7 +284,7 @@ public class HtmlTextRendererBase
 
         if (value != null)
         {
-            writer.writeAttribute(HTML.VALUE_ATTR, value, JSFAttr.VALUE_ATTR);
+            writer.writeAttribute(HTML.VALUE_ATTR, value, ComponentAttrs.VALUE_ATTR);
         }
     }
 

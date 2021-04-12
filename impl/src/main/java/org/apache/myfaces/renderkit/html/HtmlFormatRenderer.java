@@ -36,12 +36,12 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * 
@@ -91,7 +91,7 @@ public class HtmlFormatRenderer extends HtmlRenderer
         }
         else
         {
-            escape = AttributeUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, true);
+            escape = AttributeUtils.getBooleanAttribute(component, ComponentAttrs.ESCAPE_ATTR, true);
         }
         if (text != null)
         {
@@ -144,7 +144,7 @@ public class HtmlFormatRenderer extends HtmlRenderer
                 {
                     log.fine("renderOutputText writing '" + text + '\'');
                 }
-                writer.writeText(text, JSFAttr.VALUE_ATTR);
+                writer.writeText(text, ComponentAttrs.VALUE_ATTR);
             }
             else
             {

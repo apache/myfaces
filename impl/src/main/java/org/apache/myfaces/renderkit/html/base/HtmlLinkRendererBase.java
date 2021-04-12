@@ -49,11 +49,11 @@ import jakarta.faces.event.ActionEvent;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public abstract class HtmlLinkRendererBase extends HtmlRenderer
 {
@@ -430,7 +430,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         // render value as required by JSF 1.1 renderkitdocs
         if(value != null)
         {
-            writer.writeText(value.toString(), JSFAttr.VALUE_ATTR);
+            writer.writeText(value.toString(), ComponentAttrs.VALUE_ATTR);
         }
         
         // render warning message for a h:commandLink with no nesting form
@@ -822,7 +822,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             }
             else
             {
-                fragmentAttr = (String) output.getAttributes().get(JSFAttr.FRAGMENT_ATTR);
+                fragmentAttr = (String) output.getAttributes().get(ComponentAttrs.FRAGMENT_ATTR);
             }
             if (fragmentAttr != null && !fragmentAttr.isEmpty())
             {
@@ -990,7 +990,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
 
             if(value != null)
             {
-                writer.writeText(value.toString(), JSFAttr.VALUE_ATTR);
+                writer.writeText(value.toString(), ComponentAttrs.VALUE_ATTR);
             }
         }
         else

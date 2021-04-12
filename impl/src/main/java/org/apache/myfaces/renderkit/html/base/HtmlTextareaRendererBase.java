@@ -40,7 +40,7 @@ import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class HtmlTextareaRendererBase extends HtmlRenderer
 {
@@ -186,7 +186,7 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
         String strValue = RendererUtils.getStringValue(facesContext, uiComponent);
         if (strValue != null)
         {
-            writer.writeText(strValue, JSFAttr.VALUE_ATTR);
+            writer.writeText(strValue, ComponentAttrs.VALUE_ATTR);
         }
     }
     

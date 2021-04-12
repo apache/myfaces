@@ -24,7 +24,7 @@ import jakarta.faces.event.ActionListener;
 /**
  * Constant declarations for JSF tags
  */
-public interface JSFAttr
+public interface ComponentAttrs
 {
     //~ Static fields/initializers -----------------------------------------------------------------
 

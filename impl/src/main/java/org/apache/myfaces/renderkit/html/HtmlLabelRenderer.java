@@ -37,7 +37,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
@@ -46,6 +45,7 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * 
@@ -165,7 +165,7 @@ public class HtmlLabelRenderer extends HtmlRenderer
         if (forAttr != null)
         {
             String forClientId = getClientId(facesContext, uiComponent, forAttr);
-            writer.writeAttribute(HTML.FOR_ATTR, forClientId, JSFAttr.FOR_ATTR);
+            writer.writeAttribute(HTML.FOR_ATTR, forClientId, ComponentAttrs.FOR_ATTR);
         }
         else
         {
@@ -191,12 +191,12 @@ public class HtmlLabelRenderer extends HtmlRenderer
                 }
                 else
                 {
-                    escape = AttributeUtils.getBooleanAttribute(uiComponent, JSFAttr.ESCAPE_ATTR, true);
+                    escape = AttributeUtils.getBooleanAttribute(uiComponent, ComponentAttrs.ESCAPE_ATTR, true);
                 }
 
                 if (escape)
                 {
-                    writer.writeText(text, JSFAttr.VALUE_ATTR);
+                    writer.writeText(text, ComponentAttrs.VALUE_ATTR);
                 }
                 else
                 {
@@ -227,7 +227,7 @@ public class HtmlLabelRenderer extends HtmlRenderer
             return ((HtmlOutputLabel)component).getFor();
         }
 
-        return (String) component.getAttributes().get(JSFAttr.FOR_ATTR);
+        return (String) component.getAttributes().get(ComponentAttrs.FOR_ATTR);
 
     }
 

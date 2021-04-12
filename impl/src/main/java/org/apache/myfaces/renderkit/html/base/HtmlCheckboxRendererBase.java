@@ -45,9 +45,9 @@ import jakarta.faces.model.SelectItemGroup;
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.renderkit.RendererUtils;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class HtmlCheckboxRendererBase extends HtmlRenderer
 {
@@ -174,7 +174,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             return ((HtmlSelectManyCheckbox) selectMany).getLayout();
         } 
         
-        return (String) selectMany.getAttributes().get(JSFAttr.LAYOUT_ATTR);
+        return (String) selectMany.getAttributes().get(ComponentAttrs.LAYOUT_ATTR);
     }
 
     protected int renderGroupOrItemCheckbox(FacesContext facesContext,

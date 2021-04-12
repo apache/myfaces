@@ -36,13 +36,13 @@ import jakarta.faces.render.Renderer;
 import jakarta.faces.view.Location;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * Renderer used by h:outputStylesheet component 
@@ -97,7 +97,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
         Assert.notNull(component, "component");
 
         Map<String, Object> componentAttributesMap = component.getAttributes();
-        String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);
+        String resourceName = (String) componentAttributesMap.get(ComponentAttrs.NAME_ATTR);
         boolean hasChildren = component.getChildCount() > 0;
         
         if (resourceName != null && !resourceName.isEmpty())
@@ -143,8 +143,8 @@ public class HtmlStylesheetRenderer extends Renderer implements
         super.encodeEnd(facesContext, component); //check for NP
         
         Map<String, Object> componentAttributesMap = component.getAttributes();
-        String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);
-        String libraryName = (String) componentAttributesMap.get(JSFAttr.LIBRARY_ATTR);
+        String resourceName = (String) componentAttributesMap.get(ComponentAttrs.NAME_ATTR);
+        String libraryName = (String) componentAttributesMap.get(ComponentAttrs.LIBRARY_ATTR);
 
         if (resourceName == null || resourceName.isEmpty())
         {

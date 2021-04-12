@@ -47,7 +47,6 @@ import jakarta.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
@@ -57,6 +56,7 @@ import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.ui.DecorateHandler;
 import org.apache.myfaces.view.facelets.tag.ui.IncludeHandler;
 import org.apache.myfaces.view.facelets.tag.ui.InsertHandler;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * This tag creates an instance of AjaxBehavior, and associates it with the nearest 
@@ -95,8 +95,8 @@ public class AjaxHandler extends TagHandler implements
      * library. It is necessary to remove this key from facesContext attribute map after build, to keep
      * working this code for next views to be built.
      */
-    public final static String STANDARD_JSF_AJAX_LIBRARY_LOADED
-            = "org.apache.myfaces.STANDARD_JSF_AJAX_LIBRARY_LOADED";
+    public final static String FACES_JS_DYNAMICALLY_ADDED
+            = "org.apache.myfaces.FACES_JS_DYNAMICALLY_ADDED";
 
     @JSFFaceletAttribute(name = "disabled", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.Boolean")
@@ -236,10 +236,10 @@ public class AjaxHandler extends TagHandler implements
             }
         }
         
-        registerJsfAjaxDefaultResource(ctx, parent);
+        registerFacesJsResource(ctx, parent);
     }
     
-    public static void registerJsfAjaxDefaultResource(FaceletContext ctx, UIComponent parent)
+    public static void registerFacesJsResource(FaceletContext ctx, UIComponent parent)
     {
         // Register the standard ajax library on the current page in this way:
         //
@@ -251,13 +251,13 @@ public class AjaxHandler extends TagHandler implements
         // does not work in this case, because check this condition will requires 
         // traverse the whole tree looking for h:head component.
         FacesContext facesContext = ctx.getFacesContext();
-        if (!facesContext.getAttributes().containsKey(STANDARD_JSF_AJAX_LIBRARY_LOADED))
+        if (!facesContext.getAttributes().containsKey(FACES_JS_DYNAMICALLY_ADDED))
         {
             UIComponent outputScript = facesContext.getApplication().
                 createComponent(facesContext, "jakarta.faces.Output", ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE);
-            outputScript.getAttributes().put(JSFAttr.NAME_ATTR, ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
-            outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
-            outputScript.getAttributes().put(JSFAttr.TARGET_ATTR, "head");
+            outputScript.getAttributes().put(ComponentAttrs.NAME_ATTR, ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
+            outputScript.getAttributes().put(ComponentAttrs.LIBRARY_ATTR, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
+            outputScript.getAttributes().put(ComponentAttrs.TARGET_ATTR, "head");
 
             // Since this component will be relocated, we need a generated clientId from the
             // viewRoot, so when this one is relocated, its parent will be this UIViewRoot instance
@@ -275,7 +275,7 @@ public class AjaxHandler extends TagHandler implements
                 //Call it only if we are using partial state saving
                 outputScript.markInitialState();
             }            
-            facesContext.getAttributes().put(STANDARD_JSF_AJAX_LIBRARY_LOADED, Boolean.TRUE);
+            facesContext.getAttributes().put(FACES_JS_DYNAMICALLY_ADDED, Boolean.TRUE);
         }
     }
 

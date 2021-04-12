@@ -544,7 +544,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // Remove this var from faces context because this one prevent AjaxHandler
         // register the standard script library on Post-Redirect-Get pattern or
         // in the next view
-        context.getAttributes().remove(AjaxHandler.STANDARD_JSF_AJAX_LIBRARY_LOADED);
+        context.getAttributes().remove(AjaxHandler.FACES_JS_DYNAMICALLY_ADDED);
     }
 
     private void _markInitialStateOnView(final UIViewRoot view, final boolean refreshTransientBuildOnPSS)

@@ -121,7 +121,7 @@ public class SelectItemsUtils
                 String var = null;
                 if (selectItemInfo != null && selectItemInfo.getComponent() instanceof UISelectItems)
                 {
-                    var = (String) selectItemInfo.getComponent().getAttributes().get(JSFAttr.VAR_ATTR);
+                    var = (String) selectItemInfo.getComponent().getAttributes().get(ComponentAttrs.VAR_ATTR);
                     if(var != null && !var.isEmpty())
                     {
                         // save the current value of the key listed in var from the request map
@@ -156,18 +156,18 @@ public class SelectItemsUtils
 
                 if (componentDisabled || disabled)
                 {
-                    labelClass = (String) component.getAttributes().get(JSFAttr.DISABLED_CLASS_ATTR);
+                    labelClass = (String) component.getAttributes().get(ComponentAttrs.DISABLED_CLASS_ATTR);
                 }
                 else
                 {
-                    labelClass = (String) component.getAttributes().get(JSFAttr.ENABLED_CLASS_ATTR);
+                    labelClass = (String) component.getAttributes().get(ComponentAttrs.ENABLED_CLASS_ATTR);
                 }
                 if (labelClass != null)
                 {
                     writer.writeAttribute("class", labelClass, "labelClass");
                 }
 
-                boolean escape = AttributeUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, false);
+                boolean escape = AttributeUtils.getBooleanAttribute(component, ComponentAttrs.ESCAPE_ATTR, false);
                 //default is to escape
                 //In JSF 1.2, when a SelectItem is created by default 
                 //selectItem.isEscape() returns true (this property

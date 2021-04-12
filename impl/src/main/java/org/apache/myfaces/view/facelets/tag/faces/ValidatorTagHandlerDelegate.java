@@ -38,10 +38,10 @@ import jakarta.faces.view.facelets.TagHandlerDelegate;
 import jakarta.faces.view.facelets.ValidatorHandler;
 import org.apache.myfaces.config.MyfacesConfig;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerUtils;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * Handles setting a Validator instance on a EditableValueHolder. Will wire all attributes set to the Validator instance
@@ -179,9 +179,9 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
         MetaRuleset metaRuleset = new MetaRulesetImpl(_delegate.getTag(), type);
         
         // ignore binding and disabled, because they are handled by DelegatingMetaTagHandler
-        metaRuleset.ignore(JSFAttr.BINDING_ATTR).ignore(JSFAttr.DISABLED_ATTR);
+        metaRuleset.ignore(ComponentAttrs.BINDING_ATTR).ignore(ComponentAttrs.DISABLED_ATTR);
         // ignore for, because it is handled by FaceletsAttachedObjectHandler
-        metaRuleset.ignore(JSFAttr.FOR_ATTR);
+        metaRuleset.ignore(ComponentAttrs.FOR_ATTR);
         
         return metaRuleset;
     }

@@ -28,11 +28,11 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * 
@@ -60,7 +60,7 @@ public class HtmlHiddenRenderer extends HtmlRenderer
         String value = RendererUtils.getStringValue(facesContext, uiComponent);
         if (value != null)
         {
-            writer.writeAttribute(HTML.VALUE_ATTR, value, JSFAttr.VALUE_ATTR);
+            writer.writeAttribute(HTML.VALUE_ATTR, value, ComponentAttrs.VALUE_ATTR);
         }
 
         writer.endElement(HTML.INPUT_ELEM);

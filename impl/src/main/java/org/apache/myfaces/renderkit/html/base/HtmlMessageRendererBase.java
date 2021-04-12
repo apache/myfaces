@@ -42,8 +42,8 @@ import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public abstract class HtmlMessageRendererBase
         extends HtmlRenderer
@@ -114,8 +114,10 @@ public abstract class HtmlMessageRendererBase
                 ResponseWriter writer = facesContext.getResponseWriter();
                 writer.startElement(HTML.SPAN_ELEM, message);
                 writer.writeAttribute(HTML.ID_ATTR, clientId + "_msgFor", null);
-                HtmlRendererUtils.renderHTMLStringAttribute(writer, message, JSFAttr.STYLE_ATTR, HTML.STYLE_ATTR);
-                HtmlRendererUtils.renderHTMLStringAttribute(writer, message, JSFAttr.STYLE_CLASS_ATTR, HTML.CLASS_ATTR);
+                HtmlRendererUtils.renderHTMLStringAttribute(writer, message, ComponentAttrs.STYLE_ATTR,
+                        HTML.STYLE_ATTR);
+                HtmlRendererUtils.renderHTMLStringAttribute(writer, message, ComponentAttrs.STYLE_CLASS_ATTR,
+                        HTML.CLASS_ATTR);
                 writer.endElement(HTML.SPAN_ELEM);
             }
             else if (renderDivWhenNoMessagesAndIdSet && shouldRenderId(facesContext, message))
@@ -381,33 +383,33 @@ public abstract class HtmlMessageRendererBase
             Map<String, Object> attr = message.getAttributes();
             if (severity == FacesMessage.SEVERITY_INFO)
             {
-                style = (String) attr.get(JSFAttr.INFO_STYLE_ATTR);
-                styleClass = (String) attr.get(JSFAttr.INFO_CLASS_ATTR);
+                style = (String) attr.get(ComponentAttrs.INFO_STYLE_ATTR);
+                styleClass = (String) attr.get(ComponentAttrs.INFO_CLASS_ATTR);
             }
             else if (severity == FacesMessage.SEVERITY_WARN)
             {
-                style = (String) attr.get(JSFAttr.WARN_STYLE_ATTR);
-                styleClass = (String) attr.get(JSFAttr.WARN_CLASS_ATTR);
+                style = (String) attr.get(ComponentAttrs.WARN_STYLE_ATTR);
+                styleClass = (String) attr.get(ComponentAttrs.WARN_CLASS_ATTR);
             }
             else if (severity == FacesMessage.SEVERITY_ERROR)
             {
-                style = (String) attr.get(JSFAttr.ERROR_STYLE_ATTR);
-                styleClass = (String) attr.get(JSFAttr.ERROR_CLASS_ATTR);
+                style = (String) attr.get(ComponentAttrs.ERROR_STYLE_ATTR);
+                styleClass = (String) attr.get(ComponentAttrs.ERROR_CLASS_ATTR);
             }
             else if (severity == FacesMessage.SEVERITY_FATAL)
             {
-                style = (String) attr.get(JSFAttr.FATAL_STYLE_ATTR);
-                styleClass = (String) attr.get(JSFAttr.FATAL_CLASS_ATTR);
+                style = (String) attr.get(ComponentAttrs.FATAL_STYLE_ATTR);
+                styleClass = (String) attr.get(ComponentAttrs.FATAL_CLASS_ATTR);
             }
 
             if (style == null)
             {
-                style = (String) attr.get(JSFAttr.STYLE_ATTR);
+                style = (String) attr.get(ComponentAttrs.STYLE_ATTR);
             }
 
             if (styleClass == null)
             {
-                styleClass = (String) attr.get(JSFAttr.STYLE_CLASS_ATTR);
+                styleClass = (String) attr.get(ComponentAttrs.STYLE_CLASS_ATTR);
             }
         }
 
@@ -421,7 +423,7 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).getFor();
         }
  
-        return (String) component.getAttributes().get(JSFAttr.FOR_ATTR);
+        return (String) component.getAttributes().get(ComponentAttrs.FOR_ATTR);
         
     }
 
@@ -432,7 +434,7 @@ public abstract class HtmlMessageRendererBase
             return ((HtmlMessage) component).getTitle();
         }
 
-        return (String) component.getAttributes().get(JSFAttr.TITLE_ATTR);
+        return (String) component.getAttributes().get(ComponentAttrs.TITLE_ATTR);
         
     }
 
@@ -443,7 +445,7 @@ public abstract class HtmlMessageRendererBase
             return ((HtmlMessage) component).isTooltip();
         }
 
-        return AttributeUtils.getBooleanAttribute(component, JSFAttr.TOOLTIP_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.TOOLTIP_ATTR, false);
     }
 
     protected boolean isShowSummary(UIComponent component)
@@ -453,7 +455,7 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isShowSummary();
         }
 
-        return AttributeUtils.getBooleanAttribute(component, JSFAttr.SHOW_SUMMARY_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.SHOW_SUMMARY_ATTR, false);
     }
 
     protected boolean isShowDetail(UIComponent component)
@@ -463,7 +465,7 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isShowDetail();
         }
 
-        return AttributeUtils.getBooleanAttribute(component, JSFAttr.SHOW_DETAIL_ATTR, false);
+        return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.SHOW_DETAIL_ATTR, false);
     }
     
     protected boolean isRedisplay(UIComponent component)
@@ -473,7 +475,7 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isRedisplay();
         }
 
-        return AttributeUtils.getBooleanAttribute(component, JSFAttr.REDISPLAY_ATTR, true);
+        return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.REDISPLAY_ATTR, true);
     }
 
 }

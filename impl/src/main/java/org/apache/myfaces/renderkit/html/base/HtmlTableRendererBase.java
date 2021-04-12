@@ -37,12 +37,12 @@ import jakarta.faces.component.html.HtmlDataTable;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.lang.ArrayUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * Common methods for renderers for components that subclass the standard
@@ -257,8 +257,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
         }
         else
         {
-            rowClasses = (String)uiData.getAttributes().get(JSFAttr.ROW_CLASSES_ATTR);
-            columnClasses = (String)uiData.getAttributes().get(JSFAttr.COLUMN_CLASSES_ATTR);
+            rowClasses = (String)uiData.getAttributes().get(ComponentAttrs.ROW_CLASSES_ATTR);
+            columnClasses = (String)uiData.getAttributes().get(ComponentAttrs.COLUMN_CLASSES_ATTR);
         }
         return new Styles(rowClasses, columnClasses);
     }
@@ -321,7 +321,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
     private Integer[] getBodyRows(FacesContext facesContext, UIComponent component)
     {
         Integer[] bodyrows = null;
-        String bodyrowsAttr = (String) component.getAttributes().get(JSFAttr.BODYROWS_ATTR);
+        String bodyrowsAttr = (String) component.getAttributes().get(ComponentAttrs.BODYROWS_ATTR);
         if (bodyrowsAttr != null && !bodyrowsAttr.isEmpty())
         {   
             String[] bodyrowsString = StringUtils.trim(StringUtils.splitShortString(bodyrowsAttr, ','));
@@ -658,7 +658,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
             Styles styles, int columnStyleIndex) throws IOException
     {
         // Get the rowHeader attribute from the attribute map, because of MYFACES-1790
-        Object rowHeaderAttr = component.getAttributes().get(JSFAttr.ROW_HEADER_ATTR);
+        Object rowHeaderAttr = component.getAttributes().get(ComponentAttrs.ROW_HEADER_ATTR);
         boolean rowHeader = rowHeaderAttr != null && ((Boolean) rowHeaderAttr);
         
         if(rowHeader) 
@@ -719,7 +719,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
         
         renderRowStyle(facesContext, writer, uiData, styles, rowStyleIndex);
         
-        Object rowId = uiData.getAttributes().get(JSFAttr.ROW_ID);
+        Object rowId = uiData.getAttributes().get(ComponentAttrs.ROW_ID);
 
         if (rowId != null)
         {
@@ -1409,8 +1409,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
         }
         else
         {
-            return (String) component.getAttributes().get(
-                    JSFAttr.HEADER_CLASS_ATTR);
+            return (String) component.getAttributes().get(ComponentAttrs.HEADER_CLASS_ATTR);
         }
     }
 
@@ -1427,7 +1426,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
         }
         else
         {
-            return (String) component.getAttributes().get(JSFAttr.FOOTER_CLASS_ATTR);
+            return (String) component.getAttributes().get(ComponentAttrs.FOOTER_CLASS_ATTR);
         }
     }
 

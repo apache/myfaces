@@ -53,8 +53,8 @@ import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import org.apache.myfaces.core.api.shared.SharedRendererUtils;
 
 import org.apache.myfaces.util.lang.HashMapUtils;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public final class RendererUtils
 {
@@ -870,14 +870,14 @@ public final class RendererUtils
 
         // JSF 2.0: if "name" attribute is available, treat as a resource reference.
         final Map<String, Object> attributes = component.getAttributes();
-        final String resourceName = (String) attributes.get(JSFAttr.NAME_ATTR);
+        final String resourceName = (String) attributes.get(ComponentAttrs.NAME_ATTR);
         if (resourceName != null && (resourceName.length() > 0))
         {
 
             final ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
             final Resource resource;
 
-            final String libraryName = (String) component.getAttributes().get(JSFAttr.LIBRARY_ATTR);
+            final String libraryName = (String) component.getAttributes().get(ComponentAttrs.LIBRARY_ATTR);
             if ((libraryName != null) && (libraryName.length() > 0))
             {
                 resource = resourceHandler.createResource(resourceName, libraryName);

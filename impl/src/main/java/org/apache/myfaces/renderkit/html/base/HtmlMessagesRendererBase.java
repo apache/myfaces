@@ -42,8 +42,8 @@ import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
 {
@@ -138,14 +138,17 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
     
                 writer.startElement(HTML.SPAN_ELEM, null);
                 writer.writeAttribute(HTML.ID_ATTR,messages.getClientId(facesContext),null);
-                if(messages.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR)!=null)
+                if(messages.getAttributes().get(ComponentAttrs.STYLE_CLASS_ATTR)!=null)
                 {
-                    writer.writeAttribute(
-                            HTML.CLASS_ATTR, messages.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR), null);
+                    writer.writeAttribute(HTML.CLASS_ATTR,
+                            messages.getAttributes().get(ComponentAttrs.STYLE_CLASS_ATTR),
+                            null);
                 }
-                if(messages.getAttributes().get(JSFAttr.STYLE_ATTR)!=null)
+                if(messages.getAttributes().get(ComponentAttrs.STYLE_ATTR)!=null)
                 {
-                    writer.writeAttribute(HTML.STYLE_ATTR, messages.getAttributes().get(JSFAttr.STYLE_ATTR), null);
+                    writer.writeAttribute(HTML.STYLE_ATTR,
+                            messages.getAttributes().get(ComponentAttrs.STYLE_ATTR),
+                            null);
                 }
                 writer.endElement(HTML.SPAN_ELEM);
             }
@@ -293,23 +296,23 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
             Map attr = messages.getAttributes();
             if (severity == FacesMessage.SEVERITY_INFO)
             {
-                style = (String)attr.get(JSFAttr.INFO_STYLE_ATTR);
-                styleClass = (String)attr.get(JSFAttr.INFO_CLASS_ATTR);
+                style = (String)attr.get(ComponentAttrs.INFO_STYLE_ATTR);
+                styleClass = (String)attr.get(ComponentAttrs.INFO_CLASS_ATTR);
             }
             else if (severity == FacesMessage.SEVERITY_WARN)
             {
-                style = (String)attr.get(JSFAttr.WARN_STYLE_ATTR);
-                styleClass = (String)attr.get(JSFAttr.WARN_CLASS_ATTR);
+                style = (String)attr.get(ComponentAttrs.WARN_STYLE_ATTR);
+                styleClass = (String)attr.get(ComponentAttrs.WARN_CLASS_ATTR);
             }
             else if (severity == FacesMessage.SEVERITY_ERROR)
             {
-                style = (String)attr.get(JSFAttr.ERROR_STYLE_ATTR);
-                styleClass = (String)attr.get(JSFAttr.ERROR_CLASS_ATTR);
+                style = (String)attr.get(ComponentAttrs.ERROR_STYLE_ATTR);
+                styleClass = (String)attr.get(ComponentAttrs.ERROR_CLASS_ATTR);
             }
             else if (severity == FacesMessage.SEVERITY_FATAL)
             {
-                style = (String)attr.get(JSFAttr.FATAL_STYLE_ATTR);
-                styleClass = (String)attr.get(JSFAttr.FATAL_CLASS_ATTR);
+                style = (String)attr.get(ComponentAttrs.FATAL_STYLE_ATTR);
+                styleClass = (String)attr.get(ComponentAttrs.FATAL_CLASS_ATTR);
             }
         }
 
@@ -325,7 +328,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            styleClass = (String) messages.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR);
+            styleClass = (String) messages.getAttributes().get(ComponentAttrs.STYLE_CLASS_ATTR);
         }
         return styleClass;
     }
@@ -339,7 +342,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            style = (String) messages.getAttributes().get(JSFAttr.STYLE_ATTR);
+            style = (String) messages.getAttributes().get(ComponentAttrs.STYLE_ATTR);
         }
         return style;
     }
@@ -353,7 +356,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            return (String)component.getAttributes().get(JSFAttr.TITLE_ATTR);
+            return (String)component.getAttributes().get(ComponentAttrs.TITLE_ATTR);
         }
     }
 
@@ -366,7 +369,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            return AttributeUtils.getBooleanAttribute(component, JSFAttr.TOOLTIP_ATTR, false);
+            return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.TOOLTIP_ATTR, false);
         }
     }
 
@@ -379,7 +382,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            return AttributeUtils.getBooleanAttribute(component, JSFAttr.SHOW_SUMMARY_ATTR, false);
+            return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.SHOW_SUMMARY_ATTR, false);
         }
     }
 
@@ -392,7 +395,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            return AttributeUtils.getBooleanAttribute(component, JSFAttr.SHOW_DETAIL_ATTR, false);
+            return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.SHOW_DETAIL_ATTR, false);
         }
     }
 
@@ -404,8 +407,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            return AttributeUtils.getBooleanAttribute(
-                    component, JSFAttr.GLOBAL_ONLY_ATTR, false);
+            return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.GLOBAL_ONLY_ATTR, false);
         }
     }
 
@@ -417,7 +419,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         }
         else
         {
-            return (String)component.getAttributes().get(JSFAttr.LAYOUT_ATTR);
+            return (String)component.getAttributes().get(ComponentAttrs.LAYOUT_ATTR);
         }
     }
     
@@ -429,7 +431,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
             return ((UIMessages) component).getFor();
         }
  
-        return (String) component.getAttributes().get(JSFAttr.FOR_ATTR); 
+        return (String) component.getAttributes().get(ComponentAttrs.FOR_ATTR); 
     }
 
     @Override
@@ -440,8 +442,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
             return ((UIMessages) component).isRedisplay();
         }
 
-        return AttributeUtils.getBooleanAttribute(
-                component, JSFAttr.REDISPLAY_ATTR, true);
+        return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.REDISPLAY_ATTR, true);
         
     }
 

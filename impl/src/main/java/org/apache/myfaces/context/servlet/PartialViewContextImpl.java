@@ -55,10 +55,10 @@ import org.apache.myfaces.application.viewstate.StateTokenProcessor;
 import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class PartialViewContextImpl extends PartialViewContext
 {
@@ -580,8 +580,8 @@ public class PartialViewContextImpl extends PartialViewContext
                     if (ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE.equals(component.getRendererType())
                             || ResourceUtils.DEFAULT_STYLESHEET_RENDERER_TYPE.equals(component.getRendererType()))
                     {
-                        String resourceName = (String) component.getAttributes().get(JSFAttr.NAME_ATTR);
-                        String libraryName = (String) component.getAttributes().get(JSFAttr.LIBRARY_ATTR);
+                        String resourceName = (String) component.getAttributes().get(ComponentAttrs.NAME_ATTR);
+                        String libraryName = (String) component.getAttributes().get(ComponentAttrs.LIBRARY_ATTR);
 
                         if (resourceName == null || resourceName.isEmpty())
                         {

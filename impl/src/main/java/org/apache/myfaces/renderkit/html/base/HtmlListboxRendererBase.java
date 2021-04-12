@@ -20,7 +20,6 @@ package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
@@ -39,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 
 public class HtmlListboxRendererBase
@@ -60,7 +60,7 @@ public class HtmlListboxRendererBase
             }
         }
 
-        Integer size = (Integer)uiComponent.getAttributes().get(JSFAttr.SIZE_ATTR);
+        Integer size = (Integer)uiComponent.getAttributes().get(ComponentAttrs.SIZE_ATTR);
         if (size == null)
         {
             size = Integer.MIN_VALUE;

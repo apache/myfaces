@@ -22,7 +22,7 @@ import jakarta.faces.view.facelets.ComponentConfig;
 import jakarta.faces.view.facelets.ComponentHandler;
 import jakarta.faces.view.facelets.MetaRuleset;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class SelectItemHandler extends ComponentHandler
 {
@@ -34,7 +34,7 @@ public class SelectItemHandler extends ComponentHandler
     @Override
     protected MetaRuleset createMetaRuleset(Class type)
     {
-        return super.createMetaRuleset(type).alias("escapeItem", JSFAttr.ITEM_ESCAPED_ATTR);
+        return super.createMetaRuleset(type).alias("escapeItem", ComponentAttrs.ITEM_ESCAPED_ATTR);
     }
 
 }

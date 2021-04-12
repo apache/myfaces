@@ -37,10 +37,10 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class HtmlImageRendererBase extends HtmlRenderer
 {
@@ -82,10 +82,10 @@ public class HtmlImageRendererBase extends HtmlRenderer
             HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
         }
 
-        final String url = RendererUtils.getIconSrc(facesContext, uiComponent, JSFAttr.URL_ATTR);
+        final String url = RendererUtils.getIconSrc(facesContext, uiComponent, ComponentAttrs.URL_ATTR);
         if (url != null)
         {
-            writer.writeURIAttribute(HTML.SRC_ATTR, url,JSFAttr.VALUE_ATTR);
+            writer.writeURIAttribute(HTML.SRC_ATTR, url,ComponentAttrs.VALUE_ATTR);
         }
         else
         {

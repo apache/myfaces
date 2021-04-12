@@ -43,12 +43,12 @@ import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class HtmlButtonRendererBase extends HtmlRenderer
 {
@@ -148,14 +148,14 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
         writer.startElement(HTML.INPUT_ELEM, uiComponent);
 
-        writer.writeAttribute(HTML.ID_ATTR, clientId, JSFAttr.ID_ATTR);
-        writer.writeAttribute(HTML.NAME_ATTR, clientId, JSFAttr.ID_ATTR);
+        writer.writeAttribute(HTML.ID_ATTR, clientId, ComponentAttrs.ID_ATTR);
+        writer.writeAttribute(HTML.NAME_ATTR, clientId, ComponentAttrs.ID_ATTR);
 
-        String image = RendererUtils.getIconSrc(facesContext, uiComponent, JSFAttr.IMAGE_ATTR);
+        String image = RendererUtils.getIconSrc(facesContext, uiComponent, ComponentAttrs.IMAGE_ATTR);
         if (image != null)
         {
-            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_IMAGE, JSFAttr.TYPE_ATTR);
-            writer.writeURIAttribute(HTML.SRC_ATTR, image, JSFAttr.IMAGE_ATTR);
+            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_IMAGE, ComponentAttrs.TYPE_ATTR);
+            writer.writeURIAttribute(HTML.SRC_ATTR, image, ComponentAttrs.IMAGE_ATTR);
         }
         else
         {
@@ -165,11 +165,11 @@ public class HtmlButtonRendererBase extends HtmlRenderer
             {
                 type = HTML.INPUT_TYPE_SUBMIT;
             }
-            writer.writeAttribute(HTML.TYPE_ATTR, type, JSFAttr.TYPE_ATTR);
+            writer.writeAttribute(HTML.TYPE_ATTR, type, ComponentAttrs.TYPE_ATTR);
             Object value = getValue(uiComponent);
             if (value != null)
             {
-                writer.writeAttribute(HTML.VALUE_ATTR, value, JSFAttr.VALUE_ATTR);
+                writer.writeAttribute(HTML.VALUE_ATTR, value, ComponentAttrs.VALUE_ATTR);
             }
         }
         
@@ -260,12 +260,12 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
         if (isDisabled(facesContext, uiComponent))
         {
-            writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, JSFAttr.DISABLED_ATTR);
+            writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, ComponentAttrs.DISABLED_ATTR);
         }
         
         if (isReadonly(facesContext, uiComponent))
         {
-            writer.writeAttribute(HTML.READONLY_ATTR, HTML.READONLY_ATTR, JSFAttr.READONLY_ATTR);
+            writer.writeAttribute(HTML.READONLY_ATTR, HTML.READONLY_ATTR, ComponentAttrs.READONLY_ATTR);
         }
     }
     
@@ -505,7 +505,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
         {
             return ((HtmlCommandButton)uiComponent).getType();
         }
-        return (String)uiComponent.getAttributes().get(JSFAttr.TYPE_ATTR);
+        return (String)uiComponent.getAttributes().get(ComponentAttrs.TYPE_ATTR);
     }
 
     private Object getValue(UIComponent uiComponent)
@@ -514,6 +514,6 @@ public class HtmlButtonRendererBase extends HtmlRenderer
         {
             return ((ValueHolder)uiComponent).getValue();
         }
-        return uiComponent.getAttributes().get(JSFAttr.VALUE_ATTR);
+        return uiComponent.getAttributes().get(ComponentAttrs.VALUE_ATTR);
     }
 }

@@ -37,11 +37,11 @@ import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.junit.Assert;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class RendererUtilsTest extends AbstractJsfTestCase {
 
@@ -93,8 +93,8 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
 
 		EasyMock.replay(applicationMock);
 
-		graphicImage.getAttributes().put(JSFAttr.LIBRARY_ATTR, libraryName);
-		graphicImage.getAttributes().put(JSFAttr.NAME_ATTR, resourceName);
+		graphicImage.getAttributes().put(ComponentAttrs.LIBRARY_ATTR, libraryName);
+		graphicImage.getAttributes().put(ComponentAttrs.NAME_ATTR, resourceName);
 		graphicImage.setId("graphicImageId");
 		
 		parent = new UIPanel();

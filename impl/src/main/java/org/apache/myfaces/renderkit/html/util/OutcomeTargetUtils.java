@@ -68,7 +68,7 @@ public class OutcomeTargetUtils
         
         // handle faces flow 
         // 1. check to-flow-document-id
-        String toFlowDocumentId = (String) component.getAttributes().get(JSFAttr.TO_FLOW_DOCUMENT_ID_ATTR);
+        String toFlowDocumentId = (String) component.getAttributes().get(ComponentAttrs.TO_FLOW_DOCUMENT_ID_ATTR);
         
         // fromAction is null because there is no action method that was called to get the outcome
         NavigationCase navigationCase = null;

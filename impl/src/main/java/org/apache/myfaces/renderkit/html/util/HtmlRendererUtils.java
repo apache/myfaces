@@ -620,18 +620,18 @@ public final class HtmlRendererUtils
 
                 if (componentDisabled || disabled)
                 {
-                    labelClass = (String) component.getAttributes().get(JSFAttr.DISABLED_CLASS_ATTR);
+                    labelClass = (String) component.getAttributes().get(ComponentAttrs.DISABLED_CLASS_ATTR);
                 }
                 else
                 {
-                    labelClass = (String) component.getAttributes().get(JSFAttr.ENABLED_CLASS_ATTR);
+                    labelClass = (String) component.getAttributes().get(ComponentAttrs.ENABLED_CLASS_ATTR);
                 }
                 if (labelClass != null)
                 {
                     writer.writeAttribute("class", labelClass, "labelClass");
                 }
 
-                boolean escape = AttributeUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, false);
+                boolean escape = AttributeUtils.getBooleanAttribute(component, ComponentAttrs.ESCAPE_ATTR, false);
                 //default is to escape
                 //In JSF 1.2, when a SelectItem is created by default 
                 //selectItem.isEscape() returns true (this property
@@ -938,7 +938,7 @@ public final class HtmlRendererUtils
             writer.writeText(RendererUtils.getConvertedStringValue(
                     facesContext, uiComponent, converter,
                     ((UISelectBoolean) uiComponent).getValue()),
-                    JSFAttr.VALUE_ATTR);
+                    ComponentAttrs.VALUE_ATTR);
             writer.endElement(HTML.SPAN_ELEM);
 
         }
@@ -1042,8 +1042,8 @@ public final class HtmlRendererUtils
         }
         else
         {
-            captionClass = (String) component.getAttributes().get(JSFAttr.CAPTION_CLASS_ATTR);
-            captionStyle = (String) component.getAttributes().get(JSFAttr.CAPTION_STYLE_ATTR);
+            captionClass = (String) component.getAttributes().get(ComponentAttrs.CAPTION_CLASS_ATTR);
+            captionStyle = (String) component.getAttributes().get(ComponentAttrs.CAPTION_STYLE_ATTR);
         }
         writer.startElement(HTML.CAPTION_ELEM, null); // component);
         if (captionClass != null)
@@ -1113,11 +1113,11 @@ public final class HtmlRendererUtils
         String labelClass = null;
         if (disabled)
         {
-            labelClass = (String) component.getAttributes().get(JSFAttr.DISABLED_CLASS_ATTR);
+            labelClass = (String) component.getAttributes().get(ComponentAttrs.DISABLED_CLASS_ATTR);
         }
         else
         {
-            labelClass = (String) component.getAttributes().get(JSFAttr.ENABLED_CLASS_ATTR);
+            labelClass = (String) component.getAttributes().get(ComponentAttrs.ENABLED_CLASS_ATTR);
         }
         if (labelClass != null)
         {
@@ -1150,21 +1150,21 @@ public final class HtmlRendererUtils
         String labelClass = null;
         if (disabled)
         {
-            labelClass = (String) component.getAttributes().get(JSFAttr.DISABLED_CLASS_ATTR);
+            labelClass = (String) component.getAttributes().get(ComponentAttrs.DISABLED_CLASS_ATTR);
         }
         else
         {
             labelClass = (String) component.getAttributes()
-                    .get(JSFAttr.ENABLED_CLASS_ATTR);
+                    .get(ComponentAttrs.ENABLED_CLASS_ATTR);
         }
         String labelSelectedClass = null;
         if (selected)
         {
-            labelSelectedClass = (String) component.getAttributes().get(JSFAttr.SELECTED_CLASS_ATTR);
+            labelSelectedClass = (String) component.getAttributes().get(ComponentAttrs.SELECTED_CLASS_ATTR);
         }
         else
         {
-            labelSelectedClass = (String) component.getAttributes().get(JSFAttr.UNSELECTED_CLASS_ATTR);
+            labelSelectedClass = (String) component.getAttributes().get(ComponentAttrs.UNSELECTED_CLASS_ATTR);
         }
         if (labelSelectedClass != null)
         {
@@ -1904,7 +1904,7 @@ public final class HtmlRendererUtils
     public static boolean isHideNoSelectionOption(UIComponent component)
     {
         // check hideNoSelectionOption for literal value (String) or ValueExpression (Boolean)
-        Object hideNoSelectionOptionAttr = component.getAttributes().get(JSFAttr.HIDE_NO_SELECTION_OPTION_ATTR);
+        Object hideNoSelectionOptionAttr = component.getAttributes().get(ComponentAttrs.HIDE_NO_SELECTION_OPTION_ATTR);
         return ((hideNoSelectionOptionAttr instanceof String && "true"
                 .equalsIgnoreCase((String) hideNoSelectionOptionAttr)) || 
                 (hideNoSelectionOptionAttr instanceof Boolean && ((Boolean) hideNoSelectionOptionAttr)));

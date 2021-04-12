@@ -22,7 +22,6 @@ import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
@@ -40,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * see Spec.1.0 EA - JSF.7.6.4 Renderer Types for UIInput Components
@@ -98,12 +98,12 @@ public class HtmlSecretRendererBase extends HtmlRenderer
         }
         else
         {
-            isRedisplay = AttributeUtils.getBooleanAttribute(uiComponent, JSFAttr.REDISPLAY_ATTR, false);
+            isRedisplay = AttributeUtils.getBooleanAttribute(uiComponent, ComponentAttrs.REDISPLAY_ATTR, false);
         }
         if (isRedisplay)
         {
             String strValue = RendererUtils.getStringValue(facesContext, uiComponent);
-            writer.writeAttribute(HTML.VALUE_ATTR, strValue, JSFAttr.VALUE_ATTR);
+            writer.writeAttribute(HTML.VALUE_ATTR, strValue, ComponentAttrs.VALUE_ATTR);
         }
 
         if (uiComponent instanceof ClientBehaviorHolder)

@@ -38,12 +38,12 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.lang.ArrayUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class HtmlGridRendererBase extends HtmlRenderer
 {
@@ -91,7 +91,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
         }
         else
         {
-            Integer i = (Integer)component.getAttributes().get(JSFAttr.COLUMNS_ATTR);
+            Integer i = (Integer)component.getAttributes().get(ComponentAttrs.COLUMNS_ATTR);
             columns = i != null ? i : 0;
         }
 
@@ -217,14 +217,14 @@ public class HtmlGridRendererBase extends HtmlRenderer
                 ? ((HtmlPanelGrid)component).getHeaderClass()
                 : ((HtmlPanelGrid)component).getFooterClass())
             : (header
-                ? (String)component.getAttributes().get(JSFAttr.HEADER_CLASS_ATTR)
-                : (String)component.getAttributes().get(JSFAttr.FOOTER_CLASS_ATTR));
+                ? (String)component.getAttributes().get(ComponentAttrs.HEADER_CLASS_ATTR)
+                : (String)component.getAttributes().get(ComponentAttrs.FOOTER_CLASS_ATTR));
         if (styleClass != null)
         {
             writer.writeAttribute(HTML.CLASS_ATTR, styleClass,
                                   header 
-                                          ? JSFAttr.HEADER_CLASS_ATTR
-                                          : JSFAttr.FOOTER_CLASS_ATTR);
+                                          ? ComponentAttrs.HEADER_CLASS_ATTR
+                                          : ComponentAttrs.FOOTER_CLASS_ATTR);
         }
 
         if (header)
@@ -267,8 +267,8 @@ public class HtmlGridRendererBase extends HtmlRenderer
         }
         else
         {
-            columnClasses = (String)component.getAttributes().get(JSFAttr.COLUMN_CLASSES_ATTR);
-            rowClasses = (String)component.getAttributes().get(JSFAttr.ROW_CLASSES_ATTR);
+            columnClasses = (String)component.getAttributes().get(ComponentAttrs.COLUMN_CLASSES_ATTR);
+            rowClasses = (String)component.getAttributes().get(ComponentAttrs.ROW_CLASSES_ATTR);
         }
 
         String[] columnClassesArray = (columnClasses == null)
@@ -286,7 +286,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
         {
             // get the row indizes for which a new TBODY element should be created
             Integer[] bodyrows = null;
-            String bodyrowsAttr = (String) component.getAttributes().get(JSFAttr.BODYROWS_ATTR);
+            String bodyrowsAttr = (String) component.getAttributes().get(ComponentAttrs.BODYROWS_ATTR);
             if(bodyrowsAttr != null && !bodyrowsAttr.isEmpty())
             {   
                 String[] bodyrowsString = StringUtils.trim(StringUtils.splitShortString(bodyrowsAttr, ','));

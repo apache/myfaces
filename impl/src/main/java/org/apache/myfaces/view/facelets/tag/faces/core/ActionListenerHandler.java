@@ -43,8 +43,8 @@ import jakarta.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.util.lang.ClassUtils;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
@@ -162,7 +162,7 @@ public final class ActionListenerHandler extends TagHandler
         }
         else if (UIComponent.isCompositeComponent(parent))
         {
-            if (getAttribute(JSFAttr.FOR_ATTR) == null)
+            if (getAttribute(ComponentAttrs.FOR_ATTR) == null)
             {
                 throw new TagException(tag, "is nested inside a composite component"
                         + " but does not have a for attribute.");

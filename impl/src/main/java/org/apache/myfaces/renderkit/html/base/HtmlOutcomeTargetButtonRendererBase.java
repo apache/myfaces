@@ -35,10 +35,10 @@ import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
 {
@@ -69,8 +69,8 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
 
         writer.startElement(HTML.INPUT_ELEM, uiComponent);
 
-        writer.writeAttribute(HTML.ID_ATTR, clientId, JSFAttr.ID_ATTR);
-        writer.writeAttribute(HTML.NAME_ATTR, clientId, JSFAttr.ID_ATTR);
+        writer.writeAttribute(HTML.ID_ATTR, clientId, ComponentAttrs.ID_ATTR);
+        writer.writeAttribute(HTML.NAME_ATTR, clientId, ComponentAttrs.ID_ATTR);
 
         String image = getImage(uiComponent);
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -78,18 +78,18 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
         if (image != null)
         {
             // type="image"
-            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_IMAGE, JSFAttr.TYPE_ATTR);
+            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_IMAGE, ComponentAttrs.TYPE_ATTR);
             String src = facesContext.getApplication().getViewHandler().getResourceURL(facesContext, image);
-            writer.writeURIAttribute(HTML.SRC_ATTR, externalContext.encodeResourceURL(src), JSFAttr.IMAGE_ATTR);
+            writer.writeURIAttribute(HTML.SRC_ATTR, externalContext.encodeResourceURL(src), ComponentAttrs.IMAGE_ATTR);
         }
         else
         {
             // type="button"
-            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_BUTTON, JSFAttr.TYPE_ATTR);
+            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_BUTTON, ComponentAttrs.TYPE_ATTR);
             Object value = RendererUtils.getStringValue(facesContext, uiComponent);
             if (value != null)
             {
-                writer.writeAttribute(HTML.VALUE_ATTR, value, JSFAttr.VALUE_ATTR);
+                writer.writeAttribute(HTML.VALUE_ATTR, value, ComponentAttrs.VALUE_ATTR);
             }
         }
 
@@ -188,7 +188,7 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
         {
             return ((HtmlOutcomeTargetButton) uiComponent).getImage();
         }
-        return (String) uiComponent.getAttributes().get(JSFAttr.IMAGE_ATTR);
+        return (String) uiComponent.getAttributes().get(ComponentAttrs.IMAGE_ATTR);
     }
 
     @Override

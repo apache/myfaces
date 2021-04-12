@@ -36,10 +36,10 @@ import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class HtmlFormRendererBase extends HtmlRenderer
 {
@@ -175,7 +175,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
 
     protected String getAcceptCharset(FacesContext facesContext, UIForm form )
     {
-        return (String)form.getAttributes().get( JSFAttr.ACCEPTCHARSET_ATTR );
+        return (String)form.getAttributes().get(ComponentAttrs.ACCEPTCHARSET_ATTR );
     }
 
     @Override

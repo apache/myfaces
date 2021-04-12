@@ -29,12 +29,12 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Assert;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * Tests for HtmlOutcomeTargetButtonRenderer.
@@ -195,7 +195,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
      */
     public void testDisabledAttribute() 
     {
-        outcomeTargetButton.getAttributes().put(JSFAttr.DISABLED_ATTR, Boolean.TRUE);
+        outcomeTargetButton.getAttributes().put(ComponentAttrs.DISABLED_ATTR, Boolean.TRUE);
         try 
         {
             outcomeTargetButton.encodeAll(facesContext);

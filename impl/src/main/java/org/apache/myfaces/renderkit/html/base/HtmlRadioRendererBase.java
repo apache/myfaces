@@ -53,10 +53,10 @@ import jakarta.faces.model.SelectItemGroup;
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class HtmlRadioRendererBase extends HtmlRenderer
 {
@@ -208,7 +208,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
             return ((HtmlSelectOneRadio)selectOne).getLayout();
         }
 
-        return (String)selectOne.getAttributes().get(JSFAttr.LAYOUT_ATTR);
+        return (String)selectOne.getAttributes().get(ComponentAttrs.LAYOUT_ATTR);
     }
 
 
@@ -219,7 +219,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
              return ((HtmlSelectOneRadio)selectOne).getStyleClass();
          }
 
-         return (String)selectOne.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR);
+         return (String)selectOne.getAttributes().get(ComponentAttrs.STYLE_CLASS_ATTR);
      }
 
     protected int renderGroupOrItemRadio(FacesContext facesContext,

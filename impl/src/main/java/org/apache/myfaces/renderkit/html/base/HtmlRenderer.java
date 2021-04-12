@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIComponent;
@@ -28,6 +27,7 @@ import jakarta.faces.render.Renderer;
 import java.io.IOException;
 import java.util.List;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public abstract class HtmlRenderer
         extends Renderer
@@ -86,7 +86,7 @@ public abstract class HtmlRenderer
         if (shouldRenderId(context, component))
         {
             String clientId = getClientId(context, component);
-            context.getResponseWriter().writeAttribute(HTML.ID_ATTR, clientId, JSFAttr.ID_ATTR);
+            context.getResponseWriter().writeAttribute(HTML.ID_ATTR, clientId, ComponentAttrs.ID_ATTR);
         }
     }
 

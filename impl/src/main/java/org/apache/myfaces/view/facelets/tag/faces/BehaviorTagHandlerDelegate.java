@@ -175,7 +175,7 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
                 cvh.addClientBehavior(eventName, (ClientBehavior) behavior);
             }
             
-            AjaxHandler.registerJsfAjaxDefaultResource(faceletContext, parent);
+            AjaxHandler.registerFacesJsResource(faceletContext, parent);
         }
     }
 
