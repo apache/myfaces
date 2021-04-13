@@ -255,8 +255,8 @@ public class AjaxHandler extends TagHandler implements
         {
             UIComponent outputScript = facesContext.getApplication().
                 createComponent(facesContext, "jakarta.faces.Output", ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE);
-            outputScript.getAttributes().put(ComponentAttrs.NAME_ATTR, ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
-            outputScript.getAttributes().put(ComponentAttrs.LIBRARY_ATTR, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
+            outputScript.getAttributes().put(ComponentAttrs.NAME_ATTR, ResourceHandler.FACES_SCRIPT_RESOURCE_NAME);
+            outputScript.getAttributes().put(ComponentAttrs.LIBRARY_ATTR, ResourceHandler.FACES_SCRIPT_LIBRARY_NAME);
             outputScript.getAttributes().put(ComponentAttrs.TARGET_ATTR, "head");
 
             // Since this component will be relocated, we need a generated clientId from the

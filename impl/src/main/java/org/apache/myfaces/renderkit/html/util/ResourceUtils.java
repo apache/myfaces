@@ -98,8 +98,8 @@ public class ResourceUtils
         
         // Check first if we have lucky, we are using myfaces and the script has
         // been previously rendered
-        if (isRenderedScript(facesContext, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME,
-                ResourceHandler.JSF_SCRIPT_RESOURCE_NAME))
+        if (isRenderedScript(facesContext, ResourceHandler.FACES_SCRIPT_LIBRARY_NAME,
+                ResourceHandler.FACES_SCRIPT_RESOURCE_NAME))
         {
             facesContext.getAttributes().put(RENDERED_FACES_JS, Boolean.TRUE);
             return;
@@ -116,9 +116,9 @@ public class ResourceUtils
 
         //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
         Resource resource = facesContext.getApplication().getResourceHandler().createResource(
-                ResourceHandler.JSF_SCRIPT_RESOURCE_NAME, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
-        markScriptAsRendered(facesContext, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME,
-                ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
+                ResourceHandler.FACES_SCRIPT_RESOURCE_NAME, ResourceHandler.FACES_SCRIPT_LIBRARY_NAME);
+        markScriptAsRendered(facesContext, ResourceHandler.FACES_SCRIPT_LIBRARY_NAME,
+                ResourceHandler.FACES_SCRIPT_RESOURCE_NAME);
         writer.startElement(HTML.SCRIPT_ELEM, null);
         HtmlRendererUtils.renderScriptType(facesContext, writer);
         writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);

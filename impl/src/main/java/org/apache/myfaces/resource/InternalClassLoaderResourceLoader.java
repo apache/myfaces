@@ -154,9 +154,9 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     {
         //handle faces.js
         final boolean jakartaFacesLib = libraryName != null &&
-                ResourceHandler.JSF_SCRIPT_LIBRARY_NAME.equals(libraryName);
+                ResourceHandler.FACES_SCRIPT_LIBRARY_NAME.equals(libraryName);
         final boolean jakartaFaces = jakartaFacesLib &&
-                ResourceHandler.JSF_SCRIPT_RESOURCE_NAME.equals(resourceName);
+                ResourceHandler.FACES_SCRIPT_RESOURCE_NAME.equals(resourceName);
 
         if (jakartaFaces)
         {

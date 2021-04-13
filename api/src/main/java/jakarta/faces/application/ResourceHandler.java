@@ -60,12 +60,24 @@ public abstract class ResourceHandler
     /**
      * @since 2.3
      */
+    @Deprecated
     public static final String JSF_SCRIPT_RESOURCE_NAME = "faces.js";
 
     /**
      * @since 2.3
      */
+    @Deprecated
     public static final String JSF_SCRIPT_LIBRARY_NAME = "jakarta.faces";
+    
+    /**
+     * @since 4.0
+     */
+    public static final String FACES_SCRIPT_RESOURCE_NAME = "faces.js";
+
+    /**
+     * @since 4.0
+     */
+    public static final String FACES_SCRIPT_LIBRARY_NAME = "jakarta.faces";        
 
     private final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
 
