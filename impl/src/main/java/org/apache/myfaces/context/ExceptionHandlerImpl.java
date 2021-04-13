@@ -33,21 +33,11 @@ import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.SystemEvent;
 import org.apache.myfaces.util.lang.Assert;
 
-/**
- * DOCUMENT ME!
- * 
+/** 
  * @since 2.0
  */
 public class ExceptionHandlerImpl extends ExceptionHandler
 {
-    /*
-     * PLEASE NOTE!!!
-     * jakarta.faces.webapp.PreJsf2ExceptionHandlerFactory uses most parts of this implementation
-     * for its private static inner class, only the handle method differs a bit.
-     * Thus, any changes made here should also be applied to PreJsf2ExceptionHandlerFactory
-     * in the right way (you can copy everything except handle(), this method needs special treatment).
-     */
-    
     private static final Logger log = Logger.getLogger(ExceptionHandlerImpl.class.getName());
     
     private Queue<ExceptionQueuedEvent> handled;
