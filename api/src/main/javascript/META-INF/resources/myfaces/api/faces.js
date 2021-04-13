@@ -16,20 +16,13 @@
 */
 
 /**
- *MyFaces core javascripting libraries
+ *  MyFaces core javascripting libraries
  *
  *  Those are the central public API functions in the Faces2
  *  Ajax API! They handle the entire form submit and ajax send
  *  and resolve cycle!
  */
 
-/**
- * reserve the root namespace
- */
-if ('undefined' != typeof OpenAjax && ('undefined' == typeof faces || null == typeof faces)) {
-    OpenAjax.hub.registerLibrary("faces", "www.sun.com", "1.0", null);
-}
-//just in case openajax has failed (testing environment)
 /**
 * @ignore
 */

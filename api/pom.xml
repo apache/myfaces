@@ -237,10 +237,7 @@
                     <sourceDirectory>src/main/javascript/META-INF/resources</sourceDirectory>
                     <sources>
                         <source>../../../../test/javascript/org/apache/myfaces/mockups/BrowserMockups.js</source>
-                        <!--
-                        <source>jakarta/faces/_util/OpenAjax.js</source>
-                        -->
-                        <source>jakarta/faces/_util/_JSF2Utils.js</source>
+                        <source>jakarta/faces/_util/_FacesUtils.js</source>
                         <source>jakarta/faces/ajax/Ajax.js</source>
                         <source>../../../../test/javascript/org/apache/myfaces/test/_TestScenario.js</source>
                     </sources>
@@ -252,7 +249,7 @@
                             <type>TESTSUITES</type>
                             <includes>
                                 <include>test/MockupTest.js</include>
-                                <include>utils/_JSF2UtilsTests.js</include>
+                                <include>utils/_FacesUtilsTests.js</include>
                                 <include>ajax/AjaxTests.js</include>
                             </includes>
                         </testSuite>

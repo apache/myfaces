@@ -154,7 +154,7 @@ if('undefined' == typeof(node)) {
 
         this.appendData = function(/*Object*/ dataVar) {
             this._data = dataVar;
-            this.data = this._data.join("");          
+            this.data = this._data.join("");
         };
 
 
@@ -231,40 +231,7 @@ if('undefined' == typeof document  || null == document) {
 
 };
 
-
-
 if('undefined' == typeof jakarta  || null == jakarta) {
     var jakarta = new Object();
     document.jakarta = jakarta;
-}
-
-if('undefined' == typeof org  || null == org) {
-    var org = new Object();
-    document.org = org;
-}
-
-
-
-
-/**
- * we have to emulate openajax as well since
- * it ties the namespaces to the windows explicitely
- * we tie them simply into an array
- * and get the same behavior
- */
-var OpenAjax = new Object();
-
-OpenAjax.hub = new Object();
-
-OpenAjax.hub.registerLibrary = function(prefix, nsURL, version, extra) {
-    var namespaces = prefix.split(".");
-
-    var root = document;
-    for(var cnt = 0; cnt < namespaces.length; cnt ++) {
-        var curVal = namespaces[cnt];
-        if('undefined' == root[curVal] || null == root[curVal]) {
-            root[curVal] = new Object();
-        }
-        root = root[curVal];
-    }
 }
