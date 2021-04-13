@@ -137,7 +137,7 @@ public final class FactoryFinder
         }
         catch (Exception e)
         {
-            throw new FacesException("faces-api ClassLoader class loader cannot be identified", e);
+            throw new FacesException("faces-api ClassLoader cannot be identified", e);
         }
     }
 
