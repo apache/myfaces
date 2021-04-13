@@ -131,13 +131,13 @@ public final class FactoryFinder
 
             if (classLoader == null)
             {
-                throw new FacesException("jsf api class loader cannot be identified", null);
+                throw new FacesException("faces-api ClassLoader cannot be identified", null);
             }
             MYFACES_CLASSLOADER = classLoader;
         }
         catch (Exception e)
         {
-            throw new FacesException("jsf api class loader cannot be identified", e);
+            throw new FacesException("faces-api ClassLoader class loader cannot be identified", e);
         }
     }
 
