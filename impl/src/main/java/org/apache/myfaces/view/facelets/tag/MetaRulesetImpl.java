@@ -122,22 +122,26 @@ public final class MetaRulesetImpl extends MetaRuleset
         // to find the passthrough attributes.
         TagAttribute[] passthroughAttribute = _tag.getAttributes().getAll(
             PassThroughLibrary.NAMESPACE);
-        TagAttribute[] passthroughAttributeAlias = _tag.getAttributes().getAll(
-            PassThroughLibrary.ALIAS_NAMESPACE);
+        TagAttribute[] passthroughAttributeJcp = _tag.getAttributes().getAll(
+            PassThroughLibrary.JCP_NAMESPACE);
+        TagAttribute[] passthroughAttributeSun = _tag.getAttributes().getAll(
+            PassThroughLibrary.SUN_NAMESPACE);
         
-        if (passthroughAttribute.length > 0 ||
-            passthroughAttributeAlias.length > 0)
+        if (passthroughAttribute.length > 0
+                || passthroughAttributeJcp.length > 0
+                || passthroughAttributeSun.length > 0)
         {
-            _passthroughAttributes = new TagAttribute[passthroughAttribute.length+
-                passthroughAttributeAlias.length];
+            _passthroughAttributes = new TagAttribute[passthroughAttribute.length + 
+                passthroughAttributeJcp.length + passthroughAttributeSun.length];
             int i = 0;
             for (TagAttribute attribute : allAttributes)
             {
                 // The fastest check is check if the length is > 0, because
                 // most attributes usually has no namespace attached.
                 if (attribute.getNamespace().length() > 0 &&
-                    (PassThroughLibrary.NAMESPACE.equals(attribute.getNamespace()) ||
-                        PassThroughLibrary.ALIAS_NAMESPACE.equals(attribute.getNamespace())))
+                    (PassThroughLibrary.NAMESPACE.equals(attribute.getNamespace())
+                        || PassThroughLibrary.JCP_NAMESPACE.equals(attribute.getNamespace())
+                        || PassThroughLibrary.SUN_NAMESPACE.equals(attribute.getNamespace())))
                 {
                     _passthroughAttributes[i] = attribute;
                     i++;

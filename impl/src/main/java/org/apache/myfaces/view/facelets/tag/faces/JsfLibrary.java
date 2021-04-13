@@ -26,14 +26,15 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
  */
 public final class JsfLibrary extends AbstractTagLibrary
 {
-    public final static String NAMESPACE = "http://xmlns.jcp.org/jsf";
-    public final static String ALIAS_NAMESPACE = "http://java.sun.com/jsf";
+    public final static String NAMESPACE = "jakarta.faces";
+    public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsf";
+    public final static String SUN_NAMESPACE = "http://java.sun.com/jsf";
 
     public final static JsfLibrary INSTANCE = new JsfLibrary();
 
     public JsfLibrary()
     {
-        super(NAMESPACE, ALIAS_NAMESPACE);
+        super(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
         
         this.addComponent("element", "oam.passthrough.Element", 
             "jakarta.faces.passthrough.Element", JsfElementHandler.class);

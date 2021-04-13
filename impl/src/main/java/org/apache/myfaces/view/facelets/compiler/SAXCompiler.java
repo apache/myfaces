@@ -376,7 +376,9 @@ public final class SAXCompiler extends Compiler
             {
                 this.unit.popTag();
             }
-            if ((CoreLibrary.NAMESPACE.equals(uri) || CoreLibrary.ALIAS_NAMESPACE.equals(uri)))
+            if ((CoreLibrary.NAMESPACE.equals(uri)
+                    || CoreLibrary.JCP_NAMESPACE.equals(uri)
+                    || CoreLibrary.SUN_NAMESPACE.equals(uri)))
             {
                 if ("metadata".equals(localName))
                 {
@@ -387,7 +389,9 @@ public final class SAXCompiler extends Compiler
                     this.unit.popTag();
                 }
             }
-            else if (UILibrary.NAMESPACE.equals(uri) || UILibrary.ALIAS_NAMESPACE.equals(uri))
+            else if (UILibrary.NAMESPACE.equals(uri)
+                    || UILibrary.JCP_NAMESPACE.equals(uri)
+                    || UILibrary.SUN_NAMESPACE.equals(uri))
             {
                 if (!inMetadata && "remove".equals(localName))
                 {
@@ -480,8 +484,10 @@ public final class SAXCompiler extends Compiler
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
-            if ( (CoreLibrary.NAMESPACE.equals(uri) ||
-                  CoreLibrary.ALIAS_NAMESPACE.equals(uri)) && this.uiRemoveCount <= 0)
+            if (this.uiRemoveCount <= 0 &&
+                    (CoreLibrary.NAMESPACE.equals(uri)
+                        || CoreLibrary.JCP_NAMESPACE.equals(uri)
+                        || CoreLibrary.SUN_NAMESPACE.equals(uri)))
             {
                 if ("metadata".equals(localName))
                 {
@@ -496,8 +502,9 @@ public final class SAXCompiler extends Compiler
             {
                 this.unit.pushTag(new Tag(createLocation(), uri, localName, qName, createAttributes(attributes)));
             }
-            else if (UILibrary.NAMESPACE.equals(uri) ||
-                    UILibrary.ALIAS_NAMESPACE.equals(uri))
+            else if (UILibrary.NAMESPACE.equals(uri)
+                    || UILibrary.JCP_NAMESPACE.equals(uri)
+                    || UILibrary.SUN_NAMESPACE.equals(uri))
             {
                 if ("remove".equals(localName))
                 {
@@ -629,7 +636,9 @@ public final class SAXCompiler extends Compiler
                 this.unit.popTag();
             }
             else if (inCompositeImplementation && 
-                (CompositeLibrary.NAMESPACE.equals(uri) || CompositeLibrary.ALIAS_NAMESPACE.equals(uri)) )
+                (CompositeLibrary.NAMESPACE.equals(uri)
+                    || CompositeLibrary.JCP_NAMESPACE.equals(uri)
+                    || CompositeLibrary.SUN_NAMESPACE.equals(uri)))
             {
                 if ("insertFacet".equals(localName) ||
                     "renderFacet".equals(localName) ||
@@ -640,7 +649,9 @@ public final class SAXCompiler extends Compiler
                 }
             }
             
-            if (CompositeLibrary.NAMESPACE.equals(uri) || CompositeLibrary.ALIAS_NAMESPACE.equals(uri))
+            if (CompositeLibrary.NAMESPACE.equals(uri)
+                    || CompositeLibrary.JCP_NAMESPACE.equals(uri)
+                    || CompositeLibrary.SUN_NAMESPACE.equals(uri))
             {
                 if (InterfaceHandler.NAME.equals(localName))
                 {
@@ -735,7 +746,9 @@ public final class SAXCompiler extends Compiler
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
-            if (CompositeLibrary.NAMESPACE.equals(uri) || CompositeLibrary.ALIAS_NAMESPACE.equals(uri))
+            if (CompositeLibrary.NAMESPACE.equals(uri)
+                    || CompositeLibrary.JCP_NAMESPACE.equals(uri)
+                    || CompositeLibrary.SUN_NAMESPACE.equals(uri))
             {
                 if (InterfaceHandler.NAME.equals(localName))
                 {
@@ -752,7 +765,9 @@ public final class SAXCompiler extends Compiler
                 this.unit.pushTag(new Tag(createLocation(), uri, localName, qName, createAttributes(attributes)));
             }
             else if (inCompositeImplementation && 
-                (CompositeLibrary.NAMESPACE.equals(uri) || CompositeLibrary.ALIAS_NAMESPACE.equals(uri)))
+                (CompositeLibrary.NAMESPACE.equals(uri)
+                    || CompositeLibrary.JCP_NAMESPACE.equals(uri)
+                    || CompositeLibrary.SUN_NAMESPACE.equals(uri)))
             {
                 if ("insertFacet".equals(localName)    ||
                     "renderFacet".equals(localName)    ||
@@ -942,7 +957,9 @@ public final class SAXCompiler extends Compiler
         
         boolean tagContainParams = ( 
                 ("include".equals(tagName) || "decorate".equals(tagName) || "composition".equals(tagName)) && 
-                (UILibrary.NAMESPACE.equals(taglibURI) || UILibrary.ALIAS_NAMESPACE.equals(taglibURI)) );
+                (UILibrary.NAMESPACE.equals(taglibURI)
+                    || UILibrary.JCP_NAMESPACE.equals(taglibURI)
+                    || UILibrary.SUN_NAMESPACE.equals(taglibURI)));
         
         Location location = new Location(alias, 0, 0);
         int len = attributes.size();

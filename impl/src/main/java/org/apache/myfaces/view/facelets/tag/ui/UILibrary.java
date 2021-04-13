@@ -32,15 +32,15 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
  */
 public final class UILibrary extends AbstractTagLibrary
 {
-
-    public final static String NAMESPACE = "http://xmlns.jcp.org/jsf/facelets";
-    public final static String ALIAS_NAMESPACE = "http://java.sun.com/jsf/facelets";
+    public final static String NAMESPACE = "jakarta.faces.facelets";
+    public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsf/facelets";
+    public final static String SUN_NAMESPACE = "http://java.sun.com/jsf/facelets";
 
     public final static UILibrary INSTANCE = new UILibrary();
 
     public UILibrary()
     {
-        super(NAMESPACE, ALIAS_NAMESPACE);
+        super(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
 
         this.addTagHandler("include", IncludeHandler.class);
 

@@ -479,25 +479,31 @@ final class CompilationManager
 
     protected static boolean isRemove(String ns, String name)
     {
-        return (UILibrary.NAMESPACE.equals(ns) || UILibrary.ALIAS_NAMESPACE.equals(ns)) && "remove".equals(name);
+        return "remove".equals(name) && (UILibrary.NAMESPACE.equals(ns)
+                || UILibrary.JCP_NAMESPACE.equals(ns)
+                || UILibrary.SUN_NAMESPACE.equals(ns));
     }
 
     protected static boolean isTrimmed(String ns, String name)
     {
-        return (UILibrary.NAMESPACE.equals(ns) || UILibrary.ALIAS_NAMESPACE.equals(ns))
-                && (CompositionHandler.NAME.equals(name) || ComponentRefHandler.NAME.equals(name));
+        return (CompositionHandler.NAME.equals(name) || ComponentRefHandler.NAME.equals(name)) &&
+                (UILibrary.NAMESPACE.equals(ns)
+                    || UILibrary.JCP_NAMESPACE.equals(ns)
+                    || UILibrary.SUN_NAMESPACE.equals(ns));
     }
     
     protected static boolean isCompositeComponentInterface(String ns, String name)
     {
-        return (CompositeLibrary.NAMESPACE.equals(ns) || CompositeLibrary.ALIAS_NAMESPACE.equals(ns))
-            && InterfaceHandler.NAME.equals(name);
+        return InterfaceHandler.NAME.equals(name) && (CompositeLibrary.NAMESPACE.equals(ns)
+                || CompositeLibrary.JCP_NAMESPACE.equals(ns)
+                || CompositeLibrary.SUN_NAMESPACE.equals(ns));
     }
 
     protected static boolean isCompositeComponentImplementation(String ns, String name)
     {
-        return (CompositeLibrary.NAMESPACE.equals(ns) || CompositeLibrary.ALIAS_NAMESPACE.equals(ns))
-            && ImplementationHandler.NAME.equals(name);
+        return ImplementationHandler.NAME.equals(name) && (CompositeLibrary.NAMESPACE.equals(ns)
+                || CompositeLibrary.JCP_NAMESPACE.equals(ns)
+                || CompositeLibrary.SUN_NAMESPACE.equals(ns));
     }
 
     private String[] determineQName(Tag tag)

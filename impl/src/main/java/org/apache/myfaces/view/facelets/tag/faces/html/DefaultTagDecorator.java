@@ -41,13 +41,9 @@ import org.apache.myfaces.view.facelets.tag.faces.core.CoreLibrary;
 public class DefaultTagDecorator implements TagDecorator
 {
     public final static String XHTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
-    public final static String JSF_NAMESPACE = JsfLibrary.NAMESPACE;
-    public final static String JSF_ALIAS_NAMESPACE = JsfLibrary.ALIAS_NAMESPACE;
-    public final static String PASS_THROUGH_NAMESPACE = PassThroughLibrary.NAMESPACE;
-    public final static String PASS_THROUGH_ALIAS_NAMESPACE = PassThroughLibrary.ALIAS_NAMESPACE;
     private final static String EMPTY_NAMESPACE = "";
     
-    private final static String P_ELEMENTNAME = "p:"+Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY;
+    private final static String P_ELEMENTNAME = "p:" + Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY;
     
     /**
      * Fast array for lookup of local names to be inspected. 
@@ -166,7 +162,9 @@ public class DefaultTagDecorator implements TagDecorator
 
         for (String namespace : tag.getAttributes().getNamespaces())
         {
-            if (JSF_NAMESPACE.equals(namespace) || JSF_ALIAS_NAMESPACE.equals(namespace))
+            if (JsfLibrary.NAMESPACE.equals(namespace)
+                    || JsfLibrary.JCP_NAMESPACE.equals(namespace)
+                    || JsfLibrary.SUN_NAMESPACE.equals(namespace))
             {
                 jsfNamespaceFound = true;
                 break;
@@ -224,8 +222,8 @@ public class DefaultTagDecorator implements TagDecorator
         }
         else
         {
-            throw new FaceletException("Attributes under "+JSF_NAMESPACE+
-                " can only be used for tags under "+ XHTML_NAMESPACE +" or tags with no namespace defined" );
+            throw new FaceletException("Attributes under " +JsfLibrary.NAMESPACE +
+                " can only be used for tags under " + XHTML_NAMESPACE + " or tags with no namespace defined" );
         }
     }
     
@@ -236,7 +234,7 @@ public class DefaultTagDecorator implements TagDecorator
         String elementNameTagLocalName = tag.getLocalName();
 
         TagAttribute elementNameTagAttribute = new TagAttributeImpl(
-            tag.getLocation(), PASS_THROUGH_NAMESPACE , Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY,
+            tag.getLocation(), PassThroughLibrary.NAMESPACE , Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY,
             P_ELEMENTNAME, elementNameTagLocalName );
         
         // 1. Count how many attributes requires to be duplicated
@@ -286,7 +284,9 @@ public class DefaultTagDecorator implements TagDecorator
                         component.
                 ..."        
             */            
-            if (JSF_NAMESPACE.equals(namespace) || JSF_ALIAS_NAMESPACE.equals(namespace))
+            if (JsfLibrary.NAMESPACE.equals(namespace)
+                    || JsfLibrary.JCP_NAMESPACE.equals(namespace)
+                    || JsfLibrary.SUN_NAMESPACE.equals(namespace))
             {
                 // "... If the current attribute's namespace is http://xmlns.jcp.org/jsf, convertedTagAttribute's 
                 //  qualified name must be the current attribute's local name and convertedTagAttribute's 
@@ -306,8 +306,8 @@ public class DefaultTagDecorator implements TagDecorator
                 // attribute to the passthrough attribute map, so there is an error in the spec documentation.
                 //convertedTagAttributes[j] = tagAttribute;
                 
-                convertedNamespace = PASS_THROUGH_NAMESPACE;
-                qname = "p:"+tagAttribute.getLocalName();
+                convertedNamespace = PassThroughLibrary.NAMESPACE;
+                qname = "p:" + tagAttribute.getLocalName();
                 
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());
@@ -321,7 +321,7 @@ public class DefaultTagDecorator implements TagDecorator
                 // attribute to the passthrough attribute map, so there is an error in the spec documentation.
                 //convertedTagAttributes[j] = tagAttribute;
                 
-                convertedNamespace = PASS_THROUGH_NAMESPACE;
+                convertedNamespace = PassThroughLibrary.NAMESPACE;
                 qname = "p:" + tagAttribute.getLocalName();
                 
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
@@ -334,9 +334,10 @@ public class DefaultTagDecorator implements TagDecorator
                 convertedTagAttributes[j] = tagAttribute;
             }
             
-            if (Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY.equals(convertedTagAttributes[j].getLocalName()) && (
-                PASS_THROUGH_NAMESPACE.equals(convertedTagAttributes[j].getNamespace()) || 
-                PASS_THROUGH_ALIAS_NAMESPACE.equals(convertedTagAttributes[j].getNamespace()) ) )
+            if (Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY.equals(convertedTagAttributes[j].getLocalName())
+                    && (PassThroughLibrary.NAMESPACE.equals(convertedTagAttributes[j].getNamespace())
+                        || PassThroughLibrary.JCP_NAMESPACE.equals(convertedTagAttributes[j].getNamespace())
+                        || PassThroughLibrary.SUN_NAMESPACE.equals(convertedTagAttributes[j].getNamespace())))
             {
                 elementNameTagAttributeSet = true;
             }
@@ -387,7 +388,8 @@ public class DefaultTagDecorator implements TagDecorator
         private String attributeLocalName;
         private String attributePrefix;
         private final String attributeNamespace;
-        private final String attributeAliasNamespace;
+        private final String attributeJcpNamespace;
+        private final String attributeSunNamespace;
         private String matchValue;
         
         private String targetQName;
@@ -427,7 +429,8 @@ public class DefaultTagDecorator implements TagDecorator
                 this.attributeLocalName = (j >= 0) ? attributeQName.substring(j+1) : attributeQName;
                 this.attributePrefix = (j >= 0) ? attributeQName.substring(0, j) : null;
                 this.attributeNamespace = resolveSelectorNamespace(this.attributePrefix);
-                this.attributeAliasNamespace = resolveAliasSelectorNamespace(this.attributePrefix);
+                this.attributeJcpNamespace = resolveJcpSelectorNamespace(this.attributePrefix);
+                this.attributeSunNamespace = resolveSunSelectorNamespace(this.attributePrefix);
             }
             else
             {
@@ -436,7 +439,8 @@ public class DefaultTagDecorator implements TagDecorator
                 this.attributeLocalName = null;
                 this.attributePrefix = null;
                 this.attributeNamespace = "";
-                this.attributeAliasNamespace = null;
+                this.attributeJcpNamespace = null;
+                this.attributeSunNamespace = null;
             }
             
             this.targetQName = targetQName;
@@ -453,7 +457,7 @@ public class DefaultTagDecorator implements TagDecorator
                     }
                     else if (j == 3 && targetQName.startsWith("jsf"))
                     {
-                        this.targetNamespace = JsfLibrary.ALIAS_NAMESPACE;
+                        this.targetNamespace = JsfLibrary.SUN_NAMESPACE;
                         this.targetLocalName = targetQName.substring(j+1);
                     }
                 }
@@ -473,11 +477,17 @@ public class DefaultTagDecorator implements TagDecorator
                  {
                      String attributeNS = attributeNamespace;
                      TagAttribute attr = tag.getAttributes().get(attributeNS, attributeLocalName);
-                     if (attr == null && attributeAliasNamespace.length() > 0)
+                     if (attr == null && attributeJcpNamespace.length() > 0)
                      {
-                         attributeNS = attributeAliasNamespace;
-                         attr = tag.getAttributes().get(attributeAliasNamespace, attributeLocalName);
+                         attributeNS = attributeJcpNamespace;
+                         attr = tag.getAttributes().get(attributeNS, attributeLocalName);
                      }
+                     if (attr == null && attributeSunNamespace.length() > 0)
+                     {
+                         attributeNS = attributeSunNamespace;
+                         attr = tag.getAttributes().get(attributeNS, attributeLocalName);
+                     }
+
                      if (attr != null)
                      {
                          if (attributeNS.equals(attr.getNamespace()) )
@@ -492,7 +502,7 @@ public class DefaultTagDecorator implements TagDecorator
                                  return this;
                              }
                          }
-                         else if (attributeNS == "" && attr.getNamespace() == null)
+                         else if ("".equals(attributeNS) && attr.getNamespace() == null)
                          {
                              // if namespace is empty match
                              if (matchValue.equals(attr.getValue()))
@@ -512,9 +522,15 @@ public class DefaultTagDecorator implements TagDecorator
                      TagAttribute attr = tag.getAttributes().get(attributeNS, attributeLocalName);
                      if (attr == null)
                      {
-                         attributeNS = attributeAliasNamespace;
+                         attributeNS = attributeJcpNamespace;
                          attr = tag.getAttributes().get(attributeNS, attributeLocalName);
                      }
+                     if (attr == null)
+                     {
+                         attributeNS = attributeSunNamespace;
+                         attr = tag.getAttributes().get(attributeNS, attributeLocalName);
+                     }
+                     
                      if (attr != null)
                      {
                          if (attributeNS.equals(attr.getNamespace()))
@@ -562,19 +578,36 @@ public class DefaultTagDecorator implements TagDecorator
         return "";
     }
 
-    private static String resolveAliasSelectorNamespace(String prefix)
+    private static String resolveJcpSelectorNamespace(String prefix)
     {
         if ("jsf".equals(prefix))
         {
-            return JsfLibrary.ALIAS_NAMESPACE;
+            return JsfLibrary.JCP_NAMESPACE;
         }
         else if ("h".equals(prefix))
         {
-            return HtmlLibrary.ALIAS_NAMESPACE;
+            return HtmlLibrary.JCP_NAMESPACE;
         }
         else if ("f".equals(prefix))
         {
-            return CoreLibrary.ALIAS_NAMESPACE;
+            return CoreLibrary.JCP_NAMESPACE;
+        }
+        return "";
+    }
+    
+    private static String resolveSunSelectorNamespace(String prefix)
+    {
+        if ("jsf".equals(prefix))
+        {
+            return JsfLibrary.SUN_NAMESPACE;
+        }
+        else if ("h".equals(prefix))
+        {
+            return HtmlLibrary.SUN_NAMESPACE;
+        }
+        else if ("f".equals(prefix))
+        {
+            return CoreLibrary.SUN_NAMESPACE;
         }
         return "";
     }

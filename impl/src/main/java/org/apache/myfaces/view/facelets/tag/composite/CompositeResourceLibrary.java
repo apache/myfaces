@@ -49,8 +49,9 @@ import org.apache.myfaces.view.facelets.tag.TagLibrary;
  */
 public class CompositeResourceLibrary implements TagLibrary
 {
-    public final static String NAMESPACE_PREFIX = "http://xmlns.jcp.org/jsf/composite/";
-    public final static String ALIAS_NAMESPACE_PREFIX = "http://java.sun.com/jsf/composite/";
+    public final static String NAMESPACE_PREFIX = "jakarta.faces.composite";
+    public final static String JCP_NAMESPACE_PREFIX = "http://xmlns.jcp.org/jsf/composite/";
+    public final static String SUN_NAMESPACE_PREFIX = "http://java.sun.com/jsf/composite/";
     
     private final ResourceHandler _resourceHandler;
     private Pattern _acceptPatterns;

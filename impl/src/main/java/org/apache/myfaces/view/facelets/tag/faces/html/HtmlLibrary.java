@@ -24,15 +24,15 @@ package org.apache.myfaces.view.facelets.tag.faces.html;
  */
 public final class HtmlLibrary extends AbstractHtmlLibrary
 {
-
-    public final static String NAMESPACE = "http://xmlns.jcp.org/jsf/html";
-    public final static String ALIAS_NAMESPACE = "http://java.sun.com/jsf/html";
+    public final static String NAMESPACE = "jakarta.faces.html";
+    public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsf/html";
+    public final static String SUN_NAMESPACE = "http://java.sun.com/jsf/html";
 
     public final static HtmlLibrary INSTANCE = new HtmlLibrary();
 
     public HtmlLibrary()
     {
-        super(NAMESPACE, ALIAS_NAMESPACE);
+        super(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
         
         this.addHtmlComponent("body", "jakarta.faces.OutputBody", "jakarta.faces.Body");
         

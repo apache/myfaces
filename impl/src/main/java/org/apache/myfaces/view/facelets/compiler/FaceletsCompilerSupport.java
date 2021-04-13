@@ -90,7 +90,9 @@ public class FaceletsCompilerSupport
         compiler.addTagLibrary(new CompositeResourceLibrary(context,
             CompositeResourceLibrary.NAMESPACE_PREFIX));
         compiler.addTagLibrary(new CompositeResourceLibrary(context,
-            CompositeResourceLibrary.ALIAS_NAMESPACE_PREFIX));
+            CompositeResourceLibrary.JCP_NAMESPACE_PREFIX));
+        compiler.addTagLibrary(new CompositeResourceLibrary(context,
+            CompositeResourceLibrary.SUN_NAMESPACE_PREFIX));
         compiler.addTagLibrary(new JsfLibrary());
         compiler.addTagLibrary(new PassThroughLibrary());
         

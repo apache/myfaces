@@ -198,11 +198,15 @@ public class CreateDynamicCompositeComponentListener
         }
         else if (taglibURI.startsWith(CompositeResourceLibrary.NAMESPACE_PREFIX))
         {
-            values[0] = new Object[]{0, taglibURI.substring(35)};
+            values[0] = new Object[]{0, taglibURI.substring(CompositeResourceLibrary.NAMESPACE_PREFIX.length())};
         }
-        else if(taglibURI.startsWith(CompositeResourceLibrary.ALIAS_NAMESPACE_PREFIX))
+        else if(taglibURI.startsWith(CompositeResourceLibrary.JCP_NAMESPACE_PREFIX))
         {
-            values[0] = new Object[]{1, taglibURI.substring(34)};
+            values[0] = new Object[]{1, taglibURI.substring(CompositeResourceLibrary.JCP_NAMESPACE_PREFIX.length())};
+        }
+        else if(taglibURI.startsWith(CompositeResourceLibrary.SUN_NAMESPACE_PREFIX))
+        {
+            values[0] = new Object[]{2, taglibURI.substring(CompositeResourceLibrary.SUN_NAMESPACE_PREFIX.length())};
         }
         else
         {
@@ -230,9 +234,23 @@ public class CreateDynamicCompositeComponentListener
         else if (values[0] instanceof Object[])
         {
             Object[] def = (Object[])values[0];
-            String ns = (((Integer) def[0]) == 0) ? 
-                CompositeResourceLibrary.NAMESPACE_PREFIX :
-                CompositeResourceLibrary.ALIAS_NAMESPACE_PREFIX;
+            int index = (Integer) def[0];
+            String ns;
+            switch (index)
+            {
+                case 0:
+                    ns = CompositeResourceLibrary.NAMESPACE_PREFIX;
+                    break;
+                case 1:
+                    ns = CompositeResourceLibrary.JCP_NAMESPACE_PREFIX;
+                    break;
+                case 2:
+                    ns = CompositeResourceLibrary.SUN_NAMESPACE_PREFIX;
+                    break;
+                default:
+                    ns = "";
+                    break;
+            }
             taglibURI = ns + (String) ((Object[]) values[0])[1];
         }
         tagName = (String)values[1];

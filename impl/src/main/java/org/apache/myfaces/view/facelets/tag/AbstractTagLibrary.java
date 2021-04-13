@@ -61,23 +61,29 @@ public abstract class AbstractTagLibrary implements TagLibrary
     private final Map<String, Method> _functions;
 
     private final String _namespace;
-    private final String _aliasNamespace;
+    private final String _jcpNamespace;
+    private final String _sunNamespace;
     private Boolean _strictJsf2FaceletsCompatibility;
 
-    public AbstractTagLibrary(String namespace, String aliasNamespace)
+    public AbstractTagLibrary(String namespace)
+    {
+        this(namespace, null, null);
+    }
+    
+    public AbstractTagLibrary(String namespace, String jcpNamespace)
+    {
+        this(namespace, jcpNamespace, null);
+    }
+    
+    public AbstractTagLibrary(String namespace, String jcpNamespace, String sunNamespace)
     {
         _namespace = namespace;
-        _aliasNamespace = aliasNamespace;
+        _jcpNamespace = jcpNamespace;
+        _sunNamespace = sunNamespace;
         _factories = new HashMap<>();
         _functions = new HashMap<>();
     }
-    
-    public AbstractTagLibrary(String namespace)
-    {
-        this(namespace,null);
-    }
-    
-
+ 
     /*
      * (non-Javadoc)
      * 
@@ -86,7 +92,9 @@ public abstract class AbstractTagLibrary implements TagLibrary
     @Override
     public boolean containsNamespace(String ns)
     {
-        return _namespace.equals(ns) || (_aliasNamespace != null && _aliasNamespace.equals(ns));
+        return _namespace.equals(ns)
+                || (_jcpNamespace != null && _jcpNamespace.equals(ns))
+                || (_sunNamespace != null && _sunNamespace.equals(ns));
     }
 
     /*

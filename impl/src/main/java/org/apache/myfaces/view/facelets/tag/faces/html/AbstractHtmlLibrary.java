@@ -32,11 +32,16 @@ public abstract class AbstractHtmlLibrary extends AbstractTagLibrary
         super(namespace);
     }
     
-    public AbstractHtmlLibrary(String namespace, String aliasNamespace)
+    public AbstractHtmlLibrary(String namespace, String jcpNamespace)
     {
-        super(namespace, aliasNamespace);
+        super(namespace, jcpNamespace);
     }    
 
+    public AbstractHtmlLibrary(String namespace, String jcpNamespace, String sunNamespace)
+    {
+        super(namespace, jcpNamespace, sunNamespace);
+    }   
+    
     public void addHtmlComponent(String name, String componentType, String rendererType)
     {
         super.addComponent(name, componentType, rendererType, HtmlComponentHandler.class);

@@ -62,7 +62,7 @@ import org.junit.Test;
  *
  * @author Leonardo Uribe
  */
-public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
+public class DefaultHtmlDecoratorTestCaseUrn extends FaceletTestCase
 {
     
     @Override
@@ -81,7 +81,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         request.getSession().setAttribute("test", new MockBean());
         
         UIViewRoot root = facesContext.getViewRoot();
-        vdl.buildView(facesContext, root, "testHtmlPassthrough1.xhtml");
+        vdl.buildView(facesContext, root, "testHtmlPassthrough1urn.xhtml");
 
         checkTags();
         
@@ -97,7 +97,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         request.getSession().setAttribute("test", new MockBean());
         
         UIViewRoot root = facesContext.getViewRoot();
-        vdl.buildView(facesContext, root, "testHtmlPassthrough2.xhtml");
+        vdl.buildView(facesContext, root, "testHtmlPassthrough2urn.xhtml");
         
         checkTags();
 
