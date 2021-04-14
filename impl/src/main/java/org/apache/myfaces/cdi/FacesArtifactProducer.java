@@ -92,14 +92,6 @@ public class FacesArtifactProducer
     {
        return FacesContext.getCurrentInstance();
     }
-    
-    @Produces
-    @Named("request")
-    @FacesScoped 
-    public Object getRequest()
-    {
-       return FacesContext.getCurrentInstance().getExternalContext().getRequest();
-    }
 
     @Produces
     @Named("externalContext")
