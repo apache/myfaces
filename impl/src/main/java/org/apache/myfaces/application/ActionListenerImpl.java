@@ -75,10 +75,11 @@ public class ActionListenerImpl implements ActionListener
         UIViewRoot root = facesContext.getViewRoot();
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool pool = (processor != null) ? processor.getViewPool(facesContext, root) : null;
-        if (pool != null && pool.isDeferredNavigationEnabled() && 
-            processor.isViewPoolStrategyAllowedForThisView(facesContext, root) &&
-            (PhaseId.INVOKE_APPLICATION.equals(facesContext.getCurrentPhaseId()) ||
-             PhaseId.APPLY_REQUEST_VALUES.equals(facesContext.getCurrentPhaseId())) )
+        if (pool != null
+                && pool.isDeferredNavigationEnabled()
+                && processor.isViewPoolStrategyAllowedForThisView(facesContext, root)
+                && (PhaseId.INVOKE_APPLICATION.equals(facesContext.getCurrentPhaseId())
+                    || PhaseId.APPLY_REQUEST_VALUES.equals(facesContext.getCurrentPhaseId())))
         {
             NavigationHandler navigationHandler = application.getNavigationHandler();
             if (navigationHandler instanceof ConfigurableNavigationHandler)
