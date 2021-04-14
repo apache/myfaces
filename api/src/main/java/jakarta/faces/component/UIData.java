@@ -52,10 +52,8 @@ import jakarta.faces.model.CollectionDataModel;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.IterableDataModel;
 import jakarta.faces.model.ListDataModel;
-import jakarta.faces.model.ResultDataModel;
 import jakarta.faces.model.ResultSetDataModel;
 import jakarta.faces.model.ScalarDataModel;
-import jakarta.servlet.jsp.jstl.sql.Result;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacet;
@@ -1984,10 +1982,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 {
                     return new ResultSetDataModel((ResultSet) value);
                 }
-                else if (value instanceof Result)
-                {
-                    return new ResultDataModel((Result) value);
-                }
                 else if (value instanceof Iterable)
                 {
                     return new IterableDataModel<>((Iterable<?>) value);
@@ -2019,8 +2013,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      * <ul>
      * <li>A value of type DataModel is used directly.</li>
-     * <li>Array-like parameters of type array-of-Object, java.util.List, java.sql.ResultSet or
-     * jakarta.servlet.jsp.jstl.sql.Result are wrapped in a corresponding DataModel that knows how to iterate over the
+     * <li>Array-like parameters of type array-of-Object, java.util.List or java.sql.ResultSet
+     * are wrapped in a corresponding DataModel that knows how to iterate over the
      * elements.</li>
      * <li>Other values are wrapped in a DataModel as a single row.</li>
      * </ul>

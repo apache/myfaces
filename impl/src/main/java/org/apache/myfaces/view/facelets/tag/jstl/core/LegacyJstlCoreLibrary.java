@@ -31,9 +31,9 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
  */
 public final class LegacyJstlCoreLibrary extends AbstractTagLibrary
 {
-
-    public final static String NAMESPACE = "http://xmlns.jcp.org/jsp/jstl/core";
-    public final static String ALIAS_NAMESPACE = "http://java.sun.com/jsp/jstl/core";
+    public final static String NAMESPACE = "jakarta.tags.core";
+    public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsp/jstl/core";
+    public final static String SUN_NAMESPACE = "http://java.sun.com/jsp/jstl/core";
 
     // This namespace was used in the early stages of JSF 2.0 development, but later
     // it was fixed to use the same syntax for jsp. But some applications still
@@ -45,7 +45,7 @@ public final class LegacyJstlCoreLibrary extends AbstractTagLibrary
 
     public LegacyJstlCoreLibrary()
     {
-        super(NAMESPACE, ALIAS_NAMESPACE);
+        super(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
 
         this.addTagHandler("if", IfHandler.class);
 
