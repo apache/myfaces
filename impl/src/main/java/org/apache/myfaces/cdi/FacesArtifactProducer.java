@@ -49,7 +49,7 @@ import org.apache.myfaces.flow.builder.FlowBuilderImpl;
 import org.apache.myfaces.push.cdi.PushContextImpl;
 
 @ApplicationScoped
-public class JsfArtifactProducer
+public class FacesArtifactProducer
 {
     @Produces
     @Named("application")
@@ -91,6 +91,14 @@ public class JsfArtifactProducer
     public FacesContext getFacesContext()
     {
        return FacesContext.getCurrentInstance();
+    }
+    
+    @Produces
+    @Named("request")
+    @FacesScoped 
+    public Object getRequest()
+    {
+       return FacesContext.getCurrentInstance().getExternalContext().getRequest();
     }
 
     @Produces

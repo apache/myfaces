@@ -30,7 +30,7 @@ import jakarta.servlet.ServletContext;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
+import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
@@ -38,7 +38,7 @@ import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 public abstract class AbstractContextualStorageHolder<T extends ContextualStorage> implements Serializable
 {
     @Inject
-    protected JsfApplicationArtifactHolder applicationContextBean;
+    protected FacesApplicationArtifactHolder applicationContextBean;
     
     @Inject
     protected BeanManager beanManager;
@@ -59,7 +59,7 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
         Object context = facesContext.getExternalContext().getContext();
         if (context instanceof ServletContext)
         {
-            JsfApplicationArtifactHolder appBean = CDIUtils.get(beanManager, JsfApplicationArtifactHolder.class);
+            FacesApplicationArtifactHolder appBean = CDIUtils.get(beanManager, FacesApplicationArtifactHolder.class);
             if (appBean.getServletContext() != null)
             {
                 appBean.setServletContext((ServletContext) context);

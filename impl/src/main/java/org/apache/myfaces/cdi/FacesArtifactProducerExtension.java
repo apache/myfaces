@@ -27,7 +27,7 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.faces.annotation.FacesConfig;
 
-public class JsfArtifactProducerExtension implements Extension
+public class FacesArtifactProducerExtension implements Extension
 {
     private boolean registerCdiProducers = false;
     
@@ -44,8 +44,8 @@ public class JsfArtifactProducerExtension implements Extension
     {        
         if (registerCdiProducers)
         {
-            AnnotatedType<JsfArtifactProducer> jsfArtifactProducer =
-                            beanManager.createAnnotatedType(JsfArtifactProducer.class);
+            AnnotatedType<FacesArtifactProducer> jsfArtifactProducer =
+                            beanManager.createAnnotatedType(FacesArtifactProducer.class);
             event.addAnnotatedType(jsfArtifactProducer, jsfArtifactProducer.getJavaClass().getName());
         }
     }
@@ -54,7 +54,7 @@ public class JsfArtifactProducerExtension implements Extension
     {
         if (registerCdiProducers)
         {
-            afterBeanDiscovery.addBean(new JsfArtifactFlowMapProducer(beanManager));
+            afterBeanDiscovery.addBean(new FacesArtifactFlowMapProducer(beanManager));
         }
     }
 

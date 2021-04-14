@@ -30,14 +30,14 @@ import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.cdi.util.ParameterizedTypeImpl;
 
 @ApplicationScoped
-public class JsfArtifactFlowMapProducer extends AbstractDynamicProducer
+public class FacesArtifactFlowMapProducer extends AbstractDynamicProducer
 {
     class FlowMapAnnotationLiteral extends AnnotationLiteral<FlowMap> implements FlowMap
     {
         private static final long serialVersionUID = -8623640277155878657L;
     }
     
-    public JsfArtifactFlowMapProducer(BeanManager beanManager)
+    public FacesArtifactFlowMapProducer(BeanManager beanManager)
     {
         super(beanManager);
         

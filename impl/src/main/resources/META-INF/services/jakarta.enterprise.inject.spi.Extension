@@ -1,6 +1,6 @@
 org.apache.myfaces.cdi.FacesScopeExtension
-org.apache.myfaces.cdi.JsfArtifactProducerExtension
-org.apache.myfaces.cdi.JsfApplicationArtifactHolderExtension
+org.apache.myfaces.cdi.FacesArtifactProducerExtension
+org.apache.myfaces.cdi.FacesApplicationArtifactHolderExtension
 org.apache.myfaces.cdi.config.FacesConfigExtension
 org.apache.myfaces.cdi.managedproperty.ManagedPropertyExtension
 org.apache.myfaces.cdi.model.FacesDataModelExtension

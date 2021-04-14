@@ -18,18 +18,25 @@
  */
 package org.apache.myfaces.cdi;
 
-import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.spi.AnnotatedType;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
-import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.ServletContext;
 
-public class JsfApplicationArtifactHolderExtension implements Extension
+/**
+ * This bean is used to store the ServletContext, so CDI beans can get it later. This is
+ * used to ensure a valid FacesContext instance is passed when the bean is destroyed.
+ */
+@ApplicationScoped
+public class FacesApplicationArtifactHolder
 {
-    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
+    private ServletContext servletContext;
+
+    public ServletContext getServletContext() 
     {
-        AnnotatedType jsfApplicationArtifactHolder =
-                beanManager.createAnnotatedType(JsfApplicationArtifactHolder.class);
-        event.addAnnotatedType(jsfApplicationArtifactHolder, jsfApplicationArtifactHolder.getJavaClass().getName());
+        return servletContext;
+    }
+
+    public void setServletContext(ServletContext servletContext)
+    {
+        this.servletContext = servletContext;
     }
 }
