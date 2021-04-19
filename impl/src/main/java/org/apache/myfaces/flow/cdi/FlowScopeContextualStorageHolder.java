@@ -81,7 +81,7 @@ public class FlowScopeContextualStorageHolder
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
         Integer numberOfClientWindowsInSession =
-                MyfacesConfig.getCurrentInstance(facesContext).getNumberOfClientWindowsInSession();
+                MyfacesConfig.getCurrentInstance(facesContext).getNumberOfClientWindows();
         clientWindowExpirationStack = new LRULinkedHashMap<>(numberOfClientWindowsInSession, (eldest) ->
         {
             clearFlowMap(FacesContext.getCurrentInstance(), eldest.getKey());

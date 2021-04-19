@@ -38,6 +38,16 @@ public abstract class ClientWindow
     public static final String CLIENT_WINDOW_MODE_PARAM_NAME = 
             "jakarta.faces.CLIENT_WINDOW_MODE";
 
+    /**
+     * Indicate the max number of ClientWindows, which is used by {@link ClientWindowScoped}.
+     * It is only active when jakarta.faces.CLIENT_WINDOW_MODE is enabled.
+     *
+     * @since 4.0
+     */
+    @JSFWebConfigParam(since="4.0", group="state", tags="performance", defaultValue = "10")
+    public static final String NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME = 
+            "jakarta.faces.NUMBER_OF_CLIENT_WINDOWS";
+
     private static final String CLIENT_WINDOW_RENDER_MODE_DISABLED = 
             "org.apache.myfaces.CLIENT_WINDOW_URL_QUERY_PARAMETER_DISABLED";
     
