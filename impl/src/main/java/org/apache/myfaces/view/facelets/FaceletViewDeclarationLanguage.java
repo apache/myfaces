@@ -905,10 +905,14 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                 if (currentHandler instanceof
                                         ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper)
                                 {
+                                    ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper wrapper =
+                                            (ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper) currentHandler;
                                     currentHandler.applyAttachedObject(context,
-                                            new ClientBehaviorRedirectEventComponentWrapper(component,
-                                            ((ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper)
-                                                    currentHandler).getWrappedEventName(), eventName));
+                                            new ClientBehaviorRedirectEventComponentWrapper(
+                                                topLevelComponent,
+                                                component,
+                                                wrapper.getWrappedEventName(),
+                                                eventName));
                                 }
                                 else
                                 {

@@ -62,7 +62,7 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
     public List<UIComponent> getTargets(UIComponent topLevelComponent)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        String [] targetsArray = getTargets(facesContext);
+        String[] targetsArray = getTargets(facesContext);
         
         if (targetsArray.length > 0)
         {
@@ -76,8 +76,11 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
                     if (innerComponent instanceof ClientBehaviorHolder
                             || UIComponent.isCompositeComponent(innerComponent))
                     {
-                        targetsList.add(
-                                new ClientBehaviorRedirectEventComponentWrapper(innerComponent, getName(), getEvent()));
+                        targetsList.add(new ClientBehaviorRedirectEventComponentWrapper(
+                                topLevelComponent,
+                                innerComponent,
+                                getName(),
+                                getEvent()));
                     }
                     else
                     {
@@ -105,8 +108,11 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
                         UIComponent.isCompositeComponent(innerComponent))
                     {
                         List<UIComponent> targetsList = new ArrayList<>(1);
-                        targetsList.add(
-                                new ClientBehaviorRedirectEventComponentWrapper(innerComponent, getName(), getEvent()));
+                        targetsList.add(new ClientBehaviorRedirectEventComponentWrapper(
+                                topLevelComponent,
+                                innerComponent, 
+                                getName(), 
+                                getEvent()));
                         return targetsList;
                     }
                     else

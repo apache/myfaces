@@ -274,7 +274,6 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
     }
     
     @Test
-    @Ignore
     public void testSimpleClientBehaviorProcessThisInCC() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -296,8 +295,7 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         
         String content = render(root);
         
-        Assert.assertTrue(content.contains("myfaces.ab(this,event,&apos;action&apos;,&apos;form:cc&apos;")
-            || content.contains("myfaces.ab(this,event,&apos;action&apos;,&apos;@this&apos;"));
+        Assert.assertTrue(content.contains("myfaces.ab(this,event,&apos;action&apos;,&apos;form:cc&apos;,&apos;form:cc&apos;"));
     }
  
 }

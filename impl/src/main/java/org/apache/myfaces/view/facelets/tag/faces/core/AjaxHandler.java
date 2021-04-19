@@ -44,6 +44,7 @@ import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
 import jakarta.faces.view.facelets.TagHandler;
+import java.util.ArrayList;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
@@ -57,6 +58,7 @@ import org.apache.myfaces.view.facelets.tag.ui.DecorateHandler;
 import org.apache.myfaces.view.facelets.tag.ui.IncludeHandler;
 import org.apache.myfaces.view.facelets.tag.ui.InsertHandler;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
+import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectEventComponentWrapper;
 
 /**
  * This tag creates an instance of AjaxBehavior, and associates it with the nearest 
@@ -470,7 +472,7 @@ public class AjaxHandler extends TagHandler implements
                         _delay.getValueExpression(faceletContext, String.class));
             }
         }
-       if (_resetValues != null)
+        if (_resetValues != null)
         {
             if (_resetValues.isLiteral())
             {
@@ -482,6 +484,33 @@ public class AjaxHandler extends TagHandler implements
                         _resetValues.getValueExpression(faceletContext, Boolean.class));
             }
         }
+
+        // map @this in a composite to @composite
+        if (parent instanceof ClientBehaviorRedirectEventComponentWrapper)
+        {
+            UIComponent composite = ((ClientBehaviorRedirectEventComponentWrapper) parent).getComposite();
+            if (composite != null)
+            {
+                Collection<String> execute = ajaxBehavior.getExecute();              
+                if (execute != null && execute.contains("@this"))
+                {
+                    Collection<String> newExecute = new ArrayList<>(execute);
+                    newExecute.remove("@this");
+                    newExecute.add("@composite");
+                    ajaxBehavior.setExecute(newExecute);
+                }
+
+                Collection<String> render = ajaxBehavior.getRender();              
+                if (render != null && render.contains("@this"))
+                {
+                    Collection<String> newRender = new ArrayList<>(render);
+                    newRender.remove("@this");
+                    newRender.add("@composite");
+                    ajaxBehavior.setRender(newRender);
+                }
+            }
+        }
+
         cvh.addClientBehavior(eventName, ajaxBehavior);
     }
 

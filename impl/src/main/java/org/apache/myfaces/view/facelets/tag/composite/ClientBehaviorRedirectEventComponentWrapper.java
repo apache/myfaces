@@ -62,15 +62,16 @@ import jakarta.faces.render.Renderer;
 public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent 
     implements FacesWrapper<UIComponent>, ClientBehaviorHolder
 {
-
+    private final UIComponent _composite;
     private final UIComponent _delegate;
     private final String _sourceEvent; //cc:clientBehavior "name"
     private final String _targetEvent; //cc:clientBehavior "event"
 
-    public ClientBehaviorRedirectEventComponentWrapper(UIComponent delegate,
+    public ClientBehaviorRedirectEventComponentWrapper(UIComponent composite, UIComponent delegate,
             String sourceEvent, String targetEvent)
     {
         super();
+        _composite = composite;
         _delegate = delegate;
         _sourceEvent = sourceEvent;
         _targetEvent = targetEvent;
@@ -485,5 +486,15 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
     public Map<String, Object> getPassThroughAttributes(boolean create)
     {
         return getWrapped().getPassThroughAttributes(create);
+    }
+
+    public UIComponent getComposite()
+    {
+        return _composite;
+    }
+
+    public UIComponent getDelegate()
+    {
+        return _delegate;
     }
 }
