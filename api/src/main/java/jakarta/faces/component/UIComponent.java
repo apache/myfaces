@@ -98,28 +98,6 @@ public abstract class UIComponent
     public static final String COMPOSITE_FACET_NAME = "jakarta.faces.component.COMPOSITE_FACET_NAME";
 
     /**
-     * Constant used to store the current component that is being processed.
-     *
-     * @see #pushComponentToEL(FacesContext, UIComponent)
-     * @see #popComponentFromEL(FacesContext)
-     * 
-     *  @deprecated
-     */
-    @Deprecated
-    public static final String CURRENT_COMPONENT = "jakarta.faces.component.CURRENT_COMPONENT";
-
-    /**
-     * Constant used to store the current composite component that is being processed. 
-     *
-     * @see #pushComponentToEL(FacesContext, UIComponent)
-     * @see #popComponentFromEL(FacesContext)
-     * 
-     * @deprecated
-     */
-    @Deprecated
-    public static final String CURRENT_COMPOSITE_COMPONENT = "jakarta.faces.component.CURRENT_COMPOSITE_COMPONENT";
-
-    /**
      * This constant has two usages. The first one is in component attribute map to identify the 
      * facet name under this component is child of its parent. The second one is on BeanInfo descriptor
      * as a key for a Map&lt;String, PropertyDescriptor&gt; that contains metadata information defined
@@ -136,15 +114,6 @@ public abstract class UIComponent
 
     public static final String ATTRS_WITH_DECLARED_DEFAULT_VALUES
             = "jakarta.faces.component.ATTR_NAMES_WITH_DEFAULT_VALUES";
-
-    /**
-     * Indicate if the facesContext attribute values under the keys jakarta.faces.component.CURRENT_COMPONENT and
-     * jakarta.faces.component.CURRENT_COMPOSITE_COMPONENT should be valid or not. By default, those keys are
-     * deprecated since 2.1
-     */
-    @JSFWebConfigParam(since = "2.1.0", expectedValues = "true, false", defaultValue = "false")
-    public static final String HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME
-            = "jakarta.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES";
 
     /**
      * The key under which the component stack is stored in the FacesContext.
@@ -172,9 +141,6 @@ public abstract class UIComponent
      * to be implemented from here and internally it depends from this property.
      */
     private boolean _initialStateMarked = false;
-
-    /** Value of the {@link UIComponent#HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME} parameter */
-    private Boolean _honorCurrentComponentAttributes;
 
     public UIComponent()
     {
@@ -455,45 +421,14 @@ public abstract class UIComponent
      */
     public static UIComponent getCurrentComponent(FacesContext context)
     {
-        Boolean honorCurrentComponentAttributes = null;
-
-        if (context.getViewRoot() != null)
+        List<UIComponent> componentStack
+                = (List<UIComponent>) context.getAttributes().get(UIComponent._COMPONENT_STACK);
+        if (componentStack != null && !componentStack.isEmpty())
         {
-            honorCurrentComponentAttributes = ((UIComponent)context.getViewRoot())._honorCurrentComponentAttributes;
-            if (honorCurrentComponentAttributes == null)
-            {
-                honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
-            }
-        }
-        else
-        {
-            honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+            return componentStack.get(componentStack.size()-1);
         }
 
-        if (Boolean.TRUE.equals(honorCurrentComponentAttributes))
-        {
-            return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPONENT);
-        }
-        else
-        {
-            List<UIComponent> componentStack
-                    = (List<UIComponent>) context.getAttributes().get(UIComponent._COMPONENT_STACK);
-            if (componentStack == null)
-            {
-                return null;
-            }
-            else
-            {
-                if (componentStack.size() > 0)
-                {
-                    return componentStack.get(componentStack.size()-1);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
+        return null;
     }
 
     /**
@@ -505,29 +440,7 @@ public abstract class UIComponent
      */
     public static UIComponent getCurrentCompositeComponent(FacesContext context)
     {
-        Boolean honorCurrentComponentAttributes = null;
-
-        if (context.getViewRoot() != null)
-        {
-            honorCurrentComponentAttributes = ((UIComponent)context.getViewRoot())._honorCurrentComponentAttributes;
-            if (honorCurrentComponentAttributes == null)
-            {
-                honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
-            }
-        }
-        else
-        {
-            honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
-        }
-
-        if (Boolean.TRUE.equals(honorCurrentComponentAttributes))
-        {
-            return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPOSITE_COMPONENT);
-        }
-        else
-        {
-            return (UIComponent) context.getAttributes().get(UIComponent._CURRENT_COMPOSITE_COMPONENT_KEY);
-        }
+        return (UIComponent) context.getAttributes().get(UIComponent._CURRENT_COMPOSITE_COMPONENT_KEY);
     }
 
     public abstract String getFamily();
@@ -1117,114 +1030,42 @@ public abstract class UIComponent
     {
         Map<Object, Object> contextAttributes = context.getAttributes();
 
-        if (_honorCurrentComponentAttributes == null)
+        // Pop the current UIComponent from the FacesContext attributes map so that the previous 
+        // UIComponent, if any, becomes the current component.
+        List<UIComponent> componentStack
+                = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+
+        UIComponent oldCurrent = null;
+        if (componentStack != null && !componentStack.isEmpty())
         {
-            _honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
-        }
-
-        if (Boolean.TRUE.equals(_honorCurrentComponentAttributes))
-        {
-            // Pop the current UIComponent from the FacesContext attributes map so that the previous 
-            // UIComponent, if any, becomes the current component.
-            List<UIComponent> componentStack
-                    = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
-
-            UIComponent oldCurrent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
-
-            UIComponent newCurrent = null;
-            if (componentStack != null && !componentStack.isEmpty())
+            int componentIndex = componentStack.lastIndexOf(this);
+            if (componentIndex >= 0)
             {
-                if (!this.equals(oldCurrent))
+                for (int i = componentStack.size()-1; i >= componentIndex ; i--)
                 {
-                    //Check on the componentStack if it can be found
-                    int componentIndex = componentStack.lastIndexOf(this);
-                    if (componentIndex >= 0)
-                    {
-                        for (int i = componentStack.size()-1; i >= componentIndex ; i--)
-                        {
-                            newCurrent = componentStack.remove(componentStack.size()-1);
-                        }
-                    }
-                    else
-                    {
-                        //Component not found on the stack. Do not pop.
-                        return;
-                    }
-                }
-                else
-                {
-                    newCurrent = componentStack.remove(componentStack.size()-1);
+                    oldCurrent = componentStack.remove(componentStack.size()-1);
                 }
             }
             else
             {
-                //Reset the current composite component
-                contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, null);
-            }
-            oldCurrent = (UIComponent) contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
-
-            if (oldCurrent != null && oldCurrent._isCompositeComponent() && newCurrent != null)
-            {
-                // Recalculate the current composite component
-                if (newCurrent._isCompositeComponent())
-                {
-                    contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, newCurrent);
-                }
-                else
-                {
-                    UIComponent previousCompositeComponent = null;
-                    for (int i = componentStack.size() - 1; i >= 0; i--)
-                    {
-                        UIComponent component = componentStack.get(i);
-                        if (component._isCompositeComponent())
-                        {
-                            previousCompositeComponent = component;
-                            break;
-                        }
-                    }
-                    contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, previousCompositeComponent);
-                }
+                return;
             }
         }
-        else
+
+        if (oldCurrent != null && oldCurrent._isCompositeComponent())
         {
-            // Pop the current UIComponent from the FacesContext attributes map so that the previous 
-            // UIComponent, if any, becomes the current component.
-            List<UIComponent> componentStack
-                    = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
-
-            UIComponent oldCurrent = null;
-            if (componentStack != null && !componentStack.isEmpty())
+            // Recalculate the current composite component
+            UIComponent previousCompositeComponent = null;
+            for (int i = componentStack.size() - 1; i >= 0; i--)
             {
-                int componentIndex = componentStack.lastIndexOf(this);
-                if (componentIndex >= 0)
+                UIComponent component = componentStack.get(i);
+                if (component._isCompositeComponent())
                 {
-                    for (int i = componentStack.size()-1; i >= componentIndex ; i--)
-                    {
-                        oldCurrent = componentStack.remove(componentStack.size()-1);
-                    }
-                }
-                else
-                {
-                    return;
+                    previousCompositeComponent = component;
+                    break;
                 }
             }
-
-            if (oldCurrent != null && oldCurrent._isCompositeComponent())
-            {
-                // Recalculate the current composite component
-                UIComponent previousCompositeComponent = null;
-                for (int i = componentStack.size() - 1; i >= 0; i--)
-                {
-                    UIComponent component = componentStack.get(i);
-                    if (component._isCompositeComponent())
-                    {
-                        previousCompositeComponent = component;
-                        break;
-                    }
-                }
-                contextAttributes.put(UIComponent._CURRENT_COMPOSITE_COMPONENT_KEY, previousCompositeComponent);
-            }
+            contextAttributes.put(UIComponent._CURRENT_COMPOSITE_COMPONENT_KEY, previousCompositeComponent);
         }
     }
 
@@ -1238,52 +1079,17 @@ public abstract class UIComponent
 
         Map<Object, Object> contextAttributes = context.getAttributes();
 
-        if (_honorCurrentComponentAttributes == null)
+        List<UIComponent> componentStack = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+        if (componentStack == null)
         {
-            _honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+            componentStack = new ArrayList<>();
+            contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
         }
 
-        if (Boolean.TRUE.equals(_honorCurrentComponentAttributes))
+        componentStack.add(component);
+        if (component._isCompositeComponent())
         {
-            UIComponent currentComponent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
-
-            if (currentComponent != null)
-            {
-                List<UIComponent> componentStack = (List<UIComponent>)
-                        contextAttributes.get(UIComponent._COMPONENT_STACK);
-                if (componentStack == null)
-                {
-                    componentStack = new ArrayList<>();
-                    contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
-                }
-
-                componentStack.add(currentComponent);
-            }
-
-            // Push the current UIComponent this to the FacesContext  attribute map using the key CURRENT_COMPONENT 
-            // saving the previous UIComponent associated with CURRENT_COMPONENT for a subsequent call to 
-            // popComponentFromEL(jakarta.faces.context.FacesContext).
-            contextAttributes.put(UIComponent.CURRENT_COMPONENT, component);
-
-            if (component._isCompositeComponent())
-            {
-                contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
-            }
-        }
-        else
-        {
-            List<UIComponent> componentStack = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
-            if (componentStack == null)
-            {
-                componentStack = new ArrayList<>();
-                contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
-            }
-
-            componentStack.add(component);
-            if (component._isCompositeComponent())
-            {
-                contextAttributes.put(UIComponent._CURRENT_COMPOSITE_COMPONENT_KEY, component);
-            }
+            contextAttributes.put(UIComponent._CURRENT_COMPOSITE_COMPONENT_KEY, component);
         }
     }
 
@@ -1312,32 +1118,6 @@ public abstract class UIComponent
     // Dummy method to prevent cast for UIComponentBase when caching
     void setCachedFacesContext(FacesContext facesContext)
     {
-    }
-
-    /**
-     * Gets value of "jakarta.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES" parameter cached in facesContext.attributes 
-     * or resolves that param and caches its value in facesContext.attributes.    
-     *
-     * @return canonical Boolean value for parameter "jakarta.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES"
-     */
-    private static Boolean _getHonorCurrentComponentAttributes(FacesContext facesContext)
-    {
-        // performance note: we cache value in facesContext.attributes because
-        // 1) methods pushComponentToEL, popComponentFromEl, getCurrentComponent a getCurrentCompositeComponent
-        // can use that value
-        // 2) getExternalContext().getInitParameter has undetermined performance. In typical JSF app, there
-        // are one or two wrappers around external context; servletContext.getInitParameter has also unknown 
-        // implementation and performance
-        Map<Object, Object> attributes = facesContext.getAttributes();
-        Boolean paramValue = (Boolean) attributes.get(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
-        if (paramValue == null)
-        {
-            String param
-                    = facesContext.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
-            paramValue = (param != null && Boolean.parseBoolean(param));
-            attributes.put(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME, paramValue);
-        }
-        return paramValue;
     }
 
     private static class BundleMap implements Map<String, String>
