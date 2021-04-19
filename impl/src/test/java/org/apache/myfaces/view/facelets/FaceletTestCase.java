@@ -37,6 +37,7 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.RenderKitFactory;
+import java.io.IOException;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ViewHandlerImpl;
@@ -57,6 +58,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
 import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
@@ -209,17 +211,20 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         ViewHandlerImpl viewHandler = (ViewHandlerImpl) facesContext.getApplication().getViewHandler();
         viewHandler.setViewIdSupport(new ViewIdSupport(facesContext){
 
+            @Override
             public String calculateActionURL(FacesContext facesContext,
                     String viewId)
             {
                 return viewId;
             }
 
+            @Override
             public String deriveLogicalViewId(FacesContext context, String viewId)
             {
                 return viewId;
             }
             
+            @Override
             public String deriveViewId(FacesContext context, String viewId)
             {
                 return viewId;
@@ -401,4 +406,15 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         }
     }
 
+    protected String render(UIViewRoot root) throws IOException
+    {
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        
+        root.encodeAll(facesContext);
+        sw.flush();
+        
+        return sw.toString();
+    }
 }

@@ -26,6 +26,7 @@ import jakarta.faces.component.UIViewRoot;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
@@ -271,4 +272,32 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         //sw.flush();
         //System.out.print(sw.toString());
     }
+    
+    @Test
+    @Ignore
+    public void testSimpleClientBehaviorProcessThisInCC() throws Exception
+    {
+        HelloWorld helloWorld = new HelloWorld(); 
+        
+        facesContext.getExternalContext().getRequestMap().put("helloWorldBean",
+                helloWorld);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testSimpleClientBehaviorProcessThisInCC.xhtml");
+        
+        UIComponent form = root.findComponent("form");
+        Assert.assertNotNull(form);
+        UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
+        Assert.assertNotNull(compositeComponent);
+        UICommand button = (UICommand) compositeComponent.findComponent("button");
+        Assert.assertNotNull(button);
+        Assert.assertNotNull(button.getClientBehaviors().get("action"));
+        Assert.assertEquals(1, button.getClientBehaviors().get("action").size());
+        
+        String content = render(root);
+        
+        Assert.assertTrue(content.contains("myfaces.ab(this,event,&apos;action&apos;,&apos;form:cc&apos;")
+            || content.contains("myfaces.ab(this,event,&apos;action&apos;,&apos;@this&apos;"));
+    }
+ 
 }
