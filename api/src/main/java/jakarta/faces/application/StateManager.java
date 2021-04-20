@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * Responsible for storing sufficient information about a component tree so that an identical tree can later be
@@ -293,10 +294,7 @@ public abstract class StateManager
 
     public boolean isSavingStateInClient(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
         if (_savingStateInClient != null)
         {
             return _savingStateInClient;

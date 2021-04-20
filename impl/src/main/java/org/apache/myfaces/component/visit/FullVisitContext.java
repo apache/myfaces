@@ -30,7 +30,7 @@ import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * <p>

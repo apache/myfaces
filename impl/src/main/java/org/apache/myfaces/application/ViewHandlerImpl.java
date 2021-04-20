@@ -52,7 +52,7 @@ import jakarta.faces.view.ViewMetadata;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.view.facelets.StateWriter;
 
 /**

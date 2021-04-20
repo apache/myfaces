@@ -37,7 +37,7 @@ import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.view.facelets.TagDecorator;
 
 import org.apache.myfaces.config.element.FaceletsProcessing;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.BaseMultipleTagDecorator;
 import org.apache.myfaces.view.facelets.tag.BaseTagDecorator;

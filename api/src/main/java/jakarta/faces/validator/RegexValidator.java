@@ -28,6 +28,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * <p>
@@ -113,14 +114,8 @@ public class RegexValidator implements Validator, PartialStateHolder
     @Override
     public void validate(FacesContext context, UIComponent component, Object value)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
 
         if (value == null)
         {
@@ -168,10 +163,7 @@ public class RegexValidator implements Validator, PartialStateHolder
     @Override
     public Object saveState(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         if (!initialStateMarked())
         {
@@ -184,10 +176,7 @@ public class RegexValidator implements Validator, PartialStateHolder
     @Override
     public void restoreState(FacesContext context, Object state)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         if (state != null)
         {

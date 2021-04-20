@@ -53,7 +53,7 @@ import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import org.apache.myfaces.core.api.shared.SharedRendererUtils;
 
 import org.apache.myfaces.util.lang.HashMapUtils;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public final class RendererUtils

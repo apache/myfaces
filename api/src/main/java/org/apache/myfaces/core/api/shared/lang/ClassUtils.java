@@ -131,10 +131,8 @@ public class ClassUtils
      */
     public static <T> Class<T> classForName(String type) throws ClassNotFoundException
     {
-        if (type == null)
-        {
-            throw new NullPointerException("type");
-        }
+        Assert.notNull(type, "type");
+ 
         try
         {
             // Try WebApp ClassLoader first
@@ -207,10 +205,7 @@ public class ClassUtils
      */
     public static Class<?> javaTypeToClass(String type) throws ClassNotFoundException
     {
-        if (type == null)
-        {
-            throw new NullPointerException("type");
-        }
+        Assert.notNull(type, "type");
 
         // try common types and arrays of common types first
         Class<?> clazz = COMMON_TYPES.get(type);
@@ -265,10 +260,7 @@ public class ClassUtils
     public static Class javaDefaultTypeToClass(String type)
             throws ClassNotFoundException
     {
-        if (type == null)
-        {
-            throw new NullPointerException("type");
-        }
+        Assert.notNull(type, "type");
 
         // try common types and arrays of common types first
         Class clazz = (Class) COMMON_TYPES.get(type);

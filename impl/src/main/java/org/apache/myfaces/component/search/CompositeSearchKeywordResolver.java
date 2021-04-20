@@ -23,7 +23,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchKeywordContext;
 import jakarta.faces.component.search.SearchKeywordResolver;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 public class CompositeSearchKeywordResolver extends SearchKeywordResolver
 {

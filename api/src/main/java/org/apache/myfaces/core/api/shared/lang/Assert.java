@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util.lang;
+package org.apache.myfaces.core.api.shared.lang;
 
 public class Assert
 {

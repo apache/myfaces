@@ -45,7 +45,7 @@ import org.apache.myfaces.cdi.FacesScopeContext;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.context.ReleasableFacesContextFactory;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

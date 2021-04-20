@@ -25,7 +25,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

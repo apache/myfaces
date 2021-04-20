@@ -57,7 +57,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 import org.apache.myfaces.core.api.shared.ELContextDecorator;
 import org.apache.myfaces.core.api.shared.FacesMessageInterpolator;
 import org.apache.myfaces.core.api.shared.ValueReferenceResolver;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.MessageUtils;
 import org.apache.myfaces.util.MyFacesObjectInputStream;

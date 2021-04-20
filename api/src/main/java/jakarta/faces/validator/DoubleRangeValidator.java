@@ -26,6 +26,7 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * Creates a validator and associateds it with the nearest parent
@@ -79,14 +80,8 @@ public class DoubleRangeValidator
     public void validate(FacesContext facesContext, UIComponent uiComponent, Object value)
             throws ValidatorException
     {
-        if (facesContext == null)
-        {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
-        }
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(uiComponent, "uiComponent");
 
         if (value == null)
         {
@@ -180,10 +175,7 @@ public class DoubleRangeValidator
     @Override
     public Object saveState(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         if (!initialStateMarked())
         {
@@ -198,10 +190,7 @@ public class DoubleRangeValidator
     @Override
     public void restoreState(FacesContext context, Object state)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
         
         if (state != null)
         {

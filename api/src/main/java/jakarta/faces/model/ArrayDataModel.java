@@ -18,6 +18,8 @@
  */
 package jakarta.faces.model;
 
+import org.apache.myfaces.core.api.shared.lang.Assert;
+
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  */
@@ -35,10 +37,7 @@ public class ArrayDataModel<E> extends DataModel<E>
 
     public ArrayDataModel(E[] array)
     {
-        if (array == null)
-        {
-            throw new NullPointerException("array");
-        }
+        Assert.notNull(array, "array");
         setWrappedData(array);
     }
 

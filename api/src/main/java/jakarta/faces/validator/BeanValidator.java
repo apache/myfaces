@@ -47,6 +47,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.core.api.shared.FacesMessageInterpolator;
 import org.apache.myfaces.core.api.shared.ValueReferenceResolver;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 
 /**
@@ -137,14 +138,8 @@ public class BeanValidator implements Validator, PartialStateHolder
     @Override
     public void validate(final FacesContext context, final UIComponent component, final Object value)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
 
         ValueExpression valueExpression = component.getValueExpression("value");
         if (valueExpression == null)
@@ -374,10 +369,7 @@ public class BeanValidator implements Validator, PartialStateHolder
     @Override
     public Object saveState(final FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         if (!initialStateMarked())
         {
@@ -402,10 +394,7 @@ public class BeanValidator implements Validator, PartialStateHolder
     @Override
     public void restoreState(final FacesContext context, final Object state)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         if (state != null)
         {

@@ -42,6 +42,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProp
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.core.api.shared.ExternalSpecifications;
 import org.apache.myfaces.core.api.shared.MessageUtils;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * Base class for the various component classes that allow a user to select zero or more options from a set.
@@ -94,10 +95,7 @@ public class UISelectMany extends UIInput
     @Override
     public ValueExpression getValueExpression(String name)
     {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
+        Assert.notNull(name, "name");
         
         if (name.equals("selectedValues"))
         {
@@ -112,10 +110,7 @@ public class UISelectMany extends UIInput
     @Override
     public void setValueExpression(String name, ValueExpression binding)
     {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
+        Assert.notNull(name, "name");
         
         if (name.equals("selectedValues"))
         {

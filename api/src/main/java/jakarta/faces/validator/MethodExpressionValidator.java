@@ -24,6 +24,7 @@ import jakarta.el.MethodExpression;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -42,11 +43,7 @@ public class MethodExpressionValidator implements Validator, StateHolder
 
     public MethodExpressionValidator(MethodExpression methodExpression)
     {
-        if (methodExpression == null)
-        {
-            throw new NullPointerException("methodExpression can not be null.");
-        }
-
+        Assert.notNull(methodExpression, "methodExpression");
         this.methodExpression = methodExpression;
     }
 
@@ -93,10 +90,7 @@ public class MethodExpressionValidator implements Validator, StateHolder
     @Override
     public void restoreState(FacesContext context, Object state)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         methodExpression = (MethodExpression)state;
     }
@@ -104,10 +98,7 @@ public class MethodExpressionValidator implements Validator, StateHolder
     @Override
     public Object saveState(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         return methodExpression;
     }

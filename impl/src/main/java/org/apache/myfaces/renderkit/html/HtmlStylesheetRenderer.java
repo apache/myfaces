@@ -39,7 +39,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;

@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.Map;
 
 import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @since 2.0
@@ -75,10 +76,8 @@ public abstract class Resource extends ViewResource
 
     public void setResourceName(String resourceName)
     {
-        if (resourceName == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(resourceName);
+
         _resourceName = resourceName;
     }
     

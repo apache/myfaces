@@ -59,7 +59,7 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.context.flash.FlashImpl;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.lang.EnumerationIterator;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;

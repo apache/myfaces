@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import jakarta.faces.FacesException;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -97,10 +98,8 @@ public class PhaseId implements Comparable
 
     public static PhaseId phaseIdValueOf(String phase)
     {
-        if (phase == null)
-        {
-            throw new NullPointerException("phase");
-        }
+        Assert.notNull(phase, "phase");
+        
         for (int i = 0; i < VALUES.size(); i++)
         {
             PhaseId phaseId = VALUES.get(i);

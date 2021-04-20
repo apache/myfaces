@@ -32,6 +32,7 @@ import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;
 import java.util.function.Supplier;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * A delta enabled state holder implementing the StateHolder Interface. 
@@ -831,10 +832,8 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
 
     private static Object restoreAttachedState(FacesContext context, Object stateObj) throws IllegalStateException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
+
         if (stateObj == null)
         {
             return null;

@@ -22,6 +22,7 @@ import jakarta.el.ValueExpression;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * A component that allows the user to select or unselect an object.
@@ -70,11 +71,8 @@ public class UISelectBoolean extends UIInput
     @Override
     public ValueExpression getValueExpression(String name)
     {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
-        
+        Assert.notNull(name, "name");
+
         if (name.equals("selected"))
         {
             return super.getValueExpression("value");
@@ -88,10 +86,7 @@ public class UISelectBoolean extends UIInput
     @Override
     public void setValueExpression(String name, ValueExpression binding)
     {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
+        Assert.notNull(name, "name");
         
         if (name.equals("selected"))
         {

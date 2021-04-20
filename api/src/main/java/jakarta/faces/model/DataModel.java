@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
   * Represents the data presented by a UIData component, together with
@@ -56,10 +57,8 @@ public abstract class DataModel<E> implements Iterable<E>
 
     public void addDataModelListener(DataModelListener listener)
     {
-        if (listener == null)
-        {
-            throw new NullPointerException("listener");
-        }
+        Assert.notNull(listener, "listener");
+        
         if (_listeners == null)
         {
             _listeners = new ArrayList<>();
@@ -144,10 +143,8 @@ public abstract class DataModel<E> implements Iterable<E>
 
     public void removeDataModelListener(DataModelListener listener)
     {
-        if (listener == null)
-        {
-            throw new NullPointerException("listener");
-        }
+        Assert.notNull(listener, "listener");
+
         if (_listeners != null)
         {
             _listeners.remove(listener);

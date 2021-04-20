@@ -45,7 +45,7 @@ import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * Holds all configuration information (from the faces-config xml files) that is needed later during runtime. The config

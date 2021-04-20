@@ -26,6 +26,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConvert
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import org.apache.myfaces.core.api.shared.MessageUtils;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -44,10 +45,8 @@ public class DoubleConverter implements Converter
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
-        if (facesContext == null || uiComponent == null)
-        {
-            throw new NullPointerException(); // should never happen
-        }
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(uiComponent, "uiComponent");
 
         if (value == null)
         {
@@ -129,10 +128,8 @@ public class DoubleConverter implements Converter
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
-        if (facesContext == null || uiComponent == null)
-        {
-            throw new NullPointerException(); // should never happen
-        }
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(uiComponent, "uiComponent");
 
         if (value == null)
         {

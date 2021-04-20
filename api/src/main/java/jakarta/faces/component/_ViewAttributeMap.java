@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 class _ViewAttributeMap implements Map<String, Object>, Serializable
 {
@@ -183,10 +184,8 @@ class _ViewAttributeMap implements Map<String, Object>, Serializable
     
     private void checkKey(Object key)
     {
-        if (key == null)
-        {
-            throw new NullPointerException("key");
-        }
+        Assert.notNull(key, "key");
+
         if (!(key instanceof String))
         {
             throw new ClassCastException("key is not a String");

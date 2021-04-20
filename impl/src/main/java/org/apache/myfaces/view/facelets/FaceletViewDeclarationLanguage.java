@@ -98,7 +98,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.util.WebConfigParamUtils;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.ViewMetadataBase;
 import org.apache.myfaces.view.facelets.compiler.Compiler;

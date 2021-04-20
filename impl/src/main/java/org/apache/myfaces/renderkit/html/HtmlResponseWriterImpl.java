@@ -42,7 +42,7 @@ import org.apache.myfaces.util.CommentUtils;
 import org.apache.myfaces.util.lang.StreamCharBuffer;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 public class HtmlResponseWriterImpl extends ResponseWriter
 {

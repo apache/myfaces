@@ -35,7 +35,7 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 /**

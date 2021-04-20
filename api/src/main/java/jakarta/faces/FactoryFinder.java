@@ -47,6 +47,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.faces.component.search.SearchExpressionContextFactory;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 
 /**
@@ -196,11 +197,8 @@ public final class FactoryFinder
      */
     public static Object getFactory(String factoryName) throws FacesException
     {
-        if (factoryName == null)
-        {
-            throw new NullPointerException("factoryName may not be null");
-        }
-        
+        Assert.notNull(factoryName, "factoryName");
+
         initializeFactoryFinderProviderFactory();
         
         if (factoryFinderProviderFactoryInstance == null)
@@ -523,11 +521,8 @@ public final class FactoryFinder
 
     public static void setFactory(String factoryName, String implName)
     {
-        if (factoryName == null)
-        {
-            throw new NullPointerException("factoryName may not be null");
-        }
-        
+        Assert.notNull(factoryName, "factoryName");
+
         initializeFactoryFinderProviderFactory();
         
         if (factoryFinderProviderFactoryInstance == null)

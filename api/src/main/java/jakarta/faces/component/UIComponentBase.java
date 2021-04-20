@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import jakarta.faces.event.PhaseId;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 
 
@@ -380,11 +381,8 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException
     {
-        if (event == null)
-        {
-            throw new NullPointerException("event");
-        }
-        
+        Assert.notNull(event, "event");
+
         if (event instanceof BehaviorEvent && event.getComponent() == this)
         {
             Behavior behavior = ((BehaviorEvent) event).getBehavior();
@@ -440,11 +438,8 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void decode(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        
+        Assert.notNull(context, "context");
+
         setCachedRenderer(null);
         Renderer renderer = getRenderer(context);
         if (renderer != null)
@@ -465,10 +460,7 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void encodeAll(FacesContext context) throws IOException
     {
-        if (context == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(context, "context");
 
         pushComponentToEL(context, this);
         try
@@ -540,10 +532,7 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void encodeBegin(FacesContext context) throws IOException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         try
         {
@@ -582,10 +571,7 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void encodeChildren(FacesContext context) throws IOException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         boolean isCachedFacesContext = isCachedFacesContext();
         try
@@ -632,10 +618,8 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void encodeEnd(FacesContext context) throws IOException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
+
         try
         {
             setCachedFacesContext(context);
@@ -686,10 +670,8 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public UIComponent findComponent(String expr)
     {
-        if (expr == null)
-        {
-            throw new NullPointerException("expr");
-        }
+        Assert.notNull(expr, "expr");
+
         if (expr.length() == 0)
         {
             return null;
@@ -880,10 +862,7 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public String getClientId(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         if (_clientId != null)
         {
@@ -1200,10 +1179,8 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     protected void addFacesListener(FacesListener listener)
     {
-        if (listener == null)
-        {
-            throw new NullPointerException("listener");
-        }
+        Assert.notNull(listener, "listener");
+
         if (_facesListeners == null)
         {
             // How many facesListeners have single component normally? 
@@ -1229,10 +1206,8 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     protected FacesListener[] getFacesListeners(Class clazz)
     {
-        if (clazz == null)
-        {
-            throw new NullPointerException("Class is null");
-        }
+        Assert.notNull(clazz, "clazz");
+
         if (!FacesListener.class.isAssignableFrom(clazz))
         {
             throw new IllegalArgumentException("Class " + clazz.getName() + " must implement " + FacesListener.class);
@@ -1269,10 +1244,8 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     protected Renderer getRenderer(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
+
         Renderer renderer = getCachedRenderer();
         if (renderer != null)
         {
@@ -1303,10 +1276,7 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     protected void removeFacesListener(FacesListener listener)
     {
-        if (listener == null)
-        {
-            throw new NullPointerException("listener is null");
-        }
+        Assert.notNull(listener, "listener");
 
         if (_facesListeners != null)
         {
@@ -1317,10 +1287,8 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void queueEvent(FacesEvent event)
     {
-        if (event == null)
-        {
-            throw new NullPointerException("event");
-        }
+        Assert.notNull(event, "event");
+
         UIComponent parent = getParent();
         if (parent == null)
         {
@@ -1473,10 +1441,7 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public Object processSaveState(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         if (isTransient())
         {
@@ -1563,10 +1528,7 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void processRestoreState(FacesContext context, Object state)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         Object[] stateValues = (Object[]) state;
 
@@ -1734,10 +1696,8 @@ public abstract class UIComponentBase extends UIComponent
 
     public static Object restoreAttachedState(FacesContext context, Object stateObj) throws IllegalStateException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
+
         if (stateObj == null)
         {
             return null;
@@ -2310,10 +2270,7 @@ public abstract class UIComponentBase extends UIComponent
 
     private boolean _isPhaseExecutable(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         // If the rendered property of this UIComponent is false, skip further processing.
         return isRendered();

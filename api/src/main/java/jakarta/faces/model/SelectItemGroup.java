@@ -19,6 +19,7 @@
 package jakarta.faces.model;
 
 import java.util.Collection;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -48,10 +49,7 @@ public class SelectItemGroup extends SelectItem
     public SelectItemGroup(String label, String description, boolean disabled, SelectItem... selectItems)
     {
         super("", label, description, disabled);
-        if (selectItems == null)
-        {
-            throw new NullPointerException("selectItems");
-        }
+        Assert.notNull(selectItems, "selectItems");
         _selectItems = selectItems;
     }
     
@@ -59,10 +57,7 @@ public class SelectItemGroup extends SelectItem
             Collection<? extends SelectItem> selectItems)
     {
         super("", label, description, disabled);
-        if (selectItems == null)
-        {
-            throw new NullPointerException("selectItems");
-        }
+        Assert.notNull(selectItems, "selectItems");
         _selectItems = selectItems.toArray(new SelectItem[selectItems.size()]);
     }
 
@@ -75,10 +70,7 @@ public class SelectItemGroup extends SelectItem
 
     public void setSelectItems(SelectItem... selectItems)
     {
-        if (selectItems == null)
-        {
-            throw new NullPointerException("selectItems");
-        }
+        Assert.notNull(selectItems, "selectItems");
         _selectItems = selectItems;
     }
     
@@ -89,10 +81,7 @@ public class SelectItemGroup extends SelectItem
      */
     public void setSelectItems(Collection<? extends SelectItem> selectItems)
     {
-        if (selectItems == null)
-        {
-            throw new NullPointerException("selectItems");
-        }
+        Assert.notNull(selectItems, "selectItems");
         setSelectItems(selectItems.toArray(new SelectItem[selectItems.size()]));
     }
 }

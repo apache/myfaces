@@ -38,6 +38,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.core.api.shared.MessageUtils;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * 
@@ -92,10 +93,7 @@ public class UIViewParameter extends UIInput
     @Override
     public void encodeAll(FacesContext context) throws IOException
     {
-        if (context == null) 
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(context, "context");
         setSubmittedValue(getStringValue(context));
     }
 

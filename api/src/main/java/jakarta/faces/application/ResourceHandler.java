@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @since 2.0
@@ -120,10 +121,7 @@ public abstract class ResourceHandler
     
     public boolean isResourceURL(java.lang.String url)
     {
-        if (url == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(url);
         return url.contains(RESOURCE_IDENTIFIER);
     }
     

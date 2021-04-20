@@ -28,7 +28,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.servlet.ServletContext;
 
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * Provides a base implementation of the ExternalContext for Servlet

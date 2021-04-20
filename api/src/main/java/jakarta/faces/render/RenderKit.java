@@ -27,6 +27,7 @@ import java.util.List;
 
 import jakarta.faces.context.ResponseStream;
 import jakarta.faces.context.ResponseWriter;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -42,16 +43,9 @@ public abstract class RenderKit
     
     public void addClientBehaviorRenderer(String type, ClientBehaviorRenderer renderer)
     {
-        if (type == null)
-        {
-            throw new NullPointerException("type is null");
-        }
-        
-        if (renderer == null)
-        {
-            throw new NullPointerException("renderer is null");
-        }
-        
+        Assert.notNull(type, "type");
+        Assert.notNull(renderer, "renderer");
+
         this.clientBehaviorRenderers.put(type, renderer);
     }
 
@@ -64,10 +58,7 @@ public abstract class RenderKit
     
     public ClientBehaviorRenderer getClientBehaviorRenderer(String type)
     {
-        if (type == null)
-        {
-            throw new NullPointerException("type is null");
-        }
+        Assert.notNull(type, "type");
         
         return this.clientBehaviorRenderers.get(type);
     }

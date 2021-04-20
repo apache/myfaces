@@ -30,7 +30,7 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.view.facelets.AbstractFaceletCache;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 

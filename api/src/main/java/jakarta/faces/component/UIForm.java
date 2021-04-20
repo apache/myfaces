@@ -32,6 +32,7 @@ import jakarta.faces.event.PreValidateEvent;
 import jakarta.faces.view.Location;
 
 import java.util.Collection;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -118,10 +119,8 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public void processDecodes(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
+
         try
         {
             setCachedFacesContext(context);
@@ -164,10 +163,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public void processValidators(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
         
         try
         {
@@ -220,10 +216,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public void processUpdates(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
         
         try
         {

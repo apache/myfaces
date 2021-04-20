@@ -41,6 +41,7 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 public class SharedRendererUtils
 {
@@ -112,11 +113,7 @@ public class SharedRendererUtils
         // Attention!
         // This code is duplicated in shared renderkit package (except for considerValueType).
         // If you change something here please do the same in the other class!
-
-        if (submittedValue == null)
-        {
-            throw new NullPointerException("submittedValue");
-        }
+        Assert.notNull(submittedValue, "submittedValue");
 
         ValueExpression expression = component.getValueExpression("value");
         Object targetForConvertedValues = null;

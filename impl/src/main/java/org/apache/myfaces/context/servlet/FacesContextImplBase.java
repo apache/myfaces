@@ -39,7 +39,7 @@ import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.el.FacesELContext;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage; 
 
 /**

@@ -55,6 +55,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude
 import org.apache.myfaces.core.api.shared.BeanValidationUtils;
 import org.apache.myfaces.core.api.shared.ExternalSpecifications;
 import org.apache.myfaces.core.api.shared.MessageUtils;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * UICommand is a base abstraction for components that implement ActionSource.
@@ -193,10 +194,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public void processDecodes(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         try
         {
@@ -253,10 +251,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public void processValidators(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
         
         try
         {
@@ -328,10 +323,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public void processUpdates(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
+
         try
         {
             setCachedFacesContext(context);
@@ -392,10 +385,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     public void updateModel(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(context, "context");
+
         if (!isValid() || !isLocalValueSet())
         {
             return;
@@ -651,10 +642,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      */
     public void validate(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         Object submittedValue = getSubmittedValue();
         if (submittedValue == null)
@@ -879,10 +867,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public void addValidator(Validator validator)
     {
-        if (validator == null)
-        {
-            throw new NullPointerException("validator");
-        }
+        Assert.notNull(validator, "validator");
         
         if (_validatorList == null)
         {

@@ -27,6 +27,7 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * Check if a value is empty, in the same way as set UIInput required 
@@ -55,14 +56,8 @@ public class RequiredValidator implements Validator
     public void validate(FacesContext facesContext, UIComponent uiComponent,
             Object value)
     {
-        if (facesContext == null)
-        {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
-        }
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(uiComponent, "uiComponent");
 
         //Check if the value is empty like UIInput.validateValue
         boolean empty = value == null

@@ -19,6 +19,7 @@
 package jakarta.faces.model;
 
 import java.util.List;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -38,10 +39,7 @@ public class ListDataModel<E> extends DataModel<E>
 
     public ListDataModel(List<E> list)
     {
-        if (list == null)
-        {
-            throw new NullPointerException("list");
-        }
+        Assert.notNull(list, "list");
         setWrappedData(list);
     }
 

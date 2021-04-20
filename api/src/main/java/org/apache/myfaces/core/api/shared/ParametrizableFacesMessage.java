@@ -24,6 +24,7 @@ import java.util.Locale;
 import jakarta.el.ValueExpression;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /** 
  * This class encapsulates a FacesMessage to evaluate the label
@@ -42,10 +43,7 @@ public class ParametrizableFacesMessage extends FacesMessage
     public ParametrizableFacesMessage(String summary, String detail, Object[] args, Locale locale)
     {
         super(summary, detail);
-        if (locale == null)
-        {
-            throw new NullPointerException("locale");
-        }
+        Assert.notNull(locale, "locale");
         this.locale = locale;
         this.args = args;
     }
@@ -54,10 +52,7 @@ public class ParametrizableFacesMessage extends FacesMessage
             Locale locale)
     {
         super(severity, summary, detail);
-        if (locale == null)
-        {
-            throw new NullPointerException("locale");
-        }
+        Assert.notNull(locale, "locale");
         this.locale = locale;
         this.args = args;
     }

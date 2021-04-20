@@ -51,7 +51,7 @@ import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 public class HtmlInputFileRendererBase extends HtmlRenderer
 {

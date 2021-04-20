@@ -21,6 +21,7 @@ package jakarta.faces.event;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.Lifecycle;
 import java.util.EventObject;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -36,18 +37,9 @@ public class PhaseEvent extends EventObject
     public PhaseEvent(FacesContext facesContext, PhaseId phaseId, Lifecycle lifecycle)
     {
         super(lifecycle);
-        if (facesContext == null)
-        {
-            throw new NullPointerException("facesContext");
-        }
-        if (phaseId == null)
-        {
-            throw new NullPointerException("phaseId");
-        }
-        if (lifecycle == null)
-        {
-            throw new NullPointerException("lifecycle");
-        }
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(phaseId, "phaseId");
+        Assert.notNull(lifecycle, "lifecycle");
 
         _facesContext = facesContext;
         _phaseId = phaseId;

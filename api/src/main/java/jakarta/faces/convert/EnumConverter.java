@@ -26,6 +26,7 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.core.api.shared.MessageUtils;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -69,14 +70,8 @@ public class EnumConverter implements Converter, PartialStateHolder
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
-        if (facesContext == null)
-        {
-            throw new NullPointerException("facesContext can not be null");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent can not be null");
-        }
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(uiComponent, "uiComponent");
 
         checkTargetClass(facesContext, uiComponent, value);
 
@@ -107,14 +102,9 @@ public class EnumConverter implements Converter, PartialStateHolder
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
-        if (facesContext == null)
-        {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
-        }
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(uiComponent, "uiComponent");
+        
         if (value == null)
         {
             return null;

@@ -29,6 +29,7 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.component.StateHelper;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorListener;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @since 2.0
@@ -133,12 +134,8 @@ public class AjaxBehavior extends ClientBehaviorBase
     @SuppressWarnings("unchecked")
     public ValueExpression getValueExpression(String name) 
     {
-        //return getValueExpressionMap().get(name);
-        if (name == null)
-        {
-            throw new NullPointerException("name can not be null");
-        }
-        
+        Assert.notNull(name, "name");
+
         Map<String,Object> bindings = (Map<String,Object>) getStateHelper().
             get(PropertyKeys.bindings);
         if (bindings != null)
@@ -153,10 +150,7 @@ public class AjaxBehavior extends ClientBehaviorBase
 
     public void setValueExpression(String name, ValueExpression expression) 
     {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
+        Assert.notNull(name, "name");
 
         if (expression == null)
         {

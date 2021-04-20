@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jakarta.el.FunctionMapper;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 

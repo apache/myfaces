@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 class _ComponentChildrenList extends ArrayList<UIComponent> implements Serializable
 {
@@ -50,7 +51,7 @@ class _ComponentChildrenList extends ArrayList<UIComponent> implements Serializa
     @Override
     public UIComponent set(int index, UIComponent value)
     {
-        checkValue(value);
+        Assert.notNull(value, "value");
         removeChildrenFromParent(value);
         UIComponent child = super.set(index, value);
         if (child != value)
@@ -68,7 +69,7 @@ class _ComponentChildrenList extends ArrayList<UIComponent> implements Serializa
     @Override
     public boolean add(UIComponent value)
     {
-        checkValue(value);
+        Assert.notNull(value, "value");
 
         removeChildrenFromParent(value);
         boolean res = super.add(value);
@@ -81,7 +82,7 @@ class _ComponentChildrenList extends ArrayList<UIComponent> implements Serializa
     @Override
     public void add(int index, UIComponent value)
     {
-        checkValue(value);
+        Assert.notNull(value, "value");
         
         removeChildrenFromParent(value);
         
@@ -100,14 +101,6 @@ class _ComponentChildrenList extends ArrayList<UIComponent> implements Serializa
         }
         
         return child;
-    }
-
-    private void checkValue(Object value)
-    {
-        if (value == null)
-        {
-            throw new NullPointerException("value");
-        }
     }
 
     private void childRemoved(UIComponent child)
@@ -154,7 +147,7 @@ class _ComponentChildrenList extends ArrayList<UIComponent> implements Serializa
             throw new ClassCastException("value is not a UIComponent");
         }
         
-        checkValue(value);
+        Assert.notNull(value, "value");
 
         if (super.remove(value))
         {

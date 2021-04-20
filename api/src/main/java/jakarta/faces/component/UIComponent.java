@@ -58,6 +58,7 @@ import jakarta.faces.render.RendererWrapper;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  *
@@ -194,11 +195,9 @@ public abstract class UIComponent
     public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback)
             throws FacesException
     {
-        // java.lang.NullPointerException - if any of the arguments are null
-        if (context == null || clientId == null || callback == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(clientId, "clientId");
+        Assert.notNull(callback, "callback");
 
         pushComponentToEL(context, this);
         try
@@ -325,10 +324,8 @@ public abstract class UIComponent
 
     public void setValueExpression(String name, ValueExpression expression)
     {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
+        Assert.notNull(name, "name");
+
         if (name.equals("id"))
         {
             throw new IllegalArgumentException("Can't set a ValueExpression for the 'id' property.");
@@ -404,10 +401,7 @@ public abstract class UIComponent
      */
     public String getContainerClientId(FacesContext ctx)
     {
-        if (ctx == null)
-        {
-            throw new NullPointerException("FacesContext ctx");
-        }
+        Assert.notNull(ctx, "ctx");
 
         return getClientId(ctx);
     }
@@ -618,10 +612,7 @@ public abstract class UIComponent
 
     public ValueExpression getValueExpression(String name)
     {
-        if (name == null)
-        {
-            throw new NullPointerException("name can not be null");
-        }
+        Assert.notNull(name, "name");
 
         Map<String, Object> bindings = (Map<String, Object>) getStateHelper().get(PropertyKeys.bindings);
         if (bindings != null)
@@ -667,10 +658,7 @@ public abstract class UIComponent
 
     public void encodeAll(FacesContext context) throws IOException
     {
-        if (context == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(context, "context");
 
         pushComponentToEL(context, this);
         try
@@ -788,16 +776,11 @@ public abstract class UIComponent
     public void subscribeToEvent(Class<? extends SystemEvent> eventClass,
                                  ComponentSystemEventListener componentListener)
     {
+        Assert.notNull(eventClass, "eventClass");
+        Assert.notNull(componentListener, "componentListener");
+
         // The default implementation creates an inner SystemEventListener instance that wraps argument
         // componentListener as the listener argument.
-        if (eventClass == null)
-        {
-            throw new NullPointerException("eventClass required");
-        }
-        if (componentListener == null)
-        {
-            throw new NullPointerException("componentListener required");
-        }
 
         SystemEventListener listener = new EventListenerWrapper(this, componentListener);
 
@@ -831,14 +814,8 @@ public abstract class UIComponent
          * -= Leonardo Uribe=- Yes, it is supposed a wrapper should be used to hold listener references, to prevent
          * serialize component instances on the state.
          */
-        if (eventClass == null)
-        {
-            throw new NullPointerException("eventClass required");
-        }
-        if (componentListener == null)
-        {
-            throw new NullPointerException("componentListener required");
-        }
+        Assert.notNull(eventClass, "eventClass");
+        Assert.notNull(componentListener, "componentListener");
 
         if (_systemEventListenerClassMap != null)
         {

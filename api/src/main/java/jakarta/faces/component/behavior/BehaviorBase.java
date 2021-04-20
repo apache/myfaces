@@ -28,6 +28,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.BehaviorEvent;
 import jakarta.faces.event.BehaviorListener;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @since 2.0
@@ -50,10 +51,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
     @Override
     public void broadcast(BehaviorEvent event) throws AbortProcessingException
     {
-        if (event == null)
-        {
-            throw new NullPointerException("event");
-        }
+        Assert.notNull(event, "event");
         
         if (_behaviorListeners != null)
         {
@@ -197,10 +195,8 @@ public class BehaviorBase implements Behavior, PartialStateHolder
 
     private static Object restoreAttachedState(FacesContext context, Object stateObj) throws IllegalStateException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
+
         if (stateObj == null)
         {
             return null;
@@ -256,10 +252,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
     
     protected void addBehaviorListener(BehaviorListener listener)
     {
-        if (listener == null)
-        {
-            throw new NullPointerException("listener");
-        }
+        Assert.notNull(listener, "listener");
         
         if (_behaviorListeners == null)
         {
@@ -273,10 +266,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
     
     protected void removeBehaviorListener(BehaviorListener listener)
     {
-        if (listener == null)
-        {
-            throw new NullPointerException("listener");
-        }
+        Assert.notNull(listener, "listener");
 
         if (_behaviorListeners != null)
         {

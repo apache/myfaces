@@ -38,7 +38,7 @@ import jakarta.faces.lifecycle.Lifecycle;
 import org.apache.myfaces.cdi.clientwindow.ClientWindowScopeContext;
 
 import org.apache.myfaces.config.FacesConfigurator;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.DebugUtils;
 
 /**

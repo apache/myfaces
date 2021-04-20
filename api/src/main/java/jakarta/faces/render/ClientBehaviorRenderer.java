@@ -22,6 +22,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @since 2.0
@@ -32,18 +33,9 @@ public abstract class ClientBehaviorRenderer
     {
         //default impl won't do anything...implementing classes will do the actual decoding.  
         //just check for null args
-        if(context == null)
-        {
-            throw new NullPointerException("context argument must not be null");
-        }
-        if(component == null)
-        {
-            throw new NullPointerException("component argument must not be null");
-        }
-        if(behavior == null)
-        {
-            throw new NullPointerException("behavior argument must not be null");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
+        Assert.notNull(behavior, "behavior");
     }
 
     public String getScript(ClientBehaviorContext behaviorContext, ClientBehavior behavior)

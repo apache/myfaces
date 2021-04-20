@@ -58,6 +58,7 @@ import jakarta.faces.model.ScalarDataModel;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacet;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * Represents an abstraction of a component which has multiple "rows" of data.
@@ -330,10 +331,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback)
         throws FacesException
     {
-        if (context == null || clientId == null || callback == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(clientId, "clientId");
+        Assert.notNull(callback, "callback");
         
         final String baseClientId = getClientId(context);
 
@@ -1459,11 +1459,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public void setValueExpression(String name, ValueExpression binding)
     {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
-        else if (name.equals("value"))
+        Assert.notNull(name, "name");
+
+        if (name.equals("value"))
         {
             _dataModelMap.clear();
         }
@@ -1506,10 +1504,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public void queueEvent(FacesEvent event)
     {
-        if (event == null)
-        {
-            throw new NullPointerException("event");
-        }
+        Assert.notNull(event, "event");
+
         super.queueEvent(new FacesEventWrapper(event, getRowIndex(), this));
     }
 
@@ -1650,10 +1646,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public void processDecodes(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
+
         try
         {
             setCachedFacesContext(context);
@@ -1689,10 +1683,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public void processValidators(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         try
         {
@@ -1735,10 +1726,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public void processUpdates(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
+
         try
         {
             setCachedFacesContext(context);

@@ -27,7 +27,7 @@ import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * TODO: Note MyFaces core has another type of Facelet for read composite component

@@ -22,6 +22,7 @@ import java.util.Collection;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @since 2.0
@@ -45,18 +46,9 @@ public abstract class ClientBehaviorContext
                                                                     Collection<Parameter> parameters)
     {
         // This method is weird... Creating a dummy impl class seems stupid, yet I don't see any other way...
-        if(context == null)
-        {
-            throw new NullPointerException("context argument must not be null");
-        }
-        if(component == null)
-        {
-            throw new NullPointerException("component argument must not be null");
-        }
-        if(eventName == null)
-        {
-            throw new NullPointerException("eventName argument must not be null");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
+        Assert.notNull(eventName, "eventName");
 
         return new ClientBehaviorContextImpl(context,component,eventName,sourceId, parameters);
     }
@@ -76,28 +68,24 @@ public abstract class ClientBehaviorContext
      */
     public static class Parameter
     {
-        private String _name;
-        private Object _value;
+        private String name;
+        private Object value;
 
         public Parameter(String name, Object value)
         {
-            if (name == null)
-            {
-                throw new NullPointerException("name");
-            }
-
-            _name = name;
-            _value = value;
+            Assert.notNull(name, "name");
+            this.name = name;
+            this.value = value;
         }
 
         public String getName()
         {
-            return _name;
+            return name;
         }
 
         public Object getValue()
         {
-            return _value;
+            return value;
         }
     }
     

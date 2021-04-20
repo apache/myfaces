@@ -58,7 +58,7 @@ import jakarta.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.LocationAwareFacesException;

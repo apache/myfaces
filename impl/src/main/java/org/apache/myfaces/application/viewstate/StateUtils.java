@@ -42,7 +42,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.spi.SerialFactory;
 
 /**

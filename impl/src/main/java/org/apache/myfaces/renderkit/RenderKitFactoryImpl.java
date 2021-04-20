@@ -28,7 +28,7 @@ import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * RenderKitFactory implementation as defined in Spec. JSF.7.3

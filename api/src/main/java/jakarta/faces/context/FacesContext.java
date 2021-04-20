@@ -32,6 +32,7 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -131,10 +132,7 @@ public abstract class FacesContext
         // object will provide a proper implementation of this method.
         FacesContext ctx = firstInstance.get();
 
-        if (ctx == null)
-        {
-            throw new NullPointerException(FacesContext.class.getName());
-        }
+        Assert.notNull(ctx, "ctx");
 
         ELContext elctx = ctx.getELContext();
         if (elctx == null)
@@ -400,10 +398,7 @@ public abstract class FacesContext
     
     public boolean isProjectStage(ProjectStage stage)
     {
-        if (stage == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(stage, "stage");
         
         if (stage.equals(getApplication().getProjectStage()))
         {

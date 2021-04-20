@@ -19,6 +19,7 @@
 package jakarta.faces.model;
 
 import java.util.Collection;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 public class CollectionDataModel<E> extends DataModel<E>
 {
@@ -36,10 +37,7 @@ public class CollectionDataModel<E> extends DataModel<E>
 
     public CollectionDataModel(Collection<E> collection)
     {
-        if (collection == null)
-        {
-            throw new NullPointerException("collection");
-        }
+        Assert.notNull(collection, "collection");
         setWrappedData(collection);
     }
 

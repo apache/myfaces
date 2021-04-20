@@ -21,6 +21,7 @@ package jakarta.faces.view.facelets;
 
 import java.io.IOException;
 import java.net.URL;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @since 2.1
@@ -42,14 +43,9 @@ public abstract class FaceletCache<V>
     protected void setMemberFactories(FaceletCache.MemberFactory<V> faceletFactory,
                                       FaceletCache.MemberFactory<V> viewMetadataFaceletFactory)
     {
-        if (faceletFactory == null)
-        {
-            throw new NullPointerException("faceletFactory is null");
-        }
-        if  (viewMetadataFaceletFactory == null)
-        {
-            throw new NullPointerException("viewMetadataFaceletFactory is null");
-        }
+        Assert.notNull(faceletFactory, "faceletFactory");
+        Assert.notNull(viewMetadataFaceletFactory, "viewMetadataFaceletFactory");
+
         _faceletFactory = faceletFactory;
         _viewMetadataFaceletFactory = viewMetadataFaceletFactory;
     }

@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.util;
 
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import java.text.MessageFormat;
 import java.util.Locale;
 

@@ -118,7 +118,7 @@ import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.util.lang.StringUtils;

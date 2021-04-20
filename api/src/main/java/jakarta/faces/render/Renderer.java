@@ -23,6 +23,7 @@ import java.io.IOException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.ConverterException;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -36,14 +37,8 @@ public abstract class Renderer<T extends UIComponent>
     
     public void decode(FacesContext context, T component)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
     }
 
     /**
@@ -51,14 +46,8 @@ public abstract class Renderer<T extends UIComponent>
      */
     public void encodeBegin(FacesContext context, T component) throws IOException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
     }
 
     /**
@@ -73,14 +62,8 @@ public abstract class Renderer<T extends UIComponent>
      */
     public void encodeChildren(FacesContext context, T component) throws IOException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
 
         if (component.getChildCount() > 0)
         {
@@ -102,26 +85,14 @@ public abstract class Renderer<T extends UIComponent>
      */
     public void encodeEnd(FacesContext context, T component) throws IOException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
     }
 
     public String convertClientId(FacesContext context, String clientId)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (clientId == null)
-        {
-            throw new NullPointerException("clientId");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(clientId, "clientId");
         return clientId;
     }
 
@@ -144,14 +115,8 @@ public abstract class Renderer<T extends UIComponent>
     public Object getConvertedValue(FacesContext context, T component, Object submittedValue)
             throws ConverterException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
         return submittedValue;
     }
 

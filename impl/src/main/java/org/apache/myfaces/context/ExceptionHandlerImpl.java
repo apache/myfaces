@@ -31,7 +31,7 @@ import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.SystemEvent;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /** 
  * @since 2.0

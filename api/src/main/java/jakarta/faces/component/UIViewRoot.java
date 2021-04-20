@@ -67,6 +67,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * Creates a JSF View, which is a container that holds all of the components that are part of the view.
@@ -361,10 +362,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public void addPhaseListener(PhaseListener phaseListener)
     {
-        if (phaseListener == null)
-        {
-            throw new NullPointerException("phaseListener");
-        }
+        Assert.notNull(phaseListener, "phaseListener");
         
         getStateHelper().add(PropertyKeys.phaseListeners, phaseListener);
     }
@@ -518,7 +516,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @Override
     public void encodeBegin(FacesContext context) throws IOException
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
 
         boolean skipPhase = false;
 
@@ -577,7 +575,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @Override
     public void encodeEnd(FacesContext context) throws IOException
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
 
         if (!context.getResponseComplete())
         {
@@ -672,10 +670,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public List<UIComponent> getComponentResources(FacesContext context, String target)
     {
-        if (target == null)
-        {
-            throw new NullPointerException("target");
-        }
+        Assert.notNull(target, "target");
         // Locate the facet for the component by calling getFacet() using target as the argument
         UIComponent facet = getFacet(target);
 
@@ -916,14 +911,14 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
     public void processApplication(final FacesContext context)
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
         _process(context, PhaseId.INVOKE_APPLICATION, null);
     }
 
     @Override
     public void processDecodes(FacesContext context)
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
         _process(context, PhaseId.APPLY_REQUEST_VALUES, APPLY_REQUEST_VALUES_PROCESSOR);
     }
 
@@ -949,7 +944,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @Override
     public void queueEvent(FacesEvent event)
     {
-        checkNull(event, "event");
+        Assert.notNull(event, "event");
         if (_events == null)
         {
             _events = new ArrayList<FacesEvent>();
@@ -961,14 +956,14 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @Override
     public void processValidators(FacesContext context)
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
         _process(context, PhaseId.PROCESS_VALIDATIONS, PROCESS_VALIDATORS_PROCESSOR);
     }
 
     @Override
     public void processUpdates(FacesContext context)
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
         _process(context, PhaseId.UPDATE_MODEL_VALUES, UPDATE_MODEL_PROCESSOR);
     }
 
@@ -1305,14 +1300,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         _events = null;
     }
 
-    private void checkNull(Object value, String valueLabel)
-    {
-        if (value == null)
-        {
-            throw new NullPointerException(valueLabel + " is null");
-        }
-    }
-
     public void setRenderKitId(String renderKitId)
     {
         getStateHelper().put(PropertyKeys.renderKitId, renderKitId );
@@ -1639,7 +1626,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     
     public List<SystemEventListener> getViewListenersForEventClass(Class<? extends SystemEvent> systemEvent)
     {
-        checkNull(systemEvent, "systemEvent");
+        Assert.notNull(systemEvent, "systemEvent");
         if (_systemEventListeners == null)
         {
             return null;
@@ -1651,8 +1638,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         List<SystemEventListener> listeners;
         
-        checkNull(systemEvent, "systemEvent");
-        checkNull(listener, "listener");
+        Assert.notNull(systemEvent, "systemEvent");
+        Assert.notNull(listener, "listener");
         
         if (_systemEventListeners == null)
         {
@@ -1674,8 +1661,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         List<SystemEventListener> listeners;
         
-        checkNull (systemEvent, "systemEvent");
-        checkNull (listener, "listener");
+        Assert.notNull (systemEvent, "systemEvent");
+        Assert.notNull (listener, "listener");
         
         if (_systemEventListeners == null)
         {

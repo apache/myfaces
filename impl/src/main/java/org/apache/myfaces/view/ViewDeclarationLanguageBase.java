@@ -25,7 +25,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.application.InvalidViewIdException;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @since 2.0

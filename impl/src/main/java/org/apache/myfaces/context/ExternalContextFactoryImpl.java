@@ -28,7 +28,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)

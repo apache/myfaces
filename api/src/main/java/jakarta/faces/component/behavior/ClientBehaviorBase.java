@@ -24,6 +24,7 @@ import java.util.Set;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ClientBehaviorRenderer;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * @since 2.0
@@ -46,15 +47,8 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
     @Override
     public void decode(FacesContext context, UIComponent component)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
         
         // If a BehaviorRenderer is available for the specified behavior renderer type, this method delegates 
         // to the BehaviorRenderer's decode() method. Otherwise, no decoding is performed. 
@@ -85,10 +79,7 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
     @Override
     public String getScript(ClientBehaviorContext behaviorContext)
     {
-        if (behaviorContext == null)
-        {
-            throw new NullPointerException("behaviorContext");
-        }
+        Assert.notNull(behaviorContext, "behaviorContext");
         
         ClientBehaviorRenderer renderer = getRenderer(behaviorContext.getFacesContext());
         if (renderer != null)
@@ -112,10 +103,7 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
     
     protected ClientBehaviorRenderer getRenderer(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
         
         String rendererType = getRendererType();
         if (rendererType != null)

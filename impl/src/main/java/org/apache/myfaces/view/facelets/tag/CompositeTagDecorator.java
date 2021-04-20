@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.tag;
 
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagDecorator;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * A TagDecorator that is composed of 1 or more TagDecorator instances. It uses the chain of responsibility pattern to

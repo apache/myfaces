@@ -49,7 +49,7 @@ import org.apache.myfaces.config.element.facelets.FaceletSourceTag;
 import org.apache.myfaces.config.element.facelets.FaceletTag;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.element.facelets.FaceletValidatorTag;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 

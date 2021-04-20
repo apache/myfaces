@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  *
@@ -43,10 +44,7 @@ public class IterableDataModel<E> extends DataModel<E>
 
     public IterableDataModel(Iterable<E> iterable)
     {
-        if (iterable == null)
-        {
-            throw new NullPointerException("array");
-        }
+        Assert.notNull(iterable, "iterable");
         setWrappedData(iterable);
     }
 

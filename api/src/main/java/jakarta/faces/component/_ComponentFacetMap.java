@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Serializable
 {
@@ -140,14 +141,8 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
     @Override
     public V put(String key, V value)
     {
-        if (key == null)
-        {
-            throw new NullPointerException("key");
-        }
-        if (value == null)
-        {
-            throw new NullPointerException("value");
-        }
+        Assert.notNull(key, "key");
+        Assert.notNull(value, "value");
 
         setNewParent(key, value);
         V previousValue = _map.put(key, value);
@@ -187,10 +182,8 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
 
     private void checkKey(Object key)
     {
-        if (key == null)
-        {
-            throw new NullPointerException("key");
-        }
+        Assert.notNull(key, "key");
+
         if (!(key instanceof String))
         {
             throw new ClassCastException("key is not a String");
@@ -199,10 +192,8 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
 
     private void checkValue(Object value)
     {
-        if (value == null)
-        {
-            throw new NullPointerException("value");
-        }
+        Assert.notNull(value, "value");
+
         if (!(value instanceof UIComponent))
         {
             throw new ClassCastException("value is not a UIComponent");

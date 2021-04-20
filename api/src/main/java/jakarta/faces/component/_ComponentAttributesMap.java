@@ -31,6 +31,7 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
 import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper;
@@ -530,10 +531,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     @Override
     public Object put(String key, Object value)
     {
-        if (key == null)
-        {
-            throw new NullPointerException("key");
-        }
+        Assert.notNull(key, "key");
 
         int keyLength = ((String)key).length();
         if (keyLength >= MIN_LENGHT_CHECK)
@@ -701,10 +699,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
 
     private void checkKey(Object key)
     {
-        if (key == null)
-        {
-            throw new NullPointerException("key");
-        }
+        Assert.notNull(key, "key");
 
         if (!(key instanceof String))
         {

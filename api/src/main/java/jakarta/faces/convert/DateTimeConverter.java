@@ -43,6 +43,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConvert
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.core.api.shared.MessageUtils;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * This tag associates a date time converter with the nearest parent UIComponent.
@@ -102,14 +103,8 @@ public class DateTimeConverter
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
-        if (facesContext == null)
-        {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
-        }
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(uiComponent, "uiComponent");
 
         if (value != null)
         {
@@ -216,14 +211,8 @@ public class DateTimeConverter
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
-        if (facesContext == null)
-        {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
-        }
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(uiComponent, "uiComponent");
 
         if (value == null)
         {

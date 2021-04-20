@@ -46,7 +46,7 @@ import jakarta.faces.render.Renderer;
 
 import jakarta.faces.view.Location;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;

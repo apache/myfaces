@@ -42,7 +42,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderK
 import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.ContentTypeUtils;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 /**

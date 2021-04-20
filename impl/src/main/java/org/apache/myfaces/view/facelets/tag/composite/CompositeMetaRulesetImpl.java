@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
 import org.apache.myfaces.view.facelets.tag.NullMetadata;
 

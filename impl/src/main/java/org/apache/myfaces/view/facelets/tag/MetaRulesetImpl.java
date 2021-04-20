@@ -36,7 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
-import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.view.facelets.PassthroughRule;
 import org.apache.myfaces.view.facelets.tag.faces.PassThroughLibrary;
 
