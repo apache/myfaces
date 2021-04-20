@@ -71,9 +71,9 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
     {
         _tag = tag;
         _type = type;
-        _attributes = new HashMap<String, TagAttribute>();
-        _mappers = new ArrayList<Metadata>();
-        _rules = new ArrayList<MetaRule>();
+        _attributes = new HashMap<>();
+        _mappers = new ArrayList<>();
+        _rules = new ArrayList<>();
 
         // setup attributes
         for (TagAttribute attribute : _tag.getAttributes().getAll())
