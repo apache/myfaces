@@ -1120,7 +1120,7 @@ public final class ErrorPageWriter
         }
 
         Integer count = visitedFacetCount.get(component);
-        return count == null ? 0 : null;
+        return count == null ? 0 : count;
     }
 
     private static void incrementVisitedFacetCount(FacesContext facesContext, UIComponent component)
