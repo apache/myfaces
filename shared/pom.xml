@@ -32,12 +32,6 @@
   <name>Apache MyFaces Shared For JSF 2.0 - Core</name>
   <description>The MyFaces Shared Core Subproject build the sources artifact
     needed by the shared-* modules</description>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.0.x/shared</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.0.x/shared</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/branches/2.0.x/shared</url>
-  </scm>
   
   <dependencies>
         <!-- myfaces-api -->
