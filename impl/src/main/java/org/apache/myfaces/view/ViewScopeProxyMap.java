@@ -29,6 +29,7 @@ import jakarta.faces.event.PreDestroyViewMapEvent;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.view.ViewScopeContextualStorageHolder;
 import org.apache.myfaces.cdi.view.ViewScopeCDIMap;
+import org.apache.myfaces.cdi.view.ViewTransientScopeContext;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
@@ -70,15 +71,13 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             
-            if (facesContext != null)
+            // for non-CDI environments or unittests
+            if (facesContext == null || !ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
             {
-                // for unittests without CDI
-                if (!ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
-                {
-                    _delegate = new ViewScope();
-                    return _delegate;
-                }
-
+                _delegate = new HashMap<>();
+            }
+            else
+            {
                 if (_viewScopeId == null)
                 {
                     BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
@@ -87,12 +86,6 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
                     _viewScopeId = beanHolder.generateUniqueViewScopeId();
                 }
                 _delegate = new ViewScopeCDIMap(facesContext, _viewScopeId);
-            }
-            else
-            {
-                // In junit test cases, where there is no facesContext instance, it is enough to
-                // just get a blank instance.
-                _delegate = new ViewScope();
             }
         }
         return _delegate;
@@ -157,8 +150,8 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.getApplication().publishEvent(facesContext, 
                 PreDestroyViewMapEvent.class, facesContext.getViewRoot());
-
-        getWrapped().clear();
+        
+        ViewTransientScopeContext.destroyAll(facesContext);
     }
 
     @Override
@@ -202,26 +195,5 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
     {
     }
     
-    private static class ViewScope extends HashMap<String, Object>
-    {
-        
-        private static final long serialVersionUID = -1088293802269478164L;
-        
-        @Override
-        public void clear()
-        {
-            /*
-             * The returned Map must be implemented such that calling clear() on the Map causes
-             * Application.publishEvent(java.lang.Class, java.lang.Object) to be called, passing
-             * ViewMapDestroyedEvent.class as the first argument and this UIViewRoot instance as the second argument.
-             */
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            facesContext.getApplication().publishEvent(facesContext, 
-                    PreDestroyViewMapEvent.class, facesContext.getViewRoot());
-            
-            super.clear();
-        }
-        
-    }
 
 }
