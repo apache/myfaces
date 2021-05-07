@@ -29,7 +29,6 @@ import jakarta.faces.event.PreDestroyViewMapEvent;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.view.ViewScopeContextualStorageHolder;
 import org.apache.myfaces.cdi.view.ViewScopeCDIMap;
-import org.apache.myfaces.cdi.view.ViewTransientScopeContext;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
@@ -151,7 +150,7 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
         facesContext.getApplication().publishEvent(facesContext, 
                 PreDestroyViewMapEvent.class, facesContext.getViewRoot());
         
-        ViewTransientScopeContext.destroyAll(facesContext);
+        getWrapped().clear();
     }
 
     @Override
