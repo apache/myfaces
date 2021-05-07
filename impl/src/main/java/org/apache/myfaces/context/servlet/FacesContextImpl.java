@@ -137,7 +137,7 @@ public class FacesContextImpl extends FacesContextImplBase
         assertNotReleased();
         if (ExternalSpecifications.isCDIAvailable(getExternalContext()))
         {
-            FacesScopeContext.destroyAllActive(this);
+            FacesScopeContext.destroyAll(this);
         }
 
         _messages = null;

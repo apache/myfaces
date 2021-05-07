@@ -36,41 +36,13 @@ import org.apache.myfaces.cdi.util.ContextualStorage;
 @Typed()
 public class ViewTransientScopeContext implements Context
 {
-    public static final String VIEW_TRANSIENT_SCOPE_MAP = "oam.VIEW_TRANSIENT_SCOPE_MAP";
+    public static final String VIEW_TRANSIENT_SCOPED_STORAGE = "oam.VIEW_TRANSIENT_SCOPED_STORAGE";
 
     private BeanManager beanManager;
     
     public ViewTransientScopeContext(BeanManager beanManager)
     {
         this.beanManager = beanManager;
-    }
-
-    /**
-     * An implementation has to return the underlying storage which
-     * contains the items held in the Context.
-     *
-     * @param createIfNotExist whether a ContextualStorage shall get created if it doesn't yet exist.
-     * @param facesContext 
-     * 
-     * @return the underlying storage
-     */
-    protected ContextualStorage getContextualStorage(boolean createIfNotExist, FacesContext facesContext)
-    {
-        if (facesContext == null)
-        {
-            throw new ContextNotActiveException(this.getClass().getName() + ": no current active FacesContext");
-        }
-
-        ContextualStorage contextualStorage = (ContextualStorage) 
-                facesContext.getViewRoot().getTransientStateHelper().getTransient(VIEW_TRANSIENT_SCOPE_MAP);
-        if (contextualStorage == null && createIfNotExist)
-        {
-            contextualStorage = new ContextualStorage(beanManager, false);
-            facesContext.getViewRoot().getTransientStateHelper()
-                    .putTransient(VIEW_TRANSIENT_SCOPE_MAP, contextualStorage);
-        }
-
-        return contextualStorage;
     }
 
     @Override
@@ -153,29 +125,28 @@ public class ViewTransientScopeContext implements Context
     }
 
     /**
-     * Destroy the Contextual Instance of the given Bean.
-     * @param bean dictates which bean shall get cleaned up
-     * @return <code>true</code> if the bean was destroyed, <code>false</code> if there was no such bean.
+     * An implementation has to return the underlying storage which
+     * contains the items held in the Context.
+     *
+     * @param createIfNotExist whether a ContextualStorage shall get created if it doesn't yet exist.
+     * @param facesContext 
+     * 
+     * @return the underlying storage
      */
-    public boolean destroy(Contextual bean)
+    protected ContextualStorage getContextualStorage(boolean createIfNotExist, FacesContext facesContext)
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ContextualStorage storage = getContextualStorage(false, facesContext);
-        if (storage == null)
+        ContextualStorage contextualStorage = (ContextualStorage) 
+                facesContext.getViewRoot().getTransientStateHelper().getTransient(VIEW_TRANSIENT_SCOPED_STORAGE);
+        if (contextualStorage == null && createIfNotExist)
         {
-            return false;
-        }
-        ContextualInstanceInfo<?> contextualInstanceInfo = storage.getStorage().get(storage.getBeanKey(bean));
-
-        if (contextualInstanceInfo == null)
-        {
-            return false;
+            contextualStorage = new ContextualStorage(beanManager, false);
+            facesContext.getViewRoot().getTransientStateHelper()
+                    .putTransient(VIEW_TRANSIENT_SCOPED_STORAGE, contextualStorage);
         }
 
-        bean.destroy(contextualInstanceInfo.getContextualInstance(), contextualInstanceInfo.getCreationalContext());
-        return true;
+        return contextualStorage;
     }
-
+    
     /**
      * Make sure that the context is really active.
      * 
@@ -191,7 +162,7 @@ public class ViewTransientScopeContext implements Context
         }
     }
 
-    public static void destroyAllActive(FacesContext facesContext)
+    public static void destroyAll(FacesContext facesContext)
     {
         if (facesContext == null
                 || facesContext.getViewRoot() == null)
@@ -200,7 +171,7 @@ public class ViewTransientScopeContext implements Context
         }
 
         ContextualStorage storage = (ContextualStorage) facesContext.getViewRoot()
-                .getTransientStateHelper().putTransient(VIEW_TRANSIENT_SCOPE_MAP, null);
+                .getTransientStateHelper().putTransient(VIEW_TRANSIENT_SCOPED_STORAGE, null);
         if (storage != null)
         {
             Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();

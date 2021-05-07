@@ -164,6 +164,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
         // the bean holder.
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ViewScopeContext.destroyAll(facesContext, viewScopeId);
+        ViewTransientScopeContext.destroyAll(facesContext);
     }
 
     @Override
