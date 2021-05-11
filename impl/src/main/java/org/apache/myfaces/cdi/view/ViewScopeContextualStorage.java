@@ -18,12 +18,7 @@
  */
 package org.apache.myfaces.cdi.view;
 
-import jakarta.enterprise.context.spi.Contextual;
-import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.BeanManager;
-import java.util.HashMap;
-import java.util.Map;
-import jakarta.enterprise.inject.spi.Bean;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 
 /**
@@ -36,33 +31,8 @@ public class ViewScopeContextualStorage extends ContextualStorage
 {
     private static final long serialVersionUID = 1L;
     
-    private final Map<String, Object> nameBeanKeyMap;
-
     public ViewScopeContextualStorage(BeanManager beanManager)
     {
         super(beanManager, false);
-        this.nameBeanKeyMap = new HashMap<>();
-    }
-
-    public Map<String, Object> getNameBeanKeyMap()
-    {
-        return nameBeanKeyMap;
-    }
-
-    @Override
-    public <T> T createContextualInstance(Contextual<T> bean, CreationalContext<T> creationalContext)
-    {
-        T instance = super.createContextualInstance(bean, creationalContext);
-
-        if (bean instanceof Bean)
-        {
-            String name = ((Bean<T>) bean).getName();
-            if (name != null)
-            {
-                nameBeanKeyMap.put(name, getBeanKey(bean));
-            }
-        }
-
-        return instance;
     }
 }

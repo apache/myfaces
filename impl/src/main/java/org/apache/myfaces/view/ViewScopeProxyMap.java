@@ -45,97 +45,95 @@ import org.apache.myfaces.util.ExternalSpecifications;
  */
 public class ViewScopeProxyMap extends HashMap<String, Object> implements StateHolder
 {
-    private String _viewScopeId;
-    
-    private transient Map<String, Object> _delegate;
+    private String viewScopeId;
+    private transient Map<String, Object> delegate;
 
     public ViewScopeProxyMap()
     {
     }
     
-    
     public String getViewScopeId()
     {
-        return _viewScopeId;
+        return viewScopeId;
     }
     
-    public void forceCreateWrappedMap(FacesContext facesContext)
+    public void forceDelegateCreation(FacesContext facesContext)
     {
-        getWrapped();
+        getDelegate();
     }
     
-    public Map<String, Object> getWrapped()
+    public Map<String, Object> getDelegate()
     {
-        if (_delegate == null)
+        if (delegate == null)
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             
             // for non-CDI environments or unittests
             if (facesContext == null || !ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
             {
-                _delegate = new HashMap<>();
+                delegate = new HashMap<>();
             }
             else
             {
-                if (_viewScopeId == null)
+                if (viewScopeId == null)
                 {
                     BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
                     ViewScopeContextualStorageHolder beanHolder =
                             CDIUtils.get(beanManager, ViewScopeContextualStorageHolder.class);
-                    _viewScopeId = beanHolder.generateUniqueViewScopeId();
+                    viewScopeId = beanHolder.generateUniqueViewScopeId();
                 }
-                _delegate = new ViewScopeCDIMap(facesContext, _viewScopeId);
+                delegate = new ViewScopeCDIMap(viewScopeId);
             }
         }
-        return _delegate;
+        return delegate;
     }
     
     @Override
     public int size()
     {
-        return getWrapped().size();
+        return getDelegate().size();
     }
 
     @Override
     public boolean isEmpty()
     {
-        return getWrapped().isEmpty();
+        return getDelegate().isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key)
     {
-        return getWrapped().containsKey(key);
+        return getDelegate().containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value)
     {
-        return getWrapped().containsValue(value);
+        return getDelegate().containsValue(value);
     }
 
     @Override
     public Object get(Object key)
     {
-        return getWrapped().get(key);
+        return getDelegate().get(key);
     }
 
     @Override
     public Object put(String key, Object value)
     {
-        return getWrapped().put(key, value);
+        return getDelegate().put(key, value);
     }
 
     @Override
     public Object remove(Object key)
     {
-        return getWrapped().remove(key);
+        return getDelegate().remove(key);
     }
 
     @Override
     public void putAll(Map<? extends String, ? extends Object> m)
     {
-        getWrapped().putAll(m);
+        getDelegate().putAll(m);
     }
 
     @Override
@@ -150,37 +148,37 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
         facesContext.getApplication().publishEvent(facesContext, 
                 PreDestroyViewMapEvent.class, facesContext.getViewRoot());
         
-        getWrapped().clear();
+        getDelegate().clear();
     }
 
     @Override
     public Set<String> keySet()
     {
-        return getWrapped().keySet();
+        return getDelegate().keySet();
     }
 
     @Override
     public Collection<Object> values()
     {
-        return getWrapped().values();
+        return getDelegate().values();
     }
 
     @Override
     public Set<Entry<String, Object>> entrySet()
     {
-        return getWrapped().entrySet();
+        return getDelegate().entrySet();
     }
 
     @Override
     public void restoreState(FacesContext context, Object state)
     {
-        _viewScopeId = (String) state;
+        viewScopeId = (String) state;
     }
 
     @Override
     public Object saveState(FacesContext context)
     {
-        return _viewScopeId;
+        return viewScopeId;
     }
 
     @Override
@@ -194,5 +192,4 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
     {
     }
     
-
 }

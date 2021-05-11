@@ -71,7 +71,7 @@ public class ViewScopeContext implements Context
             if (id == null && create)
             {
                 // Force create
-                map.forceCreateWrappedMap(facesContext);
+                map.forceDelegateCreation(facesContext);
                 id = map.getViewScopeId();
             }
             return id;

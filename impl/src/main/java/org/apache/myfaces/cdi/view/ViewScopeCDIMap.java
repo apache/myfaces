@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
+import java.util.stream.Collectors;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 
@@ -38,14 +39,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
     private String viewScopeId;
     private ViewScopeContextualStorage storage;
 
-    public ViewScopeCDIMap(FacesContext facesContext)
-    {
-        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
-        ViewScopeContextualStorageHolder bean = CDIUtils.get(beanManager, ViewScopeContextualStorageHolder.class);
-        viewScopeId = bean.generateUniqueViewScopeId();
-    }
-    
-    public ViewScopeCDIMap(FacesContext facesContext, String viewScopeId)
+    public ViewScopeCDIMap(String viewScopeId)
     {
         this.viewScopeId = viewScopeId;
     }
@@ -67,12 +61,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
         }
         return storage;
     }
-    
-    private Map<String, Object> getNameBeanKeyMap()
-    {
-        return getStorage().getNameBeanKeyMap();
-    }
-    
+
     private Map<Object, ContextualInstanceInfo<?>> getCreationalContextInstances()
     {
         return getStorage().getStorage();
@@ -86,19 +75,19 @@ public class ViewScopeCDIMap implements Map<String, Object>
     @Override
     public int size()
     {
-        return this.getNameBeanKeyMap().size();
+        return this.getCreationalContextInstances().size();
     }
 
     @Override
     public boolean isEmpty()
     {
-        return this.getNameBeanKeyMap().isEmpty();
+        return this.getCreationalContextInstances().isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key)
     {
-        return this.getNameBeanKeyMap().containsKey(key);
+        return this.getCreationalContextInstances().containsKey(key);
     }
 
     @Override
@@ -120,30 +109,22 @@ public class ViewScopeCDIMap implements Map<String, Object>
     @Override
     public Object get(Object key)
     {
-        Object beanKey = this.getNameBeanKeyMap().get(key);
-        if (beanKey != null)
-        {
-            ContextualInstanceInfo<?> info = this.getCreationalContextInstances().get(beanKey);
-            return info == null ? null : info.getContextualInstance();
-        }
-        return null;
+        ContextualInstanceInfo<?> info = this.getCreationalContextInstances().get(key);
+        return info == null ? null : info.getContextualInstance();
     }
 
     @Override
     public Object put(String key, Object value)
     {
-        Object beanKey = new ViewScopeContextualKey(key);
-        this.getNameBeanKeyMap().put(key, beanKey);
         ContextualInstanceInfo info = new ContextualInstanceInfo();
         info.setContextualInstance(value);
-        return this.getCreationalContextInstances().put(beanKey, info);
+        return this.getCreationalContextInstances().put(key, info);
     }
 
     @Override
     public Object remove(Object key)
     {
-        Object beanKey = this.getNameBeanKeyMap().remove(key);
-        ContextualInstanceInfo info = this.getCreationalContextInstances().remove(beanKey);
+        ContextualInstanceInfo info = this.getCreationalContextInstances().remove(key);
         return info == null ? null : info.getContextualInstance();
     }
 
@@ -171,24 +152,26 @@ public class ViewScopeCDIMap implements Map<String, Object>
     @Override
     public Set<String> keySet()
     {
-        return this.getNameBeanKeyMap().keySet();
+        return this.getCreationalContextInstances().keySet()
+                .stream()
+                .map(e -> (String) e)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Collection<Object> values()
     {
-        List<Object> values = new ArrayList<>(this.getNameBeanKeyMap().size());
-        for (Map.Entry<String, Object> entry : this.getNameBeanKeyMap().entrySet())
+        List<Object> values = new ArrayList<>(this.getCreationalContextInstances().size());
+
+        for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : this.getCreationalContextInstances().entrySet())
         {
-            if (entry.getValue() != null)
+            ContextualInstanceInfo info = entry.getValue();
+            if (info != null)
             {
-                ContextualInstanceInfo info = this.getCreationalContextInstances().get(entry.getValue());
-                if (info != null)
-                {
-                    values.add(info.getContextualInstance());
-                }
+                values.add(info.getContextualInstance());
             }
         }
+
         return values;
     }
 
@@ -196,46 +179,47 @@ public class ViewScopeCDIMap implements Map<String, Object>
     public Set<Entry<String, Object>> entrySet()
     {
         Set<Entry<String, Object>> values = new HashSet<>();
-        for (Map.Entry<String, Object> entry : this.getNameBeanKeyMap().entrySet())
+  
+        for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : this.getCreationalContextInstances().entrySet())
         {
-            if (entry.getValue() != null)
+            ContextualInstanceInfo info = entry.getValue();
+            if (info != null)
             {
-                ContextualInstanceInfo info = this.getCreationalContextInstances().get(entry.getValue());
-                if (info != null)
-                {
-                    values.add(new EntryWrapper(entry));
-                }
+                values.add(new EntryWrapper(entry.getKey()));
             }
         }
+
         return values;
     }
     
     private class EntryWrapper<String, Object> implements Entry<String, Object>
     {
-        private final Map.Entry<String, Object> entry;
+        private final Object key;
         
-        public EntryWrapper(Map.Entry<String, Object> entry)
+        public EntryWrapper(Object key)
         {
-            this.entry = entry;
+            this.key = key;
         }
 
         @Override
         public String getKey()
         {
-            return entry.getKey();
+            return (String) key;
         }
 
         @Override
         public Object getValue()
         {
-            ContextualInstanceInfo<?> info = getCreationalContextInstances().get(entry.getValue());
+            ContextualInstanceInfo<?> info = getCreationalContextInstances().get(key);
+
             return (Object) (info == null ? null : info.getContextualInstance());
         }
 
         @Override
         public Object setValue(Object value)
         {
-            ContextualInstanceInfo info = getCreationalContextInstances().get(entry.getValue());
+            ContextualInstanceInfo info = getCreationalContextInstances().get(key);
+
             Object oldValue = null;
             if (info != null)
             {
@@ -245,7 +229,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
             {
                 info = new ContextualInstanceInfo();
                 info.setContextualInstance(value);
-                getCreationalContextInstances().put(entry.getValue(), info);
+                getCreationalContextInstances().put(key, info);
             }
             return oldValue;
         }
