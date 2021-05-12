@@ -35,7 +35,6 @@ import jakarta.faces.event.PhaseListener;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.lifecycle.ClientWindowFactory;
 import jakarta.faces.lifecycle.Lifecycle;
-import org.apache.myfaces.cdi.clientwindow.ClientWindowScopeContext;
 
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.core.api.shared.lang.Assert;
@@ -96,10 +95,8 @@ public class LifecycleImpl extends Lifecycle
         {
             try
             {
-                facesContext.getExternalContext().setClientWindow(clientWindow);
                 clientWindow.decode(facesContext);
-
-                ClientWindowScopeContext.pushClientWindow(facesContext, clientWindow);
+                facesContext.getExternalContext().setClientWindow(clientWindow);
             }
             catch (RuntimeException e)
             {

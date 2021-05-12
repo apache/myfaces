@@ -25,8 +25,10 @@ import java.util.Map;
 import java.util.Set;
 
 import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.servlet.ServletContext;
+import org.apache.myfaces.cdi.clientwindow.ClientWindowScopeContext;
 
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
@@ -170,9 +172,10 @@ public abstract class ServletExternalContextImplBase extends ExternalContext
     }
     
     @Override
-    public void setClientWindow(ClientWindow window)
+    public void setClientWindow(ClientWindow clientWindow)
     {
-        _clientWindow = window;
+        _clientWindow = clientWindow;
+        ClientWindowScopeContext.pushClientWindow(FacesContext.getCurrentInstance(), clientWindow);
     }
     
     @Override
