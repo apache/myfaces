@@ -748,7 +748,10 @@ public class FlashImpl extends Flash implements ReleasableFlash
             else
             {
                 FlashClientWindowTokenCollection lruMap = getFlashClientWindowTokenCollection(externalContext, true);
-                lruMap.put(clientWindow.getId(), tokenValue);
+                if (lruMap != null)
+                {
+                    lruMap.put(clientWindow.getId(), tokenValue);
+                }
             }
         }
         else
@@ -1108,6 +1111,15 @@ public class FlashImpl extends Flash implements ReleasableFlash
         {
             return null;
         }
+        if (session == null && externalContext.getResponse() instanceof HttpServletResponse)
+        {
+            HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
+            if (response.isCommitted())
+            {
+                return null;
+            }
+        }
+
         Map<String, Object> sessionMap = externalContext.getSessionMap();
         FlashClientWindowTokenCollection lruMap = (FlashClientWindowTokenCollection)
                 sessionMap.get(FLASH_CW_LRU_MAP);
