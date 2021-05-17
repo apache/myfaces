@@ -37,6 +37,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
+import org.apache.myfaces.cdi.view.ViewTransientScopeContext;
 
 import org.apache.myfaces.el.FacesELContext;
 import org.apache.myfaces.core.api.shared.lang.Assert;
@@ -285,6 +286,8 @@ public abstract class FacesContextImplBase extends FacesContext
         assertNotReleased();
 
         Assert.notNull(viewRoot, "viewRoot");
+        
+        ViewTransientScopeContext.destroyAll(this);
         
         // If the current UIViewRoot is non-null, and calling equals() on the argument root,
         // passing the current UIViewRoot returns false

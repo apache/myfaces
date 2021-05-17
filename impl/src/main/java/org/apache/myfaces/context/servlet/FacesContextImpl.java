@@ -42,6 +42,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import org.apache.myfaces.cdi.FacesScopeContext;
+import org.apache.myfaces.cdi.view.ViewTransientScopeContext;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.context.ReleasableFacesContextFactory;
@@ -137,6 +138,7 @@ public class FacesContextImpl extends FacesContextImplBase
         assertNotReleased();
         if (ExternalSpecifications.isCDIAvailable(getExternalContext()))
         {
+            ViewTransientScopeContext.destroyAll(this);
             FacesScopeContext.destroyAll(this);
         }
 
