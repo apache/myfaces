@@ -54,6 +54,7 @@ import jakarta.faces.model.IterableDataModel;
 import jakarta.faces.model.ListDataModel;
 import jakarta.faces.model.ResultSetDataModel;
 import jakarta.faces.model.ScalarDataModel;
+import java.util.regex.Pattern;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacet;
@@ -125,6 +126,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     public static final String COMPONENT_FAMILY = "jakarta.faces.Data";
     public static final String COMPONENT_TYPE = "jakarta.faces.Data"; // for unit tests
 
+    private static final String SUB_ID_PATTERN = "oam.UIData.SUB_ID_PATTERN";
+    
     private static final String FACES_DATA_MODEL_MANAGER_CLASS_NAME
             = "org.apache.myfaces.cdi.model.FacesDataModelManager";
     private static final Class<?> FACES_DATA_MODEL_MANAGER_CLASS;
@@ -382,11 +385,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 // Check if the clientId for the component, which we 
                 // are looking for, has a rowIndex attached
                 char separator = context.getNamingContainerSeparatorChar();
+                Pattern pattern = getSubIdPattern(context, separator);
+                
                 String subId = clientId.substring(baseClientId.length() + 1);
                 //If the char next to baseClientId is the separator one and
                 //the subId matches the regular expression
-                if (clientId.charAt(baseClientId.length()) == separator
-                        && subId.matches("[0-9]+" + separator + ".*")) // TODO [perf] precompile pattern
+                if (clientId.charAt(baseClientId.length()) == separator && pattern.matcher(subId).matches())
                 {
                     String clientRow = subId.substring(0, subId.indexOf(separator));
 
@@ -469,6 +473,17 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         return returnValue;
     }
 
+    protected Pattern getSubIdPattern(FacesContext context, char separator)
+    {
+        Pattern pattern = (Pattern) context.getAttributes().get(SUB_ID_PATTERN);
+        if (pattern == null)
+        {
+            pattern = Pattern.compile("[0-9]+" + separator + ".*");
+            context.getAttributes().put(SUB_ID_PATTERN, pattern);
+        }
+        return pattern;
+    }
+    
     public void setFooter(UIComponent footer)
     {
         getFacets().put(FOOTER_FACET_NAME, footer);
