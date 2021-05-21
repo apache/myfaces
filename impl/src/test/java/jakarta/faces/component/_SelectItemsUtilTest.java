@@ -18,9 +18,9 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component._SelectItemsUtil;
 import jakarta.faces.component.UISelectOne;
 import org.apache.myfaces.core.api.shared.SelectItemsIterator;
+import org.apache.myfaces.core.api.shared.SelectItemsUtil;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -86,12 +86,12 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
     public void testMatchValue()
     {
         
-        boolean matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, value, iterator, null);
+        boolean matchValue = SelectItemsUtil.matchValue(facesContext, uiComponent, value, iterator, null);
         
         Assert.assertTrue("Value Float 1.2 must match SelectItem.value \"1.2\" (type of String)", matchValue);
         
         Float valueNotInSelectItems = Float.valueOf("2.0");
-        matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, valueNotInSelectItems, iterator, null);
+        matchValue = SelectItemsUtil.matchValue(facesContext, uiComponent, valueNotInSelectItems, iterator, null);
         Assert.assertFalse(matchValue);
     }
     
@@ -105,12 +105,12 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
         iterator = new SelectItemsIterator(uiComponent, facesContext);
         
         Object enumValue = MockEnum.THREE;
-        boolean matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
+        boolean matchValue = SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
         
         Assert.assertTrue("Value Enum THREE must match SelectItem.value \"THREE\" (type of String)", matchValue);
         
         enumValue = MockEnum.FOUR;
-        matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
+        matchValue = SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
         Assert.assertFalse(matchValue);
     }
     
@@ -124,7 +124,7 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
         iterator = new SelectItemsIterator(uiComponent, facesContext);
         
         Object enumValue = MockEnum.TWO;
-        boolean matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
+        boolean matchValue = SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
         
         Assert.assertTrue("Value Enum TWO must match SelectItem.value \"TWO\" (type of String)", matchValue);
     }
@@ -155,11 +155,11 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
     public void testIsNoSelectionOption()
     {
         Float value = Float.parseFloat(NO_SELECTION_ITEM_VALUE);
-        boolean noSelectionOption = _SelectItemsUtil.isNoSelectionOption(facesContext, uiComponent, value, iterator, null);
+        boolean noSelectionOption = SelectItemsUtil.isNoSelectionOption(facesContext, uiComponent, value, iterator, null);
         Assert.assertTrue(noSelectionOption);
         
         Float valueNotInSelectItems = Float.valueOf("2.0");
-        noSelectionOption = _SelectItemsUtil.isNoSelectionOption(facesContext, uiComponent, valueNotInSelectItems, iterator, null);
+        noSelectionOption = SelectItemsUtil.isNoSelectionOption(facesContext, uiComponent, valueNotInSelectItems, iterator, null);
         Assert.assertFalse(noSelectionOption);
         
     }

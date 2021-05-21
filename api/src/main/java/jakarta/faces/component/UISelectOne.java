@@ -33,6 +33,7 @@ import jakarta.faces.component.UISelectItem;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.core.api.shared.MessageUtils;
+import org.apache.myfaces.core.api.shared.SelectItemsUtil;
 
 /**
  * Component for choosing one option out of a set of possibilities.
@@ -173,13 +174,13 @@ public class UISelectOne extends UIInput
             items.add(iter.next());
         }
         
-        if (_SelectItemsUtil.matchValue(context, this, value, items.iterator(), converter))
+        if (SelectItemsUtil.matchValue(context, this, value, items.iterator(), converter))
         {
             if (!this.isRequired())
             {
                 return; // Matched & Required false, so return ok.
             }
-            if (!_SelectItemsUtil.isNoSelectionOption(context, this, value, items.iterator(), converter))
+            if (!SelectItemsUtil.isNoSelectionOption(context, this, value, items.iterator(), converter))
             {
                 return; // Matched & Required true & No-selection did NOT match, so return ok.
             }

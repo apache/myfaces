@@ -22,13 +22,18 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectItem;
 import jakarta.faces.component.UISelectItems;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
 import jakarta.faces.model.SelectItem;
+import jakarta.faces.model.SelectItemGroup;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 import org.apache.myfaces.core.api.shared.lang.CollectionUtils;
 
 public class SelectItemsUtil
@@ -161,5 +166,135 @@ public class SelectItemsUtil
         return itemValue != null || attributes.containsKey(ATTR_ITEM_VALUE) ? itemValue : defaultValue;
     }
     
+    /**
+     * @param context the faces context
+     * @param uiComponent the component instance
+     * @param value the value to check
+     * @param converter a converter instance
+     * @param iterator contains instances of SelectItem
+     * @return if the value of a selectitem is equal to the given value
+     */
+    public static boolean matchValue(FacesContext context,
+            UIComponent uiComponent, Object value,
+            Iterator<SelectItem> iterator, Converter converter)
+    {
+        while (iterator.hasNext())
+        {
+            SelectItem item = iterator.next();
+            if (item instanceof SelectItemGroup)
+            {
+                SelectItemGroup itemgroup = (SelectItemGroup) item;
+                SelectItem[] selectItems = itemgroup.getSelectItems();
+                if (selectItems != null
+                        && selectItems.length > 0
+                        && matchValue(context, uiComponent, value, Arrays.asList(selectItems).iterator(), converter))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                Object itemValue = _convertOrCoerceValue(context, uiComponent, value, item, converter);
+                if (value == itemValue || value.equals(itemValue))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
+    /**
+     * @param context the faces context
+     * @param uiComponent the component instance
+     * @param value the value to check
+     * @param converter 
+     * @param iterator contains instances of SelectItem
+     * @return if the value is a SelectItem of selectItemsIter, on which noSelectionOption is true
+     */
+    public static boolean isNoSelectionOption(FacesContext context,
+            UIComponent uiComponent, Object value,
+            Iterator<SelectItem> iterator, Converter converter)
+    {
+        while (iterator.hasNext())
+        {
+            SelectItem item = iterator.next();
+            if (item instanceof SelectItemGroup)
+            {
+                SelectItemGroup itemgroup = (SelectItemGroup) item;
+                SelectItem[] selectItems = itemgroup.getSelectItems();
+                if (selectItems != null
+                        && selectItems.length > 0
+                        && isNoSelectionOption(context, uiComponent, value, Arrays.asList(selectItems).iterator(),
+                                converter))
+                {
+                    return true;
+                }
+            }
+            else if (item.isNoSelectionOption())
+            {
+                Object itemValue = _convertOrCoerceValue(context, uiComponent, value, item, converter);
+                if (value == itemValue || value.equals(itemValue))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * If converter is available and selectItem.value is String uses getAsObject,
+     * otherwise uses EL type coertion and return result.
+     */
+    private static Object _convertOrCoerceValue(FacesContext facesContext,
+            UIComponent uiComponent, Object value, SelectItem selectItem, Converter converter)
+    {
+        Object itemValue = selectItem.getValue();
+        if (converter != null && itemValue instanceof String)
+        {
+            itemValue = converter.getAsObject(facesContext, uiComponent, (String) itemValue);
+        }
+        else
+        {
+            // The javadoc of UISelectOne/UISelectMany says : 
+            // "... Before comparing each option, coerce the option value type
+            //  to the type of this component's value following the 
+            // Expression Language coercion rules ..."
+            // If the coercion fails, just return the value without coerce,
+            // because it could be still valid the comparison for that value.
+            // and swallow the exception, because its information is no relevant
+            // on this context.
+            try
+            {
+                if (value instanceof java.lang.Enum)
+                {
+                    // Values from an enum are a special case. There is one syntax were the
+                    // particular enumeration is extended using something like
+                    // SOMEVALUE { ... }, usually to override toString() method. In this case,
+                    // value.getClass is not the target enum class, so we need to get the 
+                    // right one from super class.
+                    Class targetClass = value.getClass();
+                    if (targetClass != null && !targetClass.isEnum())
+                    {
+                        targetClass = targetClass.getSuperclass();
+                    }
+                    itemValue = ClassUtils.convertToTypeNoLogging(facesContext, itemValue, targetClass);
+                }
+                else
+                {
+                    itemValue = ClassUtils.convertToTypeNoLogging(facesContext, itemValue, value.getClass());
+                }
+            }
+            catch (IllegalArgumentException e)
+            {
+
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+        return itemValue;
+    }
 }

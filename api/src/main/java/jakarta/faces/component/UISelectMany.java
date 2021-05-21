@@ -42,6 +42,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProp
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.core.api.shared.ExternalSpecifications;
 import org.apache.myfaces.core.api.shared.MessageUtils;
+import org.apache.myfaces.core.api.shared.SelectItemsUtil;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
@@ -328,10 +329,10 @@ public class UISelectMany extends UIInput
 
                 // selected value must match to one of the available options
                 // and if required is true it must not match an option with noSelectionOption set to true (since 2.0)
-                if (!_SelectItemsUtil.matchValue(context, this, itemValue, items.iterator(), converter)
+                if (!SelectItemsUtil.matchValue(context, this, itemValue, items.iterator(), converter)
                         || (
                             this.isRequired()
-                            && _SelectItemsUtil.isNoSelectionOption(context, this, itemValue, items.iterator(),
+                            && SelectItemsUtil.isNoSelectionOption(context, this, itemValue, items.iterator(),
                                     converter)
                         ))
                 {    

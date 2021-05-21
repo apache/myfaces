@@ -22,7 +22,7 @@ import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIComponent.EventListenerWrapper;
+import jakarta.faces.component._EventListenerWrapper;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.faces.event.ComponentSystemEventListener;
@@ -35,14 +35,14 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
     {
         UIComponent component = new UIOutput();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, component);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, component);
         
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper();
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
         wrapper2.restoreState(facesContext, state);
@@ -56,7 +56,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
     {
         UIComponent component = new UIOutput();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, component);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, component);
         
         wrapper.markInitialState();
         Object state = wrapper.saveState(facesContext);
@@ -64,7 +64,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should be null
         Assert.assertNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, component);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, component);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -79,7 +79,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
     {
         UIComponent component = new UIOutput();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, component);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, component);
         
         wrapper.markInitialState();
         
@@ -89,7 +89,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, component);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, component);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -115,14 +115,14 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         component.setRendererType("org.apache.myfaces.MyCustomRenderer");
         renderKit.addRenderer("jakarta.faces.Output", "org.apache.myfaces.MyCustomRenderer", renderer);
         //This case happens when @ListenerFor is attached on the renderer class like h:outputScript or h:outputStylesheet
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, renderer);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, renderer);
         
         Object state = wrapper.saveState(facesContext);
 
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
 
-        EventListenerWrapper wrapper2 = new EventListenerWrapper();
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
         wrapper2.restoreState(facesContext, state);
@@ -139,7 +139,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         component.setRendererType("org.apache.myfaces.MyCustomRenderer");
         renderKit.addRenderer("jakarta.faces.Output", "org.apache.myfaces.MyCustomRenderer", renderer);
         //This case happens when @ListenerFor is attached on the renderer class like h:outputScript or h:outputStylesheet
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, renderer);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, renderer);
         
         wrapper.markInitialState();
         Object state = wrapper.saveState(facesContext);
@@ -147,7 +147,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should be null
         Assert.assertNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, renderer);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, renderer);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -165,7 +165,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         component.setRendererType("org.apache.myfaces.MyCustomRenderer");
         renderKit.addRenderer("jakarta.faces.Output", "org.apache.myfaces.MyCustomRenderer", renderer);
         //This case happens when @ListenerFor is attached on the renderer class like h:outputScript or h:outputStylesheet
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, renderer);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, renderer);
         
         wrapper.markInitialState();
         
@@ -175,7 +175,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, renderer);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, renderer);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -207,14 +207,14 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         ComponentSystemEventListener listener = new MyNonSerializableListener();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper();
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
         wrapper2.restoreState(facesContext, state);
@@ -229,7 +229,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         ComponentSystemEventListener listener = new MyNonSerializableListener();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         wrapper.markInitialState();
         Object state = wrapper.saveState(facesContext);
@@ -237,7 +237,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should be null
         Assert.assertNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, listener);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -253,7 +253,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         ComponentSystemEventListener listener = new MyNonSerializableListener();        
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         wrapper.markInitialState();
         
@@ -263,7 +263,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, listener);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -295,14 +295,14 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         ComponentSystemEventListener listener = new MySerializableListener();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper();
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
         wrapper2.restoreState(facesContext, state);
@@ -317,7 +317,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         ComponentSystemEventListener listener = new MySerializableListener();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         wrapper.markInitialState();
         Object state = wrapper.saveState(facesContext);
@@ -325,7 +325,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should be null
         Assert.assertNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, listener);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -341,7 +341,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         ComponentSystemEventListener listener = new MySerializableListener();        
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         wrapper.markInitialState();
         
@@ -351,7 +351,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, listener);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -413,7 +413,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         MyStateHolderListener listener = new MyStateHolderListener();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         listener.setI(2);
         Object state = wrapper.saveState(facesContext);
@@ -421,7 +421,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper();
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
         wrapper2.restoreState(facesContext, state);
@@ -436,7 +436,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         ComponentSystemEventListener listener = new MyStateHolderListener();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         wrapper.markInitialState();
         Object state = wrapper.saveState(facesContext);
@@ -446,7 +446,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         
         MyStateHolderListener listener2 = new MyStateHolderListener();
         listener2.setI(2);
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener2);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, listener2);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -462,7 +462,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         ComponentSystemEventListener listener = new MyStateHolderListener();        
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         wrapper.markInitialState();
         
@@ -472,7 +472,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, listener);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -566,14 +566,14 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         ComponentSystemEventListener listener = new MyPartialStateHolderListener();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper();
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
         wrapper2.restoreState(facesContext, state);
@@ -588,7 +588,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         ComponentSystemEventListener listener = new MyPartialStateHolderListener();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         wrapper.markInitialState();
         Object state = wrapper.saveState(facesContext);
@@ -596,7 +596,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should be null
         Assert.assertNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, listener);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -612,7 +612,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         MyPartialStateHolderListener listener = new MyPartialStateHolderListener();
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         wrapper.markInitialState();
         
@@ -622,7 +622,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should be not null, because something changed inside the listener
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, new MyPartialStateHolderListener());
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, new MyPartialStateHolderListener());
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);
@@ -638,7 +638,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         UIComponent component = new UIOutput();
         ComponentSystemEventListener listener = new MyPartialStateHolderListener();        
         //This case happens when @ListenerFor is attached on the component class
-        EventListenerWrapper wrapper = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper = new _EventListenerWrapper(component, listener);
         
         wrapper.markInitialState();
         
@@ -648,7 +648,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         //In this case state should not be null, because state should be saved fully
         Assert.assertNotNull(state);
         
-        EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
+        _EventListenerWrapper wrapper2 = new _EventListenerWrapper(component, listener);
         wrapper.markInitialState();
         //For restore we need to setup the context first
         component.pushComponentToEL(facesContext, component);

@@ -23,9 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -33,7 +31,6 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
@@ -54,10 +51,8 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.event.SystemEventListenerHolder;
 import jakarta.faces.render.Renderer;
-import jakarta.faces.render.RendererWrapper;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
@@ -550,12 +545,12 @@ public abstract class UIComponent
                 // name of the current UIComponent this and Locale equal to the Locale of the current UIViewRoot.
                 if (bundleControl == null)
                 {
-                    _resourceBundleMap = new BundleMap(
+                    _resourceBundleMap = new _BundleMap(
                             ResourceBundle.getBundle(getClass().getName(), locale, loader));
                 }
                 else
                 {
-                    _resourceBundleMap = new BundleMap(
+                    _resourceBundleMap = new _BundleMap(
                             ResourceBundle.getBundle(getClass().getName(), locale, loader, bundleControl));
                 }
             }
@@ -591,7 +586,7 @@ public abstract class UIComponent
                         try
                         {
                             _resourceBundleMap
-                                    = new BundleMap(new PropertyResourceBundle(bundleResource.getInputStream()));
+                                    = new _BundleMap(new PropertyResourceBundle(bundleResource.getInputStream()));
                         }
                         catch (IOException e1)
                         {
@@ -751,9 +746,9 @@ public abstract class UIComponent
                         // Check if the listener points again to the component, to
                         // avoid StackoverflowException
                         boolean shouldProcessEvent = true;
-                        if (listener instanceof EventListenerWrapper && 
-                            ((EventListenerWrapper)listener).listenerCapability ==
-                                EventListenerWrapper.LISTENER_TYPE_COMPONENT)
+                        if (listener instanceof _EventListenerWrapper && 
+                            ((_EventListenerWrapper) listener).getListenerCapability() ==
+                                _EventListenerWrapper.LISTENER_TYPE_COMPONENT)
                         {
                             shouldProcessEvent = false;
                         }
@@ -782,7 +777,7 @@ public abstract class UIComponent
         // The default implementation creates an inner SystemEventListener instance that wraps argument
         // componentListener as the listener argument.
 
-        SystemEventListener listener = new EventListenerWrapper(this, componentListener);
+        SystemEventListener listener = new _EventListenerWrapper(this, componentListener);
 
         // Make sure the map exists
         if (_systemEventListenerClassMap == null)
@@ -825,7 +820,7 @@ public abstract class UIComponent
                 for (Iterator<SystemEventListener> it = listeners.iterator(); it.hasNext(); )
                 {
                     ComponentSystemEventListener listener
-                            = ((EventListenerWrapper) it.next()).getComponentSystemEventListener();
+                            = ((_EventListenerWrapper) it.next()).getComponentSystemEventListener();
                     if (listener != null && listener.equals(componentListener))
                     {
                         it.remove();
@@ -1095,452 +1090,5 @@ public abstract class UIComponent
     // Dummy method to prevent cast for UIComponentBase when caching
     void setCachedFacesContext(FacesContext facesContext)
     {
-    }
-
-    private static class BundleMap implements Map<String, String>
-    {
-        private ResourceBundle _bundle;
-        private List<String> _values;
-
-        public BundleMap(ResourceBundle bundle)
-        {
-            _bundle = bundle;
-        }
-
-        // Optimized methods
-        @Override
-        public String get(Object key)
-        {
-            try
-            {
-                return (String) _bundle.getObject(key.toString());
-            }
-            catch (Exception e)
-            {
-                return "???" + key + "???";
-            }
-        }
-
-        @Override
-        public boolean isEmpty()
-        {
-            return !_bundle.getKeys().hasMoreElements();
-        }
-
-        @Override
-        public boolean containsKey(Object key)
-        {
-            try
-            {
-                return _bundle.getObject(key.toString()) != null;
-            }
-            catch (MissingResourceException e)
-            {
-                return false;
-            }
-        }
-
-        // Unoptimized methods
-        @Override
-        public Collection<String> values()
-        {
-            if (_values == null)
-            {
-                _values = new ArrayList<>();
-                for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
-                {
-                    String v = _bundle.getString(enumer.nextElement());
-                    _values.add(v);
-                }
-            }
-            return _values;
-        }
-
-        @Override
-        public int size()
-        {
-            return values().size();
-        }
-
-        @Override
-        public boolean containsValue(Object value)
-        {
-            return values().contains(value);
-        }
-
-        @Override
-        public Set<Map.Entry<String, String>> entrySet()
-        {
-            Set<Entry<String, String>> set = new HashSet<>();
-            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
-            {
-                final String k = enumer.nextElement();
-                set.add(new Map.Entry<String, String>()
-                {
-                    @Override
-                    public String getKey()
-                    {
-                        return k;
-                    }
-
-                    @Override
-                    public String getValue()
-                    {
-                        return (String) _bundle.getObject(k);
-                    }
-                    
-                    @Override
-                    public String setValue(String value)
-                    {
-                        throw new UnsupportedOperationException();
-                    }
-                });
-            }
-
-            return set;
-        }
-
-        @Override
-        public Set<String> keySet()
-        {
-            Set<String> set = new HashSet<>();
-            for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
-            {
-                set.add(enumer.nextElement());
-            }
-            return set;
-        }
-
-        @Override
-        public String remove(Object key)
-        {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void putAll(Map<? extends String, ? extends String> t)
-        {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String put(String key, String value)
-        {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void clear()
-        {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    static class EventListenerWrapper implements SystemEventListener, PartialStateHolder
-    {
-        private Class<?> componentClass;
-        private ComponentSystemEventListener listener;
-
-        private boolean _initialStateMarked;
-
-        private int listenerCapability;
-        private transient UIComponent _component;
-
-        private static final int LISTENER_SAVE_STATE_HOLDER = 1;
-        private static final int LISTENER_SAVE_PARTIAL_STATE_HOLDER = 2;
-        private static final int LISTENER_TYPE_COMPONENT = 4;
-        private static final int LISTENER_TYPE_RENDERER = 8;
-        private static final int LISTENER_TYPE_OTHER = 16;
-
-        public EventListenerWrapper()
-        {
-            //need a no-arg constructor for state saving purposes
-            super();
-        }
-
-        /**
-         * Note we have two cases:
-         *
-         * 1. listener is an instance of UIComponent. In this case we cannot save and restore
-         *    it because we need to point to the real component, but we can assume the instance
-         *    is the same because UIComponent.subscribeToEvent says so. Also take into account
-         *    this case is the reason why we need a wrapper for UIComponent.subscribeToEvent
-         * 2. listener is an instance of Renderer. In this case we can assume the same renderer
-         *    used by the source component is the one used by the listener (ListenerFor). 
-         * 3. listener is an instance of ComponentSystemEventListener but not from UIComponent.
-         *    In this case, the instance could implement StateHolder, PartialStateHolder or do
-         *    implement anything, so we have to deal with that case as usual.
-         *
-         * @param component
-         * @param listener
-         */
-        public EventListenerWrapper(UIComponent component, ComponentSystemEventListener listener)
-        {
-            assert component != null;
-            assert listener != null;
-
-            this.componentClass = component.getClass();
-            this.listener = listener;
-            this._component = component;
-            initListenerCapability();
-        }
-
-        private void initListenerCapability()
-        {
-            this.listenerCapability = 0;
-            if (this.listener instanceof UIComponent)
-            {
-                this.listenerCapability = LISTENER_TYPE_COMPONENT;
-            }
-            else if (this.listener instanceof Renderer)
-            {
-                this.listenerCapability = LISTENER_TYPE_RENDERER;
-            }
-            else
-            {
-                if (this.listener instanceof PartialStateHolder)
-                {
-                    this.listenerCapability = LISTENER_TYPE_OTHER | LISTENER_SAVE_PARTIAL_STATE_HOLDER;
-                }
-                else if (this.listener instanceof StateHolder)
-                {
-                    this.listenerCapability = LISTENER_TYPE_OTHER | LISTENER_SAVE_STATE_HOLDER;
-                }
-                else
-                {
-                    this.listenerCapability = LISTENER_TYPE_OTHER;
-                }
-            }
-        }
-
-        @Override
-        public boolean equals(Object o)
-        {
-            if (o == this)
-            {
-                return true;
-            }
-            else if (o instanceof EventListenerWrapper)
-            {
-                EventListenerWrapper other = (EventListenerWrapper) o;
-                return componentClass.equals(other.componentClass) && listener.equals(other.listener);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        @Override
-        public int hashCode()
-        {
-            return componentClass.hashCode() + listener.hashCode();
-        }
-
-        @Override
-        public boolean isListenerForSource(Object source)
-        {
-            // and its implementation of SystemEventListener.isListenerForSource(java.lang.Object) must return true
-            // if the instance class of this UIComponent is assignable from the argument to isListenerForSource.
-
-            return source.getClass().isAssignableFrom(componentClass);
-        }
-
-        public ComponentSystemEventListener getComponentSystemEventListener()
-        {
-            return listener;
-        }
-
-        @Override
-        public void processEvent(SystemEvent event)
-        {
-            // This inner class must call through to the argument componentListener in its implementation of
-            // SystemEventListener.processEvent(jakarta.faces.event.SystemEvent)
-            assert event instanceof ComponentSystemEvent;
-
-            listener.processEvent((ComponentSystemEvent) event);
-        }
-
-        @Override
-        public void clearInitialState()
-        {
-            if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0)
-            {
-                ((PartialStateHolder) listener).clearInitialState();
-            }
-            _initialStateMarked = false;
-        }
-
-        @Override
-        public boolean initialStateMarked()
-        {
-            if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0)
-            {
-                return ((PartialStateHolder) listener).initialStateMarked();
-            }
-            return _initialStateMarked;
-        }
-
-        @Override
-        public void markInitialState()
-        {
-            if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0)
-            {
-                ((PartialStateHolder) listener).markInitialState();
-            }
-            _initialStateMarked = true;
-        }
-
-        @Override
-        public boolean isTransient()
-        {
-            if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0 ||
-                    (listenerCapability & LISTENER_SAVE_STATE_HOLDER) != 0)
-            {
-                return ((StateHolder) listener).isTransient();
-            }
-            return false;
-        }
-
-        @Override
-        public void restoreState(FacesContext context, Object state)
-        {
-            if (state == null)
-            {
-                return;
-            }
-            Object[] values = (Object[]) state;
-            componentClass = (Class) values[0];
-            if (values[1] instanceof _AttachedDeltaWrapper)
-            {
-                ((StateHolder) listener).restoreState(context,
-                        ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
-            }
-            else
-            {
-                //Full restore
-                listenerCapability = (Integer) values[2];
-
-                _component = UIComponent.getCurrentComponent(context);
-                if ((listenerCapability & LISTENER_TYPE_COMPONENT) != 0)
-                {
-                    listener = _component;
-                }
-                else if ((listenerCapability & LISTENER_TYPE_RENDERER) != 0)
-                {
-                    Renderer renderer = _component.getRenderer(context);
-                    Integer i = (Integer) values[1];
-                    if (i != null && i >= 0)
-                    {
-                        while (i > 0)
-                        {
-                            renderer = ((RendererWrapper) renderer).getWrapped();
-                            i--;
-                        }
-                    }
-                    listener = (ComponentSystemEventListener) renderer;
-                }
-                else
-                {
-                    listener = (ComponentSystemEventListener)
-                            UIComponentBase.restoreAttachedState(context, values[1]);
-                }
-            }
-        }
-
-        @Override
-        public Object saveState(FacesContext context)
-        {
-            if (!initialStateMarked())
-            {
-                Object[] state = new Object[3];
-                state[0] = componentClass;
-                //If this is not a component or a renderer, save it calling UIComponent.saveAttachedState
-                if (!((listenerCapability & LISTENER_TYPE_COMPONENT) != 0 ||
-                        (listenerCapability & LISTENER_TYPE_RENDERER) != 0))
-                {
-                    state[1] = UIComponentBase.saveAttachedState(context, listener);
-                }
-                else
-                {
-                    if ( (listenerCapability & LISTENER_TYPE_RENDERER) != 0)
-                    {
-                        UIComponent componentRef = _component != null ? _component : getCurrentComponent(context);
-                        Renderer renderer = componentRef.getRenderer(context);
-                        int i = 0;
-                        while (renderer != null && !renderer.getClass().equals(listener.getClass()))
-                        {
-                            if (renderer instanceof RendererWrapper)
-                            {
-                                renderer = ((RendererWrapper) renderer).getWrapped();
-                                i++;
-                            }
-                            else
-                            {
-                                renderer = null;
-                                i = -1;
-                            }
-                        }
-                        if (i != -1)
-                        {
-                            // Store the number so we can get the right wrapper to invoke the method.
-                            state[1] = i;
-                        }
-                        else
-                        {
-                            state[1] = null;
-                        }
-                    }
-                    else
-                    {
-                        state[1] = null;
-                    }
-                }
-                state[2] = (Integer) listenerCapability;
-                return state;
-            }
-            else
-            {
-                // If initialStateMarked() == true means two things:
-                // 1. PSS is being used
-                if ((listenerCapability & LISTENER_TYPE_COMPONENT) != 0)
-                {
-                    return null;
-                }
-                else if ((listenerCapability & LISTENER_TYPE_RENDERER) != 0)
-                {
-                    return null;
-                }
-                else
-                {
-                    if ((listenerCapability & LISTENER_SAVE_STATE_HOLDER) != 0 ||
-                            (listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0)
-                    {
-                        Object listenerSaved = ((StateHolder) listener).saveState(context);
-                        if (listenerSaved == null)
-                        {
-                            return null;
-                        }
-                        return new Object[] { componentClass,
-                                            new _AttachedDeltaWrapper(listener.getClass(), listenerSaved) };
-                    }
-                    else
-                    {
-                        //This is not necessary, because the instance is considered serializable!
-                        return null;
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void setTransient(boolean newTransientValue)
-        {
-            if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0 ||
-                    (listenerCapability & LISTENER_SAVE_STATE_HOLDER) != 0)
-            {
-                ((StateHolder) listener).setTransient(newTransientValue);
-            }
-        }
     }
 }
