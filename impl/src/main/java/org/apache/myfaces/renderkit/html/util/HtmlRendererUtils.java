@@ -577,7 +577,7 @@ public final class HtmlRendererUtils
             {
                 String itemStrValue = RendererUtils.getConvertedStringValue(context, component, converter,selectItem);
                 boolean selected = lookupSet.contains(itemStrValue); 
-                //TODO/FIX: we always compare the String vales, better fill lookupSet with Strings 
+                //TODO/FIX: we always compare the String values, better fill lookupSet with Strings 
                 //only when useSubmittedValue==true, else use the real item value Objects
 
                 // IF the hideNoSelectionOption attribute of the component is true
@@ -997,7 +997,7 @@ public final class HtmlRendererUtils
 
                 if (lookupSet.contains(itemStrValue))
                 {
-                    //TODO/FIX: we always compare the String vales, better fill lookupSet with Strings 
+                    //TODO/FIX: we always compare the String values, better fill lookupSet with Strings 
                     //only when useSubmittedValue==true, else use the real item value Objects
                     if (!isSelectOne)
                     {

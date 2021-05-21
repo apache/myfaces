@@ -151,7 +151,6 @@ public class RegexValidator implements Validator, PartialStateHolder
 
         if (!thePattern.matcher(charSequence).matches())
         {
-            //TODO: Present the patternExpression in a more user friendly way
             Object[] args = {thePattern, MessageUtils.getLabel(context, component)};
             throw new ValidatorException(MessageUtils.getErrorMessage(context, NOT_MATCHED_MESSAGE_ID, args));
         }
@@ -210,7 +209,6 @@ public class RegexValidator implements Validator, PartialStateHolder
      */
     public void setPattern(String pattern)
     {
-        //TODO: Validate input parameter
         this.pattern = pattern;
         clearInitialState();
     }

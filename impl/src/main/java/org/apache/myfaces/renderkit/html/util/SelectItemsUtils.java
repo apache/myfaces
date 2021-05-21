@@ -97,7 +97,7 @@ public class SelectItemsUtils
                         .getConvertedStringValue(context, component, converter,
                                 selectItem);
                 boolean selected = lookupSet.contains(itemStrValue); 
-                //TODO/FIX: we always compare the String vales, better fill lookupSet with Strings 
+                //TODO/FIX: we always compare the String values, better fill lookupSet with Strings 
                 //only when useSubmittedValue==true, else use the real item value Objects
 
                 // IF the hideNoSelectionOption attribute of the component is true
