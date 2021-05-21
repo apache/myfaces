@@ -92,13 +92,9 @@ public class DoubleConverter implements Converter
             return value;
         }
 
-        // TODO: DecimalFormatSymbols.getInstance exists only on JDK 1.6
-        // change it on JSF 2.1
-        //DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(loc);
-        DecimalFormatSymbols dfs = new DecimalFormatSymbols(loc);
 
-        char decSep   = dfs.getDecimalSeparator();
-
+        DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(loc);
+        char decSep = dfs.getDecimalSeparator();
 
         // replace decimal separators which are different to '.'
         if (decSep != '.' && value.lastIndexOf(decSep) >= 0)
