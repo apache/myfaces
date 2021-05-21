@@ -71,7 +71,6 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
                 newViewRoot.setRenderKitId(oldViewRoot.getRenderKitId());
             }
             
-            // TODO: VALIDATE - The spec is silent on the following line, but I feel bad if I don't set it
             newViewRoot.setViewId(viewId);
 
             return newViewRoot;
