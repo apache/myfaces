@@ -75,19 +75,19 @@ public class ViewScopeCDIMap implements Map<String, Object>
     @Override
     public int size()
     {
-        return this.getCreationalContextInstances().size();
+        return getCreationalContextInstances().size();
     }
 
     @Override
     public boolean isEmpty()
     {
-        return this.getCreationalContextInstances().isEmpty();
+        return getCreationalContextInstances().isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key)
     {
-        return this.getCreationalContextInstances().containsKey(key);
+        return getCreationalContextInstances().containsKey(key);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
     @Override
     public Object get(Object key)
     {
-        ContextualInstanceInfo<?> info = this.getCreationalContextInstances().get(key);
+        ContextualInstanceInfo<?> info = getCreationalContextInstances().get(key);
         return info == null ? null : info.getContextualInstance();
     }
 
@@ -118,13 +118,13 @@ public class ViewScopeCDIMap implements Map<String, Object>
     {
         ContextualInstanceInfo info = new ContextualInstanceInfo();
         info.setContextualInstance(value);
-        return this.getCreationalContextInstances().put(key, info);
+        return getCreationalContextInstances().put(key, info);
     }
 
     @Override
     public Object remove(Object key)
     {
-        ContextualInstanceInfo info = this.getCreationalContextInstances().remove(key);
+        ContextualInstanceInfo info = getCreationalContextInstances().remove(key);
         return info == null ? null : info.getContextualInstance();
     }
 
@@ -150,7 +150,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
     @Override
     public Set<String> keySet()
     {
-        return this.getCreationalContextInstances().keySet()
+        return getCreationalContextInstances().keySet()
                 .stream()
                 .map(e -> (String) e)
                 .collect(Collectors.toSet());
@@ -159,9 +159,9 @@ public class ViewScopeCDIMap implements Map<String, Object>
     @Override
     public Collection<Object> values()
     {
-        List<Object> values = new ArrayList<>(this.getCreationalContextInstances().size());
+        List<Object> values = new ArrayList<>(getCreationalContextInstances().size());
 
-        for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : this.getCreationalContextInstances().entrySet())
+        for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : getCreationalContextInstances().entrySet())
         {
             ContextualInstanceInfo info = entry.getValue();
             if (info != null)
@@ -178,7 +178,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
     {
         Set<Entry<String, Object>> values = new HashSet<>();
   
-        for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : this.getCreationalContextInstances().entrySet())
+        for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : getCreationalContextInstances().entrySet())
         {
             ContextualInstanceInfo info = entry.getValue();
             if (info != null)
