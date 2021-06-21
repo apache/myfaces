@@ -30,11 +30,11 @@
     <packaging>pom</packaging>
     <name>Apache MyFaces JSF-3.0 Core Module</name>
     <description>
-        This project is the home of the MyFaces implementation of the JavaServer Faces 2.3 specification, and
+        This project is the home of the MyFaces implementation of the Jakarta Server Faces 3.0 specification, and
         consists of an API module (jakarta.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
     <version>3.0.2-SNAPSHOT</version>
-    <url>http://myfaces.apache.org/core23</url>
+    <url>http://myfaces.apache.org/#/core30</url>
 
     <issueManagement>
         <system>jira</system>
