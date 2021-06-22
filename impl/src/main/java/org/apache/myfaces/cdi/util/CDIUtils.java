@@ -21,10 +21,14 @@ package org.apache.myfaces.cdi.util;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.ExternalContext;
+
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 /**
@@ -60,4 +64,25 @@ public class CDIUtils
         return dao;
 
     }
+
+    public static boolean isSessionScopeActive(BeanManager beanManager)
+    {
+        try 
+        {
+            Context ctx = beanManager.getContext(SessionScoped.class);
+            return ctx != null;
+        }
+        catch (ContextNotActiveException ex)
+        {
+            //No op
+        }
+        catch (Exception ex)
+        {
+            // Sometimes on startup time, since there is no active request context, trying to grab session scope
+            // throws NullPointerException.
+            //No op
+        }
+        return false;
+    }
+
 }
