@@ -221,4 +221,19 @@ public class ResourceHandlerImplTest extends AbstractJsfTestCase
         Assert.assertNull(resource.getResourceVersion());        
         Assert.assertEquals("myres.js", resource.getResourceName());
     }
+
+    @Test
+    public void testCreateResourceNullResourceName() throws Exception
+    {
+        boolean didNPEOccur = false;
+        try
+        {
+            resourceHandler.createResource(null);
+        } catch (NullPointerException e)
+        {
+            didNPEOccur = true;
+        }
+
+        Assert.assertTrue(didNPEOccur);
+    }
 }
