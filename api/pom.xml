@@ -32,7 +32,7 @@
     <description>
         The public API classes of the Apache MyFaces Core JSF-2.3-next project
     </description>
-    <url>http://myfaces.apache.org/core23next/myfaces-api</url>
+    <url>http://myfaces.apache.org/#/core23next</url>
 
     <build>
 
