@@ -126,7 +126,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         if (log.isLoggable(Level.FINE)) 
         {
-             log.fine("Writing serialized viewstate string : " + serializedState);
+             log.fine("Writing serialized viewstate string with hashCode : " + serializedState.hashCode());
         } 
 
         ExternalContext extContext = facesContext.getExternalContext();
