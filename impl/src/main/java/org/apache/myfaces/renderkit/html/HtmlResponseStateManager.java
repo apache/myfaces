@@ -20,6 +20,7 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
@@ -143,6 +144,12 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         throws IOException
     {
         String serializedState = _stateTokenProcessor.encode(facesContext, savedState);
+
+        if (log.isLoggable(Level.FINE)) 
+        {
+             log.fine("Writing serialized viewstate string with hashCode : " + serializedState.hashCode());
+        }
+
         ExternalContext extContext = facesContext.getExternalContext();
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(extContext);
 

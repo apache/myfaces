@@ -392,6 +392,7 @@ public final class StateUtils
             if(log.isLoggable(Level.FINE))
             {
                 log.fine("Processing state : " + string);
+                log.fine("Processing serialized viewstate string with hashCode : " + string.hashCode());
             }
 
             bytes = string.getBytes(ZIP_CHARSET);
