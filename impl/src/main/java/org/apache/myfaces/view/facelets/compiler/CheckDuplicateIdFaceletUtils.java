@@ -112,25 +112,27 @@ public final class CheckDuplicateIdFaceletUtils
 
     private static DuplicateIdException createAndQueueException(FacesContext context, UIComponent component, String id)
     {
-        String message = "Component with duplicate id \"" + id + "\" found. The first component is ";
+        String message = "Component with duplicate id \"" + id + "\" found.";
 
-        
         // We report as problematic the second component. The client (an exception handler mostly)
         // has the possibility to report all about the second component, 
         // but the first component is hard to find, especially in large view with tons of naming containers
         // So we do here two things:
         // 1) provide an info about the first component in exception message 
         UIComponent firstComponent = context.getViewRoot().findComponent(id);
-        Location location = (Location) firstComponent.getAttributes().get(UIComponent.VIEW_LOCATION_KEY);
-        if (location != null)
+        if (firstComponent != null)
         {
-            message += location.toString();
-        }
-        else
-        {
-            // location is not available in production mode or if the component
-            // doesn't come from Facelets VDL.
-            message += ComponentUtils.getPathToComponent(firstComponent);
+            Location location = (Location) firstComponent.getAttributes().get(UIComponent.VIEW_LOCATION_KEY);
+            if (location != null)
+            {
+                message += " The first component is " + location.toString();
+            }
+            else
+            {
+                // location is not available in production mode or if the component
+                // doesn't come from Facelets VDL.
+                message += " The first component is " + ComponentUtils.getPathToComponent(firstComponent);
+            }
         }
 
         // 2) we store the first commponent in exception attributes
