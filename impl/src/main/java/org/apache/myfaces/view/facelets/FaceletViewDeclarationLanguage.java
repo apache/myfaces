@@ -87,14 +87,12 @@ import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewMetadata;
 import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletContext;
-import jakarta.faces.view.facelets.ResourceResolver;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.myfaces.application.StateManagerImpl;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.util.WebConfigParamUtils;
@@ -113,7 +111,6 @@ import org.apache.myfaces.view.facelets.el.RedirectMethodExpressionValueExpressi
 import org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
-import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorAttachedObjectTarget;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectEventComponentWrapper;
@@ -222,7 +219,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private StateManagementStrategy partialSMS;
     private StateManagementStrategy fullSMS;
     private Set<String> fullStateSavingViewIds;
-    private ResourceResolver _resourceResolver;
     private Map<String, List<String>> _contractMappings;
     private List<String> _prefixWildcardKeys;
 
@@ -279,18 +275,11 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     }
 
     @Override
-    public boolean viewExists(FacesContext facesContext, String viewId)
+    public boolean viewExists(FacesContext context, String viewId)
     {
         if (strategy.handles(viewId))
         {
-            if (_resourceResolver instanceof DefaultResourceResolver)
-            {
-                return ((DefaultResourceResolver)_resourceResolver).resolveUrl(facesContext, viewId) != null;
-            }
-            else
-            {
-                return _resourceResolver.resolveUrl(viewId) != null;
-            }
+            return context.getApplication().getResourceHandler().createViewResource(context, viewId) != null;
         }
         return false;
     }
@@ -2091,31 +2080,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, DEFAULT_REFRESH_PERIOD);
         }
 
-        // resource resolver
-        ResourceResolver resolver = new DefaultResourceResolver();
-        ArrayList<String> classNames = new ArrayList<>();
-
-        String faceletsResourceResolverClassName = config.getResourceResolver();
-        if (faceletsResourceResolverClassName != null)
-        {
-            classNames.add(faceletsResourceResolverClassName);
-        }
-        
-        List<String> resourceResolversFromAnnotations = RuntimeConfig.getCurrentInstance(
-            context.getExternalContext()).getResourceResolvers();
-        if (!resourceResolversFromAnnotations.isEmpty())
-        {
-            classNames.addAll(resourceResolversFromAnnotations);
-        }
-        
-        if (!classNames.isEmpty())
-        {
-            resolver = ClassUtils.buildApplicationObject(ResourceResolver.class, classNames, resolver);
-        }
-
-        _resourceResolver = resolver;
-
-        return new DefaultFaceletFactory(compiler, resolver, refreshPeriod);
+        return new DefaultFaceletFactory(compiler, refreshPeriod);
     }
 
 

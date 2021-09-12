@@ -38,7 +38,6 @@ import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
-import jakarta.faces.view.facelets.ResourceResolver;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;
@@ -65,34 +64,24 @@ public final class DefaultFaceletFactory extends FaceletFactory
     private Map<String, DefaultFacelet> _compositeComponentMetadataFacelets;
     private long _refreshPeriod;
     private Map<String, URL> _relativeLocations;
-
-    private ResourceResolver _resolver;
-    private DefaultResourceResolver _defaultResolver;
     
     private FaceletCache<Facelet> _faceletCache;
     private AbstractFaceletCache<Facelet> _abstractFaceletCache;
     private boolean viewUniqueIdsCacheEnabled;
     
-    public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver) throws IOException
+    public DefaultFaceletFactory(Compiler compiler) throws IOException
     {
-        this(compiler, resolver, -1);
+        this(compiler, -1);
     }
 
-    public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver, long refreshPeriod)
+    public DefaultFaceletFactory(Compiler compiler, long refreshPeriod)
     {
         Assert.notNull(compiler, "compiler");
-        Assert.notNull(resolver, "resolver");
 
         _compiler = compiler;
 
         _compositeComponentMetadataFacelets = new HashMap<>();
         _relativeLocations = new HashMap<>();
-
-        _resolver = resolver;
-        if (_resolver instanceof DefaultResourceResolver)
-        {
-            _defaultResolver = (DefaultResourceResolver) _resolver;
-        }
 
         _refreshPeriod = refreshPeriod < 0 ? INFINITE_DELAY : refreshPeriod * 1000;
         
@@ -142,8 +131,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         if (log.isLoggable(Level.FINE))
         {
-            log.fine("Using ResourceResolver " + _resolver.getClass().getName()
-                    + " with refresh period " + _refreshPeriod);
+            log.fine("Rrefresh period " + _refreshPeriod);
         }
 
         this.viewUniqueIdsCacheEnabled = MyfacesConfig.getCurrentInstance().isViewUniqueIdsCacheEnabled();
@@ -163,7 +151,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
     {
         if (_baseUrl == null)
         {
-            _baseUrl = Optional.ofNullable(_resolver.resolveUrl("/"));
+            FacesContext context = FacesContext.getCurrentInstance();
+            ViewResource resource = context.getApplication().getResourceHandler().createViewResource(context, "/");
+            _baseUrl = Optional.ofNullable(resource == null ? null : resource.getURL());
         }
         return _baseUrl.isPresent() ? _baseUrl.get() : null;
     }
@@ -544,14 +534,13 @@ public final class DefaultFaceletFactory extends FaceletFactory
     
     private URL resolveURL(FacesContext context, String path)
     {
-        if (_defaultResolver != null)
+        ViewResource resource = context.getApplication().getResourceHandler().createViewResource(context, path);
+        if (resource != null)
         {
-            return _defaultResolver.resolveUrl(context, path);
+            context.getAttributes().put(FaceletFactory.LAST_RESOURCE_RESOLVED, resource);
+            return resource.getURL();
         }
-        else
-        {
-            return _resolver.resolveUrl(path);
-        }
+        return null;
     }
 
     @Override
