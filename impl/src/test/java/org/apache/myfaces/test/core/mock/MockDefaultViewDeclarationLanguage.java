@@ -254,9 +254,8 @@ public class MockDefaultViewDeclarationLanguage extends ViewDeclarationLanguage
             
             String renderKitId = applicationViewHandler.calculateRenderKitId(context);
     
-            UIViewRoot viewRoot = application.getStateManager().restoreView(context, viewId, renderKitId);
-    
-            return viewRoot;
+            return getStateManagementStrategy(context, viewId)
+                              .restoreView(context, viewId, renderKitId);
         }
     }
     

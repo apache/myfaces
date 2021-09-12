@@ -22,10 +22,13 @@ import java.io.BufferedWriter;
 import java.io.CharArrayWriter;
 
 import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.StateManagementStrategy;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.application.viewstate.StateUtils;
@@ -50,6 +53,8 @@ public class StateManagerImplTest extends AbstractJsfConfigurableMultipleRequest
     @Test
     public void testWriteAndRestoreState() throws Exception
     {
+        String viewId = "/root";
+        
         StateManager stateManager = null;
         String viewStateParam = null;
         
@@ -65,14 +70,18 @@ public class StateManagerImplTest extends AbstractJsfConfigurableMultipleRequest
             facesContext.setResponseWriter(new MockResponseWriter(new BufferedWriter(new CharArrayWriter()), null, null));
     
             UIViewRoot viewRoot = facesContext.getViewRoot();
-            viewRoot.setViewId("/root");
+            viewRoot.setViewId(viewId);
             stateManager = new StateManagerImpl();
     
             UIOutput output = new UIOutput();
             output.setValue("foo");
             output.setId("foo");
     
-            stateManager.writeState(facesContext, stateManager.saveView(facesContext));
+            ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewId);
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+            
+            stateManager.writeState(facesContext, sms.saveView(facesContext));
             
             viewStateParam = stateManager.getViewState(facesContext);
         }
@@ -87,7 +96,11 @@ public class StateManagerImplTest extends AbstractJsfConfigurableMultipleRequest
             
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
     
-            UIViewRoot restoredViewRoot = stateManager.restoreView(facesContext, "/root", RenderKitFactory.HTML_BASIC_RENDER_KIT);
+            ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewId);
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+            
+            UIViewRoot restoredViewRoot = sms.restoreView(facesContext, viewId, RenderKitFactory.HTML_BASIC_RENDER_KIT);
             
             Assert.assertNotNull(restoredViewRoot);
         }
@@ -100,6 +113,7 @@ public class StateManagerImplTest extends AbstractJsfConfigurableMultipleRequest
     @Test
     public void testWriteAndRestoreStateWithMyFacesRSM() throws Exception
     {
+        String viewId = "/root";
         StateManager stateManager = null;
         String viewStateParam = null;
 
@@ -125,7 +139,10 @@ public class StateManagerImplTest extends AbstractJsfConfigurableMultipleRequest
             output.setValue("foo");
             output.setId("foo");
     
-            stateManager.writeState(facesContext, stateManager.saveView(facesContext));
+            ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewRoot.getId());
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewRoot.getId());
+            stateManager.writeState(facesContext, sms.saveView(facesContext));
             
             viewStateParam = stateManager.getViewState(facesContext);
         }
@@ -140,7 +157,11 @@ public class StateManagerImplTest extends AbstractJsfConfigurableMultipleRequest
             
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
     
-            UIViewRoot restoredViewRoot = stateManager.restoreView(facesContext, "/root", RenderKitFactory.HTML_BASIC_RENDER_KIT);
+            ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewId);
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+
+            UIViewRoot restoredViewRoot = sms.restoreView(facesContext, viewId, RenderKitFactory.HTML_BASIC_RENDER_KIT);
             
             Assert.assertNotNull(restoredViewRoot);
         }

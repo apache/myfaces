@@ -25,7 +25,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import jakarta.faces.FacesException;
-import jakarta.faces.application.StateManager.SerializedView;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.RenderKitFactory;
@@ -95,51 +94,6 @@ public class MockResponseStateManager extends ResponseStateManager
     {
         return context.getExternalContext().getRequestParameterMap()
                 .containsKey(ResponseStateManager.VIEW_STATE_PARAM);
-    }
-
-    public void writeState(FacesContext facescontext,
-            SerializedView serializedview) throws IOException
-    {
-        ResponseWriter responseWriter = facescontext.getResponseWriter();
-
-        Object[] savedState = new Object[3];
-
-        if (facescontext.getApplication().getStateManager()
-                .isSavingStateInClient(facescontext))
-        {
-            Object treeStruct = serializedview.getStructure();
-            Object compStates = serializedview.getState();
-
-            if (treeStruct != null)
-            {
-                savedState[TREE_PARAM] = treeStruct;
-            }
-
-            if (compStates != null)
-            {
-                savedState[STATE_PARAM] = compStates;
-            }
-        }
-        else
-        {
-            // write viewSequence
-            Object treeStruct = serializedview.getStructure();
-            if (treeStruct != null)
-            {
-                if (treeStruct instanceof String)
-                {
-                    savedState[TREE_PARAM] = treeStruct;
-                }
-            }
-        }
-
-        savedState[VIEWID_PARAM] = facescontext.getViewRoot().getViewId();
-
-        // write the view state field
-        writeViewStateField(facescontext, responseWriter, savedState);
-
-        // renderKitId field
-        writeRenderKitIdField(facescontext, responseWriter);
     }
 
     private void writeViewStateField(FacesContext facesContext,
@@ -329,13 +283,7 @@ public class MockResponseStateManager extends ResponseStateManager
         Object treeStruct = null;
         Object compStates = null;
 
-        if (state instanceof SerializedView)
-        {
-            SerializedView view = (SerializedView) state;
-            treeStruct = view.getStructure();
-            compStates = view.getState();
-        }
-        else if (state instanceof Object[])
+        if (state instanceof Object[])
         {
             Object[] structureAndState = (Object[]) state;
 

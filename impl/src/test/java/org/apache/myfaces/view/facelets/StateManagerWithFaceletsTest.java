@@ -19,9 +19,12 @@
 package org.apache.myfaces.view.facelets;
 
 import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.StateManagementStrategy;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
@@ -55,16 +58,22 @@ public class StateManagerWithFaceletsTest extends FaceletMultipleRequestsTestCas
     @Test
     public void testWriteAndRestoreState() throws Exception
     {
+        String viewId = "/simpleTree.xhtml";
+        
         String viewStateParam = null;
         try
         {
             setupRequest();
             
             UIViewRoot root = facesContext.getViewRoot();
-            root.setViewId("/simpleTree.xhtml");
-            vdl.buildView(facesContext, root, "/simpleTree.xhtml");
+            root.setViewId(viewId);
+            vdl.buildView(facesContext, root, viewId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewId);
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+            
+            application.getStateManager().writeState(facesContext, sms.saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
             
@@ -81,7 +90,11 @@ public class StateManagerWithFaceletsTest extends FaceletMultipleRequestsTestCas
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
             ((MockFacesContext20)facesContext).setPostback(true);
     
-            UIViewRoot restoredViewRoot = application.getStateManager().restoreView(facesContext, "/simpleTree.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
+            ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewId);
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+            
+            UIViewRoot restoredViewRoot = sms.restoreView(facesContext, viewId, RenderKitFactory.HTML_BASIC_RENDER_KIT);
             
             Assert.assertNotNull(restoredViewRoot);
         }
@@ -94,6 +107,7 @@ public class StateManagerWithFaceletsTest extends FaceletMultipleRequestsTestCas
     @Test
     public void testWriteAndRestoreStateWithMyFacesRSM() throws Exception
     {
+        String viewId = "/simpleTree.xhtml";
         String viewStateParam = null;
         
         ((MockRenderKit)renderKit).setResponseStateManager(new HtmlResponseStateManager());
@@ -105,10 +119,14 @@ public class StateManagerWithFaceletsTest extends FaceletMultipleRequestsTestCas
             setupRequest();
             
             UIViewRoot root = facesContext.getViewRoot();
-            root.setViewId("/simpleTree.xhtml");
-            vdl.buildView(facesContext, root, "/simpleTree.xhtml");
+            root.setViewId(viewId);
+            vdl.buildView(facesContext, root, viewId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewId);
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+            
+            application.getStateManager().writeState(facesContext, sms.saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
             
@@ -125,7 +143,11 @@ public class StateManagerWithFaceletsTest extends FaceletMultipleRequestsTestCas
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
             ((MockFacesContext20)facesContext).setPostback(true);
     
-            UIViewRoot restoredViewRoot = application.getStateManager().restoreView(facesContext, "/simpleTree.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
+            ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewId);
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+            
+            UIViewRoot restoredViewRoot = sms.restoreView(facesContext, viewId, RenderKitFactory.HTML_BASIC_RENDER_KIT);
             
             Assert.assertNotNull(restoredViewRoot);
         }

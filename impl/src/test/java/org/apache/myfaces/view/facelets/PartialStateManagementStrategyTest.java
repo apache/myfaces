@@ -52,11 +52,11 @@ import org.apache.myfaces.view.ViewMetadataBase;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DefaultFaceletsStateManagementStrategyTest extends
+public class PartialStateManagementStrategyTest extends
         AbstractJsfConfigurableMockTestCase
 {
 
-    public DefaultFaceletsStateManagementStrategyTest()
+    public PartialStateManagementStrategyTest()
     {
         super();
     }
@@ -142,7 +142,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
     public void testSimpleSaveRestore() throws Exception
     {
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
-        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
+        PartialStateManagementStrategy stateManagement = new PartialStateManagementStrategy();
         
         servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
@@ -170,7 +170,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
     public void testSaveRestoreAddComponent() throws Exception
     {
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
-        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
+        PartialStateManagementStrategy stateManagement = new PartialStateManagementStrategy();
         
         servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
@@ -209,7 +209,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
     public void testSaveRestoreAddComponentMultiplePostback() throws Exception
     {
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
-        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
+        PartialStateManagementStrategy stateManagement = new PartialStateManagementStrategy();
         
         servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
@@ -277,7 +277,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
     public void testSaveRestoreToogleComponent() throws Exception
     {
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
-        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
+        PartialStateManagementStrategy stateManagement = new PartialStateManagementStrategy();
         
         servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
@@ -345,7 +345,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
     public void testSaveRestoreToogleComponent2() throws Exception
     {
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
-        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
+        PartialStateManagementStrategy stateManagement = new PartialStateManagementStrategy();
         
         servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         

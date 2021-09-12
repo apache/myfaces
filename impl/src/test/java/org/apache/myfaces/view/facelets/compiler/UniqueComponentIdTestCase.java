@@ -29,6 +29,8 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.StateManagementStrategy;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
@@ -124,7 +126,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             Assert.assertNotNull(componentBid);
             Assert.assertNotNull(tagBId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdCif.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -161,7 +163,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdCif.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -239,7 +241,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             Assert.assertNotNull(componentBid);
             Assert.assertNotNull(tagBId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdCif.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -256,7 +258,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
             ((MockFacesContext20)facesContext).setPostback(true);
     
-            UIViewRoot root = application.getStateManager().restoreView(facesContext, "/testUniqueComponentIdCif.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
+            UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdCif.xhtml").restoreView(facesContext, "/testUniqueComponentIdCif.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
             Assert.assertNotNull(root);
             
@@ -376,7 +378,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             Assert.assertNotNull(componentBid);
             Assert.assertNotNull(tagBId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -413,7 +415,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -492,7 +494,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             Assert.assertNotNull(componentBid);
             Assert.assertNotNull(tagBId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -537,7 +539,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -621,7 +623,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             Assert.assertNotNull(componentBid);
             Assert.assertNotNull(tagBId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -638,7 +640,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
             ((MockFacesContext20)facesContext).setPostback(true);
     
-            UIViewRoot root = application.getStateManager().restoreView(facesContext, "/testUniqueComponentIdInclude1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
+            UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").restoreView(facesContext, "/testUniqueComponentIdInclude1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
             Assert.assertNotNull(root);
             
@@ -770,7 +772,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             Assert.assertNotNull(componentBid);
             Assert.assertNotNull(tagBId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -787,7 +789,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
             ((MockFacesContext20)facesContext).setPostback(true);
     
-            UIViewRoot root = application.getStateManager().restoreView(facesContext, "/testUniqueComponentIdInclude1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
+            UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").restoreView(facesContext, "/testUniqueComponentIdInclude1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
             Assert.assertNotNull(root);
             
@@ -922,7 +924,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             Assert.assertNotNull(componentDid);
             Assert.assertNotNull(tagDId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -985,7 +987,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -1054,7 +1056,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             Assert.assertNotNull(componentDid);
             Assert.assertNotNull(tagDId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -1119,7 +1121,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -1181,7 +1183,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             Assert.assertNotNull(componentBid);
             Assert.assertNotNull(tagBId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -1198,7 +1200,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
             ((MockFacesContext20)facesContext).setPostback(true);
     
-            UIViewRoot root = application.getStateManager().restoreView(facesContext, "/testUniqueComponentIdDecorate1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
+            UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").restoreView(facesContext, "/testUniqueComponentIdDecorate1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
             Assert.assertNotNull(root);
             
@@ -1315,7 +1317,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             Assert.assertNotNull(componentBid);
             Assert.assertNotNull(tagBId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdChoose.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -1352,7 +1354,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdChoose.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -1413,7 +1415,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             Assert.assertNotNull(componentBid);
             Assert.assertNotNull(tagBId);
             
-            application.getStateManager().writeState(facesContext, application.getStateManager().saveView(facesContext));
+            application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdChoose.xhtml").saveView(facesContext));
             
             viewStateParam = application.getStateManager().getViewState(facesContext);
         }
@@ -1430,7 +1432,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
             ((MockFacesContext20)facesContext).setPostback(true);
     
-            UIViewRoot root = application.getStateManager().restoreView(facesContext, "/testUniqueComponentIdChoose.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
+            UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdChoose.xhtml").restoreView(facesContext, "/testUniqueComponentIdChoose.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
             Assert.assertNotNull(root);
             
@@ -1488,4 +1490,10 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
         }
     }
 
+    protected StateManagementStrategy getStateManagementStrategy(String viewId)
+    {
+        ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+        ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewId);
+        return vdl.getStateManagementStrategy(facesContext, viewId);
+    }
 }

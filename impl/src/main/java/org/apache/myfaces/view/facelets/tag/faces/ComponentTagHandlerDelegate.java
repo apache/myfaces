@@ -59,7 +59,7 @@ import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ComponentState;
-import org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy;
+import org.apache.myfaces.view.facelets.PartialStateManagementStrategy;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletDynamicComponentRefreshTransientBuildEvent;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
@@ -549,7 +549,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                     // is only necessary when the component has additional children or facets,
                     // because those components requires an unique id provided by createUniqueId(),
                     // and this ensures stability of the generated ids.
-                    c.getAttributes().put(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW,
+                    c.getAttributes().put(PartialStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW,
                                           ComponentState.REMOVE_ADD);
                     
                     if (FaceletViewDeclarationLanguageBase.isDynamicComponentNeedsRefresh(ctx.getFacesContext()))

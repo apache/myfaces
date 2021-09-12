@@ -19,10 +19,10 @@
 package org.apache.myfaces.view.facelets;
 
 /**
- * Enum used inside the key DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW
+ * Enum used inside the key PartialStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW
  * on the component attribute map to indicate if the component should be
- * add, removed and add o it was already added to DefaultFaceletsStateManagementStrategy.CLIENTIDS_ADDED
- * and DefaultFaceletsStateManagementStrategy.CLIENTIDS_REMOVED
+ * add, removed and add o it was already added to PartialStateManagementStrategy.CLIENTIDS_ADDED
+ * and PartialStateManagementStrategy.CLIENTIDS_REMOVED
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$

@@ -19,11 +19,7 @@
 
 package org.apache.myfaces.test.mock;
 
-import java.io.IOException;
-
 import jakarta.faces.application.StateManager;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.FacesContext;
 
 /**
  * <p>Mock implementation of <code>StateManager</code>.</p>
@@ -41,72 +37,6 @@ public class MockStateManager extends StateManager
      */
     public MockStateManager()
     {
-    }
-
-    // ----------------------------------------------------- Mock Object Methods
-
-    // ------------------------------------------------------ Instance Variables
-
-    // ---------------------------------------------------- StateManager Methods
-
-    /** {@inheritDoc} */
-    public SerializedView saveSerializedView(FacesContext context)
-    {
-
-        throw new UnsupportedOperationException();
-
-    }
-
-    /** {@inheritDoc} */
-    public Object getTreeStructureToSave(FacesContext context)
-    {
-
-        throw new UnsupportedOperationException();
-
-    }
-
-    /** {@inheritDoc} */
-    public Object getComponentStateToSave(FacesContext context)
-    {
-
-        throw new UnsupportedOperationException();
-
-    }
-
-    /** {@inheritDoc} */
-    public void writeState(FacesContext context, SerializedView view)
-            throws IOException
-    {
-
-        throw new UnsupportedOperationException();
-
-    }
-
-    /** {@inheritDoc} */
-    public UIViewRoot restoreView(FacesContext context, String viewId,
-            String renderKitId)
-    {
-
-        throw new UnsupportedOperationException();
-
-    }
-
-    /** {@inheritDoc} */
-    public UIViewRoot restoreTreeStructure(FacesContext context, String viewId,
-            String renderKitId)
-    {
-
-        throw new UnsupportedOperationException();
-
-    }
-
-    /** {@inheritDoc} */
-    public void restoreComponentState(FacesContext context, UIViewRoot view,
-            String renderKitId)
-    {
-
-        throw new UnsupportedOperationException();
-
     }
 
 }

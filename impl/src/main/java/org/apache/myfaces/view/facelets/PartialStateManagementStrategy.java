@@ -99,7 +99,7 @@ import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
  * @since 2.0
  *
  */
-public class DefaultFaceletsStateManagementStrategy extends StateManagementStrategy
+public class PartialStateManagementStrategy extends StateManagementStrategy
 {
     public static final String CLIENTIDS_ADDED = "oam.CLIENTIDS_ADDED";
     
@@ -137,12 +137,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
 
     private ViewPoolProcessor _viewPoolProcessor;
     
-    public DefaultFaceletsStateManagementStrategy()
+    public PartialStateManagementStrategy()
     {
         this(FacesContext.getCurrentInstance());
     }
     
-    public DefaultFaceletsStateManagementStrategy(FacesContext context)
+    public PartialStateManagementStrategy(FacesContext context)
     {
         _vdlFactory = (ViewDeclarationLanguageFactory)
                 FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);

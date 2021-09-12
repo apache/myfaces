@@ -19,10 +19,9 @@
 
 package jakarta.faces.application;
 
-import java.io.IOException;
-import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.FacesWrapper;
+import java.io.IOException;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -47,70 +46,10 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
         return delegate;
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public StateManager.SerializedView saveSerializedView(FacesContext context)
-    {
-        return getWrapped().saveSerializedView(context);
-    }
-
-    @Override
-    public Object saveView(FacesContext context)
-    {
-        return getWrapped().saveView(context);
-    }
-
     @Override
     public boolean isSavingStateInClient(FacesContext context)
     {
         return getWrapped().isSavingStateInClient(context);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    protected Object getTreeStructureToSave(FacesContext context)
-    {
-        return getWrapped().getTreeStructureToSave(context);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    protected Object getComponentStateToSave(FacesContext context)
-    {
-        return getWrapped().getComponentStateToSave(context);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void writeState(FacesContext context, StateManager.SerializedView state) throws IOException
-    {
-        getWrapped().writeState(context, state);
-    }
-
-    @Override
-    public void writeState(FacesContext context, Object state) throws IOException
-    {
-        getWrapped().writeState(context, state);
-    }
-
-    @Override
-    public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId)
-    {
-        return getWrapped().restoreView(context, viewId, renderKitId);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    protected UIViewRoot restoreTreeStructure(FacesContext context, String viewId, String renderKitId)
-    {
-        return getWrapped().restoreTreeStructure(context, viewId, renderKitId);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    protected void restoreComponentState(FacesContext context, UIViewRoot viewRoot, String renderKitId)
-    {
-        getWrapped().restoreComponentState(context, viewRoot, renderKitId);
     }
 
     @Override
@@ -119,4 +58,9 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
         return getWrapped().getViewState(context);
     }
 
+    @Override
+    public void writeState(FacesContext context, Object state) throws IOException
+    {
+        getWrapped().writeState(context, state);
+    }
 }

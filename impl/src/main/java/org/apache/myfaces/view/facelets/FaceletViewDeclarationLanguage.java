@@ -121,7 +121,7 @@ import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.faces.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
 
-import static org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy.*;
+import static org.apache.myfaces.view.facelets.PartialStateManagementStrategy.*;
 import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerSupport;
 import org.apache.myfaces.view.facelets.compiler.RefreshDynamicComponentListener;
 import org.apache.myfaces.view.facelets.impl.SectionUniqueIdCounter;
@@ -219,7 +219,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private final ViewPoolProcessor viewPoolProcessor;
     private final ViewIdSupport viewIdSupport;
     
-    private StateManagementStrategy stateManagementStrategy;
+    private StateManagementStrategy partialSMS;
+    private StateManagementStrategy fullSMS;
     private Set<String> fullStateSavingViewIds;
     private ResourceResolver _resourceResolver;
     private Map<String, List<String>> _contractMappings;
@@ -244,10 +245,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
         faceletFactory = createFaceletFactory(context, compiler);
 
-        if (config.isPartialStateSaving())
-        {
-            stateManagementStrategy = new DefaultFaceletsStateManagementStrategy(context);
-        }
+        partialSMS = new PartialStateManagementStrategy(context);
+        fullSMS = new FullStateManagementStrategy();
 
         ExternalContext externalContext = context.getExternalContext();
         
@@ -360,7 +359,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 {
                     if (!PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
                     {
-                        ((DefaultFaceletsStateManagementStrategy) 
+                        ((PartialStateManagementStrategy) 
                                 getStateManagementStrategy(context, view.getViewId())).
                                 suscribeListeners(view);
                     }
@@ -534,7 +533,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             if (!(refreshTransientBuild && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
                     && !view.isTransient())
             {
-                ((DefaultFaceletsStateManagementStrategy) getStateManagementStrategy(context, view.getViewId())).
+                ((PartialStateManagementStrategy) getStateManagementStrategy(context, view.getViewId())).
                         suscribeListeners(view);
             }
 
@@ -1703,9 +1702,12 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     public StateManagementStrategy getStateManagementStrategy(FacesContext context, String viewId)
     {
-        // Use partial state saving strategy only if jakarta.faces.PARTIAL_STATE_SAVING is "true" and
-        // the current view is not on jakarta.faces.FULL_STATE_SAVING_VIEW_IDS.
-        return _usePartialStateSavingOnThisView(viewId) ? stateManagementStrategy : null;
+        if (config.isPartialStateSaving() || _usePartialStateSavingOnThisView(viewId))
+        {
+            return partialSMS;
+        }
+
+        return fullSMS;
     }
 
     /**
@@ -1767,6 +1769,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     context.setResponseWriter(writer);
 
                     StateManager stateMgr = context.getApplication().getStateManager();
+                    StateManagementStrategy sms = getStateManagementStrategy(context, view.getId());
+                    
                     // force creation of session if saving state there
                     // -= Leonardo Uribe =- Do this does not have any sense!. The only reference
                     // about these lines are on http://java.net/projects/facelets/sources/svn/revision/376
@@ -1809,7 +1813,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         // stateManager.isSavingStateInClient(context)is true - see
                         // org.apache.myfaces.application.ViewHandlerImpl.writeState(FacesContext)
                         // TODO this class and ViewHandlerImpl contain same constant <!--@@JSF_FORM_STATE_MARKER@@-->
-                        Object stateObj = stateMgr.saveView(context);
+                        Object stateObj = sms.saveView(context);
                         String content = stateWriter.getAndResetBuffer();
                         int end = content.indexOf(STATE_KEY);
                         // See if we can find any trace of the saved state.
@@ -1860,7 +1864,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     {
                         // The state token has been written but the state has not been
                         // saved yet.
-                        stateMgr.saveView(context);
+                        sms.saveView(context);
                     }
                     else
                     {
@@ -1874,7 +1878,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
                             if (ViewDeclarationLanguage.FACELETS_VIEW_DECLARATION_LANGUAGE_ID.equals(vdl.getId()))
                             {
-                                StateManagementStrategy sms = vdl.getStateManagementStrategy(context, view.getId());
                                 if (sms != null)
                                 {
                                     context.getAttributes().put(ViewPoolProcessor.FORCE_HARD_RESET, Boolean.TRUE);
@@ -1975,7 +1978,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         
         // JSF 2.2 stateless views
         // We need to check if the incoming view is stateless or not and if that so rebuild it here
-        // note we cannot do this in DefaultFaceletsStateManagementStrategy because it is only used
+        // note we cannot do this in PartialStateManagementStrategy because it is only used
         // when PSS is enabled, but stateless views can be used without PSS. If the view is stateless,
         // there is no need to ask to the StateManager.
         String renderKitId = viewHandler.calculateRenderKitId(context);

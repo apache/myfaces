@@ -41,7 +41,7 @@ import jakarta.faces.view.facelets.TagAttributeException;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.view.facelets.ComponentState;
-import org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy;
+import org.apache.myfaces.view.facelets.PartialStateManagementStrategy;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageBase;
@@ -586,7 +586,7 @@ public final class ComponentSupport
     {
         if (MyfacesConfig.getCurrentInstance(context).isRefreshTransientBuildOnPSSPreserveState())
         {
-            component.getAttributes().put(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW,
+            component.getAttributes().put(PartialStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW,
                                           ComponentState.REMOVE_ADD);
         }
 
