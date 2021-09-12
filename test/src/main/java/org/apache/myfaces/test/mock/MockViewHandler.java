@@ -23,9 +23,13 @@ import java.util.Locale;
 
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.push.PushContext;
 import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Mock implementation of <code>ViewHandler</code>.</p>
@@ -145,5 +149,26 @@ public class MockViewHandler extends ViewHandler
         String url = context.getExternalContext().getRequestContextPath() + 
                 PushContext.URI_PREFIX + "/"+channelAndToken;
         return url;
+    }
+    
+    @Override
+    public String getBookmarkableURL(FacesContext context, String viewId,
+            Map<String, List<String>> parameters, boolean includeViewParams)
+    {
+        // the standard impl only calls getActionURL(context, viewId)
+        // but we want to include the parameters too
+
+        String actionEncodedViewId = getActionURL(context, viewId);
+        ExternalContext externalContext = context.getExternalContext();
+        String bookmarkEncodedURL = externalContext.encodeBookmarkableURL(
+                actionEncodedViewId, parameters);
+        return externalContext.encodeActionURL(bookmarkEncodedURL);
+    }
+
+    @Override
+    public ViewDeclarationLanguage getViewDeclarationLanguage(
+            FacesContext context, String viewId)
+    {
+        return new MockDefaultViewDeclarationLanguage();
     }
 }

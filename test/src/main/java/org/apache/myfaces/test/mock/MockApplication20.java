@@ -81,7 +81,7 @@ public abstract class MockApplication20 extends MockApplication12
         super();
 
         // install the 2.0-ViewHandler-Mock
-        this.setViewHandler(new MockViewHandler20());
+        this.setViewHandler(new MockViewHandler());
         this.setResourceHandler(new MockResourceHandler());
     }
 
