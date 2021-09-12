@@ -49,6 +49,11 @@ public class FullStateManagementStrategy extends StateManagementStrategy
     public static final String SERIALIZED_VIEW_REQUEST_ATTR = 
             FullStateManagementStrategy.class.getName() + ".SERIALIZED_VIEW";
 
+    public FullStateManagementStrategy(FacesContext context)
+    {
+        
+    }
+    
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId)
     {

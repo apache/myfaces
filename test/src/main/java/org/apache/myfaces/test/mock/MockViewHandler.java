@@ -36,9 +36,6 @@ import jakarta.faces.render.RenderKitFactory;
 
 public class MockViewHandler extends ViewHandler
 {
-
-    // ------------------------------------------------------------ Constructors
-
     /**
      * <p>Construct a default instance.</p>
      */
@@ -46,16 +43,9 @@ public class MockViewHandler extends ViewHandler
     {
     }
 
-    // ----------------------------------------------------- Mock Object Methods
-
-    // ------------------------------------------------------ Instance Variables
-
-    // ----------------------------------------------------- ViewHandler Methods
-
-    /** {@inheritDoc} */
+    @Override
     public Locale calculateLocale(FacesContext context)
     {
-
         Locale locale = context.getApplication().getDefaultLocale();
         if (locale == null)
         {
@@ -65,23 +55,20 @@ public class MockViewHandler extends ViewHandler
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String calculateRenderKitId(FacesContext context)
     {
-
         String renderKitId = context.getApplication().getDefaultRenderKitId();
         if (renderKitId == null)
         {
             renderKitId = RenderKitFactory.HTML_BASIC_RENDER_KIT;
         }
         return renderKitId;
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public UIViewRoot createView(FacesContext context, String viewId)
     {
-
         // Save locale and renderKitId from previous view (if any), per spec
         Locale locale = null;
         String renderKitId = null;
@@ -115,56 +102,48 @@ public class MockViewHandler extends ViewHandler
 
         // Return the configured instance
         return view;
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getActionURL(FacesContext context, String viewId)
     {
-
         return FacesContext.getCurrentInstance().getExternalContext()
                 .getRequestContextPath()
                 + viewId;
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getResourceURL(FacesContext context, String path)
     {
-
         return FacesContext.getCurrentInstance().getExternalContext()
                 .getRequestContextPath()
                 + path;
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void renderView(FacesContext context, UIViewRoot view)
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public UIViewRoot restoreView(FacesContext context, String viewId)
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void writeState(FacesContext context)
     {
 
     }
     
+    @Override
     public String getWebsocketURL(FacesContext context, String channelAndToken)
     {
         String url = context.getExternalContext().getRequestContextPath() + 
                 PushContext.URI_PREFIX + "/"+channelAndToken;
         return url;
     }
-
 }

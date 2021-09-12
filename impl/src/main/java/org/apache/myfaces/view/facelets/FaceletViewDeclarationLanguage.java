@@ -246,7 +246,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         faceletFactory = createFaceletFactory(context, compiler);
 
         partialSMS = new PartialStateManagementStrategy(context);
-        fullSMS = new FullStateManagementStrategy();
+        fullSMS = new FullStateManagementStrategy(context);
 
         ExternalContext externalContext = context.getExternalContext();
         
