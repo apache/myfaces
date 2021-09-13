@@ -96,7 +96,7 @@ public class CDIUtils
         try
         {
             Bean<T> bean = get(beanManager, beanClass, qualifiers);
-            return (bean != null) ? get(beanManager, bean, beanClass, create) : null;
+            return bean == null ? null : get(beanManager, bean, beanClass, create);
         }
         catch (ContextNotActiveException e)
         {
@@ -111,7 +111,7 @@ public class CDIUtils
             Set<Bean<?>> beans = beanManager.getBeans(type, qualifiers);
             Bean<T> bean = (Bean<T>) beanManager.resolve(beans);
 
-            return (bean != null) ? get(beanManager, bean, type, create) : null;
+            return bean == null ? null : get(beanManager, bean, type, create);
         }
         catch (ContextNotActiveException e)
         {

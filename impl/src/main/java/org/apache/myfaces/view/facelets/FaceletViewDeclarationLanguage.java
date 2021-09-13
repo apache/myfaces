@@ -2452,7 +2452,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         return null;
                     }
 
-                    facelet.apply(context, view);
+                    facelet.applyMetadata(context, view);
                 }
 
                 return view;

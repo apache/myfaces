@@ -29,8 +29,10 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import jakarta.el.ELException;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.annotation.View;
 import jakarta.faces.application.ViewResource;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.Facelet;
@@ -38,10 +40,12 @@ import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
+import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;
 import org.apache.myfaces.core.api.shared.lang.Assert;
+import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletCache;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
@@ -64,6 +68,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
     private Map<String, DefaultFacelet> _compositeComponentMetadataFacelets;
     private long _refreshPeriod;
     private Map<String, URL> _relativeLocations;
+    private Map<String, Boolean> _managedFacelet;
     
     private FaceletCache<Facelet> _faceletCache;
     private AbstractFaceletCache<Facelet> _abstractFaceletCache;
@@ -82,6 +87,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         _compositeComponentMetadataFacelets = new HashMap<>();
         _relativeLocations = new HashMap<>();
+        _managedFacelet = new HashMap<>();
 
         _refreshPeriod = refreshPeriod < 0 ? INFINITE_DELAY : refreshPeriod * 1000;
         
@@ -167,6 +173,22 @@ public final class DefaultFaceletFactory extends FaceletFactory
     public Facelet getFacelet(FacesContext facesContext, String uri) 
         throws IOException, FaceletException, FacesException, ELException
     {
+        Boolean isManagedFacelet = _managedFacelet.get(uri);
+        if (isManagedFacelet == null || isManagedFacelet)
+        {
+            Facelet facelet = null;
+            if (ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
+            {
+                BeanManager bm = CDIUtils.getBeanManager(facesContext);
+                facelet = CDIUtils.get(bm, Facelet.class, true, View.Literal.of(uri));
+            }
+            _managedFacelet.put(uri, facelet != null);
+            if (facelet != null)
+            {
+                return facelet;
+            }
+        }
+
         URL url = (URL) _relativeLocations.get(uri);
         if (url == null)
         {

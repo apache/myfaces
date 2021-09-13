@@ -122,10 +122,14 @@ final class DefaultFacelet extends AbstractFacelet
         this.doctype = doctype;
     }    
 
-    /**
-     * @see org.apache.myfaces.view.facelets.Facelet#apply(jakarta.faces.context.FacesContext,
-     *      jakarta.faces.component.UIComponent)
-     */
+    @Override
+    public void applyMetadata(FacesContext facesContext, UIComponent parent) throws IOException
+    {
+        // Call apply, since a DefaultFacelet instance will be specifically created to only
+        // hold the Metadata in advance.
+        apply(facesContext, parent);
+    }
+
     @Override
     public void apply(FacesContext facesContext, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException
