@@ -18,6 +18,7 @@
  */
 package jakarta.faces.annotation;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -33,4 +34,30 @@ import jakarta.inject.Qualifier;
 public @interface ManagedProperty
 {
     public String value();
+    
+
+    public static final class Literal extends AnnotationLiteral<ManagedProperty> implements ManagedProperty
+    {
+        private static final long serialVersionUID = 1L;
+
+        public static final Literal INSTANCE = of("");
+
+        private final String value;
+
+        public static Literal of(String value)
+        {
+            return new Literal(value);
+        }
+
+        private Literal(String value)
+        {
+            this.value = value;
+        }
+
+        @Override
+        public String value()
+        {
+            return value;
+        }
+    }
 }

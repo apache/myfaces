@@ -18,6 +18,7 @@
  */
 package jakarta.faces.annotation;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -32,5 +33,10 @@ import jakarta.inject.Qualifier;
 @Target(value={ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 public @interface ViewMap
 {
-    
+    public static final class Literal extends AnnotationLiteral<ViewMap> implements ViewMap
+    {
+        private static final long serialVersionUID = 1L;
+
+        public static final Literal INSTANCE = new Literal();
+    }
 }

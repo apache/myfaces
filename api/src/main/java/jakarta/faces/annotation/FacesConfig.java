@@ -18,6 +18,7 @@
  */
 package jakarta.faces.annotation;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -39,5 +40,18 @@ public @interface FacesConfig
     public static enum Version 
     {
         JSF_2_3
+    }
+    
+    public static final class Literal extends AnnotationLiteral<FacesConfig> implements FacesConfig
+    {
+        private static final long serialVersionUID = 1L;
+
+        public static final Literal INSTANCE = new Literal();
+
+        @Override
+        public Version version()
+        {
+            return null; // non binding, so not used
+        }
     }
 }
