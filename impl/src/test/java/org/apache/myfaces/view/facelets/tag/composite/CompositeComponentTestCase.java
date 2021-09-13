@@ -139,7 +139,7 @@ public class CompositeComponentTestCase extends FaceletTestCase
         //Check default coercion
         ValueExpression ve = facesContext.getApplication().getExpressionFactory().createValueExpression(
                 facesContext.getELContext(), "#{cc.attrs.cols}", Object.class);
-        Assert.assertEquals(1, ve.getValue(facesContext.getELContext()));
+        Assert.assertEquals(1, (int) ve.getValue(facesContext.getELContext()));
         text1.popComponentFromEL(facesContext);
         facet1.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);

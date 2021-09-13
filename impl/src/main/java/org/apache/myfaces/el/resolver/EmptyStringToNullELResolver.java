@@ -32,14 +32,14 @@ public class EmptyStringToNullELResolver extends ELResolver
     }
 
     @Override
-    public Object convertToType(ELContext context, Object value, Class<?> targetType)
+    public <T extends Object> T convertToType(ELContext context, Object value, Class<T> targetType)
     {
         if (value == null && targetType == String.class)
         {
             context.setPropertyResolved(true);
         }
 
-        return value;
+        return (T) value;
     }
 
     @Override

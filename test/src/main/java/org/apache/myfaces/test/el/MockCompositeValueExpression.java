@@ -104,12 +104,12 @@ public class MockCompositeValueExpression extends MockValueExpression
         {
             // Well only composite strings are supported.
 
-            StringBuilder result = new StringBuilder();
+            String result = "";
             for (ValueExpression valueExpression : valueExpressionChain)
             {
-                result.append(valueExpression.getValue(context));
+                result += valueExpression.getValue(context);
             }
-            return result.toString();
+            return result;
         }
         else
         {
