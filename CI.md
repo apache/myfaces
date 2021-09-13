@@ -26,14 +26,6 @@ ASF Infra has some restrictions and objections about Github Actions.
 
 [GitHub Actions status][5]
 
-## Travis CI
-
-Travis CI is used as well.
-
-[.travis.yml](.travis.yml)
-
-[https://travis-ci.com/github/apache/myfaces][6]
-
 
 
 [1]: https://ci-builds.apache.org/job/MyFaces/job/MyFaces%20Pipeline/
