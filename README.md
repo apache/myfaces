@@ -1,5 +1,5 @@
 # Apache MyFaces Core
-![Build Status](https://github.com/apache/myfaces/workflows/MyFaces%20CI/badge.svg)
+[![Build Status](https://github.com/apache/myfaces/workflows/MyFaces%20CI/badge.svg)](https://github.com/apache/myfaces/actions/workflows/myfaces-ci.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Build Status ASF](https://ci-builds.apache.org/buildStatus/icon?subject=ASF-Build&job=MyFaces%2FMyFaces+Pipeline%2Fmaster)](https://ci-builds.apache.org/job/MyFaces/job/MyFaces%20Pipeline/job/master/)
 
