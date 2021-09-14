@@ -62,6 +62,9 @@ abstract class _UIWebsocket extends UIComponentBase
     
     @JSFProperty
     public abstract String getOnclose();
+    
+    @JSFProperty
+    public abstract String getOnerror();
 
     @JSFProperty(defaultValue = "true")
     public abstract boolean isConnected();

@@ -207,6 +207,8 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         sb.append(',');
         sb.append(component.getOnmessage());
         sb.append(',');
+        sb.append(component.getOnerror());
+        sb.append(',');
         sb.append(component.getOnclose());
         sb.append(',');
         sb.append(getBehaviorScripts(facesContext, component));

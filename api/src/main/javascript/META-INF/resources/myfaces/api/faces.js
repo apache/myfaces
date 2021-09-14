@@ -336,6 +336,14 @@ if (!faces.push) {
             };
         };
 
+        socket.onerror = function(event) {
+            var clientIds = clientIdsByTokens[channelToken];
+            for (var i = clientIds.length - 1; i >= 0; i--){
+                var socketClientId = clientIds[i];
+                components[socketClientId]['onerror'](channel);
+            }
+        };
+
         /**
          * Closes the reconnecting web socket.
          */
@@ -355,10 +363,11 @@ if (!faces.push) {
      *
      * @param {function} onopen The function to be invoked when the web socket is opened.
      * @param {function} onmessage The function to be invoked when a message is received.
+     * @param {function} onerror The function to be invoked when the web socket throws a error.
      * @param {function} onclose The function to be invoked when the web socket is closed.
      * @param {boolean} autoconnect Whether or not to immediately open the socket. Defaults to <code>false</code>.
      */
-    this.init = function(socketClientId, uri, channel, onopen, onmessage, onclose, behaviorScripts, autoconnect) {
+    this.init = function(socketClientId, uri, channel, onopen, onmessage, onerror, onclose, behaviorScripts, autoconnect) {
 
         onclose = resolveFunction(onclose);
 
@@ -374,6 +383,7 @@ if (!faces.push) {
                 'channelToken': channelToken,
                 'onopen': resolveFunction(onopen),
                 'onmessage' : resolveFunction(onmessage),
+                'onerror' : resolveFunction(onerror),
                 'onclose': onclose,
                 'behaviors': behaviorScripts,
                 'autoconnect': autoconnect};
