@@ -77,7 +77,8 @@ abstract class _HtmlSelectManyCheckbox extends UISelectMany implements
   
   /**
    * Controls the layout direction of the child elements.  Values include:  
-   * lineDirection (vertical) and pageDirection (horzontal).
+   * lineDirection" (vertical), "pageDirection" (horizontal),
+   * and "list" (use LIST element instead of TABLE). Default value is "lineDirection".
    * 
    * @JSFProperty
    */

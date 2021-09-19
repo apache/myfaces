@@ -64,6 +64,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
 
     private static final String PAGE_DIRECTION = "pageDirection";
     private static final String LINE_DIRECTION = "lineDirection";
+    private static final String LAYOUT_LIST = "list";
     
     private static final Set<VisitHint> FIND_SELECT_LIST_HINTS = 
             Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED, VisitHint.SKIP_ITERATION));
@@ -79,16 +80,20 @@ public class HtmlRadioRendererBase extends HtmlRenderer
 
         String layout = getLayout(selectOne);
 
-        boolean pageDirectionLayout = false; // Defaults to LINE_DIRECTION
+        Boolean usingTable = Boolean.FALSE; // default to LINE_DIRECTION
         if (layout != null)
         {
             if (layout.equals(PAGE_DIRECTION))
             {
-                pageDirectionLayout = true;
+                usingTable = Boolean.TRUE;
             }
             else if (layout.equals(LINE_DIRECTION))
             {
-                pageDirectionLayout = false;
+                usingTable = Boolean.FALSE;
+            }
+            else if (layout.equals(LAYOUT_LIST))
+            {
+                usingTable = null;
             }
             else
             {
@@ -140,7 +145,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
                 SelectItem selectItem = (SelectItem) selectItemList.get(0);
                 renderGroupOrItemRadio(facesContext, selectOne,
                                                      selectItem, currentValue,
-                                                     converter, pageDirectionLayout, group, 0);
+                                                     converter, usingTable, group, 0);
             }
             else
             {
@@ -151,14 +156,14 @@ public class HtmlRadioRendererBase extends HtmlRenderer
                         VisitContext.createVisitContext(facesContext, null, FIND_SELECT_LIST_HINTS),
                         callback);                
                 renderGroupOrItemRadio(facesContext, selectOne, callback.getSelectItem(),
-                        callback.getCurrentValue(), callback.getConverter(), 
-                        pageDirectionLayout, group, callback.getIndex());
+                        callback.getCurrentValue(), callback.getConverter(),
+                            usingTable, group, callback.getIndex());
             }
         }
         else
         {
             // Render as single component
-            writer.startElement(HTML.TABLE_ELEM, selectOne);
+            writer.startElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM, selectOne);
             HtmlRendererUtils.renderHTMLAttributes(writer, selectOne,
                                                    HTML.SELECT_TABLE_PASSTHROUGH_ATTRIBUTES);
 
@@ -171,7 +176,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
                 HtmlRendererUtils.writeIdIfNecessary(writer, selectOne, facesContext); 
             }        
 
-            if (!pageDirectionLayout)
+            if (usingTable == Boolean.FALSE)
             {
                 writer.startElement(HTML.TR_ELEM, null); // selectOne);
             }
@@ -189,14 +194,14 @@ public class HtmlRadioRendererBase extends HtmlRenderer
 
                 itemNum = renderGroupOrItemRadio(facesContext, selectOne,
                                                  selectItem, currentValue,
-                                                 converter, pageDirectionLayout, itemNum);
+                                                 converter, usingTable, itemNum);
             }
 
-            if (!pageDirectionLayout)
+            if (usingTable == Boolean.FALSE)
             {
                 writer.endElement(HTML.TR_ELEM);
             }
-            writer.endElement(HTML.TABLE_ELEM);            
+            writer.endElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM);
         }
     }
 
@@ -225,11 +230,11 @@ public class HtmlRadioRendererBase extends HtmlRenderer
     protected int renderGroupOrItemRadio(FacesContext facesContext,
                                          UIComponent uiComponent, SelectItem selectItem,
                                          Object currentValue,
-                                         Converter converter, boolean pageDirectionLayout,
+                                         Converter converter, Boolean usingTable,
                                          Integer itemNum) throws IOException
     {
         return renderGroupOrItemRadio(facesContext, uiComponent, selectItem, 
-                currentValue,converter, pageDirectionLayout, null, itemNum);
+                currentValue,converter, usingTable, null, itemNum);
     }
 
     /**
@@ -239,7 +244,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
     protected int renderGroupOrItemRadio(FacesContext facesContext,
                                          UIComponent uiComponent, SelectItem selectItem,
                                          Object currentValue,
-                                         Converter converter, boolean pageDirectionLayout, String group,
+                                         Converter converter, Boolean usingTable, String group,
                                          Integer itemNum) throws IOException
     {
 
@@ -255,12 +260,12 @@ public class HtmlRadioRendererBase extends HtmlRenderer
 
         if (isSelectItemGroup) 
         {
-            if (pageDirectionLayout)
+            if (usingTable == Boolean.TRUE)
             {
                 writer.startElement(HTML.TR_ELEM, null); // selectOne);
             }
 
-            writer.startElement(HTML.TD_ELEM, null); // selectOne);
+            writer.startElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM, null); // selectOne);
             if (selectItem.isEscape())
             {
                 writer.writeText(selectItem.getLabel(),HTML.LABEL_ATTR);
@@ -269,19 +274,32 @@ public class HtmlRadioRendererBase extends HtmlRenderer
             {
                 writer.write(selectItem.getLabel());
             }
-            writer.endElement(HTML.TD_ELEM);
+            writer.endElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM);
 
-            if (pageDirectionLayout)
+            if (usingTable == Boolean.TRUE)
             {
                 writer.endElement(HTML.TR_ELEM);
                 writer.startElement(HTML.TR_ELEM, null); // selectOne);
             }
-            writer.startElement(HTML.TD_ELEM, null); // selectOne);
+            writer.startElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM, null); // selectOne);
 
-            writer.startElement(HTML.TABLE_ELEM, null); // selectOne);
-            writer.writeAttribute(HTML.BORDER_ATTR, "0", null);
-            
-            if(!pageDirectionLayout)
+            writer.startElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM, null); // selectOne);
+
+            if (usingTable != null)
+            {
+                Integer border = 0;
+                Object borderObj = uiComponent.getAttributes().get("border");
+                if (null != borderObj)
+                {
+                    border = (Integer) borderObj;
+                }
+                if (Integer.MIN_VALUE != border)
+                {
+                    writer.writeAttribute(HTML.BORDER_ATTR, border, "border");
+                }
+            }
+
+            if(usingTable == Boolean.FALSE)
             {
                 writer.startElement(HTML.TR_ELEM, null); // selectOne);
             }
@@ -292,17 +310,17 @@ public class HtmlRadioRendererBase extends HtmlRenderer
             for (SelectItem groupSelectItem : selectItems)
             { 
                 itemNum = renderGroupOrItemRadio(facesContext, selectOne, groupSelectItem, currentValue, 
-                                                 converter, pageDirectionLayout, itemNum);
+                                                 converter, usingTable, itemNum);
             }
 
-            if(!pageDirectionLayout)
+            if(usingTable == Boolean.FALSE)
             {
                 writer.endElement(HTML.TR_ELEM);
             }
-            writer.endElement(HTML.TABLE_ELEM);
-            writer.endElement(HTML.TD_ELEM);
+            writer.endElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM);
+            writer.endElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM);
 
-            if (pageDirectionLayout)
+            if (usingTable == Boolean.TRUE)
             {
                 writer.endElement(HTML.TR_ELEM);
             }
@@ -338,11 +356,11 @@ public class HtmlRadioRendererBase extends HtmlRenderer
             }
             else
             {
-                if (pageDirectionLayout)
+                if (usingTable == Boolean.TRUE)
                 {
                     writer.startElement(HTML.TR_ELEM, null); // selectOne);
                 }
-                writer.startElement(HTML.TD_ELEM, null); // selectOne);
+                writer.startElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM, null); // selectOne);
             }
     
             boolean itemDisabled = selectItem.isDisabled();
@@ -364,8 +382,8 @@ public class HtmlRadioRendererBase extends HtmlRenderer
             }
             else
             {
-                writer.endElement(HTML.TD_ELEM);
-                if (pageDirectionLayout)
+                writer.endElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM);
+                if (usingTable == Boolean.TRUE)
                 {
                     writer.endElement(HTML.TR_ELEM);
                 }

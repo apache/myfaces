@@ -68,9 +68,9 @@ abstract class _HtmlSelectOneRadio extends UISelectOne implements
   public abstract int getBorder();
 
   /**
-   * Orientation of the options list. Valid values are 
-   * "pageDirection" for a vertical layout, or "lineDirection" for
-   * horizontal. The default value is "lineDirection". 
+   * Controls the layout direction of the child elements.  Values include:
+   * lineDirection" (vertical), "pageDirection" (horizontal),
+   * and "list" (use LIST element instead of TABLE). Default value is "lineDirection".
    * 
    * @JSFProperty
    */
