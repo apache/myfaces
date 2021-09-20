@@ -57,6 +57,8 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
     private static final String LINE_DIRECTION = "lineDirection";
 
+    private static final String LAYOUT_LIST = "list";
+
     private static final String EXTERNAL_TRUE_VALUE = "true";
 
     @Override
@@ -93,16 +95,20 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
     public void renderCheckboxList(FacesContext facesContext, UISelectMany selectMany) throws IOException
     {
         String layout = getLayout(selectMany);
-        boolean pageDirectionLayout = false; //Default to lineDirection
+        Boolean usingTable = Boolean.FALSE; // default to LINE_DIRECTION
         if (layout != null)
         {
             if (layout.equals(PAGE_DIRECTION))
             {
-                pageDirectionLayout = true;
-            } 
+                usingTable = Boolean.TRUE;
+            }
             else if (layout.equals(LINE_DIRECTION))
             {
-                pageDirectionLayout = false;
+                usingTable = Boolean.FALSE;
+            }
+            else if (layout.equals(LAYOUT_LIST))
+            {
+                usingTable = null;
             }
             else
             {
@@ -113,7 +119,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
-        writer.startElement(HTML.TABLE_ELEM, selectMany);
+        writer.startElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM, selectMany);
         HtmlRendererUtils.renderHTMLAttributes(writer, selectMany, HTML.SELECT_TABLE_PASSTHROUGH_ATTRIBUTES);
         
         Map<String, List<ClientBehavior>> behaviors = null;
@@ -131,7 +137,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             HtmlRendererUtils.writeIdIfNecessary(writer, selectMany, facesContext);
         }        
 
-        if (!pageDirectionLayout)
+        if (usingTable == Boolean.FALSE)
         {
             writer.startElement(HTML.TR_ELEM, null);
         }
@@ -157,14 +163,14 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             
             itemNum = renderGroupOrItemCheckbox(facesContext, selectMany, 
                                                 selectItem, useSubmittedValues, lookupSet, 
-                                                converter, pageDirectionLayout, itemNum);
+                                                converter, usingTable, itemNum);
         }
 
-        if (!pageDirectionLayout)
+        if (usingTable == Boolean.FALSE)
         {
             writer.endElement(HTML.TR_ELEM);
         }
-        writer.endElement(HTML.TABLE_ELEM);
+        writer.endElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM);
     }
 
     protected String getLayout(UISelectMany selectMany)
@@ -180,7 +186,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
     protected int renderGroupOrItemCheckbox(FacesContext facesContext,
                                              UIComponent uiComponent, SelectItem selectItem,
                                              boolean useSubmittedValues, Set lookupSet,
-                                             Converter converter, boolean pageDirectionLayout, 
+                                             Converter converter, Boolean usingTable,
                                              Integer itemNum) throws IOException
     {
 
@@ -192,12 +198,12 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
         if (isSelectItemGroup)
         {
-            if (pageDirectionLayout)
+            if (usingTable == Boolean.TRUE)
             {
                 writer.startElement(HTML.TR_ELEM, null);
             }
 
-            writer.startElement(HTML.TD_ELEM, null);
+            writer.startElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM, null);
             if (selectItem.isEscape())
             {
                 writer.writeText(selectItem.getLabel(),HTML.LABEL_ATTR);
@@ -206,19 +212,31 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             {
                 writer.write(selectItem.getLabel());
             }
-            writer.endElement(HTML.TD_ELEM);
+            writer.endElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM);
 
-            if (pageDirectionLayout)
+            if (usingTable == Boolean.TRUE)
             {
                 writer.endElement(HTML.TR_ELEM);
                 writer.startElement(HTML.TR_ELEM, null);
             }
-            writer.startElement(HTML.TD_ELEM, null);
+            writer.startElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM, null);
 
-            writer.startElement(HTML.TABLE_ELEM, null);
-            writer.writeAttribute(HTML.BORDER_ATTR, "0", null);
-            
-            if(!pageDirectionLayout)
+            writer.startElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM, null);
+            if (usingTable != null)
+            {
+                Integer border = 0;
+                Object borderObj = uiComponent.getAttributes().get("border");
+                if (null != borderObj)
+                {
+                    border = (Integer) borderObj;
+                }
+                if (Integer.MIN_VALUE != border)
+                {
+                    writer.writeAttribute(HTML.BORDER_ATTR, border, "border");
+                }
+            }
+
+            if(usingTable == Boolean.FALSE)
             {
                 writer.startElement(HTML.TR_ELEM, null);
             }
@@ -229,17 +247,17 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             for (SelectItem groupSelectItem : selectItems)
             {
                 itemNum = renderGroupOrItemCheckbox(facesContext, selectMany, groupSelectItem, useSubmittedValues,
-                                                    lookupSet, converter, pageDirectionLayout, itemNum);
+                                                    lookupSet, converter, usingTable, itemNum);
             }
 
-            if(!pageDirectionLayout)
+            if(usingTable == Boolean.FALSE)
             {
                 writer.endElement(HTML.TR_ELEM);
             }
-            writer.endElement(HTML.TABLE_ELEM);
-            writer.endElement(HTML.TD_ELEM);
+            writer.endElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM);
+            writer.endElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM);
 
-            if (pageDirectionLayout)
+            if (usingTable == Boolean.TRUE)
             {
                 writer.endElement(HTML.TR_ELEM);
             }
@@ -268,11 +286,11 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             }
 
             writer.write("\t\t");
-            if (pageDirectionLayout)
+            if (usingTable == Boolean.TRUE)
             {
                 writer.startElement(HTML.TR_ELEM, null);
             }
-            writer.startElement(HTML.TD_ELEM, null);
+            writer.startElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM, null);
 
             boolean disabled = selectItem.isDisabled();
 
@@ -284,8 +302,8 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
             HtmlRendererUtils.renderLabel(writer, selectMany, itemId, selectItem, itemDisabled, checked);
 
-            writer.endElement(HTML.TD_ELEM);
-            if (pageDirectionLayout)
+            writer.endElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM);
+            if (usingTable == Boolean.TRUE)
             {
                 writer.endElement(HTML.TR_ELEM);
             }
