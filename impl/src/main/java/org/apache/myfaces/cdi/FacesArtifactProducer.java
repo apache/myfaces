@@ -92,14 +92,6 @@ public class FacesArtifactProducer
     {
        return FacesContext.getCurrentInstance();
     }
-    
-    @Produces
-    @Named("request")
-    @FacesScoped 
-    public Object getRequest()
-    {
-       return FacesContext.getCurrentInstance().getExternalContext().getRequest();
-    }
 
     @Produces
     @Named("externalContext")
@@ -188,17 +180,8 @@ public class FacesArtifactProducer
         return FacesContext.getCurrentInstance().getViewRoot();
     }
 
-    @Produces
-    @Named("session")
-    @FacesScoped
-    public Object getSession()
-    {
-        return FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-    }
-
-   
     /*
-    The spec actually forces us the use producers for "cc" and "component but it leads to a bad performance.
+    The spec actually forces us the use producers for "cc" and "component" but it leads to a bad performance.
     Also @Inject UIComponent doesn't make sense and wouldn't work correctly if we don't create a own "ComponentScoped"
     or something.
     We will still use ELResolvers for this - see ImplicitObjectResolver#makeResolverForFacesCDI().
@@ -252,4 +235,26 @@ public class FacesArtifactProducer
         String channel = push.channel().isEmpty() ? ip.getMember().getName() : push.channel();
         return new PushContextImpl(channel);
     }
+
+    /*
+    The spec actually forces us the use producers for "session" and "request" but this conflicts with CDI spec actually,
+    because CDI is responsible for producing HttpServletRequest and HttpSession
+    We will still use ELResolvers for this - see ImplicitObjectResolver#makeResolverForFacesCDI().
+    /*
+    @Produces
+    @Named("session")
+    @FacesScoped
+    public Object getSession()
+    {
+        return FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+    }
+
+    @Produces
+    @Named("request")
+    @FacesScoped 
+    public Object getRequest()
+    {
+       return FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    }
+    /*
 }

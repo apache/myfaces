@@ -96,6 +96,12 @@ public class ImplicitObjectResolver extends ELResolver
         io = new CompositeComponentImplicitObject();
         forFacesCDIList.put(io.getName(), io);
         
+        io = new RequestImplicitObject();
+        forFacesCDIList.put(io.getName(), io);
+ 
+        io = new SessionImplicitObject();
+        forFacesCDIList.put(io.getName(), io);
+
         return new ImplicitObjectResolver(forFacesCDIList);
     }
 
