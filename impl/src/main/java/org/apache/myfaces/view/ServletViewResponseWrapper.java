@@ -70,13 +70,6 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
     }
 
     @Override
-    public void setStatus(int status, String errorMessage)
-    {
-        super.setStatus(status, errorMessage);
-        _status = status;
-    }
-
-    @Override
     public int getStatus()
     {
         return _status;
