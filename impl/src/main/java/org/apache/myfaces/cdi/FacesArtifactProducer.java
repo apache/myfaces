@@ -256,5 +256,5 @@ public class FacesArtifactProducer
     {
        return FacesContext.getCurrentInstance().getExternalContext().getRequest();
     }
-    /*
+    */
 }

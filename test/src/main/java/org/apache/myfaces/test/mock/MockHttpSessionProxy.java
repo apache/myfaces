@@ -22,7 +22,6 @@ package org.apache.myfaces.test.mock;
 import java.util.Enumeration;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSessionAttributeListener;
-import jakarta.servlet.http.HttpSessionContext;
 import jakarta.servlet.http.HttpSessionEvent;
 
 /**
@@ -105,13 +104,6 @@ public class MockHttpSessionProxy extends MockHttpSession
         return servletContext == null ? getWrapped().getServletContext() : servletContext;
     }
 
-    @Override
-    public HttpSessionContext getSessionContext()
-    {
-        return getWrapped().getSessionContext();
-    }
-
-    @Override
     public Object getValue(String name)
     {
         return getWrapped().getValue(name);

@@ -30,7 +30,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionAttributeListener;
 import jakarta.servlet.http.HttpSessionBindingEvent;
 import jakarta.servlet.http.HttpSessionBindingListener;
-import jakarta.servlet.http.HttpSessionContext;
 import jakarta.servlet.http.HttpSessionEvent;
 
 /**
@@ -190,14 +189,6 @@ public class MockHttpSession implements HttpSession
     {
 
         return this.servletContext;
-
-    }
-
-    /** {@inheritDoc} */
-    public HttpSessionContext getSessionContext()
-    {
-
-        throw new UnsupportedOperationException();
 
     }
 

@@ -43,6 +43,7 @@ import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
 
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConnection;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
@@ -51,12 +52,14 @@ import jakarta.servlet.ServletRequestAttributeEvent;
 import jakarta.servlet.ServletRequestAttributeListener;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpUpgradeHandler;
 import jakarta.servlet.http.Part;
+import jakarta.servlet.http.PushBuilder;
 
 /**
  * <p>Mock implementation of <code>HttpServletContext</code>.</p>
@@ -1106,6 +1109,48 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     @Override
     public long getContentLengthLong()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public HttpServletMapping getHttpServletMapping()
+    {
+        return HttpServletRequest.super.getHttpServletMapping();
+    }
+
+    @Override
+    public PushBuilder newPushBuilder()
+    {
+        return HttpServletRequest.super.newPushBuilder();
+    }
+
+    @Override
+    public Map<String, String> getTrailerFields()
+    {
+        return HttpServletRequest.super.getTrailerFields();
+    }
+
+    @Override
+    public boolean isTrailerFieldsReady()
+    {
+        return HttpServletRequest.super.isTrailerFieldsReady();
+    }
+
+    @Override
+    public String getRequestId()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getProtocolRequestId()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ServletConnection getServletConnection()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
