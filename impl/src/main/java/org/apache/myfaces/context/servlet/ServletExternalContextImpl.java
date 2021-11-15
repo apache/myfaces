@@ -846,7 +846,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                     cookie.setHttpOnly((Boolean) propertyValue);
                     continue;
                 }
-                throw new IllegalArgumentException("Unused key when creating Cookie");
+                cookie.setAttribute(propertyKey, propertyValue == null ? null : propertyValue.toString());
             }
         }
         _httpServletResponse.addCookie(cookie);
