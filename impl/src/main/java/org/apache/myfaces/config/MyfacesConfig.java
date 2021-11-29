@@ -27,6 +27,7 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.spi.InjectionProvider;
@@ -719,12 +720,7 @@ public class MyfacesConfig
     public static final String LOG_WEB_CONTEXT_PARAMS = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS";
     private static final String LOG_WEB_CONTEXT_PARAMS_DEFAULT = "auto";
     
-    /**
-     * This parameter enables automatic extensionless mapping for all JSF views.
-     */
-    @JSFWebConfigParam(since="2.3", expectedValues = "true, false", defaultValue = "false")
-    public static final String AUTOMATIC_EXTENSIONLESS_MAPPING = 
-            "org.apache.myfaces.AUTOMATIC_EXTENSIONLESS_MAPPING";
+
     public static final boolean AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT = false;
     
     /**
@@ -1280,7 +1276,7 @@ public class MyfacesConfig
             cfg.resourceBundleControl = (ResourceBundle.Control) ClassUtils.newInstance(resourceBundleControl);
         }
         
-        cfg.automaticExtensionlessMapping = getBoolean(extCtx, AUTOMATIC_EXTENSIONLESS_MAPPING,
+        cfg.automaticExtensionlessMapping = getBoolean(extCtx, FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME,
                 AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT);
 
         return cfg;

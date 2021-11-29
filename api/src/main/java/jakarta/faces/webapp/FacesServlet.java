@@ -66,6 +66,22 @@ public final class FacesServlet implements Servlet
      */
     @JSFWebConfigParam(since="2.3")
     public static final String DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME = "jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML";
+    
+    /**
+     * <p class="changed_added_4_0">
+     * The <code>ServletContext</code> init parameter consulted by the runtime to tell if the automatic mapping of
+     * the {@code FacesServlet} to the extensionless variant (without {@code *.xhtml}) should be enabled.
+     * The implementation must enable this automatic mapping if and only if the value of this parameter is equal,
+     * ignoring case, to {@code true}.
+     * </p>
+     *
+     * <p>
+     * If this parameter is not specified, this automatic mapping is not enabled.
+     * </p>
+     */
+    @JSFWebConfigParam(since="4.0")
+    public static final String AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME
+            = "jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING";
 
     private static final String SERVLET_INFO = "FacesServlet of the MyFaces API implementation";
     
