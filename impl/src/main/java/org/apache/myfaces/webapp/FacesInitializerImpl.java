@@ -151,7 +151,7 @@ public class FacesInitializerImpl implements FacesInitializer
                     MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE, false))
             {
                 FacesServletMappingUtils.ServletRegistrationInfo facesServletRegistration =
-                        FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext, false);
+                        FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext);
                 if (facesServletRegistration == null
                         || facesServletRegistration.getMappings() == null
                         || facesServletRegistration.getMappings().length == 0)
@@ -717,7 +717,7 @@ public class FacesInitializerImpl implements FacesInitializer
     protected void initAutomaticExtensionlessMapping(FacesContext facesContext, ServletContext servletContext)
     {
         FacesServletMappingUtils.ServletRegistrationInfo facesServletRegistration =
-                FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext, false);
+                FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext);
         if (facesServletRegistration != null)
         {
             facesContext.getApplication().getViewHandler().getViews(facesContext, "/", 

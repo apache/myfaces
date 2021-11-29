@@ -158,6 +158,7 @@
         <module>autoLookupExpressionFactoryWithoutJSP</module>
         <module>protectedViews</module>
         <module>ajax</module>
+        <module>automaticExtensionlessMapping</module>
     </modules>
 
     <profiles>
