@@ -20,11 +20,11 @@ package org.apache.myfaces.core.integrationtests;
 
 import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @FacesConfig(version = JSF_2_3)
 @Named

@@ -21,10 +21,10 @@ package org.apache.myfaces.core.integrationtests.ajax.test1Protocol;
 import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.*;
 import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.responses.TableResponseMockups;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.*;
 
 
@@ -79,7 +79,7 @@ public class ResponseMockup extends HttpServlet {
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws javax.servlet.ServletException if a servlet-specific error occurs
+     * @throws jakarta.servlet.ServletException if a servlet-specific error occurs
      * @throws java.io.IOException            if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -332,7 +332,7 @@ public class ResponseMockup extends HttpServlet {
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws javax.servlet.ServletException if a servlet-specific error occurs
+     * @throws jakarta.servlet.ServletException if a servlet-specific error occurs
      * @throws java.io.IOException            if an I/O error occurs
      */
     @Override

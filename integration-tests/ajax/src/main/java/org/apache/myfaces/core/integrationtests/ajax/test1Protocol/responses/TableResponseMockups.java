@@ -24,7 +24,7 @@ import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.I
 import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.PartialResponse;
 import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.Update;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 
 /**
