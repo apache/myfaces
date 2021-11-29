@@ -1851,8 +1851,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     }
                     else if (stateWriter.isStateWrittenWithoutWrapper())
                     {
-                        // The state token has been written but the state has not been
-                        // saved yet.
+                        // The state token has been written but the state has not been saved yet.
                         sms.saveView(context);
                     }
                     else

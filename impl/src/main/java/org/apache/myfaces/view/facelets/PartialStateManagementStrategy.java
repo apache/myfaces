@@ -50,6 +50,7 @@ import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.ViewMetadata;
 import org.apache.myfaces.application.StateManagerImpl;
+import org.apache.myfaces.application.viewstate.StateCacheUtils;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
@@ -676,109 +677,127 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
             return null;
         }
         
+        ResponseStateManager responseStateManager = context.getRenderKit().getResponseStateManager();
+        
         Object serializedView = context.getAttributes().get(StateManagerImpl.SERIALIZED_VIEW_REQUEST_ATTR);
         
         //Note on ajax case the method saveState could be called twice: once before start
         //document rendering and the other one when it is called StateManager.getViewState method.
         if (serializedView == null)
         {
-            // Make sure the client IDs are unique per the spec.
-            if (context.isProjectStage(ProjectStage.Production))
+            try
             {
-                if (MyfacesConfig.CHECK_ID_PRODUCTION_MODE_AUTO.equals(checkIdsProductionMode))
+                context.getAttributes().put(StateManager.IS_SAVING_STATE, Boolean.TRUE);
+
+                // Make sure the client IDs are unique per the spec.
+                if (context.isProjectStage(ProjectStage.Production))
                 {
-                    CheckDuplicateIdFaceletUtils.checkIdsStatefulComponents(context, view);
+                    if (MyfacesConfig.CHECK_ID_PRODUCTION_MODE_AUTO.equals(checkIdsProductionMode))
+                    {
+                        CheckDuplicateIdFaceletUtils.checkIdsStatefulComponents(context, view);
+                    }
+                    else if (MyfacesConfig.CHECK_ID_PRODUCTION_MODE_TRUE.equals(checkIdsProductionMode))
+                    {
+                        CheckDuplicateIdFaceletUtils.checkIds(context, view);
+                    }
                 }
-                else if (MyfacesConfig.CHECK_ID_PRODUCTION_MODE_TRUE.equals(checkIdsProductionMode))
+                else
                 {
                     CheckDuplicateIdFaceletUtils.checkIds(context, view);
                 }
-            }
-            else
-            {
-                CheckDuplicateIdFaceletUtils.checkIds(context, view);
-            }
-            
-            // Create save state objects for every component.
-            
-            boolean viewResetable = false;
-            int count = 0;
-            Object faceletViewState = null;
-            boolean saveViewFully = view.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW);
-            if (saveViewFully)
-            {
-                ensureClearInitialState(view);
-                Object rlcStates = !context.getResourceLibraryContracts().isEmpty() ? 
-                    UIComponentBase.saveAttachedState(context, 
-                                new ArrayList<>(context.getResourceLibraryContracts())) : null;
-                states = new Object[]{
-                            internalBuildTreeStructureToSave(view),
-                            view.processSaveState(context), rlcStates};
-            }
-            else
-            {
-                states = new HashMap<>();
 
-                faceletViewState = view.getAttributes().get(ComponentSupport.FACELET_STATE_INSTANCE);
-                if (faceletViewState != null)
+                // Create save state objects for every component.
+                boolean viewResetable = false;
+                int count = 0;
+                Object faceletViewState = null;
+                boolean saveViewFully = view.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+                if (saveViewFully)
                 {
-                    ((Map<String, Object>) states).put(ComponentSupport.FACELET_STATE_INSTANCE,
-                            UIComponentBase.saveAttachedState(context, faceletViewState));
-                    //Do not save on UIViewRoot
-                    view.getAttributes().remove(ComponentSupport.FACELET_STATE_INSTANCE);
-                    view.getTransientStateHelper().putTransient(
-                            ComponentSupport.FACELET_STATE_INSTANCE, faceletViewState);
-                }
-                if (_viewPoolProcessor != null
-                        && _viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
-                {
-                    SaveStateAndResetViewCallback cb = saveStateOnMapVisitTreeAndReset(
-                            context,
-                            (Map<String,Object>) states,
-                            view,
-                            Boolean.TRUE.equals(context.getAttributes().get(ViewPoolProcessor.FORCE_HARD_RESET)));
-                    viewResetable = cb.isViewResetable();
-                    count = cb.getCount();
+                    ensureClearInitialState(view);
+                    Object rlcStates = !context.getResourceLibraryContracts().isEmpty() ? 
+                        UIComponentBase.saveAttachedState(context, 
+                                    new ArrayList<>(context.getResourceLibraryContracts())) : null;
+                    states = new Object[]{
+                                internalBuildTreeStructureToSave(view),
+                                view.processSaveState(context), rlcStates};
                 }
                 else
                 {
-                    saveStateOnMapVisitTree(context,(Map<String,Object>) states, view);
+                    states = new HashMap<>();
+
+                    faceletViewState = view.getAttributes().get(ComponentSupport.FACELET_STATE_INSTANCE);
+                    if (faceletViewState != null)
+                    {
+                        ((Map<String, Object>) states).put(ComponentSupport.FACELET_STATE_INSTANCE,
+                                UIComponentBase.saveAttachedState(context, faceletViewState));
+                        //Do not save on UIViewRoot
+                        view.getAttributes().remove(ComponentSupport.FACELET_STATE_INSTANCE);
+                        view.getTransientStateHelper().putTransient(
+                                ComponentSupport.FACELET_STATE_INSTANCE, faceletViewState);
+                    }
+                    if (_viewPoolProcessor != null
+                            && _viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
+                    {
+                        SaveStateAndResetViewCallback cb = saveStateOnMapVisitTreeAndReset(
+                                context,
+                                (Map<String,Object>) states,
+                                view,
+                                Boolean.TRUE.equals(context.getAttributes().get(ViewPoolProcessor.FORCE_HARD_RESET)));
+                        viewResetable = cb.isViewResetable();
+                        count = cb.getCount();
+                    }
+                    else
+                    {
+                        saveStateOnMapVisitTree(context,(Map<String,Object>) states, view);
+                    }
+
+                    if (((Map<String,Object>) states).isEmpty())
+                    {
+                        states = null;
+                    }
                 }
+
+                Integer uniqueIdCount = (Integer) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
+                if (uniqueIdCount != null && !uniqueIdCount.equals(1))
+                {
+                    serializedView = new Object[] { null, states, uniqueIdCount };
+                }
+                else if (states == null)
+                {
+                    serializedView = EMPTY_STATES;
+                }
+                else
+                {
+                    serializedView = new Object[] { null, states };
+                }
+
+                //If view cache enabled store the view state into the pool
+                if (!saveViewFully && _viewPoolProcessor != null)
+                {
+                    if (viewResetable)
+                    {
+                        _viewPoolProcessor.pushResetableView(context, view, (FaceletState) faceletViewState);
+                    }
+                    else
+                    {
+                        _viewPoolProcessor.pushPartialView(context, view, (FaceletState) faceletViewState, count);
+                    }
+                }
+
+                context.getAttributes().put(StateManagerImpl.SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
                 
-                if (((Map<String,Object>) states).isEmpty())
+                // If MyfacesResponseStateManager is used, give the option to do
+                // additional operations for save the state if is necessary.
+                if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
                 {
-                    states = null;
+                    StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).
+                            saveState(context, serializedView);
                 }
             }
-            
-            Integer uniqueIdCount = (Integer) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
-            if (uniqueIdCount != null && !uniqueIdCount.equals(1))
+            finally
             {
-                serializedView = new Object[] { null, states, uniqueIdCount };
+                context.getAttributes().remove(StateManager.IS_SAVING_STATE);
             }
-            else if (states == null)
-            {
-                serializedView = EMPTY_STATES;
-            }
-            else
-            {
-                serializedView = new Object[] { null, states };
-            }
-            
-            //If view cache enabled store the view state into the pool
-            if (!saveViewFully && _viewPoolProcessor != null)
-            {
-                if (viewResetable)
-                {
-                    _viewPoolProcessor.pushResetableView(context, view, (FaceletState) faceletViewState);
-                }
-                else
-                {
-                    _viewPoolProcessor.pushPartialView(context, view, (FaceletState) faceletViewState, count);
-                }
-            }
-            
-            context.getAttributes().put(StateManagerImpl.SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
         }
         
         return serializedView;
