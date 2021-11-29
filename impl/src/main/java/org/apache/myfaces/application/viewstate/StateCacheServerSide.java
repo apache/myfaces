@@ -43,6 +43,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindow;
 
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.context.flash.FlashImpl;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.util.MyFacesObjectInputStream;
 import org.apache.myfaces.view.ViewScopeProxyMap;
@@ -160,7 +161,7 @@ class StateCacheServerSide extends StateCache<Object, Object>
                     key = (SerializedViewKey) viewCollection.getLastWindowKey(context, clientWindow.getId());
                 }
                 else if (useFlashScopePurgeViewsInSession && Boolean.TRUE.equals(
-                        context.getExternalContext().getRequestMap().get("oam.Flash.REDIRECT.PREVIOUSREQUEST")))
+                        context.getExternalContext().getRequestMap().get(FlashImpl.FLASH_PREVIOUS_REQUEST_REDIRECT)))
                 {
                     key = (SerializedViewKey)
                             context.getExternalContext().getFlash().get(RESTORED_VIEW_KEY_REQUEST_ATTR);

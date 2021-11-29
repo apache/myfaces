@@ -77,7 +77,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
     /**
      * Key to store the value of the redirect cookie
      */
-    static final String FLASH_PREVIOUS_REQUEST_REDIRECT 
+    public static final String FLASH_PREVIOUS_REQUEST_REDIRECT 
             = FLASH_PREFIX + ".REDIRECT.PREVIOUSREQUEST";
     
     /**
