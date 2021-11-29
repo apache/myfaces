@@ -83,7 +83,8 @@ class StateCacheServerSide extends StateCache<Object, Object>
         FacesContext facesContext = FacesContext.getCurrentInstance();
         MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
         
-        useFlashScopePurgeViewsInSession = config.isUseFlashScopePurgeViewsInSession();
+        useFlashScopePurgeViewsInSession = !config.isFlashScopeDisabled()
+                && config.isUseFlashScopePurgeViewsInSession();
         numberOfSequentialViewsInSession = config.getNumberOfSequentialViewsInSession();
         serializeStateInSession = config.isSerializeStateInSession();
         compressStateInSession = config.isCompressStateInSession();
