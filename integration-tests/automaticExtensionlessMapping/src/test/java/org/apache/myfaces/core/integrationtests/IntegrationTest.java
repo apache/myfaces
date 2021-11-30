@@ -81,6 +81,9 @@ public class IntegrationTest
         Assert.assertTrue(webDriver.getCurrentUrl().endsWith("/foo"));
         
         Assert.assertTrue(webDriver.getPageSource().contains("/bar\""));
+        
+        // resources must NOT use exact mapping
+        Assert.assertTrue(webDriver.getPageSource().contains("/jakarta.faces.resource/faces.js.xhtml?ln=jakarta.faces"));
     }
 
     @Test
@@ -95,5 +98,8 @@ public class IntegrationTest
         Assert.assertTrue(webDriver.getCurrentUrl().endsWith("/bar"));
       
         Assert.assertTrue(webDriver.getPageSource().contains("/foo\""));
+        
+        // resources must NOT use exact mapping
+        Assert.assertTrue(webDriver.getPageSource().contains("/jakarta.faces.resource/faces.js.xhtml?ln=jakarta.faces"));
     }
 }
