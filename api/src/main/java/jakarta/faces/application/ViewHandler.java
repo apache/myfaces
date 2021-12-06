@@ -69,13 +69,15 @@ public abstract class ViewHandler
 {
     public static final String CHARACTER_ENCODING_KEY = "jakarta.faces.request.charset";
     public static final String DEFAULT_FACELETS_SUFFIX = ".xhtml";
+    @Deprecated(since = "4.0")
     public static final String DEFAULT_SUFFIX = ".xhtml";
     
     /**
      * Indicate the default suffixes, separated by spaces to derive the default file URI 
      * used by JSF to create views and render pages. 
      */
-    @JSFWebConfigParam(defaultValue=".xhtml", since="1.1", group="viewhandler")
+    @JSFWebConfigParam(defaultValue=".xhtml", since="1.1", group="viewhandler", deprecated = true)
+    @Deprecated(since = "4.0")
     public static final String DEFAULT_SUFFIX_PARAM_NAME = "jakarta.faces.DEFAULT_SUFFIX";
     
     /**
