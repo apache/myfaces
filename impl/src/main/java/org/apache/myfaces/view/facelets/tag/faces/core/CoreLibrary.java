@@ -121,8 +121,6 @@ public final class CoreLibrary extends AbstractTagLibrary
         this.addComponent("viewParam", UIViewParameter.COMPONENT_TYPE, null);
         
         this.addComponent("importConstants", UIImportConstants.COMPONENT_TYPE, null);
-
-        this.addComponent("verbatim", "jakarta.faces.HtmlOutputText", "jakarta.faces.Text", VerbatimHandler.class);
         
         this.addComponent("validateWholeBean", ValidateWholeBeanComponent.COMPONENT_TYPE, null);
         
