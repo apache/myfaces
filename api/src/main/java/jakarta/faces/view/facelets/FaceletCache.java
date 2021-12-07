@@ -38,17 +38,6 @@ public abstract class FaceletCache<V>
     public abstract V getViewMetadataFacelet(URL url) throws IOException;
     
     public abstract boolean isViewMetadataFaceletCached(URL url);
-    
-    @Deprecated
-    protected void setMemberFactories(FaceletCache.MemberFactory<V> faceletFactory,
-                                      FaceletCache.MemberFactory<V> viewMetadataFaceletFactory)
-    {
-        Assert.notNull(faceletFactory, "faceletFactory");
-        Assert.notNull(viewMetadataFaceletFactory, "viewMetadataFaceletFactory");
-
-        _faceletFactory = faceletFactory;
-        _viewMetadataFaceletFactory = viewMetadataFaceletFactory;
-    }
 
     protected FaceletCache.MemberFactory<V> getMemberFactory()
     {
@@ -73,6 +62,10 @@ public abstract class FaceletCache<V>
     public void setCacheFactories(FaceletCache.MemberFactory<V> faceletFactory, 
             FaceletCache.MemberFactory<V> viewMetadataFaceletFactory)
     {
-        this.setMemberFactories(faceletFactory, viewMetadataFaceletFactory);
+        Assert.notNull(faceletFactory, "faceletFactory");
+        Assert.notNull(viewMetadataFaceletFactory, "viewMetadataFaceletFactory");
+
+        _faceletFactory = faceletFactory;
+        _viewMetadataFaceletFactory = viewMetadataFaceletFactory;
     }
 }

@@ -57,8 +57,15 @@ package jakarta.faces.component;
 public interface NamingContainer
 {
     /**
-     * @deprecated Use {@link UINamingContainer#getSeparatorChar(jakarta.faces.context.FacesContext)}
+     * <p class="changed_modified_2_0">
+     * The separator character used in component identifiers to demarcate navigation to a child naming container.
+     * The <span class="changed_modified_4_0">default</span> separator character used in component identifiers to demarcate
+     * navigation to a child naming container,
+     * <span class="changed_added_4_0">in case {@link UINamingContainer#getSeparatorChar(jakarta.faces.context.FacesContext)}
+     * does not resolve to a valid value.
+     * It is not recommended to use this value directly, the 
+     * {link UINamingContainer#getSeparatorChar(jakarta.faces.context.FacesContext)} must be used instead</span>.
+     * </p>
      */
-    @Deprecated
     public static final char SEPARATOR_CHAR = ':';
 }

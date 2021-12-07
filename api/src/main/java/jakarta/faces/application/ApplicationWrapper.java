@@ -167,7 +167,6 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
-    @Deprecated
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType)
             throws ELException
     {
