@@ -77,9 +77,9 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     private transient List<Behavior> unmodifiableBehaviors;
     private transient List<NamedEvent> unmodifiableNamedEvents;
     private transient List<FacesConfigExtension> unmodifiableFacesConfigExtensions;
-    private transient List <FacesFlowDefinition> unmodifiableFacesFlowDefinitions;
-    private transient List <String> unmodifiableProtectedViewsUrlPatternList;
-    private transient List <String> unmodifiableResourceResolvers;
+    private transient List<FacesFlowDefinition> unmodifiableFacesFlowDefinitions;
+    private transient List<String> unmodifiableProtectedViewsUrlPatternList;
+    private transient List<String> unmodifiableResourceResolvers;
     private transient List<FaceletTagLibrary> unmodifiableFaceletTagLibraryList;
     
     private String metadataComplete;
