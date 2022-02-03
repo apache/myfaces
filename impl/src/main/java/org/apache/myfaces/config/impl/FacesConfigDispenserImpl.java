@@ -37,6 +37,7 @@ import org.apache.myfaces.config.element.FacesConfigExtension;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.element.Application;
+import org.apache.myfaces.config.element.Component;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.ContractMapping;
 import org.apache.myfaces.config.element.Converter;
@@ -85,7 +86,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     
     private LocaleConfig localeConfig;
 
-    private Map<String, String> components = new HashMap<>();
+    private Map<String, Component> components = new HashMap<>();
     private Map<String, String> converterByClass = new HashMap<>();
     private Map<String, String> converterById = new HashMap<>();
     private Map<String, String> validators = new HashMap<>();
@@ -201,7 +202,10 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
             searchExpressionContextFactories.addAll(factory.getSearchExpressionContextFactory());
         }
 
-        components.putAll(config.getComponents());
+        for (Component component : config.getComponents())
+        {
+            components.put(component.getComponentType(), component);
+        }
         validators.putAll(config.getValidators());
         behaviors.addAll(config.getBehaviors());
         
@@ -683,18 +687,19 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     }
 
     @Override
-    public Map<String, String> getComponentClassesByType()
+    public Map<String, Component> getComponentsByType()
     {
         return Collections.unmodifiableMap(components);
     }
-        
+
     /**
      * @return component class that belongs to the given component type
      */
     @Override
     public String getComponentClass(String componentType)
     {
-        return components.get(componentType);
+        Component component = components.get(componentType);
+        return component == null ? null : component.getComponentClass();
     }
 
     /**
@@ -888,7 +893,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     }
     
     @Override
-    public Collection<Behavior> getBehaviors ()
+    public Collection<Behavior> getBehaviors()
     {
         if (umbehaviors == null)
         {
@@ -898,7 +903,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     }
     
     @Override
-    public String getFacesVersion ()
+    public String getFacesVersion()
     {
         return facesVersion;
     }

@@ -19,6 +19,9 @@
 package org.apache.myfaces.config.impl.element;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
@@ -27,6 +30,19 @@ public class ComponentImpl extends org.apache.myfaces.config.element.Component i
 {
     private String componentType;
     private String componentClass;
+    private List<org.apache.myfaces.config.element.Property> properties = null;
+    private List<org.apache.myfaces.config.element.Attribute> attributes = null;
+
+    public ComponentImpl()
+    {
+
+    }
+
+    public ComponentImpl(String componentType, String componentClass)
+    {
+        this.componentType = componentType;
+        this.componentClass = componentClass;
+    }
 
     public void setComponentType(String componentType)
     {
@@ -48,5 +64,43 @@ public class ComponentImpl extends org.apache.myfaces.config.element.Component i
     public String getComponentClass()
     {
         return componentClass;
+    }
+
+    public void addProperty(org.apache.myfaces.config.element.Property value)
+    {
+        if (properties == null)
+        {
+            properties = new ArrayList<>();
+        }
+        properties.add(value);
+    }
+
+    @Override
+    public List<? extends org.apache.myfaces.config.element.Property> getProperties()
+    {
+        if (properties == null)
+        {
+            return Collections.emptyList();
+        }
+        return properties;
+    }
+    
+    public void addAttribute(org.apache.myfaces.config.element.Attribute value)
+    {
+        if (attributes == null)
+        {
+            attributes = new ArrayList<>();
+        }
+        attributes.add(value);
+    }
+
+    @Override
+    public List<? extends org.apache.myfaces.config.element.Attribute> getAttributes()
+    {
+        if (attributes == null)
+        {
+            return Collections.emptyList();
+        }
+        return attributes;
     }
 }

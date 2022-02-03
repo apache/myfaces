@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import org.apache.myfaces.config.element.AbsoluteOrdering;
 import org.apache.myfaces.config.element.Application;
 import org.apache.myfaces.config.element.Behavior;
+import org.apache.myfaces.config.element.Component;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.Converter;
 import org.apache.myfaces.config.element.FacesConfigExtension;
@@ -50,7 +51,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
 
     private List<Application> applications;
     private List<Factory> factories;
-    private Map<String, String> components;
+    private List<Component> components;
     private Map<String, ComponentTagDeclaration> componentTagDeclarations;
     private List<Converter> converters;
     private List<NavigationRule> navigationRules;
@@ -67,7 +68,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     
     private transient List<Application> unmodifiableApplications;
     private transient List<Factory> unmodifiableFactories;
-    private transient Map<String, String> unmodifiableComponents;
+    private transient List<Component> unmodifiableComponents;
     private transient Map<String, ComponentTagDeclaration> unmodifiableComponentTagDeclarations;
     private transient List<Converter> unmodifiableConverters;
     private transient List<NavigationRule> unmodifiableNavigationRules;
@@ -109,13 +110,13 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         factories.add(factory);
     }
 
-    public void addComponent(String componentType, String componentClass)
+    public void addComponent(Component component)
     {
         if (components == null)
         {
-            components = new HashMap<>();
+            components = new ArrayList<>();
         }
-        components.put(componentType, componentClass);
+        components.add(component);
     }
     
     public void addComponentTagDeclaration(String componentType, ComponentTagDeclaration tagDeclaration)
@@ -274,15 +275,15 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     }
 
     @Override
-    public Map<String, String> getComponents()
+    public List<Component> getComponents()
     {
         if (components == null)
         {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
         if (unmodifiableComponents == null)
         {
-            unmodifiableComponents = Collections.unmodifiableMap(components);
+            unmodifiableComponents = Collections.unmodifiableList(components);
         }
         return unmodifiableComponents;
     }

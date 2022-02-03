@@ -150,7 +150,7 @@ public abstract class FacesConfigData implements Serializable
     /** @return component class that belongs to the given component type */
     public abstract String getComponentClass(String componentType);
 
-    public abstract Map<String, String> getComponentClassesByType();
+    public abstract Map<String, Component> getComponentsByType();
 
     /** @return Iterator over all defined converter ids */
     public abstract Collection<String> getConverterIds();

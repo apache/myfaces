@@ -121,6 +121,7 @@ import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.component.search.SearchExpressionContextFactoryImpl;
+import org.apache.myfaces.config.element.Component;
 import org.apache.myfaces.config.element.FaceletsTemplateMapping;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
@@ -695,9 +696,9 @@ public class FacesConfigurator
             }
         }
 
-        for (Map.Entry<String, String> entry : dispenser.getComponentClassesByType().entrySet())
+        for (Map.Entry<String, Component> entry : dispenser.getComponentsByType().entrySet())
         {
-            application.addComponent(entry.getKey(), entry.getValue());
+            application.addComponent(entry.getKey(), entry.getValue().getComponentClass());
         }
 
         for (Map.Entry<String, String> entry : dispenser.getConverterClassesById().entrySet())

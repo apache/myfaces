@@ -19,7 +19,7 @@
 package org.apache.myfaces.config.element;
 
 import java.io.Serializable;
-
+import java.util.List;
 
 /**
  * 
@@ -33,4 +33,8 @@ public abstract class Component implements Serializable
     public abstract String getComponentType();
 
     public abstract String getComponentClass();
+
+    public abstract List<? extends Property> getProperties();
+
+    public abstract List<? extends Attribute> getAttributes();
 }

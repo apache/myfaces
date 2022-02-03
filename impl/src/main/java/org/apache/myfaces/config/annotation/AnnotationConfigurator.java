@@ -39,6 +39,7 @@ import jakarta.faces.view.facelets.FaceletsResourceResolver;
 
 import org.apache.myfaces.config.impl.element.ApplicationImpl;
 import org.apache.myfaces.config.impl.element.BehaviorImpl;
+import org.apache.myfaces.config.impl.element.ComponentImpl;
 import org.apache.myfaces.config.impl.element.ComponentTagDeclarationImpl;
 import org.apache.myfaces.config.impl.element.ConverterImpl;
 import org.apache.myfaces.config.impl.element.FacesConfigImpl;
@@ -114,7 +115,7 @@ public class AnnotationConfigurator
                         String simpleName = clazz.getSimpleName();
                         value = Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
                     }
-                    facesConfig.addComponent(value, clazz.getName());
+                    facesConfig.addComponent(new ComponentImpl(value, clazz.getName()));
                     
                     if (comp.createTag())
                     {

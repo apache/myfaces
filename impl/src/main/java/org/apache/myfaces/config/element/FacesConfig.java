@@ -33,7 +33,7 @@ public abstract class FacesConfig implements Serializable
 
     public abstract List<Factory> getFactories();
 
-    public abstract Map<String, String> getComponents();
+    public abstract List<Component> getComponents();
 
     public abstract List<Converter> getConverters();
 

@@ -26,8 +26,8 @@ import java.io.Serializable;
 
 public abstract class Behavior implements Serializable
 {
-    public abstract String getBehaviorId ();
+    public abstract String getBehaviorId();
     
-    public abstract String getBehaviorClass ();
+    public abstract String getBehaviorClass();
     
 }

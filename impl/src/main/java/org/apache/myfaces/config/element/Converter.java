@@ -21,7 +21,6 @@ package org.apache.myfaces.config.element;
 import java.io.Serializable;
 import java.util.List;
 
-
 /**
  * 
  * @author Leonardo Uribe

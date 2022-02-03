@@ -36,6 +36,7 @@ import org.apache.myfaces.config.impl.element.ApplicationImpl;
 import org.apache.myfaces.config.impl.element.AttributeImpl;
 import org.apache.myfaces.config.impl.element.BehaviorImpl;
 import org.apache.myfaces.config.impl.element.ClientBehaviorRendererImpl;
+import org.apache.myfaces.config.impl.element.ComponentImpl;
 import org.apache.myfaces.config.impl.element.ConfigOthersSlotImpl;
 import org.apache.myfaces.config.impl.element.ContractMappingImpl;
 import org.apache.myfaces.config.impl.element.ConverterImpl;
@@ -143,11 +144,8 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
                     (n) -> { facesConfig.addApplication(processApplication(n)); });
             onChild("factory", document.getDocumentElement(), 
                     (n) -> { facesConfig.addFactory(processFactory(n)); });
-            onChild("component", document.getDocumentElement(), (n) -> {
-                facesConfig.addComponent(
-                        firstChildTextContent("component-type", n),
-                        firstChildTextContent("component-class", n));
-            });
+            onChild("component", document.getDocumentElement(),
+                    (n) -> { facesConfig.addComponent(processComponent(n)); });
             onChild("lifecycle", document.getDocumentElement(), (n) -> {
                 onChild("phase-listener", n, (cn) -> {
                     facesConfig.addLifecyclePhaseListener(getTextContent(cn)); 
@@ -401,7 +399,43 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
 
         return obj;
     }
-    
+
+    protected ComponentImpl processComponent(Node node)
+    {
+        ComponentImpl obj = new ComponentImpl();
+
+        onChild("component-type", node, (n) -> { obj.setComponentType(getTextContent(n)); });
+        onChild("component-class", node, (n) -> { obj.setComponentClass(getTextContent(n)); });
+
+        onChild("attribute", node, (n) -> {
+            AttributeImpl a = new AttributeImpl();
+            onChild("description", n, (cn) -> { a.addDescription(getTextContent(cn)); });
+            onChild("display-name", n, (cn) -> { a.addDisplayName(getTextContent(cn)); });
+            onChild("icon", n, (cn) -> { a.addIcon(getTextContent(cn)); });
+            onChild("attribute-name", n, (cn) -> { a.setAttributeName(getTextContent(cn)); });
+            onChild("attribute-class", n, (cn) -> { a.setAttributeClass(getTextContent(cn)); });
+            onChild("default-value", n, (cn) -> { a.setDefaultValue(getTextContent(cn)); });
+            onChild("suggested-value", n, (cn) -> { a.setSuggestedValue(getTextContent(cn)); });
+            onChild("attribute-extension", n, (cn) -> { a.addAttributeExtension(getTextContent(cn)); });
+            obj.addAttribute(a);
+        });
+
+        onChild("property", node, (n) -> {
+            PropertyImpl p = new PropertyImpl();
+            onChild("description", n, (cn) -> { p.addDescription(getTextContent(cn)); });
+            onChild("display-name", n, (cn) -> { p.addDisplayName(getTextContent(cn)); });
+            onChild("icon", n, (cn) -> { p.addIcon(getTextContent(cn)); });
+            onChild("property-name", n, (cn) -> { p.setPropertyName(getTextContent(cn)); });
+            onChild("property-class", n, (cn) -> { p.setPropertyClass(getTextContent(cn)); });
+            onChild("default-value", n, (cn) -> { p.setDefaultValue(getTextContent(cn)); });
+            onChild("suggested-value", n, (cn) -> { p.setSuggestedValue(getTextContent(cn)); });
+            onChild("property-extension", n, (cn) -> { p.addPropertyExtension(getTextContent(cn)); });
+            obj.addProperty(p);
+        });
+
+        return obj;
+    }
+
     protected BehaviorImpl processBehavior(Node node)
     {
         BehaviorImpl obj = new BehaviorImpl();
