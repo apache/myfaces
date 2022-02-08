@@ -99,6 +99,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         outputText.setValue("Output");
         outputText.setStyleClass("myStyleClass");
 
+        outputText.encodeBegin(facesContext);
         outputText.encodeEnd(facesContext);
         facesContext.renderResponse();
 
@@ -117,6 +118,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         outputText.setValue("Output");
         outputText.setEscape(true);
 
+        outputText.encodeBegin(facesContext);
         outputText.encodeEnd(facesContext);
         facesContext.renderResponse();
 
