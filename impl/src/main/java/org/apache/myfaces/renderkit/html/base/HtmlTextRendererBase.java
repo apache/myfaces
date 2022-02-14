@@ -54,6 +54,27 @@ public class HtmlTextRendererBase
     private static final String AUTOCOMPLETE_VALUE_OFF = "off";
 
     @Override
+    public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
+    {
+      RendererUtils.checkParamValidity(facesContext,component,null);
+      
+      Map<String, List<ClientBehavior>> behaviors = null;
+      if (component instanceof ClientBehaviorHolder)
+      {
+          behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+          if (!behaviors.isEmpty())
+          {
+              ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());
+          }
+      }
+      
+      if (component instanceof UIInput)
+      {
+          renderInputBegin(facesContext, component);
+      }
+    }
+
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext,component,null);
@@ -70,7 +91,7 @@ public class HtmlTextRendererBase
         
         if (component instanceof UIInput)
         {
-            renderInput(facesContext, component);
+            renderInputEnd(facesContext, component);
         }
         else if (component instanceof UIOutput)
         {
@@ -175,12 +196,10 @@ public class HtmlTextRendererBase
         return true;
     }
 
+    @Deprecated
     protected void renderInput(FacesContext facesContext, UIComponent component)
         throws IOException
     {
-        //allow subclasses to render custom attributes by separating rendering begin and end 
-        renderInputBegin(facesContext, component);
-        renderInputEnd(facesContext, component);
     }
 
     //Subclasses can set the value of an attribute before, or can render a custom attribute after calling this method

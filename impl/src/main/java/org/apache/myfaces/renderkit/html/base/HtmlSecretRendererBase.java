@@ -49,25 +49,28 @@ public class HtmlSecretRendererBase extends HtmlRenderer
     private static final String AUTOCOMPLETE_VALUE_OFF = "off";
 
     @Override
+    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    {
+      RendererUtils.checkParamValidity(facesContext, uiComponent, UIInput.class);
+
+      ResponseWriter writer = facesContext.getResponseWriter();
+      
+      Map<String, List<ClientBehavior>> behaviors = null;
+      if (uiComponent instanceof ClientBehaviorHolder)
+      {
+          behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+          if (!behaviors.isEmpty())
+          {
+              ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
+          }
+      }
+      //allow subclasses to render custom attributes by separating rendering begin and end
+      renderInputBegin(facesContext, uiComponent);
+    }
+
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
-        RendererUtils.checkParamValidity(facesContext, uiComponent, UIInput.class);
-
-        ResponseWriter writer = facesContext.getResponseWriter();
-        
-        Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder)
-        {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
-            if (!behaviors.isEmpty())
-            {
-                ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
-            }
-        }
-        
-        //allow subclasses to render custom attributes by separating rendering begin and end
-        renderInputBegin(facesContext, uiComponent);
         renderInputEnd(facesContext, uiComponent);
     }
 
