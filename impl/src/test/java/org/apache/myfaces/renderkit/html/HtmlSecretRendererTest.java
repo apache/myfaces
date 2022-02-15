@@ -77,6 +77,7 @@ public class HtmlSecretRendererTest extends AbstractJsfTestCase
 
     public void testInputTextDefault() throws Exception
     {
+        inputText.encodeBegin(facesContext);
         inputText.encodeEnd(facesContext);
         facesContext.renderResponse();
 
