@@ -62,7 +62,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
     private static final String EXTERNAL_TRUE_VALUE = "true";
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
 
@@ -79,8 +79,29 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         {
             Boolean value = RendererUtils.getBooleanValue( uiComponent );
             boolean isChecked = value != null ? value : false;
-            renderCheckbox(facesContext, uiComponent, EXTERNAL_TRUE_VALUE, false,isChecked, true, null); 
+            renderCheckbox(facesContext, uiComponent, EXTERNAL_TRUE_VALUE, false,isChecked, true, null);
             //TODO: the selectBoolean is never disabled
+        }
+        else if (uiComponent instanceof UISelectMany)
+        {
+            // let the current impl do what it does in encodeEnd do nothing here just don't want exception
+            // throw if it is this case
+            log.finest("encodeBegin() doing nothing intentionally for UISelectMany");
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unsupported component class "
+                + uiComponent.getClass().getName());
+        }
+    }
+
+    @Override
+    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    {
+        if (uiComponent instanceof UISelectBoolean)
+        {
+            ResponseWriter writer = facesContext.getResponseWriter();
+            writer.endElement(HTML.INPUT_ELEM);
         }
         else if (uiComponent instanceof UISelectMany)
         {
@@ -460,8 +481,11 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         {
             writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
         }
-        
-        writer.endElement(HTML.INPUT_ELEM);
+
+        if (uiComponent instanceof UISelectMany)
+        {
+            writer.endElement(HTML.INPUT_ELEM);
+        }
 
         return itemId;
     }
