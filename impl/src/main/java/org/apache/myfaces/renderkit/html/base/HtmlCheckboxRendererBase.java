@@ -481,7 +481,6 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         {
             writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
         }
-
         if (uiComponent instanceof UISelectMany)
         {
             writer.endElement(HTML.INPUT_ELEM);
