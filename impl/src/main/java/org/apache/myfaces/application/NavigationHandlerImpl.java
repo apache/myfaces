@@ -934,6 +934,10 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         Set<NavigationCase> casesSet = null;
         NavigationCase navigationCase = null;
         
+        if (flowNavigationStructure == null)
+        {
+            return navigationCase;
+        }
         if (viewId != null)
         {
             casesSet = flowNavigationStructure.getNavigationCases().get(viewId);
