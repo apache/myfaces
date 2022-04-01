@@ -54,7 +54,8 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
     private static final String EXTERNAL_TRUE_VALUE = "true";
 
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
+    @Override
+    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, null);
@@ -78,12 +79,32 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         }
         else if (uiComponent instanceof UISelectMany)
         {
-            renderCheckboxList(facesContext, (UISelectMany) uiComponent);
+            // let the current impl do what it does in encodeEnd do nothing here just don't want exception
+            // throw if it is this case
+            log.finest("encodeBegin() doing nothing intentionally for UISelectMany");
         }
         else
         {
             throw new IllegalArgumentException("Unsupported component class "
                     + uiComponent.getClass().getName());
+        }
+    }
+    
+    @Override
+    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    {
+        if (uiComponent instanceof UISelectBoolean)
+        {
+            ResponseWriter writer = facesContext.getResponseWriter();
+            writer.endElement(HTML.INPUT_ELEM);
+        }
+        else if (uiComponent instanceof UISelectMany)
+        {
+            renderCheckboxList(facesContext, (UISelectMany) uiComponent);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unsupported component class " + uiComponent.getClass().getName());
         }
     }
 
@@ -466,7 +487,10 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
         }
         
-        writer.endElement(HTML.INPUT_ELEM);
+        if (uiComponent instanceof UISelectMany)
+        {
+            writer.endElement(HTML.INPUT_ELEM);
+        }
 
         return itemId;
     }
