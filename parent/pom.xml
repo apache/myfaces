@@ -319,7 +319,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <source>8</source>
+                    <source>${java.version}</source>
                 </configuration>
             </plugin>
             <plugin>
@@ -332,7 +332,7 @@
                     </rulesets>
                     <linkXref>true</linkXref>
                     <minimumTokens>100</minimumTokens>
-                    <targetJdk>1.8</targetJdk>
+                    <targetJdk>${java.version}</targetJdk>
                 </configuration>
                 <reportSets>
                     <reportSet>
