@@ -48,7 +48,7 @@
         <url>https://gitbox.apache.org/repos/asf?p=myfaces.git</url>
         <tag>HEAD</tag>
     </scm>
-
+  
     <modules>
         <module>parent</module>
         <module>api</module>
@@ -57,7 +57,7 @@
         <module>bundle</module>
         <!--
         <module>integration-tests</module>
-	<module>extensions</module>
+        <module>extensions</module>
         -->
     </modules>
 
@@ -245,6 +245,9 @@
     </distributionManagement>
 
     <properties>
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <siteModule.path>core40/module</siteModule.path>
         <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
         <siteContent.path>${user.home}/myfaces-site/site/${siteModule.path}</siteContent.path>
