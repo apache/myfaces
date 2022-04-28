@@ -223,5 +223,9 @@ public class ViewScopeBeanHolder implements Serializable
         } while (storageMap.containsKey(key));
         return key;
     }
-
+    
+    public void removeStorage(String viewScopeId)
+    {
+        storageMap.remove(viewScopeId);
+    }
 }
