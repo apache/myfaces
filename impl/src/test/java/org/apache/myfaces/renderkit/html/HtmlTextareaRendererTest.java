@@ -76,6 +76,7 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
 
     public void testRenderDefault() throws Exception
     {
+        inputTextarea.encodeBegin(facesContext);
         inputTextarea.encodeEnd(facesContext);
         facesContext.renderResponse();
 
@@ -87,6 +88,7 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
     {
         inputTextarea.setCols(5);
         inputTextarea.setRows(10);
+        inputTextarea.encodeBegin(facesContext);
         inputTextarea.encodeEnd(facesContext);
         facesContext.renderResponse();
 
