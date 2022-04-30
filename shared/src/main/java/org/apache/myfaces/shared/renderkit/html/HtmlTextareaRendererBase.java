@@ -40,8 +40,9 @@ public class HtmlTextareaRendererBase
         extends HtmlRenderer
 {
     private static final String ADD_NEW_LINE_AT_START_ATTR = "org.apache.myfaces.addNewLineAtStart";
-    
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
+
+    @Override
+    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIInput.class);
@@ -52,23 +53,20 @@ public class HtmlTextareaRendererBase
             behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             if (!behaviors.isEmpty())
             {
-                ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, 
+                ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext,
                         facesContext.getResponseWriter());
             }
         }
-        
-        encodeTextArea(facesContext, uiComponent);
 
+        renderTextAreaBegin(facesContext, uiComponent);
     }
 
-    protected void encodeTextArea(FacesContext facesContext, UIComponent uiComponent) 
-        throws IOException
+    @Override
+    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
+            throws IOException
     {
-       //allow subclasses to render custom attributes by separating rendering begin and end
-        renderTextAreaBegin(facesContext, uiComponent);
         renderTextAreaValue(facesContext, uiComponent);
         renderTextAreaEnd(facesContext, uiComponent);
-        
     }
 
     //Subclasses can set the value of an attribute before, or can render a custom attribute after calling this method
