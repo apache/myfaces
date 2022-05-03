@@ -2154,7 +2154,7 @@ public class ApplicationImpl extends Application
         if(isProduction && !isCachedList && dependencyList != null)   
         {
             // Note at this point listenerForList cannot be null, but just let dependencyList != null
-            // as a sanity check.
+            // as a verification check.
             _classToResourceDependencyMap.put(inspectedClass, dependencyList);
         }
         
