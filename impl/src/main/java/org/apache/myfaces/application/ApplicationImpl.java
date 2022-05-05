@@ -1795,7 +1795,7 @@ public class ApplicationImpl extends Application
         if(context.isProjectStage(ProjectStage.Production) && !isCachedList)   
         {
             // Note at this point listenerForList cannot be null, but just let this
-            // as a sanity check.
+            // as a verification check.
             if (dependencyList != null)
             {
                 _classToResourceDependencyMap.put(inspectedClass, dependencyList);
@@ -2192,7 +2192,7 @@ public class ApplicationImpl extends Application
         if(isProduction && !isCachedList) //if we're in production and the list is not yet cached, store it
         {
             // Note at this point listenerForList cannot be null, but just let this
-            // as a sanity check.
+            // as a verification check.
             if (listenerForList != null)
             {
                 _classToListenerForMap.put(inspectedClass, listenerForList);
@@ -2341,7 +2341,7 @@ public class ApplicationImpl extends Application
         if(isProduction && !isCachedList)   //if we're in production and the list is not yet cached, store it
         {
             // Note at this point listenerForList cannot be null, but just let this
-            // as a sanity check.
+            // as a verification check.
             if (dependencyList != null)
             {
                 _classToResourceDependencyMap.put(inspectedClass, dependencyList);
