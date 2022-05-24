@@ -27,7 +27,9 @@ import jakarta.el.CompositeELResolver;
 import jakarta.el.ELResolver;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.annotation.FacesConfig;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
+import java.util.stream.Collectors;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
@@ -74,6 +76,18 @@ public class ELResolverBuilder
         {
             resolvers.addAll(runtimeConfig.getApplicationElResolvers());
         }
+    }
+    
+    protected List<ELResolver> wrapELResolvers(List<ELResolver> resolvers)
+    {
+        if (!myfacesConfig.isElResolverTracing() || myfacesConfig.getProjectStage() != ProjectStage.Development)
+        {
+            return resolvers;
+        }
+
+        return resolvers.stream()
+                .map(r -> new TracingELResolverWrapper(r))
+                .collect(Collectors.toList()); 
     }
     
     /**

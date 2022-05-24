@@ -160,9 +160,11 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         // give the user a chance to sort the resolvers
         sortELResolvers(list);
         
+        list = wrapELResolvers(list);
+
         // give the user a chance to filter the resolvers
         Iterable<ELResolver> filteredELResolvers = filterELResolvers(list);
-        
+
         // add the resolvers from the list to the CompositeELResolver
         for (ELResolver resolver : filteredELResolvers)
         {

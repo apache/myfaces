@@ -126,6 +126,7 @@ import org.apache.myfaces.config.element.FaceletsTemplateMapping;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
+import org.apache.myfaces.el.TracingELResolverPhaseListener;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.spi.impl.DefaultSerialFactory;
@@ -1199,6 +1200,11 @@ public class FacesConfigurator
                     && _myfacesConfig.isDebugPhaseListenerEnabled())
             {
                 lifecycle.addPhaseListener(new DebugPhaseListener());
+            }
+            if (facesContext.isProjectStage(ProjectStage.Development)
+                    && _myfacesConfig.isElResolverTracing())
+            {
+                lifecycle.addPhaseListener(new TracingELResolverPhaseListener());
             }
         }
     }

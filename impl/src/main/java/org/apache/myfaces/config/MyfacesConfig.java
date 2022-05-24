@@ -780,6 +780,13 @@ public class MyfacesConfig
     public static final String RESOURCE_BUNDLE_CONTROL = 
             "org.apache.myfaces.RESOURCE_BUNDLE_CONTROL";
     
+    /**
+     * Defines if ELResolvers should be traced on each request and logged. Only active on Development ProjectStage.
+     */
+    @JSFWebConfigParam(name="org.apache.myfaces.EL_RESOLVER_TRACING", since="4.0", defaultValue = "false")
+    public static final String EL_RESOLVER_TRACING = "org.apache.myfaces.EL_RESOLVER_TRACING";
+    public static final boolean EL_RESOLVER_TRACING_DEFAULT = false;
+
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
     private boolean strictJsf2AllowSlashLibraryName;
@@ -858,6 +865,7 @@ public class MyfacesConfig
     private boolean alwaysForceSessionCreation = ALWAYS_FORCE_SESSION_CREATION_DEFAULT;
     private ResourceBundle.Control resourceBundleControl;
     private boolean automaticExtensionlessMapping = AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT;
+    private boolean elResolverTracing = EL_RESOLVER_TRACING_DEFAULT;
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1279,6 +1287,9 @@ public class MyfacesConfig
         cfg.automaticExtensionlessMapping = getBoolean(extCtx, FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME,
                 AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT);
 
+        cfg.elResolverTracing = getBoolean(extCtx, EL_RESOLVER_TRACING,
+                EL_RESOLVER_TRACING_DEFAULT);
+        
         return cfg;
     }
 
@@ -1737,6 +1748,11 @@ public class MyfacesConfig
     public Integer getNumberOfClientWindows()
     {
         return numberOfClientWindows;
+    }
+
+    public boolean isElResolverTracing()
+    {
+        return elResolverTracing;
     }
 }
 
