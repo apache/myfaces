@@ -100,6 +100,7 @@ mvn clean install
 
 Since 2.3-next a Quarkus extension is available. A sample project can be found here: https://github.com/apache/myfaces/blob/master/extensions/quarkus/showcase/
 
+Uber-JARs are not supported by design
 
 ### Differences to a normal servlet container
 - You need to put your views under src/main/resources/META-INF/resources as Quarkus doesn't create a WAR and src/main/webapp is ignored!
