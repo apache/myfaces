@@ -33,7 +33,7 @@
         This project is the home of the MyFaces implementation of the Jakarta Server Faces 3.0 specification, and
         consists of an API module (jakarta.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
     <url>http://myfaces.apache.org/#/core30</url>
 
     <issueManagement>
@@ -45,7 +45,7 @@
         <connection>scm:git:https://gitbox.apache.org/repos/asf/myfaces.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/myfaces.git</developerConnection>
         <url>https://gitbox.apache.org/repos/asf?p=myfaces.git</url>
-      <tag>HEAD</tag>
+      <tag>myfaces-core-module-3.0.2</tag>
   </scm>
 
     <modules>
