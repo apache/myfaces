@@ -102,6 +102,7 @@ public class ClientConfig implements Serializable
             {
                 Cookie cookie = new Cookie(COOKIE_NAME_NOSCRIPT_ENABLED, "" + javaScriptEnabled);
                 cookie.setPath("/"); // for all the server
+                cookie.setAttribute("SameSite", "Strict");
                 HttpServletResponse response = (HttpServletResponse) r;
                 response.addCookie(cookie);
             }
