@@ -1184,6 +1184,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         cookie.setPath(_getCookiePath(externalContext));
         cookie.setSecure(externalContext.isSecure());
         cookie.setHttpOnly(true);
+        cookie.setAttribute("SameSite", "Strict");
         return cookie;
     }
 
