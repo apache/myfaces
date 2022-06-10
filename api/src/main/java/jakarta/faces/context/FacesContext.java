@@ -35,7 +35,7 @@ import jakarta.faces.render.RenderKit;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 public abstract class FacesContext
 {
@@ -93,24 +93,24 @@ public abstract class FacesContext
     /**
      * Return the context within which all EL-expressions are evaluated.
      * <p>
-     * A JSF implementation is expected to provide a full implementation of this class. However JSF also explicitly
+     * A Faces implementation is expected to provide a full implementation of this class. However, Faces also explicitly
      * allows user code to apply the "decorator" pattern to this type, by overriding the FacesContextFactory class. In
      * that pattern, the decorating class has a reference to an "underlying" implementation and forward calls to it,
      * possibly after taking other related actions.
      * <p>
      * The decorator pattern does have difficulties with backwards-compatibility when new methods are added to the class
-     * being decorated, as with this method which was added in JSF1.2. Decorator classes that were written for JSF1.1
-     * will subclass this class, but will not override this method to pass the call on to the "underlying" instance.
+     * being decorated, as with this method which was added in Faces1.2. Decorator classes that were written for Faces
+     * 1.1 will subclass this class, but will not override this method to pass the call on to the "underlying" instance.
      * This base implementation therefore must do that for it.
      * <p>
-     * Unfortunately the JSF designers stuffed up the design; this base class has no way of knowing what the
+     * Unfortunately the Faces designers stuffed up the design; this base class has no way of knowing what the
      * "underlying" instance is! The current implementation here is therefore to delegate directly to the very
      * <i>first</i> FacesContext instance registered within this request (via setCurrentInstance). This instance should
-     * be the "full" implementation provided by the JSF framework. The drawback is that when any decorator class is
+     * be the "full" implementation provided by the Faces framework. The drawback is that when any decorator class is
      * present which defaults to this base implementation, then any following decorator instances that do override this
      * method do not get it invoked.
      * <p>
-     * It is believed that the Sun JSF implementation (Mojarra) does something similar.
+     * It is believed that the Sun Faces implementation (Mojarra) does something similar.
      * 
      * @since 1.2
      */

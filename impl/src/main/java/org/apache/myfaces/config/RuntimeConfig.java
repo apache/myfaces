@@ -86,7 +86,7 @@ public class RuntimeConfig
         new HashMap<>();
     
     /**
-     * JSF 2.2 section 11.4.2.1. 
+     * Faces 2.2 section 11.4.2.1. 
      * 
      * Scanning for all available contracts is necessary because the spec says 
      * "... if the information from the application configuration resources refers 

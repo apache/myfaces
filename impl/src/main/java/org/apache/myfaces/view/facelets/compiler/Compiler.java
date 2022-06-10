@@ -120,7 +120,7 @@ public abstract class Compiler
                     new TagDecorator[this.decorators.size()])));
         }
 
-        // JSF 2.2 has always enabled the default tag decorator.
+        // Faces 2.2 has always enabled the default tag decorator.
         return new BaseTagDecorator(new DefaultTagDecorator());
     }
 

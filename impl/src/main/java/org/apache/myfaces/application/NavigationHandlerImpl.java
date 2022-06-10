@@ -151,7 +151,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                     facesContext.getViewRoot().getViewId();
                 String toViewId = navigationCase.getToViewId(facesContext);
                 // A redirect is required only if the viewId changes. If the viewId
-                // does not change, section 7.4.2 says that a redirect/restart JSF
+                // does not change, section 7.4.2 says that a redirect/restart Faces
                 // lifecycle is not necessary.
                 if (fromViewId == null && toViewId != null)
                 {
@@ -242,7 +242,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                     }
                 }
                 
-                // JSF 2.0 the javadoc of handleNavigation() says something like this 
+                // Faces 2.0 the javadoc of handleNavigation() says something like this 
                 // "...If the view has changed after an application action, call
                 // PartialViewContext.setRenderAll(true)...". The effect is that ajax requests
                 // are included on navigation.
@@ -264,7 +264,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                     processor.disposeView(facesContext, facesContext.getViewRoot());
                 }
                 
-                // JSF 2.0 Spec call Flash.setRedirect(true) to notify Flash scope and take proper actions
+                // Faces 2.0 Spec call Flash.setRedirect(true) to notify Flash scope and take proper actions
                 externalContext.getFlash().setRedirect(true);
                 try
                 {
@@ -282,7 +282,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 //create new view
                 String newViewId = navigationCase.getToViewId(facesContext);
 
-                // JSF 2.0 the javadoc of handleNavigation() says something like this 
+                // Faces 2.0 the javadoc of handleNavigation() says something like this 
                 // "...If the view has changed after an application action, call
                 // PartialViewContext.setRenderAll(true)...". The effect is that ajax requests
                 // are included on navigation.
@@ -515,7 +515,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         {
             FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
             List<Flow> activeFlows = FlowHandlerImpl.getActiveFlows(facesContext, flowHandler);
-            // JSF 2.2 section 7.4.2: "... When outside of a flow, view identifier 
+            // Faces 2.2 section 7.4.2: "... When outside of a flow, view identifier 
             // has the additional possibility of being a flow id.
             Flow targetFlow = calculateTargetFlow(facesContext, outcome, flowHandler, activeFlows, toFlowDocumentId);
             Flow currentFlow = navigationContext.getCurrentFlow(facesContext);
@@ -529,7 +529,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             
             if (currentFlow != null)
             {
-                // JSF 2.2 section 7.4.2: When inside a flow, a view identifier has 
+                // Faces 2.2 section 7.4.2: When inside a flow, a view identifier has 
                 // the additional possibility of being the id of any node within the 
                 // current flow or the id of another flow
                 if (targetFlow != null)
@@ -755,7 +755,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                             navigationCase = getNavigationCaseFromFlowStructure(facesContext, 
                                     flowNavigationStructure, actionToGo, outcomeToGo, viewId);
                             
-                            // JSF 2.2 section 7.4.2 "... any text that references a view identifier, such as 
+                            // Faces 2.2 section 7.4.2 "... any text that references a view identifier, such as 
                             // <from-view-id> or <to-view-id>,
                             // can also refer to a flow node ..."
                             if (navigationCase != null)
@@ -1190,7 +1190,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             String cazeActionRef = caze.getFromAction();
             Boolean cazeIf = caze.getCondition(context);
             boolean ifMatches = cazeIf == null ? false : cazeIf;
-            // JSF 2.0: support conditional navigation via <if>.
+            // Faces 2.0: support conditional navigation via <if>.
             // Use for later cases.
             
             if(outcome == null && (cazeOutcome != null || cazeIf == null) && actionRef == null)

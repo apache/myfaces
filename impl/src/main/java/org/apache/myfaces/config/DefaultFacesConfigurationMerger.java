@@ -48,7 +48,7 @@ import org.apache.myfaces.util.lang.StringUtils;
  * Default impl of the FacesConfigurationMerger-SPI.
  *
  * This impl gets all FacesConfig data from the current FacesConfigurationProvider SPI impl and merges
- * it into one FacesConfigData object using the ordering and sorting rules of the JSF spec.
+ * it into one FacesConfigData object using the ordering and sorting rules of the Faces spec.
  *
  * @author Jakob Korherr
  */
@@ -84,7 +84,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         else
         {
             //assume false if no faces-config.xml was found
-            //metadata-complete can only be specified in faces-config.xml per the JSF 2.0 schema
+            //metadata-complete can only be specified in faces-config.xml per the Faces 2.0 schema
             metadataComplete = false;
         }
 
@@ -104,11 +104,11 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         // faces-config.xml files from jakarta.faces.CONFIG_FILES
         appConfigResources.addAll(facesConfigProvider.getContextSpecifiedFacesConfig(externalContext));
         
-        // JSF 2.2 ApplicationConfigurationResourceDocumentPopulator FacesConfig
+        // Faces 2.2 ApplicationConfigurationResourceDocumentPopulator FacesConfig
         appConfigResources.addAll(facesConfigProvider.
             getApplicationConfigurationResourceDocumentPopulatorFacesConfig(externalContext));
 
-        // JSF 2.2 Faces Flow
+        // Faces 2.2 Faces Flow
         appConfigResources.addAll(facesConfigProvider.getFacesFlowFacesConfig(externalContext));
         
         // apply the ordering and sorting algorithm 

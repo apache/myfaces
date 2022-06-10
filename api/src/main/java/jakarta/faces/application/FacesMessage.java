@@ -107,7 +107,7 @@ public class FacesMessage implements Serializable
         VALUES_MAP = Collections.unmodifiableMap(map);
 
         List<FacesMessage.Severity> severityList = new ArrayList<Severity>(map.values());
-        Collections.sort(severityList); // the JSF spec requires it to be sorted
+        Collections.sort(severityList); // the Faces spec requires it to be sorted
         VALUES = Collections.unmodifiableList(severityList);
     }
 

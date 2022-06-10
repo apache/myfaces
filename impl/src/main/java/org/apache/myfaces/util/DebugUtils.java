@@ -73,7 +73,7 @@ public class DebugUtils
         IGNORE_ATTRIBUTES.add("jakarta.faces.webapp.CURRENT_VIEW_ROOT");
     }
 
-    private static final String JSF_COMPONENT_PACKAGE = "jakarta.faces.component.";
+    private static final String FACES_COMPONENT_PACKAGE = "jakarta.faces.component.";
     private static final String MYFACES_COMPONENT_PACKAGE = "org.apache.myfaces.component.";
 
     private DebugUtils()
@@ -159,9 +159,9 @@ public class DebugUtils
         stream.print('<');
 
         String compType = comp.getClass().getName();
-        if (compType.startsWith(JSF_COMPONENT_PACKAGE))
+        if (compType.startsWith(FACES_COMPONENT_PACKAGE))
         {
-            compType = compType.substring(JSF_COMPONENT_PACKAGE.length());
+            compType = compType.substring(FACES_COMPONENT_PACKAGE.length());
         }
         else if (compType.startsWith(MYFACES_COMPONENT_PACKAGE))
         {

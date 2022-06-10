@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * See JSF 1.2 spec sections 5.6.1.1 and 5.6.2.1
+ * See Faces 1.2 spec sections 5.6.1.1 and 5.6.2.1
  * 
  * @author Stan Silvert
  */
@@ -39,7 +39,7 @@ public class ImplicitObjectResolver extends ELResolver
     private Map<String, ImplicitObject> implicitObjects;
 
     /**
-     * Static factory for an ELResolver for resolving implicit objects in all of Faces. See JSF 1.2 spec section 5.6.1.2
+     * Static factory for an ELResolver for resolving implicit objects in all Faces. See Faces 1.2 spec section 5.6.1.2
      */
     public static ELResolver makeResolver()
     {

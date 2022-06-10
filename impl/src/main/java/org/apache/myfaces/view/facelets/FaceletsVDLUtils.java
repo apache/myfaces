@@ -28,7 +28,7 @@ import java.util.Comparator;
 public class FaceletsVDLUtils
 {
     /**
-     * As specified in JSF 2.2 section 11.4.2.1, note it is different from the
+     * As specified in Faces 2.2 section 11.4.2.1, note it is different from the
      * allowed format in xml url-pattern type.
      * 
      * @param path

@@ -92,9 +92,9 @@ public class DefaultAnnotationProvider extends AnnotationProvider
      * This set contains the annotation names that this AnnotationConfigurator is able to scan
      * in the format that is read from .class file.
      */
-    private static final Set<String> JSF_ANNOTATION_NAMES;
+    private static final Set<String> FACES_ANNOTATION_NAMES;
     
-    private static final Set<Class<? extends Annotation>> JSF_ANNOTATION_CLASSES;
+    private static final Set<Class<? extends Annotation>> FACES_ANNOTATION_CLASSES;
 
     static
     {
@@ -109,7 +109,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         //bcan.add("Ljakarta/faces/event/ListenersFor;");
         bcan.add("Ljakarta/faces/render/FacesBehaviorRenderer;");
         bcan.add("Ljakarta/faces/view/facelets/FaceletsResourceResolver;");
-        JSF_ANNOTATION_NAMES = Collections.unmodifiableSet(bcan);
+        FACES_ANNOTATION_NAMES = Collections.unmodifiableSet(bcan);
 
         Set<Class<? extends Annotation>> ancl = new HashSet<>(10, 1f);
         ancl.add(FacesComponent.class);
@@ -120,7 +120,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         ancl.add(NamedEvent.class);
         ancl.add(FacesBehaviorRenderer.class);
         ancl.add(FaceletsResourceResolver.class);
-        JSF_ANNOTATION_CLASSES = Collections.unmodifiableSet(ancl);
+        FACES_ANNOTATION_CLASSES = Collections.unmodifiableSet(ancl);
     }
 
     public DefaultAnnotationProvider()
@@ -289,9 +289,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
      * <p>Return a list of classes to examine from the specified JAR archive.
      * If this archive has no classes in it, a zero-length list is returned.</p>
      *
-     * @param context <code>ExternalContext</code> instance for
-     *  this application
      * @param jar <code>JarFile</code> for the archive to be scanned
+     * @param list <code>List</code> of classes
      *
      * @exception ClassNotFoundException if a located class cannot be loaded
      */
@@ -327,7 +326,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             {
                 in = new DataInputStream(jar.getInputStream(entry));
                 couldContainAnnotation = ClassByteCodeAnnotationFilter.couldContainAnnotationsOnClassDef(in,
-                        JSF_ANNOTATION_NAMES);
+                        FACES_ANNOTATION_NAMES);
             }
             catch (IOException e)
             {
@@ -455,7 +454,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                     {
                         in = new DataInputStream(externalContext.getResourceAsStream(path));
                         couldContainAnnotation = ClassByteCodeAnnotationFilter.couldContainAnnotationsOnClassDef(in,
-                                JSF_ANNOTATION_NAMES);
+                                FACES_ANNOTATION_NAMES);
                     }
                     catch (IOException e)
                     {
@@ -572,7 +571,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         for (Annotation anno : annotations)
         {
             Class<? extends Annotation> annotationClass = anno.annotationType();
-            if (JSF_ANNOTATION_CLASSES.contains(annotationClass))
+            if (FACES_ANNOTATION_CLASSES.contains(annotationClass))
             {
                 Set<Class<?>> set = map.computeIfAbsent(annotationClass, k -> new HashSet<>());
                 set.add(clazz);

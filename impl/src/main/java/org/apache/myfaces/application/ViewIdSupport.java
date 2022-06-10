@@ -150,7 +150,7 @@ public class ViewIdSupport
                     throw new InvalidViewIdException();
                 }
 
-                // In JSF 2.3 some changes were done in the VDL to avoid the jsp vdl
+                // In Faces 2.3 some changes were done in the VDL to avoid the jsp vdl
                 // RequestDispatcher redirection (only accept viewIds with jsp extension).
                 // If we have this case
                 if (viewId != null && viewId.equals(mapping.getPrefix()))
@@ -204,7 +204,7 @@ public class ViewIdSupport
             builder.append(contextPath);
         }
         
-        // In JSF 2.3 we could have cases where the viewId can be bound to an url-pattern that is not
+        // In Faces 2.3 we could have cases where the viewId can be bound to an url-pattern that is not
         // prefix or suffix, but exact mapping. In this part we need to take the viewId and check if
         // the viewId is bound or not with a mapping.
         if (mapping != null && mapping.isExactMapping())
@@ -242,7 +242,7 @@ public class ViewIdSupport
             }
             else if (mapping.isExtensionMapping())
             {
-                //See JSF 2.0 section 7.5.2 
+                //See Faces 2.0 section 7.5.2 
                 boolean founded = false;
                 for (String contextSuffix : config.getViewSuffix())
                 {
@@ -256,7 +256,7 @@ public class ViewIdSupport
                 }
                 if (!founded)
                 {   
-                    //See JSF 2.0 section 7.5.2
+                    //See Faces 2.0 section 7.5.2
                     // - If the argument viewId has an extension, and this extension is mapping, 
                     // the result is contextPath + viewId
                     //
@@ -295,7 +295,7 @@ public class ViewIdSupport
         }
         
         
-        //JSF 2.2 check view protection.
+        //Faces 2.2 check view protection.
         if (isViewProtected(context, viewId))
         {
             int index = builder.indexOf("?");

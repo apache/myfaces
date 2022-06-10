@@ -33,7 +33,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewDeclarationLanguage;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 public abstract class ViewHandlerWrapper extends ViewHandler
     implements FacesWrapper<ViewHandler>

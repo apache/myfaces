@@ -177,7 +177,7 @@ public class HtmlCheckAttributesUtil
 
     /**
      * Generates an array of basic attributes.
-     * Note that on JSF 2.3 some components don't need onselect attribute.
+     * Note that on Faces 2.3 some components don't need onselect attribute.
      * Please see https://issues.apache.org/jira/browse/MYFACES-4190
      * @param isOnSelectNeeded   A boolean value to check if onselect attribute is needed.
      */
@@ -221,7 +221,7 @@ public class HtmlCheckAttributesUtil
         }
         else
         {
-            // Note that on JSF 2.3, some components don't need onselect attribute
+            // Note that on Faces 2.3, some components don't need onselect attribute
             attrs = new HtmlRenderedAttr[] {
                 //_AccesskeyProperty
                 new HtmlRenderedAttr("accesskey"),

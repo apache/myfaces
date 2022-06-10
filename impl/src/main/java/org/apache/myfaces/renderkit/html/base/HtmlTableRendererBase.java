@@ -46,7 +46,7 @@ import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
  * Common methods for renderers for components that subclass the standard
- * JSF HtmlDataTable component.
+ * Faces HtmlDataTable component.
  */
 public class HtmlTableRendererBase extends HtmlRenderer
 {
@@ -325,7 +325,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
         if (bodyrowsAttr != null && !bodyrowsAttr.isEmpty())
         {   
             String[] bodyrowsString = StringUtils.trim(StringUtils.splitShortString(bodyrowsAttr, ','));
-            // parsing with no exception handling, because of JSF-spec: 
+            // parsing with no exception handling, because of Faces-spec: 
             // "If present, this must be a comma separated list of integers."
             bodyrows = new Integer[bodyrowsString.length];
             for(int i = 0; i < bodyrowsString.length; i++) 
@@ -1239,7 +1239,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
     {
         if (uiComponent instanceof UIColumn)
         {
-            // allow column to override style class, new in JSF 1.2
+            // allow column to override style class, new in Faces 1.2
             if (uiComponent instanceof HtmlColumn)
             {
                 HtmlColumn column = (HtmlColumn)uiComponent;

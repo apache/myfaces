@@ -78,10 +78,10 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
                 //ClassLoaderResourceLoader, so it goes first.
                 String renderedJSFJS = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
                         InternalClassLoaderResourceLoader.MYFACES_JSF_MODE,
-                        ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
+                        ResourceUtils.FACES_MYFACES_JS_NORMAL);
 
                 if (facesContext.isProjectStage(ProjectStage.Development) ||
-                     !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
+                     !renderedJSFJS.equals(ResourceUtils.FACES_MYFACES_JS_NORMAL))
                 {
                     _resourceLoaders = new ResourceLoader[] {
                             new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader('/' +directory)),
@@ -106,10 +106,10 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
                 //ClassLoaderResourceLoader, so it goes first.
                 String renderedJSFJS = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
                         InternalClassLoaderResourceLoader.MYFACES_JSF_MODE,
-                        ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
+                        ResourceUtils.FACES_MYFACES_JS_NORMAL);
 
                 if (facesContext.isProjectStage(ProjectStage.Development) ||
-                     !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
+                     !renderedJSFJS.equals(ResourceUtils.FACES_MYFACES_JS_NORMAL))
                 {
                     _resourceLoaders = new ResourceLoader[] {
                             new ExternalContextResourceLoader('/' +directory),

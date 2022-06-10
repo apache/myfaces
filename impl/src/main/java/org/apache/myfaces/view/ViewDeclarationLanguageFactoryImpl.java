@@ -27,7 +27,7 @@ import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy;
 
 /**
- * This is the default VDL factory used as of JSF 2.0, it tries to use Facelet VDL whenever possible.
+ * This is the default VDL factory used as of Faces 2.0, it tries to use Facelet VDL whenever possible.
  * 
  * @author Simon Lessard (latest modification by $Author$)
  * @version $Revision$ $Date$

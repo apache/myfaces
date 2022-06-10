@@ -51,7 +51,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 public final class FactoryFinder
 {
@@ -171,7 +171,7 @@ public final class FactoryFinder
      * </p>
      * 
      * <p>
-     * The standard factories and wrappers in JSF all implement the interface {@link FacesWrapper}. If the returned
+     * The standard factories and wrappers in Faces all implement the interface {@link FacesWrapper}. If the returned
      * <code>Object</code> is an implementation of one of the standard factories, it must be legal to cast it to an
      * instance of <code>FacesWrapper</code> and call {@link FacesWrapper#getWrapped()} on the instance.
      * </p>

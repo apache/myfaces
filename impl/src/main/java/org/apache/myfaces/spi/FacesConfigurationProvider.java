@@ -25,7 +25,7 @@ import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.config.element.FacesConfig;
 
 /**
- * This interface provide a way to merge and store all JSF config information retrieved
+ * This interface provide a way to merge and store all Faces config information retrieved
  * from faces-config files, META-INF/service files and annotations that works as base
  * point to initialize MyFaces. The objective is allow server containers to "store" or
  * this information, preventing calculate it over and over each time the web application
@@ -50,7 +50,8 @@ public abstract class FacesConfigurationProvider
     public abstract FacesConfig getStandardFacesConfig(ExternalContext ectx);
     
     /**
-     * Return the FacesConfig object model retrieved from locate all JSF factories from META-INF/services/[factory_key].
+     * Return the FacesConfig object model retrieved from locating all Faces factories from
+     * META-INF/services/[factory_key].
      * 
      * The default implementation uses ServiceProviderFinder facilities to locate this SPI interfaces.
      * 
@@ -95,7 +96,7 @@ public abstract class FacesConfigurationProvider
     
     /**
      * Return the FacesConfig object model retrieved from a folder with a faces flow definition
-     * See JSF 2.2 section 11.4.3.3 and section 7.5.1
+     * See Faces 2.2 section 11.4.3.3 and section 7.5.1
      * 
      * @param ectx
      * @return 

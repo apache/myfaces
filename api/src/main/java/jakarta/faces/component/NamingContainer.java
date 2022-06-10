@@ -22,7 +22,7 @@ package jakarta.faces.component;
  * Interface implemented by components that provide a new "namespace" for the ids of their
  * child components.
  * <p>
- * Component ids must be unique between all descendants of a NamingContainer; the JSF library
+ * Component ids must be unique between all descendants of a NamingContainer; the Faces library
  * will report a fatal error and refuse to process or render any view where two components
  * in the same NamingContainer have identical id values. However a component that is a descendant
  * of one NamingContainer component is permitted to have the same id as a component that is a
@@ -38,8 +38,8 @@ package jakarta.faces.component;
  * <p>
  * Requiring every component in a large view (which is possibly built by including or
  * composing multiple files together) to have an id which is different from every other id
- * is simply unmanageable; JSF certainly must provide <i>some</i> kind of id namespacing.
- * Therefore this base class is defined, and a few standard JSF components subclass it
+ * is simply unmanageable; Faces certainly must provide <i>some</i> kind of id namespacing.
+ * Therefore this base class is defined, and a few standard Faces components subclass it
  * (in particular, f:subview).
  * <p>
  * When generating clientId values during rendering, descendants of a NamingContainer instance
@@ -51,7 +51,7 @@ package jakarta.faces.component;
  * values generated would quickly grow excessively long.
  * <p>
  * See the javadoc for this class in the 
- * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  * for further details.
  */
 public interface NamingContainer

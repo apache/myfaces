@@ -82,7 +82,7 @@ public class HTML5FaceletsProcessingTestCase extends FaceletTestCase {
     {
         super.setUpExternalContext();
         
-        // In JSF 2.2 xhtml default is html5
+        // In Faces 2.2 xhtml default is html5
         /*FaceletsProcessing item = new FaceletsProcessing();
         item.setFileExtension(".xhtml");
         item.setProcessAs(FaceletsProcessing.PROCESS_AS_HTML5);

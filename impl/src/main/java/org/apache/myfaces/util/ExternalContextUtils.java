@@ -29,10 +29,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This provides some functionality for determining some things about the
- * native request object that is not provided by JSF.  This class is useful
+ * native request object that is not provided by Faces.  This class is useful
  * for use in places where Portlet API's may or may not be present and can
  * also provide access to some request-specific items which are not available on
- * the JSF ExternalContext.  If portlet API's are not present, this class simply 
+ * the Faces ExternalContext.  If portlet API's are not present, this class simply 
  * handles the Servlet Request type.
  */
 public final class ExternalContextUtils

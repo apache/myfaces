@@ -34,7 +34,7 @@ public class FacesArtifactProducerExtension implements Extension
     <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> event, BeanManager beanManager)
     {
         FacesConfig facesConfig = event.getAnnotatedType().getAnnotation(FacesConfig.class);
-        if (facesConfig != null && facesConfig.version() == FacesConfig.Version.JSF_2_3)
+        if (facesConfig != null && facesConfig.version() == FacesConfig.Version.FACES_2_3)
         {
             registerCdiProducers = true;
         }

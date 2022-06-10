@@ -41,7 +41,7 @@ import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentBeanInfo;
 
 /**
- * Composite component attribute EL resolver.  See JSF spec, section 5.6.2.2.
+ * Composite component attribute EL resolver.  See Faces spec, section 5.6.2.2.
  */
 
 public final class CompositeComponentELResolver extends ELResolver
@@ -94,7 +94,7 @@ public final class CompositeComponentELResolver extends ELResolver
 
             if (!myfacesConfig.isStrictJsf2CCELResolver())
             {
-                // handle JSF 2.2 spec revisions:
+                // handle Faces 2.2 spec revisions:
                 // code resembles that found in Mojarra because it originates from
                 // the same contributor, whose ICLA is on file
                 Class<?> exprType = null;

@@ -22,7 +22,7 @@ package jakarta.faces.application;
 import jakarta.faces.FacesException;
 
 /**
- * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 public class ViewExpiredException extends FacesException
 {

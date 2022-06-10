@@ -35,12 +35,12 @@ import jakarta.inject.Qualifier;
 public @interface FacesConfig
 {
     @Deprecated(forRemoval = true, since = "4.0")
-    @Nonbinding Version version() default Version.JSF_2_3;
+    @Nonbinding Version version() default Version.FACES_2_3;
 
     @Deprecated(forRemoval = true, since = "4.0")
     public static enum Version 
     {
-        JSF_2_3
+        FACES_2_3
     }
     
     public static final class Literal extends AnnotationLiteral<FacesConfig> implements FacesConfig

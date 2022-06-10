@@ -67,7 +67,7 @@ abstract class _HtmlSelectOneListbox extends UISelectOne implements
     "jakarta.faces.HtmlSelectOneListbox";
 
   /**
-   * see JSF Spec.
+   * see Faces Spec.
    * 
    * @JSFProperty
    *   defaultValue="Integer.MIN_VALUE"

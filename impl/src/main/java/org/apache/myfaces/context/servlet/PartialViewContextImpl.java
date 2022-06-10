@@ -462,7 +462,7 @@ public class PartialViewContextImpl extends PartialViewContext
                     }
                     else
                     {
-                        // In JSF 2.3 it was added jakarta.faces.Resource as an update target to add scripts or
+                        // In Faces 2.3 it was added jakarta.faces.Resource as an update target to add scripts or
                         // stylesheets inside <head> tag
                         
                         List<UIComponent> updatedComponents = new ArrayList<>();

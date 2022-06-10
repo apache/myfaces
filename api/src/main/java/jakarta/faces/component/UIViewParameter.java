@@ -45,7 +45,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * TODO: documentation on jsp and pld are not the same. It appear two
  * params: maxlength and for, but no property getter and setter founded here. 
  * If maxlength is used, we can put something like this: 
- * JSFJspProperty(name = "maxlength", returnType = "java.lang.String")
+ * FacesJspProperty(name = "maxlength", returnType = "java.lang.String")
  * 
  * @since 2.0
  */

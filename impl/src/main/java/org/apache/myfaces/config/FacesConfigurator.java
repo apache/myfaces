@@ -407,7 +407,7 @@ public class FacesConfigurator
                 {
                     configure();
                     
-                    // JSF 2.0 Publish PostConstructApplicationEvent after all configuration resources
+                    // Faces 2.0 Publish PostConstructApplicationEvent after all configuration resources
                     // has been parsed and processed
                     FacesContext facesContext = getFacesContext();
                     Application application = facesContext.getApplication();
@@ -533,7 +533,7 @@ public class FacesConfigurator
                                 + FacesServlet.CONFIG_FILES_ATTR
                                 + " context parameter of "
                                 + "the deployment descriptor. This will automatically be removed, "
-                                + "if we wouldn't do this, it would be loaded twice.  See JSF spec 1.1, 10.3.2");
+                                + "if we wouldn't do this, it would be loaded twice.  See Faces spec 1.1, 10.3.2");
                     }
                 }
                 else
@@ -781,7 +781,7 @@ public class FacesConfigurator
             application.addBehavior(behavior.getBehaviorId(), behavior.getBehaviorClass());
         }
         
-        //JSF 2.2 set FlowHandler from factory. 
+        //Faces 2.2 set FlowHandler from factory. 
         FlowHandlerFactory flowHandlerFactory = (FlowHandlerFactory) 
             FactoryFinder.getFactory(FactoryFinder.FLOW_HANDLER_FACTORY);
         FlowHandler flowHandler = flowHandlerFactory.createFlowHandler(
@@ -967,7 +967,7 @@ public class FacesConfigurator
         
         try
         {
-            // JSF 2.2 section 11.4.2.1 scan for available resource library contracts
+            // Faces 2.2 section 11.4.2.1 scan for available resource library contracts
             // and store the result in a internal data structure, so it can be used 
             // later in ViewDeclarationLanguage.calculateResourceLibraryContracts(
             //   FacesContext context, String viewId)
@@ -986,7 +986,7 @@ public class FacesConfigurator
         }
         
         
-        // JSF 2.2 section 11.4.2.1 check all contracts are loaded
+        // Faces 2.2 section 11.4.2.1 check all contracts are loaded
         if (log.isLoggable(Level.INFO))
         {
             for (List<String> list : runtimeConfig.getContractMappings().values())
@@ -1003,7 +1003,7 @@ public class FacesConfigurator
             }
         }
         
-        // JSF 2.2 section 11.4.2.1 if no contractMappings set, all available contracts applies
+        // Faces 2.2 section 11.4.2.1 if no contractMappings set, all available contracts applies
         // to all views.
         if (runtimeConfig.getContractMappings().isEmpty())
         {

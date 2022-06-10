@@ -29,8 +29,8 @@ import jakarta.faces.context.FacesContext;
 /**
  * This class is used as a double wrapper for NavigationHandler
  * and ConfigurableNavigationHandler to be backwards compatible
- * to the pre JSF 2.0 NavigationHandlers which are not 
- * ConfigurableNavigationHandlers (since JSF 2.0 the standard
+ * to the pre Faces 2.0 NavigationHandlers which are not 
+ * ConfigurableNavigationHandlers (since Faces 2.0 the standard
  * NavigationHandler implementation has to inherit from
  * ConfigurableNavigationHandler).
  * 

@@ -22,7 +22,7 @@ import java.util.List;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 public class ListDataModel<E> extends DataModel<E>
 {

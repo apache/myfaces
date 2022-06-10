@@ -30,9 +30,9 @@ public final class JstlCoreLibrary extends AbstractTagLibrary
     public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsp/jstl/core";
     public final static String SUN_NAMESPACE = "http://java.sun.com/jsp/jstl/core";
 
-    // This namespace was used in the early stages of JSF 2.0 development, but later
+    // This namespace was used in the early stages of Faces 2.0 development, but later
     // it was fixed to use the same syntax for jsp. But some applications still
-    // uses the old syntax and it is too hard to fix them, so in JSF 2.2 it was 
+    // uses the old syntax and it is too hard to fix them, so in Faces 2.2 it was 
     // decided to add this namespace as an alternative synonym.
     public final static String ALTERNATIVE_NAMESPACE = "http://java.sun.com/jstl/core";
 

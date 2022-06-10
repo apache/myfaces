@@ -46,7 +46,7 @@ import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper;
  * Some of the behaviours of this class don't really comply with the
  * definitions of the Map class; for example the key parameter to all
  * methods is required to be of type String only, and after clear(),
- * calls to get can return non-null values. However the JSF spec
+ * calls to get can return non-null values. However the Faces spec
  * requires that this class behave in the way implemented below. See
  * UIComponent.getAttributes for more details.
  * </p>
@@ -198,7 +198,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 if (!_isCompositeComponentSet)
                 {
                     // Note we are not setting _isCompositeComponentSet, because when the component tree is built
-                    // using JSF 1.2 state saving, PostAddToViewEvent is propagated and the component is check 
+                    // using Faces 1.2 state saving, PostAddToViewEvent is propagated and the component is check 
                     // if is a composite component, but the state is not restored, so the check return always
                     // false. A check for processing events was added to prevent that scenario, but anyway that 
                     // makes invalid set _isCompositeComponentSet to true on this location.

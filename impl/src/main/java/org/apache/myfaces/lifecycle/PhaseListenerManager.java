@@ -30,7 +30,7 @@ import jakarta.faces.event.PhaseListener;
 import jakarta.faces.lifecycle.Lifecycle;
 
 /**
- * This class encapsulates the logic used to call PhaseListeners. It was needed because of issue 9 of the JSF 1.2 spec.
+ * This class encapsulates the logic used to call PhaseListeners. It was needed because of issue 9 of Faces 1.2 spec.
  * See section 11.3 for more details.
  * 
  * @author Stan Silvert
@@ -82,7 +82,7 @@ class PhaseListenerManager
                 {
                     beforePhaseSuccess[i] = false; // redundant - for clarity
                     
-                    // JSF 2.0: publish exceptions instead of logging them.
+                    // Faces 2.0: publish exceptions instead of logging them.
                     
                     publishException (e, phaseId, ExceptionQueuedEventContext.IN_BEFORE_PHASE_KEY);
                     
@@ -119,7 +119,7 @@ class PhaseListenerManager
                 }
                 catch (Throwable e)
                 {
-                    // JSF 2.0: publish exceptions instead of logging them.
+                    // Faces 2.0: publish exceptions instead of logging them.
                     
                     publishException(e, phaseId, ExceptionQueuedEventContext.IN_AFTER_PHASE_KEY);
                 }

@@ -27,7 +27,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * Displays a graphical image.
  * <p>
  * See the javadoc for this class in the
- * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  * for further details.
  */
 @JSFComponent(defaultRendererType = "jakarta.faces.Image")

@@ -19,8 +19,8 @@
 package org.apache.myfaces.spi;
 
 /**
- * Provide an interface to inject JSF artifacts using JavaEE annotations
- * as described in JSF 2.2 spec section 5.4 
+ * Provide an interface to inject Faces artifacts using JavaEE annotations
+ * as described in Faces 2.2 spec section 5.4 
  *
  * @author Leonardo Uribe
  */

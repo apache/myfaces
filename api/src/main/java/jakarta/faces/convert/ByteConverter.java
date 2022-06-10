@@ -26,7 +26,7 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @JSFConverter
 public class ByteConverter implements Converter

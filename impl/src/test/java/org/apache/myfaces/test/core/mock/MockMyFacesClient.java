@@ -45,7 +45,7 @@ import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.junit.Assert;
 
 /**
- * Client that keep track and "translate" the commands done in a JSF component.
+ * Client that keep track and "translate" the commands done in a Faces component.
  * It simulates the effect of a browser, but without execute any javascript
  * or check the html output. If that level of detail is required, use an
  * in-container alternative like Arquillian and others. This strategy is designed

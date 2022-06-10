@@ -27,7 +27,7 @@ import jakarta.servlet.ServletResponseWrapper;
 
 /**
  * Implementation of a switching response wrapper to turn 
- * output on and off according to the JSF spec 2.0.
+ * output on and off according to the Faces spec 2.0.
  * <p>
  * Fall-back implementation of HttpServletResponseSwitch
  * for non HttpServletResponses.</p>

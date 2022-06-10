@@ -22,7 +22,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseId;
 
 /**
- * Implements the process validations phase (JSF Spec 2.2.3)
+ * Implements the process validations phase (Faces Spec 2.2.3)
  * 
  * @author Nikolay Petrov (latest modification by $Author$)
  * @version $Revision$ $Date$

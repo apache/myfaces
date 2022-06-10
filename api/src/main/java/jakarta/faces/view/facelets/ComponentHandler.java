@@ -21,8 +21,8 @@ package jakarta.faces.view.facelets;
 import jakarta.faces.component.UIComponent;
 
 /**
- * Implementation of the tag logic used in the JSF specification. This is your golden hammer for wiring UIComponents to
- * Facelets.
+ * Implementation of the tag logic used in the Faces specification. This is your golden hammer for wiring UIComponents
+ * to Facelets.
  */
 public class ComponentHandler extends DelegatingMetaTagHandler
 {

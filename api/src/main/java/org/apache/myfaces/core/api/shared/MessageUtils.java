@@ -180,7 +180,7 @@ public class MessageUtils
         
         try
         {
-            //First we try the JSF implementation class loader
+            //First we try the Faces implementation class loader
             if (bundleControl == null)
             {
                 return ResourceBundle.getBundle(bundleName,
@@ -198,7 +198,7 @@ public class MessageUtils
         {
             try
             {
-                //Next we try the JSF API class loader
+                //Next we try the Faces API class loader
                 if (bundleControl == null)
                 {
                     return ResourceBundle.getBundle(bundleName,

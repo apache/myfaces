@@ -29,7 +29,7 @@ import java.util.Set;
 import jakarta.faces.lifecycle.ClientWindow;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 public abstract class ExternalContext
 {
@@ -184,7 +184,7 @@ public abstract class ExternalContext
     public abstract Map<String,String> getInitParameterMap();
 
     /**
-     * @since JSF 2.0
+     * @since Faces 2.0
      */
     public String getMimeType(String file)
     {
@@ -199,7 +199,7 @@ public abstract class ExternalContext
     }
 
     /**
-     * @since JSF 2.0
+     * @since Faces 2.0
      */
     public String getRealPath(String path)
     {
@@ -282,7 +282,7 @@ public abstract class ExternalContext
     public abstract String getRequestPathInfo();
 
     /**
-     * @since JSF 2.0
+     * @since Faces 2.0
      */
     public String getRequestScheme()
     {
@@ -297,7 +297,7 @@ public abstract class ExternalContext
     }
 
     /**
-     * @since JSF 2.0
+     * @since Faces 2.0
      */
     public String getRequestServerName()
     {
@@ -312,7 +312,7 @@ public abstract class ExternalContext
     }
 
     /**
-     * @since JSF 2.0
+     * @since Faces 2.0
      */
     public int getRequestServerPort()
     {
@@ -360,7 +360,7 @@ public abstract class ExternalContext
         
         if (ctx == null)
         {
-            throw new UnsupportedOperationException("JSF 1.2 : figure out how to tell if this is a Portlet request");
+            throw new UnsupportedOperationException("Faces 1.2 : figure out how to tell if this is a Portlet request");
         }
         
         return ctx.getResponseCharacterEncoding();
@@ -369,7 +369,7 @@ public abstract class ExternalContext
     /**
      * throws <code>UnsupportedOperationException</code> by default.
      *
-     * @since JSF 1.2
+     * @since Faces 1.2
      */
     public String getResponseContentType()
     {
@@ -384,7 +384,7 @@ public abstract class ExternalContext
     }
 
     /**
-     * @since JSF 2.0
+     * @since Faces 2.0
      */
     public OutputStream getResponseOutputStream() throws IOException
     {
@@ -399,7 +399,7 @@ public abstract class ExternalContext
     }
 
     /**
-     * @since JSF 2.0
+     * @since Faces 2.0
      */
     public Writer getResponseOutputWriter() throws IOException
     {
@@ -520,7 +520,7 @@ public abstract class ExternalContext
     /**
      * throws <code>UnsupportedOperationException</code> by default.
      *
-     * @since JSF 1.2
+     * @since Faces 1.2
      * @param request
      */
     public void setRequest(Object request)
@@ -538,7 +538,7 @@ public abstract class ExternalContext
     /**
      * throws <code>UnsupportedOperationException</code> by default.
      *
-     * @since JSF 1.2
+     * @since Faces 1.2
      * @param encoding
      * @throws java.io.UnsupportedEncodingException
      */
@@ -558,7 +558,7 @@ public abstract class ExternalContext
     /**
      * throws <code>UnsupportedOperationException</code> by default.
      *
-     * @since JSF 1.2
+     * @since Faces 1.2
      * @param response
      */
     public void setResponse(Object response)
@@ -594,7 +594,7 @@ public abstract class ExternalContext
     /**
      * throws <code>UnsupportedOperationException</code> by default.
      *
-     * @since JSF 1.2
+     * @since Faces 1.2
      * @param encoding
      */
     public void setResponseCharacterEncoding(String encoding)

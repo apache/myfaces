@@ -211,7 +211,7 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
         
         for (FacesFlowDefinition facesFlowDefinition : config.getFacesFlowDefinitions())
         {
-            // JSF 2.2 section 11.4.3.1 says this: "... Flows are defined using the 
+            // Faces 2.2 section 11.4.3.1 says this: "... Flows are defined using the 
             // <flow-definition> element. This element must have an id attribute which uniquely 
             // identifies the flow within the scope of the Application Configuration Resource 
             // file in which the element appears. To enable multiple flows with the same id to 

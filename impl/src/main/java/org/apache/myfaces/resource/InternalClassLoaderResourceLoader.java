@@ -73,7 +73,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                     USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS, false);
 
         _jsfMode = WebConfigParamUtils.getStringInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
-                    MYFACES_JSF_MODE, ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
+                    MYFACES_JSF_MODE, ResourceUtils.FACES_MYFACES_JS_NORMAL);
         _developmentStage = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
     }
 
@@ -177,14 +177,14 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                                                      ResourceUtils.FACES_UNCOMPRESSED_FULL_JS_RESOURCE_NAME, false);
                 }
             }
-            else if (_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_MINIMAL) )
+            else if (_jsfMode.equals(ResourceUtils.FACES_MYFACES_JS_MINIMAL) )
             {
                 return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
                         ResourceUtils.FACES_MINIMAL_JS_RESOURCE_NAME, false);
             }
             return null;
         }
-        else if (jakartaFacesLib && !_developmentStage && !_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL) &&
+        else if (jakartaFacesLib && !_developmentStage && !_jsfMode.equals(ResourceUtils.FACES_MYFACES_JS_NORMAL) &&
                                    (ResourceUtils.FACES_MYFACES_JSFJS_I18N.equals(resourceName)))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);

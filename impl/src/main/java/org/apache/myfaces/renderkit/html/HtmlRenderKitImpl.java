@@ -189,7 +189,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
     }
     
     /**
-     * @since JSF 2.0
+     * @since Faces 2.0
      */
     @Override
     public Iterator<String> getComponentFamilies()
@@ -199,7 +199,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
     }
     
     /**
-     * @since JSF 2.0
+     * @since Faces 2.0
      */
     @Override
     public Iterator<String> getRendererTypes(String componentFamily)

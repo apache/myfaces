@@ -167,7 +167,7 @@ public class ELResolverBuilder
                 {
                     return false;
                 }
-                else if (version.ordinal() >= FacesConfig.Version.JSF_2_3.ordinal())
+                else if (version.ordinal() >= FacesConfig.Version.FACES_2_3.ordinal())
                 {
                     return true;
                 }

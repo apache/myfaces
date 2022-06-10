@@ -99,7 +99,7 @@ public class FacesInitializerImpl implements FacesInitializer
     private static final byte FACES_INIT_PHASE_POSTDESTROY = 3;
     
     /**
-     * Performs all necessary initialization tasks like configuring this JSF
+     * Performs all necessary initialization tasks like configuring this Faces
      * application.
      * 
      * @param servletContext The current {@link ServletContext}
@@ -129,7 +129,7 @@ public class FacesInitializerImpl implements FacesInitializer
             // by using an ExternalContext. However, that's no problem as long as no 
             // one tries to call methods depending on either the ServletRequest or 
             // the ServletResponse.
-            // JSF 2.0: FacesInitializer now has some new methods to
+            // Faces 2.0: FacesInitializer now has some new methods to
             // use proper startup FacesContext and ExternalContext instances.
             FacesContext facesContext = initStartupFacesContext(servletContext);
             ExternalContext externalContext = facesContext.getExternalContext();
@@ -369,7 +369,7 @@ public class FacesInitializerImpl implements FacesInitializer
     }
 
     /**
-     * Configures this JSF application. It's required that every
+     * Configures this Faces application. It's required that every
      * FacesInitializer (i.e. every subclass) calls this method during
      * initialization.
      *

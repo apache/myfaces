@@ -53,7 +53,7 @@ abstract class _UISelectItems extends UIComponentBase
      * Disable this property; although this class extends a base-class that
      * defines a read/write rendered property, this particular subclass
      * does not support setting it. Yes, this is broken OO design: direct
-     * all complaints to the JSF spec group.
+     * all complaints to the Faces spec group.
      */
     @JSFExclude
     @JSFProperty(tagExcluded=true)
@@ -162,7 +162,7 @@ abstract class _UISelectItems extends UIComponentBase
     
     /**
      * Determines if the rendered markup for the current item receives
-     * normal JSF HTML escaping or not.
+     * normal Faces HTML escaping or not.
      * 
      * @since 2.0
      * @return
