@@ -22,7 +22,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseId;
 
 /**
- * Implements the update model values phase (JSF Spec 2.2.4)
+ * Implements the update model values phase (Faces Spec 2.2.4)
  * 
  * @author Nikolay Petrov (latest modification by $Author$)
  * @version $Revision$ $Date$

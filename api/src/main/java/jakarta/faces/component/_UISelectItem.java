@@ -44,7 +44,7 @@ abstract class _UISelectItem extends UIComponentBase
 
     /**
      * Disable this property; although this class extends a base-class that defines a read/write rendered property, this
-     * particular subclass does not support setting it. Yes, this is broken OO design: direct all complaints to the JSF
+     * particular subclass does not support setting it. Yes, this is broken OO design: direct all complaints to the Faces
      * spec group.
      */
     @Override

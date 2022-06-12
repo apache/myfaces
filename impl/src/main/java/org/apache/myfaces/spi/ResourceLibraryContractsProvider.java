@@ -25,7 +25,7 @@ import jakarta.faces.context.ExternalContext;
 
 /**
  * Locate resource library contracts, implementing the behavior described in 
- * JSF 2.2 section 11.4.2.1 related to discover the available resource library
+ * Faces 2.2 section 11.4.2.1 related to discover the available resource library
  * contracts.
  * 
  * @since 2.0.2

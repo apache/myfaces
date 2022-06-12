@@ -173,7 +173,7 @@ public class AbstractJsfTestContainer
         // Set up Servlet API Objects
         setUpServletObjects();
 
-        // Set up JSF API Objects
+        // Set up Faces API Objects
         FactoryFinder.releaseFactories();
 
         setUpServletListeners();
@@ -186,7 +186,7 @@ public class AbstractJsfTestContainer
     }
     
     /**
-     * Set up the thread context classloader. JSF uses the this classloader
+     * Set up the thread context classloader. Faces uses the this classloader
      * in order to find related factory classes and other resources, but in
      * some selected cases, the default classloader cannot be properly set.
      * 
@@ -918,7 +918,7 @@ public class AbstractJsfTestContainer
             
             catch (Throwable e)
             {
-                // JSF 2.0: publish the executor's exception (if any).
+                // Faces 2.0: publish the executor's exception (if any).
                 ExceptionQueuedEventContext context = new ExceptionQueuedEventContext (
                     facesContext, e, null, PhaseId.RENDER_RESPONSE);
                 facesContext.getApplication().publishEvent (facesContext, ExceptionQueuedEvent.class, context);

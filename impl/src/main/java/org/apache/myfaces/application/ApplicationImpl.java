@@ -1065,7 +1065,7 @@ public class ApplicationImpl extends Application
          * Obtain a reference to the composite component metadata for this composite component by calling
          * ViewDeclarationLanguage.getComponentMetadata(jakarta.faces.context.FacesContext,
          * jakarta.faces.application.Resource), passing the facesContext and componentResource arguments to this method.
-         * This version of JSF specification uses JavaBeans as the API to the component metadata.
+         * This version of Faces specification uses JavaBeans as the API to the component metadata.
          */
         BeanInfo metadata = vdl.getComponentMetadata(context, componentResource);
         if (metadata == null)
@@ -1097,7 +1097,7 @@ public class ApplicationImpl extends Application
              * Otherwise, determine if a script based component for this Resource can be found by calling
              * ViewDeclarationLanguage.getScriptComponentResource(jakarta.faces.context.FacesContext,
              * jakarta.faces.application.Resource). If the result is non-null, and is a script written in one of the
-             * languages listed in JSF 4.3 of the specification prose document, create a UIComponent instance from the
+             * languages listed in Faces 4.3 of the specification prose document, create a UIComponent instance from the
              * script resource.
              */
             resource = vdl.getScriptComponentResource(context, componentResource);
@@ -1304,13 +1304,13 @@ public class ApplicationImpl extends Application
      * Class converterClass) method on this class. Here the the appropriate Class definition is found, then an instance
      * is created and returned.
      * <p>
-     * A converter registered via a config file can have any number of nested attribute or property tags. The JSF
+     * A converter registered via a config file can have any number of nested attribute or property tags. The Faces
      * specification is very vague about what effect these nested tags have. This method ignores nested attribute
      * definitions, but for each nested property tag the corresponding setter is invoked on the new Converter instance
      * passing the property's defaultValuer. Basic typeconversion is done so the target properties on the Converter
      * instance can be String, int, boolean, etc. Note that:
      * <ol>
-     * <li>the Sun Mojarra JSF implemenation ignores nested property tags completely, so this behaviour cannot be 
+     * <li>the Sun Mojarra Faces implemenation ignores nested property tags completely, so this behaviour cannot be 
      * relied on across implementations.
      * <li>there is no equivalent functionality for converter classes registered via the Application.addConverter api
      * method.
@@ -1477,7 +1477,7 @@ public class ApplicationImpl extends Application
                         try
                         {
                             // look for a constructor that takes a single Class object
-                            // See JSF 1.2 javadoc for Converter
+                            // See Faces 1.2 javadoc for Converter
                             Constructor<? extends Converter> constructor = converterClass
                                     .getConstructor(new Class[] { Class.class });
 

@@ -132,7 +132,7 @@ public abstract class UIComponent
     private _DeltaStateHelper _stateHelper = null;
 
     /**
-     * In JSF 2.0 bindings map was deprecated, and replaced with a map
+     * In Faces 2.0 bindings map was deprecated, and replaced with a map
      * inside stateHelper. We need this one here because stateHelper needs
      * to be implemented from here and internally it depends from this property.
      */
@@ -509,7 +509,7 @@ public abstract class UIComponent
     }
 
     /**
-     * For JSF-framework internal use only. Don't call this method to add components to the component tree. Use
+     * For Faces-framework internal use only. Don't call this method to add components to the component tree. Use
      * <code>parent.getChildren().add(child)</code> instead.
      */
     public abstract void setParent(UIComponent parent);
@@ -728,7 +728,7 @@ public abstract class UIComponent
             //getFacesContext().getApplication().publishEvent(getFacesContext(),
             // PostRestoreStateEvent.class, UIComponent.class, this);
             
-            // JSF 2.2 vdl.createComponent() requires special handling to refresh
+            // Faces 2.2 vdl.createComponent() requires special handling to refresh
             // dynamic parts when refreshing is done. The only way to do it is 
             // attaching a listener to PostRestoreStateEvent, so we need to do this
             // invocation here.

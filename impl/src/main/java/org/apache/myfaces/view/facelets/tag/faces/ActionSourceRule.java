@@ -103,7 +103,7 @@ public final class ActionSourceRule extends MetaRule
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            // From JSF 2.0 it is possible to have actionListener method without ActionEvent parameter. 
+            // From Faces 2.0 it is possible to have actionListener method without ActionEvent parameter. 
             // It seems that MethodExpressionActionListener from API contains support for it but there is one big
             // problem - one-arg constructor will not preserve the current VariableMapper.
             // This is a problem when using facelets and <ui:decorate/> with EL params (see MYFACES-2541 for details).

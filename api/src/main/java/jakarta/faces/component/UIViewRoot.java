@@ -70,7 +70,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
- * Creates a JSF View, which is a container that holds all of the components that are part of the view.
+ * Creates a Faces View, which is a container that holds all of the components that are part of the view.
  * <p>
  * Unless otherwise specified, all attributes accept static values or EL expressions.
  * </p>
@@ -327,7 +327,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 componentResources.add(componentResource);
             }
 
-            // this is required to make dynamic resource loading possible since JSF 2.3
+            // this is required to make dynamic resource loading possible since Faces 2.3
             if (context.getPartialViewContext().isAjaxRequest())
             {
                 boolean isBuildingInitialState
@@ -975,7 +975,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     /**
      * Invoke view-specific phase listeners, plus an optional EL MethodExpression.
      * <p>
-     * JSF1.2 adds the ability for PhaseListener objects to be added to a UIViewRoot instance, and for
+     * Faces1.2 adds the ability for PhaseListener objects to be added to a UIViewRoot instance, and for
      * "beforePhaseListener" and "afterPhaseListener" EL expressions to be defined on the viewroot. This method is
      * expected to be called at appropriate times, and will then execute the relevant listener callbacks.
      * <p>
@@ -1197,7 +1197,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * Broadcast all events in the specified collection, stopping the at any time an AbortProcessingException
      * is thrown.
      *
-     * @param context the current JSF context
+     * @param context the current Faces context
      * @param events the events to broadcast
      * @return 
      *
@@ -1310,7 +1310,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * <p>
      * This inherited property is disabled. Although this class extends a base-class that defines a read/write rendered
      * property, this particular subclass does not support setting it. Yes, this is broken OO design: direct all
-     * complaints to the JSF spec group.
+     * complaints to the Faces spec group.
      */
     @Override
     @JSFProperty(tagExcluded = true)
@@ -1586,8 +1586,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         
         Object[] values = (Object[])state;
         super.restoreState(facesContext,values[0]);
-        // JSF 2.2 spec says that restoreViewScopeState can be called but only if
-        // StateManagementStrategy is used. If that's not the case (JSF 1.2 state saving),
+        // Faces 2.2 spec says that restoreViewScopeState can be called but only if
+        // StateManagementStrategy is used. If that's not the case (Faces 1.2 state saving),
         // restoreViewScopeState could not be called, so this code should avoid restore
         // the state twice.
         if (!_restoreViewScopeStateCalled)
@@ -1812,7 +1812,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             // with PhaseId.UPDATE_MODEL_VALUES if:
             //   * PartialViewContext.isPartialRequest() returns true and we don't have a request to process all
             // components in the view (PartialViewContext.isExecuteAll() returns false)
-            //section 13.4.2 from the  JSF2  spec also see https://issues.apache.org/jira/browse/MYFACES-2119
+            //section 13.4.2 from the  Faces2  spec also see https://issues.apache.org/jira/browse/MYFACES-2119
             if (pvc.isPartialRequest() && !pvc.isExecuteAll())
             {
                 pvc.processPartial(PhaseId.APPLY_REQUEST_VALUES);
@@ -1839,7 +1839,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             // with PhaseId.UPDATE_MODEL_VALUES if:
             // PartialViewContext.isPartialRequest() returns true and we don't have a request to process all components
             // in the view (PartialViewContext.isExecuteAll() returns false)
-            //section 13.4.2 from the  JSF2  spec also see https://issues.apache.org/jira/browse/MYFACES-2119
+            //section 13.4.2 from the  Faces2  spec also see https://issues.apache.org/jira/browse/MYFACES-2119
             if (pvc.isPartialRequest() && !pvc.isExecuteAll())
             {
                 pvc.processPartial(PhaseId.PROCESS_VALIDATIONS);
@@ -1866,7 +1866,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             // with PhaseId.UPDATE_MODEL_VALUES if:
             //   * PartialViewContext.isPartialRequest() returns true and we don't have a request to process
             // all components in the view (PartialViewContext.isExecuteAll() returns false)
-            //section 13.4.2 from the JSF2 spec also see https://issues.apache.org/jira/browse/MYFACES-2119
+            //section 13.4.2 from the Faces2 spec also see https://issues.apache.org/jira/browse/MYFACES-2119
             if (pvc.isPartialRequest() && !pvc.isExecuteAll())
             {
                 pvc.processPartial(PhaseId.UPDATE_MODEL_VALUES);

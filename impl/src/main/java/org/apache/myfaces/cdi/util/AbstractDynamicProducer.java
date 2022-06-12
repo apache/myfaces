@@ -100,7 +100,7 @@ public abstract class AbstractDynamicProducer<T> implements Bean<T>, Passivation
     @Override
     public void destroy(T instance, CreationalContext<T> creationalContext)
     {
-        // not required - we just push a JSF artifact into CDI
+        // not required - we just push a Faces artifact into CDI
     }
 
     @Override

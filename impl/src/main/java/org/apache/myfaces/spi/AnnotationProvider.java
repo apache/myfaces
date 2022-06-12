@@ -67,7 +67,7 @@ public abstract class AnnotationProvider implements FacesWrapper<AnnotationProvi
     /**
      * Retrieve a map containing the classes that contains annotations used by jsf implementation at
      * startup.
-     * <p>The default implementation must comply with JSF 2.0 spec section 11.5.1 Requirements for scanning of 
+     * <p>The default implementation must comply with Faces 2.0 spec section 11.5.1 Requirements for scanning of 
      * classes for annotations. 
      * </p>
      * <p>This method could call getBaseUrls() to obtain a list of URL that could be used to indicate jar files of
@@ -84,7 +84,7 @@ public abstract class AnnotationProvider implements FacesWrapper<AnnotationProvi
 
     /**
      * <p>The returned Set&lt;URL&gt; urls are calculated in this way
-     * ( see JSF 2.0 spec section 11.4.2 for definitions )
+     * ( see Faces 2.0 spec section 11.4.2 for definitions )
      * </p>
      * <ol>
      * <li>All resources that match either "META-INF/faces-config.xml" or end with ".facesconfig.xml" directly in

@@ -29,7 +29,7 @@ import jakarta.el.PropertyNotFoundException;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
- * See JSF 2.2 section 5.6.2.8
+ * See Faces 2.2 section 5.6.2.8
  */
 public class ImportHandlerResolver extends ScopedAttributeResolver
 {

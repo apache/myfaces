@@ -46,7 +46,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
   * that explicitly serializes dataModel.getWrappedData.
   *  
   * See Javadoc of
- * <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for more.
+ * <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a> for more.
 */
 public abstract class DataModel<E> implements Iterable<E>
 {

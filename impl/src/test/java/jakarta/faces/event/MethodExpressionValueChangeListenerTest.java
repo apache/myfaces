@@ -88,7 +88,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test for case: method with ValueChangeEvent param exists (pre-JSF 2.0 case)
+     * Test for case: method with ValueChangeEvent param exists (pre-Faces 2.0 case)
      */
     public void testProcessValueChange() 
     {
@@ -105,7 +105,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test for case: method exists but has no ValueChangeEvent param (new possibility in JSF 2.0)
+     * Test for case: method exists but has no ValueChangeEvent param (new possibility in Faces 2.0)
      */
     public void testProcessValueChange2() throws Exception 
     {

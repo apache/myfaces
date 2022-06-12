@@ -31,7 +31,7 @@ import jakarta.faces.render.RenderKitFactory;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
- * RenderKitFactory implementation as defined in Spec. JSF.7.3
+ * RenderKitFactory implementation as defined in Spec. Faces.7.3
  * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -76,7 +76,7 @@ public class RenderKitFactoryImpl extends RenderKitFactory
         if (renderkit == null)
         {
             // throw new IllegalArgumentException("Unknown RenderKit '" + renderKitId + "'.");
-            // JSF Spec API Doc says:
+            // Faces Spec API Doc says:
             // "If there is no registered RenderKit for the specified identifier, return null"
             // vs "IllegalArgumentException - if no RenderKit instance can be returned for the specified identifier"
             // First sentence is more precise, so we just log a warning

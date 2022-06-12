@@ -268,7 +268,7 @@ public class ExceptionTestCase extends FaceletTestCase
         }
         catch (Throwable e)
         {
-            // JSF 2.0: publish the executor's exception (if any).
+            // Faces 2.0: publish the executor's exception (if any).
             
             publishException (e, PhaseId.INVOKE_APPLICATION, facesContext);
         }
@@ -405,7 +405,7 @@ public class ExceptionTestCase extends FaceletTestCase
         }
         catch (Throwable e)
         {
-            // JSF 2.0: publish the executor's exception (if any).
+            // Faces 2.0: publish the executor's exception (if any).
             publishException (e, PhaseId.UPDATE_MODEL_VALUES, facesContext);
         }
         
@@ -465,7 +465,7 @@ public class ExceptionTestCase extends FaceletTestCase
         }
         catch (Throwable e)
         {
-            // JSF 2.0: publish the executor's exception (if any).
+            // Faces 2.0: publish the executor's exception (if any).
             publishException (e, PhaseId.UPDATE_MODEL_VALUES, facesContext);
         }
         

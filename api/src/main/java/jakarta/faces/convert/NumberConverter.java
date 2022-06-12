@@ -46,7 +46,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * 
  * Unless otherwise specified, all attributes accept static values or EL expressions.
  * 
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @JSFConverter(name = "f:convertNumber", bodyContent = "empty")
 @JSFJspProperty(

@@ -33,7 +33,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * <p>
  * It is up to the concrete implementation to decide whether to use information from the "view template" that was used
  * to first create the view, or whether to store sufficient information to enable the view to be restored without any
- * reference to the original template. However as JSF components have mutable fields that can be set by code, and
+ * reference to the original template. However as Faces components have mutable fields that can be set by code, and
  * affected by user input, at least some state does need to be kept in order to recreate a previously-existing component
  * tree.
  * <p>
@@ -49,12 +49,12 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * <p>
  * This class is usually invoked by a concrete implementation of ViewHandler.
  * <p>
- * Note that class ViewHandler isolates JSF components from the details of the request format. This class isolates JSF
- * components from the details of the response format. Because request and response are usually tightly coupled, the
- * StateManager and ViewHandler implementations are also usually fairly tightly coupled (ie the ViewHandler/StateManager
- * implementations come as pairs).
+ * Note that class ViewHandler isolates Faces components from the details of the request format. This class isolates
+ * Faces components from the details of the response format. Because request and response are typically tightly coupled,
+ * the StateManager and ViewHandler implementations are also typically fairly tightly coupled (ie the
+ * ViewHandler/StateManager implementations come as pairs).
  * <p>
- * See also the <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * See also the <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 public abstract class StateManager
 {
@@ -196,7 +196,7 @@ public abstract class StateManager
      * When server-side state is enabled, at most a "token" is expected to be written.
      * <p>
      * This method should be overridden by subclasses. It is not abstract because a default implementation is provided
-     * that forwards to the old writeState method; this allows subclasses of StateManager written using the JSF1.1 API
+     * that forwards to the old writeState method; this allows subclasses of StateManager written using the Faces1.1 API
      * to continue to work.
      * <p>
      * 

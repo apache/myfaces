@@ -513,7 +513,7 @@ final class CompilationManager
         {
             if (log.isLoggable(Level.FINE))
             {
-                log.fine(attr + " JSF Facelet Compile Directive Found");
+                log.fine(attr + " Faces Facelet Compile Directive Found");
             }
             String value = attr.getValue();
             String namespace;

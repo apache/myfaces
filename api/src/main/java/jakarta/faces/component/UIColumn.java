@@ -22,7 +22,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacet;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @JSFComponent
 public class UIColumn extends UIComponentBase

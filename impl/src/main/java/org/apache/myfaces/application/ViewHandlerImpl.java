@@ -56,7 +56,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.view.facelets.StateWriter;
 
 /**
- * JSF 2.0 ViewHandler implementation 
+ * Faces 2.0 ViewHandler implementation 
  *
  * @since 2.0
  */

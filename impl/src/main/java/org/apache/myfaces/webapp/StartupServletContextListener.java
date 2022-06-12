@@ -24,7 +24,7 @@ import jakarta.servlet.ServletContextListener;
 /**
  * Initialise the MyFaces system.
  * <p>
- * This context listener is registered by the JSP TLD file for the standard JSF "f" components. Normally, servlet
+ * This context listener is registered by the JSP TLD file for the standard Faces "f" components. Normally, servlet
  * containers will automatically load and process .tld files at startup time, and therefore register and run this class
  * automatically.
  * </p><p>

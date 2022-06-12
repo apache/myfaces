@@ -43,7 +43,7 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
     @Override
     public void sessionDestroyed(HttpSessionEvent event)
     {
-        // If we don't propagate this event, CDI will do for us but outside JSF control
+        // If we don't propagate this event, CDI will do for us but outside Faces control
         // so when @PreDestroy methods are called there will not be an active FacesContext.
         // The trick here is ensure clean the affected scopes to avoid duplicates.
         // Remember cdi session scope is different from jsf session scope, because in

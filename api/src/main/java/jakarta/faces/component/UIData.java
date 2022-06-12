@@ -117,7 +117,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * invokeApplication phase has no effect on the rendering of the table. When a validation error has occurred, a new
  * DataModel is <i>not</i> fetched, and the saved state of the child components is <i>not</i> discarded.
  * </p>
- * see Javadoc of the <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of the <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  * for more information.
  */
 @JSFComponent(defaultRendererType = "jakarta.faces.Table")
@@ -1788,7 +1788,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * @param context
      *            is the current faces context.
      * @param processAction
-     *            specifies a JSF phase: decode, validate or update.
+     *            specifies a Faces phase: decode, validate or update.
      */
     private void processColumnFacets(FacesContext context, int processAction)
     {
@@ -1821,7 +1821,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * @param context
      *            is the current faces context.
      * @param processAction
-     *            specifies a JSF phase: decode, validate or update.
+     *            specifies a Faces phase: decode, validate or update.
      */
     private void processColumnChildren(FacesContext context, int processAction)
     {

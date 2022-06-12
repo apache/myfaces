@@ -72,7 +72,7 @@ public class BeanValidator implements Validator, PartialStateHolder
     private static final Logger log = Logger.getLogger(BeanValidator.class.getName());
 
     /**
-     * Converter ID, as defined by the JSF 2.0 specification.
+     * Converter ID, as defined by the Faces 2.0 specification.
      */
     public static final String VALIDATOR_ID = "jakarta.faces.Bean";
 
@@ -189,7 +189,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         // Note that validationGroupsArray was initialized when createValidator was called
         Class[] validationGroupsArray = this.validationGroupsArray;
 
-        // JSF 2.3: If the ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME application parameter is enabled and this Validator 
+        // Faces 2.3: If the ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME application parameter is enabled and this Validator 
         // instance has validation groups other than or in addition to the Default group
         boolean containsOtherValidationGroup = false;
         if (validationGroupsArray != null && validationGroupsArray.length > 0)
@@ -221,7 +221,7 @@ public class BeanValidator implements Validator, PartialStateHolder
             
             if (isValidateWholeBeanEnabled(context) && containsOtherValidationGroup)
             {
-                // JSF 2.3: record the fact that this field failed validation so that any <f:validateWholeBean /> 
+                // Faces 2.3: record the fact that this field failed validation so that any <f:validateWholeBean /> 
                 // component later in the tree is able to skip class-level validation for the bean for which this 
                 // particular field is a property. Regardless of whether or not 
                 // ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME is set, throw the new exception.            
@@ -233,7 +233,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         else
         {
             
-            // JSF 2.3: If the returned Set is empty, the ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME application parameter
+            // Faces 2.3: If the returned Set is empty, the ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME application parameter
             // is enabled and this Validator instance has validation groups other than or in addition to the 
             // Default group
             if (isValidateWholeBeanEnabled(context) && containsOtherValidationGroup)

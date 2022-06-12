@@ -40,7 +40,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @MultipartConfig
 public final class FacesServlet implements Servlet
@@ -49,7 +49,7 @@ public final class FacesServlet implements Servlet
     
     /**
      * Comma separated list of URIs of (additional) faces config files.
-     * (e.g. /WEB-INF/my-config.xml)See JSF 1.0 PRD2, 10.3.2
+     * (e.g. /WEB-INF/my-config.xml)See Faces 1.0 PRD2, 10.3.2
      * Attention: You do not need to put /WEB-INF/faces-config.xml in here.
      */
     @JSFWebConfigParam(since="1.1")
@@ -216,7 +216,7 @@ public final class FacesServlet implements Servlet
             }
             else
             {
-                //JSF 2.2: attach window
+                //Faces 2.2: attach window
                 _lifecycle.attachWindow(facesContext);
                 // If this returns false, handle as follows:
                 // call Lifecycle.execute(jakarta.faces.context.FacesContext)

@@ -71,7 +71,7 @@ import org.apache.myfaces.view.facelets.tag.faces.core.FacetHandler;
 
 /**
  *  
- * Implementation of the tag logic used in the JSF specification. 
+ * Implementation of the tag logic used in the Faces specification. 
  * 
  * See org.apache.myfaces.view.facelets.tag.faces.ComponentHandler
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -165,7 +165,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     }
 
     /**
-     * Method handles UIComponent tree creation in accordance with the JSF 1.2 spec.
+     * Method handles UIComponent tree creation in accordance with the Faces 1.2 spec.
      * <ol>
      * <li>First determines this UIComponent's id by calling {@link #getId(FaceletContext) getId(FaceletContext)}.</li>
      * <li>Search the parent for an existing UIComponent of the id we just grabbed</li>

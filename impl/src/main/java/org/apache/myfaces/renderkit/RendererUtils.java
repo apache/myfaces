@@ -333,7 +333,7 @@ public final class RendererUtils
     }
 
     /**
-     * See JSF Spec. 8.5 Table 8-1
+     * See Faces Spec. 8.5 Table 8-1
      * @param value
      * @return boolean
      */
@@ -868,7 +868,7 @@ public final class RendererUtils
             final UIComponent component, final String attributeName)
     {
 
-        // JSF 2.0: if "name" attribute is available, treat as a resource reference.
+        // Faces 2.0: if "name" attribute is available, treat as a resource reference.
         final Map<String, Object> attributes = component.getAttributes();
         final String resourceName = (String) attributes.get(ComponentAttrs.NAME_ATTR);
         if (resourceName != null && (resourceName.length() > 0))
@@ -941,7 +941,7 @@ public final class RendererUtils
             return null;
         }
 
-        // With JSF 2.0 url for resources can be done with EL like #{resource['resourcename']}
+        // With Faces 2.0 url for resources can be done with EL like #{resource['resourcename']}
         // and such EL after evalution contains context path for the current web application already,
         // -> we dont want call viewHandler.getResourceURL()
         if (uri.contains(ResourceHandler.RESOURCE_IDENTIFIER))

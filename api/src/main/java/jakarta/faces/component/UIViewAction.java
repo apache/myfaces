@@ -42,7 +42,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
     
     /**
      * Key in facesContext attribute map to check if a viewAction broadcast is 
-     * being processed. This is used to check when a JSF lifecycle restart is required
+     * being processed. This is used to check when a Faces lifecycle restart is required
      * by the NavigationHandler implementation.
      */
     private static final String BROADCAST_PROCESSING_KEY = "oam.viewAction.broadcast";
@@ -159,7 +159,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
                     // "... Otherwise, execute the lifecycle on the new UIViewRoot ..."
                     // Note these words are implemented in the NavigationHandler, but 
                     // the original proposal from seam s:viewAction did a trick here 
-                    // to restart the JSF lifecycle.
+                    // to restart the Faces lifecycle.
                 }
             }
         }

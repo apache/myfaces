@@ -434,7 +434,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                                 + FacesServlet.CONFIG_FILES_ATTR
                                 + " context parameter of "
                                 + "the deployment descriptor. This will automatically be removed, "
-                                + "if we wouldn't do this, it would be loaded twice.  See JSF spec 1.1, 10.3.2");
+                                + "if we wouldn't do this, it would be loaded twice.  See Faces spec 1.1, 10.3.2");
                     }
                 }
                 else
@@ -666,7 +666,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             else
             {
                 // Zero lenght, if that so the flow definition must be implicitly derived. 
-                // See JSF 2.2 section 11.4.3.3
+                // See Faces 2.2 section 11.4.3.3
                 // 
                 FacesConfigImpl facesConfig = new FacesConfigImpl();
                 FacesFlowDefinitionImpl flow = new FacesFlowDefinitionImpl();

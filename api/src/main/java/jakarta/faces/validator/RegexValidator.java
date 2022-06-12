@@ -80,7 +80,7 @@ public class RegexValidator implements Validator, PartialStateHolder
 {
 
     /**
-     * Converter ID, as defined by the JSF 2.0 specification.
+     * Converter ID, as defined by the Faces 2.0 specification.
      */
     public static final String VALIDATOR_ID = "jakarta.faces.RegularExpression";
 

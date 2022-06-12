@@ -57,10 +57,10 @@ import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ExternalContextUtils;
 
 /**
- * Implements the Restore View Phase (JSF Spec 2.2.1)
+ * Implements the Restore View Phase (Faces Spec 2.2.1)
  * 
  * @author Nikolay Petrov (latest modification by $Author$)
- * @author Bruno Aranda (JSF 1.2)
+ * @author Bruno Aranda (Faces 1.2)
  * @version $Revision$ $Date$
  */
 class RestoreViewExecutor extends PhaseExecutor
@@ -437,7 +437,7 @@ class RestoreViewExecutor extends PhaseExecutor
                     {
                         // Origin Header match and 
                         // STRICT_JSF_2_ORIGIN_HEADER_APP_PATH property is set to false (default)
-                        // Because we don't want to strictly follow JSF 2.x spec
+                        // Because we don't want to strictly follow Faces 2.x spec
                     }
                     else
                     {
@@ -513,7 +513,7 @@ class RestoreViewExecutor extends PhaseExecutor
      * Note: In this phase it is not possible to invoke the beforePhase method, because we
      * first have to restore the view to get its attributes. Also it is not really possible
      * to call the afterPhase method inside of UIViewRoot for this phase, thus it was decided
-     * in the JSF 2.0 spec rev A to put this here.
+     * in the Faces 2.0 spec rev A to put this here.
      * @param facesContext
      */
     private void _invokeViewRootAfterPhaseListener(FacesContext facesContext)

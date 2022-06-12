@@ -27,7 +27,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 
 /**
  * Dummy class that is used as a container for resources 
- * (see JSF 2.0 rev A UIViewRoot.addComponentResource javadoc)
+ * (see Faces 2.0 rev A UIViewRoot.addComponentResource javadoc)
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$

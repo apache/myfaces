@@ -290,7 +290,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
             if(bodyrowsAttr != null && !bodyrowsAttr.isEmpty())
             {   
                 String[] bodyrowsString = StringUtils.trim(StringUtils.splitShortString(bodyrowsAttr, ','));
-                // parsing with no exception handling, because of JSF-spec: 
+                // parsing with no exception handling, because of Faces-spec: 
                 // "If present, this must be a comma separated list of integers."
                 bodyrows = new Integer[bodyrowsString.length];
                 for(int i = 0; i < bodyrowsString.length; i++) 

@@ -21,7 +21,7 @@ package jakarta.faces.event;
 import java.util.EventListener;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 public interface FacesListener extends EventListener
 {

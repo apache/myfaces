@@ -60,8 +60,8 @@ import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * This class is called by any Java EE 6 complaint container at startup.
- * It checks if the current webapp is a JSF-webapp by checking if some of 
- * the JSF related annotations are specified in the webapp classpath or if
+ * It checks if the current webapp is a Faces-webapp by checking if some of 
+ * the Faces related annotations are specified in the webapp classpath or if
  * the faces-config.xml file is present. If so, the listener checks if 
  * the FacesServlet has already been defined in web.xml and if not, it adds
  * the FacesServlet with the mappings (/faces/*, *.jsf, *.faces) dynamically.
@@ -158,7 +158,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
             // the FacesServlet is not installed yet - install it
             ServletRegistration.Dynamic servlet = servletContext.addServlet(FACES_SERVLET_NAME, FACES_SERVLET_CLASS);
 
-            //try to add typical JSF mappings
+            //try to add typical Faces mappings
             String[] mappings = isAutomaticXhtmlMappingDisabled(servletContext) ? 
                         FACES_SERVLET_MAPPINGS : FACES_SERVLET_FULL_MAPPINGS;
             Set<String> conflictMappings = servlet.addMapping(mappings);

@@ -34,7 +34,7 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.config.RuntimeConfig;
 
 /**
- * See JSF 1.2 spec section 5.6.1.4
+ * See Faces 1.2 spec section 5.6.1.4
  * 
  * @author Stan Silvert
  */
@@ -55,7 +55,7 @@ public final class ResourceBundleResolver extends ELResolver
     public void setValue(final ELContext context, final Object base, final Object property, final Object value)
         throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException
     {
-        // JSF 2.0 spec section 5.6.1.4
+        // Faces 2.0 spec section 5.6.1.4
         // "... If base is null and property is a String equal to the value of the
         // <var> element of one of the <resource-bundle>'s in the application 
         // configuration resources throw jakarta.el.PropertyNotWriteable, since

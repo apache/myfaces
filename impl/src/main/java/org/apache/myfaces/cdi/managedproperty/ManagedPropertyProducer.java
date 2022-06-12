@@ -83,7 +83,7 @@ public class ManagedPropertyProducer extends AbstractDynamicProducer<Object>
         if (facesContext == null)
         {
             throw new FacesException("@ManagedProperty(\"" + typeInfo.getExpression()
-                    + "\") can only be resolved in a JSF request!");
+                    + "\") can only be resolved in a Faces request!");
         }
 
         return facesContext.getApplication().evaluateExpressionGet(

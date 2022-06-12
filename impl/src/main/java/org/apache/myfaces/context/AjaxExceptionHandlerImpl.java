@@ -42,7 +42,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * 
- * Specialized Ajax Handler, according to JSF 2.0 rev A section 13.3.7.
+ * Specialized Ajax Handler, according to Faces 2.0 rev A section 13.3.7.
  */
 public class AjaxExceptionHandlerImpl extends ExceptionHandler
 {

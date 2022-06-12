@@ -25,7 +25,7 @@ import org.junit.Test;
 
 /**
  * Check if a composite component can be localized following the rules
- * of JSF 2.0 Resource Handler API that are used for css, javascript
+ * of Faces 2.0 Resource Handler API that are used for css, javascript
  * and other resources.
  * 
  * @author Leonardo Uribe

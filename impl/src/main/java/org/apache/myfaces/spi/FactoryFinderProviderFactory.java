@@ -44,10 +44,10 @@ import org.apache.myfaces.util.lang.ClassUtils;
  * corresponding implementation class is searched for based on the following 
  * algorithm...."</p>
  * 
- * <p>In few words, this class allows to find JSF factory classes. The necessary 
+ * <p>In few words, this class allows to find Faces factory classes. The necessary 
  * information to create factory instances is loaded on initialization time, 
  * but which locations contains such information (for more information see 
- * JSF 2.0 spec section 11.4.2) (here the only interest is in jsf factories 
+ * Faces 2.0 spec section 11.4.2) (here the only interest is in jsf factories 
  * initialization information) ?</p>
  * 
  * <ul>

@@ -35,7 +35,7 @@ import java.util.Collection;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @JSFComponent(type = "jakarta.faces.Form", family = "jakarta.faces.Form")
 public class UIForm extends UIComponentBase implements NamingContainer, UniqueIdVendor

@@ -560,7 +560,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             String param = ec.getInitParameter(CLEAR_INPUT_WHEN_SUBMITTED_VALUE_IS_NULL_OR_EMPTY_PARAM_NAME);
             
             // evaluate the param
-            // NOTE: On JSF 2.3, this value will be set to true by default.
+            // NOTE: On Faces 2.3, this value will be set to true by default.
             if (param == null)
             {
                 clearInputWhenSubmittedValueIsNullOrEmpty = true; // default
@@ -657,7 +657,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             }
         }
 
-        // Begin new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
+        // Begin new Faces 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
         if (shouldInterpretEmptyStringSubmittedValuesAsNull(context) && isEmptyString(submittedValue))
         {   
             setSubmittedValue(null);
@@ -667,7 +667,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 submittedValue = null;
             }
         }
-        // End new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
+        // End new Faces 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
 
         Object convertedValue;
         try

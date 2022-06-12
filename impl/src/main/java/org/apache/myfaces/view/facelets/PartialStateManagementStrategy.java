@@ -224,7 +224,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 boolean skipBuildView = false;
                 if (state[1] != null)
                 {
-                    // Since JSF 2.2, UIViewRoot.restoreViewScopeState() must be called, but
+                    // Since Faces 2.2, UIViewRoot.restoreViewScopeState() must be called, but
                     // to get the state of the root, it is necessary to force calculate the
                     // id from this location. Remember in this point, PSS is enabled, so the
                     // code match with the assigment done in 
@@ -983,7 +983,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                     ComponentState componentAddedAfterBuildView
                             = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
                     
-                    //Note if UIViewRoot has this marker, JSF 1.2 like state saving is used.
+                    //Note if UIViewRoot has this marker, Faces 1.2 like state saving is used.
                     if (componentAddedAfterBuildView != null && (target.getParent() != null))
                     {
                         if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
@@ -1211,7 +1211,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
             ComponentState componentAddedAfterBuildView
                     = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
 
-            //Note if UIViewRoot has this marker, JSF 1.2 like state saving is used.
+            //Note if UIViewRoot has this marker, Faces 1.2 like state saving is used.
             if (componentAddedAfterBuildView != null && (target.getParent() != null))
             {
                 //Set this view as not resetable.

@@ -58,7 +58,7 @@ public class ViewImplicitObject extends ImplicitObject
     @Override
     public FeatureDescriptor getDescriptor()
     {
-        return makeDescriptor(NAME, "The root object of a JSF component tree", UIViewRoot.class);
+        return makeDescriptor(NAME, "The root object of a Faces component tree", UIViewRoot.class);
     }
 
 }

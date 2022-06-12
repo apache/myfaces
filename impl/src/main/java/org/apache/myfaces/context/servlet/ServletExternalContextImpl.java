@@ -66,7 +66,7 @@ import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.lang.StringUtils;
 
 /**
- * Implements the external context for servlet request. JSF 1.2, 6.1.3
+ * Implements the external context for servlet request. Faces 1.2, 6.1.3
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
@@ -226,7 +226,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     /**
-     * @since JSF 2.0
+     * @since Faces 2.0
      */
     @Override
     public Writer getResponseOutputWriter() throws IOException
@@ -654,7 +654,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     /**
-     * @since JSF 1.2
+     * @since Faces 1.2
      * @param request
      */
     @Override
@@ -673,7 +673,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     /**
-     * @since JSF 1.2
+     * @since Faces 1.2
      * @param encoding
      * @throws java.io.UnsupportedEncodingException
      */
@@ -686,7 +686,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     /**
-     * @since JSF 1.2
+     * @since Faces 1.2
      */
     @Override
     public String getRequestCharacterEncoding()
@@ -695,7 +695,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     /**
-     * @since JSF 1.2
+     * @since Faces 1.2
      */
     @Override
     public String getResponseCharacterEncoding()
@@ -704,7 +704,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     /**
-     * @since JSF 1.2
+     * @since Faces 1.2
      * @param response
      */
     @Override
@@ -724,7 +724,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     /**
-     * @since JSF 1.2
+     * @since Faces 1.2
      * @param encoding
      */
     @Override
@@ -802,7 +802,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     /**
-     * @since JSF 2.0
+     * @since Faces 2.0
      */
     @Override
     public void addResponseCookie(final String name,

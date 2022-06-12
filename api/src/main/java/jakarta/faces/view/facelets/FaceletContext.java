@@ -31,7 +31,7 @@ import jakarta.faces.context.FacesContext;
 /**
  * The parent or root object in a FaceletHandler composition. The Facelet will
  * take care of populating the passed UIComponent parent in relation to the
- * create/restore lifecycle of JSF.
+ * create/restore lifecycle of Faces.
  * 
  * @since 2.0
  */

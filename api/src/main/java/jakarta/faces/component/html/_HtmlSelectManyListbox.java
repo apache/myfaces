@@ -69,7 +69,7 @@ abstract class _HtmlSelectManyListbox extends UISelectMany implements
     "jakarta.faces.HtmlSelectManyListbox";
 
   /**
-   * see JSF Spec.
+   * see Faces Spec.
    * 
    * @JSFProperty
    *   defaultValue="Integer.MIN_VALUE"

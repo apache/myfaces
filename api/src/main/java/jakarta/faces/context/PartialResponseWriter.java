@@ -126,7 +126,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     @Override
     public void startDocument() throws IOException
     {
-        // JSF 2.2 section 2.2.6.1 Render Response Partial Processing
+        // Faces 2.2 section 2.2.6.1 Render Response Partial Processing
         // use writePreamble(...)
         //_wrapped.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
         
