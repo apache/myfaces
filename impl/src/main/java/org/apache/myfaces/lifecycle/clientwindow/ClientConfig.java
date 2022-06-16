@@ -21,9 +21,12 @@ package org.apache.myfaces.lifecycle.clientwindow;
 
 import jakarta.faces.context.FacesContext;
 import java.io.Serializable;
+
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Contains information about whether the user has
@@ -102,7 +105,14 @@ public class ClientConfig implements Serializable
             {
                 Cookie cookie = new Cookie(COOKIE_NAME_NOSCRIPT_ENABLED, "" + javaScriptEnabled);
                 cookie.setPath("/"); // for all the server
-                cookie.setAttribute("SameSite", "Strict");
+                Object context = facesContext.getExternalContext().getContext();
+                String sameSite = null;
+                if (context instanceof ServletContext)
+                {
+                    ServletContext servletContext = (ServletContext)context;
+                    sameSite = servletContext.getSessionCookieConfig().getAttribute("SameSite");
+                }
+                cookie.setAttribute("SameSite", Objects.toString(sameSite, "Strict"));
                 HttpServletResponse response = (HttpServletResponse) r;
                 response.addCookie(cookie);
             }

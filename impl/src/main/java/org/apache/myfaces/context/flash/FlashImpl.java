@@ -26,6 +26,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.Flash;
 import jakarta.faces.event.PhaseId;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.Serializable;
@@ -35,6 +36,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 import jakarta.faces.event.PostKeepFlashValueEvent;
@@ -1184,7 +1186,14 @@ public class FlashImpl extends Flash implements ReleasableFlash
         cookie.setPath(_getCookiePath(externalContext));
         cookie.setSecure(externalContext.isSecure());
         cookie.setHttpOnly(true);
-        cookie.setAttribute("SameSite", "Strict");
+        Object context = externalContext.getContext();
+        String sameSite = null;
+        if (context instanceof ServletContext)
+        {
+            ServletContext servletContext = (ServletContext)context;
+            sameSite = servletContext.getSessionCookieConfig().getAttribute("SameSite");
+        }
+        cookie.setAttribute("SameSite", Objects.toString(sameSite, "Strict"));
         return cookie;
     }
 
