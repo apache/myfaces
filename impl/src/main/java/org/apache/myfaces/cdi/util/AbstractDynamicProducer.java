@@ -121,7 +121,7 @@ public abstract class AbstractDynamicProducer<T> implements Bean<T>, Passivation
         return false;
     }
 
-    @Override
+    //@Override not available anymore in CDI 4.0
     public boolean isNullable()
     {
         return false;

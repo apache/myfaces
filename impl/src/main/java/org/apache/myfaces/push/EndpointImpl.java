@@ -76,8 +76,8 @@ public class EndpointImpl extends Endpoint
             Serializable user = (Serializable) session.getUserProperties().get(WebsocketConfigurator.WEBSOCKET_USER);
 
             BeanManager beanManager = CDI.current().getBeanManager();
-            beanManager.fireEvent(new WebsocketEvent(channel, user, null), OPENED);
-            
+            beanManager.getEvent().select(OPENED).fire(new WebsocketEvent(channel, user, null));
+
             session.getUserProperties().put(
                     WebsocketSessionClusterSerializedRestore.WEBSOCKET_SESSION_SERIALIZED_RESTORE, 
                     new WebsocketSessionClusterSerializedRestore(channelToken));
@@ -111,8 +111,7 @@ public class EndpointImpl extends Endpoint
         try
         {
             BeanManager beanManager = CDI.current().getBeanManager();
-            beanManager.fireEvent(
-                    new WebsocketEvent(channel, user, closeReason.getCloseCode()),  CLOSED);
+            beanManager.getEvent().select(CLOSED).fire(new WebsocketEvent(channel, user, closeReason.getCloseCode()));
         }
         catch(Exception e)
         {

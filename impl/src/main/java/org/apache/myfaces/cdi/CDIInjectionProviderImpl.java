@@ -45,7 +45,7 @@ public class CDIInjectionProviderImpl extends InjectionProvider
     public Object inject(Object instance) throws InjectionProviderException
     {
         AnnotatedType annoType = beanManager.createAnnotatedType(instance.getClass());
-        InjectionTarget target = beanManager.createInjectionTarget(annoType);
+        InjectionTarget target = beanManager.getInjectionTargetFactory(annoType).createInjectionTarget(null);
         CreationalContext<?> creationalContext =  beanManager.createCreationalContext(null);
 
         target.inject(instance, creationalContext);
@@ -57,7 +57,7 @@ public class CDIInjectionProviderImpl extends InjectionProvider
     public void postConstruct(Object instance, Object creationMetaData) throws InjectionProviderException
     {
         AnnotatedType annoType = beanManager.createAnnotatedType(instance.getClass());
-        InjectionTarget target = beanManager.createInjectionTarget(annoType);
+        InjectionTarget target = beanManager.getInjectionTargetFactory(annoType).createInjectionTarget(null);
         target.postConstruct(instance);
     }
 
@@ -67,7 +67,7 @@ public class CDIInjectionProviderImpl extends InjectionProvider
         if (creationMetaData instanceof CreationalContext)
         {
             AnnotatedType annoType = beanManager.createAnnotatedType(instance.getClass());
-            InjectionTarget target = beanManager.createInjectionTarget(annoType);
+            InjectionTarget target = beanManager.getInjectionTargetFactory(annoType).createInjectionTarget(null);
             target.preDestroy(instance);
 
             ((CreationalContext)creationMetaData).release();
