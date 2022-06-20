@@ -694,7 +694,92 @@ public class MockServletContext implements ServletContext
 
     public SessionCookieConfig getSessionCookieConfig()
     {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        return new SessionCookieConfig() {
+            @Override public void setName(String s)
+            {
+
+            }
+
+            @Override public String getName()
+            {
+                return null;
+            }
+
+            @Override public void setDomain(String s)
+            {
+
+            }
+
+            @Override public String getDomain()
+            {
+                return null;
+            }
+
+            @Override public void setPath(String s)
+            {
+
+            }
+
+            @Override public String getPath()
+            {
+                return null;
+            }
+
+            @Override public void setComment(String s)
+            {
+
+            }
+
+            @Override public String getComment()
+            {
+                return null;
+            }
+
+            @Override public void setHttpOnly(boolean b)
+            {
+
+            }
+
+            @Override public boolean isHttpOnly()
+            {
+                return false;
+            }
+
+            @Override public void setSecure(boolean b)
+            {
+
+            }
+
+            @Override public boolean isSecure()
+            {
+                return false;
+            }
+
+            @Override public void setMaxAge(int i)
+            {
+
+            }
+
+            @Override public int getMaxAge()
+            {
+                return 0;
+            }
+
+            @Override public void setAttribute(String s, String s1)
+            {
+
+            }
+
+            @Override public String getAttribute(String s)
+            {
+                return null;
+            }
+
+            @Override public Map<String, String> getAttributes()
+            {
+                return new HashMap<>();
+            }
+        };
     }
 
     public void setSessionTrackingModes(Set<SessionTrackingMode> set)
