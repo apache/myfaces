@@ -52,7 +52,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesCDIRequestTestCase
     protected void setUpWebConfigParams() throws Exception
     {
         super.setUpWebConfigParams();
-        servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES","org.apache.myfaces.component.search");
+        servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES", "org.apache.myfaces.component.search");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
         servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
     }
@@ -81,46 +81,46 @@ public class SearchExpressionImplTest extends AbstractMyFacesCDIRequestTestCase
         
         String componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, "@this").get(0);
-        Assert.assertEquals(componentId, "mainForm:showName");
+        Assert.assertEquals("mainForm:showName", componentId);
         
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, "@this:@parent:showName").get(0);
-        Assert.assertEquals(componentId, "mainForm:showName");
+        Assert.assertEquals("mainForm:showName", componentId);
 
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, "mainForm:table:0:baseText").get(0);
-        Assert.assertEquals(componentId, "mainForm:table:0:baseText");
+        Assert.assertEquals("mainForm:table:0:baseText", componentId);
         
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, "@parent:showName:@parent:showName").get(0);
-        Assert.assertEquals(componentId, "mainForm:showName");
+        Assert.assertEquals("mainForm:showName", componentId);
         
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, "@form:showName").get(0);
-        Assert.assertEquals(componentId, "mainForm:showName");
+        Assert.assertEquals("mainForm:showName", componentId);
 
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, " @namingcontainer:showName ").get(0);
-        Assert.assertEquals(componentId, "mainForm:showName");
+        Assert.assertEquals("mainForm:showName", componentId);
 
         UIOutput name = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:name");
         searchContext = SearchExpressionContext.createSearchExpressionContext(facesContext, name);
         
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, "@previous").get(0);
-        Assert.assertEquals(componentId, "mainForm:labelName");
+        Assert.assertEquals("mainForm:labelName", componentId);
         
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, "@next").get(0);
-        Assert.assertEquals(componentId, "mainForm:msgName");
+        Assert.assertEquals("mainForm:msgName", componentId);
         
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, "@parent:@id(msgName)").get(0);
-        Assert.assertEquals(componentId, "mainForm:msgName");
+        Assert.assertEquals("mainForm:msgName", componentId);
 
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, "topLevelOutputText").get(0);
-        Assert.assertEquals(componentId, "topLevelOutputText");
+        Assert.assertEquals("topLevelOutputText", componentId);
         
         facesContext.getViewRoot().invokeOnComponent(facesContext, "mainForm:table:3:nested:1:nestedButton", 
                 new ContextCallback()
@@ -132,25 +132,25 @@ public class SearchExpressionImplTest extends AbstractMyFacesCDIRequestTestCase
                 SearchExpressionContext searchContext = 
                         SearchExpressionContext.createSearchExpressionContext(context, target);
                 String componentId = handler.resolveClientIds(searchContext, "mainForm:showName").get(0);
-                Assert.assertEquals(componentId, "mainForm:showName");
+                Assert.assertEquals("mainForm:showName", componentId);
                 
                 componentId = handler.resolveClientIds(searchContext, "nested:nestedText").get(0);
-                Assert.assertEquals(componentId, "mainForm:table:3:nested:1:nestedText");
+                Assert.assertEquals("mainForm:table:3:nested:1:nestedText", componentId);
                 
                 componentId = handler.resolveClientIds(searchContext, "table:baseText").get(0);
-                Assert.assertEquals(componentId, "mainForm:table:3:baseText");
+                Assert.assertEquals("mainForm:table:3:baseText", componentId);
                 
                 componentId = handler.resolveClientIds(searchContext, "table:0:baseText").get(0);
-                Assert.assertEquals(componentId, "mainForm:table:0:baseText");
+                Assert.assertEquals("mainForm:table:0:baseText", componentId);
 
                 componentId = handler.resolveClientIds(searchContext, "nested:0:nestedText").get(0);
-                Assert.assertEquals(componentId, "mainForm:table:3:nested:0:nestedText");
+                Assert.assertEquals("mainForm:table:3:nested:0:nestedText", componentId);
                 
                 componentId = handler.resolveClientIds(searchContext, "table:nested").get(0);
-                Assert.assertEquals(componentId, "mainForm:table:3:nested");
+                Assert.assertEquals("mainForm:table:3:nested", componentId);
                 
                 componentId = handler.resolveClientIds(searchContext, "table:1:nested:0:nestedText").get(0);
-                Assert.assertEquals(componentId, "mainForm:table:1:nested:0:nestedText");
+                Assert.assertEquals("mainForm:table:1:nested:0:nestedText", componentId);
                 
                 //System.out.println(componentId);
             }
@@ -257,7 +257,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesCDIRequestTestCase
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
         
         UIOutput out = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:showName");
-        Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
+        Set<SearchExpressionHint> expressionHints = new HashSet<>();
 
         expressionHints.add(SearchExpressionHint.IGNORE_NO_RESULT);
         SearchExpressionContext searchContextWithIgnoreNoResult = 
@@ -291,7 +291,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesCDIRequestTestCase
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
         
         UIOutput out = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:showName");
-        Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
+        Set<SearchExpressionHint> expressionHints = new HashSet<>();
         expressionHints.add(SearchExpressionHint.IGNORE_NO_RESULT);
         SearchExpressionContext searchContextWithIgnoreNoResult = 
                 SearchExpressionContext.createSearchExpressionContext(facesContext, out, expressionHints, null);
@@ -387,7 +387,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesCDIRequestTestCase
         Assert.assertFalse(handler.isPassthroughExpression(searchContext, "mainForm:@whoNows"));
         Assert.assertFalse(handler.isPassthroughExpression(searchContext, "!whoNows"));
         
-        Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
+        Set<SearchExpressionHint> expressionHints = new HashSet<>();
         expressionHints.add(SearchExpressionHint.RESOLVE_CLIENT_SIDE);
         SearchExpressionContext searchContextWithAjaxResolve = 
                 SearchExpressionContext.createSearchExpressionContext(facesContext, null, expressionHints, null);
