@@ -130,7 +130,7 @@ public class FaceletState implements StateHolder, Serializable
     
     public boolean isDynamic()
     {
-        return stateMap == null ? false : !stateMap.isEmpty();
+        return stateMap != null && !stateMap.isEmpty();
     }
 
     public void putBinding(String uniqueId, String key, ValueExpression expr)

@@ -1077,7 +1077,7 @@ public abstract class UIComponentBase extends UIComponent
     public boolean getRendersChildren()
     {
         Renderer renderer = getRenderer(getFacesContext());
-        return renderer != null ? renderer.getRendersChildren() : false;
+        return renderer != null && renderer.getRendersChildren();
     }
 
     /**

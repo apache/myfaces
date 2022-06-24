@@ -124,7 +124,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
     private boolean _isSetConverter()
     {
         Boolean value = (Boolean) getStateHelper().get(PropertyKeys.converterSet);
-        return value == null ? false : value;
+        return value != null && value;
     }
     
     @Override

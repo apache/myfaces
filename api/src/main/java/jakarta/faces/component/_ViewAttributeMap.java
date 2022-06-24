@@ -114,7 +114,7 @@ class _ViewAttributeMap implements Map<String, Object>, Serializable
             && RESOURCE_DEPENDENCY_UNIQUE_ID_KEY.equals(key))
         {
             boolean b = _root.isResourceDependencyUniqueId();
-            _root.setResourceDependencyUniqueId(value == null ? false : (Boolean) value);
+            _root.setResourceDependencyUniqueId(value != null && (Boolean) value);
             return b;
         }
         if (UNIQUE_ID_COUNTER_KEY.length() == keyLength

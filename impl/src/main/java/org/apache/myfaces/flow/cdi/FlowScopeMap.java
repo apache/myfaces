@@ -76,21 +76,21 @@ public class FlowScopeMap implements Map
     public boolean isEmpty()
     {
         Map<Object, Object> wrapped = getWrapped(false);
-        return wrapped == null ? true : wrapped.isEmpty();
+        return wrapped == null || wrapped.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key)
     {
         Map<Object, Object> wrapped = getWrapped(false);
-        return wrapped == null ? false : wrapped.containsKey(key);
+        return wrapped != null && wrapped.containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value)
     {
         Map<Object, Object> wrapped = getWrapped(false);
-        return wrapped == null ? false : wrapped.containsValue(value);
+        return wrapped != null && wrapped.containsValue(value);
     }
 
     @Override

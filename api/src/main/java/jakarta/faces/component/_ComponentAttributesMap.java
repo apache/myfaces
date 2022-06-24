@@ -209,9 +209,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         }
         
         PropertyDescriptorWrapper pd = getPropertyDescriptor((String) key);
-        return pd == null || pd.getReadMethod() == null
-                ? getUnderlyingMap().containsKey(key)
-                : false;
+        return (pd == null || pd.getReadMethod() == null) && getUnderlyingMap().containsKey(key);
     }
 
     /**

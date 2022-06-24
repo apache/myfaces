@@ -212,7 +212,7 @@ public class TemplateContextImpl extends TemplateContext
         
         public boolean isParametersMapEmpty()
         {
-            return _parameters == null ? true : _parameters.isEmpty();
+            return _parameters == null || _parameters.isEmpty();
         }
 
         public Set<String> getKnownParameters()
@@ -226,7 +226,7 @@ public class TemplateContextImpl extends TemplateContext
         
         public boolean isKnownParametersEmpty()
         {
-            return _knownParameters == null ? true : _knownParameters.isEmpty();
+            return _knownParameters == null || _knownParameters.isEmpty();
         }
         
         @Override

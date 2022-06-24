@@ -859,7 +859,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // If PartialViewContext.isAjaxRequest()  returns true this method must return true.
         PartialViewContext context = getFacesContext().getPartialViewContext();
 
-        return (context.isAjaxRequest()) ? true : super.getRendersChildren();
+        return context.isAjaxRequest() || super.getRendersChildren();
     }
 
     /**

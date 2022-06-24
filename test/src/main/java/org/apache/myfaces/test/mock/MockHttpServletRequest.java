@@ -641,7 +641,7 @@ public class MockHttpServletRequest implements HttpServletRequest
     /** {@inheritDoc} */
     public boolean isUserInRole(String role)
     {
-        return (this.roles != null) ? this.roles.contains(role) : false;
+        return this.roles != null && this.roles.contains(role);
     }
 
     // ------------------------------------------------- ServletRequest Methods

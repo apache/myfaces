@@ -499,7 +499,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
     {
         if (_markCreated == null)
         {
-            return _attributes == null ? false : _attributes.isEmpty();
+            return _attributes != null && _attributes.isEmpty();
         }
         else
         {
@@ -518,7 +518,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         }
         else
         {
-            return (_attributes == null ? false :_attributes.containsKey(key));
+            return (_attributes != null && _attributes.containsKey(key));
         }
     }
          
@@ -529,7 +529,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         {
             return true;
         }
-        return (_attributes == null) ? false : _attributes.containsValue(value);
+        return _attributes != null && _attributes.containsValue(value);
     }
 
     @Override

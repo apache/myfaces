@@ -432,7 +432,7 @@ public class ViewPoolProcessor
         {
             FaceletState faceletState = (FaceletState) root.getAttributes().get(
                     ComponentSupport.FACELET_STATE_INSTANCE);
-            boolean isDynamic = faceletState != null ? faceletState.isDynamic() : false;
+            boolean isDynamic = faceletState != null && faceletState.isDynamic();
             if (!isDynamic)
             {
                 viewPool.storeStaticViewStructureMetadata(context, root, faceletState);            
@@ -451,7 +451,7 @@ public class ViewPoolProcessor
         {
             FaceletState faceletState = (FaceletState) root.getAttributes().get(
                     ComponentSupport.FACELET_STATE_INSTANCE);
-            boolean isDynamic = faceletState != null ? faceletState.isDynamic() : false;
+            boolean isDynamic = faceletState != null && faceletState.isDynamic();
             if (!isDynamic)
             {
                 return viewPool.retrieveStaticViewStructureMetadata(context, root);
@@ -469,7 +469,7 @@ public class ViewPoolProcessor
         ViewPool viewPool = getViewPool(context, view);
         if (viewPool != null)
         {
-            boolean isDynamic = faceletViewState != null ? faceletViewState.isDynamic() : false;
+            boolean isDynamic = faceletViewState != null && faceletViewState.isDynamic();
             if (!isDynamic)
             {
                 clearTransientAndNonFaceletComponentsForStaticView(context, view);

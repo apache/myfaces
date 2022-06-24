@@ -165,7 +165,7 @@ public class AjaxBehavior extends ClientBehaviorBase
     public boolean isDisabled() 
     {
         Boolean retVal = (Boolean) getStateHelper().eval(ATTR_DISABLED);
-        retVal = (retVal == null) ? false : retVal;
+        retVal = retVal != null && retVal;
         return retVal;
     }
 
@@ -177,7 +177,7 @@ public class AjaxBehavior extends ClientBehaviorBase
     public boolean isImmediate() 
     {
         Boolean retVal = (Boolean) getStateHelper().eval(ATTR_IMMEDIATE);
-        retVal = (retVal == null) ? false : retVal;
+        retVal = retVal != null && retVal;
         return retVal;
     }
 
@@ -198,7 +198,7 @@ public class AjaxBehavior extends ClientBehaviorBase
     public boolean isResetValues()
     {
         Boolean retVal = (Boolean) getStateHelper().eval(ATTR_RESET_VALUES);
-        retVal = (retVal == null) ? false : retVal;
+        retVal = retVal != null && retVal;
         return retVal;
     }
     

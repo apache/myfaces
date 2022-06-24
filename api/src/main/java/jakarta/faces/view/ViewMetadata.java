@@ -132,7 +132,7 @@ public abstract class ViewMetadata
     public static boolean hasMetadata(UIViewRoot root)
     {
         UIComponent metadataFacet = root.getFacet(UIViewRoot.METADATA_FACET_NAME);
-        return metadataFacet != null ? metadataFacet.getChildCount() > 0 : false;
+        return metadataFacet != null && metadataFacet.getChildCount() > 0;
     }
     
     /**
