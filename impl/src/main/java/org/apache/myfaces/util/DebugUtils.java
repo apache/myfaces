@@ -199,7 +199,7 @@ public class DebugUtils
 
         if (!compType.startsWith("org.apache.myfaces.view.facelets.compiler"))
         {
-            PropertyDescriptor propDescriptors[] = beanInfo.getPropertyDescriptors();
+            PropertyDescriptor[] propDescriptors = beanInfo.getPropertyDescriptors();
             for (int i = 0; i < propDescriptors.length; i++)
             {
                 if (propDescriptors[i].getReadMethod() != null)

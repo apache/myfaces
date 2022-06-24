@@ -365,13 +365,13 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
         }
 
         @Override
-        public void write(byte b[]) throws IOException
+        public void write(byte[] b) throws IOException
         {
             output.write(b);
         }
 
         @Override
-        public void write(byte b[], int off, int len) throws IOException
+        public void write(byte[] b, int off, int len) throws IOException
         {
             output.write(b, off, len);
         }

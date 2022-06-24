@@ -1639,7 +1639,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             return;
         }
         
-        Object values[] = (Object[]) state;
+        Object[] values = (Object[]) state;
         super.restoreState(context, values[0]);
 
         if (values.length > 2)
@@ -1690,7 +1690,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 }
                 else
                 {
-                    Object values[] = new Object[3];
+                    Object[] values = new Object[3];
                     values[0] = super.saveState(context);
                     values[1] = null;
                     values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
@@ -1705,7 +1705,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 }
                 else
                 {
-                    Object values[] = new Object[2];
+                    Object[] values = new Object[2];
                     values[0] = super.saveState(context);
                     values[1] = null;
                     return values; 
@@ -1717,7 +1717,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             if (context.getCurrentPhaseId() != null && 
                 !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
-                Object values[] = new Object[3];
+                Object[] values = new Object[3];
                 values[0] = super.saveState(context);
                 values[1] = null;
                 values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
@@ -1725,7 +1725,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
             else
             {
-                Object values[] = new Object[2];
+                Object[] values = new Object[2];
                 values[0] = super.saveState(context);
                 values[1] = null;
                 return values;

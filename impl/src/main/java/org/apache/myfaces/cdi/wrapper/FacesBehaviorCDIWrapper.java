@@ -65,7 +65,7 @@ public class FacesBehaviorCDIWrapper implements PartialStateHolder, Behavior, Fa
     {
         if (!initialStateMarked())
         {
-            Object values[] = new Object[1];
+            Object[] values = new Object[1];
             values[0] = behaviorId;
             return values;
         }
@@ -77,7 +77,7 @@ public class FacesBehaviorCDIWrapper implements PartialStateHolder, Behavior, Fa
     {
         if (state != null)
         {
-            Object values[] = (Object[])state;
+            Object[] values = (Object[])state;
             behaviorId = (String)values[0];
         }
     }

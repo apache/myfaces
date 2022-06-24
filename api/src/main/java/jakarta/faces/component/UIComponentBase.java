@@ -1876,7 +1876,7 @@ public abstract class UIComponentBase extends UIComponent
         else
         {
             //Full
-            Object values[] = new Object[FULL_STATE_ARRAY_SIZE];
+            Object[] values = new Object[FULL_STATE_ARRAY_SIZE];
             values[0] = saveFacesListenersList(context);
             StateHelper stateHelper = getStateHelper(false);
             if (stateHelper != null)
@@ -1929,7 +1929,7 @@ public abstract class UIComponentBase extends UIComponent
             throw new NullPointerException ("state");
         }
         
-        Object values[] = (Object[]) state;
+        Object[] values = (Object[]) state;
         
         if ( values.length == FULL_STATE_ARRAY_SIZE && initialStateMarked())
         {

@@ -322,7 +322,7 @@ public class NumberConverter implements Converter, PartialStateHolder
     {
         if (state != null)
         {
-            Object values[] = (Object[]) state;
+            Object[] values = (Object[]) state;
             _currencyCode = (String) values[0];
             _currencySymbol = (String) values[1];
             _locale = (Locale) values[2];
@@ -350,7 +350,7 @@ public class NumberConverter implements Converter, PartialStateHolder
     {
         if (!initialStateMarked())
         {
-            Object values[] = new Object[15];
+            Object[] values = new Object[15];
             values[0] = _currencyCode;
             values[1] = _currencySymbol;
             values[2] = _locale;

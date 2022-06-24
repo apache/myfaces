@@ -65,8 +65,8 @@ public class MessageUtils
     }
     
     public static FacesMessage getErrorMessage(FacesContext facesContext,
-                                        String messageId,
-                                        Object args[])
+                                               String messageId,
+                                               Object[] args)
     {
         return getMessage(facesContext,
                           facesContext.getViewRoot().getLocale(),
@@ -76,10 +76,10 @@ public class MessageUtils
     }
 
     public static FacesMessage getMessage(FacesContext facesContext,
-                                   Locale locale,
-                                   FacesMessage.Severity severity,
-                                   String messageId,
-                                   Object args[])
+                                          Locale locale,
+                                          FacesMessage.Severity severity,
+                                          String messageId,
+                                          Object[] args)
     {
         ResourceBundle appBundle;
         ResourceBundle defBundle;

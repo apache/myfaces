@@ -67,7 +67,7 @@ public class FaceletState implements StateHolder, Serializable
         {
             if (stateMap != null)
             {
-                Object values[] = new Object[1];
+                Object[] values = new Object[1];
                 values[0] = UIComponentBase.saveAttachedState(context, stateMap);
                 return values;
             }
@@ -75,7 +75,7 @@ public class FaceletState implements StateHolder, Serializable
         }
         else
         {
-            Object values[] = new Object[2];
+            Object[] values = new Object[2];
             values[0] = UIComponentBase.saveAttachedState(context, stateMap);
             // If the UIViewRoot instance was not marked with initial state, that means
             // we need to save the bindingsMap as well because it will not be restored
@@ -96,7 +96,7 @@ public class FaceletState implements StateHolder, Serializable
             bindingsMap = null;
             return;
         }
-        Object values[] = (Object[])state;
+        Object[] values = (Object[])state;
         if (values.length == 2)
         {
             // Full state

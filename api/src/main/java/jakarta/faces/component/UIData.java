@@ -1346,7 +1346,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             return;
         }
         
-        Object values[] = (Object[]) state;
+        Object[] values = (Object[]) state;
         super.restoreState(context, values[0]);
 
         Object restoredRowStates = UIComponentBase.restoreAttachedState(context, values[1]);
@@ -1427,7 +1427,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 }
                 else
                 {
-                    Object values[] = new Object[4];
+                    Object[] values = new Object[4];
                     values[0] = super.saveState(context);
                     values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
                     values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
@@ -1443,7 +1443,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 }
                 else
                 {
-                    Object values[] = new Object[2];
+                    Object[] values = new Object[2];
                     values[0] = super.saveState(context);
                     values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
                     return values; 
@@ -1454,7 +1454,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             if (context.getCurrentPhaseId() != null && !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
-                Object values[] = new Object[4];
+                Object[] values = new Object[4];
                 values[0] = super.saveState(context);
                 values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
                 values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
@@ -1463,7 +1463,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
             else
             {
-                Object values[] = new Object[2];
+                Object[] values = new Object[2];
                 values[0] = super.saveState(context);
                 values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
                 return values;

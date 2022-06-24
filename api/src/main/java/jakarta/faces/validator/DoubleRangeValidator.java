@@ -179,7 +179,7 @@ public class DoubleRangeValidator
 
         if (!initialStateMarked())
         {
-            Object values[] = new Object[2];
+            Object[] values = new Object[2];
             values[0] = _maximum;
             values[1] = _minimum;
             return values;
@@ -194,7 +194,7 @@ public class DoubleRangeValidator
         
         if (state != null)
         {
-            Object values[] = (Object[])state;
+            Object[] values = (Object[])state;
             _maximum = (Double)values[0];
             _minimum = (Double)values[1];
         }

@@ -1975,7 +1975,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
      */
     private static final class FixedCharArrayWriter extends Writer
     {
-        char buf[];
+        char[] buf;
         int count = 0;
 
         public FixedCharArrayWriter(int fixedSize)

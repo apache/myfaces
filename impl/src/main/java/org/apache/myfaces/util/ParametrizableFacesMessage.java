@@ -34,10 +34,10 @@ public class ParametrizableFacesMessage extends FacesMessage
 {
     private static final long serialVersionUID = 7792947730961657948L;
 
-    private final Object _args[];
+    private final Object[] _args;
     private String _evaluatedDetail;
     private String _evaluatedSummary;
-    private transient Object _evaluatedArgs[];
+    private transient Object[] _evaluatedArgs;
     private Locale _locale;
 
     public ParametrizableFacesMessage(

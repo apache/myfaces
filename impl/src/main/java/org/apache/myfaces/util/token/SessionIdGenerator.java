@@ -143,7 +143,7 @@ public class SessionIdGenerator
     public String generateSessionId()
     {
 
-        byte random[] = new byte[16];
+        byte[] random = new byte[16];
 
         // Render the result as a String of hexadecimal digits
         StringBuilder buffer = new StringBuilder();
@@ -187,7 +187,7 @@ public class SessionIdGenerator
         return buffer.toString();
     }
 
-    public void getRandomBytes(byte bytes[])
+    public void getRandomBytes(byte[] bytes)
     {
         SecureRandom random = randoms.poll();
         if (random == null)

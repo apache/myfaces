@@ -80,7 +80,7 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
     {
         if (!initialStateMarked())
         {
-            Object values[] = new Object[1];
+            Object[] values = new Object[1];
             values[0] = validatorId;
             return values;
         }
@@ -92,7 +92,7 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
     {
         if (state != null)
         {
-            Object values[] = (Object[])state;
+            Object[] values = (Object[])state;
             validatorId = (String)values[0];
         }
     }
