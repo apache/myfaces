@@ -285,7 +285,7 @@ public final class Classpath
         // Find suffix prefixed by '!' on OC4J
         int oc4jIndex = urlFile.indexOf('!');
         // Take the first found suffix
-        int separatorIndex = wlIndex == -1 && oc4jIndex == -1 ? -1 : wlIndex < oc4jIndex ? wlIndex : oc4jIndex;
+        int separatorIndex = wlIndex == -1 && oc4jIndex == -1 ? -1 : Math.min(wlIndex, oc4jIndex);
 
         if (separatorIndex != -1)
         {
