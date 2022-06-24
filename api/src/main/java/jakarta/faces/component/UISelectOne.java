@@ -85,36 +85,31 @@ public class UISelectOne extends UIInput
         {
             final UIComponent form = getRadioNestingForm(context, this);
 
-            form.visitTree(VisitContext.createVisitContext(context), new VisitCallback() 
-            {
-                @Override
-                public VisitResult visit(VisitContext visitContext, UIComponent target) 
+            form.visitTree(VisitContext.createVisitContext(context), (visitContext, target) -> {
+                if (target instanceof UISelectOne  && ((UISelectOne) target).getGroup().equals(group))
                 {
-                    if (target instanceof UISelectOne  && ((UISelectOne) target).getGroup().equals(group)) 
+                    UISelectOne radio = (UISelectOne) target;
+
+                    // if target is an instance of UISelectOne then get all the UISelectItem children
+                    // and verify if the submitted value exists
+                    for (Iterator<UIComponent> iter = radio.getChildren().iterator(); iter.hasNext(); )
                     {
-                        UISelectOne radio = (UISelectOne) target;
-
-                        // if target is an instance of UISelectOne then get all the UISelectItem children
-                        // and verify if the submitted value exists
-                        for (Iterator<UIComponent> iter = radio.getChildren().iterator(); iter.hasNext(); ) 
+                        UIComponent component = iter.next();
+                        if (component instanceof UISelectItem)
                         {
-                            UIComponent component = iter.next();
-                            if (component instanceof UISelectItem) 
+                            UISelectItem item = (UISelectItem) component;
+                            if (item.getItemValue().equals(submittedValue))
                             {
-                                UISelectItem item = (UISelectItem) component;
-                                if (item.getItemValue().equals(submittedValue)) 
-                                {
-                                    selectItemValueFound = true;
-                                    return VisitResult.COMPLETE;
-                                }
+                                selectItemValueFound = true;
+                                return VisitResult.COMPLETE;
                             }
-
                         }
-                        return VisitResult.REJECT;
-                    }
 
-                    return VisitResult.ACCEPT;
+                    }
+                    return VisitResult.REJECT;
                 }
+
+                return VisitResult.ACCEPT;
             });
         }
         

@@ -407,7 +407,7 @@ class StateCacheServerSide extends StateCache<Object, Object>
                     Object object = null;
                     if (System.getSecurityManager() != null) 
                     {
-                        object = AccessController.doPrivileged((PrivilegedExceptionAction) () -> in.readObject());
+                        object = AccessController.doPrivileged((PrivilegedExceptionAction) in::readObject);
                     }
                     else
                     {

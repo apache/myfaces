@@ -51,9 +51,7 @@ public class ClientWindowScopeContextualStorageHolder
         Integer numberOfClientWindowsInSession =
                 MyfacesConfig.getCurrentInstance(facesContext).getNumberOfClientWindows();
         clientWindowExpirationStack = new LRULinkedHashMap<>(numberOfClientWindowsInSession, (eldest) ->
-        {
-            destroyAll(FacesContext.getCurrentInstance(), eldest.getKey());
-        });
+                destroyAll(FacesContext.getCurrentInstance(), eldest.getKey()));
 
         pushClientWindow(facesContext, facesContext.getExternalContext().getClientWindow());
     }

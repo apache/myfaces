@@ -62,28 +62,23 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
             current.visitTree(
                     VisitContext.createVisitContext(facesContext, null,
                             expressionContext.getSearchExpressionContext().getVisitHints()),
-                    new VisitCallback()
-                    {
-                        @Override
-                        public VisitResult visit(VisitContext context, UIComponent target)
+                    (context, target) -> {
+                        if (targetId.equals(target.getId()))
                         {
-                            if (targetId.equals(target.getId()))
+                            expressionContext.invokeContextCallback(target);
+
+                            if (expressionContext.getSearchExpressionContext().getExpressionHints() != null
+                                    && expressionContext.getSearchExpressionContext().getExpressionHints().contains(
+                                            SearchExpressionHint.RESOLVE_SINGLE_COMPONENT))
                             {
-                                expressionContext.invokeContextCallback(target);
-                                
-                                if (expressionContext.getSearchExpressionContext().getExpressionHints() != null
-                                        && expressionContext.getSearchExpressionContext().getExpressionHints().contains(
-                                                SearchExpressionHint.RESOLVE_SINGLE_COMPONENT))
-                                {
-                                    return VisitResult.COMPLETE;
-                                }
-                                
-                                return VisitResult.ACCEPT;
+                                return VisitResult.COMPLETE;
                             }
-                            else
-                            {
-                                return VisitResult.ACCEPT;
-                            }
+
+                            return VisitResult.ACCEPT;
+                        }
+                        else
+                        {
+                            return VisitResult.ACCEPT;
                         }
                     });
         }

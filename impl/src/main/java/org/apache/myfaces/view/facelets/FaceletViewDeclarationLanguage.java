@@ -2643,7 +2643,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         if (options != null &&
             Arrays.binarySearch(options, ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME) >= 0)
         {
-            stream = stream.map(f -> strategy.getMinimalImplicitOutcome(f));
+            stream = stream.map(strategy::getMinimalImplicitOutcome);
         }
         return stream;
     }

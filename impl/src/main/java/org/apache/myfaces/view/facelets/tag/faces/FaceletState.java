@@ -140,12 +140,7 @@ public class FaceletState implements StateHolder, Serializable
             bindingsMap = new HashMap<>();
         }
 
-        Map<String, ValueExpression> bindings = bindingsMap.get(uniqueId);
-        if (bindings == null)
-        {
-            bindings = new HashMap<>();
-            bindingsMap.put(uniqueId, bindings);
-        }
+        Map<String, ValueExpression> bindings = bindingsMap.computeIfAbsent(uniqueId, k -> new HashMap<>());
 
         bindings.put(key, expr);
     }

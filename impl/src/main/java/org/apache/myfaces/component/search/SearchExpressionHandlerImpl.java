@@ -416,15 +416,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                     throw new FacesException("Expression cannot have keywords or ids at the right side: "+command);
                 }
 
-                this.applyKeyword(searchExpressionContext, previous, command, remaining, new ContextCallback()
-                    {
-                        @Override
-                        public void invokeContextCallback(FacesContext facesContext, UIComponent target)
-                        {
-                            handler.invokeOnComponent(
-                                    searchExpressionContext, target, remaining, topCallback);
-                        }
-                    });
+                this.applyKeyword(searchExpressionContext, previous, command, remaining, (facesContext1, target) -> handler.invokeOnComponent(
+                        searchExpressionContext, target, remaining, topCallback));
             }
             else
             {
@@ -500,15 +493,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                             {
                                 final String childExpression = nextExpression;
 
-                                parent.invokeOnComponent(facesContext, targetClientId, new ContextCallback() 
-                                {
-                                    @Override
-                                    public void invokeContextCallback(FacesContext context, UIComponent target)
-                                    {
-                                        handler.invokeOnComponent(
-                                                searchExpressionContext, target, childExpression, topCallback);
-                                    }
-                                });
+                                parent.invokeOnComponent(facesContext, targetClientId, (context, target1) -> handler.invokeOnComponent(
+                                        searchExpressionContext, target1, childExpression, topCallback));
                             }
                             else
                             {

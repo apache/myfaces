@@ -167,14 +167,7 @@ public class ConcurrentLRUCache<K, V>
         {
             if (newThreadForCleanup)
             {
-                new Thread()
-                {
-                    @Override
-                    public void run()
-                    {
-                        markAndSweep();
-                    }
-                }.start();
+                new Thread(this::markAndSweep).start();
             }
             else if (cleanupThread != null)
             {

@@ -88,13 +88,8 @@ public class DebugPhaseListener implements PhaseListener
     public static List<Object[]> getFieldDebugInfos(final String field, String clientId)
     {
         Map<String, List<Object[]>> debugInfo = getDebugInfoMap(clientId);
-        List<Object[]> fieldDebugInfo = debugInfo.get(field);
-        if (fieldDebugInfo == null)
-        {
-            // no field debug-infos yet, create them and store it in the Map
-            fieldDebugInfo = new ArrayList<Object[]>();
-            debugInfo.put(field, fieldDebugInfo);
-        }
+        List<Object[]> fieldDebugInfo = debugInfo.computeIfAbsent(field, k -> new ArrayList<Object[]>());
+        // no field debug-infos yet, create them and store it in the Map
         return fieldDebugInfo;
     }
     

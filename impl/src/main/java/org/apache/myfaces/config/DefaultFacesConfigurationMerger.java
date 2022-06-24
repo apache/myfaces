@@ -822,49 +822,44 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
             appFilteredConfigResources = new ArrayList<>(appConfigResources);
         }
         Collections.sort(appFilteredConfigResources,
-                new Comparator<FacesConfig>()
-                {
-                    @Override
-                    public int compare(FacesConfig o1, FacesConfig o2)
+                (o1, o2) -> {
+                    int o1Weight = 0;
+                    int o2Weight = 0;
+                    if (o1.getOrdering() != null)
                     {
-                        int o1Weight = 0;
-                        int o2Weight = 0;
-                        if (o1.getOrdering() != null)
+                        for (OrderSlot slot : o1.getOrdering().getBeforeList())
                         {
-                            for (OrderSlot slot : o1.getOrdering().getBeforeList())
+                            if (slot instanceof FacesConfigNameSlot)
                             {
-                                if (slot instanceof FacesConfigNameSlot)
-                                {
-                                    o1Weight++;
-                                }
-                            }
-                            for (OrderSlot slot : o1.getOrdering().getAfterList())
-                            {
-                                if (slot instanceof FacesConfigNameSlot)
-                                {
-                                    o1Weight++;
-                                }
+                                o1Weight++;
                             }
                         }
-                        if (o2.getOrdering() != null)
+                        for (OrderSlot slot : o1.getOrdering().getAfterList())
                         {
-                            for (OrderSlot slot : o2.getOrdering().getBeforeList())
+                            if (slot instanceof FacesConfigNameSlot)
                             {
-                                if (slot instanceof FacesConfigNameSlot)
-                                {
-                                    o2Weight++;
-                                }
-                            }
-                            for (OrderSlot slot : o2.getOrdering().getAfterList())
-                            {
-                                if (slot instanceof FacesConfigNameSlot)
-                                {
-                                    o2Weight++;
-                                }
+                                o1Weight++;
                             }
                         }
-                        return o2Weight - o1Weight;
                     }
+                    if (o2.getOrdering() != null)
+                    {
+                        for (OrderSlot slot : o2.getOrdering().getBeforeList())
+                        {
+                            if (slot instanceof FacesConfigNameSlot)
+                            {
+                                o2Weight++;
+                            }
+                        }
+                        for (OrderSlot slot : o2.getOrdering().getAfterList())
+                        {
+                            if (slot instanceof FacesConfigNameSlot)
+                            {
+                                o2Weight++;
+                            }
+                        }
+                    }
+                    return o2Weight - o1Weight;
                 });
 
         List<FacesConfig> postOrderedList = new LinkedList<>();

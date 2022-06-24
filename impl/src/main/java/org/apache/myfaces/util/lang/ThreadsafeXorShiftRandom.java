@@ -44,14 +44,7 @@ public class ThreadsafeXorShiftRandom extends XorShiftRandom
         super(0);
     }
 
-    private static final ThreadLocal<XorShiftRandom> randomThreadLocal = new ThreadLocal<XorShiftRandom>()
-    {
-        @Override
-        protected XorShiftRandom initialValue()
-        {
-            return new XorShiftRandom(seedRandom.nextLong());
-        }
-    };
+    private static final ThreadLocal<XorShiftRandom> randomThreadLocal = ThreadLocal.withInitial(() -> new XorShiftRandom(seedRandom.nextLong()));
 
     /**
      * We use the random generator for this very thread.

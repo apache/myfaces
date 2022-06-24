@@ -123,7 +123,7 @@ public final class FactoryFinder
             if (System.getSecurityManager() != null)
             {
                 classLoader = (ClassLoader) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> FactoryFinder.class.getClassLoader());
+                        (PrivilegedExceptionAction) FactoryFinder.class::getClassLoader);
             }
             else
             {
@@ -330,10 +330,7 @@ public final class FactoryFinder
         synchronized (factoryClassNames)
         {
             // check if someone else already installed the factory
-            if (factoryMap.get(factoryName) == null)
-            {
-                factoryMap.put(factoryName, factory);
-            }
+            factoryMap.putIfAbsent(factoryName, factory);
         }
 
         return factory;

@@ -127,7 +127,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _componentsMarkedForDeletion = new ArrayList<>();
         _relocatableResourceForDeletion = new HashMap<>();
         _deletionLevel = -1;
-        _sectionUniqueIdCounter = new Lazy(() -> new SectionUniqueIdCounter());
+        _sectionUniqueIdCounter = new Lazy(SectionUniqueIdCounter::new);
         //Cached at facelet view
         myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
 

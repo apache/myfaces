@@ -271,12 +271,8 @@ public class HtmlFormRendererBase extends HtmlRenderer
             return;
         }
 
-        if (facesContext.getExternalContext().getRequestMap().get(
-                getScrollHiddenInputName(facesContext, form)) == null)
-        {
-            facesContext.getExternalContext().getRequestMap().put(getScrollHiddenInputName(
-                    facesContext, form), Boolean.TRUE);
-        }
+        facesContext.getExternalContext().getRequestMap().putIfAbsent(getScrollHiddenInputName(
+                facesContext, form), Boolean.TRUE);
     }
 
     /**

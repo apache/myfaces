@@ -96,15 +96,15 @@ public final class DefaultFaceletFactory extends FaceletFactory
                 = (FaceletCacheFactory) FactoryFinder.getFactory(FactoryFinder.FACELET_CACHE_FACTORY);
         _faceletCache = (FaceletCache<Facelet>) cacheFactory.getFaceletCache();
         
-        FaceletCache.MemberFactory<Facelet> faceletFactory = (URL url) -> _createFacelet(url);
-        FaceletCache.MemberFactory<Facelet> viewMetadataFaceletFactory = (URL url) -> _createViewMetadataFacelet(url);
+        FaceletCache.MemberFactory<Facelet> faceletFactory = this::_createFacelet;
+        FaceletCache.MemberFactory<Facelet> viewMetadataFaceletFactory = this::_createViewMetadataFacelet;
         
         if (_faceletCache instanceof AbstractFaceletCache)
         {
             _abstractFaceletCache = (AbstractFaceletCache<Facelet>) _faceletCache;
             
-            FaceletCache.MemberFactory<Facelet> compositeComponentMetadataFaceletFactory = 
-                (URL url) -> _createCompositeComponentMetadataFacelet(url);
+            FaceletCache.MemberFactory<Facelet> compositeComponentMetadataFaceletFactory =
+                    this::_createCompositeComponentMetadataFacelet;
 
             try
             {

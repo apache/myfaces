@@ -892,12 +892,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                     paramMap = new HashMap<>(5, 1f);
                 }
 
-                List<String> values = paramMap.get(currentName);
-                if (values == null)
-                {
-                    values = new ArrayList<>(1);
-                    paramMap.put(currentName, values);
-                }
+                List<String> values = paramMap.computeIfAbsent(currentName, k -> new ArrayList<>(1));
 
                 try
                 {

@@ -200,26 +200,21 @@ class PackageInfo
     protected static void listFilesRecursive(final List<Class> classes,
             final File base, final ClassLoader cld, final String pckgname)
     {
-        base.listFiles(new FileFilter()
-        {
-            @Override
-            public boolean accept(File file)
+        base.listFiles(file -> {
+            if (file.isDirectory())
             {
-                if (file.isDirectory())
-                {
-                    listFilesRecursive(classes, file, cld, pckgname + '.' + file.getName());
-                    return false;
-                }
-                if (!file.getName().toLowerCase().endsWith(".class"))
-                {
-                    return false;
-                }
-
-                String className = filenameToClassname(pckgname + '.' + file.getName());
-                loadClass(classes, cld, className);
-
+                listFilesRecursive(classes, file, cld, pckgname + '.' + file.getName());
                 return false;
             }
+            if (!file.getName().toLowerCase().endsWith(".class"))
+            {
+                return false;
+            }
+
+            String className = filenameToClassname(pckgname + '.' + file.getName());
+            loadClass(classes, cld, className);
+
+            return false;
         });
     }
 }

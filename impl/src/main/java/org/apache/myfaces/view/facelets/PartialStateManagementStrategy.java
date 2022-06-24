@@ -965,97 +965,92 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
         try
         {
             uiViewRoot.visitTree(getVisitContextFactory().getVisitContext(facesContext, null,
-                    MyFacesVisitHints.SET_SKIP_ITERATION), new VisitCallback()
-            {
-                @Override
-                public VisitResult visit(VisitContext context, UIComponent target)
-                {
-                    FacesContext facesContext = context.getFacesContext();
-                    Object state;
-                    
-                    if ((target == null) || target.isTransient())
-                    {
-                        // No need to bother with these components or their children.
-                        
-                        return VisitResult.REJECT;
-                    }
-                    
-                    ComponentState componentAddedAfterBuildView
-                            = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
-                    
-                    //Note if UIViewRoot has this marker, JSF 1.2 like state saving is used.
-                    if (componentAddedAfterBuildView != null && (target.getParent() != null))
-                    {
-                        if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
+                    MyFacesVisitHints.SET_SKIP_ITERATION), (context, target) -> {
+                        FacesContext facesContext1 = context.getFacesContext();
+                        Object state;
+
+                        if ((target == null) || target.isTransient())
                         {
-                            registerOnAddRemoveList(facesContext, target.getClientId(facesContext));
-                            target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
+                            // No need to bother with these components or their children.
+
+                            return VisitResult.REJECT;
                         }
-                        else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
+
+                        ComponentState componentAddedAfterBuildView
+                                = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+
+                        //Note if UIViewRoot has this marker, JSF 1.2 like state saving is used.
+                        if (componentAddedAfterBuildView != null && (target.getParent() != null))
                         {
-                            registerOnAddList(facesContext, target.getClientId(facesContext));
-                            target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
-                        }
-                        else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
-                        {
-                            registerOnAddList(facesContext, target.getClientId(facesContext));
-                        }
-                        ensureClearInitialState(target);
-                        //Save all required info to restore the subtree.
-                        //This includes position, structure and state of subtree
-                        
-                        int childIndex = target.getParent().getChildren().indexOf(target);
-                        if (childIndex >= 0)
-                        {
-                            states.put(target.getClientId(facesContext), new AttachedFullStateWrapper( 
-                                    new Object[]{
-                                        target.getParent().getClientId(facesContext),
+                            if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
+                            {
+                                registerOnAddRemoveList(facesContext1, target.getClientId(facesContext1));
+                                target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
+                            }
+                            else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
+                            {
+                                registerOnAddList(facesContext1, target.getClientId(facesContext1));
+                                target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
+                            }
+                            else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
+                            {
+                                registerOnAddList(facesContext1, target.getClientId(facesContext1));
+                            }
+                            ensureClearInitialState(target);
+                            //Save all required info to restore the subtree.
+                            //This includes position, structure and state of subtree
+
+                            int childIndex = target.getParent().getChildren().indexOf(target);
+                            if (childIndex >= 0)
+                            {
+                                states.put(target.getClientId(facesContext1), new AttachedFullStateWrapper(
+                                        new Object[]{
+                                            target.getParent().getClientId(facesContext1),
+                                            null,
+                                            childIndex,
+                                            internalBuildTreeStructureToSave(target),
+                                            target.processSaveState(facesContext1)}));
+                            }
+                            else
+                            {
+                                String facetName = null;
+                                if (target.getParent().getFacetCount() > 0)
+                                {
+                                    for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet())
+                                    {
+                                        if (target.equals(entry.getValue()))
+                                        {
+                                            facetName = entry.getKey();
+                                            break;
+                                        }
+                                    }
+                                }
+                                states.put(target.getClientId(facesContext1),new AttachedFullStateWrapper(new Object[]{
+                                        target.getParent().getClientId(facesContext1),
+                                        facetName,
                                         null,
-                                        childIndex,
                                         internalBuildTreeStructureToSave(target),
-                                        target.processSaveState(facesContext)}));
+                                        target.processSaveState(facesContext1)}));
+                            }
+                            return VisitResult.REJECT;
+                        }
+                        else if (target.getParent() != null)
+                        {
+                            state = target.saveState (facesContext1);
+                            if (state != null)
+                            {
+                                // Save by client ID into our map.
+                                states.put(target.getClientId(facesContext1), state);
+                            }
+
+                            return VisitResult.ACCEPT;
                         }
                         else
                         {
-                            String facetName = null;
-                            if (target.getParent().getFacetCount() > 0)
-                            {
-                                for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet()) 
-                                {
-                                    if (target.equals(entry.getValue()))
-                                    {
-                                        facetName = entry.getKey();
-                                        break;
-                                    }
-                                }
-                            }
-                            states.put(target.getClientId(facesContext),new AttachedFullStateWrapper(new Object[]{
-                                    target.getParent().getClientId(facesContext),
-                                    facetName,
-                                    null,
-                                    internalBuildTreeStructureToSave(target),
-                                    target.processSaveState(facesContext)}));
+                            //Only UIViewRoot has no parent in a component tree.
+                            return VisitResult.ACCEPT;
                         }
-                        return VisitResult.REJECT;
-                    }
-                    else if (target.getParent() != null)
-                    {
-                        state = target.saveState (facesContext);
-                        if (state != null)
-                        {
-                            // Save by client ID into our map.
-                            states.put(target.getClientId(facesContext), state);
-                        }
-                        
-                        return VisitResult.ACCEPT;
-                    }
-                    else
-                    {
-                        //Only UIViewRoot has no parent in a component tree.
-                        return VisitResult.ACCEPT;
-                    }
-                }
-            });
+                    });
         }
         finally
         {

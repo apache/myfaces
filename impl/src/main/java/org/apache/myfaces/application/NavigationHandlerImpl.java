@@ -1137,12 +1137,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                             // ignore includeViewParams, faces-include-view-params and faces-redirect
                             continue;
                         }
-                        List<String> paramValues = params.get(splitParam[0]);
-                        if (paramValues == null)
-                        {
-                            paramValues = new ArrayList<>(5);
-                            params.put(splitParam[0], paramValues);
-                        }
+                        List<String> paramValues = params.computeIfAbsent(splitParam[0], k -> new ArrayList<>(5));
                         paramValues.add(splitParam[1]);
                     }
                     else

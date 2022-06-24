@@ -76,15 +76,11 @@ public class ViewPoolImpl extends ViewPool
                 INIT_PARAM_VIEW_POOL_MAX_DYNAMIC_PARTIAL_LIMIT_DEFAULT);
         String entryMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
                 INIT_PARAM_VIEW_POOL_ENTRY_MODE,
-                parameters.containsKey(INIT_PARAM_VIEW_POOL_ENTRY_MODE) ?
-                parameters.get(INIT_PARAM_VIEW_POOL_ENTRY_MODE) :
-                INIT_PARAM_VIEW_POOL_ENTRY_MODE_DEFAULT);
+                parameters.getOrDefault(INIT_PARAM_VIEW_POOL_ENTRY_MODE, INIT_PARAM_VIEW_POOL_ENTRY_MODE_DEFAULT));
         entryWeak = ENTRY_MODE_WEAK.equals(entryMode);
         String deferredNavigationVal = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
                 INIT_PARAM_VIEW_POOL_DEFERRED_NAVIGATION,
-                parameters.containsKey(INIT_PARAM_VIEW_POOL_DEFERRED_NAVIGATION) ?
-                parameters.get(INIT_PARAM_VIEW_POOL_DEFERRED_NAVIGATION) :
-                "false");
+                parameters.getOrDefault(INIT_PARAM_VIEW_POOL_DEFERRED_NAVIGATION, "false"));
         deferredNavigation = Boolean.valueOf(deferredNavigationVal);
         
         staticStructureViewMetadataMap = new ConcurrentHashMap<>();

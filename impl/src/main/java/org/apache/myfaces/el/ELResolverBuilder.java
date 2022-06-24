@@ -86,7 +86,7 @@ public class ELResolverBuilder
         }
 
         return resolvers.stream()
-                .map(r -> new TracingELResolverWrapper(r))
+                .map(TracingELResolverWrapper::new)
                 .collect(Collectors.toList()); 
     }
     

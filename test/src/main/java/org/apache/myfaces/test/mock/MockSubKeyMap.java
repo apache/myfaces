@@ -200,15 +200,7 @@ final class MockSubKeyMap<V> extends AbstractMap<String, V>
         @Override
         public void clear()
         {
-            Iterator<String> keys = _base.keySet().iterator();
-            while (keys.hasNext())
-            {
-                String key = keys.next();
-                if (key != null && key.startsWith(_prefix))
-                {
-                    keys.remove();
-                }
-            }
+            _base.keySet().removeIf(key -> key != null && key.startsWith(_prefix));
         }
     }
 

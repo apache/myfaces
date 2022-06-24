@@ -53,7 +53,7 @@ public abstract class SerialFactory
             {
                 if (System.getSecurityManager() != null)
                 {
-                    return AccessController.doPrivileged((PrivilegedExceptionAction) () -> ois.readObject());
+                    return AccessController.doPrivileged((PrivilegedExceptionAction) ois::readObject);
                 }
 
                 return ois.readObject();
