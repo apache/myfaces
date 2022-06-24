@@ -25,6 +25,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -48,7 +49,7 @@ import java.security.PrivilegedAction;
  */
 public final class Classpath
 {
-    private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final Charset UTF8 = StandardCharsets.UTF_8;
     private static final Set<String> EXCLUDED_PREFIX_SET = new HashSet<String>(Arrays.asList("rar:", "sar:"));
     private static final Set<String> EXCLUDED_SUFFIX_SET = new HashSet<String>(Arrays.asList(".rar", ".sar"));
 
@@ -92,7 +93,7 @@ public final class Classpath
                 }
                 else
                 {
-                    if (!_searchDir(result, new File(URLDecoder.decode(url.getFile(), "UTF-8")), suffix))
+                    if (!_searchDir(result, new File(URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8)), suffix))
                     {
                         _searchFromURL(result, prefix, suffix, url);
                     }

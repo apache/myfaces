@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
@@ -100,14 +101,7 @@ public class DefaultServiceProviderFinder extends ServiceProviderFinder
                         // strange systems.  It's a fix for bugs
                         // reported in xerces
                         BufferedReader rd;
-                        try
-                        {
-                            rd = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                        }
-                        catch (java.io.UnsupportedEncodingException e)
-                        {
-                            rd = new BufferedReader(new InputStreamReader(is));
-                        }
+                        rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
                         try
                         {
