@@ -453,8 +453,8 @@ class RestoreViewExecutor extends PhaseExecutor
             if (ectx.getRequestServletPath() != null && ectx.getRequestPathInfo() != null)
             {
                 servletPathIndex = ectx.getRequestServletPath() != null ? 
-                    path.indexOf(ectx.getRequestServletPath(), 
-                                 appContextPathIndex >= 0 ? appContextPathIndex : 0) : -1;
+                    path.indexOf(ectx.getRequestServletPath(),
+                            Math.max(appContextPathIndex, 0)) : -1;
                 if (servletPathIndex != -1)
                 {
                     pathInfoIndex = servletPathIndex + ectx.getRequestServletPath().length();
@@ -463,7 +463,7 @@ class RestoreViewExecutor extends PhaseExecutor
             else
             {
                 servletPathIndex = -1;
-                pathInfoIndex = (appContextPathIndex >= 0 ? appContextPathIndex : 0) + appContextPath.length();
+                pathInfoIndex = (Math.max(appContextPathIndex, 0)) + appContextPath.length();
             }
 
             // If match appContextPath(if any) and match servletPath or pathInfo referer header is ok

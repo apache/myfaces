@@ -770,6 +770,6 @@ public final class StringUtils
     {
         return (a < 0) ? b
             : (b < 0) ? a
-                : (a < b) ? a : b;
+                : Math.min(a, b);
     }
 }
