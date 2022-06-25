@@ -257,21 +257,19 @@ public class TempDirFileCacheResourceLoader extends ResourceLoaderWrapper
         target.mkdirs();  // ensure necessary directories exist
         target.delete();  // remove any existing file
 
-        InputStream inputStream = null;
         FileOutputStream fileOutputStream;
-        try
+        try (InputStream inputStream = getWrapped().getResourceInputStream(resourceMeta))
         {
             /*
             if (couldResourceContainValueExpressions(resourceMeta))
             {
                 inputStream = new ValueExpressionFilterInputStream(
                         getWrapped().getResourceInputStream(resourceMeta),
-                        resourceMeta.getLibraryName(), 
+                        resourceMeta.getLibraryName(),
                         resourceMeta.getResourceName());
             }
             else
             {*/
-                inputStream = getWrapped().getResourceInputStream(resourceMeta);
             /*}*/
             fileOutputStream = new FileOutputStream(target);
             byte[] buffer = new byte[this.getResourceBufferSize()];
@@ -286,20 +284,7 @@ public class TempDirFileCacheResourceLoader extends ResourceLoaderWrapper
         {
             throw new FacesException("Unexpected exception while create file:", e);
         }
-        finally
-        {
-            if (inputStream != null)
-            {
-                try
-                {
-                    inputStream.close();
-                }
-                catch (IOException e)
-                {
-                    // Ignore
-                }
-            }
-        }
+        // Ignore
     }
     
     /**

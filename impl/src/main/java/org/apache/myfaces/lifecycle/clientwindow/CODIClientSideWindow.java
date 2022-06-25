@@ -218,14 +218,9 @@ public class CODIClientSideWindow extends ClientWindow
             windowHandlerHtml = windowHandlerHtml.replace(
                     NOSCRIPT_URL_REPLACE_PATTERN, getNoscriptUrl(facesContext.getExternalContext()));
 
-            OutputStream os = httpResponse.getOutputStream();
-            try
+            try (OutputStream os = httpResponse.getOutputStream())
             {
                 os.write(windowHandlerHtml.getBytes());
-            }
-            finally
-            {
-                os.close();
             }
         }
         catch (IOException ioe)

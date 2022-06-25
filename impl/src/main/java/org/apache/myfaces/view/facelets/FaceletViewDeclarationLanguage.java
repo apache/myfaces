@@ -1752,8 +1752,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             StateWriter stateWriter = new StateWriter(outputWriter, 1024, context);
             try
             {
-                ResponseWriter writer = origWriter.cloneWithWriter(stateWriter);
-                try
+                try (ResponseWriter writer = origWriter.cloneWithWriter(stateWriter))
                 {
                     context.setResponseWriter(writer);
 
@@ -1886,11 +1885,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                             }
                         }
                     }
-                }
-                finally
-                {
-                    // The Facelets implementation must close the writer used to write the response
-                    writer.close();
                 }
             }
             finally

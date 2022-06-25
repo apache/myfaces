@@ -20,6 +20,7 @@ package org.apache.myfaces.config.impl;
 
 import java.io.ByteArrayInputStream;
 import jakarta.faces.context.ExternalContext;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Consumer;
@@ -96,7 +97,7 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
     {
         FacesConfigImpl facesConfig = new FacesConfigImpl();
 
-        try
+        try (InputStream copy = in)
         {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
@@ -121,7 +122,7 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             Document document;
             if (systemId == null)
             {
-                document = builder.parse(in);
+                document = builder.parse(copy);
             }
             else
             {
@@ -175,22 +176,15 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
                     (n) -> { facesConfig.addFacesFlowDefinition(processFlowDefinition(n)); });
             
         }
+        catch (final IOException e)
+        {
+            throw new IOException("Unexpected exception while close the resource:", e);
+        }
         catch (Exception e)
         {
             throw new FacesException(e);
         }
-        finally
-        {
-            try
-            {
-                in.close();
-            }
-            catch (IOException e)
-            {
-                // ignore silently
-            }
-        }
-          
+
         postProcessFacesConfig(systemId, facesConfig);
 
         return facesConfig;

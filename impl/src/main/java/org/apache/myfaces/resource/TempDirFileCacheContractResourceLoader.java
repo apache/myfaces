@@ -211,11 +211,9 @@ public class TempDirFileCacheContractResourceLoader extends ContractResourceLoad
         target.mkdirs();  // ensure necessary directories exist
         target.delete();  // remove any existing file
 
-        InputStream inputStream = null;
         FileOutputStream fileOutputStream;
-        try
+        try (InputStream inputStream = getWrapped().getResourceInputStream(resourceMeta))
         {
-            inputStream = getWrapped().getResourceInputStream(resourceMeta);
             fileOutputStream = new FileOutputStream(target);
             byte[] buffer = new byte[this.getResourceBufferSize()];
 
@@ -225,23 +223,9 @@ public class TempDirFileCacheContractResourceLoader extends ContractResourceLoad
         {
             throw new FacesException("Unexpected exception while create file:", e);
         }
-        catch (IOException e)
+        catch (final IOException e)
         {
-            throw new FacesException("Unexpected exception while create file:", e);
-        }
-        finally
-        {
-            if (inputStream != null)
-            {
-                try
-                {
-                    inputStream.close();
-                }
-                catch (IOException e)
-                {
-                    // Ignore
-                }
-            }
+            throw new RuntimeException("Unexpected exception while close the resource:", e);
         }
     }
     

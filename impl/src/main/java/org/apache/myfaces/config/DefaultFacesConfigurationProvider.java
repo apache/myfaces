@@ -648,10 +648,10 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             throw new FacesException(e);
         }
 
-        InputStream stream = ectx.getResourceAsStream(systemId);
-        PushbackInputStream pbstream = new PushbackInputStream(stream, 10);
-        try
+
+        try (InputStream stream = ectx.getResourceAsStream(systemId))
         {
+            PushbackInputStream pbstream = new PushbackInputStream(stream, 10);
             if (stream == null)
             {
                 log.severe("Faces config resource " + systemId + " not found");
@@ -717,20 +717,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         {
             throw new FacesException(e);
         }
-        finally
-        {
-            if (stream != null)
-            {
-                try
-                {
-                    stream.close();
-                }
-                catch (IOException ex)
-                {
-                    // No op
-                }
-            }
-        }
+        // No op
     }
 
     @Override
