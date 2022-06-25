@@ -659,6 +659,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             }
             String flowName = systemId.substring(systemId.lastIndexOf('/')+1, systemId.lastIndexOf("-flow.xml"));
             int c = pbstream.read();
+            final String startNodePath = systemId.substring(0, systemId.lastIndexOf('/') + 1) + flowName + ".xhtml";
             if (c != -1)
             {
                 pbstream.unread(c);
@@ -673,8 +674,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 flow.setId(flowName);
                 // In this case the defining document id is implicit associated
                 flow.setDefiningDocumentId(systemId);
-                
-                String startNodePath = systemId.substring(0, systemId.lastIndexOf('/')+1)+flowName+".xhtml";
+
                 flow.setStartNode(startNodePath);
                 
                 // There is a default return node with name [flow-name]-return and 
@@ -705,8 +705,6 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     FacesFlowDefinitionImpl flow = (FacesFlowDefinitionImpl) definition;
                     if (flow.getStartNode() == null)
                     {
-                        String startNodePath = systemId.substring(0, 
-                            systemId.lastIndexOf('/')+1)+flowName+".xhtml";
                         flow.setStartNode(startNodePath);
                     }
                 }
