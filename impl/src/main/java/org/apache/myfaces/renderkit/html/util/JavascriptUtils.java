@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.util;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -143,14 +143,7 @@ public final class JavascriptUtils
                 else
                 {
                     byte[] bytes;
-                    try
-                    {
-                        bytes = Character.toString(c).getBytes("UTF-8");
-                    }
-                    catch (UnsupportedEncodingException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
+                    bytes = Character.toString(c).getBytes(StandardCharsets.UTF_8);
 
                     for (int j = 0; j < bytes.length; j++)
                     {
