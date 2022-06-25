@@ -245,7 +245,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             writer.startElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM, null);
             if (usingTable != null)
             {
-                Integer border = 0;
+                int border = 0;
                 Object borderObj = uiComponent.getAttributes().get("border");
                 if (null != borderObj)
                 {
@@ -403,7 +403,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
                             facesContext, writer, uiComponent, itemId != null ? itemId : clientId,  behaviors);
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
+                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
                         CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, uiComponent,
                                 itemId != null ? itemId : clientId, behaviors);
@@ -452,7 +452,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
                             facesContext, writer, uiComponent, itemId != null ? itemId : clientId, behaviors);
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
+                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
                         CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, uiComponent, 
                                 itemId != null ? itemId : clientId, behaviors);

@@ -190,7 +190,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
                 HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, component, behaviors);
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
+                    long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
                     CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                             commonPropertiesMarked, commonEventsMarked, component, behaviors);
                     CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(

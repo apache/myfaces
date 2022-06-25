@@ -272,7 +272,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                     {
                         if (isCommonEventsOptimizationEnabled(facesContext))
                         {
-                            Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
+                            long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
                             CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                     commonPropertiesMarked, commonEventsMarked, component, behaviors);
                             CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -300,7 +300,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                     {
                         if (isCommonEventsOptimizationEnabled(facesContext))
                         {
-                            Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
+                            long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
                             CommonHtmlEventsUtil.renderBehaviorizedEventHandlersWithoutOnclick(facesContext, writer, 
                                     commonPropertiesMarked, commonEventsMarked, component, behaviors);
                             CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -753,7 +753,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 {
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
+                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
                         CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
                         CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -864,7 +864,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 {
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
+                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
                         CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
                         CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -948,7 +948,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 {
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
+                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
                         CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
                         CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -1025,7 +1025,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 {
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
+                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
                         CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
                         CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(

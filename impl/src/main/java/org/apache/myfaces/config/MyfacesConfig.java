@@ -1070,7 +1070,7 @@ public class MyfacesConfig
                    + NUMBER_OF_VIEWS_IN_SESSION_DEFAULT + "): " + e.getMessage(), e);
         }
 
-        Integer numberOfFlashTokensInSessionDefault;
+        int numberOfFlashTokensInSessionDefault;
         if (cfg.numberOfSequentialViewsInSession != null && cfg.numberOfSequentialViewsInSession > 0)
         {
             numberOfFlashTokensInSessionDefault = (cfg.numberOfViewsInSession

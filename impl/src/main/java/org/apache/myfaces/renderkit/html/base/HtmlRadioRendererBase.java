@@ -287,7 +287,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
 
             if (usingTable != null)
             {
-                Integer border = 0;
+                int border = 0;
                 Object borderObj = uiComponent.getAttributes().get("border");
                 if (null != borderObj)
                 {
@@ -499,7 +499,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
                         itemId != null ? itemId : clientId, behaviors);
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
+                    long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
                     CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                             commonPropertiesMarked, commonEventsMarked, uiComponent,
                             itemId != null ? itemId : clientId, behaviors);

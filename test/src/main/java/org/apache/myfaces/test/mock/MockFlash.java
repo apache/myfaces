@@ -786,7 +786,7 @@ public class MockFlash extends Flash
 
     private Boolean convertToBoolean(Object value)
     {
-        Boolean booleanValue;
+        boolean booleanValue;
         if (value instanceof Boolean)
         {
             booleanValue = (Boolean) value;
