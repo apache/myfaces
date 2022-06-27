@@ -657,9 +657,11 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 log.severe("Faces config resource " + systemId + " not found");
                 return null;
             }
+
             String flowName = systemId.substring(systemId.lastIndexOf('/')+1, systemId.lastIndexOf("-flow.xml"));
+            String startNodePath = systemId.substring(0, systemId.lastIndexOf('/') + 1) + flowName + ".xhtml";
+
             int c = pbstream.read();
-            final String startNodePath = systemId.substring(0, systemId.lastIndexOf('/') + 1) + flowName + ".xhtml";
             if (c != -1)
             {
                 pbstream.unread(c);

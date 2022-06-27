@@ -631,15 +631,15 @@ public final class SAXCompiler extends Compiler
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException
         {
-            final boolean hasNameSpace = CompositeLibrary.NAMESPACE.equals(uri)
+            boolean isCompositeNamespace = CompositeLibrary.NAMESPACE.equals(uri)
                     || CompositeLibrary.JCP_NAMESPACE.equals(uri)
                     || CompositeLibrary.SUN_NAMESPACE.equals(uri);
+
             if (inCompositeInterface)
             {
                 this.unit.popTag();
             }
-            else if (inCompositeImplementation &&
-                    hasNameSpace)
+            else if (inCompositeImplementation && isCompositeNamespace)
             {
                 if ("insertFacet".equals(localName) ||
                     "renderFacet".equals(localName) ||
@@ -650,7 +650,7 @@ public final class SAXCompiler extends Compiler
                 }
             }
             
-            if (hasNameSpace)
+            if (isCompositeNamespace)
             {
                 if (InterfaceHandler.NAME.equals(localName))
                 {
@@ -745,10 +745,11 @@ public final class SAXCompiler extends Compiler
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
-            final boolean nameSpace = CompositeLibrary.NAMESPACE.equals(uri)
+            boolean isCompositeNamespace = CompositeLibrary.NAMESPACE.equals(uri)
                     || CompositeLibrary.JCP_NAMESPACE.equals(uri)
                     || CompositeLibrary.SUN_NAMESPACE.equals(uri);
-            if (nameSpace)
+
+            if (isCompositeNamespace)
             {
                 if (InterfaceHandler.NAME.equals(localName))
                 {
@@ -765,7 +766,7 @@ public final class SAXCompiler extends Compiler
                 this.unit.pushTag(new Tag(createLocation(), uri, localName, qName, createAttributes(attributes)));
             }
             else if (inCompositeImplementation &&
-                    (nameSpace))
+                    (isCompositeNamespace))
             {
                 if ("insertFacet".equals(localName)    ||
                     "renderFacet".equals(localName)    ||
