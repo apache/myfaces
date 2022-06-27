@@ -98,9 +98,9 @@ public class SelectItemsUtil
             itemDescription = itemDescription.toString();
         }
 
-        Boolean itemDisabled = AttributeUtils.getBooleanAttribute(component,
+        boolean itemDisabled = AttributeUtils.getBooleanAttribute(component,
                 ATTR_ITEM_DISABLED, false);
-        Boolean itemLabelEscaped = AttributeUtils.getBooleanAttribute(component,
+        boolean itemLabelEscaped = AttributeUtils.getBooleanAttribute(component,
                 ATTR_ITEM_LABEL_ESCAPED, true);
         Object noSelectionValue = attributes.get(ATTR_NO_SELECTION_VALUE);
 

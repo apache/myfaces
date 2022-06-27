@@ -289,8 +289,8 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                     value = itr.next();
 
                     // first time, use the counter
-                    Integer count = iterationState.getCounter();
-                    String base = count.toString();
+                    int count = iterationState.getCounter();
+                    String base = Integer.toString(count);
                     iterationState.setCounter(count+1);
 
                     if (value instanceof Serializable)
@@ -504,8 +504,8 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                     else
                     {
                         // No state, added item, create new count
-                        Integer count = iterationState.getCounter();
-                        base = count.toString();
+                        int count = iterationState.getCounter();
+                        base = Integer.toString(count);
                         iterationState.setCounter(count+1);
                         stateValue = null;
                     }

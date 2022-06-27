@@ -123,7 +123,7 @@ public class HtmlLabelRenderer extends HtmlRenderer
             {
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
-                    Long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
+                    long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
                     CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                             commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
                     CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
