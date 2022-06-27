@@ -61,7 +61,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
     private static final long INFINITE_DELAY = -1;
     private static final long NO_CACHE_DELAY = 0;
     
-    protected final Logger log = Logger.getLogger(DefaultFaceletFactory.class.getName());
+    protected static final Logger log = Logger.getLogger(DefaultFaceletFactory.class.getName());
 
     private Optional<URL> _baseUrl;
     private Compiler _compiler;
