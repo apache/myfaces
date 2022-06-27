@@ -87,7 +87,7 @@ public class FacesClientBehaviorCDIWrapper implements PartialStateHolder, Client
     {
         if (!initialStateMarked())
         {
-            Object values[] = new Object[1];
+            Object[] values = new Object[1];
             values[0] = behaviorId;
             return values;
         }
@@ -99,7 +99,7 @@ public class FacesClientBehaviorCDIWrapper implements PartialStateHolder, Client
     {
         if (state != null)
         {
-            Object values[] = (Object[])state;
+            Object[] values = (Object[])state;
             behaviorId = (String)values[0];
         }
     }

@@ -227,7 +227,7 @@ public final class MessageUtils
      * @param params The params to fill in the String with.
      * @return The updated String.
      */
-    public static String substituteParams(Locale locale, String msgtext, Object params[])
+    public static String substituteParams(Locale locale, String msgtext, Object[] params)
     {
         String localizedStr = null;
         if(params == null || msgtext == null)
@@ -243,13 +243,13 @@ public final class MessageUtils
         return localizedStr;
     }
 
-    public static FacesMessage getMessage(String messageId, Object params[])
+    public static FacesMessage getMessage(String messageId, Object[] params)
     {
         Locale locale = getCurrentLocale();
         return getMessage(locale, messageId, params);
     }
 
-    public static FacesMessage getMessageFromBundle(String bundleBaseName, String messageId, Object params[])
+    public static FacesMessage getMessageFromBundle(String bundleBaseName, String messageId, Object[] params)
     {
         Locale locale = null;
         FacesContext context = FacesContext.getCurrentInstance();
@@ -268,7 +268,7 @@ public final class MessageUtils
         return getMessageFromBundle(bundleBaseName, context , locale, messageId, params);
     }
 
-    public static FacesMessage getMessage(Locale locale, String messageId, Object params[])
+    public static FacesMessage getMessage(Locale locale, String messageId, Object[] params)
     {
         String summary = null;
         String detail = null;
@@ -378,8 +378,9 @@ public final class MessageUtils
         }
     }
     
-    public static FacesMessage getMessageFromBundle(String bundleBaseName, 
-            FacesContext context, Locale locale, String messageId, Object params[])
+    public static FacesMessage getMessageFromBundle(String bundleBaseName,
+                                                    FacesContext context, Locale locale,
+                                                    String messageId, Object[] params)
     {
         String summary = null;
         String detail = null;
@@ -529,7 +530,7 @@ public final class MessageUtils
      * @param params parameters to set at localized message
      * @return generated FacesMessage
      */
-    public static FacesMessage getMessage(String bundleBaseName, String messageId, Object params[])
+    public static FacesMessage getMessage(String bundleBaseName, String messageId, Object[] params)
     {
         return getMessage(bundleBaseName, getCurrentLocale(), messageId, params);
     }
@@ -569,8 +570,8 @@ public final class MessageUtils
      * @param params parameters to set at localized message
      * @return generated FacesMessage
      */
-    public static FacesMessage getMessage(FacesMessage.Severity severity, String bundleBaseName, 
-            String messageId, Object params[])
+    public static FacesMessage getMessage(FacesMessage.Severity severity, String bundleBaseName,
+                                          String messageId, Object[] params)
     {
       FacesMessage msg = getMessage(bundleBaseName, messageId, params);
       msg.setSeverity(severity);
@@ -588,7 +589,7 @@ public final class MessageUtils
      * @param params parameters to set at localized message
      * @return generated FacesMessage
      */
-    public static FacesMessage getMessage(String bundleBaseName, Locale locale, String messageId, Object params[])
+    public static FacesMessage getMessage(String bundleBaseName, Locale locale, String messageId, Object[] params)
     {
       if (bundleBaseName == null)
       {
@@ -606,7 +607,7 @@ public final class MessageUtils
      * @param params parameters to set at localized message
      * @return generated FacesMessage
      */
-    public static FacesMessage getMessage(ResourceBundle bundle, String messageId, Object params[])
+    public static FacesMessage getMessage(ResourceBundle bundle, String messageId, Object[] params)
     {
         String summary = null;
         String detail = null;
@@ -669,7 +670,7 @@ public final class MessageUtils
      * @param params
      * @return generated FacesMessage
      */
-    public static FacesMessage getMessage(FacesContext context, String messageId, Object params[])
+    public static FacesMessage getMessage(FacesContext context, String messageId, Object[] params)
     {
         if(context == null || messageId == null)
         {
@@ -694,8 +695,8 @@ public final class MessageUtils
         }
     }
     
-    public static FacesMessage getMessage(String bundleBaseName, FacesContext context, 
-            String messageId, Object params[])
+    public static FacesMessage getMessage(String bundleBaseName, FacesContext context,
+                                          String messageId, Object[] params)
     {
         if(context == null || messageId == null)
         {

@@ -71,7 +71,7 @@ public class FastByteArrayOutputStream extends OutputStream
     }
 
     @Override
-    public final void write(byte b[])
+    public final void write(byte[] b)
     {
         verifyBufferSize(size + b.length);
         System.arraycopy(b, 0, buf, size, b.length);
@@ -79,7 +79,7 @@ public class FastByteArrayOutputStream extends OutputStream
     }
 
     @Override
-    public final void write(byte b[], int off, int len)
+    public final void write(byte[] b, int off, int len)
     {
         verifyBufferSize(size + len);
         System.arraycopy(b, off, buf, size, len);

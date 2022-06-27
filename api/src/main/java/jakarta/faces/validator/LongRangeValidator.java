@@ -192,7 +192,7 @@ public class LongRangeValidator
 
         if (!initialStateMarked())
         {
-            Object values[] = new Object[2];
+            Object[] values = new Object[2];
             values[0] = _maximum;
             values[1] = _minimum;
             return values;
@@ -207,7 +207,7 @@ public class LongRangeValidator
 
         if (state != null)
         {
-            Object values[] = (Object[])state;
+            Object[] values = (Object[])state;
             _maximum = (Long)values[0];
             _minimum = (Long)values[1];
         }

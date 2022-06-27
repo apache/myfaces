@@ -889,7 +889,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     }
 
     @Override
-    public void writeText(char cbuf[], int off, int len) throws IOException
+    public void writeText(char[] cbuf, int off, int len) throws IOException
     {
         Assert.notNull(cbuf, "cbuf");
 
@@ -1000,7 +1000,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     }
 
     @Override
-    public void write(char cbuf[], int off, int len) throws IOException
+    public void write(char[] cbuf, int off, int len) throws IOException
     {
         closeStartTagIfNecessary();
         // Don't bother encoding anything if chosen character encoding is UTF-8
@@ -1022,7 +1022,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     }
 
     @Override
-    public void write(char cbuf[]) throws IOException
+    public void write(char[] cbuf) throws IOException
     {
         closeStartTagIfNecessary();
         // Don't bother encoding anything if chosen character encoding is UTF-8

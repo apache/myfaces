@@ -1403,7 +1403,7 @@ public class ApplicationImpl extends Application
         // (save 3 additional lookups over a concurrent map per request). 
         if (converterClassOrClassName == null && !String.class.equals(targetClass))
         {
-            final Class<?> interfaces[] = targetClass.getInterfaces();
+            final Class<?>[] interfaces = targetClass.getInterfaces();
             if (interfaces != null)
             {
                 for (int i = 0, len = interfaces.length; i < len; i++)

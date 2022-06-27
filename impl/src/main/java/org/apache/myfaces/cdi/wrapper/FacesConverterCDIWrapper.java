@@ -105,7 +105,7 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
     {
         if (!initialStateMarked())
         {
-            Object values[] = new Object[2];
+            Object[] values = new Object[2];
             values[0] = forClass;
             values[1] = converterId;
             return values;
@@ -118,7 +118,7 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
     {
         if (state != null)
         {
-            Object values[] = (Object[])state;         
+            Object[] values = (Object[])state;
             forClass = (Class)values[0];
             converterId = (String)values[1];
         }

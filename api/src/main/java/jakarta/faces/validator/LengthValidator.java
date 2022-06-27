@@ -163,7 +163,7 @@ public class LengthValidator
 
         if (!initialStateMarked())
         {
-            Object values[] = new Object[2];
+            Object[] values = new Object[2];
             values[0] = _maximum;
             values[1] = _minimum;
             return values;
@@ -179,7 +179,7 @@ public class LengthValidator
 
         if (state != null)
         {
-            Object values[] = (Object[]) state;
+            Object[] values = (Object[]) state;
             _maximum = (Integer)values[0];
             _minimum = (Integer)values[1];
         }
