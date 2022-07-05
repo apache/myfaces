@@ -20,8 +20,8 @@ It's equals to JSF 2.3 but with "jakarta.faces" packages and constants instead o
 ### 2.3-next
 
 (Almost) JavaServer Faces 2.3 implementation  
-Completely refactored codebase compared to 2.3  
-2.3-next equals the JSF 2.3 API but delegates @ManagedBeans to CDI. ManagedBeans configured via XML are completely ignored. The implementation of the old FacesEL (javax.faces.el.*) also has been completely removed.
+Completely refactored codebase compared to 2.3, also providing a Quarkus extension  
+2.3-next equals the JSF 2.3 API but delegates @ManagedBeans to CDI; ManagedBeans configured via XML are completely ignored. The implementation of the old FacesEL (javax.faces.el.*) also has been completely removed.
 
 ### 2.3.x
 
