@@ -28,7 +28,7 @@ Completely refactored codebase compared to 2.3, also providing a Quarkus extensi
 JavaServer Faces 2.3 implementation
 
 
-## Minimum Requirements (trunk / 2.3-next)
+## Minimum Requirements (master / 2.3-next)
 
 - Java 1.8
 - Servlet 3.0
