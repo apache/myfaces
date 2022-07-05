@@ -9,15 +9,17 @@ Apache's implementation of the JavaServer Faces (JSF) and Jakarta Faces specific
 
 ### Master
 
-Upcoming Jakarta Faces 4.0 implementation.
+Jakarta Faces 4.0 implementation
 
 ### 3.0.x
 
-The upcoming Jakarta Faces 3.0. It's equals to JSF 2.3 but with "jakarta.faces" packages and constants instead of "javax.faces".
+Jakarta Faces 3.0 implementation
+It's equals to JSF 2.3 but with "jakarta.faces" packages and constants instead of "javax.faces".
 
 ### 2.3-next
 
-2.3-next is a completely refactored codebase compared to 2.3.
+(Almost) JavaServer Faces 2.3 implementation
+Completely refactored codebase compared to 2.3
 2.3-next equals the JSF 2.3 API but delegates @ManagedBeans to CDI. ManagedBeans configured via XML are completely ignored. The implementation of the old FacesEL (javax.faces.el.*) also has been completely removed.
 It will be the base of the upcoming JSF 4.0.
 
