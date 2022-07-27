@@ -617,10 +617,13 @@ public class DateTimeConverter
     }
 
     /**
-     * Specifies whether the date, time, or both should be 
-     * parsed/formatted.  Values include:  date, time, and both.
-     * Default based on setting of timeStyle and dateStyle.
-     * 
+     * Specifies whether the date, time, or both should be
+     * parsed/formatted.
+     * Valid values are: "date", "time", "both", "localDate", "localDateTime", "localTime", "offsetTime",
+     * "offsetDateTime", and "zonedDateTime".
+     * The prefixes "local", "offset", "zoned" are used, when the type of the value is
+     * one of the corresponding Java 8 Date Time API classes.
+     * Default is "date".
      */
     @JSFProperty
     public String getType()
