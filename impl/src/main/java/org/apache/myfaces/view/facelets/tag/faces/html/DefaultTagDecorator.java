@@ -176,7 +176,7 @@ public class DefaultTagDecorator implements TagDecorator
             return null;
         }
         
-        // One or many attributes has the Faces_NAMESPACE attribute set. Check empty or
+        // One or many attributes has the JSF_NAMESPACE attribute set. Check empty or
         // xhtml namespace
         if (EMPTY_NAMESPACE.equals(tag.getNamespace()) || XHTML_NAMESPACE.equals(tag.getNamespace()))
         {
