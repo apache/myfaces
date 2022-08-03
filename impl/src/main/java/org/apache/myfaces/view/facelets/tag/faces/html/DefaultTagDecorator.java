@@ -176,7 +176,7 @@ public class DefaultTagDecorator implements TagDecorator
             return null;
         }
         
-        // One or many attributes has the JSF_NAMESPACE attribute set. Check empty or
+        // One or many attributes has the JsfLibrary.NAMESPACE attribute set. Check empty or
         // xhtml namespace
         if (EMPTY_NAMESPACE.equals(tag.getNamespace()) || XHTML_NAMESPACE.equals(tag.getNamespace()))
         {
@@ -222,7 +222,7 @@ public class DefaultTagDecorator implements TagDecorator
         }
         else
         {
-            throw new FaceletException("Attributes under " +JsfLibrary.NAMESPACE +
+            throw new FaceletException("Attributes under " + JsfLibrary.NAMESPACE +
                 " can only be used for tags under " + XHTML_NAMESPACE + " or tags with no namespace defined" );
         }
     }
