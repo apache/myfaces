@@ -30,6 +30,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.event.PhaseId;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
+import org.apache.myfaces.shared.context.StartupFacesContext;
 
 /**
  * A FacesContext implementation which will be set as the current instance
@@ -39,7 +40,7 @@ import org.apache.myfaces.context.ReleaseableExternalContext;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class StartupFacesContextImpl extends FacesContextImplBase
+public class StartupFacesContextImpl extends FacesContextImplBase implements StartupFacesContext
 {
     
     public static final String EXCEPTION_TEXT = "This method is not supported during ";
