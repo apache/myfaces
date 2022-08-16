@@ -31,6 +31,7 @@ import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.webapp.DelegatedFacesServlet;
@@ -108,7 +109,7 @@ public class FacesServletMappingUtils
     }
 
     public static List<ServletRegistrationInfo> getServletRegistrations(FacesContext facesContext,
-            ServletContext servletContext, boolean cache)
+            ServletContext servletContext)
     {
         Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
         
@@ -131,7 +132,7 @@ public class FacesServletMappingUtils
             }
             
             infos = Collections.unmodifiableList(infos);
-            if (cache)
+            if (!(facesContext instanceof StartupFacesContextImpl))
             {
                 applicationMap.put(SERVLET_REGISTRATIONS, infos);
             }
@@ -141,7 +142,7 @@ public class FacesServletMappingUtils
     }
     
     public static ServletRegistrationInfo getFacesServletRegistration(FacesContext facesContext,
-            ServletContext servletContext, boolean cache)
+            ServletContext servletContext)
     {
         Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
         
@@ -149,7 +150,7 @@ public class FacesServletMappingUtils
                 applicationMap.get(FACES_SERVLET_REGISTRATION);
         if (facesServletRegistration == null)
         {
-            for (ServletRegistrationInfo info : getServletRegistrations(facesContext, servletContext, cache))
+            for (ServletRegistrationInfo info : getServletRegistrations(facesContext, servletContext))
             {
                 if (info.isFacesServlet())
                 {
@@ -158,7 +159,7 @@ public class FacesServletMappingUtils
                 }
             }
 
-            if (facesServletRegistration != null && cache)
+            if (facesServletRegistration != null && !(facesContext instanceof StartupFacesContextImpl))
             {
                 applicationMap.put(FACES_SERVLET_REGISTRATION, facesServletRegistration);
             }
@@ -248,7 +249,7 @@ public class FacesServletMappingUtils
         try
         {
             List<ServletRegistrationInfo> servletRegistrations =
-                    getServletRegistrations(facesContext, servletContext, true);
+                    getServletRegistrations(facesContext, servletContext);
             if (servletRegistrations  != null)
             {
                 FacesServletMapping facesExtensionMapping = null;
@@ -382,7 +383,7 @@ public class FacesServletMappingUtils
             if (context instanceof ServletContext)
             {
                 ServletRegistrationInfo facesServletRegistration =
-                        getFacesServletRegistration(facesContext, (ServletContext) context, true);
+                        getFacesServletRegistration(facesContext, (ServletContext) context);
                 if (facesServletRegistration != null)
                 {
                     for (String mapping : facesServletRegistration.getMappings())
@@ -408,7 +409,7 @@ public class FacesServletMappingUtils
             if (context instanceof ServletContext)
             {
                 ServletRegistrationInfo facesServletRegistration =
-                        getFacesServletRegistration(facesContext, (ServletContext) context, true);
+                        getFacesServletRegistration(facesContext, (ServletContext) context);
                 if (facesServletRegistration != null)
                 {
                     for (String mapping : facesServletRegistration.getMappings())
