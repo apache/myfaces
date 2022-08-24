@@ -48,7 +48,6 @@ import jakarta.faces.event.NamedEvent;
 import jakarta.faces.render.FacesBehaviorRenderer;
 import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.validator.FacesValidator;
-import jakarta.faces.view.facelets.FaceletsResourceResolver;
 
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
@@ -108,7 +107,6 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         //bcan.add("Ljakarta/faces/event/ListenerFor;");
         //bcan.add("Ljakarta/faces/event/ListenersFor;");
         bcan.add("Ljakarta/faces/render/FacesBehaviorRenderer;");
-        bcan.add("Ljakarta/faces/view/facelets/FaceletsResourceResolver;");
         JSF_ANNOTATION_NAMES = Collections.unmodifiableSet(bcan);
 
         Set<Class<? extends Annotation>> ancl = new HashSet<>(10, 1f);
@@ -119,7 +117,6 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         ancl.add(FacesRenderer.class);
         ancl.add(NamedEvent.class);
         ancl.add(FacesBehaviorRenderer.class);
-        ancl.add(FaceletsResourceResolver.class);
         JSF_ANNOTATION_CLASSES = Collections.unmodifiableSet(ancl);
     }
 
