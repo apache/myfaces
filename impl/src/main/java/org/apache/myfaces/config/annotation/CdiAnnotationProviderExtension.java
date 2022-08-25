@@ -33,7 +33,6 @@ import jakarta.faces.convert.FacesConverter;
 import jakarta.faces.render.FacesBehaviorRenderer;
 import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.validator.FacesValidator;
-import jakarta.faces.view.facelets.FaceletsResourceResolver;
 import org.apache.myfaces.config.element.NamedEvent;
 
 public class CdiAnnotationProviderExtension implements Extension
@@ -50,8 +49,7 @@ public class CdiAnnotationProviderExtension implements Extension
             FacesValidator.class,
             FacesRenderer.class,
             NamedEvent.class,
-            FacesBehaviorRenderer.class,
-            FaceletsResourceResolver.class
+            FacesBehaviorRenderer.class
         };
         map = new HashMap<>(annotationsToScan.length, 1f);
     }

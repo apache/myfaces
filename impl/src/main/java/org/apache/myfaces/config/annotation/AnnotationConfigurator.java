@@ -35,7 +35,6 @@ import jakarta.faces.render.FacesBehaviorRenderer;
 import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.validator.FacesValidator;
-import jakarta.faces.view.facelets.FaceletsResourceResolver;
 
 import org.apache.myfaces.config.impl.element.ApplicationImpl;
 import org.apache.myfaces.config.impl.element.BehaviorImpl;
@@ -267,13 +266,7 @@ public class AnnotationConfigurator
         {
             handleFacesBehaviorRenderer(facesConfig, classes);
         }
-        
-        classes = map.get(FaceletsResourceResolver.class);
-        if (classes != null && !classes.isEmpty())
-        {
-            handleFaceletsResourceResolver(facesConfig, classes);
-        }
-        
+
         return facesConfig;
     }
 
@@ -373,19 +366,6 @@ public class AnnotationConfigurator
                 cbr.setRendererType(facesBehaviorRenderer.rendererType());
                 cbr.setRendererClass(clazz.getName());
                 renderKit.addClientBehaviorRenderer(cbr);
-            }
-        }
-    }
-    
-    private void handleFaceletsResourceResolver(FacesConfigImpl facesConfig, Set<Class<?>> classes)
-    {
-        for (Class<?> clazz : classes)
-        {
-            FaceletsResourceResolver faceletsResourceResolver = 
-                (FaceletsResourceResolver) clazz.getAnnotation(FaceletsResourceResolver.class);
-            if (faceletsResourceResolver != null)
-            {
-                facesConfig.addResourceResolver(clazz.getName());
             }
         }
     }
