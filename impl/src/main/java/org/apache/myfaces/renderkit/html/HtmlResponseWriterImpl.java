@@ -425,7 +425,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
                         value = ((ValueExpression)value).getValue(getFacesContext().getELContext());
                     }
                     // encodeAndWriteURIAttribute(key, value, key);
-                    // JSF 2.2 In the renderkit javadoc of jsf 2.2 spec says this 
+                    // Faces 2.2 In the renderkit javadoc of jsf 2.2 spec says this 
                     // (Rendering Pass Through Attributes):
                     // "... The ResponseWriter must ensure that any pass through attributes are 
                     // rendered on the outer-most markup element for the component. If there is 
@@ -769,7 +769,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             throw new IllegalStateException("Must be called before the start element is closed (attribute '"
                     + name + "')");
         }
-        // From JSF 2.2 RenderKit javadoc: "... If there is a pass through attribute with the same 
+        // From Faces 2.2 RenderKit javadoc: "... If there is a pass through attribute with the same 
         // name as a renderer specific attribute, the pass through attribute takes precedence. ..."
         if (_passThroughAttributesMap != null && _passThroughAttributesMap.containsKey(name))
         {
@@ -823,7 +823,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             throw new IllegalStateException("Must be called before the start element is closed (attribute '"
                     + name + "')");
         }
-        // From JSF 2.2 RenderKit javadoc: "... If there is a pass through attribute with the same 
+        // From Faces 2.2 RenderKit javadoc: "... If there is a pass through attribute with the same 
         // name as a renderer specific attribute, the pass through attribute takes precedence. ..."
         if (_passThroughAttributesMap != null && _passThroughAttributesMap.containsKey(name))
         {

@@ -125,7 +125,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         if (myfacesConfig.isRenderViewStateId())
         {
             // responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
-            // JSF 2.2 if jakarta.faces.ViewState is used as the id, in portlet
+            // Faces 2.2 if jakarta.faces.ViewState is used as the id, in portlet
             // case it will be duplicate ids and that not xml friendly.
             responseWriter.writeAttribute(HTML.ID_ATTR,
                 HtmlResponseStateManager.generateUpdateViewStateId(facesContext),
@@ -271,7 +271,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
     public static String generateUpdateClientWindowId(FacesContext facesContext)
     {
-        // JSF 2.2 section 2.2.6.1 Partial State Rendering
+        // Faces 2.2 section 2.2.6.1 Partial State Rendering
         // According to the javascript doc of faces.ajax.response,
         //
         // The new syntax looks like this:
@@ -303,7 +303,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     
     public static String generateUpdateViewStateId(FacesContext facesContext)
     {
-        // JSF 2.2 section 2.2.6.1 Partial State Rendering
+        // Faces 2.2 section 2.2.6.1 Partial State Rendering
         // According to the javascript doc of faces.ajax.response,
         //
         // The new syntax looks like this:

@@ -57,7 +57,7 @@ import jakarta.faces.validator.Validator;
  * {@link ApplicationFactory}. Because this instance is shared, it must be implemented in a thread-safe manner.
  * </p>
  * 
- * Holds webapp-wide resources for a JSF application. There is a single one of these for a web application, accessable
+ * Holds webapp-wide resources for a Faces application. There is a single one of these for a web application, accessable
  * via
  * 
  * <pre>
@@ -67,7 +67,7 @@ import jakarta.faces.validator.Validator;
  * In particular, this provides a factory for UIComponent objects. It also provides convenience methods for creating
  * ValueBinding objects.
  * 
- * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @SuppressWarnings("deprecation")
 public abstract class Application
@@ -115,7 +115,7 @@ public abstract class Application
         return null;
     }
 
-    // The concrete methods throwing UnsupportedOperationExceptiom were added for JSF 1.2.
+    // The concrete methods throwing UnsupportedOperationExceptiom were added for Faces 1.2.
     // They supply default to allows old Application implementations to still work.
 
     /**
@@ -247,7 +247,7 @@ public abstract class Application
      */
     public void addELResolver(ELResolver resolver)
     {
-        // The following concrete methods were added for JSF 1.2.  They supply default 
+        // The following concrete methods were added for Faces 1.2.  They supply default 
         // implementations that throw UnsupportedOperationException.  
         // This allows old Application implementations to still work.
         Application application = getMyfacesApplicationInstance();
@@ -769,7 +769,7 @@ public abstract class Application
 
     /**
      * <p>
-     * Return the singleton, stateless, thread-safe <code>{@link ResourceHandler}</code> for this application. The JSF
+     * Return the singleton, stateless, thread-safe <code>{@link ResourceHandler}</code> for this application. The Faces
      * implementation must support the following techniques for declaring an alternate implementation of <code>
      * ResourceHandler</code>.
      * </p>
@@ -785,7 +785,7 @@ public abstract class Application
      * 
      * <p>
      * In all of the above cases, the runtime must employ the decorator pattern as for every other pluggable artifact in
-     * JSF.
+     * Faces.
      * </p>
      * 
      * @since 2.0
@@ -1170,7 +1170,7 @@ public abstract class Application
     
     public void addSearchKeywordResolver(SearchKeywordResolver resolver)
     {
-        // The following concrete methods were added for JSF 1.2.  They supply default 
+        // The following concrete methods were added for Faces 1.2.  They supply default 
         // implementations that throw UnsupportedOperationException.  
         // This allows old Application implementations to still work.
         Application application = getMyfacesApplicationInstance();

@@ -32,7 +32,7 @@ import org.apache.myfaces.view.facelets.tag.faces.PassThroughLibrary;
 import org.apache.myfaces.view.facelets.tag.faces.core.CoreLibrary;
 
 /**
- * Default implementation of TagDecorator as described in JSF 2.2 javadoc of
+ * Default implementation of TagDecorator as described in Faces 2.2 javadoc of
  * jakarta.faces.view.facelets.TagDecorator
  * 
  * @since 2.2
@@ -302,7 +302,7 @@ public class DefaultTagDecorator implements TagDecorator
             {
                 // should not happen, but let it because org.xml.sax.Attributes considers it
                 // -= Leonardo Uribe =- after conversation with Frank Caputo, who was the main contributor for
-                // this feature in JSF 2.2, he said that if the namespace is empty the intention is pass the
+                // this feature in Faces 2.2, he said that if the namespace is empty the intention is pass the
                 // attribute to the passthrough attribute map, so there is an error in the spec documentation.
                 //convertedTagAttributes[j] = tagAttribute;
                 
@@ -317,7 +317,7 @@ public class DefaultTagDecorator implements TagDecorator
                 // "... If the current attribute's namespace is empty 
                 // let the current attribute be convertedTagAttribute. ..."
                 // -= Leonardo Uribe =- after conversation with Frank Caputo, who was the main contributor for
-                // this feature in JSF 2.2, he said that if the namespace is empty the intention is pass the
+                // this feature in Faces 2.2, he said that if the namespace is empty the intention is pass the
                 // attribute to the passthrough attribute map, so there is an error in the spec documentation.
                 //convertedTagAttributes[j] = tagAttribute;
                 

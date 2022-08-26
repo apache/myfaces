@@ -184,7 +184,7 @@ public class FacesMessageTest extends TestCase
 
     public void testSeverityValues()
     {
-        // JSF spec requires this list to be sorted by ordinal
+        // Faces spec requires this list to be sorted by ordinal
         for (int i = 0, sz = FacesMessage.VALUES.size(); i < sz; i++)
         {
             FacesMessage.Severity severity = (Severity) FacesMessage.VALUES.get(i);

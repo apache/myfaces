@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * See JSF 1.2 spec section 5.6.2.7
+ * See Faces 1.2 spec section 5.6.2.7
  * 
  * @author Stan Silvert
  */

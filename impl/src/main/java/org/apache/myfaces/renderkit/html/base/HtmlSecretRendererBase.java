@@ -42,7 +42,7 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**
- * see Spec.1.0 EA - JSF.7.6.4 Renderer Types for UIInput Components
+ * see Spec.1.0 EA - Faces.7.6.4 Renderer Types for UIInput Components
  */
 public class HtmlSecretRendererBase extends HtmlRenderer
 {

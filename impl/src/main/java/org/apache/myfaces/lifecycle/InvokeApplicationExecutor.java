@@ -23,7 +23,7 @@ import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 
 /**
- * Implements the invoke application phase (JSF Spec 2.2.5)
+ * Implements the invoke application phase (Faces Spec 2.2.5)
  * 
  * @author Nikolay Petrov (latest modification by $Author$)
  * @version $Revision$ $Date$

@@ -38,7 +38,7 @@ import org.apache.myfaces.component.validate.ValidateWholeBeanComponent;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
 /**
- * For Tag details, see JSF Core <a target="_new"
+ * For Tag details, see Faces Core <a target="_new"
  * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/tld-summary.html">taglib documentation</a>.
  *
  * @author Jacob Hookom

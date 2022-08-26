@@ -32,7 +32,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 /**
- * SAX EntityResolver to provide JSF-specific resources (DTDs) for well-known identifiers.
+ * SAX EntityResolver to provide Faces-specific resources (DTDs) for well-known identifiers.
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl

@@ -427,7 +427,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_CLASS_ATTR, HTML.STYLE_CLASS_ATTR, styleClass);
         }
 
-        // render value as required by JSF 1.1 renderkitdocs
+        // render value as required by Faces 1.1 renderkitdocs
         if(value != null)
         {
             writer.writeText(value.toString(), ComponentAttrs.VALUE_ATTR);
@@ -436,7 +436,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         // render warning message for a h:commandLink with no nesting form
         if (form == null)
         {
-            writer.writeText(": This link is deactivated, because it is not embedded in a JSF form.", null);
+            writer.writeText(": This link is deactivated, because it is not embedded in a Faces form.", null);
         }
     }
 

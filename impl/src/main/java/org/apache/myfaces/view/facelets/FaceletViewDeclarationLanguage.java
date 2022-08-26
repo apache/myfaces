@@ -1736,7 +1736,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             // should that be handled? Or
             // is this optimization simply so minor that it should just
             // be trimmed altogether?
-            // See JSF 2.0 spec section 2.2.6, buildView is called before
+            // See Faces 2.0 spec section 2.2.6, buildView is called before
             // Render Response
             //if (!isFilledView(context, view))
             //{
@@ -1958,7 +1958,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         List<String> contracts = vdl.calculateResourceLibraryContracts(context, viewId);
         context.setResourceLibraryContracts(contracts);
         
-        // JSF 2.2 stateless views
+        // Faces 2.2 stateless views
         // We need to check if the incoming view is stateless or not and if that so rebuild it here
         // note we cannot do this in PartialStateManagementStrategy because it is only used
         // when PSS is enabled, but stateless views can be used without PSS. If the view is stateless,
@@ -2103,11 +2103,11 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         String encoding = (String) context.getAttributes().get(PARAM_ENCODING);
 
         // -= Leonardo Uribe =- Add */* to the contentType is a fix done from FaceletViewHandler
-        // to make old RI versions work, but since this is for JSF 2.0 it is not necessary that code.
+        // to make old RI versions work, but since this is for Faces 2.0 it is not necessary that code.
         ResponseWriter writer = renderKit.createResponseWriter(FaceletsVDLUtils.NullWriter.INSTANCE,
             contentType, encoding);
 
-        // Override the JSF provided content type if necessary
+        // Override the Faces provided content type if necessary
         contentType = getResponseContentType(context, writer.getContentType());
         encoding = getResponseEncoding(context, writer.getCharacterEncoding());
 

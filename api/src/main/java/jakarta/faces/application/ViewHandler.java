@@ -49,7 +49,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  * rendering methods on components; see method "renderView".
  * <p>
  * This class also isolates callers from the underlying request/response system. In particular, this class does not
- * explicitly depend upon the jakarta.servlet apis. This allows JSF to be used on servers that do not implement the
+ * explicitly depend upon the jakarta.servlet apis. This allows Faces to be used on servers that do not implement the
  * servlet API (for example, plain CGI).
  * <p>
  * Examples:
@@ -63,7 +63,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  * This class is expected to be invoked via the concrete implementation of {@link jakarta.faces.lifecycle.Lifecycle}.
  * <p>
  * For the official specification for this class, see <a
- * href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>.
+ * href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>.
  */
 public abstract class ViewHandler
 {
@@ -74,7 +74,7 @@ public abstract class ViewHandler
     
     /**
      * Indicate the default suffixes, separated by spaces to derive the default file URI 
-     * used by JSF to create views and render pages. 
+     * used by Faces to create views and render pages. 
      */
     @JSFWebConfigParam(defaultValue=".xhtml", since="1.1", group="viewhandler", deprecated = true)
     @Deprecated(since = "4.0")
@@ -133,7 +133,7 @@ public abstract class ViewHandler
     public static final java.lang.String FACELETS_SKIP_COMMENTS_PARAM_NAME = "jakarta.faces.FACELETS_SKIP_COMMENTS";
     
     /**
-     * @since JSF 1.2
+     * @since Faces 1.2
      */
     public String calculateCharacterEncoding(FacesContext context)
     {
@@ -172,7 +172,7 @@ public abstract class ViewHandler
      * Some request protocols allow an application user to specify what locale they prefer the response to be in. For
      * example, HTTP requests can specify the "accept-language" header.
      * <p>
-     * Method {@link jakarta.faces.application.Application#getSupportedLocales()} defines what locales this JSF
+     * Method {@link jakarta.faces.application.Application#getSupportedLocales()} defines what locales this Faces
      * application is capable of supporting.
      * <p>
      * This method should match such sources of data up and return the Locale object that is the best choice for
@@ -181,7 +181,7 @@ public abstract class ViewHandler
     public abstract Locale calculateLocale(FacesContext context);
 
     /**
-     * Return the id of an available render-kit that should be used to map the JSF components into user presentation.
+     * Return the id of an available render-kit that should be used to map the Faces components into user presentation.
      * <p>
      * The render-kit selected (eg html, xhtml, pdf, xul, ...) may depend upon the user, properties associated with the
      * request, etc.
@@ -231,15 +231,15 @@ public abstract class ViewHandler
     }
 
     /**
-     * Returns a URL, suitable for encoding and rendering, that (if activated) will cause the JSF
+     * Returns a URL, suitable for encoding and rendering, that (if activated) will cause the Faces
      * request processing lifecycle for the specified viewId to be executed
      */
     public abstract String getActionURL(FacesContext context, String viewId);
 
     /**
-     * Return a JSF action URL derived from the viewId argument that is suitable to be used as
-     * the target of a link in a JSF response. Compiliant implementations must implement this method
-     * as specified in section JSF.7.5.2. The default implementation simply calls through to
+     * Return a Faces action URL derived from the viewId argument that is suitable to be used as
+     * the target of a link in a Faces response. Compiliant implementations must implement this method
+     * as specified in section Faces.7.5.2. The default implementation simply calls through to
      * getActionURL(jakarta.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
      * 
      * @param context
@@ -281,9 +281,9 @@ public abstract class ViewHandler
     }
 
     /**
-     * Return a JSF action URL derived from the viewId argument that is suitable to be used by
+     * Return a Faces action URL derived from the viewId argument that is suitable to be used by
      * the NavigationHandler to issue a redirect request to the URL using a NonFaces request.
-     * Compiliant implementations must implement this method as specified in section JSF.7.5.2.
+     * Compiliant implementations must implement this method as specified in section Faces.7.5.2.
      * The default implementation simply calls through to
      * getActionURL(jakarta.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
      * 
@@ -320,7 +320,7 @@ public abstract class ViewHandler
      * if non-null, into the ExternalContext.setRequestCharacterEncoding(java.lang.String) method.
      * If ExternalContext.getRequestCharacterEncoding() returns non-null take no action.
      * 
-     * @since JSF 1.2
+     * @since Faces 1.2
      */
     public void initView(FacesContext context) throws FacesException
     {
@@ -402,7 +402,7 @@ public abstract class ViewHandler
     }
     
     /**
-     * Return a JSF URL that represents a websocket connection for the passed channel and channelToken
+     * Return a Faces URL that represents a websocket connection for the passed channel and channelToken
      * 
      * @since 2.3
      * @param context

@@ -278,7 +278,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         // is true and it should only be called by the NavigationHandler
         // in a redirect case RIGHT BEFORE ExternalContext.redirect().
         // Maybe a PreRedirectEvent issued by the ExternalContext would be a good
-        // choice for JSF 2.1.
+        // choice for Faces 2.1.
         
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -1057,7 +1057,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
 
         if (!map.isEmpty())
         {
-            //JSF 2.2 invoke PreClearFlashEvent
+            //Faces 2.2 invoke PreClearFlashEvent
             facesContext.getApplication().publishEvent(facesContext, 
                 PreClearFlashEvent.class, map);
 

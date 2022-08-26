@@ -42,7 +42,7 @@ public class WindowContextConfig
 
     /**
      * Allows to restrict window-ids.
-     * <p>With the default window handler (esp. for JSF 1.2), URLs have to contain the window-id.
+     * <p>With the default window handler (esp. for Faces 1.2), URLs have to contain the window-id.
      * If users bookmark these links, they could open 2-n tabs (with the bookmark) which have the same window-id.
      * It is only possible to prevent it if the ClientSideWindowHandler is used.
      * </p>

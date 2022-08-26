@@ -633,9 +633,9 @@ public final class HtmlRendererUtils
 
                 boolean escape = AttributeUtils.getBooleanAttribute(component, ComponentAttrs.ESCAPE_ATTR, false);
                 //default is to escape
-                //In JSF 1.2, when a SelectItem is created by default 
+                //In Faces 1.2, when a SelectItem is created by default 
                 //selectItem.isEscape() returns true (this property
-                //is not available on JSF 1.1).
+                //is not available on Faces 1.1).
                 //so, if we found a escape property on the component
                 //set to true, escape every item, but if not
                 //check if isEscape() = true first.
@@ -663,7 +663,7 @@ public final class HtmlRendererUtils
     {
         if (!RendererUtils.isDefaultAttributeValue(value))
         {
-            // render JSF "styleClass" and "itemStyleClass" attributes as "class"
+            // render Faces "styleClass" and "itemStyleClass" attributes as "class"
             String htmlAttrName = attrName.equals(HTML.STYLE_CLASS_ATTR) ? HTML.CLASS_ATTR : attrName;
             writer.writeAttribute(htmlAttrName, value, componentProperty);
             return true;

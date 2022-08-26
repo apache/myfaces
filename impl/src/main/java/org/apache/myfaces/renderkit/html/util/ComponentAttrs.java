@@ -22,7 +22,7 @@ import jakarta.faces.event.ActionListener;
 
 
 /**
- * Constant declarations for JSF tags
+ * Constant declarations for Faces tags
  */
 public interface ComponentAttrs
 {

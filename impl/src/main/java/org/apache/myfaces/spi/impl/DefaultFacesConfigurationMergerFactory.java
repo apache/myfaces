@@ -93,7 +93,7 @@ public class DefaultFacesConfigurationMergerFactory extends FacesConfigurationMe
                    InvocationTargetException,
                    PrivilegedActionException
     {
-        // get all fitting SPI implementations (no need to cache this since it's only called once per JSF-app)
+        // get all fitting SPI implementations (no need to cache this since it's only called once per Faces-app)
         List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext)
                 .getServiceProviderList(FACES_CONFIGURATION_MERGER);
 

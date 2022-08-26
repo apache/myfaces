@@ -929,7 +929,7 @@ public class ResourceHandlerImpl extends ResourceHandler
 
     /**
      * Recursively unwarp the resource until we find the real resourceName
-     * This is needed because the JSF2 specced ResourceWrapper doesn't override
+     * This is needed because the Faces2 specced ResourceWrapper doesn't override
      * the getResourceName() method :(
      * @param resource
      * @return the first non-null resourceName or <code>null</code> if none set
@@ -1658,7 +1658,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 // "... Considering the web app root ..."
                 
                 // "... Considering faces flows (at the locations specified in the spec prose document section 
-                // Faces Flows in the Using JSF in Web Applications chapter) ..."
+                // Faces Flows in the Using Faces in Web Applications chapter) ..."
                 for (ResourceLoader loader : getResourceHandlerSupport().getViewResourceLoaders())
                 {
                     ResourceMeta resourceMeta = deriveViewResourceMeta(

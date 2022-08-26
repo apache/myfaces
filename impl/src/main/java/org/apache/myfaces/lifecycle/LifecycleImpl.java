@@ -177,7 +177,7 @@ public class LifecycleImpl extends Lifecycle
         
         catch (Throwable e)
         {
-            // JSF 2.0: publish the executor's exception (if any).
+            // Faces 2.0: publish the executor's exception (if any).
             
             publishException (e, currentPhaseId, context);
         }
@@ -243,7 +243,7 @@ public class LifecycleImpl extends Lifecycle
 
         catch (Throwable e)
         {
-            // JSF 2.0: publish the executor's exception (if any).
+            // Faces 2.0: publish the executor's exception (if any).
 
             publishException (e, renderExecutor.getPhase(), facesContext);
         }

@@ -25,7 +25,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 /**
  * Renders a HTML label element.
  * 
- * In addition to the JSF specification, MyFaces allows it to directly give an output text via the "value" attribute.
+ * In addition to the Faces specification, MyFaces allows it to directly give an output text via the "value" attribute.
  */
 @JSFComponent(name = "h:outputLabel",
         clazz = "jakarta.faces.component.html.HtmlOutputLabel",template=true,

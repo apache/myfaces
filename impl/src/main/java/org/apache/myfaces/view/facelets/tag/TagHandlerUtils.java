@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import jakarta.faces.view.facelets.FaceletHandler;
 
 /**
- * This class was created to gather some code from latest Facelets not existing in latest JSF 2.0 spec.
+ * This class was created to gather some code from latest Facelets not existing in latest Faces 2.0 spec.
  * Also, since it was created on the fly while converting, it's highly possible that methods in this class
  * should be moved in a more logical location and/or removed.
  *

@@ -53,7 +53,7 @@ abstract class _HtmlInputSecret extends UIInput implements _AccesskeyProperty,
   
   /**
    * If true, the value will be re-sent (in plaintext) when the form
-   * is rerendered (see JSF.7.4.4). Default is false.
+   * is rerendered (see Faces.7.4.4). Default is false.
    * 
    * @JSFProperty
    *   defaultValue = "false"

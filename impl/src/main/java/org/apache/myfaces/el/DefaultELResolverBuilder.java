@@ -93,7 +93,7 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         // add the ELResolvers to a List first to be able to sort them
         List<ELResolver> list = new ArrayList<>();
 
-        // Add CDI ELResolver for JSF 2.3
+        // Add CDI ELResolver for Faces 2.3
         if (isReplaceImplicitObjectResolverWithCDIResolver(facesContext))
         {
             list.add(ImplicitObjectResolver.makeResolverForCDI());

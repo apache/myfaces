@@ -386,7 +386,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object state1 = output.saveState(facesContext);
         
         // Transient means no state, but the effect is the converter dissapear
-        // (because is transient, and in JSF 1.2/1.1 that was the effect).
+        // (because is transient, and in Faces 1.2/1.1 that was the effect).
         Assert.assertNotNull(state1);
         
         UIOutput output2 = new UIOutput();
@@ -412,7 +412,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object state1 = output.saveState(facesContext);
         
         // Transient means no state, but the effect is the converter dissapear
-        // (because is transient, and in JSF 1.2/1.1 that was the effect).
+        // (because is transient, and in Faces 1.2/1.1 that was the effect).
         Assert.assertNotNull(state1);
         
         UIOutput output2 = new UIOutput();

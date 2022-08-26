@@ -120,7 +120,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
         ResponseWriter writer = facesContext.getResponseWriter();
         
-        // commandButton does not need to be nested in a form since JSF 2.0
+        // commandButton does not need to be nested in a form since Faces 2.0
         UIForm form = ComponentUtils.findClosest(UIForm.class, uiComponent);
 
         boolean reset = isReset(uiComponent);

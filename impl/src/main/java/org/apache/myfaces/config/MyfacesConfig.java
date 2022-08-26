@@ -43,8 +43,8 @@ import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
  * files and are needed by the core implementation.
  *
  * MyfacesConfig is meant for components that implement some of the extended features
- * of MyFaces. Anyhow, using the MyFaces JSF implementation is no precondition for using
- * MyfacesConfig in custom components. Upon using another JSF implementation
+ * of MyFaces. Anyhow, using the MyFaces Faces implementation is no precondition for using
+ * MyfacesConfig in custom components. Upon using another Faces implementation
  * (or omitting the extended init parameters) all config properties will simply have
  * their default values.
  */
@@ -66,16 +66,16 @@ public class MyfacesConfig
      * Define if the input field that should store the state (jakarta.faces.ViewState) should render 
      * id="jakarta.faces.ViewState".
      * 
-     * JSF API 1.2 defines a "jakarta.faces.ViewState" client parameter, that must be rendered as both the "name"
+     * Faces API 1.2 defines a "jakarta.faces.ViewState" client parameter, that must be rendered as both the "name"
      * and the "id" attribute of the hidden input that is rendered for the purpose of state saving
      * (see ResponseStateManager.VIEW_STATE_PARAM).
      * Actually this causes duplicate id attributes and thus invalid XHTML pages when multiple forms are rendered on
      * one page. With the org.apache.myfaces.RENDER_VIEWSTATE_ID context parameter you can tune this behaviour.
      * <br/>Set it to
-     * <ul><li>true - to render JSF 1.2 compliant id attributes (that might cause invalid XHTML), or</li>
+     * <ul><li>true - to render Faces 1.2 compliant id attributes (that might cause invalid XHTML), or</li>
      * <li>false - to omit rendering of the id attribute (which is only needed for very special 
      * AJAX/Javascript components)</li></ul>
-     * Default value is: true (for backwards compatibility and JSF 1.2 compliancy) 
+     * Default value is: true (for backwards compatibility and Faces 1.2 compliancy) 
      */
     @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1", 
             ignoreUpperLowerCase=true, group="state")
@@ -187,7 +187,7 @@ public class MyfacesConfig
     
     /**
      * Change default getType() behavior for composite component EL resolver, from return null 
-     * (see JSF 2_0 spec section 5_6_2_2) to
+     * (see Faces 2_0 spec section 5_6_2_2) to
      * use the metadata information added by composite:attribute, ensuring components working with 
      * chained EL expressions to find the
      * right type when a getType() is called over the source EL expression.
@@ -556,7 +556,7 @@ public class MyfacesConfig
      * Define a custom comparator class used to sort the ELResolvers.
      * 
      * <p>This is useful when it is necessary to put an ELResolver on top of other resolvers. Note set
-     * this param override the default ordering described by JSF spec section 5. 
+     * this param override the default ordering described by Faces spec section 5. 
      * </p>
      */
     @JSFWebConfigParam(since = "1.2.10, 2.0.2", group="EL",
@@ -566,7 +566,7 @@ public class MyfacesConfig
     @JSFWebConfigParam(since = "2.1.0", group="EL",
         desc="The Class of an java.util.function.Predicate&lt;ELResolver&gt; implementation."
              + "If used and returns false for a ELResolver instance, such resolver will not be installed in "
-             + "ELResolvers chain. Use with caution - can break functionality defined in JSF specification "
+             + "ELResolvers chain. Use with caution - can break functionality defined in Faces specification "
              + "'ELResolver Instances Provided by Faces'")
     public static final String EL_RESOLVER_PREDICATE = "org.apache.myfaces.EL_RESOLVER_PREDICATE";
 
@@ -598,7 +598,7 @@ public class MyfacesConfig
     private static final boolean VIEWID_DERIVE_CACHE_ENABLED_DEFAULT = true;
 
     /**
-     * Enforce f:validateBean to be called first before any JSF validator.
+     * Enforce f:validateBean to be called first before any Faces validator.
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since = "2.2.10", group="validation")
     public final static String BEAN_BEFORE_JSF_VALIDATION

@@ -52,12 +52,12 @@ public class RestoreViewSupport
 
     public void processComponentBinding(FacesContext facesContext, UIComponent component)
     {
-        // JSF 2.0: Old hack related to t:aliasBean was fixed defining a event that traverse
+        // Faces 2.0: Old hack related to t:aliasBean was fixed defining a event that traverse
         // whole tree and let components to override UIComponent.processEvent() method to include it.
         
-        // Remove this hack SKIP_ITERATION_HINT and use VisitHints.SKIP_ITERATION in JSF 2.1 only
+        // Remove this hack SKIP_ITERATION_HINT and use VisitHints.SKIP_ITERATION in Faces 2.1 only
         // is not possible, because jsf 2.0 API-based libraries can use the String
-        // hint, JSF21-based libraries can use both.
+        // hint, Faces21-based libraries can use both.
         try
         {
             facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);

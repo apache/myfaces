@@ -36,7 +36,7 @@ import org.apache.myfaces.resource.ResourceELUtils;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 
 /**
- * See JSF 2.0 spec section 5.6.1.3 and 5.6.2.4
+ * See Faces 2.0 spec section 5.6.1.3 and 5.6.2.4
  * 
  * @author Leonardo Uribe
  *
@@ -126,7 +126,7 @@ public final class ResourceResolver extends ELResolver
                         }
                         else
                         {
-                            // JSF 2.2 "this" identifier can refer to a library or contract.
+                            // Faces 2.2 "this" identifier can refer to a library or contract.
                             libraryName = ResourceELUtils.getResourceLibraryForResolver(facesContext);
                             contractName = ResourceELUtils.getResourceContractForResolver(facesContext);
                         }

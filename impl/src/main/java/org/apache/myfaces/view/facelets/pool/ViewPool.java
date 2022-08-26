@@ -28,7 +28,7 @@ import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
  * order to be used by MyFaces.
  * 
  * <p>A View Pool is a set of initialized views that are kept ready to use. The idea 
- * is reset and reuse views taking advantage of existing JSF 2.0 Partial State 
+ * is reset and reuse views taking advantage of existing Faces 2.0 Partial State 
  * Saving algorithm with some small additions to component's saveState() method.
  * </p>
  * <p>This technique works by these reasons:

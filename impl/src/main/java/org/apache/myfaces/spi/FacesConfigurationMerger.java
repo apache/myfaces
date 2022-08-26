@@ -25,7 +25,7 @@ import jakarta.faces.context.ExternalContext;
 /**
  * SPI that uses the FacesConfigurationProvider-SPI to get all FacesConfig data
  * and then it combines it into one FacesConfigData instance. For this merging
- * process the ordering and sorting rules of the JSF spec must be applied.
+ * process the ordering and sorting rules of the Faces spec must be applied.
  *
  * With this SPI it is possible to store the result of the complex ordering and
  * sorting algorithm in order to skip it if no configuration changes are applied

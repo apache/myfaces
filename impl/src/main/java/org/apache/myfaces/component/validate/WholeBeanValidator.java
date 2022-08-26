@@ -120,7 +120,7 @@ public class WholeBeanValidator implements Validator
         
         if (Boolean.TRUE.equals(beanValidationFailed))
         {
-            // JSF 2.3 Skip class level validation
+            // Faces 2.3 Skip class level validation
             return;
         }
         

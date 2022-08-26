@@ -43,7 +43,7 @@ import org.apache.myfaces.core.api.shared.SelectItemsUtil;
  * </p>
  * <p>
  * See the javadoc for this class in the <a
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a> for further details.
+ * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">Faces Specification</a> for further details.
  * </p>
  */
 @JSFComponent(defaultRendererType = "jakarta.faces.Menu")

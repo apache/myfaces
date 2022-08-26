@@ -19,7 +19,7 @@
 package jakarta.faces;
 
 /**
- * Any wrapper class in JSF that must provide access to the object it wraps must implement this interface.
+ * Any wrapper class in Faces that must provide access to the object it wraps must implement this interface.
  * 
  * @since 2.0
  */

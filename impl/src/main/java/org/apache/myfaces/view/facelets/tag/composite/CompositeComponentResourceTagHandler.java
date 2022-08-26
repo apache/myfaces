@@ -179,7 +179,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     {
         FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
         
-        // Since JSF 2.2, there are two cases here:
+        // Since Faces 2.2, there are two cases here:
         // 
         // 1. The composite component content is defined as facelet content like usual.
         // 2. The composite component content will be defined programatically. That means,

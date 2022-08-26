@@ -68,7 +68,7 @@ public class HtmlClientEventAttributesUtil
         }
         else
         {
-            // Note that on JSF 2.3, some components don't need onselect attribute
+            // Note that on Faces 2.3, some components don't need onselect attribute
             // Please see https://issues.apache.org/jira/browse/MYFACES-4190
             attrs = (HtmlRenderedClientEventAttr[]) org.apache.myfaces.util.lang.ArrayUtils.concat( 
                 generateClientBehaviorEventAttrs(),

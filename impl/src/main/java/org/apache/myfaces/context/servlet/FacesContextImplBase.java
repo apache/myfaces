@@ -134,7 +134,7 @@ public abstract class FacesContextImplBase extends FacesContext
         _cachedRenderKitId = null;
         _separatorChar = null;
         
-        // Spec JSF 2 section getAttributes when release is called the attributes map
+        // Spec Faces 2 section getAttributes when release is called the attributes map
         // must!!! be cleared! (probably to trigger some clearance methods on possible
         // added entries before nullifying everything)
         if (_attributes != null)
@@ -255,7 +255,7 @@ public abstract class FacesContextImplBase extends FacesContext
      * 
      * Also the map does not cause any events according to the spec!
      * 
-     * @since JSF 2.0
+     * @since Faces 2.0
      * 
      * @throws IllegalStateException
      *             if the current context already is released!

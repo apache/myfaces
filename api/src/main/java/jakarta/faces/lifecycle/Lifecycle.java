@@ -22,7 +22,7 @@ import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 public abstract class Lifecycle
 {

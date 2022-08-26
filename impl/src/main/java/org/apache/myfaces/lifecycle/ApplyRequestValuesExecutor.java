@@ -23,7 +23,7 @@ import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 
 /**
- * Implements the apply request values phase (JSF Spec 2.2.2)
+ * Implements the apply request values phase (Faces Spec 2.2.2)
  * 
  * @author Nikolay Petrov (latest modification by $Author$)
  * @version $Revision$ $Date$

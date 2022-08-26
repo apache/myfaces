@@ -39,7 +39,7 @@ import jakarta.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.config.MyfacesConfig;
 
 /**
- * Implements the render response phase (JSF Spec 2.2.6)
+ * Implements the render response phase (Faces Spec 2.2.6)
  * 
  * @author Nikolay Petrov (latest modification by $Author$)
  * @version $Revision$ $Date$

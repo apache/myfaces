@@ -29,7 +29,7 @@ import jakarta.el.VariableMapper;
 import jakarta.faces.context.FacesContext;
 
 /**
- * ELContext used for JSF.
+ * ELContext used for Faces.
  * 
  * @author Stan Silvert
  */

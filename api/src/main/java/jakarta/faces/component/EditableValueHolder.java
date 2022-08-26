@@ -45,7 +45,7 @@ import jakarta.faces.validator.Validator;
  * Rendering the value-binding expression named "value" allows components to display data from the user's model classes.
  * This is the most common way a component's renderer obtains the value to display.
  * 
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for
+ * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a> for
  * more.
  */
 public interface EditableValueHolder extends ValueHolder

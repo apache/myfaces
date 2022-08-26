@@ -286,9 +286,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
      * <p>Return a list of classes to examine from the specified JAR archive.
      * If this archive has no classes in it, a zero-length list is returned.</p>
      *
-     * @param context <code>ExternalContext</code> instance for
-     *  this application
      * @param jar <code>JarFile</code> for the archive to be scanned
+     * @param list <code>List</code> list of classes
      *
      * @exception ClassNotFoundException if a located class cannot be loaded
      */

@@ -90,7 +90,7 @@ public class MethodExpressionActionListenerTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test for case: method with ActionEvent param exists (pre-JSF 2.0 case)
+     * Test for case: method with ActionEvent param exists (pre-Faces 2.0 case)
      */
     public void testProcessAction() 
     {
@@ -107,7 +107,7 @@ public class MethodExpressionActionListenerTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test for case: method exists but has no ActionEvent param (new possibility in JSF 2.0)
+     * Test for case: method exists but has no ActionEvent param (new possibility in Faces 2.0)
      */
     public void testProcessAction2() throws Exception 
     {

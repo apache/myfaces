@@ -31,7 +31,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * </p>
  * <p>
  * See the javadoc for this class in the
- * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
+ * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  * for further details.
  * </p>
  */

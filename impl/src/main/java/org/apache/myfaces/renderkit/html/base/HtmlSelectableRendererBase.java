@@ -94,7 +94,7 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
             {
                 CommonHtmlAttributesUtil.renderChangeEventProperty(writer, commonPropertiesMarked, uiComponent);
                 CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
-                // Note that on JSF 2.3, selectable components don't need onselect attribute
+                // Note that on Faces 2.3, selectable components don't need onselect attribute
                 // Please see https://issues.apache.org/jira/browse/MYFACES-4190
                 CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchangeAndOnselect(writer, 
                         commonPropertiesMarked, uiComponent);
