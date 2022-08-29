@@ -21,6 +21,7 @@ package org.apache.myfaces.cdi;
 import java.util.Map;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.faces.annotation.ApplicationMap;
 import jakarta.faces.annotation.HeaderMap;
@@ -229,11 +230,11 @@ public class FacesArtifactProducer
     
     @Produces
     @Push
-    public PushContext getPushContext(InjectionPoint ip)
+    public PushContext getPushContext(InjectionPoint ip, BeanManager beanManager)
     {
         Push push = ip.getAnnotated().getAnnotation(Push.class);
         String channel = push.channel().isEmpty() ? ip.getMember().getName() : push.channel();
-        return new PushContextImpl(channel);
+        return new PushContextImpl(channel, beanManager);
     }
 
     /*
