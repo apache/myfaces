@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Context;
 
@@ -143,6 +144,24 @@ public class CDIUtils
         {
             // Sometimes on startup time, since there is no active request context, trying to grab session scope
             // throws NullPointerException.
+            //No op
+        }
+        return false;
+    }
+    
+    public static boolean isRequestScopeActive(BeanManager beanManager)
+    {
+        try 
+        {
+            Context ctx = beanManager.getContext(RequestScoped.class);
+            return ctx != null;
+        }
+        catch (ContextNotActiveException ex)
+        {
+            //No op
+        }
+        catch (Exception ex)
+        {
             //No op
         }
         return false;

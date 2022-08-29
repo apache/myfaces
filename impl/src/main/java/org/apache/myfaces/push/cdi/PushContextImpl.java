@@ -69,15 +69,18 @@ public class PushContextImpl implements PushContext
         WebsocketViewBean viewTokenBean = null;
         WebsocketSessionBean sessionTokenBean = null;
         
-        if (CDIUtils.isSessionScopeActive(beanManager))
+        if (CDIUtils.isRequestScopeActive(beanManager))
         {
-            sessionTokenBean = CDIUtils.get(beanManager, WebsocketSessionBean.class, false);
-            if (CDIUtils.isViewScopeActive(beanManager))
+            if (CDIUtils.isSessionScopeActive(beanManager))
             {
-                viewTokenBean = CDIUtils.get(beanManager, WebsocketViewBean.class, false);
+                sessionTokenBean = CDIUtils.get(beanManager, WebsocketSessionBean.class, false);
+                if (CDIUtils.isViewScopeActive(beanManager))
+                {
+                    viewTokenBean = CDIUtils.get(beanManager, WebsocketViewBean.class, false);
+                }
             }
         }
-        
+
         if (appTokenBean == null)
         {
             // No base bean to push message
