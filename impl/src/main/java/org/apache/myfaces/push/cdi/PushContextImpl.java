@@ -28,9 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
 import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
 import javax.faces.push.PushContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
@@ -41,10 +39,12 @@ public class PushContextImpl implements PushContext
 {
     
     private final String channel;
+    private final BeanManager beanManager;
 
-    public PushContextImpl(String channel)
+    public PushContextImpl(String channel, BeanManager beanManager)
     {
         this.channel = channel;
+        this.beanManager = beanManager;
     }
 
     /**
@@ -60,17 +60,7 @@ public class PushContextImpl implements PushContext
     {
         //1. locate the channel and define the context
         String channel = getChannel();
-        BeanManager beanManager = null;
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext != null)
-        {
-            beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
-        }
-        else
-        {
-            beanManager = CDI.current().getBeanManager();
-        }
-        
+
         WebsocketApplicationBean appTokenBean = CDIUtils.getInstance(beanManager, 
                 WebsocketApplicationBean.class, false);
         WebsocketViewBean viewTokenBean = null;
@@ -149,17 +139,7 @@ public class PushContextImpl implements PushContext
     {
         //1. locate the channel and define the context
         String channel = getChannel();
-        BeanManager beanManager = null;
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext != null)
-        {
-            beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
-        }
-        else
-        {
-            beanManager = CDI.current().getBeanManager();
-        }
-        
+
         WebsocketApplicationBean appTokenBean = CDIUtils.getInstance(beanManager, 
                 WebsocketApplicationBean.class, false);
         WebsocketViewBean viewTokenBean = null;
