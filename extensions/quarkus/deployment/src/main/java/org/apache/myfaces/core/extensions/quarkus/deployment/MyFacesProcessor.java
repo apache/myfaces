@@ -34,6 +34,7 @@ import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBundleBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
 import io.quarkus.runtime.LaunchMode;
@@ -542,11 +543,18 @@ class MyFacesProcessor
     
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
-    void registerForFieldReflection(MyFacesRecorder recorder, BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+    NativeImageConfigBuildItem registerForFieldReflection(MyFacesRecorder recorder,
+                               BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
                                CombinedIndexBuildItem combinedIndex)
     {     
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, 
                 "javax.faces.context._MyFacesExternalContextHelper"));
+
+        // Register ViewScopeBeanHolder to be initialized at runtime, it uses a static random
+        NativeImageConfigBuildItem.Builder builder = NativeImageConfigBuildItem.builder();
+        builder.addRuntimeInitializedClass(ViewScopeBeanHolder.class.getName());
+
+        return builder.build();
     }
 
     @BuildStep
