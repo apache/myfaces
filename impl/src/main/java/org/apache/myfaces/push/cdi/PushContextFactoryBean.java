@@ -21,6 +21,7 @@ package org.apache.myfaces.push.cdi;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.faces.push.Push;
 import jakarta.faces.push.PushContext;
@@ -39,11 +40,11 @@ public class PushContextFactoryBean
     
     @Produces
     @Push
-    public PushContext createPushContext(InjectionPoint ip)
+    public PushContext createPushContext(InjectionPoint ip, BeanManager beanManager)
     {
         Push push = ip.getAnnotated().getAnnotation(Push.class);
         String channel = push.channel().isEmpty() ? ip.getMember().getName() : push.channel();
-        return new PushContextImpl(channel);
+        return new PushContextImpl(channel, beanManager);
     }
     
     public void close(@Disposes @Push PushContext context) 
