@@ -226,7 +226,7 @@ public class ViewIdSupport
                         if (mapping == null)
                         {
                             throw new IllegalStateException(
-                                    "No generic (either prefix or suffix) servlet-mapping found for FacesServlet."
+                                    "No generic (either prefix or suffix) servlet-mapping found for FacesServlet. "
                                     + "This is required serve views, that are not exact mapped.");
                         }
                     }
