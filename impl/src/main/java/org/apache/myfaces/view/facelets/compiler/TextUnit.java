@@ -529,7 +529,7 @@ final class TextUnit extends CompilationUnit
             }
             else if (ins instanceof LiteralNonExcapedTextInstruction)
             {
-                text = ((LiteralTextInstruction)ins).getText();
+                text = ((LiteralNonExcapedTextInstruction)ins).getText();
                 instructionType = 2;
             }
             else if (ins instanceof LiteralXMLInstruction)
