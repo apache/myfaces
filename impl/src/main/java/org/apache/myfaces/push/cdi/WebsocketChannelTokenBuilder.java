@@ -27,13 +27,13 @@ import org.apache.myfaces.util.token.CsrfSessionTokenFactorySecureRandom;
 import org.apache.myfaces.config.MyfacesConfig;
 
 @ApplicationScoped
-public class WebsocketChannelTokenBuilderBean
+public class WebsocketChannelTokenBuilder
 {
     private CsrfSessionTokenFactory csrfSessionTokenFactory;
     
     private boolean initialized;
     
-    public WebsocketChannelTokenBuilderBean()
+    public WebsocketChannelTokenBuilder()
     {
     }
     

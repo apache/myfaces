@@ -37,14 +37,14 @@ import jakarta.enterprise.context.SessionScoped;
  * 
  */
 @SessionScoped
-public class WebsocketSessionBean implements Serializable
+public class WebsocketTokenManagerSession extends AbstractWebsocketTokenManager implements Serializable
 {
     
     /**
      * This map hold all tokens that are related to the current scope. 
      * This map use as key channel and as value channelTokens
      */
-    private Map<String, List<WebsocketChannel> > channelTokenListMap = new ConcurrentHashMap<>(2);    
+    private Map<String, List<WebsocketChannel>> channelTokenListMap = new ConcurrentHashMap<>(2);    
     
     /**
      * This map holds all tokens related to the current session and its associated metadata, that will
@@ -53,7 +53,7 @@ public class WebsocketSessionBean implements Serializable
      */
     private Map<String, WebsocketChannelMetadata> tokenMap = new ConcurrentHashMap<>();
     
-    public WebsocketSessionBean()
+    public WebsocketTokenManagerSession()
     {
     }
     
@@ -62,15 +62,19 @@ public class WebsocketSessionBean implements Serializable
         tokenMap.put(token, metadata);
     }
 
+    @Override
     public void registerWebsocketSession(String token, WebsocketChannelMetadata metadata)
     {
-        if ("session".equals(metadata.getScope()))
-        {
-            channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<>(1));
-            channelTokenListMap.get(metadata.getChannel()).add(new WebsocketChannel(token, metadata));
-        }
+        channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<>(1));
+        channelTokenListMap.get(metadata.getChannel()).add(new WebsocketChannel(token, metadata));
     }
-    
+
+    @Override
+    public boolean isChannelAvailable(String channel)
+    {
+        return channelTokenListMap.containsKey(channel);
+    }
+
     public boolean isTokenValid(String token)
     {
         return tokenMap.containsKey(token);
@@ -88,21 +92,9 @@ public class WebsocketSessionBean implements Serializable
         }
         return null;
     }
-    
-    /**
-     * Indicate if the channel mentioned is valid for view scope.
-     * 
-     * A channel is valid if there is at least one token that represents a valid connection to this channel.
-     * 
-     * @param channel
-     * @return 
-     */
-    public boolean isChannelAvailable(String channel)
-    {
-        return channelTokenListMap.containsKey(channel);
-    }
-    
-    public List<String> getChannelTokensFor(String channel)
+
+    @Override
+    public List<String> getChannelTokens(String channel)
     {
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())
@@ -117,7 +109,8 @@ public class WebsocketSessionBean implements Serializable
         return Collections.emptyList();
     }
     
-    public <S extends Serializable> List<String> getChannelTokensFor(String channel, S user)
+    @Override
+    public <S extends Serializable> List<String> getChannelTokens(String channel, S user)
     {
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.myfaces.push.cdi;
 
 import java.io.Serializable;
@@ -35,7 +34,7 @@ import org.apache.myfaces.cdi.util.CDIUtils;
  * is discarded, destroy the websocket sessions associated with the view because they are no longer valid.
  */
 @ViewScoped
-public class WebsocketViewBean implements Serializable
+public class WebsocketTokenManagerView extends AbstractWebsocketTokenManager implements Serializable
 {
     
     /**
@@ -61,30 +60,21 @@ public class WebsocketViewBean implements Serializable
         tokenList.put(token, metadata);
     }
     
+    @Override
     public void registerWebsocketSession(String token, WebsocketChannelMetadata metadata)
     {
-        if ("view".equals(metadata.getScope()))
-        {
-            channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<>(1));
-            channelTokenListMap.get(metadata.getChannel()).add(new WebsocketChannel(
-                    token, metadata));
-        }
+        channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<>(1));
+        channelTokenListMap.get(metadata.getChannel()).add(new WebsocketChannel(token, metadata));
     }
 
-    /**
-     * Indicate if the channel mentioned is valid for view scope.
-     * 
-     * A channel is valid if there is at least one token that represents a valid connection to this channel.
-     * 
-     * @param channel
-     * @return 
-     */
+    @Override
     public boolean isChannelAvailable(String channel)
     {
         return channelTokenListMap.containsKey(channel);
     }
     
-    public List<String> getChannelTokensFor(String channel)
+    @Override
+    public List<String> getChannelTokens(String channel)
     {
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())
@@ -118,7 +108,8 @@ public class WebsocketViewBean implements Serializable
         return token;
     }
     
-    public <S extends Serializable> List<String> getChannelTokensFor(String channel, S user)
+    @Override
+    public <S extends Serializable> List<String> getChannelTokens(String channel, S user)
     {
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())
@@ -139,8 +130,8 @@ public class WebsocketViewBean implements Serializable
     @PreDestroy
     public void destroy()
     {
-        WebsocketSessionBean sessionHandler = CDIUtils.get(CDI.current().getBeanManager(), 
-                WebsocketSessionBean.class);
+        WebsocketTokenManagerSession sessionHandler = CDIUtils.get(CDI.current().getBeanManager(), 
+                WebsocketTokenManagerSession.class);
         if (sessionHandler != null)
         {
             for (String token : tokenList.keySet())

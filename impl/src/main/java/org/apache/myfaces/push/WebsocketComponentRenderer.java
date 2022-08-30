@@ -37,11 +37,11 @@ import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.push.cdi.WebsocketApplicationBean;
+import org.apache.myfaces.push.cdi.WebsocketTokenManagerApplication;
 import org.apache.myfaces.push.cdi.WebsocketChannelMetadata;
-import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
-import org.apache.myfaces.push.cdi.WebsocketSessionBean;
-import org.apache.myfaces.push.cdi.WebsocketViewBean;
+import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilder;
+import org.apache.myfaces.push.cdi.WebsocketTokenManagerSession;
+import org.apache.myfaces.push.cdi.WebsocketTokenManagerView;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
@@ -122,16 +122,13 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         // TODO: use a single bean and entry point for this algorithm.
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
 
-        WebsocketChannelTokenBuilderBean channelTokenBean = CDIUtils.get(
-                beanManager,
-                WebsocketChannelTokenBuilderBean.class);
+        WebsocketChannelTokenBuilder channelTokenBean = CDIUtils.get(beanManager, WebsocketChannelTokenBuilder.class);
 
         // This bean is required because you always need to register the token, so it can be properly destroyed
-        WebsocketViewBean viewTokenBean = CDIUtils.get(
-                beanManager,
-                WebsocketViewBean.class);
-        WebsocketSessionBean sessionTokenBean = CDIUtils.get(
-                beanManager, WebsocketSessionBean.class);
+        WebsocketTokenManagerView viewTokenManager =
+                CDIUtils.get(beanManager, WebsocketTokenManagerView.class);
+        WebsocketTokenManagerSession sessionTokenManager =
+                CDIUtils.get(beanManager, WebsocketTokenManagerSession.class);
 
         // Create channel token 
         // TODO: Use ResponseStateManager to create the token
@@ -144,7 +141,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         // creation 
         if (!component.isConnected())
         {
-            channelToken = viewTokenBean.getChannelToken(metadata);
+            channelToken = viewTokenManager.getChannelToken(metadata);
         }
         if (channelToken == null)
         {
@@ -152,37 +149,32 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
             channelToken = channelTokenBean.createChannelToken(facesContext, channel);
             
             // Register channel in view scope to chain discard view algorithm using @PreDestroy
-            viewTokenBean.registerToken(channelToken, metadata);
+            viewTokenManager.registerToken(channelToken, metadata);
             
             // Register channel in session scope to allow validation on handshake ( WebsocketConfigurator )
-            sessionTokenBean.registerToken(channelToken, metadata);
+            sessionTokenManager.registerToken(channelToken, metadata);
         }
 
         // Ask these two scopes 
-        WebsocketApplicationBean appTokenBean = CDIUtils.get(
-                beanManager, WebsocketApplicationBean.class, false);
+        WebsocketTokenManagerApplication applicationTokenManager =
+                CDIUtils.get(beanManager, WebsocketTokenManagerApplication.class, false);
 
         // Register token and metadata in the proper bean
         if (scope.equals("view"))
         {
-            viewTokenBean.registerWebsocketSession(channelToken, metadata);
+            viewTokenManager.registerWebsocketSession(channelToken, metadata);
         }
         else if (scope.equals("session"))
         {
-            sessionTokenBean = (sessionTokenBean != null) ? sessionTokenBean : CDIUtils.get(
-                    CDIUtils.getBeanManager(facesContext),
-                    WebsocketSessionBean.class);
-
-            sessionTokenBean.registerWebsocketSession(channelToken, metadata);
+            sessionTokenManager.registerWebsocketSession(channelToken, metadata);
         }
-        else
+        else if (scope.equals("application"))
         {
-            //Default application
-            appTokenBean = (appTokenBean != null) ? appTokenBean : CDIUtils.get(
-                    CDIUtils.getBeanManager(facesContext),
-                    WebsocketApplicationBean.class);
+            applicationTokenManager = applicationTokenManager != null
+                    ? applicationTokenManager
+                    : CDIUtils.get(beanManager, WebsocketTokenManagerApplication.class);
 
-            appTokenBean.registerWebsocketSession(channelToken, metadata);
+            applicationTokenManager.registerWebsocketSession(channelToken, metadata);
         }
         writer.startElement(HTML.SCRIPT_ELEM, component);
         HtmlRendererUtils.renderScriptType(facesContext, writer);

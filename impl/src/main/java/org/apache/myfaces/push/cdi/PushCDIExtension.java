@@ -28,22 +28,22 @@ import jakarta.enterprise.inject.spi.Extension;
 /**
  *
  */
-public class PushContextCDIExtension implements Extension
+public class PushCDIExtension implements Extension
 {
     void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
         // Register PushContextFactoryBean as a bean with CDI annotations, so the system
         // can take it into account, and use it later when necessary.
-        AnnotatedType wcbean = beanManager.createAnnotatedType(WebsocketChannelTokenBuilderBean.class);
-        event.addAnnotatedType(wcbean, wcbean.getJavaClass().getName());
-        
-        AnnotatedType sessionhandlerbean = beanManager.createAnnotatedType(WebsocketSessionBean.class);
+        AnnotatedType tokenBuilder = beanManager.createAnnotatedType(WebsocketChannelTokenBuilder.class);
+        event.addAnnotatedType(tokenBuilder, tokenBuilder.getJavaClass().getName());
+
+        AnnotatedType sessionhandlerbean = beanManager.createAnnotatedType(WebsocketTokenManagerSession.class);
         event.addAnnotatedType(sessionhandlerbean, sessionhandlerbean.getJavaClass().getName());
 
-        AnnotatedType viewTokenBean = beanManager.createAnnotatedType(WebsocketViewBean.class);
+        AnnotatedType viewTokenBean = beanManager.createAnnotatedType(WebsocketTokenManagerView.class);
         event.addAnnotatedType(viewTokenBean, viewTokenBean.getJavaClass().getName());
 
-        AnnotatedType apphandlerbean = beanManager.createAnnotatedType(WebsocketApplicationBean.class);
+        AnnotatedType apphandlerbean = beanManager.createAnnotatedType(WebsocketTokenManagerApplication.class);
         event.addAnnotatedType(apphandlerbean, apphandlerbean.getJavaClass().getName());
     }
 }

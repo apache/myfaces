@@ -22,43 +22,34 @@ package org.apache.myfaces.push.cdi;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import jakarta.enterprise.context.ApplicationScoped;
+import java.util.concurrent.ConcurrentHashMap;
 
 @ApplicationScoped
-public class WebsocketApplicationBean
+public class WebsocketTokenManagerApplication extends AbstractWebsocketTokenManager
 {
-   
     /**
      * This map has as key the channel and as values a list of websocket channels
      */
-    private Map<String, List<WebsocketChannel>> channelTokenListMap = new HashMap<>(2);
+    private Map<String, List<WebsocketChannel>> channelTokenListMap = new ConcurrentHashMap<>(2);
 
+    @Override
     public void registerWebsocketSession(String token, WebsocketChannelMetadata metadata)
     {
-        if ("application".equals(metadata.getScope()))
-        {
-            channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<>(1));
-            channelTokenListMap.get(metadata.getChannel()).add(new WebsocketChannel(token, metadata));
-        }
+        channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<>(1));
+        channelTokenListMap.get(metadata.getChannel()).add(new WebsocketChannel(token, metadata));
     }
-    
-    /**
-     * Indicate if the channel mentioned is valid for view scope.
-     * 
-     * A channel is valid if there is at least one token that represents a valid connection to this channel.
-     * 
-     * @param channel
-     * @return 
-     */
+
+    @Override
     public boolean isChannelAvailable(String channel)
     {
         return channelTokenListMap.containsKey(channel);
     }
     
-    public List<String> getChannelTokensFor(String channel)
+    @Override
+    public List<String> getChannelTokens(String channel)
     {
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())
@@ -73,7 +64,8 @@ public class WebsocketApplicationBean
         return Collections.emptyList();
     }
     
-    public <S extends Serializable> List<String> getChannelTokensFor(String channel, S user)
+    @Override
+    public <S extends Serializable> List<String> getChannelTokens(String channel, S user)
     {
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())

@@ -7,6 +7,6 @@ org.apache.myfaces.cdi.model.FacesDataModelExtension
 org.apache.myfaces.cdi.view.ViewScopeExtension
 org.apache.myfaces.cdi.view.ViewTransientScopeExtension
 org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension
-org.apache.myfaces.push.cdi.PushContextCDIExtension
+org.apache.myfaces.push.cdi.PushCDIExtension
 org.apache.myfaces.flow.cdi.FlowScopeExtension
 org.apache.myfaces.cdi.clientwindow.ClientWindowScopeExtension
