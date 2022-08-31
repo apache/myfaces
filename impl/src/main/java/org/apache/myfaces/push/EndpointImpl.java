@@ -34,6 +34,7 @@ import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.push.cdi.WebsocketSessionManager;
+import org.apache.myfaces.util.lang.Lazy;
 
 /**
  *
@@ -56,6 +57,8 @@ public class EndpointImpl extends Endpoint
                 private static final long serialVersionUID = 38450203L;
             };
 
+    private Lazy<BeanManager> beanManager = new Lazy<>(() -> CDI.current().getBeanManager());
+    
     @Override
     public void onOpen(Session session, EndpointConfig config)
     {
@@ -67,8 +70,7 @@ public class EndpointImpl extends Endpoint
         // Note in this point there is no session scope because there is no HttpSession available,
         // but on the handshake there is. So, everything below should use CDI application scoped
         // beans only.
-        BeanManager beanManager = CDI.current().getBeanManager();
-        WebsocketSessionManager sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
+        WebsocketSessionManager sessionManager = CDIUtils.get(beanManager.get(), WebsocketSessionManager.class);
 
         if (Boolean.TRUE.equals(config.getUserProperties().get(WebsocketConfigurator.WEBSOCKET_VALID)) &&
                 sessionManager.addOrUpdateSession(channelToken, session))
@@ -78,7 +80,7 @@ public class EndpointImpl extends Endpoint
 
             Serializable user = (Serializable) session.getUserProperties().get(WebsocketConfigurator.WEBSOCKET_USER);
 
-            beanManager.fireEvent(new WebsocketEvent(channel, user, null), OPENED);
+            beanManager.get().fireEvent(new WebsocketEvent(channel, user, null), OPENED);
             
             session.getUserProperties().put(
                     WebsocketSessionClusterSerializedRestore.WEBSOCKET_SESSION_SERIALIZED_RESTORE, 
@@ -112,8 +114,7 @@ public class EndpointImpl extends Endpoint
         // propagate the event but if an error happens, just ensure the Session is properly disposed.
         try
         {
-            BeanManager beanManager = CDI.current().getBeanManager();
-            beanManager.fireEvent(
+            beanManager.get().fireEvent(
                     new WebsocketEvent(channel, user, closeReason.getCloseCode()),  CLOSED);
         }
         catch(Exception e)
@@ -122,8 +123,7 @@ public class EndpointImpl extends Endpoint
         }
         finally
         {
-            BeanManager beanManager = CDI.current().getBeanManager();
-            WebsocketSessionManager sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
+            WebsocketSessionManager sessionManager = CDIUtils.get(beanManager.get(), WebsocketSessionManager.class);
             sessionManager.removeSession(channelToken);
         }
     }
