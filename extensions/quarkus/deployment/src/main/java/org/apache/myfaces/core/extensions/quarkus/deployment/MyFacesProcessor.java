@@ -72,11 +72,6 @@ import org.apache.myfaces.el.ELResolverBuilderForFaces;
 import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
 import org.apache.myfaces.flow.cdi.FlowBuilderFactoryBean;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
-import org.apache.myfaces.push.cdi.PushContextFactoryBean;
-import org.apache.myfaces.push.cdi.WebsocketApplicationBean;
-import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
-import org.apache.myfaces.push.cdi.WebsocketSessionBean;
-import org.apache.myfaces.push.cdi.WebsocketViewBean;
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.spi.FactoryFinderProviderFactory;
 import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
@@ -148,6 +143,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.myfaces.push.cdi.WebsocketSessionManager;
+import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilder;
+import org.apache.myfaces.push.cdi.WebsocketScopeManager;
 
 class MyFacesProcessor
 {
@@ -160,11 +158,12 @@ class MyFacesProcessor
             FacesDataModelManager.class,
             ViewScopeBeanHolder.class,
             CdiAnnotationProviderExtension.class,
-            PushContextFactoryBean.class,
-            WebsocketChannelTokenBuilderBean.class,
-            WebsocketSessionBean.class,
-            WebsocketViewBean.class,
-            WebsocketApplicationBean.class,
+            WebsocketChannelTokenBuilder.class,
+            WebsocketSessionManager.class,
+            WebsocketScopeManager.class,
+            WebsocketScopeManager.ApplicationScope.class,
+            WebsocketScopeManager.SessionScope.class,
+            WebsocketScopeManager.ViewScope.class,
             FlowBuilderFactoryBean.class,
             FlowScopeBeanHolder.class
     };
