@@ -330,7 +330,7 @@ public class FacesInitializerImpl implements FacesInitializer
 
         if (facesContext.getExternalContext().getApplicationMap().containsKey("org.apache.myfaces.push"))
         {
-            WebsocketFacesInit.init(facesContext.getExternalContext());
+            WebsocketFacesInit.destroy(facesContext.getExternalContext());
         }
         
         // clear UIViewParameter default renderer map
@@ -688,7 +688,7 @@ public class FacesInitializerImpl implements FacesInitializer
                         .configurator(new WebsocketConfigurator(externalContext)).build());
 
                 //Init LRU cache
-                WebsocketFacesInit.destroy(externalContext);
+                WebsocketFacesInit.init(externalContext);
 
                 externalContext.getApplicationMap().put("org.apache.myfaces.push", "true");
             }
