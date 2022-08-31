@@ -19,6 +19,8 @@
 
 package org.apache.myfaces.push.cdi;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.HashSet;
@@ -26,7 +28,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
@@ -35,105 +36,78 @@ import jakarta.websocket.Session;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.push.WebsocketSessionClusterSerializedRestore;
 import org.apache.myfaces.push.Json;
-import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.ConcurrentLRUCache;
+import org.apache.myfaces.util.lang.Lazy;
 
-public final class WebsocketApplicationSessionHolder
+@ApplicationScoped
+public class WebsocketSessionManager
 {
-    
+    private Lazy<ConcurrentLRUCache<String, Reference<Session>>> sessionMap;
+    private Queue<String> restoreQueue;
 
-    
-    private volatile static WeakHashMap<ClassLoader, ConcurrentLRUCache<String, Reference<Session>>> 
-            clWebsocketMap = new WeakHashMap<ClassLoader, ConcurrentLRUCache<String, Reference<Session>>>();
-    
-    private volatile static WeakHashMap<ClassLoader, Queue<String>> clWebsocketRestoredQueue =
-            new WeakHashMap<ClassLoader, Queue<String>>();
-
-    public static ConcurrentLRUCache<String, Reference<Session>> getWebsocketSessionLRUCache()
+    @PostConstruct
+    public void init()
     {
-        ClassLoader cl = ClassUtils.getContextClassLoader();
-        
-        ConcurrentLRUCache<String, Reference<Session>> metadata = (ConcurrentLRUCache<String, Reference<Session>>)
-                WebsocketApplicationSessionHolder.clWebsocketMap.get(cl);
-
-        if (metadata == null)
+        sessionMap = new Lazy<>(() ->
         {
-            // Ensure thread-safe put over _metadata, and only create one map
-            // per classloader to hold metadata.
-            synchronized (WebsocketApplicationSessionHolder.clWebsocketMap)
-            {
-                metadata = createWebsocketSessionLRUCache(cl, MyfacesConfig.WEBSOCKET_MAX_CONNECTIONS_DEFAULT);
-            }
-        }
-
-        return metadata;
+            int size = MyfacesConfig.WEBSOCKET_MAX_CONNECTIONS_DEFAULT;
+            return new ConcurrentLRUCache<>((size * 4 + 3) / 3, size);
+        });
+        restoreQueue = new ConcurrentLinkedQueue<>();
     }
 
-    public static void initWebsocketSessionLRUCache(ExternalContext context)
+    public ConcurrentLRUCache<String, Reference<Session>> getSessionMap()
     {
-        ClassLoader cl = ClassUtils.getContextClassLoader();
-        
-        ConcurrentLRUCache<String, Reference<Session>> lruCache = (ConcurrentLRUCache<String, Reference<Session>>)
-                WebsocketApplicationSessionHolder.clWebsocketMap.get(cl);
+        return sessionMap.get();
+    }
 
+    public void initSessionMap(ExternalContext context)
+    {
         int size = MyfacesConfig.getCurrentInstance(context).getWebsocketMaxConnections();
-
-        ConcurrentLRUCache<String, Reference<Session>> newMetadata = 
-                new ConcurrentLRUCache<>((size * 4 + 3) / 3, size);
+        ConcurrentLRUCache<String, Reference<Session>> newSessionMap
+                = new ConcurrentLRUCache<>((size * 4 + 3) / 3, size);
         
-        synchronized (WebsocketApplicationSessionHolder.clWebsocketMap)
+        synchronized (sessionMap)
         {
-            if (lruCache == null)
-            {
-                WebsocketApplicationSessionHolder.clWebsocketMap.put(cl, newMetadata);
-                lruCache = newMetadata;
-            }
-            else
+            if (sessionMap.isInitialized())
             {
                 // If a Session has been restored, it could be already a lruCache instantiated, so in this case
                 // we need to fill the new one with the old instances, but only the instances that are active
                 // at the moment.
-                for (Map.Entry<String, Reference<Session>> entry : 
-                        lruCache.getLatestAccessedItems(MyfacesConfig.WEBSOCKET_MAX_CONNECTIONS_DEFAULT).entrySet())
+                Set<Map.Entry<String, Reference<Session>>> entries = sessionMap.get()
+                        .getLatestAccessedItems(MyfacesConfig.WEBSOCKET_MAX_CONNECTIONS_DEFAULT).entrySet();
+                for (Map.Entry<String, Reference<Session>> entry : entries)
                 {
                     if (entry.getValue() != null && entry.getValue().get() != null && entry.getValue().get().isOpen())
                     {
-                        newMetadata.put(entry.getKey(), entry.getValue());
+                        newSessionMap.put(entry.getKey(), entry.getValue());
                     }
                 }
-                WebsocketApplicationSessionHolder.clWebsocketMap.put(cl, newMetadata);
-                lruCache = newMetadata;
             }
+            
+            sessionMap.reset(newSessionMap);
         }
     }
 
-    private static ConcurrentLRUCache<String, Reference<Session>> createWebsocketSessionLRUCache(
-            ClassLoader cl, int size)
+    public void clearSessions()
     {
-        return (ConcurrentLRUCache<String, Reference<Session>>)
-                WebsocketApplicationSessionHolder.clWebsocketMap.computeIfAbsent(cl,
-                        k -> new ConcurrentLRUCache<>((size * 4 + 3) / 3, size));
-    }
-
-    /**
-     * Removes the cached MetadataTarget instances in order to prevent a memory leak.
-     */
-    public static void clearWebsocketSessionLRUCache()
-    {
-        clWebsocketMap.remove(ClassUtils.getContextClassLoader());
-        clWebsocketRestoredQueue.remove(ClassUtils.getContextClassLoader());
+        if (sessionMap.isInitialized())
+        {
+            sessionMap.get().clear();
+        }
+        restoreQueue.clear();
     }
     
-    public static boolean addOrUpdateSession(String channelToken, Session session)
+    public boolean addOrUpdateSession(String channelToken, Session session)
     {
-        Reference oldInstance = getWebsocketSessionLRUCache().get(channelToken);
+        Reference oldInstance = getSessionMap().get(channelToken);
         if (oldInstance == null)
         {
-            getWebsocketSessionLRUCache().put(channelToken, new SoftReference<Session>(session));
+            getSessionMap().put(channelToken, new SoftReference<>(session));
         }
         else if (!session.equals(oldInstance.get()))
         {
-            getWebsocketSessionLRUCache().put(channelToken, new SoftReference<Session>(session));
+            getSessionMap().put(channelToken, new SoftReference<>(session));
         }
         return true;
     }
@@ -147,20 +121,20 @@ public final class WebsocketApplicationSessionHolder
      * @param channelToken
      * @return 
      */
-    public static boolean removeSession(String channelToken)
+    public boolean removeSession(String channelToken)
     {
-        getWebsocketSessionLRUCache().remove(channelToken);
+        getSessionMap().remove(channelToken);
         return false;
     }
     
     
-    protected static Set<Future<Void>> send(String channelToken, Object message)
+    protected Set<Future<Void>> send(String channelToken, Object message)
     {
         // Before send, we need to check 
         synchronizeSessionInstances();
-            
-        Set< Future<Void> > results = new HashSet<>(1);
-        Reference<Session> sessionRef = (channelToken != null) ? getWebsocketSessionLRUCache().get(channelToken) : null;
+
+        Set<Future<Void>> results = new HashSet<>(1);
+        Reference<Session> sessionRef = (channelToken != null) ? getSessionMap().get(channelToken) : null;
 
         if (sessionRef != null && sessionRef.get() != null)
         {
@@ -174,17 +148,17 @@ public final class WebsocketApplicationSessionHolder
             {
                 //If session is not open, remove the session, because a websocket session after is closed cannot
                 //be alive.
-                getWebsocketSessionLRUCache().remove(channelToken);
+                getSessionMap().remove(channelToken);
             }
         }
         return results;
     }
 
-    private static final String WARNING_TOMCAT_WEB_SOCKET_BOMBED =
+    private final String WARNING_TOMCAT_WEB_SOCKET_BOMBED =
             "Tomcat cannot handle concurrent push messages. A push message has been sent only after %s retries."
             + " Consider rate limiting sending push messages. For example, once every 500ms.";    
     
-    private static void send(Session session, String text, Set<Future<Void>> results, int retries)
+    private void send(Session session, String text, Set<Future<Void>> results, int retries)
     {
         try
         {
@@ -192,7 +166,7 @@ public final class WebsocketApplicationSessionHolder
 
             if (retries > 0)
             {
-                Logger.getLogger(WebsocketApplicationSessionHolder.class.getName())
+                Logger.getLogger(WebsocketSessionManager.class.getName())
                         .warning(String.format(WARNING_TOMCAT_WEB_SOCKET_BOMBED, retries));
             }
         }
@@ -223,13 +197,13 @@ public final class WebsocketApplicationSessionHolder
      * @return Whether it was Tomcat who couldn't handle the push bomb.
      * @since 2.5
      */
-    private static boolean isTomcatWebSocketBombed(Session session, IllegalStateException illegalStateException)
+    private boolean isTomcatWebSocketBombed(Session session, IllegalStateException illegalStateException)
     {
         return session.getClass().getName().startsWith("org.apache.tomcat.websocket.")
                 && illegalStateException.getMessage().contains("[TEXT_FULL_WRITING]");
     }
     
-    private static void synchronizeSessionInstances()
+    private void synchronizeSessionInstances()
     {
         Queue<String> queue = getRestoredQueue();
         // The queue is always empty, unless a deserialization of Session instances happen. If that happens, 
@@ -240,7 +214,7 @@ public final class WebsocketApplicationSessionHolder
         {
             // It is necessary to have at least 1 registered Session instance to call getOpenSessions() and get all
             // instances associated to jakarta.faces.push Endpoint.
-            Map<String, Reference<Session>> map = getWebsocketSessionLRUCache().getLatestAccessedItems(1);
+            Map<String, Reference<Session>> map = getSessionMap().getLatestAccessedItems(1);
             if (map != null && !map.isEmpty())
             {
                 Reference<Session> ref = map.values().iterator().next();
@@ -271,35 +245,9 @@ public final class WebsocketApplicationSessionHolder
         }
     }
 
-    public static Queue<String> getRestoredQueue()
+    public Queue<String> getRestoredQueue()
     {
-        ClassLoader cl = ClassUtils.getContextClassLoader();
+        return restoreQueue;
+    }
         
-        Queue<String> metadata = (Queue<String>)
-                WebsocketApplicationSessionHolder.clWebsocketRestoredQueue.get(cl);
-
-        if (metadata == null)
-        {
-            // Ensure thread-safe put over _metadata, and only create one map
-            // per classloader to hold metadata.
-            synchronized (WebsocketApplicationSessionHolder.clWebsocketRestoredQueue)
-            {
-                metadata = createRestoredQueue(cl, metadata);
-            }
-        }
-
-        return metadata;
-    }
-    
-    private static Queue<String> createRestoredQueue(ClassLoader cl, Queue<String> metadata)
-    {
-        metadata = (Queue<String>) WebsocketApplicationSessionHolder.clWebsocketRestoredQueue.get(cl);
-        if (metadata == null)
-        {
-            metadata = (Queue<String>) new ConcurrentLinkedQueue<String>();
-            WebsocketApplicationSessionHolder.clWebsocketRestoredQueue.put(cl, metadata);
-        }
-        return metadata;
-    }
-    
 }

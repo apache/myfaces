@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.myfaces.push.cdi;
 
 import jakarta.enterprise.event.Observes;
@@ -25,9 +24,6 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 
-/**
- *
- */
 public class PushCDIExtension implements Extension
 {
     void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
@@ -37,13 +33,19 @@ public class PushCDIExtension implements Extension
         AnnotatedType tokenBuilder = beanManager.createAnnotatedType(WebsocketChannelTokenBuilder.class);
         event.addAnnotatedType(tokenBuilder, tokenBuilder.getJavaClass().getName());
 
-        AnnotatedType sessionhandlerbean = beanManager.createAnnotatedType(WebsocketTokenManagerSession.class);
-        event.addAnnotatedType(sessionhandlerbean, sessionhandlerbean.getJavaClass().getName());
+        AnnotatedType sessionManager = beanManager.createAnnotatedType(WebsocketSessionManager.class);
+        event.addAnnotatedType(sessionManager, sessionManager.getJavaClass().getName());
+        
+        AnnotatedType scopeManager = beanManager.createAnnotatedType(WebsocketScopeManager.class);
+        event.addAnnotatedType(scopeManager, scopeManager.getJavaClass().getName());
+        
+        AnnotatedType sessionScope = beanManager.createAnnotatedType(WebsocketScopeManager.SessionScope.class);
+        event.addAnnotatedType(sessionScope, sessionScope.getJavaClass().getName());
 
-        AnnotatedType viewTokenBean = beanManager.createAnnotatedType(WebsocketTokenManagerView.class);
-        event.addAnnotatedType(viewTokenBean, viewTokenBean.getJavaClass().getName());
+        AnnotatedType viewScope = beanManager.createAnnotatedType(WebsocketScopeManager.ViewScope.class);
+        event.addAnnotatedType(viewScope, viewScope.getJavaClass().getName());
 
-        AnnotatedType apphandlerbean = beanManager.createAnnotatedType(WebsocketTokenManagerApplication.class);
-        event.addAnnotatedType(apphandlerbean, apphandlerbean.getJavaClass().getName());
+        AnnotatedType applicationScope = beanManager.createAnnotatedType(WebsocketScopeManager.ApplicationScope.class);
+        event.addAnnotatedType(applicationScope, applicationScope.getJavaClass().getName());
     }
 }
