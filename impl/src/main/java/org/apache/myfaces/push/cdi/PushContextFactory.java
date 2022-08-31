@@ -27,7 +27,7 @@ import javax.faces.push.Push;
 import javax.faces.push.PushContext;
 
 @ApplicationScoped
-public class PushContextFactoryBean
+public class PushContextFactory
 {
 
     @Produces

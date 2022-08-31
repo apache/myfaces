@@ -33,6 +33,9 @@ public class PushCDIExtension implements Extension
         AnnotatedType tokenBuilder = beanManager.createAnnotatedType(WebsocketChannelTokenBuilder.class);
         event.addAnnotatedType(tokenBuilder, tokenBuilder.getJavaClass().getName());
 
+        AnnotatedType pushContextFactory = beanManager.createAnnotatedType(PushContextFactory.class);
+        event.addAnnotatedType(pushContextFactory, pushContextFactory.getJavaClass().getName());
+     
         AnnotatedType sessionManager = beanManager.createAnnotatedType(WebsocketSessionManager.class);
         event.addAnnotatedType(sessionManager, sessionManager.getJavaClass().getName());
         

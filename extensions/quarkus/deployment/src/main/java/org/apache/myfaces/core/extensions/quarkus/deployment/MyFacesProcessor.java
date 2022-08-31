@@ -143,6 +143,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.myfaces.push.cdi.PushContextFactory;
 import org.apache.myfaces.push.cdi.WebsocketSessionManager;
 import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilder;
 import org.apache.myfaces.push.cdi.WebsocketScopeManager;
@@ -160,6 +161,7 @@ class MyFacesProcessor
             CdiAnnotationProviderExtension.class,
             WebsocketChannelTokenBuilder.class,
             WebsocketSessionManager.class,
+            PushContextFactory.class,
             WebsocketScopeManager.class,
             WebsocketScopeManager.ApplicationScope.class,
             WebsocketScopeManager.SessionScope.class,
