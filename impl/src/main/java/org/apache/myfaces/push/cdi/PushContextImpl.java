@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.myfaces.push.cdi;
 
 import java.io.Serializable;
@@ -36,11 +35,15 @@ public class PushContextImpl implements PushContext
 {
     private final String channel;
     private final BeanManager beanManager;
+    private final WebsocketScopeManager scopeManager;
+    private final WebsocketSessionManager sessionManager;
 
     public PushContextImpl(String channel, BeanManager beanManager)
     {
         this.channel = channel;
         this.beanManager = beanManager;
+        this.scopeManager = CDIUtils.get(beanManager, WebsocketScopeManager.class);
+        this.sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
     }
 
     public String getChannel()
@@ -54,24 +57,23 @@ public class PushContextImpl implements PushContext
         //1. locate the channel and define the context
         String channel = getChannel();
 
-        WebsocketApplicationBean appTokenBean = CDIUtils.get(beanManager, 
-                WebsocketApplicationBean.class, false);
-        WebsocketViewBean viewTokenBean = null;
-        WebsocketSessionBean sessionTokenBean = null;
-        
+        WebsocketScopeManager.AbstractScope applicationScope = scopeManager.getApplicationScope(false);
+        WebsocketScopeManager.AbstractScope viewScope = null;
+        WebsocketScopeManager.AbstractScope sessionScope = null;
+
         if (CDIUtils.isRequestScopeActive(beanManager))
         {
             if (CDIUtils.isSessionScopeActive(beanManager))
             {
-                sessionTokenBean = CDIUtils.get(beanManager, WebsocketSessionBean.class, false);
+                sessionScope = scopeManager.getSessionScope(false);
                 if (CDIUtils.isViewScopeActive(beanManager))
                 {
-                    viewTokenBean = CDIUtils.get(beanManager, WebsocketViewBean.class, false);
+                    viewScope = scopeManager.getViewScope(false);
                 }
             }
         }
 
-        if (appTokenBean == null)
+        if (applicationScope == null)
         {
             // No base bean to push message
             return Collections.emptySet();
@@ -79,20 +81,20 @@ public class PushContextImpl implements PushContext
         
         List<String> channelTokens;
         
-        if (viewTokenBean != null && viewTokenBean.isChannelAvailable(channel))
+        if (viewScope != null && viewScope.isChannelAvailable(channel))
         {
             // Use view scope for context
-            channelTokens = viewTokenBean.getChannelTokensFor(channel);
+            channelTokens = viewScope.getChannelTokens(channel);
         }
-        else if (sessionTokenBean != null && sessionTokenBean.isChannelAvailable(getChannel()))
+        else if (sessionScope != null && sessionScope.isChannelAvailable(getChannel()))
         {
             // Use session scope for context
-            channelTokens = sessionTokenBean.getChannelTokensFor(channel);
+            channelTokens = sessionScope.getChannelTokens(channel);
         }
-        else if (appTokenBean != null && appTokenBean.isChannelAvailable(getChannel()))
+        else if (applicationScope != null && applicationScope.isChannelAvailable(getChannel()))
         {
             // Use application scope for context
-            channelTokens = appTokenBean.getChannelTokensFor(channel);
+            channelTokens = applicationScope.getChannelTokens(channel);
         }
         else
         {
@@ -100,7 +102,6 @@ public class PushContextImpl implements PushContext
         }
         
         //2. send the message
-        
         if (channelTokens != null && !channelTokens.isEmpty())
         {
             Set<Future<Void>> result = null;
@@ -108,11 +109,11 @@ public class PushContextImpl implements PushContext
             {
                 if (result == null)
                 {
-                    result = WebsocketApplicationSessionHolder.send(channelToken, message);
+                    result = sessionManager.send(channelToken, message);
                 }
                 else
                 {
-                    result.addAll(WebsocketApplicationSessionHolder.send(channelToken, message));
+                    result.addAll(sessionManager.send(channelToken, message));
                 }
             }
             return result;
@@ -133,50 +134,52 @@ public class PushContextImpl implements PushContext
         //1. locate the channel and define the context
         String channel = getChannel();
 
-        WebsocketApplicationBean appTokenBean = CDIUtils.get(beanManager, 
-                WebsocketApplicationBean.class, false);
-        WebsocketViewBean viewTokenBean = null;
-        WebsocketSessionBean sessionTokenBean = null;
-        
-        if (CDIUtils.isSessionScopeActive(beanManager))
+        WebsocketScopeManager.AbstractScope applicationScope = scopeManager.getApplicationScope(false);
+        WebsocketScopeManager.AbstractScope viewScope = null;
+        WebsocketScopeManager.AbstractScope sessionScope = null;
+
+        if (CDIUtils.isRequestScopeActive(beanManager))
         {
-            sessionTokenBean = CDIUtils.get(beanManager, WebsocketSessionBean.class, false);
-            if (CDIUtils.isViewScopeActive(beanManager))
+            if (CDIUtils.isSessionScopeActive(beanManager))
             {
-                viewTokenBean = CDIUtils.get(beanManager, WebsocketViewBean.class, false);
+                sessionScope = scopeManager.getSessionScope(false);
+                if (CDIUtils.isViewScopeActive(beanManager))
+                {
+                    viewScope = scopeManager.getViewScope(false);
+                }
             }
         }
         
-        if (appTokenBean == null)
+        if (applicationScope == null)
         {
             // No base bean to push message
             return Collections.emptyMap();
         }
 
-        Map<S, Set<Future<Void>>> result = new HashMap<S, Set<Future<Void>>>();
-        
-        if (viewTokenBean != null && viewTokenBean.isChannelAvailable(channel))
+        Map<S, Set<Future<Void>>> result = new HashMap<>();
+
+        if (viewScope != null && viewScope.isChannelAvailable(channel))
         {
             // Use view scope for context
             for (S user : users)
             {
-                result.put(user, send(viewTokenBean.getChannelTokensFor(channel, user), message));
+                result.put(user, send(viewScope.getChannelTokens(channel, user), message));
             }
         }
-        else if (sessionTokenBean != null && sessionTokenBean.isChannelAvailable(getChannel()))
+        else if (sessionScope != null && sessionScope.isChannelAvailable(getChannel()))
         {
             // Use session scope for context
             for (S user : users)
             {
-                result.put(user, send(sessionTokenBean.getChannelTokensFor(channel, user), message));
+                result.put(user, send(sessionScope.getChannelTokens(channel, user), message));
             }
         }
-        else if (appTokenBean != null && appTokenBean.isChannelAvailable(getChannel()))
+        else if (applicationScope != null && applicationScope.isChannelAvailable(getChannel()))
         {
             // Use application scope for context
             for (S user : users)
             {
-                result.put(user, send(appTokenBean.getChannelTokensFor(channel, user), message));
+                result.put(user, send(applicationScope.getChannelTokens(channel, user), message));
             }
         }
         else
@@ -198,11 +201,11 @@ public class PushContextImpl implements PushContext
                 String channelToken = channelTokens.get(i);
                 if (result == null)
                 {
-                    result = WebsocketApplicationSessionHolder.send(channelToken, message);
+                    result = sessionManager.send(channelToken, message);
                 }
                 else
                 {
-                    result.addAll(WebsocketApplicationSessionHolder.send(channelToken, message));
+                    result.addAll(sessionManager.send(channelToken, message));
                 }
             }
             return result;

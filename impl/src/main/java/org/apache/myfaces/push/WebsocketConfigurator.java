@@ -27,7 +27,7 @@ import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.push.cdi.WebsocketSessionBean;
+import org.apache.myfaces.push.cdi.WebsocketScopeManager;
 
 public class WebsocketConfigurator extends ServerEndpointConfig.Configurator
 {
@@ -68,18 +68,17 @@ public class WebsocketConfigurator extends ServerEndpointConfig.Configurator
         }
         
         BeanManager beanManager = CDI.current().getBeanManager();
-        WebsocketSessionBean websocketSessionBean = CDIUtils.get(
-                beanManager, WebsocketSessionBean.class, false);
-        
-        if (websocketSessionBean != null)
+        WebsocketScopeManager scopeManager = CDIUtils.get(beanManager, WebsocketScopeManager.class);
+        WebsocketScopeManager.AbstractScope sessionScope = scopeManager.getSessionScope(false);
+        if (sessionScope != null)
         {
-            Serializable user = websocketSessionBean.getUserFromChannelToken(channelToken);
+            Serializable user = sessionScope.getUserFromChannelToken(channelToken);
             if (user != null)
             {
                 sec.getUserProperties().put(WEBSOCKET_USER, user);
             }
 
-            sec.getUserProperties().put(WEBSOCKET_VALID, websocketSessionBean.isTokenValid(channelToken));
+            sec.getUserProperties().put(WEBSOCKET_VALID, sessionScope.isTokenValid(channelToken));
         }
         else
         {

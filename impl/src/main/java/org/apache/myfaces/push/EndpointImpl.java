@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.push;
 
-import org.apache.myfaces.push.cdi.WebsocketApplicationSessionHolder;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.enterprise.inject.spi.BeanManager;
@@ -33,6 +32,8 @@ import javax.websocket.CloseReason.CloseCodes;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
+import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.push.cdi.WebsocketSessionManager;
 
 /**
  *
@@ -66,16 +67,17 @@ public class EndpointImpl extends Endpoint
         // Note in this point there is no session scope because there is no HttpSession available,
         // but on the handshake there is. So, everything below should use CDI application scoped
         // beans only.
+        BeanManager beanManager = CDI.current().getBeanManager();
+        WebsocketSessionManager sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
 
         if (Boolean.TRUE.equals(config.getUserProperties().get(WebsocketConfigurator.WEBSOCKET_VALID)) &&
-                WebsocketApplicationSessionHolder.addOrUpdateSession(channelToken, session))
+                sessionManager.addOrUpdateSession(channelToken, session))
         {
             session.setMaxIdleTimeout((Long) config.getUserProperties().getOrDefault(
                     WebsocketConfigurator.MAX_IDLE_TIMEOUT, 300000L));
 
             Serializable user = (Serializable) session.getUserProperties().get(WebsocketConfigurator.WEBSOCKET_USER);
 
-            BeanManager beanManager = CDI.current().getBeanManager();
             beanManager.fireEvent(new WebsocketEvent(channel, user, null), OPENED);
             
             session.getUserProperties().put(
@@ -120,7 +122,9 @@ public class EndpointImpl extends Endpoint
         }
         finally
         {
-            WebsocketApplicationSessionHolder.removeSession(channelToken);
+            BeanManager beanManager = CDI.current().getBeanManager();
+            WebsocketSessionManager sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
+            sessionManager.removeSession(channelToken);
         }
     }
 

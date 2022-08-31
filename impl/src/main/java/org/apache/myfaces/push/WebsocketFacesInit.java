@@ -19,8 +19,10 @@
 
 package org.apache.myfaces.push;
 
-import org.apache.myfaces.push.cdi.WebsocketApplicationSessionHolder;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.ExternalContext;
+import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.push.cdi.WebsocketSessionManager;
 
 /**
  * Class to decouple websocket initialization steps and avoid load unwanted websocket API 
@@ -29,14 +31,18 @@ import javax.faces.context.ExternalContext;
  */
 public class WebsocketFacesInit
 {
-    
-    public static void initWebsocketSessionLRUCache(ExternalContext context)
+    public static void init(ExternalContext context)
     {
-        WebsocketApplicationSessionHolder.initWebsocketSessionLRUCache(context);
+        BeanManager beanManager = CDIUtils.getBeanManager(context);
+        WebsocketSessionManager sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
+        sessionManager.initSessionMap(context);
     }
-    
-    public static void clearWebsocketSessionLRUCache(ExternalContext context)
+
+    public static void destroy(ExternalContext context)
     {
-        WebsocketApplicationSessionHolder.clearWebsocketSessionLRUCache();
+        BeanManager beanManager = CDIUtils.getBeanManager(context);
+        WebsocketSessionManager sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
+        sessionManager.clearSessions();
     }
+
 }

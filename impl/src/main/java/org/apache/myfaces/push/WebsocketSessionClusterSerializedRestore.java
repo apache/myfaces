@@ -23,7 +23,10 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import org.apache.myfaces.push.cdi.WebsocketApplicationSessionHolder;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
+import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.push.cdi.WebsocketSessionManager;
 
 /**
  * This class ensures the Session instance is properly registered into WebsocketApplicationSessionHolder in case
@@ -59,7 +62,10 @@ public class WebsocketSessionClusterSerializedRestore implements Externalizable
     {
         this.channelToken = in.readUTF();
         this.deserialized = true;
-        WebsocketApplicationSessionHolder.getRestoredQueue().add(this.channelToken);
+
+        BeanManager beanManager = CDI.current().getBeanManager();
+        WebsocketSessionManager sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
+        sessionManager.getRestoredQueue().add(this.channelToken);
     }
 
     public String getChannelToken()
