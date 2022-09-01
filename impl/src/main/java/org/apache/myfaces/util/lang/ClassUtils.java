@@ -200,6 +200,8 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
      *             if type is null
      * @throws ClassNotFoundException
      */
+    // @Override MYFACES-4449: Methods that call ClassUtils.class.getClassLoader() need to be here
+    //           as well as in the API ClassUtils so that the correct ClassLoader is used.
     public static <T> Class<T> classForName(String type) throws ClassNotFoundException
     {
         Assert.notNull(type, "type");
@@ -230,6 +232,8 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
      * @throws FacesException
      *             if class not found
      */
+    // @Override MYFACES-4449: Methods that call ClassUtils.class.getClassLoader() need to be here
+    //           as well as in the API ClassUtils so that the correct ClassLoader is used.
     public static Class simpleClassForName(String type)
     {
         return simpleClassForName(type, true);
@@ -244,6 +248,8 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
      * @return the corresponding Class
      * @throws FacesException if class not found and logException is true
      */
+    // @Override MYFACES-4449: Methods that call ClassUtils.class.getClassLoader() need to be here
+    //           as well as in the API ClassUtils so that the correct ClassLoader is used.
     public static Class simpleClassForName(String type, boolean logException)
     {
         Class returnClass = null;
@@ -262,6 +268,8 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
         return returnClass;
     }
 
+    // @Override MYFACES-4449: Methods that call ClassUtils.class.getClassLoader() need to be here
+    //           as well as in the API ClassUtils so that the correct ClassLoader is used.
     public static URL getResource(String resource)
     {
         URL url = getContextClassLoader().getResource(resource);
@@ -272,6 +280,8 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
         return url;
     }
 
+    // @Override MYFACES-4449: Methods that call ClassUtils.class.getClassLoader() need to be here
+    //           as well as in the API ClassUtils so that the correct ClassLoader is used.
     public static InputStream getResourceAsStream(String resource)
     {
         InputStream stream = getContextClassLoader().getResourceAsStream(resource);
