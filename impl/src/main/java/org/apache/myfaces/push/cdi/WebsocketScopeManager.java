@@ -93,14 +93,23 @@ public class WebsocketScopeManager
      * the user object into the Session object.
      */
     @SessionScoped
-    public static class SessionScope extends AbstractScope implements Serializable
+    public static class SessionScope extends AbstractUserScope implements Serializable
     {
+        @Inject private WebsocketSessionManager sessionManager;
+        
         @PreDestroy
         public void destroy()
         {
-            // Since there is an algorithm in place for @PreDestroy and @ViewScoped beans using a session
-            // scope bean and @PreDestroy, there is nothing else to do here. But on session expiration
-            // it is easier to just clear the map. At the end it will not cause any side effects.
+            // When current session scope is about to be destroyed, deregister all session scope channels and
+            // explicitly close any open web sockets associated with it to avoid stale websockets.
+            // If any, also deregister session users.
+            for (String token : tokens.keySet())
+            {
+                sessionManager.removeSession(token);
+            }
+
+            // we dont need to destroy child sockets ("view")
+            // this is implemented in @PreDestroy in WebsocketScopeManager.ViewScope
             channelTokens.clear();
             tokens.clear();
         }
@@ -143,33 +152,36 @@ public class WebsocketScopeManager
     * can share a websocket connection or not, simplifying code design.
     */
     @ViewScoped
-    public static class ViewScope extends AbstractScope implements Serializable
+    public static class ViewScope extends AbstractUserScope implements Serializable
     {
         @Inject private WebsocketScopeManager scopeManager;
         @Inject private WebsocketSessionManager sessionManager;
         
-       /*
-        * if the view is discarded, destroy the websocket sessions associated with the view because they are no
-        * longer valid
-        */
-       @PreDestroy
-       public void destroy()
-       {
-           SessionScope sessionScope = (SessionScope) scopeManager.getScope(SCOPE_SESSION, false);
-           if (sessionScope != null)
-           {
-               for (String token : tokens.keySet())
-               {
-                   sessionScope.destroyChannelToken(token);
-               }
-           }
+        /*
+         * If the view is discarded, destroy the websocket sessions associated with the view because they are no
+         * longer valid
+         */
+        @PreDestroy
+        public void destroy()
+        {
+            // destroy parent scope ("session")
+            SessionScope sessionScope = (SessionScope) scopeManager.getScope(SCOPE_SESSION, false);
+            if (sessionScope != null)
+            {
+                for (String token : tokens.keySet())
+                {
+                    sessionScope.destroyChannelToken(token);
+                }
+            }
 
-           for (String token : tokens.keySet())
-           {
-               sessionManager.removeSession(token);
-           }
-           channelTokens.clear();
-           tokens.clear();
+            // remove sessions
+            for (String token : tokens.keySet())
+            {
+                sessionManager.removeSession(token);
+            }
+
+            channelTokens.clear();
+            tokens.clear();
        }
     }
     
@@ -183,51 +195,6 @@ public class WebsocketScopeManager
          */
         protected Map<String, List<WebsocketChannel>> channelTokens = new ConcurrentHashMap<>(2, 1f);    
 
-
-        protected Map<String, WebsocketChannelMetadata> tokens = new ConcurrentHashMap<>(2, 1f);
-
-
-        public void registerToken(String token, WebsocketChannelMetadata metadata)
-        {
-            tokens.put(token, metadata);
-        }
-
-        public String getChannelToken(WebsocketChannelMetadata metadata)
-        {
-            if (!metadata.isConnected())
-            {
-                // Always generate a connection
-                return null;
-            }
-            String token = null;
-            for (Map.Entry<String, WebsocketChannelMetadata> entry : tokens.entrySet())
-            {
-                if (metadata.equals(entry.getValue()))
-                {
-                    token = entry.getKey();
-                    break;
-                }
-            }
-            return token;
-        }
-
-        public boolean isTokenValid(String token)
-        {
-            return tokens.containsKey(token);
-        }
-
-        public Serializable getUserFromChannelToken(String channelToken)
-        {
-            if (tokens != null)
-            {
-                WebsocketChannelMetadata metadata = tokens.get(channelToken);
-                if (metadata != null)
-                {
-                    return metadata.getUser();
-                }
-            }
-            return null;
-        }
 
         public void registerWebsocketSession(String token, WebsocketChannelMetadata metadata)
         {
@@ -280,5 +247,53 @@ public class WebsocketScopeManager
             }
             return null;
         }
+    }
+    
+    public static abstract class AbstractUserScope extends AbstractScope
+    {
+        protected Map<String, WebsocketChannelMetadata> tokens = new ConcurrentHashMap<>(2, 1f);
+
+
+        public void registerToken(String token, WebsocketChannelMetadata metadata)
+        {
+            tokens.put(token, metadata);
+        }
+
+        public String getChannelToken(WebsocketChannelMetadata metadata)
+        {
+            if (!metadata.isConnected())
+            {
+                // Always generate a connection
+                return null;
+            }
+            String token = null;
+            for (Map.Entry<String, WebsocketChannelMetadata> entry : tokens.entrySet())
+            {
+                if (metadata.equals(entry.getValue()))
+                {
+                    token = entry.getKey();
+                    break;
+                }
+            }
+            return token;
+        }
+
+        public boolean isTokenValid(String token)
+        {
+            return tokens.containsKey(token);
+        }
+
+        public Serializable getUserFromChannelToken(String channelToken)
+        {
+            if (tokens != null)
+            {
+                WebsocketChannelMetadata metadata = tokens.get(channelToken);
+                if (metadata != null)
+                {
+                    return metadata.getUser();
+                }
+            }
+            return null;
+        } 
     }
 }

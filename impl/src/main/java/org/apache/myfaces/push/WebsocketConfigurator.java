@@ -69,7 +69,7 @@ public class WebsocketConfigurator extends ServerEndpointConfig.Configurator
 
         BeanManager beanManager = CDI.current().getBeanManager();
         WebsocketScopeManager scopeManager = CDIUtils.get(beanManager, WebsocketScopeManager.class);
-        WebsocketScopeManager.AbstractScope sessionScope = scopeManager.getSessionScope(false);
+        WebsocketScopeManager.SessionScope sessionScope = scopeManager.getSessionScope(false);
         if (sessionScope != null)
         {
             Serializable user = sessionScope.getUserFromChannelToken(channelToken);
