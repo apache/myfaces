@@ -28,6 +28,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
+import jakarta.faces.convert.FacesConverter;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
 /**
@@ -77,8 +78,7 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
 
             if (converterId != null)
             {
-                FacesConverterAnnotationLiteral literal =
-                        new FacesConverterAnnotationLiteral(Object.class, converterId);
+                FacesConverter.Literal literal = FacesConverter.Literal.of(converterId, Object.class, true);
                 delegate = (Converter) CDIUtils.get(bm, CONVERTER_TYPE, true, literal);
 
                 if (delegate == null)
@@ -88,7 +88,7 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
             }
             else if (forClass != null)
             {
-                FacesConverterAnnotationLiteral literal = new FacesConverterAnnotationLiteral(forClass, "");
+                FacesConverter.Literal literal = FacesConverter.Literal.of("", forClass, true);
                 delegate = (Converter) CDIUtils.get(bm, CONVERTER_TYPE, true, literal);
 
                 if (delegate == null)

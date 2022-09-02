@@ -22,6 +22,7 @@ package org.apache.myfaces.cdi.wrapper;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.BehaviorEvent;
 import org.apache.myfaces.cdi.util.CDIUtils;
@@ -55,7 +56,7 @@ public class FacesBehaviorCDIWrapper implements PartialStateHolder, Behavior, Fa
         if (delegate == null)
         {
             delegate = (Behavior) CDIUtils.get(CDIUtils.getBeanManager(FacesContext.getCurrentInstance()),
-                    Behavior.class, true, new FacesBehaviorAnnotationLiteral(behaviorId));
+                    Behavior.class, true, FacesBehavior.Literal.of(behaviorId, true));
         }
         return delegate;
     }

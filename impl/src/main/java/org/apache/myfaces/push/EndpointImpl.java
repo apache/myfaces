@@ -22,10 +22,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
-import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.event.WebsocketEvent;
-import jakarta.faces.event.WebsocketEvent.Closed;
-import jakarta.faces.event.WebsocketEvent.Opened;
 import jakarta.faces.push.PushContext;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.CloseReason.CloseCodes;
@@ -43,23 +40,10 @@ import org.apache.myfaces.util.lang.Lazy;
  */
 public class EndpointImpl extends Endpoint
 {
-
     public static final String JAKARTA_FACES_PUSH_PATH = PushContext.URI_PREFIX + "/{channel}";
-
     public static final String PUSH_CHANNEL_PARAMETER = "channel";
-    
+
     private static final Logger LOG = Logger.getLogger(EndpointImpl.class.getName());
-    
-    private static final AnnotationLiteral<Opened> OPENED = 
-            new AnnotationLiteral<Opened>() 
-            {
-                private static final long serialVersionUID = 2789324L;
-            };
-    private static final AnnotationLiteral<Closed> CLOSED = 
-            new AnnotationLiteral<Closed>() 
-            {
-                private static final long serialVersionUID = 38450203L;
-            };
 
     private Lazy<BeanManager> beanManager = new Lazy<>(() -> CDI.current().getBeanManager());
     
@@ -83,7 +67,9 @@ public class EndpointImpl extends Endpoint
 
             Serializable user = (Serializable) session.getUserProperties().get(WebsocketConfigurator.WEBSOCKET_USER);
 
-            beanManager.get().getEvent().select(OPENED).fire(new WebsocketEvent(channel, user, null));
+            beanManager.get().getEvent()
+                    .select(WebsocketEvent.Opened.Literal.INSTANCE)
+                    .fire(new WebsocketEvent(channel, user, null));
 
             session.getUserProperties().put(
                     WebsocketSessionClusterSerializedRestore.WEBSOCKET_SESSION_SERIALIZED_RESTORE, 
@@ -131,7 +117,9 @@ public class EndpointImpl extends Endpoint
         WebsocketSessionManager sessionManager = CDIUtils.get(beanManager.get(), WebsocketSessionManager.class);
         sessionManager.removeSession(channelToken);
 
-        beanManager.get().getEvent().select(CLOSED).fire(new WebsocketEvent(channel, user, closeReason.getCloseCode()));
+        beanManager.get().getEvent()
+                .select(WebsocketEvent.Closed.Literal.INSTANCE)
+                .fire(new WebsocketEvent(channel, user, closeReason.getCloseCode()));
     }
 
     @Override
