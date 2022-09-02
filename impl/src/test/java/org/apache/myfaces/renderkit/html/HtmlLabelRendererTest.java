@@ -91,6 +91,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         HtmlRenderedAttr[] attrs = {
             //_AccesskeyProperty
             new HtmlRenderedAttr("accesskey"),
+            new HtmlRenderedAttr("tabindex"),
             //_UniversalProperties
             new HtmlRenderedAttr("dir"), 
             new HtmlRenderedAttr("lang"), 
