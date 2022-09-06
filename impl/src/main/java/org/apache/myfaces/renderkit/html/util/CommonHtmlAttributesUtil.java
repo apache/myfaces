@@ -671,11 +671,7 @@ public final class CommonHtmlAttributesUtil
             return;
         }
         
-        if ((commonPropertiesMarked & CommonHtmlAttributes.ACCESSKEY) != 0)
-        {
-            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
-                    HTML.ACCESSKEY_ATTR, HTML.ACCESSKEY_ATTR);
-        }
+        renderAccesskeyTabindexProperties(writer, commonPropertiesMarked, component);
         renderCommonPassthroughPropertiesWithoutEvents(writer, commonPropertiesMarked, component);
     }
     
