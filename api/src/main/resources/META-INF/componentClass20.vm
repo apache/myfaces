@@ -133,6 +133,19 @@ $innersource
 #end
 #end
 
+#if ($component.implements)
+#if ( ($component.implements == "jakarta.faces.component.behavior.ClientBehaviorHolder")
+     && (${utils.getClassFromFullClass($component.className)} == "UIWebsocket"))
+    // Start UIWebsocket getEventNames template
+    @Override
+    public java.util.Collection<String> getEventNames()
+    {
+        return EVERY_EVENT;
+    }
+    // End UIWebsocket getEventNames template
+#end
+#end
+
 #if ($component.defaultEventName)
 #if ($component.defaultEventName != "")
 
