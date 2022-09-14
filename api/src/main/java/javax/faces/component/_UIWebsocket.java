@@ -96,10 +96,4 @@ abstract class _UIWebsocket extends UIComponentBase
     {
         channel, scope, user, onopen, onmessage, onclose, connected;
     }
-
-    @Override
-    public Collection<String> getEventNames()
-    {
-        return EVERY_EVENT;
-    }
 }
