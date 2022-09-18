@@ -82,7 +82,7 @@ import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBundleBuil
 import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import org.apache.myfaces.core.extensions.quarkus.runtime.MyFacesRecorder;
-import org.apache.myfaces.core.extensions.quarkus.runtime.QuarkusFacesInitilializer;
+import org.apache.myfaces.core.extensions.quarkus.runtime.QuarkusFacesInitializer;
 import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFacesScopeContext;
 import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFlowScopedContext;
 import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewScopeContext;
@@ -283,7 +283,7 @@ class MyFacesProcessor
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.INJECTION_PROVIDER, QuarkusInjectionProvider.class.getName()));
         initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.FACES_INITIALIZER, QuarkusFacesInitilializer.class.getName()));
+                MyfacesConfig.FACES_INITIALIZER, QuarkusFacesInitializer.class.getName()));
     }
 
     @BuildStep
