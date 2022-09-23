@@ -102,6 +102,31 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         Assert.assertEquals("<span class=\"myStyleClass\">Output</span>", output);
         Assert.assertNotSame("Output", output);
     }
+
+    public void testInputDefaultTypeAttr() throws IOException
+    {
+        inputText.encodeBegin(facesContext);
+        inputText.encodeEnd(facesContext);
+        facesContext.renderResponse();
+
+        String output = writer.getWriter().toString();
+        Assert.assertEquals("<input id=\"j_id__v_0\" name=\"j_id__v_0\" type=\"text\" value=\"\"/>", output);
+        Assert.assertNotSame("Output", output);
+    }
+
+    public void testInputTypeAttr() throws IOException
+    {
+        inputText.setType("tel");
+
+        inputText.encodeBegin(facesContext);
+        inputText.encodeEnd(facesContext);
+        facesContext.renderResponse();
+
+        String output = writer.getWriter().toString();
+        Assert.assertEquals("<input id=\"j_id__v_0\" name=\"j_id__v_0\" type=\"tel\" value=\"\"/>", output);
+        Assert.assertNotSame("Output", output);
+    }
+
     
     /**
      * Don't add span over escape
@@ -121,7 +146,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         Assert.assertEquals("Output", output);
     }
 
-    public void testHtmlPropertyPassTru() throws Exception
+    public void testHtmlPropertyPassThru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
         
