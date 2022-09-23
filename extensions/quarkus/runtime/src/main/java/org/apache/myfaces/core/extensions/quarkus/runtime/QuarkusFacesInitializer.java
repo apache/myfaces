@@ -36,7 +36,7 @@ import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFind
  * Custom FacesInitializer to execute our integration code, always before MyFaces starts.
  * With ServletListeners or other ways, we would have order/priority problems.
  */
-public class QuarkusFacesInitilializer extends FacesInitializerImpl
+public class QuarkusFacesInitializer extends FacesInitializerImpl
 {
 
     @Override

@@ -61,6 +61,11 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-undertow-websockets</artifactId>
+            <version>2.7.6.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jsonp</artifactId>
             <version>${quarkus.version}</version>
         </dependency>
@@ -92,22 +97,26 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>commons-fileupload</groupId> <!-- primefaces fileupload, needed in quarkus native mode -->
+            <groupId>commons-fileupload</groupId>
+            <!-- primefaces fileupload, needed in quarkus native mode -->
             <artifactId>commons-fileupload</artifactId>
             <version>1.3.3</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.xml.bind</groupId> <!-- java 11 support -->
+            <groupId>jakarta.xml.bind</groupId>
+            <!-- java 11 support -->
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>2.3.2</version>
         </dependency>
         <dependency>
-            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId> <!-- primefaces textEditor renderer -->
+            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+            <!-- primefaces textEditor renderer -->
             <artifactId>owasp-java-html-sanitizer</artifactId>
             <version>20211018.1</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.poi</groupId> <!-- primefaces exporter -->
+            <groupId>org.apache.poi</groupId>
+            <!-- primefaces exporter -->
             <artifactId>poi</artifactId>
             <version>4.1.2</version>
         </dependency>
@@ -117,7 +126,8 @@
             <version>4.1.2</version>
         </dependency>
         <dependency>
-            <groupId>com.rometools</groupId> <!-- primefaces feed -->
+            <groupId>com.rometools</groupId>
+            <!-- primefaces feed -->
             <artifactId>rome</artifactId>
             <version>1.9.0</version>
         </dependency>
@@ -138,10 +148,11 @@
         <plugins>
             <plugin>
                 <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
+                <artifactId>quarkus-extension-maven-plugin</artifactId>
                 <version>${quarkus.version}</version>
                 <executions>
                     <execution>
+                        <phase>compile</phase>
                         <goals>
                             <goal>extension-descriptor</goal>
                         </goals>
