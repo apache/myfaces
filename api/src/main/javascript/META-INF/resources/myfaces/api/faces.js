@@ -334,14 +334,14 @@ if (!faces.push) {
                     setTimeout(self.open, RECONNECT_INTERVAL * reconnectAttempts++);
                 }
             };
-        };
 
-        socket.onerror = function(event) {
-            var clientIds = clientIdsByTokens[channelToken];
-            for (var i = clientIds.length - 1; i >= 0; i--){
-                var socketClientId = clientIds[i];
-                components[socketClientId]['onerror'](channel);
-            }
+            socket.onerror = function(event) {
+                var clientIds = clientIdsByTokens[channelToken];
+                for (var i = clientIds.length - 1; i >= 0; i--){
+                    var socketClientId = clientIds[i];
+                    components[socketClientId]['onerror'](channel);
+                }
+            };
         };
 
         /**
