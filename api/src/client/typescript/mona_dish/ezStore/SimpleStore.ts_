@@ -1,0 +1,28 @@
+/**
+ * A simplified rjxs store handling which adds saner patterns to the store to make it more maintainable
+ * this is not or will not be part of mona-dish but maybe will get its own project
+ */
+
+    //Idea
+
+@Store("Component Counter")
+class MyStore {
+
+    @InitialState
+    static state = 0;
+
+    @Action("increment")
+    static counterIncrement(state: state) {
+        return state + 1;
+    }
+
+    @Action("decrement")
+    static counterIncrement(state: state) {
+        return state - 1;
+    }
+
+    @Action("reset")
+    static rest() {
+        return 1;
+    }
+}

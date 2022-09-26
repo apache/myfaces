@@ -27,6 +27,7 @@ import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.context.FacesContext;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
@@ -36,12 +37,34 @@ import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 public class InternalClassLoaderResourceLoader extends ResourceLoader
 {
 
+    /**
+     * If this param is true and the project stage is development mode,
+     * the source javascript files will be loaded separately instead have
+     * all in just one file, to preserve line numbers and make javascript
+     * debugging of the default jsf javascript file more simple.
+     */
+    @JSFWebConfigParam(since = "2.0.1", defaultValue = "false", expectedValues = "true,false", group = "render")
+    public static final String USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS
+            = "org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS";
+
+    /**
+     * Define the mode used for faces.js file:
+     * <ul>
+     * <li>normal : contains everything, including i18n (faces-i18n.js)</li>
+     * <li>minimal: contains everything, excluding i18n (faces-i18n.js)</li>
+     * </ul>
+     * <p>If org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS param is set to true and project stage
+     * is Development, this param is ignored.</p>
+     */
+    @JSFWebConfigParam(since = "2.0.10,2.1.4", defaultValue = "normal",
+                       expectedValues = "normal, minimal-modern, minimal", group = "render")
+    public static final String MYFACES_JSF_MODE = "org.apache.myfaces.JSF_JS_MODE";
+
     private final boolean _developmentStage;
 
     public InternalClassLoaderResourceLoader(String prefix)
     {
         super(prefix);
-
         _developmentStage = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
     }
 
@@ -103,7 +126,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             return url;
         }
     }
-    
+
     @Override
     public URL getResourceURL(ResourceMeta resourceMeta)
     {
@@ -128,11 +151,29 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
 
         if (jakartaFaces)
         {
-            String rescourceName = _developmentStage ?
-                    ResourceUtils.FACES_DEVELOPMENT_JS :
-                    ResourceUtils.FACES_PRODUCTION_JS;
-            return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
-                            rescourceName, false);
+            // first we have to split any appendixes post js out, this is needed to also serve gz, br and map requests,
+            // which come in from the browser
+            String fileAppendix = "";
+            if(resourceName.contains(".js."))
+            {
+                //  we just need the first .js. to extract the appendix
+                fileAppendix = "." + resourceName.split("\\.js\\.")[1];
+            }
+
+            // in development stage we serve the uncompressed file and the map file
+            if (_developmentStage)
+            {
+                    return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
+                                                     ResourceUtils.JSF_UNCOMPRESSED_JS_RESOURCE_NAME
+                                                             + fileAppendix, false);
+            }
+            // in production only the compressed version (note we have to take care that per default also the zip and br
+            // files can be served from the resource loader
+            else
+            {
+                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
+                        ResourceUtils.JSF_MINIMAL_JS_RESOURCE_NAME + fileAppendix, false);
+            }
         }
         else if (_developmentStage && libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
         {
@@ -188,7 +229,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     }
 
     @Override
-    public Iterator<String> iterator(FacesContext facesContext, String path, 
+    public Iterator<String> iterator(FacesContext facesContext, String path,
             int maxDepth, ResourceVisitOption... options)
     {
         String basePath = path;

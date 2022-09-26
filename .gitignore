@@ -14,4 +14,6 @@ target
 .DS_Store
 .pmd
 .eclipse-pmd
+node_modules/
+
 .vscode
