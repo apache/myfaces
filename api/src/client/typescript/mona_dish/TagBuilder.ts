@@ -1,5 +1,4 @@
-/*!
- * Licensed to the Apache Software Foundation (ASF) under one or more
+/* Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to you under the Apache License, Version 2.0
@@ -17,14 +16,12 @@
 
 //poliyfill from @webcomponents/webcomponentsjs
 import {DomQuery} from "./DomQuery";
-import {_global$} from "./Global";
 
-
-if ("undefined" != typeof _global$) {
+if ("undefined" != typeof window) {
     (function () {
-        if (void 0 === _global$().Reflect || void 0 === _global$().customElements || (<any>_global$().customElements).polyfillWrapFlushCallback) return;
+        if (void 0 === window.Reflect || void 0 === window.customElements || (<any>window.customElements).polyfillWrapFlushCallback) return;
         const a = HTMLElement;
-        _global$().HTMLElement = {
+        (<any>window).HTMLElement = {
             HTMLElement: function HTMLElement() {
                 return Reflect.construct(a, [], this.constructor)
             }
@@ -159,7 +156,7 @@ export class TagBuilder {
                 });
             }
 
-            _global$().customElements.define(this.tagName, this.clazz, this.theOptions || null);
+            window.customElements.define(this.tagName, this.clazz, this.theOptions || null);
         } else {
             let _t_ = this;
             let applyCallback = (name: string, scope: any) => {
@@ -168,7 +165,7 @@ export class TagBuilder {
                 }
             };
 
-            _global$().customElements.define(this.tagName, class extends this.extendsType {
+            window.customElements.define(this.tagName, class extends this.extendsType {
                 constructor() {
                     super();
                     this.innerHTML = _t_.markup;

@@ -1,19 +1,24 @@
-This directory hosts the 4.0+ version of the faces.ajax implementation.
+# JSF_JS next gen
 
-It is a new clean room implementation, implemented in Typescript for modern browsers.
+this directory hosts the main build for the typescript based
+jsf files.
+Due to project requirements all necessary source files are hosted here.
+Build related node files cannot be hosted here.
 
-The baseline atm is Microsoft Edge 14 and Ecmascript 2015. 
+We use the npm packages as downstream to get the code from npm.
+Any change should be upstreamed back to the corresponding 
+projects from github. (aka mona-dish and jsf_ts)
 
-usage, as per spec
+usage:
+One time usage, must be manually triggered:
+* npm run copy:npm-sources - Downstreams the source code from the npm packages
+* npm run build - runs the build, this script target will be regularily triggered automatically
+* npm run test - runs the build, this script target will be regularily triggered automatically
 
-* load the faces.js script via the resource loading
-* use the faces.* calls as before *faces.ajax.request(..)* for instance
+to update to a new jsf_ts version 
+* change the version in the package json (either manually or via *ncu*)
+* *npm install* to install the new version
+* *npm run copy:npm-sources* to move the sources out of their npm packages into the source tree
+* run a build and test to see if the final build works
 
-### API Documentation
 
-Follow the links on the right hand side or [click here](./modules/faces.html)
-
-### Developer Info
-
-For the development and build info see the development.md file in
-*api/src/client/development.md*
