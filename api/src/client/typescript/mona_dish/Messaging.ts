@@ -1,28 +1,8 @@
-/*!
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 /**
  * a standardized message to be sent over the message bus
  */
 import {Observable, Subject} from "rxjs";
 import {Stream} from "./Stream";
-import {_global$} from "./Global";
-
 
 /**
  * generic crypto interface
@@ -336,8 +316,8 @@ abstract class BaseBroker {
 }
 
 let broadCastChannelBrokerGenerator = (name) => {
-    if (_global$()?.BroadcastChannel) {
-        return new (_global$()).BroadcastChannel(name);
+    if (window?.BroadcastChannel) {
+        return new window.BroadcastChannel(name);
     }
     throw Error("No Broadcast channel in the system, use a shim or provide a factory function" +
         "in the constructor");
@@ -632,10 +612,10 @@ export class Broker extends BaseBroker {
             this.msgCallListeners(channel, message);
         }
         this.markMessageAsProcessed(message);
-        if (_global$().parent != null) {
+        if (window.parent != null) {
 
             let messageWrapper = new MessageWrapper(channel, message);
-            _global$().parent.postMessage(JSON.parse(JSON.stringify(messageWrapper)), message.targetOrigin);
+            window.parent.postMessage(JSON.parse(JSON.stringify(messageWrapper)), message.targetOrigin);
         }
         if (callBrokerListeners) {
             this.dispatchSameLevel(channel, message);
@@ -645,7 +625,7 @@ export class Broker extends BaseBroker {
     private dispatchSameLevel(channel: string, message: Message) {
         let event = this.transformToEvent(channel, message, true);
         //we also dispatch sideways
-        _global$().dispatchEvent(event);
+        window.dispatchEvent(event);
     }
 
     //a dispatch of our own should never trigger the listeners hence the default true
@@ -688,7 +668,7 @@ export class Broker extends BaseBroker {
     }
 
     private static createCustomEvent(name: string, wrapper: MessageWrapper): any {
-        if ('function' != typeof _global$().CustomEvent) {
+        if ('function' != typeof window.CustomEvent) {
             let e: any = document.createEvent('HTMLEvents');
             e.detail = wrapper.detail;
             e.channel = wrapper.channel;
@@ -696,7 +676,7 @@ export class Broker extends BaseBroker {
             return e;
 
         } else {
-            let customEvent = new (_global$()).CustomEvent(name, wrapper);
+            let customEvent = new window.CustomEvent(name, wrapper);
             (<any>customEvent).channel = wrapper.channel;
             return customEvent;
         }

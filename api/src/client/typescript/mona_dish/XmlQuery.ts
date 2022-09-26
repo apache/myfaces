@@ -1,5 +1,4 @@
-/*!
- * Licensed to the Apache Software Foundation (ASF) under one or more
+/* Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to you under the Apache License, Version 2.0
@@ -18,7 +17,6 @@
 import {Lang} from "./Lang";
 import {DomQuery} from "./DomQuery";
 import isString = Lang.isString;
-import {_global$} from "./Global";
 
 declare let ActiveXObject: any;
 
@@ -47,7 +45,7 @@ export class XMLQuery extends DomQuery {
                 return null;
             }
             let domParser: DOMParser = Lang.saveResolveLazy<DOMParser>(
-                () => new (_global$()).DOMParser(),
+                () => new window.DOMParser(),
                 (): DOMParser => createIe11DomQueryShim()
             ).value;
             return domParser.parseFromString(xml, <any> docType);
@@ -67,7 +65,7 @@ export class XMLQuery extends DomQuery {
     toString(): string {
         let ret = [];
         this.eachElem((node: any) => {
-            let serialized = (_global$())?.XMLSerializer?.constructor()?.serializeToString(node) ?? node?.xml;
+            let serialized = (<any>window)?.XMLSerializer?.constructor()?.serializeToString(node) ?? node?.xml;
             if (!!serialized) {
                 ret.push(serialized);
             }

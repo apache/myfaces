@@ -1,12 +1,11 @@
-/*!
- * Licensed to the Apache Software Foundation (ASF) under one or more
+/* Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http:// www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,32 +17,25 @@
 import {Config, Optional, ValueEmbedder} from "./Monad";
 import {XMLQuery} from "./XmlQuery";
 import {IStream, LazyStream, Stream} from "./Stream";
-import {
-    ArrayCollector,
-    AssocArrayCollector,
-    ICollector,
-    IStreamDataSource,
-    ITERATION_STATUS
-} from "./SourcesCollectors";
+import {ArrayCollector, ICollector, IStreamDataSource, ITERATION_STATUS} from "./SourcesCollectors";
 import {Lang} from "./Lang";
 import trim = Lang.trim;
-
-import isString = Lang.isString;
-import eqi = Lang.equalsIgnoreCase;
-import {_global$} from "./Global";
 import objToArray = Lang.objToArray;
+import isString = Lang.isString;
+import equalsIgnoreCase = Lang.equalsIgnoreCase;
+import {glob} from "typedoc/dist/lib/utils/fs";
 
-declare var ownerDocument: any;
+//import {observable, Observable, Subscriber} from "rxjs";
 
 /**
  * in order to poss custom parameters we need to extend the mutation observer init
  */
 export interface WAIT_OPTS extends MutationObserverInit {
-    timeout?: number;
+    timeout ?: number;
     /**
      * interval on non legacy browsers
      */
-    interval?: number;
+    interval ?: number;
 }
 
 
@@ -55,7 +47,7 @@ export interface WAIT_OPTS extends MutationObserverInit {
  && ((elemType != "checkbox" && elemType != "radio"
  */
 
-enum ALLOWED_SUBMITTABLE_ELEMENTS {
+enum Submittables {
     SELECT = "select",
     BUTTON = "button",
     SUBMIT = "submit",
@@ -67,84 +59,55 @@ enum ALLOWED_SUBMITTABLE_ELEMENTS {
 }
 
 /**
- * helper to fix a common problem that a system has to wait, until a certain condition is reached.
- * Depending on the browser this uses either the Mutation Observer or a semi compatible interval as fallback.
- * @param root the root DomQuery element to start from
- * @param condition the condition lambda to be fulfilled
- * @param options options for the search
+ * helper to fix a common problem that a system has to wait until a certain condition is reached
+ * depening on the browser this uses either the mutation observer or a semi compatible interval as fallback
+ * @param condition
  */
-function waitUntilDom(root: DomQuery, condition: (element: DomQuery) => boolean, options: WAIT_OPTS = {
-    attributes: true,
-    childList: true,
-    subtree: true,
-    timeout: 500,
-    interval: 100
-}): Promise<DomQuery> {
-    return new Promise<DomQuery>((success, error) => {
-        let observer: MutationObserver = null;
+function waitUntilDom(root: DomQuery, condition: (element: DomQuery) => boolean, options: WAIT_OPTS = { attributes: true, childList: true, subtree: true, timeout: 500, interval: 100 }): Promise<DomQuery> {
+    const ret = new Promise<DomQuery>((success, error) => {
         const MUT_ERROR = new Error("Mutation observer timeout");
-
-        // we do the same but for now ignore the options on the dom query
-        // we cannot use absent here, because the condition might search for an absent element
-        function findElement(root: DomQuery, condition: (element: DomQuery) => boolean): DomQuery | null {
-            let found = null;
-            if (!!condition(root)) {
-                return root;
-            }
-            if (options.childList) {
-                found = (condition(root)) ? root : root.childNodes.filter(item => condition(item)).first().value.value;
-            } else if (options.subtree) {
-                found = (condition(root)) ? root : root.querySelectorAll(" * ").filter(item => condition(item)).first().value.value;
-            } else {
-                found = (condition(root)) ? root : null;
-            }
-            return found;
-        }
-
-        let foundElement = root;
-        if (!!(foundElement = findElement(foundElement, condition))) {
-            success(new DomQuery(foundElement));
-            return;
-        }
-
-        if ('undefined' != typeof MutationObserver) {
+        if('undefined' != typeof window.MutationObserver) {
             const mutTimeout = setTimeout(() => {
-                observer.disconnect();
                 return error(MUT_ERROR);
             }, options.timeout);
-
-            const callback: MutationCallback = (mutationList: MutationRecord[]) => {
-                const found = new DomQuery(mutationList.map((mut) => mut.target)).filter(item => condition(item)).first();
-                if (found.isPresent()) {
+            const callback: MutationCallback = (mutationList: MutationRecord[], observer: MutationObserver) => {
+                const found = new DomQuery(mutationList.map((mut: MutationRecord) => mut.target)).first(condition);
+                if(found.isPresent()) {
                     clearTimeout(mutTimeout);
-                    observer.disconnect();
-                    success(new DomQuery(found || root));
+                    success(found);
                 }
             }
-            observer = new MutationObserver(callback);
 
+            const observer = new window.MutationObserver(callback);
             // browsers might ignore it, but we cannot break the api in the case
             // hence no timeout is passed
-            let observableOpts = {...options};
+            let observableOpts = {... options};
             delete observableOpts.timeout;
             root.eachElem(item => {
                 observer.observe(item, observableOpts)
             })
-        } else { // fallback for legacy browsers without mutation observer
-
+        } else { //fallback for legacy browsers without mutation observer
+            //we do the same but for now ignore the options on the dom query
             let interval = setInterval(() => {
-                let found = findElement(root, condition);
-                if (!!found) {
-                    if (timeout) {
+                let found = null;
+                if(options.childList) {
+                    found = (condition(root)) ? root:  root.childNodes.first(condition);
+                } else if(options.subtree) {
+                    found = (condition(root)) ? root: root.querySelectorAll(" * ").first(condition);
+                } else {
+                    found = (condition(root)) ? root: DomQuery.absent;
+                }
+                if(found.isPresent()) {
+                    if(timeout) {
                         clearTimeout(timeout);
                         clearInterval(interval);
                         interval = null;
+                        success(found);
                     }
-                    success(new DomQuery(found || root));
                 }
             }, options.interval);
             let timeout = setTimeout(() => {
-                if (interval) {
+                if(interval) {
                     clearInterval(interval);
                     error(MUT_ERROR);
                 }
@@ -152,7 +115,9 @@ function waitUntilDom(root: DomQuery, condition: (element: DomQuery) => boolean,
 
         }
     });
+    return ret;
 }
+
 
 export class ElementAttribute extends ValueEmbedder<string> {
 
@@ -180,57 +145,23 @@ export class ElementAttribute extends ValueEmbedder<string> {
         return ElementAttribute;
     }
 
-    static fromNullable<ElementAttribute, T>(value?: any, valueKey: string = "value"): ElementAttribute {
-        return <any>new ElementAttribute(value, valueKey);
-    }
-
-}
-
-export class Style extends ValueEmbedder<string> {
-
-    constructor(private element: DomQuery, private name: string, private defaultVal: string = null) {
-        super(element, name);
-    }
-
-    get value(): string {
-        let val: Element[] = this.element.values;
-        if (!val.length) {
-            return this.defaultVal;
-        }
-        return (val[0] as HTMLElement).style[this.name];
-    }
-
-    set value(value: string) {
-        let val: HTMLElement[] = this.element.values as HTMLElement[];
-        for (let cnt = 0; cnt < val.length; cnt++) {
-            val[cnt].style[this.name] = value;
-        }
-    }
-
-    protected getClass(): any {
-        return ElementAttribute;
-    }
-
-    static fromNullable<ElementAttribute, T>(value?: any, valueKey: string = "value"): ElementAttribute {
-        return <any>new ElementAttribute(value, valueKey);
+    static fromNullable<ElementAttribute,T>(value?: any, valueKey: string = "value"): ElementAttribute {
+        return <any> new ElementAttribute(value, valueKey);
     }
 
 }
 
 /**
  * small helper for the specialized jsf case
+ * @param src
  * @constructor
  */
-const DEFAULT_WHITELIST = () => {
+const DEFAULT_WHITELIST = (src: string) => {
     return true;
+
 };
 
 interface IDomQuery {
-    /**
-     * reference to the systems global object
-     * (globalThis, window, global, depending on the environment)
-     */
-    readonly global: any;
     /**
      * reads the first element if it exists and returns an optional
      */
@@ -264,36 +195,11 @@ interface IDomQuery {
      */
     readonly name: ValueEmbedder<string>;
     /**
-     * The value in case of inputs as changeable value
+     * The the value in case of inputs as changeable value
      */
     readonly inputValue: ValueEmbedder<string | boolean>;
-
     /**
-     * accumulated top element offsetWidth
-     */
-    readonly offsetWidth: number;
-    /**
-     * accumulated top element offsetHeight
-     */
-    readonly offsetHeight: number;
-    /**
-     * accumulated top element offsetLeft
-     */
-    readonly offsetLeft: number;
-    /**
-     * accumulated top element offsetTop
-     */
-    readonly offsetTop: number;
-
-
-    /**
-     * abbreviation for inputValue\.value to make
-     * the code terser
-     */
-    val: string | boolean;
-
-    /**
-     * the underlying form elements as DomQuery object
+     * the underlying form elements as domquery object
      */
     readonly elements: DomQuery;
     /**
@@ -318,34 +224,15 @@ interface IDomQuery {
     readonly asArray: Array<DomQuery>;
 
     /**
-     * inner html property
-     * setter and getter which works directly on strings
-     */
-    innerHTML: string;
-
-    /**
-     * same as innerHTML
-     * will be removed once
-     * my code is transitioned
-     * @deprecated do not use anymore, user innerHTML instead
-     */
-    innerHtml: string;
-
-    /**
-     * convenience for dq.id.value to make the code a little bit tighter
-     */
-    nodeId: string;
-
-    /**
-     * returns true if the elements have the tag *tagName* as tag embedded ( highest level )
+     * returns true if the elements have the tag *tagName* as tag embedded (highest level)
      * @param tagName
      */
     isTag(tagName: string): boolean;
 
     /**
-     * returns the nth element as DomQuery
+     * returns the nth element as domquery
      * from the internal elements
-     * note if you try to reach a non-existing element position
+     * note if you try to reach a non existing element position
      * you will get back an absent entry
      *
      * @param index the nth index
@@ -355,7 +242,7 @@ interface IDomQuery {
     /**
      * returns the nth element as optional of an Element object
      * @param index the number from the index
-     * @param defaults the default value if the index is overrun default Optional\.absent
+     * @param defaults the default value if the index is overrun default Optional.absent
      */
     getAsElem(index: number, defaults: Optional<any>): Optional<Element>;
 
@@ -372,14 +259,14 @@ interface IDomQuery {
     /**
      * should make the code clearer
      * note if you pass a function
-     * this refers to the active DomQuery object
+     * this refers to the active dopmquery object
      */
     isPresent(presentRunnable ?: (elem ?: DomQuery) => void): boolean;
 
     /**
      * should make the code clearer
      * note if you pass a function
-     * this refers to the active DomQuery object
+     * this refers to the active dopmquery object
      *
      *
      * @param presentRunnable
@@ -393,15 +280,6 @@ interface IDomQuery {
 
     /**
      * query selector all on the existing dom query object
-     *
-     * @param selector the standard selector
-     * @return a DomQuery with the results
-     */
-    querySelectorAll(selector): DomQuery;
-
-
-    /**
-     * closest, walks up the dom tree to fid the closest element to match
      *
      * @param selector the standard selector
      * @return a DomQuery with the results
@@ -431,14 +309,7 @@ interface IDomQuery {
     attr(attr: string, defaultValue: string): ElementAttribute;
 
     /**
-     * style accessor
-     * @param defaultValue the default value in case nothing is presented (defaults to null)
-     * @param cssProperty
-     */
-    style(cssProperty: string, defaultValue: string): Style;
-
-    /**
-     * Checks for an existing class in the class attributes
+     * hasclass, checks for an existing class in the class attributes
      *
      * @param clazz the class to search for
      */
@@ -464,19 +335,19 @@ interface IDomQuery {
     isMultipartCandidate(): boolean;
 
     /**
-     * innerHtml
-     * equivalent to jQueries html
+     * innerHtml equivalkent
+     * equivalent to jqueries html
      * as setter the html is set and the
      * DomQuery is given back
      * as getter the html string is returned
      *
-     * @param newInnerHTML
+     * @param inval
      */
-    html(newInnerHTML?: string): DomQuery | Optional<string>;
+    html(inval?: string): DomQuery | Optional<string>;
 
     /**
      * dispatch event on all children
-     * just a delegated dispatchEvent from the standard
+     * just a delegated dispatchevent from the standard
      * dom working on all queried elements in the monad level
      *
      * @param evt the event to be dispatched
@@ -485,9 +356,9 @@ interface IDomQuery {
 
     /**
      * easy node traversal, you can pass
-     * a set of node selectors which are joined as direct children
+     * a set of node selectors which are joined as direct childs
      *
-     * Note! The root nodes are not in the getIf, those are always the child nodes
+     * not the rootnodes are not in the getIf, those are always the child nodes
      *
      * @param nodeSelector
      */
@@ -508,13 +379,6 @@ interface IDomQuery {
     firstElem(func: (item: Element, cnt?: number) => any): DomQuery;
 
     /**
-     * perform an operation on the first element
-     * returns a DomQuery on the first element only
-     * @param func
-     */
-    lastElem(func: (item: Element, cnt?: number) => any): DomQuery;
-
-    /**
      * same as eachElem, but a DomQuery object is passed down
      *
      * @param func
@@ -528,14 +392,6 @@ interface IDomQuery {
      */
     first(func: (item: DomQuery, cnt?: number) => any): DomQuery;
 
-
-    /**
-     * returns a new dom query containing only the first element max
-     *
-     * @param func a an optional callback function to perform an operation on the first element
-     */
-    last(func: (item: DomQuery, cnt?: number) => any): DomQuery;
-
     /**
      * filter function which filters a subset
      *
@@ -546,25 +402,16 @@ interface IDomQuery {
     /**
      * global eval head appendix method
      * no other methods are supported anymore
-     * @param code the code to be evaluated
+     * @param code the code to be evaled
      * @param  nonce optional  nonce key for higher security
      */
     globalEval(code: string, nonce ?: string): DomQuery;
 
     /**
-     * Runs an eval and keeps the evaluated code in the head
-     * This is a corner condition, where we want to update the head with custom
-     * code and leave the code in (instead of deleting ig)
-     *
-     * @param code the code to be evaluated
-     * @param  nonce optional  nonce key for higher security
-     */
-    globalEvalSticky(code: string, nonce ?: string): DomQuery;
-
-    /**
      * detaches a set of nodes from their parent elements
-     * in a browser independent manner
-     * @return {DomQuery} DomQuery of nodes with the detached dom nodes
+     * in a browser independend manner
+     * @param {Object} items the items which need to be detached
+     * @return {Array} an array of nodes with the detached dom nodes
      */
     detach(): DomQuery;
 
@@ -573,47 +420,16 @@ interface IDomQuery {
      * to the element or first element passed via elem
      * @param elem
      */
-    appendTo(elem: DomQuery | string): DomQuery;
+    appendTo(elem: DomQuery): void;
 
     /**
-     * appends the passed elements to our existing queries
-     * note, double appends can happen if you are not careful
+     * loads and evals a script from a source uri
      *
-     * @param elem to append
-     */
-    append(elem: DomQuery): DomQuery;
-
-    /**
-     * replace convenience function replaces the domquery elements with the
-     * elements passed as parameter
-     * @param toReplace the replacement elements
-     * @return a reference on the replacement elements
-     */
-    replace(toReplace: DomQuery): DomQuery;
-
-    /**
-     * appends the passed elements to our existing queries
-     * note, double appends can happen if you are not careful
-     *
-     * @param elem to append
-     */
-    prepend(elem: DomQuery): DomQuery;
-
-    /**
-     * prepend equivalent to appendTo
-     *
-     * @param elem the element to prepend to
-     */
-    prependTo(elem: DomQuery): DomQuery;
-
-    /**
-     * loads and evaluates a script from a source uri
-     *
-     * @param src the source to be loaded and evaluated
-     * @param delay in milliseconds execution default (0 == no delay)
+     * @param src the source to be loaded and evaled
+     * @param defer in miliseconds execution default (0 == no defer)
      * @param charSet
      */
-    loadScriptEval(src: string, delay: number, charSet: string): void;
+    loadScriptEval(src: string, defer: number, charSet: string): void;
 
     /**
      * insert toInsert after the current element
@@ -630,7 +446,7 @@ interface IDomQuery {
     insertBefore(...toInsert: Array<DomQuery>): DomQuery;
 
     /**
-     * in case the DomQuery is pointing to nothing the else value is taken into consideration
+     * in case the domquery is pointing to nothing the else value is taken into consideration
      * als alternative
      *
      * @param elseValue the else value
@@ -645,40 +461,21 @@ interface IDomQuery {
      */
     orElseLazy(func: () => any): DomQuery;
 
-
     /**
-     * find all parents in the hierarchy for which the selector matches
-     * @param selector
-     */
-    allParents(selector: string): DomQuery;
-
-    /**
-     * first parents with a matching selector
-     * @param selector
-     */
-    firstParent(selector: string): DomQuery;
-
-    /**
-     * all parents until the selector match stops
+     * all parents with TagName
      * @param tagName
      */
-    parentsWhileMatch(selector: string): DomQuery;
-
-
-    /**
-     * the parent of the elements
-     */
-    parent(): DomQuery;
+    parents(tagName: string): DomQuery;
 
     /**
      * copy all attributes of sourceItem to this DomQuery items
      *
-     * @param sourceItem the source item to copy over (can be another DomQuery or a parsed XML Query item)
+     * @param sourceItem the source item to copy over (can be another domquery or a parsed XML Query item)
      */
     copyAttrs(sourceItem: DomQuery | XMLQuery): DomQuery;
 
     /**
-     * outerHTML convenience method
+     * outerhtml convenience method
      * browsers only support innerHTML but
      * for instance for your jsf.js we have a full
      * replace pattern which needs outerHTML processing
@@ -691,11 +488,10 @@ interface IDomQuery {
 
     /**
      * Run through the given nodes in the DomQuery execute the inline scripts
-     * @param sticky if set to true the element must be left in the head after eval default === false
-     * @param whiteListed: optional whitelist function which can filter out script tags which are not processed
+     * @param whilteListed: optional whitelist function which can filter out script tags which are not processed
      * defaults to the standard jsf.js exclusion (we use this code for myfaces)
      */
-    runScripts(sticky?: boolean, whiteListed?: (val: string) => boolean): DomQuery;
+    runScripts(whilteListed: (val: string) => boolean): DomQuery;
 
     /**
      * runs the embedded css
@@ -733,17 +529,17 @@ interface IDomQuery {
     /*
      * pushes  in optionally a new textContent, and/or returns the current text content
      */
-    textContent(joinString?: string): string;
+    textContent(joinstr?: string): string;
 
     /*
      * pushes  in optionally a new innerText, and/or returns the current innerText
      */
-    innerText(joinString?: string): string;
+    innerText(joinstr?: string): string;
 
     /**
      * encodes all input elements properly into respective
      * config entries, this can be used
-     * for legacy systems, for newer use-cases, use the
+     * for legacy systems, for newer usecases, use the
      * HTML5 Form class which all newer browsers provide
      *
      * @param toMerge optional config which can be merged in
@@ -752,7 +548,7 @@ interface IDomQuery {
     encodeFormElement(toMerge): Config;
 
     /**
-     * fetches the sub-nodes from ... to..
+     * fetches the subnodes from ... to..
      * @param from
      * @param to
      */
@@ -776,9 +572,9 @@ interface IDomQuery {
      */
     waitUntilDom(condition: (element: DomQuery) => boolean, options: WAIT_OPTS): Promise<DomQuery>;
 
-    // observable: Observable<DomQuery>;
+    //observable: Observable<DomQuery>;
 
-    // observableElem: Observable<Element>;
+    //observableElem: Observable<Element>;
 }
 
 /**
@@ -791,23 +587,19 @@ interface IDomQuery {
  * the reduced code footprint of querying dom trees and traversing
  * by using functional patterns.
  *
- * Also, a few convenience methods are added to reduce
+ * Also a few convenience methods are added to reduce
  * the code footprint of standard dom processing
  * operations like eval
  *
+ * TODO add jquery fallback support, since it is supported
  * in most older systems
  * Note parts of this code still stem from the Dom.js I have written 10 years
- * ago, those parts look a bit ancient and will be replaced over time.
+ * ago, those parts look a little bit ancient and will be replaced over time.
  *
  */
 export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterable<DomQuery> {
 
     static absent = new DomQuery();
-
-    /**
-     * reference to the environmental global object
-     */
-    static global = _global$;
 
     private rootNode: Array<Element> = [];
 
@@ -815,15 +607,16 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     constructor(...rootNode: Array<Element | ShadowRoot | DomQuery | Document | Array<any> | string>) {
 
-        if (Optional.fromNullable(rootNode).isAbsent() || !rootNode.length) {
+        if (Optional.fromNullable(rootNode).isAbsent() || !rootNode.length ) {
             return;
         } else {
-            // we need to flatten out the arrays
+            //we need to flatten out the arrays
 
             for (let cnt = 0; cnt < rootNode.length; cnt++) {
-                if (!rootNode[cnt]) {
-                    // we skip possible null entries which can happen in
-                    // certain corner conditions due to the constructor re-wrapping single elements into arrays.
+                if(!rootNode[cnt]) {
+                    //we skip possible null entries which can happen in
+                    //certain corner conditions due to the constructor re-wrapping single elements into arrays.
+                    continue;
                 } else if (isString(rootNode[cnt])) {
                     let foundElement = DomQuery.querySelectorAll(<string>rootNode[cnt]);
                     if (!foundElement.isAbsent()) {
@@ -839,6 +632,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
 
+
     /**
      * returns the first element
      */
@@ -848,10 +642,6 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     get values(): Element[] {
         return this.allElems();
-    }
-
-    get global(): any {
-        return _global$;
     }
 
     /**
@@ -925,22 +715,6 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         }
     }
 
-    get val(): string | boolean {
-        return this.inputValue.value;
-    }
-
-    set val(value: string | boolean) {
-        this.inputValue.value = value;
-    }
-
-    get nodeId(): string {
-        return this.id.value;
-    }
-
-    set nodeId(value: string) {
-        this.id.value = value;
-    }
-
     get checked(): boolean {
         return Stream.of(...this.values).allMatch(el => !!(<any>el).checked);
     }
@@ -950,7 +724,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     get elements(): DomQuery {
-        // a simple querySelectorAll should suffice
+        //a simple querySelectorAll should suffice
         return this.querySelectorAll("input, checkbox, select, textarea, fieldset");
     }
 
@@ -960,20 +734,20 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     /**
-     * a deep search which treats the single isolated shadow dom areas
-     * separately and runs the query on each shadow dom
+     * a deep search which treats the single isolated shadow doms
+     * separately and runs the query on earch shadow dom
      * @param queryStr
      */
     querySelectorAllDeep(queryStr: string): DomQuery {
         let found: Array<DomQuery> = [];
         let queryRes = this.querySelectorAll(queryStr);
-        if (queryRes.length) {
+        if(queryRes.length) {
             found.push(queryRes);
         }
         let shadowRoots = this.querySelectorAll("*").shadowRoot;
-        if (shadowRoots.length) {
+        if(shadowRoots.length) {
             let shadowRes = shadowRoots.querySelectorAllDeep(queryStr);
-            if (shadowRes.length) {
+            if(shadowRes.length) {
                 found.push(shadowRes);
             }
         }
@@ -981,8 +755,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
 
+
     /**
-     * disabled flag
+     * todo align this api with the rest of the apis
      */
     get disabled(): boolean {
         return this.attr("disabled").isPresent();
@@ -1019,7 +794,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     /**
      * fetches a lazy stream representation
-     * lazy should be applied if you have some filters etc.
+     * lazy should be applied if you have some filters etc
      * in between, this can reduce the number of post filter operations
      * and ram usage
      * significantly because the operations are done lazily and stop
@@ -1030,41 +805,13 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     get asArray(): Array<DomQuery> {
-        // filter not supported by IE11
+        //filter not supported by IE11
         return [].concat(LazyStream.of(...this.rootNode).filter(item => {
             return item != null
         })
             .map(item => {
                 return DomQuery.byId(item)
             }).collect(new ArrayCollector()));
-    }
-
-    get offsetWidth(): number {
-        return LazyStream.of(...this.rootNode)
-            .filter(item => item != null)
-            .map(elem => (elem as HTMLElement).offsetWidth)
-            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
-    }
-
-    get offsetHeight(): number {
-        return LazyStream.of(...this.rootNode)
-            .filter(item => item != null)
-            .map(elem => (elem as HTMLElement).offsetHeight)
-            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
-    }
-
-    get offsetLeft(): number {
-        return LazyStream.of(...this.rootNode)
-            .filter(item => item != null)
-            .map(elem => (elem as HTMLElement).offsetLeft)
-            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
-    }
-
-    get offsetTop(): number {
-        return LazyStream.of(...this.rootNode)
-            .filter(item => item != null)
-            .map(elem => (elem as HTMLElement).offsetTop)
-            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
     }
 
     get asNodeArray(): Array<DomQuery> {
@@ -1075,7 +822,6 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     static querySelectorAllDeep(selector: string) {
         return new DomQuery(document).querySelectorAllDeep(selector);
     }
-
     /**
      * easy query selector all producer
      *
@@ -1094,7 +840,6 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * byId producer
      *
      * @param selector id
-     * @param deep true if you want to go into shadow areas
      * @return a DomQuery containing the found elements
      */
     static byId(selector: string | DomQuery | Element, deep = false): DomQuery {
@@ -1123,25 +868,21 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return new DomQuery(document).globalEval(code, nonce);
     }
 
-    static globalEvalSticky(code: string, nonce?: string): DomQuery {
-        return new DomQuery(document).globalEvalSticky(code, nonce);
-    }
-
     /**
      * builds the ie nodes properly in a placeholder
      * and bypasses a non script insert bug that way
-     * @param markup the markup code to be executed from
+     * @param markup the marku code
      */
     static fromMarkup(markup: string): DomQuery {
 
-        // https:// developer.mozilla.org/de/docs/Web/API/DOMParser license creative commons
+        //https://developer.mozilla.org/de/docs/Web/API/DOMParser license creative commons
         const doc = document.implementation.createHTMLDocument("");
         markup = trim(markup);
         let lowerMarkup = markup.toLowerCase();
-        if (lowerMarkup.search(/\<\!doctypeW+/gi) != -1 ||
-            lowerMarkup.search(/\<html\w+/gi) != -1 ||
-            lowerMarkup.search(/\<head\W+/gi) != -1 ||
-            lowerMarkup.search(/\<body\W+/gi) != -1) {
+        if (lowerMarkup.indexOf('<!doctype') != -1 ||
+            lowerMarkup.indexOf('<html') != -1 ||
+            lowerMarkup.indexOf('<head') != -1 || //TODO proper regexps here to avoid embedded tags with same element names to be triggered
+            lowerMarkup.indexOf('<body') != -1) {
             doc.documentElement.innerHTML = markup;
             return new DomQuery(doc.documentElement);
         } else {
@@ -1153,7 +894,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
             let dummyPlaceHolder = new DomQuery(document.createElement("div"));
 
-            // table needs special treatment due to the browsers auto creation
+            //table needs special treatment due to the browsers auto creation
             if (startsWithTag(lowerMarkup, "thead") || startsWithTag(lowerMarkup, "tbody")) {
                 dummyPlaceHolder.html(`<table>${markup}</table>`);
                 return dummyPlaceHolder.querySelectorAll("table").get(0).childNodes.detach();
@@ -1175,9 +916,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     /**
-     * returns the nth element as DomQuery
+     * returns the nth element as domquery
      * from the internal elements
-     * note if you try to reach a non-existing element position
+     * note if you try to reach a non existing element position
      * you will get back an absent entry
      *
      * @param index the nth index
@@ -1187,21 +928,22 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
 
+
     /**
      * returns the nth element as optional of an Element object
      * @param index the number from the index
-     * @param defaults the default value if the index is overrun default Optional\.absent
+     * @param defaults the default value if the index is overrun default Optional.absent
      */
     getAsElem(index: number, defaults: Optional<any> = Optional.absent): Optional<Element> {
         return (index < this.rootNode.length) ? Optional.fromNullable(this.rootNode[index]) : defaults;
     }
 
     /**
-     * returns the files from a given element
+     * returns the files from a given elmement
      * @param index
      */
     filesFromElem(index: number): Array<any> {
-        return (index < this.rootNode.length) ? (<any>this.rootNode[index])?.files ? (<any>this.rootNode[index]).files : [] : [];
+        return (index < this.rootNode.length) ? (<any>this.rootNode[index])?.files ?  (<any>this.rootNode[index]).files : [] : [];
     }
 
     /**
@@ -1221,7 +963,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     /**
      * should make the code clearer
      * note if you pass a function
-     * this refers to the active DomQuery object
+     * this refers to the active dopmquery object
      */
     isPresent(presentRunnable ?: (elem ?: DomQuery) => void): boolean {
         let absent = this.isAbsent();
@@ -1234,7 +976,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     /**
      * should make the code clearer
      * note if you pass a function
-     * this refers to the active DomQuery object
+     * this refers to the active dopmquery object
      *
      *
      * @param presentRunnable
@@ -1257,7 +999,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     querySelectorAll(selector): DomQuery {
-        // We could merge both methods, but for now this is more readable
+        //We could merge both methods, but for now this is more readable
         if (selector.indexOf("/shadow/") != -1) {
             return this._querySelectorAllDeep(selector);
         } else {
@@ -1265,15 +1007,52 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         }
     }
 
-    closest(selector): DomQuery {
-        // We could merge both methods, but for now this is more readable
-        if (selector.indexOf("/shadow/") != -1) {
-            return this._closestDeep(selector);
-        } else {
-            return this._closest(selector);
+    /**
+     * query selector all on the existing dom queryX object
+     *
+     * @param selector the standard selector
+     * @return a DomQuery with the results
+     */
+    private _querySelectorAll(selector): DomQuery {
+        if (!this?.rootNode?.length) {
+            return this;
         }
+        let nodes = [];
+        for (let cnt = 0; cnt < this.rootNode.length; cnt++) {
+            if (!this.rootNode[cnt]?.querySelectorAll) {
+                continue;
+            }
+            let res = this.rootNode[cnt].querySelectorAll(selector);
+            nodes = nodes.concat(objToArray(res));
+        }
+
+        return new DomQuery(...nodes);
     }
 
+
+    /*deep with a selector and a peudo /shadow/ marker to break into the next level*/
+    private _querySelectorAllDeep(selector): DomQuery {
+        if (!this?.rootNode?.length) {
+            return this;
+        }
+
+        let nodes = [];
+        let foundNodes: DomQuery = new DomQuery(...this.rootNode);
+        let selectors = selector.split(/\/shadow\//);
+
+        for (let cnt2 = 0; cnt2 < selectors.length; cnt2++) {
+            if (selectors[cnt2] == "") {
+                continue;
+            }
+            let levelSelector = selectors[cnt2];
+            foundNodes = foundNodes.querySelectorAll(levelSelector);
+            if (cnt2 < selectors.length - 1) {
+                foundNodes = foundNodes.shadowRoot;
+            }
+        }
+
+        return foundNodes;
+    }
 
     /**
      * core byId method
@@ -1291,9 +1070,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             );
         }
 
-        // for some strange kind of reason the # selector fails
-        // on hidden elements we use the attributes match selector
-        // that works
+        //for some strange kind of reason the # selector fails
+        //on hidden elements we use the attributes match selector
+        //that works
         res = res.concat(this.querySelectorAll(`[id="${id}"]`));
         return new DomQuery(...res);
     }
@@ -1311,7 +1090,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         }
 
         let subItems = this.querySelectorAllDeep(`[id="${id}"]`);
-        if (subItems.length) {
+        if(subItems.length) {
             res.push(subItems);
         }
 
@@ -1320,14 +1099,13 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     /**
      * same as byId just for the tag name
-     * @param tagName the tag-name to search for
-     * @param includeRoot shall the root element be part of this search
-     * @param deep do we also want to go into shadow dom areas
+     * @param tagName
+     * @param includeRoot
      */
     byTagName(tagName: string, includeRoot ?: boolean, deep ?: boolean): DomQuery {
         let res: Array<Element | DomQuery> = [];
         if (includeRoot) {
-            res = <any>LazyStream.of(...(this?.rootNode ?? []))
+            res = <any> LazyStream.of(...(this?.rootNode ?? []))
                 .filter(element => element?.tagName == tagName)
                 .reduce<Array<Element | DomQuery>>((reduction: any, item: Element) => reduction.concat([item]), res)
                 .orElse(res).value;
@@ -1347,13 +1125,8 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return new ElementAttribute(this, attr, defaultValue);
     }
 
-    style(cssProperty: string, defaultValue: string = null): Style {
-        return new Style(this, cssProperty, defaultValue);
-    }
-
-
     /**
-     * Checks for an existing class in the class attributes
+     * hasclass, checks for an existing class in the class attributes
      *
      * @param clazz the class to search for
      */
@@ -1393,26 +1166,44 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * or are one
      */
     isMultipartCandidate(deep = false): boolean {
-        const FILE_INPUT = "input[type='file']";
-        return this.matchesSelector(FILE_INPUT) ||
-            ((!deep) ? this.querySelectorAll(FILE_INPUT) :
-                this.querySelectorAllDeep(FILE_INPUT)).first().isPresent();
+        let isCandidate = (item: DomQuery): boolean => {
+            if(item.length == 0) {
+                return false;
+            }
+            if(item.length == 1) {
+                if ((<string>item.tagName.get("booga").value).toLowerCase() == "input" &&
+                    (<string>item.attr("type")?.value || "").toLowerCase() == "file") {
+                    return true;
+                }
+                if (deep) {
+                    return this.querySelectorAllDeep("input[type='file']").firstElem().isPresent();
+                } else {
+                    return this.querySelectorAll("input[type='file']").firstElem().isPresent();
+                }
+            }
+            return item.isMultipartCandidate(deep);
+        };
+        let ret = this.stream.filter(item => isCandidate(item)).first().isPresent();
+
+        return ret;
     }
 
+
+
     /**
-     * innerHtml
-     * equivalent to jQueries html
+     * innerHtml equivalkent
+     * equivalent to jqueries html
      * as setter the html is set and the
      * DomQuery is given back
      * as getter the html string is returned
      *
-     * @param newInnerHTML the inner html to be inserted
+     * @param inval
      */
-    html(newInnerHTML?: string): DomQuery | Optional<string> {
-        if (Optional.fromNullable(newInnerHTML).isAbsent()) {
-            return this.isPresent() ? Optional.fromNullable(this.innerHTML) : Optional.absent;
+    html(inval?: string): DomQuery | Optional<string> {
+        if (Optional.fromNullable(inval).isAbsent()) {
+            return this.isPresent() ? Optional.fromNullable(this.innerHtml) : Optional.absent;
         }
-        this.innerHTML = newInnerHTML;
+        this.innerHtml = inval;
 
         return this;
     }
@@ -1425,36 +1216,34 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return this;
     }
 
-    /**
-     * abbreviation property to use innerHTML directly like on the dom tree
-     * @param newInnerHTML  the new inner html which should be attached to "this" domQuery
-     */
-    set innerHTML(newInnerHTML: string) {
-        this.eachElem(elem => elem.innerHTML = newInnerHTML);
+    set innerHtml(inVal: string) {
+        this.eachElem(elem => elem.innerHTML = inVal);
     }
 
-    /**
-     * getter abbreviation to use innerHTML directly
-     */
-    get innerHTML(): string {
+    get innerHtml(): string {
         let retArr = [];
         this.eachElem(elem => retArr.push(elem.innerHTML));
         return retArr.join("");
     }
 
-    /**
-     * since the dom allows both innerHTML and innerHtml we also have to implement both
-     * @param newInnerHtml see above
-     */
-    set innerHtml(newInnerHtml: string) {
-        this.innerHTML = newInnerHtml;
-    }
-
-    /**
-     * same here, getter for allowing innerHtml directly
-     */
-    get innerHtml(): string {
-        return this.innerHTML;
+    //source: https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
+    //code snippet license: https://creativecommons.org/licenses/by-sa/2.5/
+    private _mozMatchesSelector(toMatch: Element, selector: string): boolean {
+        let prot: { [key: string]: Function } = (<any>toMatch);
+        let matchesSelector: Function = prot.matches ||
+            prot.matchesSelector ||
+            prot.mozMatchesSelector ||
+            prot.msMatchesSelector ||
+            prot.oMatchesSelector ||
+            prot.webkitMatchesSelector ||
+            function (s: string) {
+                let matches: NodeListOf<HTMLElement> = (document || (<any>window).ownerDocument).querySelectorAll(s),
+                    i = matches.length;
+                while (--i >= 0 && matches.item(i) !== toMatch) {
+                }
+                return i > -1;
+            };
+        return matchesSelector.call(toMatch, selector);
     }
 
     /**
@@ -1490,9 +1279,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     /**
      * easy node traversal, you can pass
-     * a set of node selectors which are joined as direct children
+     * a set of node selectors which are joined as direct childs
      *
-     * Note!!! The root nodes are not in the getIf, those are always the child nodes
+     * not the rootnodes are not in the getIf, those are always the child nodes
      *
      * @param nodeSelector
      */
@@ -1525,17 +1314,10 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return this;
     }
 
-    lastElem(func: (item: Element, cnt?: number) => any = item => item): DomQuery {
-        if (this.rootNode.length > 1) {
-            func(this.rootNode[this.rootNode.length - 1], 0);
-        }
-        return this;
-    }
-
     each(func: (item: DomQuery, cnt?: number) => any): DomQuery {
         Stream.of(...this.rootNode)
             .each((item, cnt) => {
-                // we could use a filter, but for the best performance we don´t
+                //we could use a filter, but for the best performance we dont
                 if (item == null) {
                     return;
                 }
@@ -1543,29 +1325,6 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             });
 
         return this;
-    }
-
-    /**
-     * replace convenience function, replaces one or more elements with
-     * a set of elements passed as DomQuery
-     * @param toReplace the replaced nodes as reference (original node has been replaced)
-     */
-    replace(toReplace: DomQuery): DomQuery {
-        this.each(item => {
-            let asElem = item.getAsElem(0).value;
-            let parent = asElem.parentElement;
-            let nextElement = asElem.nextElementSibling;
-            let previousElement = asElem.previousElementSibling;
-            if(nextElement != null) {
-                new DomQuery(nextElement).insertBefore(toReplace);
-            } else if(previousElement) {
-                new DomQuery(previousElement).insertAfter(toReplace)
-            } else {
-                new DomQuery(parent).append(toReplace);
-            }
-            item.delete();
-        });
-        return toReplace;
     }
 
     /**
@@ -1577,20 +1336,6 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         if (this.rootNode.length >= 1) {
             func(this.get(0), 0);
             return this.get(0);
-        }
-        return this;
-    }
-
-    /**
-     * returns a new dom query containing only the first element max
-     *
-     * @param func a an optional callback function to perform an operation on the first element
-     */
-    last(func: (item: DomQuery, cnt?: number) => any = (item) => item): DomQuery {
-        if (this.rootNode.length >= 1) {
-            let lastNode = this.get(this.rootNode.length - 1);
-            func(lastNode, 0);
-            return lastNode;
         }
         return this;
     }
@@ -1608,22 +1353,19 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return new DomQuery(...<any>reArr);
     }
 
+    //TODO append prepend
+
     /**
      * global eval head appendix method
      * no other methods are supported anymore
-     * @param code the code to be evaluated
+     * @param code the code to be evaled
      * @param  nonce optional  nonce key for higher security
      */
     globalEval(code: string, nonce ?: string): DomQuery {
-        const head = document.getElementsByTagName("head")?.[0]
-            ?? document.documentElement.getElementsByTagName("head")?.[0];
-        const script = document.createElement("script");
+        let head = document.getElementsByTagName("head")[0] || document.documentElement;
+        let script = document.createElement("script");
         if (nonce) {
-            if ('undefined' != typeof script?.nonce) {
-                script.nonce = nonce;
-            } else {
-                script.setAttribute("nonce", nonce);
-            }
+            script.setAttribute("nonce", nonce);
         }
         script.type = "text/javascript";
         script.innerHTML = code;
@@ -1633,24 +1375,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     /**
-     * global eval head appendix method
-     * no other methods are supported anymore
-     * @param code the code to be evaluated
-     * @param  nonce optional  nonce key for higher security
-     */
-    globalEvalSticky(code: string, nonce ?: string): DomQuery {
-        let head = document.getElementsByTagName("head")[0] || document.documentElement;
-        let script = document.createElement("script");
-        this.applyNonce(nonce, script);
-        script.type = "text/javascript";
-        script.innerHTML = code;
-        head.appendChild(script);
-        return this;
-    }
-
-    /**
      * detaches a set of nodes from their parent elements
-     * in a browser independent manner
+     * in a browser independend manner
+     * @param {Object} items the items which need to be detached
      * @return {Array} an array of nodes with the detached dom nodes
      */
     detach(): DomQuery {
@@ -1665,46 +1392,55 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * to the element or first element passed via elem
      * @param elem
      */
-    appendTo(elem: DomQuery | string): DomQuery {
-        if (Lang.isString(elem)) {
-            this.appendTo(DomQuery.querySelectorAll(elem as string));
-            return this;
-        }
+    appendTo(elem: DomQuery) {
         this.eachElem((item) => {
-            let value1: Element = <Element>(elem as DomQuery).getAsElem(0).orElseLazy(() => {
+            let value1: Element = <Element>elem.getAsElem(0).orElseLazy(() => {
                 return {
-                    appendChild: () => {
+                    appendChild: (theItem: any) => {
                     }
                 }
             }).value;
             value1.appendChild(item);
         });
-        return this;
     }
 
     /**
-     * loads and evaluates a script from a source uri
+     * loads and evals a script from a source uri
      *
-     * @param src the source to be loaded and evaluated
-     * @param delay in milliseconds execution default (0 == no delay)
-     * @param nonce optional nonce value to allow increased security via nonce crypto token
+     * @param src the source to be loaded and evaled
+     * @param defer in miliseconds execution default (0 == no defer)
+     * @param charSet
      */
-    loadScriptEval(src: string, delay: number = 0,  nonce?: string) {
-        this._loadScriptEval(false, src, delay, nonce);
+    loadScriptEval(src: string, defer: number = 0, charSet: string = "utf-8") {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", src, false);
 
-        return this;
-    }
+        if (charSet) {
+            xhr.setRequestHeader("Content-Type", "application/x-javascript; charset:" + charSet);
+        }
 
+        xhr.send(null);
 
-    /**
-     * loads and evaluates a script from a source uri
-     *
-     * @param src the source to be loaded and evaluated
-     * @param delay in milliseconds execution default (0 == no delay)
-     * @param nonce optional nonce parameter for increased security via nonce crypto token
-     */
-    loadScriptEvalSticky(src: string, delay: number = 0,  nonce?: string) {
-        this._loadScriptEval(true, src, delay, nonce);
+        xhr.onload = (responseData: any) => {
+            //defer also means we have to process after the ajax response
+            //has been processed
+            //we can achieve that with a small timeout, the timeout
+            //triggers after the processing is done!
+            if (!defer) {
+                this.globalEval(xhr.responseText.replace(/\n/g, "\r\n") + "\r\n//@ sourceURL=" + src);
+            } else {
+                //TODO not ideal we maybe ought to move to something else here
+                //but since it is not in use yet, it is ok
+                setTimeout(() => {
+                    this.globalEval(xhr.responseText + "\r\n//@ sourceURL=" + src);
+                }, defer);
+            }
+        };
+
+        xhr.onerror = (data: any) => {
+            throw Error(data);
+        };
+        //since we are synchronous we do it after not with onReadyStateChange
 
         return this;
     }
@@ -1766,62 +1502,31 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         }
     }
 
-    /**
-     * find all parents in the hierarchy for which the selector matches
-     * @param selector
-     */
-    allParents(selector: string): DomQuery {
-        let parent = this.parent();
-        let ret = [];
-        while(parent.isPresent()) {
-            if(parent.matchesSelector(selector)) {
-               ret.push(parent);
+    parents(tagName: string): DomQuery {
+        const retSet: Set<Element> = new Set();
+        const retArr: Array<Element> = [];
+        const lowerTagName = tagName.toLowerCase();
+
+        let resolveItem = (item: Element) => {
+            if ((item.tagName || "").toLowerCase() == lowerTagName && !retSet.has(item)) {
+                retSet.add(item);
+                retArr.push(item);
             }
-            parent = parent.parent();
-        }
-        return new DomQuery(...ret);
-    }
+        };
 
-    /**
-     * finds the first parent in the hierarchy for which the selector matches
-     * @param selector
-     */
-    firstParent(selector: string): DomQuery {
-        let parent = this.parent();
-        while(parent.isPresent()) {
-            if(parent.matchesSelector(selector)) {
-                return parent;
-            }
-            parent = parent.parent();
-        }
-        return DomQuery.absent;
-    }
-
-    /**
-     * fetches all parents as long as the filter criterium matches
-     * @param selector
-     */
-    parentsWhileMatch(selector: string): DomQuery {
-        const retArr: Array<DomQuery> = [];
-        let parent = this.parent().filter(item => item.matchesSelector(selector));
-        while(parent.isPresent()) {
-            retArr.push(parent);
-            parent = parent.parent().filter(item => item.matchesSelector(selector));
-        }
-
-        return new DomQuery(...retArr);
-    }
-
-    parent(): DomQuery {
-        let ret = [];
         this.eachElem((item: Element) => {
-            let parent = item.parentNode || (<any>item).host || item.shadowRoot;
-            if (parent && ret.indexOf(parent) == -1) {
-                ret.push(parent);
+            while (item.parentNode || (<any> item).host) {
+                item = <Element>item?.parentNode ?? (<any>item)?.host;
+
+                resolveItem(item);
+                //nested forms not possible, performance shortcut
+                if (tagName == "form" && retArr.length) {
+                    return false;
+                }
             }
         });
 
-        return new DomQuery(...ret);
+        return new DomQuery(...retArr);
     }
 
     copyAttrs(sourceItem: DomQuery | XMLQuery): DomQuery {
@@ -1850,15 +1555,26 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     /**
-     * outerHTML convenience method
+     * resolves an attribute holder compared
+     * @param attrName the attribute name
+     */
+    private resolveAttributeHolder(attrName: string = "value"): HTMLFormElement | any {
+        let ret = [];
+        ret[attrName] = null;
+        return (attrName in this.getAsElem(0).value) ?
+            this.getAsElem(0).value :
+            ret;
+    }
+
+    /**
+     * outerhtml convenience method
      * browsers only support innerHTML but
      * for instance for your jsf.js we have a full
      * replace pattern which needs outerHTML processing
      *
-     * @param markup the markup which should replace the root element
-     * @param runEmbeddedScripts if true the embedded scripts are executed
-     * @param runEmbeddedCss if true the embedded css are executed
-     * @param deep should this also work for shadow dom (run scripts etc...)
+     * @param markup
+     * @param runEmbeddedScripts
+     * @param runEmbeddedCss
      */
     outerHTML(markup: string, runEmbeddedScripts ?: boolean, runEmbeddedCss ?: boolean, deep = false): DomQuery {
         if (this.isAbsent()) {
@@ -1875,7 +1591,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         let replaced = firstInsert.getAsElem(0).value;
         parentNode.replaceChild(replaced, toReplace);
         res.push(new DomQuery(replaced));
-        // no replacement possible
+        //no replacement possible
         if (this.isAbsent()) {
             return this;
         }
@@ -1905,76 +1621,43 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     /**
      * Run through the given nodes in the DomQuery execute the inline scripts
-     * @param sticky if set to true the evaluated elements will stick to the head, default false
-     * @param whitelisted: optional whitelist function which can filter out script tags which are not processed
+     * @param whilteListed: optional whitelist function which can filter out script tags which are not processed
      * defaults to the standard jsf.js exclusion (we use this code for myfaces)
      */
-    runScripts(sticky = false, whitelisted: (val: string) => boolean = DEFAULT_WHITELIST): DomQuery {
-        const evalCollectedScripts = (scriptsToProcess: { evalText: string, nonce: string }[]) => {
-            if (scriptsToProcess.length) {
-                // script source means we have to eval the existing
-                // scripts before we run the 'include' command
-                // this.globalEval(finalScripts.join("\n"));
-                let joinedScripts = [];
-                Stream.of(...scriptsToProcess).each(item => {
-                    if (!item.nonce) {
-                        joinedScripts.push(item.evalText)
-                    } else {
-                        if (joinedScripts.length) {
-                            this.globalEval(joinedScripts.join("\n"));
-                            joinedScripts.length = 0;
-                        }
-
-                        (!sticky) ?
-                            this.globalEval(item.evalText, item.nonce) :
-                            this.globalEvalSticky(item.evalText, item.nonce);
-                    }
-                });
-                if (joinedScripts.length) {
-                    (!sticky) ? this.globalEval(joinedScripts.join("\n")) :
-                        this.globalEvalSticky(joinedScripts.join("\n"));
-                    joinedScripts.length = 0;
-                }
-
-                scriptsToProcess = [];
-            }
-            return scriptsToProcess;
-        }
-
+    runScripts(whilteListed: (val: string) => boolean = DEFAULT_WHITELIST): DomQuery {
         let finalScripts = [],
-            allowedItemTypes = ["", "script", "text/javascript", "text/ecmascript", "ecmascript"],
-            execScript = (item) => {
+            equi = equalsIgnoreCase,
+            execScrpt = (item) => {
                 let tagName = item.tagName;
-                let itemType = (item?.type ?? '').toLowerCase();
-                if (tagName &&
-                    eqi(tagName, "script") &&
-                    allowedItemTypes.indexOf(itemType) != -1) {
+                let itemType = item.type || "";
+                if (tagName && equi(tagName, "script") &&
+                    (itemType === "" || equi(itemType, "text/javascript") ||
+                        equi(itemType, "javascript") ||
+                        equi(itemType, "text/ecmascript") ||
+                        equi(itemType, "ecmascript"))) {
                     let src = item.getAttribute('src');
                     if ('undefined' != typeof src
                         && null != src
                         && src.length > 0
                     ) {
-                        let nonce = item?.nonce ?? item.getAttribute('nonce').value;
-                        // we have to move this into an inner if because chrome otherwise chokes
-                        // due to changing the and order instead of relying on left to right
-                        // if jsf.js is already registered we do not replace it anymore
-                        if (whitelisted(src)) {
-                            // we run the collected scripts, before we run the 'include' command
-                            finalScripts = evalCollectedScripts(finalScripts);
-                            if (!sticky) {
-                                (!!nonce) ? this.loadScriptEval(src, 0,  nonce) :
-                                    // if no nonce is set we do not pass any once
-                                    this.loadScriptEval(src, 0);
-                            } else {
-                                (!!nonce) ? this.loadScriptEvalSticky(src, 0,  nonce) :
-                                    // if no nonce is set we do not pass any once
-                                    this.loadScriptEvalSticky(src, 0);
+                        //we have to move this into an inner if because chrome otherwise chokes
+                        //due to changing the and order instead of relying on left to right
+                        //if jsf.js is already registered we do not replace it anymore
+                        if (whilteListed(src)) {
+                            if (finalScripts.length) {
+                                //script source means we have to eval the existing
+                                //scripts before running the include
+                                this.globalEval(finalScripts.join("\n"));
+
+                                finalScripts = [];
                             }
+                            this.loadScriptEval(src, 0, "UTF-8");
                         }
 
                     } else {
                         // embedded script auto eval
-                        // probably not needed anymore
+                        //TODO this probably needs to be changed due to our new parsing structures
+                        //probably not needed anymore
                         let evalText = trim(item.text || item.innerText || item.innerHTML);
                         let go = true;
 
@@ -1993,72 +1676,78 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                                 go = true;
                             }
                         }
-                        let nonce = item?.nonce ?? item.getAttribute('nonce').value ?? '';
                         // we have to run the script under a global context
-                        // we store the script for fewer calls to eval
-                        finalScripts.push({
-                            nonce,
-                            evalText
-                        });
+                        //we store the script for less calls to eval
+                        finalScripts.push(evalText);
                     }
                 }
             };
         try {
             let scriptElements = new DomQuery(this.filterSelector("script"), this.querySelectorAll("script"));
-            // script execution order by relative pos in their dom tree
+            //script execution order by relative pos in their dom tree
             scriptElements.stream
                 .flatMap(item => Stream.of(item.values))
-                .sort((node1, node2) => node1.compareDocumentPosition(node2) - 3) // preceding 2, following == 4)
-                .each(item => execScript(item));
+                .sort((node1, node2) => node1.compareDocumentPosition(node2) - 3) //preceding 2, following == 4)
+                .each(item => execScrpt(item));
 
-            evalCollectedScripts(finalScripts);
+            if (finalScripts.length) {
+                this.globalEval(finalScripts.join("\n"));
+            }
         } catch (e) {
-            if (console && console.error) {
-                // not sure if we
-                // should use our standard
-                // error mechanisms here
-                // because in the head appendix
-                // method only a console
-                // error would be raised as well
+            if (window.console && window.console.error) {
+                //not sure if we
+                //should use our standard
+                //error mechanisms here
+                //because in the head appendix
+                //method only a console
+                //error would be raised as well
                 console.error(e.message || e.description);
             }
         } finally {
-            // the usual ie6 fix code
-            // the IE6 garbage collector is broken
-            // nulling closures helps somewhat to reduce
-            // mem leaks, which are impossible to avoid
-            // at this browser
-            execScript = null;
+            //the usual ie6 fix code
+            //the IE6 garbage collector is broken
+            //nulling closures helps somewhat to reduce
+            //mem leaks, which are impossible to avoid
+            //at this browser
+            execScrpt = null;
         }
         return this;
     }
 
     runCss(): DomQuery {
 
-        const execCss = (toReplace: HTMLElement) => {
-                const _toReplace = DomQuery.byId(toReplace);
-                const tagName = _toReplace.tagName.orElse("").value;
-                const head = DomQuery.byTagName("head");
+        const applyStyle = (item: Element, style: string) => {
+                let newSS: HTMLStyleElement = document.createElement("style");
+                document.getElementsByTagName("head")[0].appendChild(newSS);
 
-                if (tagName && eqi(tagName, "link") && eqi(toReplace.getAttribute("rel"), "stylesheet")) {
-                    const rel = toReplace.getAttribute("rel");
-                    //if possible we are now replacing the existing elements where we reference this stylesheet
-                    const matches = head.querySelectorAll(`link[rel='stylesheet'][href='${rel}']`);
+                let styleSheet = newSS.sheet ?? (<any>newSS).styleSheet;
 
-                    if(matches.length) {
-                        matches.replace(_toReplace);
-                    } else {
-                        head.append(_toReplace);
+                newSS.setAttribute("rel", item.getAttribute("rel") ?? "stylesheet");
+                newSS.setAttribute("type", item.getAttribute("type") ?? "text/css");
+
+                if (styleSheet?.cssText ?? false) {
+                    styleSheet.cssText = style;
+                } else {
+                    newSS.appendChild(document.createTextNode(style));
+                }
+            },
+
+            execCss = (item: Element) => {
+                const tagName = item.tagName;
+                if (tagName && equalsIgnoreCase(tagName, "link") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
+                    applyStyle(item, "@import url('" + item.getAttribute("href") + "');");
+                } else if (tagName && equalsIgnoreCase(tagName, "style") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
+                    let innerText = [];
+                    //compliant browsers know child nodes
+                    let childNodes: Array<Node> = Array.prototype.slice.call(item.childNodes);
+                    if (childNodes) {
+                        childNodes.forEach(child => innerText.push((<Element>child).innerHTML || (<CharacterData>child).data));
+                        //non compliant ones innerHTML
+                    } else if (item.innerHTML) {
+                        innerText.push(item.innerHTML);
                     }
-                } else if (tagName && eqi(tagName, "style")) {
-                    let innerText = _toReplace.innerHTML.replace(/\s+/gi, "");
-                    let styles = head.querySelectorAll("style");
-                    styles = styles.stream.filter(style => {
-                        return style.innerHTML.replace(/\s+/gi, "") == innerText;
-                    }).collect(new DomQueryCollector())
-                    if(!styles.length) { //already present
-                        head.append(_toReplace);
-                    }
+
+                    applyStyle(item, innerText.join(""));
                 }
             };
 
@@ -2093,12 +1782,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     /**
      * fires an event
      */
-    fireEvent(eventName: string, options: {[key: string]: any} = {}) {
-        // merge with last one having the highest priority
-        let finalOptions = Stream.ofAssoc({
-            bubbles: true, cancelable: true
-        }).concat(Stream.ofAssoc(options)).collect(new AssocArrayCollector());
-        
+    fireEvent(eventName: string) {
         this.eachElem((node: Element) => {
             let doc;
             if (node.ownerDocument) {
@@ -2112,52 +1796,45 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
             if (node.dispatchEvent) {
                 // Gecko-style approach (now the standard) takes more work
-                let EventClass = Event;
+                let eventClass = "";
 
                 // Different events have different event classes.
-                // If this switch statement can't map an eventName to an EventClass,
+                // If this switch statement can't map an eventName to an eventClass,
                 // the event firing is going to fail.
-                // extend this list on demand
                 switch (eventName) {
                     case "click": // Dispatching of 'click' appears to not work correctly in Safari. Use 'mousedown' or 'mouseup' instead.
                     case "mousedown":
                     case "mouseup":
-                    case "mousemove":
-                        EventClass = this.global().MouseEvent;
+                        eventClass = "MouseEvents";
                         break;
-                    case "keyup":
-                    case "keydown":
-                    case "keypress":
-                        EventClass = this.global().KeyboardEvent;
-                        break;
+
                     case "focus":
                     case "change":
                     case "blur":
                     case "select":
+                        eventClass = "HTMLEvents";
                         break;
+
                     default:
                         throw "fireEvent: Couldn't find an event class for event '" + eventName + "'.";
+                        break;
                 }
+                let event = doc.createEvent(eventClass);
+                event.initEvent(eventName, true, true); // All events created as bubbling and cancelable.
 
-                let event = new EventClass(eventName, finalOptions);
-                // this is added as an extra to allow internally the detection of synthetic events
-                // not used atm, but it does not hurt to have the extra info
-                (event as any).synthetic = true; // allow detection of synthetic events
+                event.synthetic = true; // allow detection of synthetic events
                 // The second parameter says go ahead with the default action
                 node.dispatchEvent(event);
             } else if ((<any>node).fireEvent) {
                 // IE-old school style, you can drop this if you don't need to support IE8 and lower
                 let event = doc.createEventObject();
                 event.synthetic = true; // allow detection of synthetic events
-                Stream.ofAssoc(finalOptions).each(([key, value]): void => {
-                    event[key] = value;
-                });
                 (<any>node).fireEvent("on" + eventName, event);
             }
         })
     }
 
-    textContent(joinString: string = ""): string {
+    textContent(joinstr: string = ""): string {
         return this.stream
             .map((value: DomQuery) => {
                 let item = value.getAsElem(0).orElseLazy(() => {
@@ -2167,10 +1844,10 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 }).value;
                 return (<any>item).textContent || "";
             })
-            .reduce((text1, text2) => [text1,joinString,text2].join(""), "").value;
+            .reduce((text1, text2) => text1 + joinstr + text2, "").value;
     }
 
-    innerText(joinString: string = ""): string {
+    innerText(joinstr: string = ""): string {
         return this.stream
             .map((value: DomQuery) => {
                 let item = value.getAsElem(0).orElseLazy(() => {
@@ -2180,14 +1857,14 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 }).value;
                 return (<any>item).innerText || "";
             })
-            .reduce((text1, text2) => [text1, text2].join(joinString), "").value;
+            .reduce((text1, text2) => [text1, text2].join(joinstr), "").value;
 
     }
 
     /**
      * encodes all input elements properly into respective
      * config entries, this can be used
-     * for legacy systems, for newer use-cases, use the
+     * for legacy systems, for newer usecases, use the
      * HTML5 Form class which all newer browsers provide
      *
      * @param toMerge optional config which can be merged in
@@ -2195,17 +1872,17 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      */
     encodeFormElement(toMerge = new Config({})): Config {
 
-        // browser behavior no element name no encoding (normal submit fails in that case)
-        // https:// issues.apache.org/jira/browse/MYFACES-2847
+        //browser behavior no element name no encoding (normal submit fails in that case)
+        //https://issues.apache.org/jira/browse/MYFACES-2847
         if (this.name.isAbsent()) {
             return;
         }
 
-        // let´s keep it side-effects free
+        //lets keep it sideffects free
         let target = toMerge.shallowCopy;
 
         this.each((element: DomQuery) => {
-            if (element.name.isAbsent()) {// no name, no encoding
+            if (element.name.isAbsent()) {//no name, no encoding
                 return;
             }
             let name = element.name.value;
@@ -2216,8 +1893,8 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
             // routine for all elements
             // rules:
-            // - process only input, textarea and select elements
-            // - elements must have attribute "name"
+            // - process only inputs, textareas and selects
+            // - elements muest have attribute "name"
             // - elements must not be disabled
             if (((tagName == "input" || tagName == "textarea" || tagName == "select") &&
                 (name != null && name != "")) && !element.disabled) {
@@ -2228,16 +1905,16 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 // (also if value empty => "name=")
                 // - if select-one and value-Attribute don't exist =>
                 // "name=DisplayValue"
-                // - if select multi and multiple selected => "name=value1&name=value2"
+                // - if select multi and multple selected => "name=value1&name=value2"
                 // - if select and selectedIndex=-1 don't submit
                 if (tagName == "select") {
-                    // selectedIndex must be >= 0 to be submitted
+                    // selectedIndex must be >= 0 sein to be submittet
                     let selectElem: HTMLSelectElement = <HTMLSelectElement>element.getAsElem(0).value;
                     if (selectElem.selectedIndex >= 0) {
                         let uLen = selectElem.options.length;
                         for (let u = 0; u < uLen; u++) {
                             // find all selected options
-                            // let subBuf = [];
+                            //let subBuf = [];
                             if (selectElem.options[u].selected) {
                                 let elementOption = selectElem.options[u];
                                 target.append(name).value = (elementOption.getAttribute("value") != null) ?
@@ -2253,27 +1930,22 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 // - submit checkboxes and radio inputs only if checked
                 if (
                     (
-                        tagName != ALLOWED_SUBMITTABLE_ELEMENTS.SELECT &&
-                        elemType != ALLOWED_SUBMITTABLE_ELEMENTS.BUTTON &&
-                        elemType != ALLOWED_SUBMITTABLE_ELEMENTS.RESET &&
-                        elemType != ALLOWED_SUBMITTABLE_ELEMENTS.SUBMIT &&
-                        elemType != ALLOWED_SUBMITTABLE_ELEMENTS.IMAGE
+                        tagName != Submittables.SELECT &&
+                        elemType != Submittables.BUTTON &&
+                        elemType != Submittables.RESET &&
+                        elemType != Submittables.SUBMIT &&
+                        elemType != Submittables.IMAGE
                     ) && (
                         (
-                            elemType != ALLOWED_SUBMITTABLE_ELEMENTS.CHECKBOX && elemType != ALLOWED_SUBMITTABLE_ELEMENTS.RADIO) ||
+                            elemType != Submittables.CHECKBOX && elemType != Submittables.RADIO) ||
                         element.checked
                     )
                 ) {
-                    let uploadedFiles = (<any>element.value)?.value?.files;
-                    let filesArr: any = uploadedFiles ?? [];
-                    if (filesArr?.length) { //files can be empty but set
-                        // xhr level2, single multiple must be passes as they are
-                        target.assign(name).value = Array.from(filesArr);
+                    let files: any = (<any>element.value).value?.files ?? [];
+                    if (files?.length) {
+                        //xhr level2
+                        target.append(name).value = files[0];
                     } else {
-                        if(!!uploadedFiles) { //we skip empty file elements i
-                            return;
-                        }
-                        //checkboxes etc.. need to be appended
                         target.append(name).value = element.inputValue.value;
                     }
                 }
@@ -2285,6 +1957,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     get cDATAAsString(): string {
+        let cDataBlock = [];
         let TYPE_CDATA_BLOCK = 4;
 
         let res: any = this.lazyStream.flatMap(item => {
@@ -2307,8 +1980,8 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return new DomQuery(...this.rootNode.slice(from, Math.min(to, this.length)));
     }
 
-
-    // because we can stream from an array stream directly into the dom query
+    //TODO this part probably will be removed
+    //because we can stream from an array stream directly into the dom query
     _limits = -1;
 
     limits(end: number): IStream<DomQuery> {
@@ -2334,15 +2007,16 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
 
     lookAhead(cnt = 1): ITERATION_STATUS | DomQuery {
-        if ((this.values.length - 1) < (this.pos + cnt)) {
+        if((this.values.length - 1) < (this.pos + cnt)) {
             return ITERATION_STATUS.EO_STRM;
         }
         return new DomQuery(this.values[this.pos + cnt]);
     }
 
 
+
     current(): DomQuery | ITERATION_STATUS {
-        if (this.pos == -1) {
+        if(this.pos == -1) {
             return ITERATION_STATUS.BEF_STRM;
         }
         return new DomQuery(this.values[this.pos]);
@@ -2369,17 +2043,11 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     /**
      * helper to fix a common dom problem
-     * we have to wait until a certain condition is met, in most of the cases we just want to know whether an element is present in the sub dom-tree before being able to proceed
+     * we have to wait until a certain condition is met, in most of the cases we just want to know whether an element is present in the subdome before being able to proceed
      * @param condition
      * @param options
      */
-    async waitUntilDom(condition: (element: DomQuery) => boolean, options: WAIT_OPTS = {
-        attributes: true,
-        childList: true,
-        subtree: true,
-        timeout: 500,
-        interval: 100
-    }): Promise<DomQuery> {
+    async waitUntilDom(condition: (element: DomQuery) => boolean, options: WAIT_OPTS = { attributes: true, childList: true, subtree: true, timeout: 500, interval: 100 }): Promise<DomQuery> {
         return waitUntilDom(this, condition, options);
     }
 
@@ -2414,8 +2082,8 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return false;
     }
 
-    // from
-    // http:// blog.vishalon.net/index.php/javascript-getting-and-setting-caret-position-in-textarea/
+    //from
+    // http://blog.vishalon.net/index.php/javascript-getting-and-setting-caret-position-in-textarea/
     static getCaretPosition(ctrl: any) {
         let caretPos = 0;
 
@@ -2423,14 +2091,14 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             if ((<any>document)?.selection) {
                 ctrl.focus();
                 let selection = (<any>document).selection.createRange();
-                // the selection now is start zero
+                //the selection now is start zero
                 selection.moveStart('character', -ctrl.value.length);
-                // the caret-position is the selection start
+                //the caretposition is the selection start
                 caretPos = selection.text.length;
             }
         } catch (e) {
-            // now this is ugly, but not supported input types throw errors for selectionStart
-            // just in case someone dumps this code onto unsupported browsers
+            //now this is ugly, but not supported input types throw errors for selectionStart
+            //just in case someone dumps this code onto unsupported browsers
         }
         return caretPos;
     }
@@ -2447,7 +2115,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      */
     static setCaretPosition(ctrl: any, pos: number) {
         ctrl?.focus ? ctrl?.focus() : null;
-        // the selection range is our caret position
+        //the selection range is our caret position
 
         ctrl?.setSelectiongRange ? ctrl?.setSelectiongRange(pos, pos) : null;
     }
@@ -2470,17 +2138,16 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     /**
-     * Concatenates the elements of two Dom Queries into a single one
-     * @param toAttach the elements to attach
-     * @param filterDoubles filter out possible double elements (aka same markup)
+     * concats the elements of two Dom Queries into a single one
+     * @param toAttach
      */
     concat(toAttach: DomQuery, filterDoubles = true): any {
         const ret = this.lazyStream.concat(toAttach.lazyStream).collect(new DomQueryCollector());
-        // we now filter the doubles out
-        if (!filterDoubles) {
+        //we now filter the doubles out
+        if(!filterDoubles) {
             return ret;
         }
-        let idx = {}; // ie11 does not support sets, we have to fake it
+        let idx = {}; //ie11 does not support sets, we have to fake it
         return ret.lazyStream.filter(node => {
             const notFound = !(idx?.[node.value.value.outerHTML as any]);
             idx[node.value.value.outerHTML as any] = true;
@@ -2488,234 +2155,39 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         }).collect(new DomQueryCollector());
     }
 
-    append(elem: DomQuery): DomQuery {
-        this.each(item => elem.appendTo(item));
-        return this;
+
+    /*[observable](): Observable<DomQuery> {
+        return this.observable;
     }
 
-    prependTo(elem: DomQuery): DomQuery {
-        elem.eachElem(item => {
-            item.prepend(...this.allElems());
-        });
-        return this;
-    }
-
-    prepend(elem: DomQuery): DomQuery {
-        this.eachElem(item => {
-            item.prepend(...elem.allElems());
-        })
-        return this;
-    }
-
-    /**
-     * query selector all on the existing dom queryX object
-     *
-     * @param selector the standard selector
-     * @return a DomQuery with the results
-     */
-    private _querySelectorAll(selector): DomQuery {
-        if (!this?.rootNode?.length) {
-            return this;
-        }
-        let nodes = [];
-        for (let cnt = 0; cnt < this.rootNode.length; cnt++) {
-            if (!this.rootNode[cnt]?.querySelectorAll) {
-                continue;
+    get observable(): Observable<DomQuery> {
+        let observerFunc = (observer:Subscriber<DomQuery>) => {
+            try {
+                this.each(dqNode => {
+                    observer.next(dqNode);
+                });
+            } catch (e) {
+                observer.error(e);
             }
-            let res = this.rootNode[cnt].querySelectorAll(selector);
-            nodes = nodes.concat(objToArray(res));
-        }
-
-        return new DomQuery(...nodes);
+        };
+        return new Observable(observerFunc);
     }
 
-    /*deep with a selector and a pseudo /shadow/ marker to break into the next level*/
-    private _querySelectorAllDeep(selector): DomQuery {
-        if (!this?.rootNode?.length) {
-            return this;
-        }
-
-        let foundNodes: DomQuery = new DomQuery(...this.rootNode);
-        let selectors = selector.split(/\/shadow\//);
-
-        for (let cnt2 = 0; cnt2 < selectors.length; cnt2++) {
-            if (selectors[cnt2] == "") {
-                continue;
+    get observableElem(): Observable<Element> {
+        let observerFunc = (observer:Subscriber<Element>) => {
+            try {
+                this.eachElem(node => {
+                    observer.next(node);
+                });
+            } catch (e) {
+                observer.error(e);
             }
-            let levelSelector = selectors[cnt2];
-            foundNodes = foundNodes.querySelectorAll(levelSelector);
-            if (cnt2 < selectors.length - 1) {
-                foundNodes = foundNodes.shadowRoot;
-            }
-        }
-
-        return foundNodes;
-    }
-
-
-    /**
-     * query selector all on the existing dom queryX object
-     *
-     * @param selector the standard selector
-     * @return a DomQuery with the results
-     */
-    private _closest(selector): DomQuery {
-        if (!this?.rootNode?.length) {
-            return this;
-        }
-        let nodes = [];
-        for (let cnt = 0; cnt < this.rootNode.length; cnt++) {
-            if (!this.rootNode[cnt]?.closest) {
-                continue;
-            }
-            let res = [this.rootNode[cnt].closest(selector)];
-            nodes = nodes.concat(...res);
-        }
-
-        return new DomQuery(...nodes);
-    }
-
-    /*deep with a selector and a pseudo /shadow/ marker to break into the next level*/
-    private _closestDeep(selector): DomQuery {
-        if (!this?.rootNode?.length) {
-            return this;
-        }
-
-        let foundNodes: DomQuery = new DomQuery(...this.rootNode);
-        let selectors = selector.split(/\/shadow\//);
-
-        for (let cnt2 = 0; cnt2 < selectors.length; cnt2++) {
-            if (selectors[cnt2] == "") {
-                continue;
-            }
-            let levelSelector = selectors[cnt2];
-            foundNodes = foundNodes.closest(levelSelector);
-            if (cnt2 < selectors.length - 1) {
-                foundNodes = foundNodes.shadowRoot;
-            }
-        }
-
-        return foundNodes;
-    }
-
-    // source: https:// developer.mozilla.org/en-US/docs/Web/API/Element/matches
-    // code snippet license: https:// creativecommons.org/licenses/by-sa/2.5/
-    /**
-     * matches selector call in a browser independent manner
-     *
-     * @param toMatch
-     * @param selector
-     * @private
-     */
-    private _mozMatchesSelector(toMatch: Element, selector: string): boolean {
-        let prototypeOwner: { [key: string]: Function } = (<any>toMatch);
-        let matchesSelector: Function = prototypeOwner.matches ||
-            prototypeOwner.matchesSelector ||
-            prototypeOwner.mozMatchesSelector ||
-            prototypeOwner.msMatchesSelector ||
-            prototypeOwner.oMatchesSelector ||
-            prototypeOwner.webkitMatchesSelector ||
-            function (s: string) {
-                let matches: NodeListOf<HTMLElement> = (document || ownerDocument).querySelectorAll(s),
-                    i = matches.length;
-                while (--i >= 0 && matches.item(i) !== toMatch) {
-                }
-                return i > -1;
-            };
-        return matchesSelector.call(toMatch, selector);
-    }
-
-    /**
-     * sticky non-sticky unified code of the load script eval
-     * implementation if programmatic &gt;script src="... loading
-     *
-     * @param sticky if set to true a head element is left in the dom tree after the script has loaded
-     *
-     * @param src the sec to load
-     * @param delay delay the script loading x ms (default immediately === 0)
-     * @param nonce optional nonce token to be passed into the script tag
-     * @private
-     */
-    private _loadScriptEval(sticky: boolean, src: string, delay: number = 0, nonce ?: string) {
-        let srcNode = this.createSourceNode(src, nonce);
-        let nonceCheck = this.createSourceNode(null, nonce);
-        let marker = `nonce_${Date.now()}_${Math.random()}`;
-        nonceCheck.innerHTML = `document.head["${marker}"] = true` // noop
-
-        let head = document.head;
-        //  upfront nonce check, needed mostly for testing
-        //  but cannot hurt to block src calls which have invalid nonce on localhost
-        // the reason for doing this up until now we have a similar construct automatically
-        // by loading the scripts via xhr and then embedding them.
-        // this is not needed anymore but the nonce is more relaxed with script src
-        // we now enforce it the old way
-
-        head.appendChild(nonceCheck);
-        head.removeChild(nonceCheck);
-        if(!head[marker]) {
-            return;
-        }
-        try {
-            if (!delay) {
-                head.appendChild(srcNode);
-                if(!sticky) {
-                    head.removeChild(srcNode);
-                }
-            } else {
-                setTimeout(() => {
-                    head.appendChild(srcNode);
-                    if(!sticky) {
-                        head.removeChild(srcNode);
-                    }
-                }, delay);
-            }
-        } finally {
-            delete head[marker];
-        }
-
-        return this;
-    }
-
-    /**
-     * resolves an attribute holder compared
-     * @param attrName the attribute name
-     */
-    private resolveAttributeHolder(attrName: string = "value"): HTMLFormElement | any {
-        let ret = [];
-        ret[attrName] = null;
-        return (attrName in this.getAsElem(0).value) ?
-            this.getAsElem(0).value :
-            ret;
-    }
-
-    private createSourceNode(src: string | null, nonce?: string) {
-        let srcNode: HTMLScriptElement = document.createElement("script");
-        srcNode.type = "text/javascript";
-        if (!!nonce) {
-            if ('undefined' != typeof srcNode?.nonce) {
-                srcNode.nonce = nonce;
-            } else {
-                srcNode.setAttribute("nonce", nonce);
-            }
-        }
-        if(!!src) {
-            srcNode.src = src;
-        }
-
-        return srcNode;
-    }
-
-    private applyNonce(nonce: string, script: HTMLScriptElement) {
-        if (nonce) {
-            if ('undefined' != typeof script?.nonce) {
-                script.nonce = nonce;
-            } else {
-                script.setAttribute("nonce", nonce);
-            }
-        }
-    }
+        };
+        return new Observable(observerFunc);
+    }*/
 
 }
+
 
 
 /**
@@ -2746,8 +2218,4 @@ export class DomQueryCollector implements ICollector<DomQuery, DomQuery> {
  */
 export const DQ = DomQuery;
 export type DQ = DomQuery;
-// noinspection JSUnusedGlobalSymbols
-/**
- * replacement for the jquery $
- */
-export const DQ$ = DomQuery.querySelectorAll;
+
