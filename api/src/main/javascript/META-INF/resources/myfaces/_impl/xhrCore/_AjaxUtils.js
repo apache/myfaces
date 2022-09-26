@@ -81,6 +81,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
         var name = element.name;
         var tagName = element.tagName.toLowerCase();
         var elemType = element.type;
+        var isMultiple = element.multiple;
         if (elemType != null) {
             elemType = elemType.toLowerCase();
         }
@@ -126,7 +127,14 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
                     && ((elemType != "checkbox" && elemType != "radio") || element.checked)) {
                 if ('undefined' != typeof element.files && element.files != null && _RT.getXHRLvl() >= 2 && element.files.length) {
                     //xhr level2
-                    targetBuf.append(name, element.files[0]);
+                    for(var r = 0;r < element.files.length; r++){
+                        targetBuf.append(name, element.files[r]);
+                        // don't add any more files
+                        if(!isMultiple){ 
+                            break;
+                        }
+                    }
+                   
                 } else {
                     targetBuf.append(name, element.value);
                 }
