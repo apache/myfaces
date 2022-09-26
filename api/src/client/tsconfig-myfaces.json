@@ -1,0 +1,36 @@
+/**
+* Changes to the downstream tsconfig
+* for the myfaces build integration.
+* key requirement no github dependencies on code level
+* we have to compile mona-dish in directly on source level
+* The idea is to copy all the needed files from the node
+* dependencies into the source tree whenever we update the codebase
+* and then build locally.
+* Theoretically a build from the node folders would suffice.
+* The end result is the same as well as in the mapping files
+* but that would mean we do host the typescript code ourselves.
+*
+* That however means we have to upstream the code into the
+* jsf_ts github project for the time being to be in sync with it.
+*/
+{
+  "extends": "./typescript/jsf_ts/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    /**
+    * key requirement no github dependencies on code level
+    * we have to compile mona-dish in directly on source level
+    */
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "paths": {
+      "mona-dish": ["./typescript/mona_dish/index_core.ts"]
+    },
+  },
+  "exclude": [
+    "./typescript/mona_dish/ExtendedArray.ts",
+    "./typescript/mona_dish/index.ts",
+    "./typescript/mona_dish/Messaging.ts",
+  ]
+}

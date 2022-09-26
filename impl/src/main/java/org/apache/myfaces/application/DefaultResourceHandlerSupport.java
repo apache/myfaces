@@ -76,12 +76,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
             {
                 //The ExternalContextResourceLoader has precedence over
                 //ClassLoaderResourceLoader, so it goes first.
-                String renderedJSFJS = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
-                        InternalClassLoaderResourceLoader.MYFACES_JSF_MODE,
-                        ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
-
-                if (facesContext.isProjectStage(ProjectStage.Development) ||
-                     !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
+                if (facesContext.isProjectStage(ProjectStage.Development))
                 {
                     _resourceLoaders = new ResourceLoader[] {
                             new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader('/' +directory)),
@@ -104,12 +99,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
             {
                 //The ExternalContextResourceLoader has precedence over
                 //ClassLoaderResourceLoader, so it goes first.
-                String renderedJSFJS = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
-                        InternalClassLoaderResourceLoader.MYFACES_JSF_MODE,
-                        ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
-
-                if (facesContext.isProjectStage(ProjectStage.Development) ||
-                     !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
+                if (facesContext.isProjectStage(ProjectStage.Development))
                 {
                     _resourceLoaders = new ResourceLoader[] {
                             new ExternalContextResourceLoader('/' +directory),
@@ -125,7 +115,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
                             new FacesFlowClassLoaderResourceLoader(),
                             new ClassLoaderResourceLoader(META_INF_RESOURCES)
                     };
-                }
+               }
             }
         }
         return _resourceLoaders;

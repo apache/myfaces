@@ -1,0 +1,78 @@
+/**
+ * store registry to collect the annotation data
+ */
+import {createAction, createReducer} from '@ngrx/store';
+
+export class StoreRegistry {
+    data: {[key: string]: any} = {}
+}
+
+let storeRegistry = new StoreRegistry();
+
+/**
+ * store marker optional name
+ * @param name
+ * @constructor
+ */
+function Store(name?:string) {
+    return (constructor: Function) => {
+        let finalName = name ?? constructor.name;
+        //we reserve the name
+
+        (<any>constructor).__actions = [];
+        (<any>constructor).__finalName = finalName;
+
+        (<any>constructor).__actionDefinitions.forEach(actionDefinition => {
+            (<any>constructor).__actions.push(actionDefinition.actionFactory(finalName));
+        })
+        let reducers = (<any>constructor).__actionDefinitions.map(actionDefinition => actionDefinition.reducer);
+        (<any>constructor).__reducer = createReducer((<any>constructor).__initialState, ...reducers);
+
+    }
+}
+
+function Action(name ?: string) {
+    return (target: Object, propertyKey: string, descriptor: PropertyDescriptor) =>  {
+        let finalName = name ?? propertyKey;
+        (<any>target).__actionDefinitions =  (<any>target).__actionDefinitions || [];
+        let actionDefinition: any = {
+            actionFactory: (storeName: string) => createAction(`[${storeName}] ${finalName}`),
+            reducer: (state) => target[propertyKey](state)
+        };
+        (<any>target).__actionDefinitions.push(actionDefinition);
+        let oldFunc = target[propertyKey];
+
+        //TODO add triggers for the function here
+        target[propertyKey+"_trigger"] = (payload?:any) => {
+            target.__store.dispatch()
+        }
+    }
+}
+
+function InitialState(target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
+    //target.prototype.__initialState =
+    (<any>target).__initialState = (<any>target)[propertyKey]();
+}
+
+
+@Store("foobaz")
+class TestClass {
+    constructor() {
+    }
+
+    @InitialState
+    static initialState() {return 1};
+
+    @Action("increment")
+    static action1(state?: any, payload?: any) {
+        return state + 1;
+    }
+
+   // @Selector
+    static value(state: any, props: any) {
+        return state
+    }
+
+}
+
+
