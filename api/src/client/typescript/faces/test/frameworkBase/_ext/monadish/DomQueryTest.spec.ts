@@ -1,4 +1,6 @@
-/* Licensed to the Apache Software Foundation (ASF) under one or more
+// noinspection HtmlUnknownAttribute
+
+/*! Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to you under the Apache License, Version 2.0
@@ -16,21 +18,21 @@
 
 import {expect} from 'chai';
 import {describe, it} from 'mocha';
-import {ArrayCollector, DomQuery, DomQueryCollector, Lang, LazyStream} from "mona-dish";
+import {ArrayCollector, DomQuery, Lang, LazyStream} from "mona-dish";
+import * as sinon from 'sinon';
 import trim = Lang.trim;
-import {from} from "rxjs";
+import {ExtDomquery} from "../../../../impl/util/ExtDomQuery";
 
 
 const jsdom = require("jsdom");
 const {JSDOM} = jsdom;
-(global as any).window = {}
-let dom = null;
+declare const global;
+
 describe('DOMQuery tests', function () {
 
     beforeEach(function () {
 
-        // language=HTML
-        dom = new JSDOM(`
+        let dom = new JSDOM(`
             <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -39,22 +41,19 @@ describe('DOMQuery tests', function () {
             </head>
             <body>
                 <div id="id_1"></div>
-                <div id="id_2"  booga="blarg" class="blarg2"></div>
-                <div id="id_3" class="blarg1 blarg2"></div>
+                <div id="id_2"  booga="blarg"></div>
+                <div id="id_3"></div>
                 <div id="id_4"></div>
             </body>
             </html>
     
     `, {
             contentType: "text/html",
-            runScripts: "dangerously",
-            resources: "usable",
-            url: `file://${__dirname}/index.html`
+            runScripts: "dangerously"
         });
 
         let window = dom.window;
 
-        (<any>global).dom = dom;
         (<any>global).window = window;
         (<any>global).body = window.document.body;
         (<any>global).document = window.document;
@@ -62,11 +61,17 @@ describe('DOMQuery tests', function () {
             language: "en-En"
         };
 
-
+        this.xhr = sinon.useFakeXMLHttpRequest();
+        this.requests = [];
+        this.xhr.onCreate = (xhr: any) => {
+            this.requests.push(xhr);
+        };
+        (<any>global).XMLHttpRequest = this.xhr;
+        (<any>window).XMLHttpRequest = this.xhr;
     });
 
     this.afterEach(function () {
-
+        (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
     });
 
     it('basic init', function () {
@@ -80,58 +85,6 @@ describe('DOMQuery tests', function () {
         expect(probe3.length == 5).to.be.true;
         //still under discussion (we might index to avoid doubles)
         expect(probe4.length == 6).to.be.true;
-    });
-
-    it('proper iterator api and rxjs mapping', function () {
-        let probe1 = new DomQuery(window.document.body);
-        let probe2 = DomQuery.querySelectorAll("div");
-
-        let o1 = from(probe1.stream);
-        let o2 = from(probe2.stream);
-
-        let cnt1 = 0;
-        let isDQuery = false;
-        let cnt2 = 0;
-
-        o1.subscribe(() => {
-            cnt1++;
-        });
-
-        o2.subscribe((item: any) => {
-            cnt2++;
-            isDQuery = (item.length == 1) && (item instanceof DomQuery)
-        })
-
-        expect(probe1.length).to.be.eq(1);
-        expect(probe2.length == 4).to.be.true;
-        expect(isDQuery).to.be.true;
-
-    });
-
-    it('proper iterator api and rxjs mapping with observable', function () {
-        let probe1 = new DomQuery(window.document.body);
-        let probe2 = DomQuery.querySelectorAll("div");
-
-        let o1 = from(probe1.stream);
-        let o2 = from(probe2.stream);
-
-        let cnt1 = 0;
-        let isDQuery = false;
-        let cnt2 = 0;
-
-        o1.subscribe(() => {
-            cnt1++;
-        });
-
-        o2.subscribe((item: any) => {
-            cnt2++;
-            isDQuery = (item.length == 1) && (item instanceof DomQuery)
-        })
-
-        expect(probe1.length).to.be.eq(1);
-        expect(probe2.length == 4).to.be.true;
-        expect(isDQuery).to.be.true;
-
     });
 
     it('domquery ops test filter', function () {
@@ -160,25 +113,10 @@ describe('DOMQuery tests', function () {
 
         DomQuery.globalEval("document.getElementById('id_1').innerHTML = 'hello'");
         expect(probe2.html().value).to.eq("hello");
-        expect(DomQuery.byId(document.head).innerHTML.indexOf("document.getElementById('id_1').innerHTML = 'hello'")).to.eq(-1);
 
         DomQuery.globalEval("document.getElementById('id_1').innerHTML = 'hello2'", "nonci");
         expect(probe2.html().value).to.eq("hello2");
     });
-
-
-    it('domquery ops test2 with sticky eval code', () => {
-        let probe2 = DomQuery.querySelectorAll("div#id_1");
-
-        DomQuery.globalEvalSticky("document.getElementById('id_1').innerHTML = 'hello'");
-        expect(probe2.html().value).to.eq("hello");
-        expect(DomQuery.byId(document.head).innerHTML.indexOf("document.getElementById('id_1').innerHTML = 'hello'")).not.to.eq(-1);
-
-        DomQuery.globalEvalSticky("document.getElementById('id_1').innerHTML = 'hello2'", "nonci");
-        expect(probe2.html().value).to.eq("hello2");
-        expect(DomQuery.byId(document.head).innerHTML.indexOf("document.getElementById('id_1').innerHTML = 'hello2'")).not.to.eq(-1);
-    });
-
 
     it('domquery ops test2 eachNode', function () {
         let probe2 = DomQuery.querySelectorAll("div");
@@ -199,7 +137,7 @@ describe('DOMQuery tests', function () {
     });
 
     it('outerhtml and eval tests', function () {
-        let probe1 = new DomQuery(window.document.body);
+        let probe1 = new ExtDomquery(window.document.body);
         probe1.querySelectorAll("#id_1").outerHTML(`
             <div id='barg'>
             
@@ -214,7 +152,7 @@ describe('DOMQuery tests', function () {
         expect(window.document.body.innerHTML.indexOf("blarg") != -1).to.be.true;
     });
 
-    it('attr test and eval tests', function () {
+    it('attrn test and eval tests', function () {
 
         let probe1 = new DomQuery(document);
         probe1.querySelectorAll("div#id_2").attr("style").value = "border=1;";
@@ -225,20 +163,6 @@ describe('DOMQuery tests', function () {
         expect(blarg).to.be.eq("blarg");
         expect(style).to.be.eq("border=1;");
         expect(nonexistent).to.be.eq(null);
-
-
-    });
-
-    it('style must work ', function () {
-        let probe1 = new DomQuery(document);
-        let probe = probe1.querySelectorAll("div#id_2");
-        probe.style("border").value = "10px solid red";
-        probe.style("color").value = "blue";
-        let styleNodeLevel = (probe.getAsElem(0).value as HTMLElement).style['color'];
-        expect(probe.style("border").value).to.eq("10px solid red")
-        expect(probe.style("color").value).to.eq("blue");
-        expect(styleNodeLevel).to.eq('blue');
-
     });
 
     it('must perform addClass and hasClass correctly', function () {
@@ -247,40 +171,12 @@ describe('DOMQuery tests', function () {
         element.addClass("booga").addClass("Booga2");
 
         let classdef = element.attr("class").value;
-        expect(classdef).to.eq("blarg2 booga Booga2");
+        expect(classdef).to.eq("booga Booga2");
 
         element.removeClass("booga2")
         expect(element.hasClass("booga2")).to.be.false;
         expect(element.hasClass("booga")).to.be.true;
 
-    });
-
-    it('must perform addClass and hasClass correctly 2', function () {
-        let probe1 = new DomQuery(document);
-        let element = probe1.querySelectorAll(".blarg2");
-
-
-        element.addClass("booga").addClass("Booga2");
-
-        let classdef = element.attr("class").value;
-        expect(classdef).to.eq("blarg2 booga Booga2");
-
-        element.removeClass("booga2")
-        expect(element.hasClass("booga2")).to.be.false;
-        expect(element.hasClass("booga")).to.be.true;
-        expect(element.hasClass("blarg2")).to.be.true;
-
-    });
-
-    it('must perform addClass and hasClass correctly 2', function () {
-        let probe1 = new DomQuery(document);
-        let element = probe1.querySelectorAll(".blarg2");
-
-
-        element.addClass("booga").addClass("Booga2");
-
-
-        expect(probe1.querySelectorAll(".Booga2").length).eq(2);
     });
 
     it('must perform insert before and insert after correctly', function () {
@@ -308,18 +204,9 @@ describe('DOMQuery tests', function () {
 
     });
 
-    it('it must stream to a domquery', function () {
-        let probe1 = new DomQuery(document).querySelectorAll("div");
-        let coll: DomQuery = probe1.stream.collect(new DomQueryCollector());
-        expect(coll.length == 4).to.be.true;
-
-        coll = probe1.lazyStream.collect(new DomQueryCollector());
-        expect(coll.length == 4).to.be.true;
-    });
-
     it('it must have parents', function () {
         let probe1 = new DomQuery(document).querySelectorAll("div");
-        let coll: Array<any> = probe1.firstParent("body").stream.collect(new ArrayCollector());
+        let coll: Array<any> = probe1.parents("body").stream.collect(new ArrayCollector());
         expect(coll.length == 1).to.be.true;
 
     });
@@ -330,10 +217,10 @@ describe('DOMQuery tests', function () {
         probe1.insertAfter(DomQuery.fromMarkup(` <div id="id_x_0_1"></div><div id="id_x_1_1"></div>`));
 
         expect(DomQuery.querySelectorAll("div").length).to.eq(8);
-        DomQuery.querySelectorAll("body").innerHTML = trim(DomQuery.querySelectorAll("body").innerHTML.replace(/>\s*</gi, "><"));
+        DomQuery.querySelectorAll("body").innerHtml = trim(DomQuery.querySelectorAll("body").innerHtml.replace(/>\s*</gi, "><"));
         expect(DomQuery.querySelectorAll("body").childNodes.length).to.eq(8);
 
-        let innerHtml = DomQuery.querySelectorAll("body").innerHTML;
+        let innerHtml = DomQuery.querySelectorAll("body").innerHtml;
         expect(innerHtml.indexOf("id_x_0") < innerHtml.indexOf("id_x_1")).to.be.true;
         expect(innerHtml.indexOf("id_x_0") < innerHtml.indexOf("id_2")).to.be.true;
         expect(innerHtml.indexOf("id_x_0") > 0).to.be.true;
@@ -343,18 +230,18 @@ describe('DOMQuery tests', function () {
     })
 
     it("must have a working input handling", function () {
-        DomQuery.querySelectorAll("body").innerHTML = `<form id="blarg">
+        DomQuery.querySelectorAll("body").innerHtml = `<form id="blarg">
     <div id="embed1">
-        <input type="text" id="id_1" name="id_1" value="id_1_val">
-        <input type="text" id="id_2" name="id_2" value="id_2_val" disabled="disabled">
-        <textarea id="id_3" name="id_3">textareaVal</textarea>
+        <input type="text" id="id_1" name="id_1" value="id_1_val"/>
+        <input type="text" id="id_2" name="id_2" value="id_2_val" disabled="disabled"/>
+        <textarea type="text" id="id_3" name="id_3">textareaVal</textarea>
 
         <fieldset>
-            <input type="radio" id="mc" name="cc_1" value="Mastercard" checked="checked">
+            <input type="radio" id="mc" name="cc_1" value="Mastercard" checked="checked"/>
             <label for="mc"> Mastercard</label>
-            <input type="radio" id="vi" name="cc_1" value="Visa">
+            <input type="radio" id="vi" name="cc_1" value="Visa"/>
             <label for="vi"> Visa</label>
-            <input type="radio" id="ae" name="cc_1" value="AmericanExpress">
+            <input type="radio" id="ae" name="cc_1" value="AmericanExpress"/>
             <label for="ae"> American Express</label>
         </fieldset>
         <select id="val_5" name="val_5" size="5">
@@ -368,7 +255,8 @@ describe('DOMQuery tests', function () {
 </form>
        `;
 
-        let length = DomQuery.querySelectorAll("form").elements.length;
+        let elements = DomQuery.querySelectorAll("form").elements;
+        let length = elements.length;
         expect(length == 8).to.be.true;
         let length1 = DomQuery.querySelectorAll("body").elements.length;
         expect(length1 == 8).to.be.true;
@@ -413,9 +301,16 @@ describe('DOMQuery tests', function () {
 
     it("must have a proper loadScriptEval execution", function (done) {
 
-        DomQuery.byTagName("body").loadScriptEval("./fixtures/test.js");
+        DomQuery.byTagName("body").loadScriptEval("test.js");
+
+        let xhr = this.requests[0];
+        xhr.respond(200, {
+            "content-type": "application/javascript",
+        }, `
+            document.getElementById('id_1').innerHTML = "hello world";
+        `);
         setTimeout(() => {
-            expect(DomQuery.byId("id_1").innerHTML == "hello world").to.be.true;
+            expect(DomQuery.byId("id_1").innerHtml == "hello world").to.be.true;
             done();
         }, 100)
 
@@ -425,8 +320,8 @@ describe('DOMQuery tests', function () {
         expect(DomQuery.querySelectorAll("div").first().id.value).to.eq("id_1");
     });
 
-    it("runscript runcss", function (done) {
-        DomQuery.byTagName("body").innerHTML = `
+    it("runscript runcss", function () {
+        DomQuery.byTagName("body").innerHtml = `
             <div id="first"></div>
             <div id="second"></div>
             <div id="third"></div>
@@ -458,26 +353,32 @@ describe('DOMQuery tests', function () {
             </style>
         `;
         let content = DomQuery.byTagName("body").runScripts().runCss();
-        expect(content.byId("first").innerHTML).to.eq("hello world");
-        expect(content.byId("second").innerHTML).to.eq("hello world");
-        expect(content.byId("third").innerHTML).to.eq("hello world");
-        expect(content.byId("fourth").innerHTML).to.eq("hello world");
-        done();
+        expect(content.byId("first").innerHtml).to.eq("hello world");
+        expect(content.byId("second").innerHtml).to.eq("hello world");
+        expect(content.byId("third").innerHtml).to.eq("hello world");
+        expect(content.byId("fourth").innerHtml).to.eq("hello world");
 
     });
 
-    //TODO defer does not work in jsdom
     it("must have a proper loadScriptEval deferred", function (done) {
-        DomQuery.byId(document.body).loadScriptEval("./fixtures/test2.js", 200);
+
+        DomQuery.byTagName("body").loadScriptEval("test.js", 700);
+
+        let xhr = this.requests[0];
+        xhr.respond(200, {
+            "content-type": "application/javascript",
+        }, `
+            document.getElementById('id_1').innerHTML = "hello world";
+        `);
         setTimeout(() => {
-            expect(DomQuery.byId("id_1").innerHTML == "hello world").to.be.false;
+            expect(DomQuery.byId("id_1").innerHtml == "hello world").to.be.false;
+
         }, 100)
 
-
         setTimeout(() => {
-            expect(DomQuery.byId("id_1").innerHTML == "hello world").to.be.true;
+            expect(DomQuery.byId("id_1").innerHtml == "hello world").to.be.true;
             done();
-        }, 1500)
+        }, 1000)
     })
 
     it("it must handle events properly", function () {
@@ -508,12 +409,12 @@ describe('DOMQuery tests', function () {
         });
 
         let probe = DomQuery.byId("id_1");
-        probe.innerHTML = "<div>hello</div><div>world</div>";
+        probe.innerHtml = "<div>hello</div><div>world</div>";
         expect(probe.innerText()).to.eq("helloworld");
     });
     it("it must handle textContent properly", function () {
         let probe = DomQuery.byId("id_1");
-        probe.innerHTML = "<div>hello</div><div>world</div>";
+        probe.innerHtml = "<div>hello</div><div>world</div>";
         expect(probe.textContent()).to.eq("helloworld");
     });
 
@@ -535,125 +436,12 @@ describe('DOMQuery tests', function () {
 
     it("it must handle subnodes properly", function () {
         let probe = DomQuery.byTagName("div");
-        expect(probe.subNodes(1, 3).length).to.eq(2);
-        probe = DomQuery.byTagName("body").childNodes.subNodes(0, 2);
+        expect(probe.subNodes(1,3).length).to.eq(2);
+        probe = DomQuery.byTagName("body").childNodes.subNodes(0,2);
         expect(probe.length).to.eq(2);
 
         probe = DomQuery.byTagName("div").subNodes(2);
         expect(probe.length).to.eq(2);
     })
 
-
-    it("it must ensure shadow dom creation works properly", function () {
-        let probe = DomQuery.byTagName("div");
-        try {
-            //probably not testable atm, mocha does not have shadow dom support
-            //we might be able to shim it in one way or the other
-            let element = probe.attachShadow();
-            expect(element.length > 0).to.eq(true);
-        } catch (e) {
-            //not supported we still need to get an error here
-            expect(e.message.indexOf("not supported") != -1).to.be.true;
-        }
-    })
-
-
-    it('it must have a working wait for dom with mut observer and must detect condition after change', async function () {
-        let probe = DomQuery.byId('id_1');
-        probe.innerHTML = 'true';
-        let ret = await probe.waitUntilDom((element) => element.innerHTML.indexOf('true') != -1);
-        expect(ret.isPresent());
-        probe = DomQuery.byId('bosushsdhs');
-        ret = await probe.waitUntilDom((element) => element.isAbsent());
-        expect(ret.isAbsent());
-
-    });
-
-    it('it must have a working wait for dom with mut observer', async function () {
-        let probe = DomQuery.byId('id_1');
-        setTimeout(() => probe.innerHTML = 'true', 300);
-        let ret = await probe.waitUntilDom((element) => element.innerHTML.indexOf('true') != -1);
-        delete window.MutationObserver;
-        delete global.MutationObserver;
-        probe.innerHTML = "";
-        setTimeout(() => probe.innerHTML = 'true', 300);
-        let ret2 = await probe.waitUntilDom((element) => element.innerHTML.indexOf('true') != -1);
-        expect(ret.isPresent() && ret2.isPresent());
-    });
-
-    it('it must have a timeout', async function () {
-        let probe = DomQuery.byId('booga');
-        try {
-            setTimeout(() => probe.innerHTML = 'true', 300);
-            await probe.waitUntilDom((element) => element.innerHTML.indexOf('true') != -1);
-            expect.fail("must have a timeout");
-        } catch (ex) {
-            expect(!!ex);
-        }
-        try {
-            delete window.MutationObserver;
-            delete global.MutationObserver;
-            probe.innerHTML = "";
-            setTimeout(() => probe.innerHTML = 'true', 300);
-            await probe.waitUntilDom((element) => element.innerHTML.indexOf('true') != -1);
-            expect.fail("must have a timeout");
-        } catch (ex2) {
-            expect(!!ex2);
-        }
-    });
-    it('must handle null inputs correctly', function () {
-        const dq = new DomQuery(null);
-        expect(dq.isAbsent()).to.eq(true);
-    })
-
-    it('concat must work as expected resulting', function () {
-        let probe = DomQuery.querySelectorAll("div");
-        let probe2 = DomQuery.querySelectorAll("body");
-        let result = probe.concat(probe2);
-        expect(result.length).to.eq(probe.length + probe2.length);
-
-        //lets now check for filter double
-        probe2 = DomQuery.querySelectorAll('div');
-        result = probe.concat(probe2);
-        expect(result.length).to.eq(probe.length);
-    })
-
-    it('must handle match correctly', function () {
-        let probe = DomQuery.querySelectorAll("div").first();
-        let probe2 = DomQuery.querySelectorAll("body").first();
-
-        expect(probe.matchesSelector("div")).to.eq(true);
-        expect(probe2.matchesSelector("body")).to.eq(true);
-        expect(probe2.matchesSelector("div")).to.eq(false);
-    })
-
-    it('must by recycleable', function () {
-        let probe = DomQuery.querySelectorAll("div");
-
-        let res1 = probe.filter(item => item.matchesSelector("div"));
-        expect(res1.length).to.eq(4);
-        let res2 = probe.filter(item => item.matchesSelector("div"));
-        expect(res2.length).to.eq(4);
-    })
-
-    it('delete must work', function () {
-        let probe = DomQuery.querySelectorAll("body");
-        let probe2 = DomQuery.fromMarkup("<div id='deleteprobe1'>snafu</div>");
-
-        probe2.appendTo(probe);
-
-        expect(probe.querySelectorAll("#deleteprobe1").isPresent()).to.eq(true);
-        probe2.delete();
-        expect(probe.querySelectorAll("#deleteprobe1").isAbsent()).to.eq(true);
-    })
-    it('must work with rxjs and domquery', function () {
-        let probe = DomQuery.querySelectorAll("div");
-        let probe2 = DomQuery.querySelectorAll("div");
-        let probeCnt = 0;
-        let probe2Cnt = 0;
-        from(probe).subscribe(() => probeCnt++);
-        from(probe2.stream).subscribe(() => probe2Cnt++);
-        expect(probeCnt).to.be.above(0);
-        expect(probeCnt).to.eq(probe2Cnt);
-    })
 });

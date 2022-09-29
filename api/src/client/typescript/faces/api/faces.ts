@@ -13,31 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+///<reference types='../../types/typedefs'/>
 "use strict";
+import {Implementation} from "../impl/AjaxImpl";
+
+declare const window: any;
 
 /**
  * faces.js init layer which provides as per spec the proper
  * window namespace if it does not exist already
- *
- * The idea is that we use a small shim on top of
- * the implementation to provide the window namespace.
- * The implementation itself is in a protected namespace
- * which will be bound by the build system
- *
- * The documentation nevertheless targets the _api file, which
- * hosts the full api
  */
 if(!window.faces) {
     //we lazily load the code to prevent ram bloat
     const faces = require("./_api").faces;
-    window['faces'] = window?.faces ?? faces;
+    window['faces'] = (window as any)?.faces ?? faces;
 }
 if(!window?.myfaces?.ab) {
     const myfaces = require("./_api").myfaces;
 
     //namespace might be extended is not exclusively reserved so we merge
-    (window as any)["myfaces"] = window?.myfaces ?? {};
+    window["myfaces"] = window?.myfaces ?? {};
     Object.keys(myfaces).forEach(key => window.myfaces[key] = window.myfaces?.[key] ?? myfaces[key]);
 }
 export var faces = window.faces;

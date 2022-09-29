@@ -33,21 +33,6 @@ export interface IResponseProcessor {
     replaceHead(shadowHead: XMLQuery | DQ): void;
 
     /**
-     * adds new elements to the head
-     *
-     * @param newElements the elements which need addition
-     */
-    addToHead(newElements: XMLQuery | DQ): void;
-
-
-    /**
-     * adds new elements to the head in a deferred manner
-     *
-     * @param newElements the elements which need addition
-     */
-    addToHeadDeferred(newElements: XMLQuery | DQ): void;
-
-    /**
      * replace the body
      *
      * @param shadowBody
@@ -55,7 +40,7 @@ export interface IResponseProcessor {
     replaceBody(shadowBody: XMLQuery | DQ): void;
 
     /**
-     * Leaf Tag eval... process whatever is in the evaluated cdata block
+     * Leaf Tag eval... process whatever is in the evals cdata block
      *
      * @param node
      */
@@ -98,11 +83,11 @@ export interface IResponseProcessor {
     attributes(node: XMLQuery): void;
 
     /**
-     * replace the entire viewRoot
+     * replace the entire viewroot
      * with shadowResponse
-     * @param shadowResponse
+     * @param shadownResponse
      */
-    replaceViewRoot(shadowResponse: XMLQuery | DQ): void;
+    replaceViewRoot(shadownResponse: XMLQuery | DQ): void;
 
     /**
      * jsf insert resolution
@@ -113,34 +98,34 @@ export interface IResponseProcessor {
     insert(node: XMLQuery): void;
 
     /**
-     * insert with before, after sub-tags
+     * insert with before, after subtags
      * @param node
      */
-    insertWithSubTags(node: XMLQuery);
+    insertWithSubtags(node: XMLQuery);
 
     /**
      * process the viewState update, update the affected
-     * forms with their respective new viewState values
+     * forms with their respective new viewstate values
      *
      */
     processViewState(node: XMLQuery): boolean;
 
     /**
      * process the viewState update, update the affected
-     * forms with their respective new viewState values
+     * forms with their respective new viewstate values
      *
      */
     processClientWindow(node: XMLQuery): boolean;
 
 
     /**
-     * Eval - all processed elements so far
+     * evals all processed elements of so far
      * and executes the embedded scripts
      */
     globalEval(): void;
 
     /**
-     * fix the viewStates of all processed forms
+     * fix the viewstates of all processed forms
      */
     fixViewStates(): void;
 

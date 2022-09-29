@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {Config, DomQuery} from "mona-dish";
+import {Config} from "mona-dish";
 import {describe, it} from 'mocha';
 import {expect} from 'chai';
 import * as sinon from 'sinon';
 
-import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import {CTX_PARAM_REQ_PASS_THR, P_EXECUTE, P_RENDER} from "../../impl/core/Const";
-import defaultMyFaces23 = StandardInits.defaultMyFaces23;
+import {DomQuery} from "mona-dish";
 
+import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
+import {P_EXECUTE, P_RENDER} from "../../impl/core/Const";
+import defaultMyFaces23 = StandardInits.defaultMyFaces23;
 
 sinon.reset();
 
@@ -39,14 +40,16 @@ declare var Implementation: any;
 describe('javax.ajax.request test suite', () => {
 
     beforeEach(async () => {
-        return await defaultMyFaces23();
+        let ret = await defaultMyFaces23();
+        return ret;
     });
 
     it("jsf.ajax.request can be called", () => {
         //we stub the addRequestToQueue, to enable the request check only
         //without any xhr and response, both will be tested separately for
         //proper behavior
-        const addRequestToQueue = sinon.stub(Implementation.queueHandler, "addRequestToQueue");
+        const Impl = Implementation;
+        const addRequestToQueue = sinon.stub(Impl.queueHandler, "addRequestToQueue");
         //now the javax.ajax.request should trigger but should not go into
         //the asynchronous event loop.
         //lets check it out
@@ -58,11 +61,13 @@ describe('javax.ajax.request test suite', () => {
 
             expect(addRequestToQueue.called).to.be.true;
             expect(addRequestToQueue.callCount).to.eq(1);
+
+            const argElement = <Config>addRequestToQueue.args[0][2];
             const context = (<Config>addRequestToQueue.args[0][2]);
 
-            expect(context.getIf(CTX_PARAM_REQ_PASS_THR, P_RENDER).value).eq("@all");
+            expect(context.getIf("passThrgh", P_RENDER).value).eq("@all");
             //Execute issuing form due to @form and always the issuing element
-            expect(context.getIf(CTX_PARAM_REQ_PASS_THR, P_EXECUTE).value).eq("blarg input_2");
+            expect(context.getIf("passThrgh", P_EXECUTE).value).eq("blarg input_2");
         } finally {
             //once done we restore the proper state
             addRequestToQueue.restore();
@@ -77,7 +82,7 @@ describe('javax.ajax.request test suite', () => {
 
     it("javax.util.chain must work", () => {
         let called = {};
-        window.called = called;
+        (<any>window).called = called;
 
         let func1 = () => {
             called["func1"] = true;
@@ -104,7 +109,7 @@ describe('javax.ajax.request test suite', () => {
             return false;
         };
 
-        window.jsf.util.chain(this, called, func1, func2, func3, func4, func5);
+        (window as any).jsf.util.chain(this, called, func1, func2, func3, func4, func5);
 
         expect(called["func1"]).to.be.true;
         expect(called["func2"]).to.be.true;
@@ -113,7 +118,7 @@ describe('javax.ajax.request test suite', () => {
         expect(!!called["func5"]).to.be.false;
 
         called = {};
-        window.jsf.util.chain(this, called, func1, func2, func4, func5);
+        (window as any).jsf.util.chain(this, called, func1, func2, func4, func5);
         expect(called["func1"]).to.be.true;
         expect(called["func2"]).to.be.true;
         expect(!!called["func4"]).to.be.true;

@@ -20,7 +20,7 @@ import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {DomQuery} from "mona-dish";
 import {
-    COMPLETE, EMPTY_STR,
+    COMPLETE,
     P_AJAX,
     P_EXECUTE,
     P_PARTIAL_SOURCE,
@@ -39,10 +39,8 @@ let issueStdReq = function (element) {
     faces.ajax.request(element, null, {
         execute: "input_1",
         render: "@form",
-        params: {
-            pass1: "pass1",
-            pass2: "pass2"
-        }
+        pass1: "pass1",
+        pass2: "pass2"
     });
 };
 /**
@@ -62,12 +60,12 @@ describe('Tests on the xhr core when it starts to call the request', function ()
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr;
-            window.XMLHttpRequest = this.xhr;
+            (<any>window).XMLHttpRequest = this.xhr;
 
             this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();
@@ -105,6 +103,7 @@ describe('Tests on the xhr core when it starts to call the request', function ()
     });
 
     it('it must have the pass through values properly passed', function (done) {
+
         let send = sinon.spy(XMLHttpRequest.prototype, "send");
         try {
             let element = DomQuery.byId("input_2").getAsElem(0).value;
@@ -130,35 +129,6 @@ describe('Tests on the xhr core when it starts to call the request', function ()
             expect(resultsMap[P_RENDER]).to.eq("blarg");
             expect(resultsMap[P_EXECUTE]).to.eq("input_1%20input_2");
 
-        } finally {
-            send.restore();
-        }
-        done();
-    });
-
-    it('it must handle resetValues properly', function (done) {
-        let send = sinon.spy(XMLHttpRequest.prototype, "send");
-        try {
-            let element = DomQuery.byId("input_2").getAsElem(0).value;
-            faces.ajax.request(element, null, {
-                execute: "input_1",
-                resetValues: true,
-                render: "@form",
-                params: {
-                    pass1: "pass1",
-                    pass2: "pass2"
-                }
-            });
-
-            expect(send.called).to.be.true;
-            let argsVal: any = send.args[0][0];
-            let arsArr = argsVal.split("&");
-            let resultsMap = {};
-            for (let val of arsArr) {
-                let keyVal = val.split("=");
-                resultsMap[keyVal[0]] = keyVal[1];
-            }
-            expect(resultsMap["jakarta.faces.partial.resetValues"]).to.eq("true");
         } finally {
             send.restore();
         }
@@ -195,13 +165,12 @@ describe('Tests after core when it hits response', function () {
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
-            // @ts-ignore
-            window.XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest() as XMLHttpRequest;
+            (<any>window).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
 
             this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();
@@ -226,24 +195,16 @@ describe('Tests after core when it hits response', function () {
             faces.ajax.request(element, null, {
                 execute: "input_1",
                 render: "@form",
-                params: {
-                    pass1: "pass1",
-                    pass2: "pass2"
-                },
-                message: "Hello World",
+                pass1: "pass1",
+                pass2: "pass2",
                 onevent: (evt: any) => {
                     localCnt++;
                 }
             });
 
             let xhrReq = this.requests[0];
-            let requestBody = xhrReq.requestBody.split("&");
 
             xhrReq.respond(200, {'Content-Type': 'text/xml'}, STD_XML);
-            expect(requestBody.indexOf("pass1=pass1")).not.to.eq(-1);
-            expect(requestBody.indexOf("pass2=pass2")).not.to.eq(-1);
-            expect(requestBody.indexOf("message=Hello%20World")).not.to.eq(-1);
-
             expect(this.jsfAjaxResponse.callCount).to.eq(1);
             //success ommitted due to fake response
             expect(globalCnt == 3).to.eq(true);
@@ -258,8 +219,7 @@ describe('Tests after core when it hits response', function () {
 
     });
 
-    it('it must have called request and the pass through values must be properly transferred ' +
-        'into the context, via the old non spec conform behavior', function (done) {
+    it('it must have called request and the pass through values must be properly transferred into the context', function (done) {
         let send = sinon.spy(XMLHttpRequest.prototype, "send");
         let globalCnt = 0;
         let localCnt = 0;
@@ -312,67 +272,6 @@ describe('Tests after core when it hits response', function () {
             xhrReq.respond(200, {'Content-Type': 'text/xml'}, STD_XML);
 
 
-        } catch (e) {
-            console.error(e);
-
-        } finally {
-            send.restore();
-        }
-    });
-
-    it('it must have allow array key value pairs as passthroughs', function (done) {
-        let send = sinon.spy(XMLHttpRequest.prototype, "send");
-        let globalCnt = 0;
-        let localCnt = 0;
-        let xhrReq = null;
-
-        try {
-            let element = DomQuery.byId("input_2").getAsElem(0).value;
-            faces.ajax.addOnEvent(() => {
-                globalCnt++;
-            });
-
-
-            faces.ajax.request(element, null, {
-                execute: "input_1",
-                render: "@form",
-                params: [["pass1", "pass1"],
-                    ["pass2", "pass2"]],
-
-                onevent: (evt: any) => {
-                    localCnt++;
-                    if (evt.status == COMPLETE) {
-                        expect(!!xhrReq.responseXML).to.be.true;
-                    }
-                    if (evt.status == SUCCESS) {
-                        expect(this.jsfAjaxResponse.callCount).to.eq(1);
-
-                        expect(this.jsfAjaxResponse.firstCall.args[0] instanceof XMLHttpRequest).to.be.true;
-                        let lastArg = this.jsfAjaxResponse.firstCall.args[1];
-                        expect(lastArg.onevent != null).to.be.true;
-                        expect(lastArg.onevent instanceof Function).to.be.true;
-                        expect(!!lastArg.onError).to.be.false;
-                        expect(lastArg.pass1 == "pass1").to.be.true;
-                        expect(lastArg.pass2 == "pass2").to.be.true;
-                        expect(!!lastArg[P_PARTIAL_SOURCE]).to.be.true;
-                        expect(!!lastArg[P_AJAX]).to.be.true;
-                        expect(!!lastArg[P_EXECUTE]).to.be.true;
-                        expect(!!lastArg[P_RENDER]).to.be.true;
-
-                        expect(this.jsfAjaxResponse.firstCall.args.length).to.eq(2);
-
-                        expect(globalCnt == 2).to.eq(true); //local before global
-                        expect(localCnt == 3).to.eq(true);
-
-                        done();
-                    }
-                }
-            });
-
-            xhrReq = this.requests[0];
-            xhrReq.responsetype = "text/xml";
-            xhrReq.respond(200, {'Content-Type': 'text/xml'}, STD_XML);
-
 
         } catch (e) {
             console.error(e);
@@ -382,68 +281,6 @@ describe('Tests after core when it hits response', function () {
         }
     });
 
-    it('it must have called request and the pass through values must be properly transferred into the context', function (done) {
-        let send = sinon.spy(XMLHttpRequest.prototype, "send");
-        let globalCnt = 0;
-        let localCnt = 0;
-        let xhrReq = null;
-
-        try {
-            let element = DomQuery.byId("input_2").getAsElem(0).value;
-            faces.ajax.addOnEvent(() => {
-                globalCnt++;
-            });
-
-
-            faces.ajax.request(element, null, {
-                execute: "input_1",
-                render: "@form",
-                params: {
-                    pass1: "pass1",
-                    pass2: "pass2",
-                },
-                onevent: (evt: any) => {
-                    localCnt++;
-                    if (evt.status == COMPLETE) {
-                        expect(!!xhrReq.responseXML).to.be.true;
-                    }
-                    if (evt.status == SUCCESS) {
-                        expect(this.jsfAjaxResponse.callCount).to.eq(1);
-
-                        expect(this.jsfAjaxResponse.firstCall.args[0] instanceof XMLHttpRequest).to.be.true;
-                        let lastArg = this.jsfAjaxResponse.firstCall.args[1];
-                        expect(lastArg.onevent != null).to.be.true;
-                        expect(lastArg.onevent instanceof Function).to.be.true;
-                        expect(!!lastArg.onError).to.be.false;
-                        expect(lastArg.pass1 == "pass1").to.be.true;
-                        expect(lastArg.pass2 == "pass2").to.be.true;
-                        expect(!!lastArg[P_PARTIAL_SOURCE]).to.be.true;
-                        expect(!!lastArg[P_AJAX]).to.be.true;
-                        expect(!!lastArg[P_EXECUTE]).to.be.true;
-                        expect(!!lastArg[P_RENDER]).to.be.true;
-
-                        expect(this.jsfAjaxResponse.firstCall.args.length).to.eq(2);
-
-                        expect(globalCnt == 2).to.eq(true); //local before global
-                        expect(localCnt == 3).to.eq(true);
-
-                        done();
-                    }
-                }
-            });
-
-            xhrReq = this.requests[0];
-            xhrReq.responsetype = "text/xml";
-            xhrReq.respond(200, {'Content-Type': 'text/xml'}, STD_XML);
-
-
-        } catch (e) {
-            console.error(e);
-
-        } finally {
-            send.restore();
-        }
-    });
 
 
     it('it must have called onError in the error case', function (done) {
@@ -458,15 +295,13 @@ describe('Tests after core when it hits response', function () {
             faces.ajax.request(element, null, {
                 execute: "input_1",
                 render: "@form",
-                params: {
-                    pass1: "pass1",
-                    pass2: "pass2",
-                },
+                pass1: "pass1",
+                pass2: "pass2",
                 onerror: (error: any) => {
                     expect(error.type).to.eq("error");
-                    expect(error.status).to.eq(EMPTY_STR);
+                    expect(!!error.status).to.eq(true);
                     expect(!!error.message).to.eq(true);
-                    expect(!!error.source?.id).to.eq(true);
+                    expect(!!error.source).to.eq(true);
                     expect(!!error.responseCode).to.eq(true);
                     expect(!!error.responseText).to.eq(true);
                     expect(!error.responseXML).to.eq(true);
@@ -491,72 +326,5 @@ describe('Tests after core when it hits response', function () {
         }
 
     });
-
-    // We can cover this TCK issue in a simple code unit test, the case is simple enough
-    it("must throw an error on invalid delays (MYFACES-4499, TCK_ISSUE320IT )", (done) => {
-
-        let element = DomQuery.byId("input_2").getAsElem(0).value;
-        try {
-            faces.ajax.request(element, null, {
-                execute: "input_1",
-                render: "@form",
-                delay: NaN,
-                params: {
-                    pass1: "pass1",
-                    pass2: "pass2",
-                }
-            });
-        } catch (e) {
-            expect(e.message.indexOf("NaN") > 0).to.eq(true, "Invalid NaN in message");
-            done();
-            return;
-        }
-        done("Expecting a client error to be thrown")
-    });
-
-    it("must throw an error on invalid delays (MYFACES-4499, TCK_ISSUE320IT ) - 2", (done) => {
-
-        let element = DomQuery.byId("input_2").getAsElem(0).value;
-        try {
-            faces.ajax.request(element, null, {
-                execute: "input_1",
-                render: "@form",
-                delay: -1,
-                params: {
-                    pass1: "pass1",
-                    pass2: "pass2",
-                }
-            });
-        } catch (e) {
-            expect(e.message.indexOf("-1") > 0).to
-                .eq(true, "Invalid integer value in message");
-            done();
-            return;
-        }
-        done("Expecting a client error to be thrown")
-    });
-    it("must throw an error on invalid delays (MYFACES-4499, TCK_ISSUE320IT ) - 3", (done) => {
-
-        let element = DomQuery.byId("input_2").getAsElem(0).value;
-        try {
-            faces.ajax.request(element, null, {
-                execute: "input_1",
-                render: "@form",
-                delay: "booga",
-                params: {
-                    pass1: "pass1",
-                    pass2: "pass2",
-                }
-            });
-        } catch (e) {
-            expect(e.message.indexOf("booga") > 0).to.be
-                .eq(true, "Invalid string value in message");
-            done();
-            return;
-        }
-        done("Expecting a client error to be thrown")
-    });
-
-
 });
 

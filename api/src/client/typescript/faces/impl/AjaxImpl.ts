@@ -21,16 +21,17 @@ import {AsynchronousQueue} from "./util/AsyncQueue";
 import {AssocArrayCollector, Config, DQ, Lang, LazyStream, Optional, Stream} from "mona-dish";
 import {Assertions} from "./util/Assertions";
 import {XhrFormData} from "./xhrCore/XhrFormData";
-import {ExtConfig, ExtDomQuery} from "./util/ExtDomQuery";
+import {ExtDomquery} from "./util/ExtDomQuery";
 import {ErrorData} from "./xhrCore/ErrorData";
 import {EventData} from "./xhrCore/EventData";
 import {ExtLang} from "./util/Lang";
-
 import {
-    CTX_OPTIONS_EXECUTE,
-    CTX_PARAM_REQ_PASS_THR,
+    $nsp,
+    CTX_PARAM_EXECUTE,
+    CTX_PARAM_PASS_THR,
     CTX_PARAM_SRC_CTL_ID,
     CTX_PARAM_SRC_FRM_ID,
+    CTX_PARAM_TR_TYPE,
     IDENT_ALL,
     IDENT_FORM,
     IDENT_NONE,
@@ -47,15 +48,19 @@ import {
     P_RESET_VALUES,
     P_WINDOW_ID,
     CTX_PARAM_RENDER,
+    REQ_TYPE_POST,
     SOURCE,
-    HTML_TAG_FORM, CTX_OPTIONS_PARAMS, VIEW_ID, $faces, EMPTY_STR
+    TAG_FORM
 } from "./core/Const";
 import {
     resolveDefaults,
     resolveDelay,
     resolveForm,
-    resolveTimeout, resolveViewId
+    resolveTimeout
 } from "./xhrCore/RequestDataResolver";
+
+
+declare var faces: any;
 
 /*
  * allowed project stages
@@ -68,8 +73,8 @@ enum ProjectStages {
 }
 
 /*
- *   Block-filter for the pass-through filtering; the attributes given here
- *   will not be transmitted from the options into the pass-through
+ *   blockfilter for the passthrough filtering; the attributes given here
+ *   will not be transmitted from the options into the passthrough
  */
 enum BlockFilter {
     onerror = "onerror",
@@ -79,9 +84,7 @@ enum BlockFilter {
     myfaces = "myfaces",
     delay = "delay",
     timeout = "timeout",
-    resetValues = "resetValues",
-    windowId = "windowId",
-    params = "params"
+    windowId = "windowId"
 }
 
 /**
@@ -147,6 +150,8 @@ export module Implementation {
     import getGlobalConfig = ExtLang.getGlobalConfig;
     import assert = Assertions.assert;
 
+    declare const window: any;
+
     let projectStage: string = null;
     let separator: string = null;
     let eventQueue = [];
@@ -163,8 +168,20 @@ export module Implementation {
     export function getSeparatorChar(): string {
         return resolveGlobalConfig()?.separator ??
             this?.separator ??
-            (separator = ExtDomQuery.searchJsfJsFor(/separator=([^&;]*)/).orElse(":").value);
+            (separator = ExtDomquery.searchJsfJsFor(/separator=([^&;]*)/).orElse(":").value);
     }
+
+    /**
+     * fetches the separator char from the given script tags
+     *
+     * @return {string} the separator char for the given script tags
+     */
+    export function getContextPath(): string {
+        return resolveGlobalConfig()?.separator ??
+            this?.separator ??
+            (separator = ExtDomquery.searchJsfJsFor(/separator=([^&;]*)/).orElse(":").value);
+    }
+
 
     /**
      * this is for testing purposes only, since AjaxImpl is a module
@@ -196,7 +213,7 @@ export module Implementation {
     export function resolveProjectStateFromURL(): string | null {
 
         /* run through all script tags and try to find the one that includes faces.js */
-        const foundStage = ExtDomQuery.searchJsfJsFor(/stage=([^&;]*)/).value as string;
+        const foundStage = ExtDomquery.searchJsfJsFor(/stage=([^&;]*)/).value as string;
         return (foundStage in ProjectStages) ? foundStage : null;
     }
 
@@ -241,14 +258,15 @@ export module Implementation {
     export function request(el: ElemDef, event?: Event, opts ?: Options) {
 
         const {
+            resolvedEvent,
             options,
             elem,
             elementId,
+            requestCtx,
+            internalCtx,
             windowId,
             isResetValues
         } = resolveDefaults(event, opts, el);
-        const requestCtx = new ExtConfig({});
-        const internalCtx = new ExtConfig({});
 
         Assertions.assertRequestIntegrity(options, elem);
 
@@ -259,36 +277,21 @@ export module Implementation {
          * so that people can use dummy forms and work
          * with detached objects
          */
-        const form: DQ = resolveForm(elem, event);
-        const viewId: string = resolveViewId(form);
+        const form: DQ = resolveForm(requestCtx, elem, resolvedEvent);
         const formId = form.id.value;
         const delay: number = resolveDelay(options);
         const timeout: number = resolveTimeout(options);
 
         requestCtx.assignIf(!!windowId, P_WINDOW_ID).value = windowId;
 
-        // old non spec behavior will be removed after it is clear whether the removal breaks any code
-        requestCtx.assign(CTX_PARAM_REQ_PASS_THR).value = extractLegacyParams(options.value);
-
-        // spec conform behavior, all passthrough params must be under "passthrough
-        const params = remapArrayToAssocArr(options.getIf(CTX_OPTIONS_PARAMS).orElse({}).value);
-        //we turn off the remapping for the param merge, because we do not want to have
-        //any namespacing to be remapped
-
-        let ctxPassthrough = requestCtx.getIf(CTX_PARAM_REQ_PASS_THR) as ExtConfig;
-        ctxPassthrough.$nspEnabled = false;
-        ctxPassthrough.shallowMerge(new Config(params), true);
-        //now we turn it on again
-        ctxPassthrough.$nspEnabled = true;
-        requestCtx.assignIf(!!event, CTX_PARAM_REQ_PASS_THR, P_EVT).value = event?.type;
+        requestCtx.assign(CTX_PARAM_PASS_THR).value = filterPassthroughValues(options.value);
+        requestCtx.assignIf(!!resolvedEvent, CTX_PARAM_PASS_THR, P_EVT).value = resolvedEvent?.type;
 
         /**
          * ajax pass through context with the source
          * onresolved Event and onerror Event
          */
         requestCtx.assign(SOURCE).value = elementId;
-
-        requestCtx.assign(VIEW_ID).value = viewId;
 
         /**
          * on resolvedEvent and onError...
@@ -306,12 +309,12 @@ export module Implementation {
         /**
          * binding contract the jakarta.faces.source must be set
          */
-        requestCtx.assign(CTX_PARAM_REQ_PASS_THR, P_PARTIAL_SOURCE).value = elementId;
+        requestCtx.assign(CTX_PARAM_PASS_THR, P_PARTIAL_SOURCE).value = elementId;
 
         /**
          * jakarta.faces.partial.ajax must be set to true
          */
-        requestCtx.assign(CTX_PARAM_REQ_PASS_THR, P_AJAX).value = true;
+        requestCtx.assign(CTX_PARAM_PASS_THR, P_AJAX).value = true;
 
         /**
          * if resetValues is set to true
@@ -320,7 +323,7 @@ export module Implementation {
          * the value has to be explicitly true, according to
          * the specs jsdoc
          */
-        requestCtx.assignIf(isResetValues, CTX_PARAM_REQ_PASS_THR, P_RESET_VALUES).value = true;
+        requestCtx.assignIf(isResetValues, CTX_PARAM_PASS_THR, P_RESET_VALUES).value = true;
 
         // additional meta information to speed things up, note internal non jsf
         // pass through options are stored under _mfInternal in the context
@@ -331,8 +334,9 @@ export module Implementation {
         // mojarra under blackbox conditions.
         // I assume it does the same as our formId_submit=1 so leaving it out
         // won't hurt but for the sake of compatibility we are going to add it
-        requestCtx.assign(CTX_PARAM_REQ_PASS_THR, formId).value = formId;
+        requestCtx.assign(CTX_PARAM_PASS_THR, formId).value = formId;
         internalCtx.assign(CTX_PARAM_SRC_CTL_ID).value = elementId;
+        internalCtx.assign(CTX_PARAM_TR_TYPE).value = REQ_TYPE_POST;
 
         assignClientWindowId(form, requestCtx);
         assignExecute(options, requestCtx, form, elementId);
@@ -452,17 +456,17 @@ export module Implementation {
         const ALTERED = "___mf_id_altered__";
         const INIT = "___init____";
 
-        /*
+        /**
          * the search root for the dom element search
          */
         let searchRoot = new DQ(node || document.body).querySelectorAll(`form input [name='${P_CLIENT_WINDOW}']`);
 
-        /*
+        /**
          * lazy helper to fetch the window id from the window url
          */
-        let fetchWindowIdFromUrl = () => ExtDomQuery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null).value;
+        let fetchWindowIdFromUrl = () => ExtDomquery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null).value;
 
-        /*
+        /**
          * functional double check based on stream reduction
          * the values should be identical or on INIT value which is a premise to
          * skip the first check
@@ -479,16 +483,16 @@ export module Implementation {
             return value2;
         };
 
-        /*
+        /**
          * helper for cleaner code, maps the value from an item
          *
          * @param item
          */
         let getValue = (item: DQ) => item.attr("value").value;
-        /*
+        /**
          * fetch the window id from the forms
          * window ids must be present in all forms
-         * or non-existent. If they exist all of them must be the same
+         * or non existent. If they exist all of them must be the same
          */
 
         let formWindowId: Optional<string> = searchRoot.stream.map<string>(getValue).reduce(differenceCheck, INIT);
@@ -497,8 +501,9 @@ export module Implementation {
         //if the resulting window id is set on altered then we have an unresolvable problem
         assert(ALTERED != formWindowId.value, "Multiple different windowIds found in document");
 
-        /*
+        /**
          * return the window id or null
+         * prio, forms under node/document and if not given then from the url
          */
         return formWindowId.value != INIT ? formWindowId.value : fetchWindowIdFromUrl();
     }
@@ -513,12 +518,12 @@ export module Implementation {
      */
     export function getViewState(form: Element | string): string {
         /**
-         *  type-check assert!, we opt for strong typing here
+         *  typecheck assert!, we opt for strong typing here
          *  because it makes it easier to detect bugs
          */
 
         let element: DQ = DQ.byId(form, true);
-        if (!element.isTag(HTML_TAG_FORM)) {
+        if (!element.isTag(TAG_FORM)) {
             throw new Error(getMessage("ERR_VIEWSTATE"));
         }
 
@@ -533,11 +538,11 @@ export module Implementation {
      */
     export let queueHandler = {
         /**
-         * public to make it accessible for tests
+         * public to make it shimmable for tests
          *
          * adds a new request to our queue for further processing
          */
-        addRequestToQueue: function (elem: DQ, form: DQ, reqCtx: ExtConfig, respPassThr: Config, delay = 0, timeout = 0) {
+        addRequestToQueue: function (elem: DQ, form: DQ, reqCtx: Config, respPassThr: Config, delay = 0, timeout = 0) {
             requestQueue = requestQueue ?? new AsynchronousQueue<XhrRequest>();
             requestQueue.enqueue(new XhrRequest(elem, form, reqCtx, respPassThr, [], timeout), delay);
         }
@@ -559,7 +564,7 @@ export module Implementation {
      */
     function assignRender(requestOptions: Config, targetContext: Config, issuingForm: DQ, sourceElementId: string) {
         if (requestOptions.getIf(CTX_PARAM_RENDER).isPresent()) {
-            remapDefaultConstants(targetContext.getIf(CTX_PARAM_REQ_PASS_THR).get({}), P_RENDER, <string>requestOptions.getIf(CTX_PARAM_RENDER).value, issuingForm, <any>sourceElementId, targetContext.getIf(VIEW_ID).value);
+            remapDefaultConstants(targetContext.getIf(CTX_PARAM_PASS_THR).get({}), P_RENDER, <string>requestOptions.getIf(CTX_PARAM_RENDER).value, issuingForm, <any>sourceElementId);
         }
     }
 
@@ -577,15 +582,15 @@ export module Implementation {
      */
     function assignExecute(requestOptions: Config, targetContext: Config, issuingForm: DQ, sourceElementId: string) {
 
-        if (requestOptions.getIf(CTX_OPTIONS_EXECUTE).isPresent()) {
+        if (requestOptions.getIf(CTX_PARAM_EXECUTE).isPresent()) {
             /*the options must be a blank delimited list of strings*/
             /*compliance with Mojarra which automatically adds @this to an execute
              * the spec rev 2.0a however states, if none is issued nothing at all should be sent down
              */
-            requestOptions.assign(CTX_OPTIONS_EXECUTE).value = [requestOptions.getIf(CTX_OPTIONS_EXECUTE).value, IDENT_THIS].join(" ");
-            remapDefaultConstants(targetContext.getIf(CTX_PARAM_REQ_PASS_THR).get({}), P_EXECUTE, <string>requestOptions.getIf(CTX_OPTIONS_EXECUTE).value, issuingForm, <any>sourceElementId, targetContext.getIf(VIEW_ID).value);
+            requestOptions.assign(CTX_PARAM_EXECUTE).value = [requestOptions.getIf(CTX_PARAM_EXECUTE).value, IDENT_THIS].join(" ");
+            remapDefaultConstants(targetContext.getIf(CTX_PARAM_PASS_THR).get({}), P_EXECUTE, <string>requestOptions.getIf(CTX_PARAM_EXECUTE).value, issuingForm, <any>sourceElementId);
         } else {
-            targetContext.assign(CTX_PARAM_REQ_PASS_THR, P_EXECUTE).value = sourceElementId;
+            targetContext.assign(CTX_PARAM_PASS_THR, P_EXECUTE).value = sourceElementId;
         }
     }
 
@@ -597,16 +602,16 @@ export module Implementation {
      */
     function assignClientWindowId(form: DQ, targetContext: Config) {
 
-        let clientWindow = $faces().getClientWindow(form.getAsElem(0).value);
+        let clientWindow = (window?.faces ?? window?.jsf).getClientWindow(form.getAsElem(0).value);
         if (clientWindow) {
-            targetContext.assign(CTX_PARAM_REQ_PASS_THR, P_CLIENT_WINDOW).value = clientWindow;
+            targetContext.assign(CTX_PARAM_PASS_THR, P_CLIENT_WINDOW).value = clientWindow;
         }
     }
 
     /**
      * transforms the user values to the expected one
      * with the proper none all form and this handling
-     * (note we also could use a simple string replace, but then
+     * (note we also could use a simple string replace but then
      * we would have had double entries under some circumstances)
      *
      * there are several standardized constants which need a special treatment
@@ -617,59 +622,13 @@ export module Implementation {
      * @param userValues the passed user values (aka input string which needs to be transformed)
      * @param issuingForm the form where the issuing element originates
      * @param issuingElementId the issuing element
-     * @param rootNamingContainerId the naming container id ("" default if none is given)
      */
-    function remapDefaultConstants(targetConfig: Config, targetKey: string, userValues: string, issuingForm: DQ, issuingElementId: string, rootNamingContainerId: string = ""): Config {
+    function remapDefaultConstants(targetConfig: Config, targetKey: string, userValues: string, issuingForm: DQ, issuingElementId: string): Config {
         //a cleaner implementation of the transform list method
-        const SEP = $faces().separatorchar;
+
         let iterValues: string[] = (userValues) ? trim(userValues).split(/\s+/gi) : [];
         let ret = [];
         let processed: {[key: string]: boolean} = {};
-
-        /**
-         * remaps the client ids for the portlet case so that the server
-         * can deal with them either prefixed ir not
-         * also resolves the absolute id case (it was assumed the server does this, but
-         * apparently the RI does not, so we have to follow the RI behavior here)
-         * @param componentIdToTransform the componentId which needs post processing
-         */
-        const remapNamingContainer = componentIdToTransform => {
-            // pattern :<anything> must be prepended by viewRoot if there is one,
-            // otherwise we are in a not namespaced then only the id has to match
-            const rootNamingContainerPrefix = (rootNamingContainerId.length) ? rootNamingContainerId+SEP : EMPTY_STR;
-            let formClientId = issuingForm.id.value;
-            // nearest parent naming container relative to the form
-            const nearestNamingContainer = formClientId.substring(0, formClientId.lastIndexOf(SEP));
-            const nearestNamingContainerPrefix = (nearestNamingContainer.length) ? nearestNamingContainer + SEP : EMPTY_STR;
-            // Absolute search expressions, always start with SEP or the name of the root naming container
-            const hasLeadingSep = componentIdToTransform.indexOf(SEP) === 0;
-            const isAbsolutSearchExpr = hasLeadingSep || (rootNamingContainerId.length
-                && componentIdToTransform.indexOf(rootNamingContainerPrefix) == 0);
-            let finalIdentifier = "";
-            if (isAbsolutSearchExpr) {
-                //we cut off the leading sep if there is one
-                componentIdToTransform = hasLeadingSep ? componentIdToTransform.substring(1) : componentIdToTransform;
-                componentIdToTransform = componentIdToTransform.indexOf(rootNamingContainerPrefix) == 0 ? componentIdToTransform.substring(rootNamingContainerPrefix.length) : componentIdToTransform;
-                //now we prepend either the prefix or "" from the cut-off string to get the final result
-                finalIdentifier = [rootNamingContainerPrefix, componentIdToTransform].join(EMPTY_STR);
-            } else { //relative search according to the javadoc
-                //we cut off the root naming container id from the form
-                if (formClientId.indexOf(rootNamingContainerPrefix) == 0) {
-                    formClientId = formClientId.substring(rootNamingContainerPrefix.length);
-                }
-
-                //If prependId = true, the outer form id must be present in the id if same form
-                let hasPrependId = componentIdToTransform.indexOf(formClientId) == 0;
-                finalIdentifier = hasPrependId ?
-                    [rootNamingContainerPrefix, componentIdToTransform].join(EMPTY_STR) :
-                    [nearestNamingContainerPrefix,  componentIdToTransform].join(EMPTY_STR);
-            }
-            // We need to double check because we have scenarios where we have a naming container
-            // and no prepend (aka tobago testcase "must handle ':' in IDs properly", scenario 3,
-            // in this case we return the component id, and be happy
-            // we can roll a dom check here
-            return (!!document.getElementById(finalIdentifier)) ? finalIdentifier : componentIdToTransform;
-        };
 
         // in this case we do not use lazy stream because it wont bring any code reduction
         // or speedup
@@ -688,51 +647,38 @@ export module Implementation {
                     return targetConfig;
                 //@form pushes the issuing form id into our list
                 case IDENT_FORM:
-                    ret.push(remapNamingContainer(issuingForm.id.value));
+                    ret.push(issuingForm.id.value);
                     processed[issuingForm.id.value] = true;
                     break;
                 //@this is replaced with the current issuing element id
                 case IDENT_THIS:
                     if (!(issuingElementId in processed)) {
-                        ret.push(remapNamingContainer(issuingElementId));
+                        ret.push(issuingElementId);
                         processed[issuingElementId] = true;
                     }
                     break;
                 default:
-                    ret.push(remapNamingContainer(iterValues[cnt]));
+                    ret.push(iterValues[cnt]);
                     processed[iterValues[cnt]] = true;
             }
         }
-
+        //We now add the target as joined list
         targetConfig.assign(targetKey).value = ret.join(" ");
         return targetConfig;
     }
 
     /**
-     * Filter the options given with a blacklist, so that only
-     * the values required for params-through are processed in the ajax request
-     *
-     * Note this is a bug carried over from the old implementation
-     * the spec conform behavior is to use params for passthrough values
-     * this will be removed soon, after it is cleared up whether removing
-     * it breaks any legacy code
+     * filter the options given with a blacklist so that only
+     * the values required for passthough land in the ajax request
      *
      * @param {Context} mappedOpts the options to be filtered
-     * @deprecated
      */
-    function extractLegacyParams(mappedOpts: Options): Context {
+    function filterPassthroughValues(mappedOpts: Context): Context {
         //we now can use the full code reduction given by our stream api
         //to filter
         return Stream.ofAssoc(mappedOpts)
             .filter(item => !(item[0] in BlockFilter))
             .collect(new AssocArrayCollector());
-    }
-
-    function remapArrayToAssocArr(arrayedParams: [[string, any]] | {[key: string]: any}): {[key: string]: any} {
-        if(Array.isArray(arrayedParams)) {
-            return Stream.of(... arrayedParams).collect(new AssocArrayCollector());
-        }
-        return arrayedParams;
     }
 
     function resolveGlobalConfig(): any {

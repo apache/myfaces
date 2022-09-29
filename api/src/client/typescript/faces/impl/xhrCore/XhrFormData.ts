@@ -16,7 +16,7 @@
 import {ArrayCollector, Config, DQ, Lang, LazyStream, Stream} from "mona-dish";
 import {EMPTY_STR, IDENT_ALL, IDENT_FORM, P_VIEWSTATE} from "../core/Const";
 import isString = Lang.isString;
-import {ExtConfig, ExtDomQuery} from "../util/ExtDomQuery";
+import {ExtConfig} from "../util/ExtDomQuery";
 
 
 /**
@@ -45,7 +45,7 @@ export class XhrFormData extends Config {
      * data collector from a given form
      *
      * @param dataSource either a form as DomQuery object or an encoded url string
-     * @param viewState the form view state or an external viewState coming in as string
+     * @param viewState the form view state or an external viewstate coming in as string
      * @param executes the executes id list for the elements to being processed
      * @param partialIds partial ids to collect, to reduce the data sent down
      */
@@ -54,41 +54,32 @@ export class XhrFormData extends Config {
         //a call to getViewState before must pass the encoded line
         //a call from getViewState passes the form element as datasource,
         //so we have two call points
-        // atm we basically encode twice, to keep the code leaner
-        // this will be later optmized, practically elements
-        // which are already covered by an external viewstate do not need
-        // the encoding a second time, because they are overwritten by the viewstate again
         if (isString(dataSource)) {
             this.assignEncodedString(<string>this.dataSource);
         } else {
             this.applyFormDataToConfig();
         }
-        //now assign the external viewstate overrides
-        if ('undefined' != typeof viewState) {
+        if('undefined' != typeof viewState) {
             this.assignEncodedString(viewState)
         }
-        if (executes) {
+        if(executes) {
             this.postInit(...executes);
         }
     }
 
     /**
-     * generic post init code, for now, this performs some post assign data post-processing
-     * @param executes the executable dom nodes which need to be processed into the form data, which we can send
-     * in our ajax request
+     * generic post init code, for now, this peforms some post assign data post processing
+     * @param executes
      */
     postInit(...executes: Array<string>) {
-        let fetchFileInputs = (id: string): DQ => {
-            const INPUT_FILE = "input[type='file']";
+        let fetchInput = (id: string): DQ => {
             if (id == IDENT_ALL) {
-                return DQ.querySelectorAllDeep(INPUT_FILE);
+                return DQ.querySelectorAllDeep("input[type='file']");
             } else if (id == IDENT_FORM) {
-                return (<DQ>this.dataSource).matchesSelector(INPUT_FILE) ?
-                    (<DQ>this.dataSource) :
-                    (<DQ>this.dataSource).querySelectorAllDeep(INPUT_FILE);
+                return (<DQ>this.dataSource).querySelectorAllDeep("input[type='file']");
             } else {
                 let element = DQ.byId(id, true);
-                return element.matchesSelector(INPUT_FILE) ? element : this.getFileInputs(element);
+                return this.getFileInputs(element);
             }
         };
 
@@ -98,7 +89,7 @@ export class XhrFormData extends Config {
 
 
         this.isMultipartRequest = LazyStream.of(...executes)
-            .map(fetchFileInputs)
+            .map(fetchInput)
             .filter(inputExists)
             .first().isPresent();
     }
@@ -109,7 +100,7 @@ export class XhrFormData extends Config {
      * @param form the form holding the view state value
      */
     private applyViewState(form: DQ) {
-        let viewState = form.querySelectorAllDeep(`[name*='${P_VIEWSTATE}'`).inputValue;
+        let viewState = form.byId(P_VIEWSTATE, true).inputValue;
         this.appendIf(viewState.isPresent(), P_VIEWSTATE).value = viewState.value;
     }
 
@@ -121,8 +112,8 @@ export class XhrFormData extends Config {
     assignEncodedString(encoded: string) {
         // this code filters out empty strings as key value pairs
         let keyValueEntries = decodeURIComponent(encoded).split(/&/gi)
-            .filter(item => !!(item || '')
-                .replace(/\s+/g, ''));
+                .filter(item => !!(item || '')
+                .replace(/\s+/g,''));
         this.assignString(keyValueEntries);
     }
 
@@ -141,8 +132,8 @@ export class XhrFormData extends Config {
             return keyVal.length < 3 ? [keyVal?.[0] ?? [], keyVal?.[1] ?? []] : keyVal;
         }
 
-        //TODO fix files...
         Stream.of(...keyValueEntries)
+            //split only the first =
             .map(line => splitToKeyVal(line))
             //special case of having keys without values
             .map(keyVal => fixKeyWithoutVal(keyVal))
@@ -179,11 +170,7 @@ export class XhrFormData extends Config {
         }
         let entries = LazyStream.of(...Object.keys(this.value))
             .filter(key => this.value.hasOwnProperty(key))
-            .flatMap(key => Stream.of(...this.value[key]).map(val => [key, val])
-                //we cannot encode file elements that is handled by multipart requests anyway
-                .filter(([, value]) => !(value instanceof ExtDomQuery.global().File))
-                .collect(new ArrayCollector()))
-
+            .flatMap(key => Stream.of(...this.value[key]).map(val => [key, val]).collect(new ArrayCollector()))
             .map(keyVal => {
                 return `${encodeURIComponent(keyVal[0])}=${encodeURIComponent(keyVal[1])}`;
             })

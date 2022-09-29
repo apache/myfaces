@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
+ * todo replace singleton with module definition
+ *
  */
 
 import {Lang as LangBase, Config, Optional, DomQuery, DQ, Stream} from "mona-dish";
 import {Messages} from "../i18n/Messages";
-import {EMPTY_STR, HTML_TAG_FORM} from "../core/Const";
+import {EMPTY_STR, TAG_FORM} from "../core/Const";
 import {getEventTarget} from "../xhrCore/RequestDataResolver";
-
 
 export module ExtLang {
 
@@ -36,11 +37,11 @@ export module ExtLang {
 
     //should be in lang, but for now here to avoid recursive imports, not sure if typescript still has a problem with those
     /**
-     * helper function to safely resolve anything
+     * helper function to savely resolve anything
      * this is not an elvis operator, it resolves
      * a value without exception in a tree and if
      * it is not resolvable then an optional of
-     * a default value is restored or Optional\.empty
+     * a default value is restored or Optional.empty
      * if none is given
      *
      * usage
@@ -49,7 +50,7 @@ export module ExtLang {
      * </code>
      *
      * @param resolverProducer a lambda which can produce the value
-     * @param defaultValue an optional default value if the producer fails to produce anything
+     * @param defaultValue an optional default value if the producer failes to produce anything
      * @returns an Optional of the produced value
      */
     export function failSaveResolve<T>(resolverProducer: () => T, defaultValue: T = null): Optional<T> {
@@ -73,10 +74,10 @@ export module ExtLang {
      * returns a given localized message upon a given key
      * basic java log like templating functionality is included
      *
-     * @param  key the key for the message
-     * @param  defaultMessage optional default message if none was found
+     * @param {String} key the key for the message
+     * @param {String} defaultMessage optional default message if none was found
      *
-     * Additionally, you can pass additional arguments, which are used
+     * Additionally you can pass additional arguments, which are used
      * in the same way java log templates use the params
      *
      * @param templateParams the param list to be filled in
@@ -104,15 +105,15 @@ export module ExtLang {
     }
 
     /**
-     * creates an exception with additional internal parameters
+     * creates an exeption with additional internal parameters
      * for extra information
      *
      * @param error
-     * @param  title the exception title
-     * @param  name  the exception name
-     * @param  callerCls the caller class
-     * @param  callFunc the caller function
-     * @param  message the message for the exception
+     * @param {String} title the exception title
+     * @param {String} name  the exception name
+     * @param {String} callerCls the caller class
+     * @param {String} callFunc the caller function
+     * @param {String} message the message for the exception
      */
     export function makeException(error: Error, title: string, name: string, callerCls: string, callFunc: string, message: string): Error {
 
@@ -122,22 +123,22 @@ export module ExtLang {
 
     /**
      * fetches a global config entry
-     * @param  configName the name of the configuration entry
-     * @param  defaultValue
+     * @param {String} configName the name of the configuration entry
+     * @param {Object} defaultValue
      *
      * @return either the config entry or if none is given the default value
      */
     export function getGlobalConfig(configName: string, defaultValue: any): any {
         /**
-         * note we could use exists but this is a heavy operation, since the config name usually
+         * note we could use exists but this is an heavy operation, since the config name usually
          * given this function here is called very often
          * is a single entry without . in between we can do the lighter shortcut
          */
-        return window?.myfaces?.config?.[configName] ?? defaultValue;
+        return (<any>window)?.myfaces?.config?.[configName] ?? defaultValue;
     }
 
     /**
-     * fetches the form in a fuzzy manner depending
+     * fetches the form in an fuzzy manner depending
      * on an element or event target.
      *
      * The idea is that according to the jsf spec
@@ -146,7 +147,7 @@ export module ExtLang {
      * This is fine, but since then html5 came into the picture with the form attribute the element
      * can be anywhere referencing its parent form.
      *
-     * Also, theoretically you can have the case of an issuing element enclosing a set of forms
+     * Also theoretically you can have the case of an issuing element enclosing a set of forms
      * (not really often used, but theoretically it could be input button allows to embed html for instance)
      *
      * So the idea is not to limit the issuing form determination to the spec case
@@ -158,25 +159,25 @@ export module ExtLang {
     export function getForm(elem: Element, event ?: Event): DQ | never {
 
         let queryElem = new DQ(elem);
-        let eventTarget = (event) ?  new DQ(getEventTarget(event)) : DomQuery.absent;
+        let eventTarget = new DQ(getEventTarget(event));
 
-        if (queryElem.isTag(HTML_TAG_FORM)) {
+        if (queryElem.isTag(TAG_FORM)) {
             return queryElem;
         }
 
         //html 5 for handling
-        if (queryElem.attr(HTML_TAG_FORM).isPresent()) {
-            let formId = queryElem.attr(HTML_TAG_FORM).value;
+        if (queryElem.attr(TAG_FORM).isPresent()) {
+            let formId = queryElem.attr(TAG_FORM).value;
             let foundForm = DQ.byId(formId, true);
             if (foundForm.isPresent()) {
                 return foundForm;
             }
         }
 
-        let form = queryElem.firstParent(HTML_TAG_FORM)
-            .orElseLazy(() => queryElem.byTagName(HTML_TAG_FORM, true))
-            .orElseLazy(() => eventTarget.firstParent(HTML_TAG_FORM))
-            .orElseLazy(() => eventTarget.byTagName(HTML_TAG_FORM))
+        let form = queryElem.parents(TAG_FORM)
+            .orElseLazy(() => queryElem.byTagName(TAG_FORM, true))
+            .orElseLazy(() => eventTarget.parents(TAG_FORM))
+            .orElseLazy(() => eventTarget.byTagName(TAG_FORM))
             .first();
 
         assertFormExists(form);
@@ -188,22 +189,22 @@ export module ExtLang {
      * gets the local or global options with local ones having higher priority
      * if no local or global one was found then the default value is given back
      *
-     * @param  configName the name of the configuration entry
-     * @param  localOptions the local options root for the configuration myfaces as default marker is added
-     * implicitly
+     * @param {String} configName the name of the configuration entry
+     * @param {String} localOptions the local options root for the configuration myfaces as default marker is added implicitely
      *
-     * @param  defaultValue
+     * @param {Object} defaultValue
      *
      * @return either the config entry or if none is given the default value
      */
     export function getLocalOrGlobalConfig(localOptions: Config, configName: string, defaultValue: any): any {
         return localOptions.value?.myfaces?.config?.[configName] ??
-            window?.myfaces?.config?.[configName] ??
+            (<any>window)?.myfaces?.config?.[configName] ??
             defaultValue;
     }
 
     /**
      * assert that the form exists and throw an exception in the case it does not
+     * (TODO move this into the assertions)
      *
      * @param form the form to check for
      */
@@ -212,4 +213,5 @@ export module ExtLang {
             throw makeException(new Error(), null, null, "Impl", "getForm", getMessage("ERR_FORM"));
         }
     }
+
 }
