@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.application;
 
-import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.resource.ClassLoaderContractResourceLoader;
@@ -29,7 +28,6 @@ import org.apache.myfaces.resource.InternalClassLoaderResourceLoader;
 import org.apache.myfaces.resource.RootExternalContextResourceLoader;
 import org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader;
 import org.apache.myfaces.resource.TempDirFileCacheResourceLoader;
-import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.resource.BaseResourceHandlerSupport;
 import org.apache.myfaces.resource.ClassLoaderResourceLoader;
 import org.apache.myfaces.resource.ContractResourceLoader;
@@ -74,48 +72,23 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
             
             if (TempDirFileCacheResourceLoader.isValidCreateTemporalFiles(facesContext))
             {
-                //The ExternalContextResourceLoader has precedence over
-                //ClassLoaderResourceLoader, so it goes first.
-                if (facesContext.isProjectStage(ProjectStage.Development))
-                {
-                    _resourceLoaders = new ResourceLoader[] {
-                            new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader('/' +directory)),
-                            new TempDirFileCacheResourceLoader(new FacesFlowClassLoaderResourceLoader()),
-                            new TempDirFileCacheResourceLoader(
-                                             new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES)),
-                            new TempDirFileCacheResourceLoader(new ClassLoaderResourceLoader(META_INF_RESOURCES))
-                    };
-                }
-                else
-                {
-                    _resourceLoaders = new ResourceLoader[] {
-                            new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader('/' +directory)),
-                            new TempDirFileCacheResourceLoader(new FacesFlowClassLoaderResourceLoader()),
-                            new TempDirFileCacheResourceLoader(new ClassLoaderResourceLoader(META_INF_RESOURCES))
-                    };
-                }
+                _resourceLoaders = new ResourceLoader[] {
+                        new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader('/' +directory)),
+                        new TempDirFileCacheResourceLoader(new FacesFlowClassLoaderResourceLoader()),
+                        new TempDirFileCacheResourceLoader(
+                                         new InternalClassLoaderResourceLoader(META_INF_RESOURCES)),
+                        new TempDirFileCacheResourceLoader(new ClassLoaderResourceLoader(META_INF_RESOURCES))
+                };
             }
             else
             {
-                //The ExternalContextResourceLoader has precedence over
-                //ClassLoaderResourceLoader, so it goes first.
-                if (facesContext.isProjectStage(ProjectStage.Development))
-                {
-                    _resourceLoaders = new ResourceLoader[] {
-                            new ExternalContextResourceLoader('/' +directory),
-                            new FacesFlowClassLoaderResourceLoader(),
-                            new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES),
-                            new ClassLoaderResourceLoader(META_INF_RESOURCES)
-                    };
-                }
-                else
-                {
-                    _resourceLoaders = new ResourceLoader[] {
-                            new ExternalContextResourceLoader('/' +directory),
-                            new FacesFlowClassLoaderResourceLoader(),
-                            new ClassLoaderResourceLoader(META_INF_RESOURCES)
-                    };
-               }
+                _resourceLoaders = new ResourceLoader[] {
+                        new ExternalContextResourceLoader('/' +directory),
+                        new FacesFlowClassLoaderResourceLoader(),
+                        new TempDirFileCacheResourceLoader(
+                                new InternalClassLoaderResourceLoader(META_INF_RESOURCES)),
+                        new ClassLoaderResourceLoader(META_INF_RESOURCES)
+                };
             }
         }
         return _resourceLoaders;
