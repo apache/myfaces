@@ -27,38 +27,17 @@ import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.context.FacesContext;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
 /**
- * A resource loader implementation which loads resources from the thread ClassLoader.
+ * A specialized classloader for our internal resources
+ * it enables el resolution on source level for our jsf.js files
+ * and reserves a myfaces namespace in the resources for other custom files.
+ * This resource loader is generally reserved for internal purposes.
  */
 public class InternalClassLoaderResourceLoader extends ResourceLoader
 {
-
-    /**
-     * If this param is true and the project stage is development mode,
-     * the source javascript files will be loaded separately instead have
-     * all in just one file, to preserve line numbers and make javascript
-     * debugging of the default jsf javascript file more simple.
-     */
-    @JSFWebConfigParam(since = "2.0.1", defaultValue = "false", expectedValues = "true,false", group = "render")
-    public static final String USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS
-            = "org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS";
-
-    /**
-     * Define the mode used for faces.js file:
-     * <ul>
-     * <li>normal : contains everything, including i18n (faces-i18n.js)</li>
-     * <li>minimal: contains everything, excluding i18n (faces-i18n.js)</li>
-     * </ul>
-     * <p>If org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS param is set to true and project stage
-     * is Development, this param is ignored.</p>
-     */
-    @JSFWebConfigParam(since = "2.0.10,2.1.4", defaultValue = "normal",
-                       expectedValues = "normal, minimal-modern, minimal", group = "render")
-    public static final String MYFACES_JSF_MODE = "org.apache.myfaces.JSF_JS_MODE";
 
     private final boolean _developmentStage;
 
@@ -151,30 +130,16 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
 
         if (jakartaFaces)
         {
-            // first we have to split any appendixes post js out, this is needed to also serve gz, br and map requests,
-            // which come in from the browser
-            String fileAppendix = "";
-            if(resourceName.contains(".js."))
-            {
-                //  we just need the first .js. to extract the appendix
-                fileAppendix = "." + resourceName.split("\\.js\\.")[1];
-            }
+            String remappedResourceName = _developmentStage ?
+                    ResourceUtils.FACES_UNCOMPRESSED_JS_RESOURCE_NAME :
+                    ResourceUtils.FACES_MINIMAL_JS_RESOURCE_NAME;
 
-            // in development stage we serve the uncompressed file and the map file
-            if (_developmentStage)
-            {
-                    return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
-                                                     ResourceUtils.JSF_UNCOMPRESSED_JS_RESOURCE_NAME
-                                                             + fileAppendix, false);
-            }
-            // in production only the compressed version (note we have to take care that per default also the zip and br
-            // files can be served from the resource loader
-            else
-            {
-                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
-                        ResourceUtils.JSF_MINIMAL_JS_RESOURCE_NAME + fileAppendix, false);
-            }
+            // in development stage we serve the uncompressed file and the map file, we have a special case of el expressions
+            // in our javascript for context path and separator char, hence we enable value expressions for those resources
+            return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
+                    remappedResourceName, true);
         }
+        // TODO still needed for tests?
         else if (_developmentStage && libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);

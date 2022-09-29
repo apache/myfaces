@@ -33,9 +33,9 @@ console.log("fixing mapping file references for jsf");
 
 let option = {
     //development
-    files: '../../target/classes/META-INF/resources/javax.faces/**/*.js',
-    from: (buildStage == "-development") ? /jsf-development.js\.map/g : /jsf.js\.map/g,
-    to: `jsf${buildStage}.js.map\n//# sourceMappingURL=jsf${buildStage}.js.map.jsf?ln=javax.faces`
+    files: '../../target/classes/META-INF/resources/jakarta.faces/**/*.js',
+    from: (buildStage == "-development") ? /faces-development.js\.map/g : /faces.js\.map/g,
+    to: `faces${buildStage}.js.map\n//# sourceMappingURL=faces${buildStage}.js.map.mf_map?ln=jakarta.faces`
 }
 
 try {
