@@ -32,6 +32,7 @@ if (!myfaces.oam) {
          * @param value the value to be rendered
          */
         this.setHiddenInput = function(formname, name, value) {
+
             var form = document.forms[formname];
             if (typeof form == 'undefined') {
                 form = document.getElementById(formname);
