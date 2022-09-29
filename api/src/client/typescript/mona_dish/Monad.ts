@@ -1,4 +1,5 @@
-/* Licensed to the Apache Software Foundation (ASF) under one or more
+/*!
+ * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to you under the Apache License, Version 2.0
@@ -451,6 +452,10 @@ export class Config extends Optional<any> {
      * in a shared manner
      */
     get shallowCopy(): Config {
+        return this.shallowCopy$();
+    }
+
+    protected shallowCopy$(): Config {
         return new Config(Stream.ofAssoc(this.value).collect(new AssocArrayCollector()));
     }
 
@@ -458,6 +463,10 @@ export class Config extends Optional<any> {
      * deep copy, copies all config nodes
      */
     get deepCopy(): Config {
+        return this.deepCopy$();
+    }
+
+    protected deepCopy$(): Config {
         return new Config(objAssign({}, this.value));
     }
 
