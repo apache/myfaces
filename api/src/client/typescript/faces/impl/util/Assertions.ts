@@ -16,6 +16,9 @@
 import {Config, Lang, XMLQuery} from "mona-dish";
 
 import {DQ} from "mona-dish";
+import {ExtLang} from "./Lang";
+import getMessage = ExtLang.getMessage;
+import makeException = ExtLang.makeException;
 import {
     ATTR_URL,
     EMPTY_RESPONSE,
@@ -23,10 +26,8 @@ import {
     ON_ERROR,
     ON_EVENT,
     PHASE_PROCESS_RESPONSE,
-    XML_TAG_PARTIAL_RESP
+    RESP_PARTIAL
 } from "../core/Const";
-import {ExtLang} from "./Lang";
-
 
 /**
  * a set of internal code assertions
@@ -35,8 +36,6 @@ import {ExtLang} from "./Lang";
  */
 export module Assertions {
 
-
-
     export function assertRequestIntegrity(options: Config, elem: DQ): void | never {
         /*assert if the onerror is set and once if it is set it must be of type function*/
         assertFunction(options.getIf(ON_ERROR).value);
@@ -44,12 +43,12 @@ export module Assertions {
         assertFunction(options.getIf(ON_EVENT).value);
         //improve the error messages if an empty elem is passed
         //Assertions.assertElementExists(elem);
-        assert(elem.isPresent(), ExtLang.getMessage("ERR_MUST_BE_PROVIDED1", "{0}: source  must be provided or exist", "source element id"), "faces.ajax.request", "ArgNotSet",  )
+        assert(elem.isPresent(), getMessage("ERR_MUST_BE_PROVIDED1", "{0}: source  must be provided or exist", "source element id"), "faces.ajax.request", "ArgNotSet",  )
     }
 
     export function assertUrlExists(node: XMLQuery): void | never {
         if (node.attr(ATTR_URL).isAbsent()) {
-            throw Assertions.raiseError(new Error(), ExtLang.getMessage("ERR_RED_URL", null, "processRedirect"), "processRedirect");
+            throw Assertions.raiseError(new Error(), getMessage("ERR_RED_URL", null, "_Ajaxthis.processRedirect"), "processRedirect");
         }
     }
 
@@ -60,7 +59,7 @@ export module Assertions {
     export function assertValidXMLResponse(responseXML: XMLQuery) : void | never  {
         assert(!responseXML.isAbsent(), EMPTY_RESPONSE, PHASE_PROCESS_RESPONSE);
         assert(!responseXML.isXMLParserError(),  responseXML.parserErrorText(EMPTY_STR), PHASE_PROCESS_RESPONSE);
-        assert(responseXML.querySelectorAll(XML_TAG_PARTIAL_RESP).isPresent(), ERR_NO_PARTIAL_RESPONSE, PHASE_PROCESS_RESPONSE);
+        assert(responseXML.querySelectorAll(RESP_PARTIAL).isPresent(), ERR_NO_PARTIAL_RESPONSE, PHASE_PROCESS_RESPONSE);
     }
 
     /**
@@ -80,7 +79,7 @@ export module Assertions {
         let finalMessage = message ?? EMPTY_STR;
 
         //TODO clean up the messy makeException, this is a perfect case for encapsulation and sane defaults
-        return ExtLang.makeException(error, finalTitle, finalName, "Response", caller || (((<any>arguments).caller) ? (<any>arguments).caller.toString() : "_raiseError"), finalMessage);
+        return makeException(error, finalTitle, finalName, "Response", caller || (((<any>arguments).caller) ? (<any>arguments).caller.toString() : "_raiseError"), finalMessage);
     }
 
     /*
@@ -103,13 +102,6 @@ export module Assertions {
 
     export function assertFunction(value: any, msg = EMPTY_STR, caller=EMPTY_STR, title="Assertion Error"): asserts value is Function {
         assertType(value, "function", msg, caller, title);
-    }
-
-    export function assertDelay(value: any) {
-        if(!(value >= 0)) { // >= 0 abbreviation which covers all cases of non positive values,
-            // including NaN and non numeric strings, no type equality is deliberate here,
-            throw new Error("Invalid delay value: " + value);
-        }
     }
 }
 

@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-import {DQ, XMLQuery} from "mona-dish";
+import {Config, DQ, XMLQuery} from "mona-dish";
 import {ResponseProcessor} from "./ResponseProcessor";
 
 import {IResponseProcessor} from "./IResponseProcessor";
 import {
     $nsp,
-    XML_TAG_ATTRIBUTES,
-    XML_TAG_CHANGES,
-    XML_TAG_DELETE,
-    XML_TAG_ERROR,
-    XML_TAG_EVAL,
-    XML_TAG_EXTENSION,
-    XML_TAG_INSERT,
-    XML_TAG_REDIRECT,
-    XML_TAG_UPDATE, P_RESOURCE,
+    CMD_ATTRIBUTES,
+    CMD_CHANGES,
+    CMD_DELETE,
+    CMD_ERROR,
+    CMD_EVAL,
+    CMD_EXTENSION,
+    CMD_INSERT,
+    CMD_REDIRECT,
+    CMD_UPDATE,
     P_VIEWBODY,
     P_VIEWHEAD,
     P_VIEWROOT,
     PARTIAL_ID,
-    XML_TAG_PARTIAL_RESP,
+    RESP_PARTIAL,
     RESPONSE_XML,
-    XML_TAG_AFTER,
-    XML_TAG_BEFORE
+    TAG_AFTER,
+    TAG_BEFORE
 } from "../core/Const";
 import {resolveContexts, resolveResponseXML} from "./ResonseDataResolver";
 import {ExtConfig} from "../util/ExtDomQuery";
@@ -66,16 +66,16 @@ export module Response {
 
         internalContext.assign(RESPONSE_XML).value = responseXML;
 
-        // we now process the partial tags, or in none given raise an error
-        responseXML.querySelectorAll(XML_TAG_PARTIAL_RESP)
+        //we now process the partial tags, or in none given raise an error
+        responseXML.querySelectorAll(RESP_PARTIAL)
             .each(item => processPartialTag(<XMLQuery>item, responseProcessor, internalContext));
 
-        // We now process the viewStates, client windows and the elements to be evaluated are delayed.
-        // The reason for this is that often it is better
-        // to wait until the document has caught up before
-        // doing any evaluations even on embedded scripts.
-        // Usually this does not matter, the client window comes in almost last always anyway
-        // we maybe drop this deferred assignment in the future, but myfaces did it until now.
+        //we now process the viewstates, client windows and the evals deferred
+        //the reason for this is that often it is better
+        //to wait until the document has caught up before
+        //doing any evals even on embedded scripts
+        //usually this does not matter, the client window comes in almost last always anyway
+        //we maybe drop this deferred assignment in the future, but myfaces did it until now
         responseProcessor.fixViewStates();
         responseProcessor.fixClientWindow();
         responseProcessor.globalEval();
@@ -89,18 +89,18 @@ export module Response {
      function processPartialTag(node: XMLQuery, responseProcessor: IResponseProcessor, internalContext) {
 
         internalContext.assign(PARTIAL_ID).value = node.id;
-        const SEL_SUB_TAGS = [XML_TAG_ERROR, XML_TAG_REDIRECT, XML_TAG_CHANGES].join(",");
+        const SEL_SUB_TAGS = [CMD_ERROR, CMD_REDIRECT, CMD_CHANGES].join(",");
 
-        // now we can process the main operations
+        //now we can process the main operations
         node.querySelectorAll(SEL_SUB_TAGS).each((node: XMLQuery) => {
             switch (node.tagName.value) {
-                case XML_TAG_ERROR:
+                case CMD_ERROR:
                     responseProcessor.error(node);
                     break;
-                case XML_TAG_REDIRECT:
+                case CMD_REDIRECT:
                     responseProcessor.redirect(node);
                     break;
-                case XML_TAG_CHANGES:
+                case CMD_CHANGES:
                     processChangesTag(node, responseProcessor);
                     break;
             }
@@ -109,10 +109,10 @@ export module Response {
     }
 
     let processInsert = function (responseProcessor: IResponseProcessor, node: XMLQuery) {
-         // path1 insert after as child tags
-         if(node.querySelectorAll([XML_TAG_BEFORE, XML_TAG_AFTER].join(",")).length) {
-             responseProcessor.insertWithSubTags(node);
-         } else { // insert before after with id
+         //path1 insert after as child tags
+         if(node.querySelectorAll([TAG_BEFORE, TAG_AFTER].join(",")).length) {
+             responseProcessor.insertWithSubtags(node);
+         } else { //insert before after with id
              responseProcessor.insert(node);
          }
 
@@ -125,31 +125,31 @@ export module Response {
      * @param responseProcessor
      */
      function processChangesTag(node: XMLQuery, responseProcessor: IResponseProcessor): boolean {
-        const ALLOWED_TAGS = [XML_TAG_UPDATE, XML_TAG_EVAL, XML_TAG_INSERT, XML_TAG_DELETE, XML_TAG_ATTRIBUTES, XML_TAG_EXTENSION].join(", ");
+        const ALLOWED_TAGS = [CMD_UPDATE, CMD_EVAL, CMD_INSERT, CMD_DELETE, CMD_ATTRIBUTES, CMD_EXTENSION].join(", ");
         node.querySelectorAll(ALLOWED_TAGS).each(
             (node: XMLQuery) => {
                 switch (node.tagName.value) {
-                    case XML_TAG_UPDATE:
+                    case CMD_UPDATE:
                         processUpdateTag(node, responseProcessor);
                         break;
 
-                    case XML_TAG_EVAL:
+                    case CMD_EVAL:
                         responseProcessor.eval(node);
                         break;
 
-                    case XML_TAG_INSERT:
+                    case CMD_INSERT:
                         processInsert(responseProcessor, node);
                         break;
 
-                    case XML_TAG_DELETE:
+                    case CMD_DELETE:
                         responseProcessor.delete(node);
                         break;
 
-                    case XML_TAG_ATTRIBUTES:
+                    case CMD_ATTRIBUTES:
                         responseProcessor.attributes(node);
                         break;
 
-                    case XML_TAG_EXTENSION:
+                    case CMD_EXTENSION:
                         break;
                 }
             }
@@ -171,14 +171,14 @@ export module Response {
 
     /**
      * branch tag update. drill further down into the updates
-     * special case viewState in that case it is a leaf
-     * and the viewState must be processed
+     * special case viewstate in that case it is a leaf
+     * and the viewstate must be processed
      *
      * @param node
      * @param responseProcessor
      */
      function processUpdateTag(node: XMLQuery, responseProcessor: IResponseProcessor) {
-         // early state storing, if no state we perform a normal update cycle
+         //early state storing, if no state we perform a normal update cycle
         if (!storeState(responseProcessor, node)) {
             handleElementUpdate(node, responseProcessor);
         }
@@ -205,11 +205,7 @@ export module Response {
                 responseProcessor.replaceBody(DQ.fromMarkup(cdataBlock));
                 break;
 
-            case $nsp(P_RESOURCE):
-                responseProcessor.addToHead(DQ.fromMarkup(cdataBlock))
-                break;
-
-            default:// htmlItem replacement
+            default://htmlItem replacement
                 responseProcessor.update(node, cdataBlock);
                 break;
         }

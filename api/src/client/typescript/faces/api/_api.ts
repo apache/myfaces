@@ -16,14 +16,15 @@
 import {Implementation} from "../impl/AjaxImpl";
 import {PushImpl} from "../impl/PushImpl";
 import {oam as _oam} from "../myfaces/OamSubmit";
-import {$nsp, CTX_OPTIONS_EXECUTE, CTX_OPTIONS_PARAMS, CTX_PARAM_RENDER, P_BEHAVIOR_EVENT} from "../impl/core/Const";
-import {ErrorData} from "../impl/xhrCore/ErrorData";
-import {EventData} from "../impl/xhrCore/EventData";
+import {$nsp, CTX_PARAM_EXECUTE, CTX_PARAM_RENDER, P_BEHAVIOR_EVENT} from "../impl/core/Const";
 
+
+declare const window: any;
 //we use modules to get a proper jsdoc and static/map structure in the calls
 //as per spec requirement
 export module faces {
 
+    export var contextpath = '#{facesContext.externalContext.requestContextPath}';
 
     /**
      * Version of the implementation for the faces.ts.
@@ -49,14 +50,14 @@ export module faces {
 
     /**
      * SeparatorChar as defined by facesContext.getNamingContainerSeparatorChar()
+     * @type {Char}
      */
-    export var separatorchar: string = getSeparatorChar();
+    export var separatorchar = getSeparatorChar();
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Context Path as defined externalContext.requestContextPath
      */
-    export var contextpath: string = '#{facesContext.externalContext.requestContextPath}';
+    export var contextpath = '#{facesContext.externalContext.requestContextPath}';
     // we do not have a fallback here, for now
 
     /**
@@ -100,7 +101,7 @@ export module faces {
     }
 
     //private helper functions
-    function getSeparatorChar(): string {
+    function getSeparatorChar() {
         const sep = '#{facesContext.namingContainerSeparatorChar}';
         //We now enable standalone mode, the separator char was not mapped we make a fallback to 2.3 behavior
         //the idea is that the separator char is provided from the underlying container, but if not then we
@@ -129,8 +130,9 @@ export module faces {
          * @param {EVENT} event: any javascript event supported by that object
          * @param {Map} options : map of options being pushed into the ajax cycle
          */
-        export function request(element: Element, event?: Event, options?: Context): void {
+        export function request(element: Element, event?: Event, options?: Context) {
             Implementation.request(element, event, options)
+            //Implementation.getInstance().requestInternal(element, event, options);
         }
 
         /**
@@ -140,7 +142,7 @@ export module faces {
          *
          * TODO add info on what can be in the context
          */
-        export function response(request: XMLHttpRequest, context?: Context): void {
+        export function response(request: XMLHttpRequest, context?: Context) {
             Implementation.response(request, context);
         }
 
@@ -159,9 +161,9 @@ export module faces {
          *     <li> eventData.responseXML: the requestInternal response xml </li>
          * </ul>
          *
-         * @param errorListener error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
+         * @param {function} errorListener error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
          */
-        export function addOnError(errorFunc: (data: ErrorData) => void): void {
+        export function addOnError(errorFunc: (data: ErrorData) => void) {
             Implementation.addOnError(<any>errorFunc);
         }
 
@@ -169,9 +171,9 @@ export module faces {
          * Adds a global event listener to the ajax event queue. The event listener must be a function
          * of following format: <i>function eventListener(&lt;eventData&gt;)</i>
          *
-         * @param eventListener event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
+         * @param {function} eventListener event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
          */
-        export function addOnEvent(eventFunc: (data: EventData) => void): void {
+        export function addOnEvent(eventFunc: (data: EventData) => void) {
             Implementation.addOnEvent(<any>eventFunc);
         }
     }
@@ -196,43 +198,37 @@ export module faces {
 
     export module push {
         /**
-         * @param socketClientId the sockets client identifier
-         * @param url the uri to reach the socket
-         * @param channel the channel name/id
-         * @param onopen The function to be invoked when the web socket is opened.
-         * @param onmessage The function to be invoked when a message is received.
-         * @param onerror The function to be invoked when an error occurs.
-         * @param onclose The function to be invoked when the web socket is closed.
-         * @param behaviors functions which are invoked whenever a message is received
-         * @param autoConnect Whether or not to automatically open the socket. Defaults to <code>false</code>.
+         * @param {function} onopen The function to be invoked when the web socket is opened.
+         * @param {function} onmessage The function to be invoked when a message is received.
+         * @param {function} onclose The function to be invoked when the web socket is closed.
+         * @param {boolean} autoconnect Whether or not to immediately open the socket. Defaults to <code>false</code>.
          */
         export function init(socketClientId: string,
-                    url: string,
+                    uri: string,
                     channel: string,
                     onopen: Function,
                     onmessage: Function,
-                    onerror: Function,
                     onclose: Function,
-                    behaviors: any,
-                    autoConnect: boolean): void {
-            PushImpl.init(socketClientId, url, channel, onopen, onmessage, onerror, onclose, behaviors, autoConnect);
+                    behaviorScripts: any,
+                    autoconnect: boolean) {
+            PushImpl.init(socketClientId, uri, channel, onopen, onmessage, onclose, behaviorScripts, autoconnect);
         }
 
         /**
          * Open the web socket on the given channel.
-         * @param  channel The name of the web socket channel.
-         * @throws  Error is thrown, if the channel is unknown.
+         * @param {string} channel The name of the web socket channel.
+         * @throws {Error} When channel is unknown.
          */
-        export function open(socketClientId: string): void {
+        export function open(socketClientId: string) {
             PushImpl.open(socketClientId);
         }
 
         /**
          * Close the web socket on the given channel.
-         * @param  channel The name of the web socket channel.
-         * @throws  Error is thrown, if the channel is unknown.
+         * @param {string} channel The name of the web socket channel.
+         * @throws {Error} When channel is unknown.
          */
-        export function close(socketClientId: string): void {
+        export function close(socketClientId: string) {
             PushImpl.close(socketClientId);
         }
 
@@ -252,13 +248,12 @@ export module myfaces {
      * @param render
      * @param options
      */
-    export function ab(source: Element, event: Event, eventName: string, execute: string, render: string, options: Options = {}): void {
+    export function ab(source: Element, event: Event, eventName: string, execute: string, render: string, options: Context = {}) {
         if (eventName) {
-           options[CTX_OPTIONS_PARAMS] = options?.[CTX_OPTIONS_PARAMS] ?? {};
-           options[CTX_OPTIONS_PARAMS][$nsp(P_BEHAVIOR_EVENT)] = eventName;
+           options[$nsp(P_BEHAVIOR_EVENT)] = eventName;
         }
         if (execute) {
-            options[CTX_OPTIONS_EXECUTE] = execute;
+            options[CTX_PARAM_EXECUTE] = execute;
         }
         if (render) {
             options[CTX_PARAM_RENDER] = render;

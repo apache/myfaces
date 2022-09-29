@@ -38,12 +38,12 @@ describe('Asynchronous Queue tests', () => {
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr;
-            window.XMLHttpRequest = this.xhr;
+            (<any>window).XMLHttpRequest = this.xhr;
 
             this.jsfAjaxResponse = sinon.stub((<any>global).faces.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();

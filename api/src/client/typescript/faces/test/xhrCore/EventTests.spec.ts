@@ -28,7 +28,6 @@ declare var faces: any;
 
 describe('tests the addOnEvent and addOnError handling', function () {
 
-    // noinspection DuplicatedCode
     beforeEach(async function () {
         let waitForResult = protocolPage();
         return waitForResult.then((close) => {
@@ -37,7 +36,7 @@ describe('tests the addOnEvent and addOnError handling', function () {
             this.requests = [];
 
             this.respond = (response: string): XMLHttpRequest => {
-                let xhrReq = (this.requests as Array<any>).shift();
+                let xhrReq = this.requests.shift();
                 xhrReq.responsetype = "text/xml";
                 xhrReq.respond(200, {'Content-Type': 'text/xml'}, response);
                 return xhrReq;
@@ -47,10 +46,10 @@ describe('tests the addOnEvent and addOnError handling', function () {
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr;
-            window.XMLHttpRequest = this.xhr;
+            (<any>window).XMLHttpRequest = this.xhr;
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
                 Implementation.reset();
                 close();
             }
@@ -60,6 +59,13 @@ describe('tests the addOnEvent and addOnError handling', function () {
     afterEach(function () {
         this.closeIt();
     });
+
+    let allowedStati = {
+        "begin": true,
+        "complete": true,
+        "success": true,
+    };
+
     it("must have a global add on event call with all three phases passed", function () {
         let onEventCalled1 = 0;
         let onEventCalled2 = 0;
@@ -76,10 +82,11 @@ describe('tests the addOnEvent and addOnError handling', function () {
                 throw ("Wrong status")
             }
         });
-        faces.ajax.addOnEvent(() => {
+        faces.ajax.addOnEvent((data: any) => {
             onEventCalled2++;
+
         });
-        DQ.byId("cmd_update_insert").click();
+        let issuer = DQ.byId("cmd_update_insert").click();
         this.respond(XmlResponses.UPDATE_INSERT_1);
 
         expect(onEventCalled1).to.eq(3);
@@ -97,21 +104,22 @@ describe('tests the addOnEvent and addOnError handling', function () {
             errorMessage = data.errorMessage;
             onErrorCalled1++
         });
-        faces.ajax.addOnError(() => {
+        faces.ajax.addOnError((data: any) => {
             onErrorCalled2++;
         });
 
         //cmd_error_component
-        DQ.byId("cmd_error_component").click();
+        let issuer = DQ.byId("cmd_error_component").click();
         this.respond(XmlResponses.ERROR_2);
 
         expect(onErrorCalled1).to.eq(1);
         expect(onErrorCalled2).to.eq(1);
         expect(errorTitle).to.eq('Erro21');
-        expect(errorMessage).to.eq('serverError: Error2 Text');
+        expect(errorMessage).to.eq('Error2 Text');
     });
 
     it("must have an id set if there is an emitting element", function () {
+        let onEventCalled1 = 0;
         let onEventCalled2 = 0;
 
         let assertSourceExists = (data: any) => {
@@ -121,11 +129,11 @@ describe('tests the addOnEvent and addOnError handling', function () {
         faces.ajax.addOnEvent((data: any) => {
             assertSourceExists(data);
         });
-        faces.ajax.addOnEvent(() => {
+        faces.ajax.addOnEvent((data: any) => {
             onEventCalled2++;
 
         });
-        DQ.byId("cmd_update_insert").click();
+        let issuer = DQ.byId("cmd_update_insert").click();
         this.respond(XmlResponses.UPDATE_INSERT_1);
 
     });

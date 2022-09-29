@@ -21,6 +21,8 @@ import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import defaultMyFaces = StandardInits.defaultMyFaces;
 import defaultSeparatorChar = StandardInits.defaultSeparatorChar;
 
+const jsdom = require("jsdom");
+const {JSDOM} = jsdom;
 sinon.reset();
 
 declare var faces: any;

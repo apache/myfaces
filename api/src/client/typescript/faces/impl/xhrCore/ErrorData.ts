@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import {
-    EMPTY_STR, ERROR,
+    EMPTY_STR,
     ERROR_MESSAGE,
     ERROR_NAME,
     RESPONSE_TEXT,
-    RESPONSE_XML, SERVER_ERROR,
+    RESPONSE_XML,
     SOURCE,
     STATUS,
     UNKNOWN
@@ -46,11 +46,10 @@ export enum ErrorType {
  * everything into the same attributes,
  * I will add deprecated myfaces backwards compatibility attributes as well
  */
-export class ErrorData extends EventData implements IErrorData {
+export class ErrorData extends EventData {
 
     type: string = "error";
-    source: HTMLElement;
-    sourceId: string;
+    source: string;
     errorName: string;
     errorMessage: string;
 
@@ -60,18 +59,17 @@ export class ErrorData extends EventData implements IErrorData {
     status: string;
     typeDetails: ErrorType;
 
+    //TODO backwards compatible attributes
     serverErrorName: string;
     serverErrorMessage: string;
     message: string;
 
-    constructor(source: string, errorName: string, errorMessage: string, responseText: string = null, responseXML: any = null, responseCode: string = "200", status: string = "", type = ErrorType.CLIENT_ERROR) {
+    constructor(source: string, errorName: string, errorMessage: string, responseText: string = null, responseXML: any = null, responseCode: string = "200", status: string = "UNKNOWN", type = ErrorType.CLIENT_ERROR) {
         super();
-        this.source = document.getElementById(source);
-        this.sourceId = source;
-        this.type = ERROR;
+        this.source = source;
+        this.type = "error";
         this.errorName = errorName;
-        //tck requires that the type is prefixed to the message itself (jsdoc also) in case of a server error
-        this.message = this.errorMessage = (type == SERVER_ERROR) ? type + ": " + errorMessage : errorMessage;
+        this.message = this.errorMessage = errorMessage;
         this.responseCode = responseCode;
         this.responseText = responseText;
         this.status = status;
@@ -84,10 +82,10 @@ export class ErrorData extends EventData implements IErrorData {
     }
 
     static fromClient(e: Error): ErrorData {
-        return new ErrorData((e as any)?.source ?? "client", e?.name ?? EMPTY_STR, e?.message ?? EMPTY_STR, e?.stack ?? EMPTY_STR);
+        return new ErrorData("client", e?.name ?? '', e?.message ?? '', e?.stack ?? '');
     }
 
-    static fromHttpConnection(source: any, name: string, message: string, responseText, responseCode: number, status: string = EMPTY_STR): ErrorData {
+    static fromHttpConnection(source: any, name: string, message: string, responseText, responseCode: number, status: string = 'UNKNOWN'): ErrorData {
         return new ErrorData(source, name, message, responseText, responseCode, `${responseCode}`, status, ErrorType.HTTP_ERROR);
     }
 
@@ -101,13 +99,11 @@ export class ErrorData extends EventData implements IErrorData {
         let status = getMsg(context, STATUS);
         let responseText = getMsg(context, RESPONSE_TEXT);
         let responseXML = getMsg(context, RESPONSE_XML);
-
-
         return new ErrorData(source, errorName, errorMessage, responseText, responseXML, errorCode + EMPTY_STR, status, errorType);
     }
 
     private static getMsg(context, param) {
-        return getMessage(context.getIf(param).orElse(EMPTY_STR).value);
+        return getMessage(context.getIf(param).orElse(UNKNOWN).value);
     }
 
     static fromServerError(context: Config): ErrorData {
