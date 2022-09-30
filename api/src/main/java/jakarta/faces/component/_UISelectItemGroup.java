@@ -29,8 +29,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 abstract class _UISelectItemGroup extends UISelectItem
 {
 
-    static public final String COMPONENT_FAMILY =
-        "jakarta.faces.SelectItemGroup";
     static public final String COMPONENT_TYPE =
         "jakarta.faces.SelectItemGroup";
 
