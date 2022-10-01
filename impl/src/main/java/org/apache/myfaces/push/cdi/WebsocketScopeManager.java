@@ -105,7 +105,8 @@ public class WebsocketScopeManager
             // If any, also deregister session users.
             for (String token : tokens.keySet())
             {
-                sessionManager.removeSession(token);
+                // remove channelToken
+                sessionManager.removeChannelToken(token);
             }
 
             // we dont need to destroy child sockets ("view")
@@ -172,12 +173,6 @@ public class WebsocketScopeManager
                 {
                     sessionScope.destroyChannelToken(token);
                 }
-            }
-
-            // remove sessions
-            for (String token : tokens.keySet())
-            {
-                sessionManager.removeSession(token);
             }
 
             channelTokens.clear();
