@@ -181,6 +181,11 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
 
     public void destroyAll(T contextualStorage, FacesContext facesContext)
     {
+        if (contextualStorage == null)
+        {
+            return;
+        }
+
         if (facesContext == null)
         {
             facesContext = FacesContext.getCurrentInstance();

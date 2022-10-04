@@ -187,19 +187,19 @@ public class ViewScopeContext implements Context
 
     public static void destroyAll(FacesContext facesContext)
     {
-        ViewScopeContextualStorageHolder manager = ViewScopeContextualStorageHolder.getInstance(facesContext);
-        if (manager != null)
+        ViewScopeContextualStorageHolder storageHolder = ViewScopeContextualStorageHolder.getInstance(facesContext);
+        if (storageHolder != null)
         {
-            manager.destroyAll(facesContext);
+            storageHolder.destroyAll(facesContext);
         }
     }
 
     public static void destroyAll(FacesContext facesContext, String viewScopeId)
     {
-        ViewScopeContextualStorageHolder manager = ViewScopeContextualStorageHolder.getInstance(facesContext);
-        if (manager != null)
+        ViewScopeContextualStorageHolder storageHolder = ViewScopeContextualStorageHolder.getInstance(facesContext);
+        if (storageHolder != null)
         {
-            manager.destroyAll(facesContext, viewScopeId);
+            storageHolder.destroyAll(facesContext, viewScopeId);
         }
     }
 }
