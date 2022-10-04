@@ -628,10 +628,10 @@
                                 </Export-Package>
                                 <Import-Package>
                                     !org.apache.myfaces.*,
-                                    jakarta.annotation,
+                                    jakarta.annotation;version="[2.1.0, 3.0.0)",
                                     javax.crypto,
                                     javax.crypto.spec,
-                                    jakarta.ejb;resolution:=optional,
+                                    jakarta.ejb;version="[4.0.0, 5.0.0)";resolution:=optional,
                                     jakarta.el;version="[5.0.0, 6.0.0)",
                                     javax.naming,
                                     jakarta.persistence;version="[3.1.0, 4.0.0)";resolution:=optional,
