@@ -24,6 +24,7 @@ on:
   push:
     branches:
       - master
+      - main
       - 3.0.x
       - 2.3-next
       - 2.3.x
@@ -34,6 +35,7 @@ on:
   pull_request:
     branches:
       - master
+      - main
       - 3.0.x
       - 2.3-next
       - 2.3.x
