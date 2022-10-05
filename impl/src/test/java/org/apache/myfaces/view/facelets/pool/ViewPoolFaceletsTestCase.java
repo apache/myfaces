@@ -25,7 +25,7 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.RenderKitFactory;
 import org.junit.Assert;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.junit.Test;

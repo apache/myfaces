@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
+
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
@@ -35,8 +37,6 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PostRenderViewEvent;
 import jakarta.faces.event.PreRenderViewEvent;
 import jakarta.faces.view.ViewDeclarationLanguage;
-
-import org.apache.myfaces.config.MyfacesConfig;
 
 /**
  * Implements the render response phase (Faces Spec 2.2.6)

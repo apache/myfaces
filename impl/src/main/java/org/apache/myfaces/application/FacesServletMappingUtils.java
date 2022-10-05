@@ -29,7 +29,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRegistration;
-import org.apache.myfaces.config.MyfacesConfig;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.ExternalContextUtils;

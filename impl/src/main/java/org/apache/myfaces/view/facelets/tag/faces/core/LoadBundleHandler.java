@@ -40,7 +40,7 @@ import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 

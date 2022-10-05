@@ -38,6 +38,7 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.el.resolver.CompositeComponentELResolver;
 import org.apache.myfaces.el.resolver.ImportConstantsELResolver;
 import org.apache.myfaces.el.resolver.ImportHandlerResolver;
@@ -45,7 +46,6 @@ import org.apache.myfaces.el.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.resolver.ResourceResolver;
 import org.apache.myfaces.el.resolver.ScopedAttributeResolver;
 import org.apache.myfaces.el.resolver.implicitobject.ImplicitObjectResolver;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.el.resolver.EmptyStringToNullELResolver;
 import org.apache.myfaces.el.resolver.LambdaBeanELResolver;

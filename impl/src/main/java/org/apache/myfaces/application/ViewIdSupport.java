@@ -29,9 +29,9 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.ViewDeclarationLanguage;
-import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.util.lang.ConcurrentLRUCache;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.util.lang.StringUtils;

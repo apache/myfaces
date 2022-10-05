@@ -22,8 +22,8 @@ import org.apache.myfaces.util.token.SessionIdGenerator;
 import java.util.Map;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.config.MyfacesConfig;
 
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.util.lang.Hex;
 

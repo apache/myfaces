@@ -21,7 +21,7 @@ package org.apache.myfaces.webapp;
 import jakarta.faces.FacesException;
 import jakarta.servlet.ServletContext;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 /**

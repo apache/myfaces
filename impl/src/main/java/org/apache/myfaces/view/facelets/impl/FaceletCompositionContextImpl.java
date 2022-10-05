@@ -34,7 +34,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.AttachedObjectHandler;
 import jakarta.faces.view.EditableValueHolderAttachedObjectHandler;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;

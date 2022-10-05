@@ -29,9 +29,8 @@ import jakarta.faces.component.UICommand;
 
 
 import org.apache.myfaces.config.RuntimeConfig;
-
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.junit.Assert;
 import org.junit.Test;

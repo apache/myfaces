@@ -30,7 +30,8 @@ import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.config.MyfacesConfig;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.util.lang.StringUtils;

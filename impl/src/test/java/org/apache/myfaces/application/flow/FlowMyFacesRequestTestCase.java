@@ -26,8 +26,9 @@ import jakarta.faces.component.UICommand;
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.render.ResponseStateManager;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -22,9 +22,8 @@ import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
 import org.junit.Assert;
-
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.junit.Test;
 
 public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase

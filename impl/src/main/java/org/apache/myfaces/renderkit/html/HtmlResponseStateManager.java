@@ -30,8 +30,8 @@ import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.application.viewstate.StateCache;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.spi.StateCacheProvider;
 import org.apache.myfaces.spi.StateCacheProviderFactory;

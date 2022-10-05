@@ -32,7 +32,8 @@ import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.config.MyfacesConfig;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 /**

@@ -50,10 +50,10 @@ import jakarta.faces.view.ViewMetadata;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.myfaces.application.ViewIdSupport;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ExternalContextUtils;
 
 /**

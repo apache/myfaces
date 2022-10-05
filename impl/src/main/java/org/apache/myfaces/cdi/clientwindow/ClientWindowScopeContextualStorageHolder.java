@@ -28,8 +28,8 @@ import java.io.Serializable;
 import java.util.Map;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.LRULinkedHashMap;
 
 @Typed(ClientWindowScopeContextualStorageHolder.class)

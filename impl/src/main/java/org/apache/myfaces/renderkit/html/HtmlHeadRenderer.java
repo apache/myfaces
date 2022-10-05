@@ -28,7 +28,7 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 

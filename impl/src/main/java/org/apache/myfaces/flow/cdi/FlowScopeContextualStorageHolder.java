@@ -35,9 +35,9 @@ import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
 import org.apache.myfaces.flow.FlowUtils;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.LRULinkedHashMap;
 
 /**

@@ -21,10 +21,11 @@ package org.apache.myfaces.push.cdi;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.faces.context.FacesContext;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactory;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactoryRandom;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactorySecureRandom;
-import org.apache.myfaces.config.MyfacesConfig;
 
 @ApplicationScoped
 public class WebsocketChannelTokenBuilder

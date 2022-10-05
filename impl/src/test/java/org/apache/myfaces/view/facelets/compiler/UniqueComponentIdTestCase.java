@@ -34,8 +34,8 @@ import jakarta.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.application.viewstate.StateUtils;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.spi.impl.DefaultSerialFactory;
 import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;

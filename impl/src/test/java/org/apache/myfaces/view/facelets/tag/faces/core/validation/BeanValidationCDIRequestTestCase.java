@@ -22,8 +22,9 @@ import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.validator.Validator;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.junit.Assert;
 import org.junit.Test;
 

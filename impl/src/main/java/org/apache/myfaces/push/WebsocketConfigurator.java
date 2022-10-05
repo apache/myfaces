@@ -26,7 +26,7 @@ import jakarta.websocket.HandshakeResponse;
 import jakarta.websocket.server.HandshakeRequest;
 import jakarta.websocket.server.ServerEndpointConfig;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.push.cdi.WebsocketScopeManager;
 
 public class WebsocketConfigurator extends ServerEndpointConfig.Configurator

@@ -29,9 +29,9 @@ import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewParameter;
 import jakarta.faces.component.html.HtmlDataTable;
-import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.view.facelets.pss.acid.component.UISimpleComponent1;
 import org.apache.myfaces.view.facelets.pss.acid.component.UISimpleComponent2;

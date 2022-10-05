@@ -28,10 +28,10 @@ import junit.framework.Test;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 import junit.framework.TestSuite;
-import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
