@@ -63,8 +63,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
                     newSS.setAttribute("rel", item.getAttribute("rel") || "stylesheet");
                     newSS.setAttribute("type", item.getAttribute("type") || "text/css");
-                    if(item.getAttribute("nonce")) {
-                        newSS.setAttribute("nonce", item.getAttribute("nonce"));
+                    var nonce = item.nonce || item.getAttribute("nonce") || null;
+                    if(nonce) {
+                        newSS.setAttribute("nonce", nonce);
                     }
 
                     document.getElementsByTagName("head")[0].appendChild(newSS);
@@ -136,7 +137,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                         _Lang.equalsIgnoreCase(type,"text/ecmascript") ||
                         _Lang.equalsIgnoreCase(type,"ecmascript"))) {
 
-                    var nonce = item.getAttribute("nonce") || null;
+                    var nonce = item.nonce || item.getAttribute("nonce") || null;
 
                     var src = item.getAttribute('src');
                     if ('undefined' != typeof src
