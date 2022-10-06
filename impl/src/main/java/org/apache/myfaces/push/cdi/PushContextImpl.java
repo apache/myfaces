@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,17 +47,10 @@ public class PushContextImpl implements PushContext
         this.sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
     }
 
-    public String getChannel()
-    {
-        return channel;
-    }
-
     @Override
     public Set<Future<Void>> send(Object message)
     {
         //1. locate the channel and define the context
-        String channel = getChannel();
-
         WebsocketScopeManager.AbstractScope applicationScope = scopeManager.getApplicationScope(false);
         WebsocketScopeManager.AbstractScope viewScope = null;
         WebsocketScopeManager.AbstractScope sessionScope = null;
@@ -86,12 +80,12 @@ public class PushContextImpl implements PushContext
             // Use view scope for context
             channelTokens = viewScope.getChannelTokens(channel);
         }
-        else if (sessionScope != null && sessionScope.isChannelAvailable(getChannel()))
+        else if (sessionScope != null && sessionScope.isChannelAvailable(channel))
         {
             // Use session scope for context
             channelTokens = sessionScope.getChannelTokens(channel);
         }
-        else if (applicationScope != null && applicationScope.isChannelAvailable(getChannel()))
+        else if (applicationScope.isChannelAvailable(channel))
         {
             // Use application scope for context
             channelTokens = applicationScope.getChannelTokens(channel);
@@ -131,64 +125,23 @@ public class PushContextImpl implements PushContext
     @Override
     public <S extends Serializable> Map<S, Set<Future<Void>>> send(Object message, Collection<S> users)
     {
-        //1. locate the channel and define the context
-        String channel = getChannel();
 
-        WebsocketScopeManager.AbstractScope applicationScope = scopeManager.getApplicationScope(false);
-        WebsocketScopeManager.AbstractScope viewScope = null;
-        WebsocketScopeManager.AbstractScope sessionScope = null;
+        Map<S, Set<Future<Void>>> resultsByUser = new HashMap<>(users.size());
 
-        if (CDIUtils.isRequestScopeActive(beanManager))
+        for (S user : users)
         {
-            if (CDIUtils.isSessionScopeActive(beanManager))
+            Set<String> channelTokenSet = sessionManager.getChannelTokensForUser(user, channel);
+            Set<Future<Void>> results = new HashSet<>(channelTokenSet.size());
+
+            for (String channelToken : channelTokenSet)
             {
-                sessionScope = scopeManager.getSessionScope(false);
-                if (CDIUtils.isViewScopeActive(beanManager))
-                {
-                    viewScope = scopeManager.getViewScope(false);
-                }
+                results.addAll(sessionManager.send(channelToken, message));
             }
-        }
-        
-        if (applicationScope == null)
-        {
-            // No base bean to push message
-            return Collections.emptyMap();
+
+            resultsByUser.put(user, results);
         }
 
-        Map<S, Set<Future<Void>>> result = new HashMap<>();
-
-        if (viewScope != null && viewScope.isChannelAvailable(channel))
-        {
-            // Use view scope for context
-            for (S user : users)
-            {
-                result.put(user, send(viewScope.getChannelTokens(channel, user), message));
-            }
-        }
-        else if (sessionScope != null && sessionScope.isChannelAvailable(getChannel()))
-        {
-            // Use session scope for context
-            for (S user : users)
-            {
-                result.put(user, send(sessionScope.getChannelTokens(channel, user), message));
-            }
-        }
-        else if (applicationScope != null && applicationScope.isChannelAvailable(getChannel()))
-        {
-            // Use application scope for context
-            for (S user : users)
-            {
-                result.put(user, send(applicationScope.getChannelTokens(channel, user), message));
-            }
-        }
-        else
-        {
-            throw new FacesException("CDI bean not found for push message");
-        }
-        
-        //2. send the message
-        return result;
+        return resultsByUser;
     }
     
     private Set<Future<Void>> send(List<String> channelTokens, Object message)
