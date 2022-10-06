@@ -304,10 +304,10 @@
                                     *;version="${project.version}"
                                 </Export-Package>
                                 <Import-Package>
-                                    javax.el;version="[1.0.0, 3.1.0)",
-                                    javax.validation*;version="[1.0.0, 2.0.0)",
-                                    javax.servlet;version="[3, 5)",
-                                    javax.servlet.http;version="[3, 5)",
+                                    jakarta.el;version="[5.0.0, 6.0.0)",
+                                    jakarta.validation*;version="[3.0.0, 4.0.0)",
+                                    jakarta.servlet;version="[6.0.0, 7.0.0)",
+                                    jakarta.servlet.http;version="[6.0.0, 7.0.0)",
                                     jakarta.faces.*;version="${project.version}"
                                 </Import-Package>
                                 <Require-Bundle>
@@ -384,8 +384,8 @@
                             <comparisonArtifacts>
                                 <comparisonArtifact>
                                     <groupId>org.glassfish</groupId>
-                                    <artifactId>javax.faces</artifactId>
-                                    <version>2.3.0</version>
+                                    <artifactId>jakarta.faces</artifactId>
+                                    <version>4.0.0</version>
                                 </comparisonArtifact>
                             </comparisonArtifacts>
                             <includes>
