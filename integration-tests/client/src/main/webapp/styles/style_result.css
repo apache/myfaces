@@ -1,0 +1,73 @@
+/* =================================================================================
+   Final Result styles
+   ================================================================================= */
+.testGroup {
+    background-color: white;
+    border: 1px solid silver;
+    margin: 0 5px 5px;
+    padding: 5px;
+}
+
+.testGroup li.groupName {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.testGroup li.groupName:hover {
+    cursor:pointer;
+    background-color: #e4d9ff;
+}
+
+.testGroup .testCasesTitle {
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.testGroup .testCase {
+    padding-bottom: 10px;
+}
+
+.testGroup li {
+    padding-left: 20px;
+    margin-left: 0px;
+    list-style: none;
+
+}
+
+.testGroup .testName {
+    margin-top: 5px;
+}
+
+.testGroup .success_true,.testGroup .failure_false {
+    background-image: url(../resources/node_modules/famfamfam-silk/dist/png/accept.png);
+    background-repeat: no-repeat;
+}
+
+.testGroup .success_false,.testGroup .failure_true {
+    background-image: url(../resources/node_modules/famfamfam-silk/dist/png/error_delete.png);
+    background-repeat: no-repeat;
+}
+
+.testGroup .finalResultsTitle {
+    margin-top: 15px;
+    font-weight: bold;
+    border-bottom: 2px inset black;
+    margin-bottom: 5px;
+}
+
+.testGroup .assertions {
+    padding-left: 20px;
+}
+
+.resultGroup  {
+    padding-left: 0px;
+}
+.resultGroup > ul {
+    margin-left: 0px;
+    padding-left: 0px;
+}
+
+
+.testGroup .resultGroup.collapsed {
+    display: none;
+}

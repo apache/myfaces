@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets" xmlns:components="="jakarta.faces.composite">
+
+<ui:composition template="../templates/template.xhtml">
+    <ui:define name="content">
+        <components:jasmineTest testRunner="test19-execute.js" />
+
+        <h2>Checks for a valid execute in the request parameter</h2>
+
+        <p>
+            This is a regression test for
+            <a href="https://issues.apache.org/jira/browse/MYFACES-3626">MYFACES-3626</a>
+        </p>
+
+        <p>
+            This test tests for a parameter @none in the execute part of the ajax request parameters
+            no request param should be sent if an execute is present
+            <ul>
+                <li> begin before response is called</li>
+                <li>b) complete before response is called</li>
+                <li> success within response (pretty much at the end)</li>
+            </ul>
+        </p>
+
+        <h:form id="centerForm" prependId="false">
+            <!-- needed for the test trigger -->
+            <input type="button" id="submitme" value="Press me for None submit" />
+            <div id="result"></div>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+</html>

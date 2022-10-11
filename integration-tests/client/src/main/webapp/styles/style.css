@@ -1,0 +1,157 @@
+body {
+    background-color: #ddddde;
+}
+
+#centerDiv {
+    text-align: center;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+#testResults {
+    text-align: left;
+    border: 1px solid black;
+    margin: auto;
+    background-color: white;
+    padding: 30px;
+}
+
+#form1 {
+    margin-top: 10px;
+}
+
+#testResults div {
+    padding: 2px;
+}
+
+#testResults #evalarea1,
+#testResults #evalarea2,
+#testResults #evalarea3,
+#testResults #evalarea4 {
+    border: 1px dotted silver;
+    margin: 3px;
+}
+
+#testResults #evalarea1, .insert_before td {
+    background-color: #f7f7f7;
+}
+
+#testResults #evalarea2, .insert_after td {
+    background-color: #f1f1f1;
+}
+
+tbody .insert_before td {
+    background-color: #bcd5e6;
+}
+
+tbody .insert_after td {
+    background-color: #cddef4;
+}
+
+#testResults #evalarea3 {
+    background-color: #e9e9e9;
+}
+
+#testResults #evalarea4 {
+    background-color: #e3e3e3;
+}
+
+#testResults #changesArea,
+#testResults #deleteable,
+#testResults #attributeChange {
+    border: 1px dashed silver;
+    margin: 3px;
+    background-color: #d9dfe8;
+}
+
+#testResults #insertbefore, #testResults #insertafter {
+    border: 1px solid silver;
+    margin: 3px;
+
+    background-color: #e6a5a5;
+}
+
+div#myfaces\.logging {
+    border: 1px solid black;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    background-color: white;
+    width: 100%;
+    padding: 2px;
+    max-height: 200px;
+    overflow: auto;
+    margin-top: 15px;
+}
+
+div.info, div.warn, div.error, div.log {
+    width: 95%;
+    margin: 2px;
+    margin-left: auto;
+    margin-right: auto;
+    display: table;
+}
+
+div.info {
+    background-color: #adff2f;
+
+}
+
+div.warn {
+    background-color: #ff8c00;
+}
+
+div.error {
+    background-color: red;
+}
+
+.consoleLog .args {
+    float: left;
+    margin-right: 5px;
+}
+
+.consoleLog .args_0 {
+    overflow: hidden;
+    width: 10px;
+
+    background-color: yellow;
+    height: 20px;
+}
+
+.consoleLog .args_0:hover {
+    overflow: visible;
+    width: auto;
+}
+
+/* table test */
+#table1 {
+    border-width: 1px;
+    border-spacing: 2px;
+    border-style: outset;
+    border-color: gray;
+    border-collapse: collapse;
+}
+
+#table1 th, #table1 thead {
+    border-width: 1px;
+    padding: 1px;
+    border-style: inset;
+    border-color: gray;
+    -moz-border-radius:unset;
+    background-color: #fbd850;
+}
+
+#table1 td {
+    border-width: 1px;
+    padding: 1px;
+    border-style: inset;
+    border-color: gray;
+    -moz-border-radius:unset;
+}
+
+.gotoFinalResults {
+    background-image: url("../resources/node_modules/famfamfam-silk/dist/png/arrow_right.png");
+    background-position: left 0;
+    background-repeat: no-repeat;
+    font-weight: bold;
+    padding-left: 20px;
+}

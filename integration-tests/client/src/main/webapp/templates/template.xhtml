@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:cust="="jakarta.faces.composite"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:c="jakarta.tags.core">
+<h:head>
+    <h:outputScript name="jquery/dist/jquery.js" library="node_modules" target="head"/>
+    <h:outputScript name="mona-dish/dist/js/umd/index_core.js" library="node_modules" target="head"/>
+    <link rel="stylesheet" type="text/css" href="../resources/node_modules/jasmine-core/lib/jasmine-core/jasmine.css"/>
+    <cust:imports />
+    <cust:unittest />
+
+    <style type="text/css">
+        @import "../styles/style.css";
+    </style>
+
+    <ui:insert name="header" />
+
+</h:head>
+<h:body>
+    <ui:insert name="controls">
+        <a href="./finalResults.jsf" class="gotoFinalResults" >Go To the Results page</a>
+        <div id="myfaces.logging" />
+    </ui:insert>
+
+
+    <ui:insert name="content" />
+</h:body>
+</html>

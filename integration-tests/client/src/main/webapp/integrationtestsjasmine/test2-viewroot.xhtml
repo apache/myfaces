@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:components="="jakarta.faces.composite">
+<ui:composition template="../templates/template.xhtml">
+    <ui:define name="content">
+
+        <components:jasmineTest testRunner="./test2-viewroot.js"/>
+
+        <div id="centerDiv">
+            <h1>ViewRoot testcase2</h1>
+
+            <h2>This test tests the jakarta.faces.ViewRoot update part of the protocol
+                with embedded scripts included</h2>
+
+
+            <div id="testResults">
+                <h3>After triggering this test the entier page should be replaced by the test result</h3>
+            </div>
+
+
+            <h:form id="form1" prependId="false">
+                <input type="button" id="cmd_body1" value="replace the entire body"
+                       onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'body');"/>
+            </h:form>
+
+            <!--
+            <h:form id="form1_iframe" prependId="false">
+                <input type="button" id="cmd_body1_iframe" value="replace the entire body"
+                       onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'body',true);"/>
+            </h:form>
+            -->
+
+        </div>
+
+    </ui:define>
+</ui:composition>
+</html>

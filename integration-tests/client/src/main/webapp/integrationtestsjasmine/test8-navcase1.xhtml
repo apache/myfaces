@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core" xmlns:components="="jakarta.faces.composite">
+<ui:composition template="../templates/template.xhtml">
+    <ui:define name="content">
+
+
+        <components:jasmineTest testRunner="test8-navcase1.js" />
+
+
+        <h1>PPR Nav Case Test</h1>
+
+        <h2>
+            This test tests the partial page navigation with an extreme
+            condition, of issuing a full update but with a render of a single element.
+            The result should be a full ViewRoot replacement in that case, due to
+            the ppr navigation being issued.
+        </h2>
+
+
+        <h:form id="mainForm" prependId="false">
+
+            <h1>content part only present on page1</h1>
+
+            <h:panelGroup id="fullContent">
+
+                <h:panelGroup id="navigation">
+                    <h:commandLink id="forward" action="test8-navcaseresult" value="got to page2&gt;&gt;">
+
+                        <f:ajax execute="mainForm" render="fullContent"/>
+
+                    </h:commandLink>
+                    <h:commandLink onclick="document.body.innerHTML = 'boogy';return false;" value="inner"/>
+                </h:panelGroup>
+
+
+                <h:panelGroup id="content">
+                    <h:panelGrid columns="2">
+                        <h:outputFormat value="First Name"/> <h:inputText id="firstName" value="#{navigationTestBean
+                    .firstName}"/>
+                        <h:outputFormat value="Last Name"/><h:inputText id="lastName" value="#{navigationTestBean
+                    .lastName}"/>
+                        <h:outputFormat value="City"/><h:inputText id="city" value="#{navigationTestBean.city}"/>
+                        <h:outputFormat value="Zip Code"/><h:inputText id="zip" value="#{navigationTestBean.zipCode}"/>
+                    </h:panelGrid>
+                </h:panelGroup>
+
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

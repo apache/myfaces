@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:components="="jakarta.faces.composite"
+        >
+<ui:composition template="../templates/template.xhtml">
+    <ui:define name="content">
+
+        <components:jasmineTest testRunner="test15-jsf22delay.js" />
+
+        <script type="text/javascript">
+            /**
+             helpper function to encapsule the recurring parts
+             @param source the source (same as the source of faces.ajax request
+             @param event the event which causes the trigger
+             @param options the options passed down
+             @param target a helper target to trigger various simulation backend servlets
+             */
+            function emitPPR(source, event, options, target) {
+                document.getElementById("testform").action = target;
+                faces.ajax.request(/*String|Dom Node*/ source, /*|EVENT|*/ event, /*{|OPTIONS|}*/ options);
+            }
+        </script>
+
+
+        <h2>
+            This is a testcase for the jsf2.2 delay functionality
+        </h2>
+        <h:form id="testform" prependId="false">
+            Press fast for a delay
+            <h:inputText id="delayControl"
+                         onkeyup="emitPPR(this, event, {render:'delayoutput', execute:'delayControl', op:'delay', delay: 1500},'./test.timeout'); return true;"/>
+            <h:panelGroup id="delayoutput">
+                <h:outputFormat value="number of requests will be triggered"/>
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>
