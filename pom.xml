@@ -117,6 +117,8 @@
                         <exclude>**/*.md</exclude>
                         <exclude>**/*/MANIFEST.MF</exclude>
                         <exclude>**/*.iml</exclude>
+                        <exclude>**/package.json</exclude>
+                        <exclude>**/package-lock.json</exclude>
                         <exclude>src/main/resources/META-INF/licenses/*-LICENSE.txt</exclude>
                         <exclude>src/main/resources/META-INF/licenses/*-LICENSE.TXT</exclude>
                         <exclude>**/src/main/resources/META-INF/services/**</exclude>
