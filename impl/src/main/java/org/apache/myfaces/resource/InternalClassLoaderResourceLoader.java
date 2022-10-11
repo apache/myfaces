@@ -27,23 +27,53 @@ import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.context.FacesContext;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
 /**
- * A specialized classloader for our internal resources
- * it enables el resolution on source level for our jsf.js files
- * and reserves a myfaces namespace in the resources for other custom files.
- * This resource loader is generally reserved for internal purposes.
+ * A resource loader implementation which loads resources from the thread ClassLoader.
  */
 public class InternalClassLoaderResourceLoader extends ResourceLoader
 {
 
+    /**
+     * If this param is true and the project stage is development mode,
+     * the source javascript files will be loaded separately instead have
+     * all in just one file, to preserve line numbers and make javascript
+     * debugging of the default jsf javascript file more simple.
+     */
+    @JSFWebConfigParam(since = "2.0.1", defaultValue = "false", expectedValues = "true,false", group = "render")
+    public static final String USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS
+            = "org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS";
+
+    /**
+     * Define the mode used for faces.js file:
+     * <ul>
+     * <li>normal : contains everything, including i18n (faces-i18n.js)</li>
+     * <li>minimal: contains everything, excluding i18n (faces-i18n.js)</li>
+     * </ul>
+     * <p>If org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS param is set to true and project stage
+     * is Development, this param is ignored.</p>
+     */
+    @JSFWebConfigParam(since = "2.0.10,2.1.4", defaultValue = "normal",
+                       expectedValues = "normal, minimal-modern, minimal", group = "render")
+    public static final String MYFACES_JSF_MODE = "org.apache.myfaces.JSF_JS_MODE";
+
+    private final boolean _useMultipleJsFilesForJsfUncompressedJs;
+    private final String _jsfMode;
     private final boolean _developmentStage;
 
     public InternalClassLoaderResourceLoader(String prefix)
     {
         super(prefix);
+        _useMultipleJsFilesForJsfUncompressedJs
+                = WebConfigParamUtils.getBooleanInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
+                    USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS, false);
+
+        _jsfMode = WebConfigParamUtils.getStringInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
+                    MYFACES_JSF_MODE, ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
         _developmentStage = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
     }
 
@@ -130,18 +160,35 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
 
         if (jakartaFaces)
         {
-            String remappedResourceName = _developmentStage ?
-                    ResourceUtils.FACES_UNCOMPRESSED_JS_RESOURCE_NAME :
-                    ResourceUtils.FACES_MINIMAL_JS_RESOURCE_NAME;
-
-            // in development stage we serve the uncompressed file and the map
-            // file, we have a special case of el expressions
-            // in our javascript for context path and separator char,
-            // hence we enable value expressions for those resources
-            return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
-                    remappedResourceName, true);
+            if (_developmentStage)
+            {
+                if (_useMultipleJsFilesForJsfUncompressedJs)
+                {
+                    return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
+                            resourceName, resourceVersion, ResourceUtils.FACES_UNCOMPRESSED_JS_RESOURCE_NAME, true);
+                }
+                else
+                {
+                    //normall we would have to take care about the standard faces.js case also
+                    //but our standard resource loader takes care of it,
+                    // because this part is only called in debugging mode
+                    //in production only in debugging
+                    return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
+                                                     ResourceUtils.FACES_UNCOMPRESSED_FULL_JS_RESOURCE_NAME, false);
+                }
+            }
+            else if (_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_MINIMAL) )
+            {
+                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
+                        ResourceUtils.FACES_MINIMAL_JS_RESOURCE_NAME, false);
+            }
+            return null;
         }
-        // TODO still needed for tests?
+        else if (jakartaFacesLib && !_developmentStage && !_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL) &&
+                                   (ResourceUtils.FACES_MYFACES_JSFJS_I18N.equals(resourceName)))
+        {
+            return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
+        }
         else if (_developmentStage && libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
