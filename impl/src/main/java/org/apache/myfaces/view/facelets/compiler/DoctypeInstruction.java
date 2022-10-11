@@ -67,7 +67,7 @@ public class DoctypeInstruction implements Instruction
             {
                 sb.append(" SYSTEM \"").append(systemId).append("\"");
             }
-            sb.append(" >\n");
+            sb.append(">\n");
         }
         context.getResponseWriter().writeDoctype(sb.toString());
     }
