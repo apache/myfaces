@@ -24,9 +24,6 @@ import trim = Lang.trim;
 import objToArray = Lang.objToArray;
 import isString = Lang.isString;
 import equalsIgnoreCase = Lang.equalsIgnoreCase;
-import {glob} from "typedoc/dist/lib/utils/fs";
-
-//import {observable, Observable, Subscriber} from "rxjs";
 
 /**
  * in order to poss custom parameters we need to extend the mutation observer init
@@ -67,13 +64,36 @@ enum Submittables {
 function waitUntilDom(root: DomQuery, condition: (element: DomQuery) => boolean, options: WAIT_OPTS = { attributes: true, childList: true, subtree: true, timeout: 500, interval: 100 }): Promise<DomQuery> {
     const ret = new Promise<DomQuery>((success, error) => {
         const MUT_ERROR = new Error("Mutation observer timeout");
-        if('undefined' != typeof window.MutationObserver) {
+
+        //we do the same but for now ignore the options on the dom query
+        //we cannot use absent here, because the condition might search for an absent element
+        function findElement(root: DomQuery, condition: (element: DomQuery) => boolean): DomQuery | null {
+            let found = null;
+            if(condition(root)) {
+                return root;
+            }
+            if(options.childList) {
+                found = (condition(root)) ? root:  root.childNodes.first(condition).value.value;
+            } else if(options.subtree) {
+                found = (condition(root)) ? root: root.querySelectorAll(" * ").first(condition).value;
+            } else {
+                found = (condition(root)) ? root: null;
+            }
+            return found;
+        }
+        let foundElement = root;
+        if(foundElement = findElement(foundElement, condition)) {
+            success(new DomQuery(foundElement));
+            return;
+        }
+
+        if('undefined' != typeof MutationObserver) {
             const mutTimeout = setTimeout(() => {
                 return error(MUT_ERROR);
             }, options.timeout);
             const callback: MutationCallback = (mutationList: MutationRecord[], observer: MutationObserver) => {
                 const found = new DomQuery(mutationList.map((mut: MutationRecord) => mut.target)).first(condition);
-                if(found.isPresent()) {
+                if(found) {
                     clearTimeout(mutTimeout);
                     success(found);
                 }
@@ -88,17 +108,10 @@ function waitUntilDom(root: DomQuery, condition: (element: DomQuery) => boolean,
                 observer.observe(item, observableOpts)
             })
         } else { //fallback for legacy browsers without mutation observer
-            //we do the same but for now ignore the options on the dom query
+
             let interval = setInterval(() => {
-                let found = null;
-                if(options.childList) {
-                    found = (condition(root)) ? root:  root.childNodes.first(condition);
-                } else if(options.subtree) {
-                    found = (condition(root)) ? root: root.querySelectorAll(" * ").first(condition);
-                } else {
-                    found = (condition(root)) ? root: DomQuery.absent;
-                }
-                if(found.isPresent()) {
+               let found = findElement(root, condition);
+                if(found) {
                     if(timeout) {
                         clearTimeout(timeout);
                         clearInterval(interval);
@@ -140,6 +153,37 @@ export class ElementAttribute extends ValueEmbedder<string> {
             val[cnt].setAttribute(this.name, value);
         }
         val[0].setAttribute(this.name, value);
+    }
+
+    protected getClass(): any {
+        return ElementAttribute;
+    }
+
+    static fromNullable<ElementAttribute,T>(value?: any, valueKey: string = "value"): ElementAttribute {
+        return <any> new ElementAttribute(value, valueKey);
+    }
+
+}
+
+export class Style extends ValueEmbedder<string> {
+
+    constructor(private element: DomQuery, private name: string, private defaultVal: string = null) {
+        super(element, name);
+    }
+
+    get value(): string {
+        let val: Element[] = this.element.values;
+        if (!val.length) {
+            return this.defaultVal;
+        }
+        return (val[0] as HTMLElement).style[this.name];
+    }
+
+    set value(value: string) {
+        let val: HTMLElement[] = this.element.values as HTMLElement[];
+        for (let cnt = 0; cnt < val.length; cnt++) {
+            val[cnt].style[this.name] = value;
+        }
     }
 
     protected getClass(): any {
@@ -308,6 +352,13 @@ interface IDomQuery {
      * @param defaultValue the default value in case nothing is presented (defaults to null)
      */
     attr(attr: string, defaultValue: string): ElementAttribute;
+
+    /**
+     * style accessor
+     * @param defaultValue the default value in case nothing is presented (defaults to null)
+     * @param cssProperty
+     */
+    style(cssProperty: string, defaultValue: string): Style;
 
     /**
      * hasclass, checks for an existing class in the class attributes
@@ -1126,6 +1177,11 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return new ElementAttribute(this, attr, defaultValue);
     }
 
+    style(cssProperty: string, defaultValue: string = null): Style {
+        return new Style(this, cssProperty, defaultValue);
+    }
+
+
     /**
      * hasclass, checks for an existing class in the class attributes
      *
@@ -1404,8 +1460,6 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             xhr.setRequestHeader("Content-Type", "application/x-javascript; charset:" + charSet);
         }
 
-        xhr.send(null);
-
         xhr.onload = (responseData: any) => {
             //defer also means we have to process after the ajax response
             //has been processed
@@ -1426,6 +1480,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             throw Error(data);
         };
         //since we are synchronous we do it after not with onReadyStateChange
+        xhr.send(null);
 
         return this;
     }
@@ -1679,7 +1734,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 this.globalEval(finalScripts.join("\n"));
             }
         } catch (e) {
-            if (window.console && window.console.error) {
+            if (console && console.error) {
                 //not sure if we
                 //should use our standard
                 //error mechanisms here
