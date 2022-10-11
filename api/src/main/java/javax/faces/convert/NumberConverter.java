@@ -29,7 +29,6 @@ import java.util.Currency;
 import java.util.Locale;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -579,12 +578,6 @@ public class NumberConverter implements Converter, PartialStateHolder
 
     public void setType(String type)
     {
-        if (type != null && type.length() > 0
-                && (!"number".equals(type) && !"currency".equals(type) && !"percent".equals(type)))
-        {
-            throw new FacesException("Uknown type: " + type);
-        }
-        
         _type = type;
         clearInitialState();
     }
