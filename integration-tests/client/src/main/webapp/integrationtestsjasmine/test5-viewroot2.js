@@ -30,7 +30,7 @@ if (!window.viewRoot) {
     });
 
 
-    let env = getJasmineRequireObj().Env;
+
     describe("Viewroot with execute @all and render @all", function () {
 
         beforeEach(function (done) {
@@ -47,14 +47,13 @@ if (!window.viewRoot) {
             });
 
         });
-
-        it("Needs to have the root replaced", function () {
-            //return setTimeout(function () {
-            //getJasmineRequireObj().Env = env;
-                    //expect($("body").html().indexOf("refresh successul2")).not.toBe(-1);
-            if($("body").html().indexOf("refresh successul2") == -1) {
+        //expect does not like double includes
+        it("Needs to have the root replaced", function (done) {
+            if($("body").html().indexOf("refresh successul2") == -1 || window.__mf_import_cnt != 2) {
                 throw new Error("Test not passed");
             }
+            done();
+
 
         });
     });

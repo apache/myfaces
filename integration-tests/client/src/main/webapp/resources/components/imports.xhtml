@@ -26,25 +26,23 @@
     </cc:interface>
 
     <cc:implementation>
-
-
-        <h:outputScript name="jsf.js_next_gen/dist/window/faces-development.js" library="node_modules" target="head"/>
-
         <!--
-            <h:outputScript name="faces.js" library="jakarta.faces"
-                        target="head" />
+        you can use this import for cross verification this is the latest script from github
+        -->
+        <h:outputScript name="jsf.js_next_gen/dist/window/faces-development.js" library="node_modules" target="head"/>
+        <!--
+        Import the official scripts, (note old scripts fail on one test hence disabled)
+        <h:outputScript name="faces.js" library="jakarta.faces" target="head" />
         -->
 
         <!-- runtime for testing -->
 
-
         <h:outputScript name="myfaces/_impl/_util/_Lang.js" library="myfaces.testscripts" target="head"/>
-
+        <h:outputScript name="myfaces/_impl/_util/_ImportCounter.js" library="myfaces.testscripts" target="head"/>
 
         <script type="text/javascript" defer="defer">
 
             //disable for impl testing not local testing
-
             myfaces = window.myfaces ||{};
             myfaces.config = myfaces.config ||{};
             myfaces.config.projectStage = "Development";

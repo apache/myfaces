@@ -119,6 +119,8 @@
                         <exclude>**/*.iml</exclude>
                         <exclude>**/package.json</exclude>
                         <exclude>**/package-lock.json</exclude>
+                        <!-- used only for build and test purposes -->
+                        <exclude>**/node_modules</exclude>
                         <exclude>src/main/resources/META-INF/licenses/*-LICENSE.txt</exclude>
                         <exclude>src/main/resources/META-INF/licenses/*-LICENSE.TXT</exclude>
                         <exclude>**/src/main/resources/META-INF/services/**</exclude>
