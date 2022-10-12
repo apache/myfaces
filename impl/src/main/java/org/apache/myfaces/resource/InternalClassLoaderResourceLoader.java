@@ -123,8 +123,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                                            String resourceName, String resourceVersion)
     {
         //handle faces.js
-        final boolean jakartaFacesLib = libraryName != null &&
-                ResourceHandler.FACES_SCRIPT_LIBRARY_NAME.equals(libraryName);
+        final boolean jakartaFacesLib = ResourceHandler.FACES_SCRIPT_LIBRARY_NAME.equals(libraryName);
         final boolean jakartaFaces = jakartaFacesLib &&
                 ResourceHandler.FACES_SCRIPT_RESOURCE_NAME.equals(resourceName);
 
@@ -134,8 +133,10 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                     ResourceUtils.FACES_UNCOMPRESSED_JS_RESOURCE_NAME :
                     ResourceUtils.FACES_MINIMAL_JS_RESOURCE_NAME;
 
-            // in development stage we serve the uncompressed file and the map file, we have a special case of el expressions
-            // in our javascript for context path and separator char, hence we enable value expressions for those resources
+            // in development stage we serve the uncompressed
+            // file and the map file, we have a special case of el expressions
+            // in our javascript for context path and separator char,
+            // hence we enable value expressions for those resources
             return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
                     remappedResourceName, true);
         }
@@ -173,10 +174,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             {
                 url = this.getClass().getClassLoader().getResource(name);
             }
-            if (url != null)
-            {
-                return true;
-            }
+            return url != null;
         }
         else
         {
@@ -185,12 +183,8 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             {
                 url = this.getClass().getClassLoader().getResource(libraryName);
             }
-            if (url != null)
-            {
-                return true;
-            }
+            return url != null;
         }
-        return false;
     }
 
     @Override
