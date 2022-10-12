@@ -104,6 +104,16 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
      */
     public static final String FACES_SERVLET_FOUND = "org.apache.myfaces.FACES_SERVLET_FOUND";
 
+    /**
+     * Store the FacesServlet ServletRegistration using this key in the ServletContext.
+     * The is necessary for the MyFaces Extensionless Mapping feature. This is used
+     * in AbstractFacesInitializer when configuring the Extensionless Mapping feature since
+     * an UnsupportedOperationException is thrown when calling the ServletContext.getServletRegistrations
+     * method if the StartupServletContextListener was added programmatically.
+     */
+    public static final String FACES_SERVLET_SERVLETREGISTRATION =
+                "org.apache.myfaces.FACES_SERVLET_SERVLETREGISTRATION";
+
     private static final String FACES_CONFIG_RESOURCE = "/WEB-INF/faces-config.xml";
     private static final Logger log = Logger.getLogger(MyFacesContainerInitializer.class.getName());
     private static final String[] FACES_SERVLET_MAPPINGS = { "/faces/*", "*.jsf", "*.faces" };
@@ -180,6 +190,9 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                     // now we have to set a field in the ServletContext to indicate that we have
                     // added the mapping dynamically.
                     servletContext.setAttribute(FACES_SERVLET_ADDED_ATTRIBUTE, Boolean.TRUE);
+
+                    // Add the FacesServlet ServletRegistration as an attribute for use during initialization.
+                    servletContext.setAttribute(FACES_SERVLET_SERVLETREGISTRATION, servlet);
 
                     // add a log message
                     log.log(Level.INFO, "Added FacesServlet with mappings=" + Arrays.toString(mappings));
@@ -324,6 +337,9 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                 // we found a FacesServlet; set an attribute for use during initialization
                 servletContext.setAttribute(FACES_SERVLET_FOUND, Boolean.TRUE);
                 isFacesServletPresent = true;
+
+                // Add the FacesServlet ServletRegistration as an attribute for use during initialization.
+                servletContext.setAttribute(FACES_SERVLET_SERVLETREGISTRATION, servletEntry.getValue());
             }
         }
         return isFacesServletPresent;
