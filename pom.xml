@@ -139,7 +139,7 @@
                         <!-- This file probably needs a license, but I don't know if it's safe to put it in there -->
                         <exclude>src/test/resources/org/apache/myfaces/context/nestedScriptCDATA.xml</exclude>
                         <exclude>src/test/resources/META-INF/openwebbeans/openwebbeans.properties</exclude>
-
+                        <exclude>impl/oam-rh-cache/jakarta.faces/faces.js.tmp</exclude>
                         <exclude>DEPENDENCIES</exclude>
                         <exclude>doap_MyFaces.rdf</exclude>
                     </excludes>
