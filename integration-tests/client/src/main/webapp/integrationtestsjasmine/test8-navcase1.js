@@ -21,14 +21,14 @@ afterEach(function () {
 });
 describe("Partial Page Rendering Nav Case", function () {
     it("Nav Case Test", function (done) {
-        let htmlReporter = $(".jasmine_html-reporter");
+        let htmlReporter = DQ$(".jasmine_html-reporter");
 
 
         htmlReporter.detach();
-        $("#firstName").val("Werner");
-        $("#lastName").val("Tester");
-        $("#city").val("Linz");
-        $("#zip").val("Tester");
+        DQ$("#firstName").val = "Werner";
+        DQ$("#lastName").val = "Tester";
+        DQ$("#city").val = "Linz";
+        DQ$("#zip").val = "Tester";
         jsfAjaxRequestPromise('forward', null, {
             execute: 'mainForm',
             render: 'fullContent',
@@ -36,9 +36,9 @@ describe("Partial Page Rendering Nav Case", function () {
         }).then(function () {
             setTimeout(function () {
                 htmlReporter.appendTo("body");
-                expect($("span#firstName").html().indexOf("Werner")).not.toBe(-1);
-                expect($("span#lastName").html().indexOf("Tester")).not.toBe(-1);
-                expect($("body").html().indexOf("script executed")).not.toBe(-1);
+                expect(DQ$("span#firstName").innerHTML.indexOf("Werner")).not.toBe(-1);
+                expect(DQ$("span#lastName").innerHTML.indexOf("Tester")).not.toBe(-1);
+                expect(DQ$("body").innerHTML.indexOf("script executed")).not.toBe(-1);
                 done();
             }, 500);
         });

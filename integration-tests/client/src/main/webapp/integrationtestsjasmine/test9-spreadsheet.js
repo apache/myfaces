@@ -31,8 +31,8 @@ describe("Spreadsheet test for the replacement of table elements", function () {
             let currentOutput1 = "testTable2"+faces.separatorchar + cnt + faces.separatorchar+"field2";
             let origin = "testTable2"+faces.separatorchar + cnt + faces.separatorchar+"submitall";
 
-            $(currentField1).val("value1:" + cnt);
-            $(currentField2).val("value2:" + cnt);
+            DQ$(currentField1).val = "value1:" + cnt;
+            DQ$(currentField2).val = "value2:" + cnt;
             //secondly we issue 100 requests
             currentField2 = currentField2.replace("#", "").replace(/\\/g, "");
             currentField1 = currentField1.replace("#", "").replace(/\\/g, "");
@@ -49,8 +49,8 @@ describe("Spreadsheet test for the replacement of table elements", function () {
                 for (let cnt = 0; cnt < 100; cnt++) {
                     let currentOutput1 = "#testTable2" + faces.separatorchar + cnt + faces.separatorchar + "field1";
                     let currentOutput2 = "#testTable2" + faces.separatorchar + cnt + faces.separatorchar + "field2";
-                    let assert1 = $(currentOutput1.replace(/\:/g, "\\:")).html().indexOf("value1:" + cnt) != -1;
-                    let assert2 = $(currentOutput2.replace(/\:/g, "\\:")).html().indexOf("value2:" + cnt) != -1;
+                    let assert1 = DQ$(currentOutput1.replace(/\:/g, "\\:")).innerHTML.indexOf("value1:" + cnt) != -1;
+                    let assert2 = DQ$(currentOutput2.replace(/\:/g, "\\:")).innerHTML.indexOf("value2:" + cnt) != -1;
                     expect( assert1 && assert2).toBeTruthy(); //field must have ajax content
                 }
                 console.log("Processing time last request:"+(Date.now() - 500 - start))

@@ -21,12 +21,12 @@ afterEach(function () {
 });
 describe("Full root replacement via protocol view root", function () {
     it("Should run the ajax and replace the viewroot", function (done) {
-        let htmlReporter = $(".jasmine_html-reporter");
+        let htmlReporter = DQ$(".jasmine_html-reporter");
         htmlReporter.detach();
         emitPPR("form1", null, "body").then(function () {
             setTimeout(function () {
-                htmlReporter.appendTo("body");
-                expect($("#scriptreceiver").html().indexOf("hello from embedded script")).not.toBe(-1);
+                htmlReporter.appendTo(DQ$("body"));
+                expect(DQ$("#scriptreceiver").innerHTML.indexOf("hello from embedded script")).not.toBe(-1);
                 done();
             }, 500);
         });

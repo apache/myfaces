@@ -21,7 +21,7 @@ afterEach(function () {
 });
 describe("CSS Head replacement test", function () {
     it("replaces the head and checks whether the css has been replaced", function (done) {
-        let htmlReporter = $(".jasmine_html-reporter");
+        let htmlReporter = DQ$(".jasmine_html-reporter");
 
             htmlReporter.detach();
             jsfAjaxRequestPromise('nextPage', null, {
@@ -31,13 +31,13 @@ describe("CSS Head replacement test", function () {
             }).finally(function () {
                 htmlReporter.appendTo("body");
                 setTimeout(function () {
-                    expect($("#div1").width() > 120).toBeTruthy();//"div1 has no width anymore",
-                    expect($("#div2").width() > 120).toBeTruthy();//"div2 has no width anymore",
-                    expect($("#div3").width() > 120).toBeTruthy();//"div3 has no width anymore",
-                    expect($("#div4").width() < 120).toBeTruthy();//"div4 has a width",
-                    expect($("#div5").width() < 120).toBeTruthy();//"div5 has a width",
-                    expect($("#div6").width() < 120).toBeTruthy();//"div6 has a width",
-                    expect($("#div7").width() < 120).toBeTruthy();//"div6 has a width",
+                    expect(DQ$("#div1").offsetWidth > 120).toBeTruthy();//"div1 has no width anymore",
+                    expect(DQ$("#div2").offsetWidth > 120).toBeTruthy();//"div2 has no width anymore",
+                    expect(DQ$("#div3").offsetWidth > 120).toBeTruthy();//"div3 has no width anymore",
+                    expect(DQ$("#div4").offsetWidth < 120).toBeTruthy();//"div4 has a width",
+                    expect(DQ$("#div5").offsetWidth < 120).toBeTruthy();//"div5 has a width",
+                    expect(DQ$("#div6").offsetWidth < 120).toBeTruthy();//"div6 has a width",
+                    expect(DQ$("#div7").offsetWidth < 120).toBeTruthy();//"div6 has a width",
                     done();
                 }, 500);
 

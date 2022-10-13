@@ -34,8 +34,19 @@ import jakarta.inject.Named;
 @RequestScoped
 public class ThisBean
 {
+    private String _value="";
+
     public String thisAction()
     {
+        this._value="success";
         return null;
+    }
+
+    public String getCustomValue() {
+        return _value;
+    }
+
+    public void setCustomValue(String _value) {
+        this._value = _value;
     }
 }

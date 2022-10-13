@@ -32,7 +32,7 @@ describe("Regression test for double eval on a single script element", function 
         }
         let beDone = () => {
             setTimeout(function () {
-                let renderTargetHTML = $("#output").html();
+                let renderTargetHTML = DQ$("#output").innerHTML;
                 expect(renderTargetHTML == "0 1 2 ").toBeTruthy();  //
                 done();
             })

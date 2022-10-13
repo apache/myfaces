@@ -34,13 +34,13 @@ if (!window.viewRoot) {
     describe("Viewroot with execute @all and render @all", function () {
 
         beforeEach(function (done) {
-            let htmlReporter = $(".jasmine_html-reporter");
+            let htmlReporter = DomQuery.querySelectorAll(".jasmine_html-reporter");
             htmlReporter.detach();
             //render all kills the new jasmine code because it kills off old script configs
             jsfAjaxRequestPromise("allKeyword", null, {render: "@all", execute: "@all"}).then(function () {
 
                 setTimeout(function() {
-                    htmlReporter.appendTo("body");
+                    htmlReporter.appendTo(DomQuery.querySelectorAll("body"));
                     done();
                 }, 1000)
 
@@ -49,7 +49,8 @@ if (!window.viewRoot) {
         });
         //expect does not like double includes
         it("Needs to have the root replaced", function (done) {
-            if($("body").html().indexOf("refresh successul2") == -1 || window.__mf_import_cnt != 2) {
+            let body = DomQuery.querySelectorAll("body");
+            if(body.html().value.indexOf("refresh successul2") == -1 || window.__mf_import_cnt != 2) {
                 throw new Error("Test not passed");
             }
             done();

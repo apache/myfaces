@@ -97,6 +97,7 @@
         <servlet-class>extras.apache.org.jsintegration.protocol.JSF21Simulation</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+
     <servlet-mapping>
         <servlet-name>JSF21Simulation</servlet-name>
         <url-pattern>*.timeout</url-pattern>

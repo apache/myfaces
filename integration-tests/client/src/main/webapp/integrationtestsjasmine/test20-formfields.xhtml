@@ -22,10 +22,15 @@
 
 <ui:composition template="../templates/template.xhtml">
     <ui:define name="content">
-        <components:jasmineTest testRunner="test20-formfields.js" />
+        <components:jasmineTest testRunner="test20-formfields.js"/>
 
         <h2>Regression bug</h2>
-
+        <p>
+            This was a reported regression bug, where the
+            render and executes were not properly valued, sent in case of a
+            @none in render and execute in conjunction with additional elements.
+            @none overrides anything else!
+        </p>
 
         <h:form id="centerForm" prependId="false">
             <!-- needed for the test trigger -->
@@ -35,8 +40,8 @@
             <h:commandButton id="myCnd" value="trigger fieldset">
                 <f:ajax execute="centerForm" render="centerForm" action="#{thisBean.thisAction}"></f:ajax>
             </h:commandButton>
-            <input type="button" id="submitme" value="Press me for None submit" />
-            <div id="result"></div>
+            <input type="button" id="submitme" value="Press me for None submit"/>
+            <div id="result">#{thisBean.customValue}</div>
         </h:form>
 
     </ui:define>

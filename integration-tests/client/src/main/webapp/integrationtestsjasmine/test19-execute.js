@@ -16,7 +16,7 @@
 
 afterEach(function () {
     setTimeout(function () {
-        myfaces.testcases.redirect("./finalResults.jsf");
+        myfaces.testcases.redirect("./test20-formfields.jsf");
     }, 1000);
 });
 describe("Execute none handling", function () {

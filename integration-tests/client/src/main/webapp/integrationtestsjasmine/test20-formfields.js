@@ -19,8 +19,8 @@ afterEach(function () {
     }, 1000);
 });
 describe("Execute none handling", function () {
-    it("runs an execute request with execute @none", function () {
-
+    it("runs an execute request with execute @none", function (done) {
+            DQ$("#centerForm").getAsElem(0).value.action = './test.mockup'
 
             jsfAjaxRequestPromise(document.getElementById("submitme"), null, {
                 render: "booga @none",
@@ -28,7 +28,9 @@ describe("Execute none handling", function () {
                 op: "executeNone"
             }).finally(function () {
                 setTimeout(function () {
-                    expect(document.getElementById("result").innerHTML.indexOf("success")).not.toBe(-1);
+                    //we wont get any success
+                    expect(DQ$("#result").innerHTML.indexOf("success")).not.toEqual(-1);
+                    done();
                 }, 500);
             });
 

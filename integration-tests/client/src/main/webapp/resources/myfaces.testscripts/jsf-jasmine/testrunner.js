@@ -46,7 +46,7 @@
      ### Test Results
      Scroll down to see the results of all of these specs.
      */
-    $('.version').html(jasmine.version || (jasmine.getEnv().versionString && jasmine.getEnv().versionString()));
+    DQ$('.version').html(jasmine.version || (jasmine.getEnv().versionString && jasmine.getEnv().versionString()));
 
 
 

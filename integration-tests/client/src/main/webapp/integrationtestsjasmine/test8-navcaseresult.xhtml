@@ -23,7 +23,7 @@
     <ui:define name="header">
         <script type="text/javascript">
             setTimeout(function() {
-                $("body").html($("body").html() + "script executed");
+                DQ$("body").innerHTML = DQ$("body").innerHTML + "script executed";
             }, 100);
         </script>
     </ui:define>

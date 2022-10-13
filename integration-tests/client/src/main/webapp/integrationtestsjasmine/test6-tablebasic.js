@@ -31,8 +31,8 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
         emitPPR("replace_head", null, "table_replace_head", "form2").then(function () {
             setTimeout(function () {
 
-                let headCol1 = $("#head_col1").html();
-                let headCol2 = $("#head_col2").html();
+                let headCol1 = DQ$("#head_col1").innerHTML;
+                let headCol2 = DQ$("#head_col2").innerHTML;
                 expect(headCol1.indexOf("replaced")).not.toBe(-1);  //headcol1 replaced
                 expect(headCol1.indexOf("evaled")).not.toBe(-1);    //headcol1 auto evaled
                 expect(headCol2.indexOf("replaced")).not.toBe(-1);  //headcol2 replaced
@@ -47,8 +47,8 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
 
         emitPPR("replace_body", null, "table_replace_body", "form2").then(function () {
             setTimeout(function () {
-                let col1 = $("#body_row1_col1").html();
-                let col2 = $("#body_row1_col2").html();
+                let col1 = DQ$("#body_row1_col1").innerHTML;
+                let col2 = DQ$("#body_row1_col2").innerHTML;
                 expect(col1.indexOf("replaced")).not.toBe(-1);//body col1 replaced
                 expect(col1.indexOf("evaled")).not.toBe(-1);  //body col1 auto evaled
                 expect(col2.indexOf("replaced")).not.toBe(-1);//body col2 replaced
@@ -62,9 +62,9 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
 
         emitPPR("insert_row_head", null, "table_insert_row_head", "form2").then(function () {
             setTimeout(function () {
-                expect($("#table1 thead tr").length >= 3).toBeTruthy()    //three rows now in head
-                expect($("#table1 thead tr").first().hasClass("insert_before")).toBeTruthy();   //first element must be insert before
-                expect($("#table1 thead tr").last().hasClass("insert_after")).toBeTruthy();   //last element must be insert after"
+                expect(DQ$("#table1 thead tr").length >= 3).toBeTruthy()    //three rows now in head
+                expect(DQ$("#table1 thead tr").first().hasClass("insert_before")).toBeTruthy();   //first element must be insert before
+                expect(DQ$("#table1 thead tr").last().hasClass("insert_after")).toBeTruthy();   //last element must be insert after"
                 done();
             }, 500)
         });
@@ -75,9 +75,9 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
 
         emitPPR("insert_row_body", null, "table_insert_row_body", "form2").then(function () {
             setTimeout(function () {
-                expect($("#table1 tbody tr").length >= 3).toBeTruthy();                       //three rows now in body
-                expect($("#table1 tbody tr").first().hasClass("insert_before")).toBeTruthy(); //first element must be insert before
-                expect($("#table1 tbody tr").last().hasClass("insert_after")).toBeTruthy();   //last element must be insert after
+                expect(DQ$("#table1 tbody tr").length >= 3).toBeTruthy();                       //three rows now in body
+                expect(DQ$("#table1 tbody tr").first().hasClass("insert_before")).toBeTruthy(); //first element must be insert before
+                expect(DQ$("#table1 tbody tr").last().hasClass("insert_after")).toBeTruthy();   //last element must be insert after
                 done();
             }, 100);
         });
@@ -86,9 +86,9 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
     it("Insert Column in head", function (done) {
         emitPPR("insert_column_head", null, "table_insert_column_head", "form2").then(function () {
             setTimeout(function () {
-                expect($("#table1 #head_row1 td").length >= 6).toBeTruthy(); //six columns in head or more
-                expect($("#table1 #head_row1 td").first().html().indexOf("inserted before")).not.toBe(-1);//first element must be insert before
-                expect($("#table1 #head_row1 td").last().html().indexOf("inserted after")).not.toBe(-1);//last element must be insert after
+                expect(DQ$("#table1 #head_row1 td").length >= 6).toBeTruthy(); //six columns in head or more
+                expect(DQ$("#table1 #head_row1 td").first().innerHTML.indexOf("inserted before")).not.toBe(-1);//first element must be insert before
+                expect(DQ$("#table1 #head_row1 td").last().innerHTML.indexOf("inserted after")).not.toBe(-1);//last element must be insert after
                 done();
             }, 500);
         });
@@ -98,9 +98,9 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
 
         emitPPR("insert_column_body", null, "table_insert_column_body", "form2").then(function () {
             setTimeout(function () {
-                expect($("#table1 #body_row1 td").length >= 6).toBeTruthy(); //six columns in body or more
-                expect($("#table1 #body_row1 td").first().html().indexOf("inserted before")).not.toBe(-1);//first element must be insert before
-                expect($("#table1 #body_row1 td").last().html().indexOf("inserted after")).not.toBe(-1);//last element must be insert after
+                expect(DQ$("#table1 #body_row1 td").length >= 6).toBeTruthy(); //six columns in body or more
+                expect(DQ$("#table1 #body_row1 td").first().innerHTML.indexOf("inserted before")).not.toBe(-1);//first element must be insert before
+                expect(DQ$("#table1 #body_row1 td").last().innerHTML.indexOf("inserted after")).not.toBe(-1);//last element must be insert after
                 done();
             }, 500);
         });
@@ -109,7 +109,7 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
 
         emitPPR("insert_body", null, "table_insert_body", "form2").then(function () {
             setTimeout(function () {
-                expect($("#table1 tbody").length >= 2).toBeTruthy();
+                expect(DQ$("#table1 tbody").length >= 2).toBeTruthy();
                 done();
             }, 500);
         });

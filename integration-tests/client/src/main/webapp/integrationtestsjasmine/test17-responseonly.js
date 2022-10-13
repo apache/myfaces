@@ -80,7 +80,7 @@ describe("Various response tests giving the codebase something to chew on in the
             setTimeout(function () {
 
                 //TODO sometimes this test fails due to timing issues
-                expect($("#myVal").html().indexOf("1") != -1).toBeTruthy(); //"innerHTML of result must be 1",
+                expect(DQ$("#myVal").innerHTML.indexOf("1") != -1).toBeTruthy(); //"innerHTML of result must be 1",
                 done();
             }, 500);
         }).catch(function (val) {
@@ -96,7 +96,7 @@ describe("Various response tests giving the codebase something to chew on in the
             'jakarta.faces.behavior.event': 'action'
         }).then(function () {
             setTimeout(function () {
-                expect($("#myVal").html().indexOf("1") != -1).toBeTruthy(); //"innerHTML of result must be 1",
+                expect(DQ$("#myVal").innerHTML.indexOf("1") != -1).toBeTruthy(); //"innerHTML of result must be 1",
             }, 500);
             done();
         }).catch(function (val) {
