@@ -78,7 +78,7 @@ if (!myfaces._impl.core._Runtime) {
         };
 
         _T.resolveNonce = function(item) {
-            return myfaces._impl.core._EvalHandlers._resolveNonce(item);
+            return myfaces._impl.core._EvalHandlers.resolveNonce(item);
         };
 
         /**

@@ -94,8 +94,8 @@ if (!myfaces._impl.core._EvalHandlers) {
             document.head.removeChild(htmlScriptElement);
         };
 
-        _T._resolveNonce = function(item) {
-            let nonce = null;
+        _T.resolveNonce = function(item) {
+            var nonce = null;
             if(!!(item && item.nonce)) {
                 nonce = item.nonce;
             } else if(!!item) {
@@ -116,9 +116,9 @@ if (!myfaces._impl.core._EvalHandlers) {
             }
 
             //since our baseline atm is ie11 we cannot use document.currentScript globally
-            if(_T._resolveNonce(document.currentScript)) {
+            if(_T.resolveNonce(document.currentScript)) {
                 //fastpath for modern browsers
-                return _T._resolveNonce(document.currentScript);
+                return _T.resolveNonce(document.currentScript);
             }
 
             var scripts = document.querySelectorAll("script[src], link[src]");
@@ -127,7 +127,7 @@ if (!myfaces._impl.core._EvalHandlers) {
             //we search all scripts
             for(var cnt = 0; scripts && cnt < scripts.length; cnt++) {
                 var scriptNode = scripts[cnt];
-                if(!_T._resolveNonce(scriptNode)) {
+                if(!_T.resolveNonce(scriptNode)) {
                     continue;
                 }
                 var src = scriptNode.getAttribute("src") || "";
@@ -144,7 +144,7 @@ if (!myfaces._impl.core._EvalHandlers) {
                 nonce: null
             };
             if(jsf_js) {
-                myfaces.config.cspMeta.nonce = _T._resolveNonce(jsf_js);
+                myfaces.config.cspMeta.nonce = _T.resolveNonce(jsf_js);
             }
             return myfaces.config.cspMeta.nonce;
         };
