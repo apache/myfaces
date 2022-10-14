@@ -94,6 +94,17 @@ if (!myfaces._impl.core._EvalHandlers) {
             document.head.removeChild(htmlScriptElement);
         };
 
+        _T.resolveNonce = function(item) {
+            var nonce = null;
+            if(!!(item && item.nonce)) {
+                nonce = item.nonce;
+            } else if(!!item) {
+                nonce = item.getAttribute("nonce");
+            }
+            //empty nonce means no nonce, the rest
+            //of the code treats it like null
+            return (!nonce) ? null : nonce;
+        }
         /*
         * determines the jsfjs nonce and adds them to the namespace
         * this is done once and only lazily
@@ -105,9 +116,9 @@ if (!myfaces._impl.core._EvalHandlers) {
             }
 
             //since our baseline atm is ie11 we cannot use document.currentScript globally
-            if(document.currentScript && document.currentScript.getAttribute("nonce")) {
+            if(_T.resolveNonce(document.currentScript)) {
                 //fastpath for modern browsers
-                return document.currentScript.getAttribute("nonce") || null;
+                return _T.resolveNonce(document.currentScript);
             }
 
             var scripts = document.querySelectorAll("script[src], link[src]");
@@ -116,7 +127,7 @@ if (!myfaces._impl.core._EvalHandlers) {
             //we search all scripts
             for(var cnt = 0; scripts && cnt < scripts.length; cnt++) {
                 var scriptNode = scripts[cnt];
-                if(!scriptNode.getAttribute("nonce")) {
+                if(!_T.resolveNonce(scriptNode)) {
                     continue;
                 }
                 var src = scriptNode.getAttribute("src") || "";
@@ -133,7 +144,7 @@ if (!myfaces._impl.core._EvalHandlers) {
                 nonce: null
             };
             if(jsf_js) {
-                myfaces.config.cspMeta.nonce = jsf_js.getAttribute("nonce") || null;
+                myfaces.config.cspMeta.nonce = _T.resolveNonce(jsf_js);
             }
             return myfaces.config.cspMeta.nonce;
         };
