@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export {DomQuery, ElementAttribute, DomQueryCollector, DQ} from "./DomQuery";
+export {DomQuery, ElementAttribute, DomQueryCollector, DQ, DQ$} from "./DomQuery";
 export {Lang} from "./Lang";
 export {Config, Monad, IValueHolder, IFunctor, IMonad, IIdentity, Optional, ValueEmbedder} from "./Monad";
 export {CancellablePromise, IPromise, PromiseStatus} from "./Promise";
