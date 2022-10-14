@@ -56,45 +56,54 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     runCss: function(item/*, xmlData*/) {
 
         var  UDEF = "undefined",
-                _RT = this._RT,
-                _Lang = this._Lang,
-                applyStyle = function(item, style) {
-                    var newSS = document.createElement("style");
+            _T = this;
+            _RT = this._RT,
+            _Lang = this._Lang;
+        var applyStyle = function(item, style) {
+                var newSS = document.createElement("style");
 
-                    newSS.setAttribute("rel", item.getAttribute("rel") || "stylesheet");
-                    newSS.setAttribute("type", item.getAttribute("type") || "text/css");
-                    if(item.getAttribute("nonce")) {
-                        newSS.setAttribute("nonce", item.getAttribute("nonce"));
+                newSS.setAttribute("rel", item.getAttribute("rel") || "stylesheet");
+                newSS.setAttribute("type", item.getAttribute("type") || "text/css");
+                const nonceValue = _RT.resolveNonce(item);
+                if(nonceValue) {
+                    if('undefined' != typeof newSS.nonce) {
+                        newSS['nonce'] = nonceValue;
+                    } else {
+                        newSS.setAttribute("nonce", nonceValue);
                     }
+                }
 
-                    document.getElementsByTagName("head")[0].appendChild(newSS);
-                    //ie merrily again goes its own way
-                    if (window.attachEvent && !_RT.isOpera && UDEF != typeof newSS.styleSheet && UDEF != newSS.styleSheet.cssText) newSS.styleSheet.cssText = style;
-                    else newSS.appendChild(document.createTextNode(style));
-                },
+                document.getElementsByTagName("head")[0].appendChild(newSS);
+                //ie merrily again goes its own way
+                if (window.attachEvent && !_RT.isOpera && UDEF != typeof newSS.styleSheet && UDEF != newSS.styleSheet.cssText) newSS.styleSheet.cssText = style;
+                else newSS.appendChild(document.createTextNode(style));
+            },
 
-                execCss = function(item) {
-                    var equalsIgnoreCase = _Lang.equalsIgnoreCase;
-                    var tagName = item.tagName;
-                    if (tagName && equalsIgnoreCase(tagName, "link") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
-                        applyStyle(item, "@import url('" + item.getAttribute("href") + "');");
-                    } else if (tagName && equalsIgnoreCase(tagName, "style") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
-                        var innerText = [];
-                        //compliant browsers know child nodes
-                        var childNodes = item.childNodes;
-                        if (childNodes) {
-                            var len = childNodes.length;
-                            for (var cnt = 0; cnt < len; cnt++) {
-                                innerText.push(childNodes[cnt].innerHTML || childNodes[cnt].data);
-                            }
-                            //non compliant ones innerHTML
-                        } else if (item.innerHTML) {
-                            innerText.push(item.innerHTML);
+            execCss = function(item) {
+                var equalsIgnoreCase = _Lang.equalsIgnoreCase;
+                var tagName = item.tagName;
+                if (tagName && equalsIgnoreCase(tagName, "link") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
+                    applyStyle(item, "@import url('" + item.getAttribute("href") + "');");
+                } else if (tagName && equalsIgnoreCase(tagName, "style") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
+                    // we do not handle css items blockwise like we do scripts
+                    // but we do have to deal with the child elements instead of the markup
+                    // nonce can be handled on tag level though
+                    var innerText = [];
+                    //compliant browsers know child nodes
+                    var childNodes = item.childNodes;
+                    if (childNodes) {
+                        var len = childNodes.length;
+                        for (var cnt = 0; cnt < len; cnt++) {
+                            innerText.push(childNodes[cnt].innerHTML || childNodes[cnt].data);
                         }
-
-                        applyStyle(item, innerText.join(""));
+                        //non compliant ones innerHTML
+                    } else if (item.innerHTML) {
+                        innerText.push(item.innerHTML);
                     }
-                };
+
+                    applyStyle(item, innerText.join(""));
+                }
+            };
 
         try {
             var scriptElements = this.findByTagNames(item, {"link":1,"style":1}, true);
@@ -121,43 +130,66 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      * @param {Node} item
      */
     runScripts: function(item, xmlData) {
+        var _T = this;
+        var finalScripts = [];
+        var _RT = this._RT;
+
+        var evalCollectedScripts = function (scriptsToProcess) {
+            if (scriptsToProcess && scriptsToProcess.length) {
+                //script source means we have to eval the existing
+                //scripts before running the include
+                var joinedScripts = [];
+                for(var scrptCnt = 0; scrptCnt < scriptsToProcess.length; scrptCnt++) {
+                    var item = scriptsToProcess[scrptCnt];
+                    if (!item.cspMeta) {
+                        joinedScripts.push(item.text)
+                    } else {
+                        if (joinedScripts.length) {
+                            _RT.globalEval(joinedScripts.join("\n"));
+                            joinedScripts.length = 0;
+                        }
+                        _RT.globalEval(item.text, item.cspMeta);
+                    }
+                }
+
+                if (joinedScripts.length) {
+                    _RT.globalEval(joinedScripts.join("\n"));
+                    joinedScripts.length = 0;
+                }
+            }
+            return [];
+        }
+
+
         var _Lang = this._Lang,
-            _RT = this._RT,
-            finalScripts = [],
             execScrpt = function(item) {
                 var tagName = item.tagName;
                 var type = item.type || "";
                 //script type javascript has to be handled by eval, other types
                 //must be handled by the browser
                 if (tagName && _Lang.equalsIgnoreCase(tagName, "script") &&
-                        (type === "" ||
+                    (type === "" ||
                         _Lang.equalsIgnoreCase(type,"text/javascript") ||
                         _Lang.equalsIgnoreCase(type,"javascript") ||
                         _Lang.equalsIgnoreCase(type,"text/ecmascript") ||
                         _Lang.equalsIgnoreCase(type,"ecmascript"))) {
 
-                    var nonce = item.getAttribute("nonce") || null;
+                    //now given that scripts can embed nonce
+                    //we cannoit
+                    var nonce = _RT.resolveNonce(item);
 
                     var src = item.getAttribute('src');
                     if ('undefined' != typeof src
-                            && null != src
-                            && src.length > 0
-                            ) {
+                        && null != src
+                        && src.length > 0
+                    ) {
                         //we have to move this into an inner if because chrome otherwise chokes
                         //due to changing the and order instead of relying on left to right
                         //if jsf.js is already registered we do not replace it anymore
                         if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
-                                && src.indexOf("/jsf-uncompressed.js") == -1)) {
+                            && src.indexOf("/jsf-uncompressed.js") == -1)) {
 
-                            if (finalScripts.length) {
-                                //script source means we have to eval the existing
-                                //scripts before running the include
-                                for(var cnt = 0; cnt < finalScripts.length; cnt++) {
-                                    _RT.globalEval(finalScripts[cnt].text, finalScripts[cnt]["cspMeta"] || null);
-                                }
-
-                                finalScripts = [];
-                            }
+                            finalScripts = evalCollectedScripts(finalScripts);
                             _RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false, nonce ? {nonce: nonce} : null );
                         }
 
@@ -182,13 +214,15 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                         }
                         // we have to run the script under a global context
                         //we store the script for less calls to eval
+                        if(!finalScripts) {
+                            debugger;
+                        }
                         finalScripts.push(nonce ? {
                             cspMeta: {nonce: nonce},
                             text: test
                         }: {
                             text: test
                         });
-
                     }
                 }
             };
@@ -198,11 +232,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             for (var cnt = 0; cnt < scriptElements.length; cnt++) {
                 execScrpt(scriptElements[cnt]);
             }
-            if (finalScripts.length) {
-                for(var cnt = 0; cnt < finalScripts.length; cnt++) {
-                    _RT.globalEval(finalScripts[cnt].text, finalScripts[cnt]["cspMeta"] || null);
-                }
-            }
+            evalCollectedScripts(finalScripts);
         } catch (e) {
             //we are now in accordance with the rest of the system of showing errors only in development mode
             //the default error output is alert we always can override it with
@@ -348,9 +378,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         if (markup === "") return null;
 
         var evalNodes = this._buildEvalNodes(item, markup),
-                currentRef = item,
-                parentNode = item.parentNode,
-                ret = [];
+            currentRef = item,
+            parentNode = item.parentNode,
+            ret = [];
         for (var cnt = evalNodes.length - 1; cnt >= 0; cnt--) {
             currentRef = parentNode.insertBefore(evalNodes[cnt], currentRef);
             ret.push(currentRef);
@@ -372,9 +402,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         if (markup === "") return null;
 
         var evalNodes = this._buildEvalNodes(item, markup),
-                currentRef = item,
-                parentNode = item.parentNode,
-                ret = [];
+            currentRef = item,
+            parentNode = item.parentNode,
+            ret = [];
 
         for (var cnt = 0; cnt < evalNodes.length; cnt++) {
             if (currentRef.nextSibling) {
@@ -559,8 +589,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             // other browsers make it simpler by simply having a selection start element
             if (ctrl.selectionStart || ctrl.selectionStart == '0')
                 caretPos = ctrl.selectionStart;
-            // ie 5 quirks mode as second option because
-            // this option is flakey in conjunction with text areas
+                // ie 5 quirks mode as second option because
+                // this option is flakey in conjunction with text areas
             // TODO move this into the quirks class
             else if (document.selection) {
                 ctrl.focus();
@@ -786,9 +816,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             //elements bug, but it is mostly dom compliant so we have to give it a special
             //treatment, IE9 finally fixes that issue finally after 10 years
             evalNodes = (this.isDomCompliant() &&  nonIEQuirks) ?
-                    this._buildNodesCompliant(markup) :
-                    //ie8 or quirks mode browsers
-                    this._buildNodesNonCompliant(markup);
+                this._buildNodesCompliant(markup) :
+                //ie8 or quirks mode browsers
+                this._buildNodesNonCompliant(markup);
         }
         return evalNodes;
     },
@@ -808,9 +838,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             throw this._Lang.makeException(new Error(), null, null, this._nameSpace, "_assertStdParams",  "Caller must be set for assertion");
         }
         var _Lang = this._Lang,
-                ERR_PROV = "ERR_MUST_BE_PROVIDED1",
-                DOM = "myfaces._impl._util._Dom.",
-                finalParams = params || ["item", "markup"];
+            ERR_PROV = "ERR_MUST_BE_PROVIDED1",
+            DOM = "myfaces._impl._util._Dom.",
+            finalParams = params || ["item", "markup"];
 
         if (!item || !markup) {
             _Lang.makeException(new Error(), null, null,DOM, ""+caller,  _Lang.getMessage(ERR_PROV, null, DOM +"."+ caller, (!item) ? finalParams[0] : finalParams[1]));
@@ -866,8 +896,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
         var parentNode = item.parentNode,
 
-                sibling = item.nextSibling,
-                resultArr = this._Lang.objToArray(evalNodes);
+            sibling = item.nextSibling,
+            resultArr = this._Lang.objToArray(evalNodes);
 
         for (var cnt = 0; cnt < resultArr.length; cnt++) {
             if (cnt == 0) {
@@ -940,7 +970,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     findByTagName : function(fragment, tagName) {
         this._assertStdParams(fragment, tagName, "findByTagName", ["fragment", "tagName"]);
         var _Lang = this._Lang,
-                nodeType = fragment.nodeType;
+            nodeType = fragment.nodeType;
         if (nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
         //remapping to save a few bytes
@@ -1007,8 +1037,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         //we use the reject mechanism to prevent a deep scan reject means any
         //child elements will be omitted from the scan
         var FILTER_ACCEPT = NodeFilter.FILTER_ACCEPT,
-                FILTER_SKIP = NodeFilter.FILTER_SKIP,
-                FILTER_REJECT = NodeFilter.FILTER_REJECT;
+            FILTER_SKIP = NodeFilter.FILTER_SKIP,
+            FILTER_REJECT = NodeFilter.FILTER_REJECT;
 
         var walkerFilter = function (node) {
             var retCode = (filter(node)) ? FILTER_ACCEPT : FILTER_SKIP;
@@ -1088,10 +1118,10 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             return null;
         }
 
-        // This will not work well on portlet case, because we cannot be sure
-        // the returned form is right one.
-        //we can cover that case by simply adding one of our config params
-        //the default is the weaker, but more correct portlet code
+            // This will not work well on portlet case, because we cannot be sure
+            // the returned form is right one.
+            //we can cover that case by simply adding one of our config params
+            //the default is the weaker, but more correct portlet code
         //you can override it with myfaces_config.no_portlet_env = true globally
         else if (1 == forms.length && this._RT.getGlobalConfig("no_portlet_env", false)) {
             return forms[0];
@@ -1105,7 +1135,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             //https://issues.apache.org/jira/browse/MYFACES-2793
 
             return (_Lang.equalsIgnoreCase(elem.tagName, "form")) ? elem :
-                    ( this.html5FormDetection(elem) || this.getParent(elem, "form"));
+                ( this.html5FormDetection(elem) || this.getParent(elem, "form"));
         });
 
         if (finalElem) {
@@ -1153,13 +1183,13 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
         if (!item) {
             throw this._Lang.makeException(new Error(), null, null, this._nameSpace, "getParent",
-                    this._Lang.getMessage("ERR_MUST_BE_PROVIDED1", null, "_Dom.getParent", "item {DomNode}"));
+                this._Lang.getMessage("ERR_MUST_BE_PROVIDED1", null, "_Dom.getParent", "item {DomNode}"));
         }
 
         var _Lang = this._Lang;
         var searchClosure = function(parentItem) {
             return parentItem && parentItem.tagName
-                    && _Lang.equalsIgnoreCase(parentItem.tagName, tagName);
+                && _Lang.equalsIgnoreCase(parentItem.tagName, tagName);
         };
         try {
             return this.getFilteredParent(item, searchClosure);
@@ -1278,5 +1308,3 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         return form[elementId];
     }
 });
-
-

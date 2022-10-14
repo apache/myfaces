@@ -77,6 +77,10 @@ if (!myfaces._impl.core._Runtime) {
             return myfaces._impl.core._EvalHandlers.globalEval(code, cspMeta);
         };
 
+        _T.resolveNonce = function(item) {
+            return myfaces._impl.core._EvalHandlers._resolveNonce(item);
+        };
+
         /**
          * applies an object to a namespace
          * basically does what bla.my.name.space = obj does
