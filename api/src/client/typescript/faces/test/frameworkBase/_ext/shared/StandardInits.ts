@@ -312,7 +312,6 @@ export module StandardInits {
         (<any>global).faces = data.faces;
         (<any>global).myfaces = data.myfaces;
         (<any>global).window.faces = data.faces;
-        debugger;
         (<any>global).window.myfaces = data.myfaces;
         (<any>global).Implementation = Implementation.Implementation;
         (<any>global).PushImpl = PushImpl.PushImpl;
@@ -325,7 +324,6 @@ export module StandardInits {
         (<any>global).jsf = data.jsf;
         (<any>global).myfaces = data.myfaces;
         (<any>global).window.jsf = data.jsf;
-        debugger;
         (<any>global).window.myfaces = data.myfaces;
         (<any>global).Implementation = Implementation.Implementation;
         (<any>global).window.Implementation = Implementation.Implementation;

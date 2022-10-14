@@ -113,23 +113,27 @@ export class ExtDomquery extends DQ {
 
         let curScript = new DQ(document.currentScript);
         //since our baseline atm is ie11 we cannot use document.currentScript globally
-        if (curScript.attr("nonce").value != null) {
+        if (!!this.extractNonce(curScript)) {
             // fastpath for modern browsers
-            return curScript.attr("nonce").value;
+            return this.extractNonce(curScript);
         }
         // fallback if the currentScript method fails, we just search the jsf tags for nonce, this is
         // the last possibility
         let nonceScript = DQ
             .querySelectorAll("script[src], link[src]")
             .lazyStream
-            .filter((item) => item.attr("nonce").value != null && item.attr(ATTR_SRC) != null)
-            .map(item => IS_FACES_SOURCE(item.attr(ATTR_SRC).value))
+            .filter((item) => this.extractNonce(item)  && item.attr(ATTR_SRC) != null)
+            .filter(item => IS_FACES_SOURCE(item.attr(ATTR_SRC).value))
             .first();
 
         if (nonceScript.isPresent()) {
-            nonce.value = DomQuery.byId(nonceScript.value, true).attr("nonce").value;
+            return this.extractNonce(nonceScript.value);
         }
-        return <string>nonce.value;
+        return null;
+    }
+
+    private extractNonce(curScript: DomQuery) {
+        return (curScript.getAsElem(0).value as HTMLElement)?.nonce ?? curScript.attr("nonce").value;
     }
 
     static searchJsfJsFor(item: RegExp): Optional<String> {
