@@ -21,17 +21,28 @@ package org.apache.myfaces.push.cdi;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import java.io.IOException;
+import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.faces.context.ExternalContext;
+import javax.websocket.CloseReason;
 import javax.websocket.Session;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.push.WebsocketSessionClusterSerializedRestore;
@@ -39,11 +50,19 @@ import org.apache.myfaces.push.Json;
 import org.apache.myfaces.util.lang.ConcurrentLRUCache;
 import org.apache.myfaces.util.lang.Lazy;
 
+import static javax.websocket.CloseReason.CloseCodes.NORMAL_CLOSURE;
+
 @ApplicationScoped
 public class WebsocketSessionManager
 {
-    private Lazy<ConcurrentLRUCache<String, Reference<Session>>> sessionMap;
+    private Lazy<ConcurrentLRUCache<String, Collection<Reference<Session>>>> sessionMap;
+
+    private Lazy<ConcurrentHashMap<UserChannelKey, Set<String>>> userMap;
     private Queue<String> restoreQueue;
+
+    private static final CloseReason REASON_EXPIRED = new CloseReason(NORMAL_CLOSURE, "Expired");
+
+    private static final Logger LOG = Logger.getLogger(WebsocketSessionManager.class.getName());
 
     @PostConstruct
     public void init()
@@ -54,17 +73,63 @@ public class WebsocketSessionManager
             return new ConcurrentLRUCache<>((size * 4 + 3) / 3, size);
         });
         restoreQueue = new ConcurrentLinkedQueue<>();
+        userMap = new Lazy<>(ConcurrentHashMap::new);
     }
 
-    public ConcurrentLRUCache<String, Reference<Session>> getSessionMap()
+    public ConcurrentLRUCache<String, Collection<Reference<Session>>> getSessionMap()
     {
         return sessionMap.get();
+    }
+
+    public ConcurrentMap<UserChannelKey, Set<String>> getUserMap()
+    {
+        return userMap.get();
+    }
+
+    public void registerSessionToken(String channelToken)
+    {
+        if (this.getSessionMap().get(channelToken) == null)
+        {
+            this.getSessionMap().put(channelToken, new ConcurrentLinkedQueue<>());
+        }
+    }
+
+    public void registerUser(Serializable user, String channel, String channelToken)
+    {
+        UserChannelKey userChannelKey = new UserChannelKey(user, channel);
+
+        Set<String> channelTokenSet = getUserMap().computeIfAbsent(userChannelKey, k -> new HashSet<>(1));
+        channelTokenSet.add(channelToken);
+    }
+
+    public void deregisterUser(Serializable user, String channel, String channelToken)
+    {
+        UserChannelKey userChannelKey = new UserChannelKey(user, channel);
+
+        synchronized (getUserMap())
+        {
+            Set<String> channelTokenSet = getUserMap().get(userChannelKey);
+            if (channelTokenSet != null)
+            {
+                channelTokenSet.remove(channelToken);
+                if (channelTokenSet.isEmpty())
+                {
+                    getUserMap().remove(userChannelKey);
+                }
+            }
+        }
+    }
+
+    public Set<String> getChannelTokensForUser(Serializable user, String channel)
+    {
+        UserChannelKey userChannelKey = new UserChannelKey(user, channel);
+        return getUserMap().get(userChannelKey);
     }
 
     public void initSessionMap(ExternalContext context)
     {
         int size = MyfacesConfig.getCurrentInstance(context).getWebsocketMaxConnections();
-        ConcurrentLRUCache<String, Reference<Session>> newSessionMap
+        ConcurrentLRUCache<String, Collection<Reference<Session>>> newSessionMap
                 = new ConcurrentLRUCache<>((size * 4 + 3) / 3, size);
         
         synchronized (sessionMap)
@@ -74,13 +139,20 @@ public class WebsocketSessionManager
                 // If a Session has been restored, it could be already a lruCache instantiated, so in this case
                 // we need to fill the new one with the old instances, but only the instances that are active
                 // at the moment.
-                Set<Map.Entry<String, Reference<Session>>> entries = sessionMap.get()
+                Set<Map.Entry<String, Collection<Reference<Session>>>> entries = sessionMap.get()
                         .getLatestAccessedItems(MyfacesConfig.WEBSOCKET_MAX_CONNECTIONS_DEFAULT).entrySet();
-                for (Map.Entry<String, Reference<Session>> entry : entries)
+                for (Map.Entry<String, Collection<Reference<Session>>> entry : entries)
                 {
-                    if (entry.getValue() != null && entry.getValue().get() != null && entry.getValue().get().isOpen())
+                    Collection<Reference<Session>> referenceCollection = entry.getValue();
+                    if (referenceCollection != null)
                     {
-                        newSessionMap.put(entry.getKey(), entry.getValue());
+                        Collection<Reference<Session>> newReferenceCollection =
+                                referenceCollection
+                                        .stream()
+                                        .filter(p -> p.get() != null && p.get().isOpen())
+                                        .distinct()
+                                        .collect(Collectors.toCollection(ConcurrentLinkedQueue::new));
+                        newSessionMap.put(entry.getKey(), newReferenceCollection);
                     }
                 }
             }
@@ -100,14 +172,22 @@ public class WebsocketSessionManager
     
     public boolean addOrUpdateSession(String channelToken, Session session)
     {
-        Reference oldInstance = getSessionMap().get(channelToken);
-        if (oldInstance == null)
+        if (LOG.isLoggable(Level.FINE))
         {
-            getSessionMap().put(channelToken, new SoftReference<>(session));
+            LOG.log (Level.FINE, "WebsocketSessionManager: addOrUpdateSession for channelToken = {0}, " +
+                    "session.id = {1}", new Object[] {channelToken ,session.getId()});
         }
-        else if (!session.equals(oldInstance.get()))
+        Collection<Reference<Session>> sessions = this.getSessionMap().get(channelToken);
+        if (sessions == null)
         {
-            getSessionMap().put(channelToken, new SoftReference<>(session));
+            registerSessionToken(channelToken);
+        }
+        Optional<Reference<Session>> referenceOptional =
+                sessions.stream().filter(p -> Objects.equals(p.get(), session)).findFirst();
+
+        if (!referenceOptional.isPresent())
+        {
+            return sessions.add(new SoftReference<>(session));
         }
         return true;
     }
@@ -121,37 +201,89 @@ public class WebsocketSessionManager
      * @param channelToken
      * @return 
      */
-    public boolean removeSession(String channelToken)
+    public void removeSession(String channelToken, Session session)
     {
-        getSessionMap().remove(channelToken);
-        return false;
+        if (LOG.isLoggable(Level.FINE))
+        {
+            LOG.log (Level.FINE, "WebsocketSessionManager: removeSession for channelToken = {0}, " +
+                    "session.id = {1}", new Object[] {channelToken ,session.getId()});
+        }
+        Collection<Reference<Session>> collection = getSessionMap().get(channelToken);
+        Optional<Reference<Session>> referenceOptional =
+                collection.stream().filter(p -> Objects.equals(p.get(), session)).findFirst();
+        referenceOptional.ifPresent(collection::remove);
     }
-    
-    
+
+    /**
+     * Remove the channelToken and close all sessions associated with it. Happens, when session scope
+     * or view scope is destroyed.
+     * @param channelToken
+     */
+    public void removeChannelToken(String channelToken)
+    {
+        // close all sessions associated with this channelToken
+        Collection<Reference<Session>> sessions = getSessionMap().get(channelToken);
+
+        if (sessions != null)
+        {
+            for (Reference<Session> sessionReference : sessions)
+            {
+                Session session = sessionReference.get();
+                if (session != null && session.isOpen())
+                {
+                    try
+                    {
+                        session.close(REASON_EXPIRED);
+                    }
+                    catch (IOException ignore)
+                    {
+                        // ignored
+                    }
+                }
+            }
+        }
+
+        getSessionMap().remove(channelToken);
+    }
+
     protected Set<Future<Void>> send(String channelToken, Object message)
     {
         // Before send, we need to check 
         synchronizeSessionInstances();
 
         Set<Future<Void>> results = new HashSet<>(1);
-        Reference<Session> sessionRef = (channelToken != null) ? getSessionMap().get(channelToken) : null;
+        Collection<Reference<Session>> sessions = (channelToken != null) ? getSessionMap().get(channelToken) : null;
 
-        if (sessionRef != null && sessionRef.get() != null)
+        if (sessions != null && !sessions.isEmpty())
         {
             String json = Json.encode(message);
-            Session session = sessionRef.get();
-            if (session.isOpen())
-            {
-                send(session, json, results, 0);
-            }
-            else
-            {
-                //If session is not open, remove the session, because a websocket session after is closed cannot
-                //be alive.
-                getSessionMap().remove(channelToken);
-            }
+
+            sessions.forEach (
+                    sessionRef ->
+                    {
+                        if (sessionRef != null && sessionRef.get() != null)
+                        {
+                            Session session = sessionRef.get();
+                            if (session.isOpen())
+                            {
+                                send(session, json, results, 0);
+                            }
+                            else
+                            {
+                                //If session is not open, remove the session, because a websocket
+                                // session after is closed cannot
+                                //be alive.
+                                removeSession(channelToken, session);
+                            }
+                        }
+                    }
+            );
+            return results;
         }
-        return results;
+        else
+        {
+            return Collections.emptySet();
+        }
     }
 
     private final String WARNING_TOMCAT_WEB_SOCKET_BOMBED =
@@ -203,7 +335,7 @@ public class WebsocketSessionManager
                 && illegalStateException.getMessage().contains("[TEXT_FULL_WRITING]");
     }
     
-    private void synchronizeSessionInstances()
+    public void synchronizeSessionInstances()
     {
         Queue<String> queue = getRestoredQueue();
         // The queue is always empty, unless a deserialization of Session instances happen. If that happens, 
@@ -214,33 +346,41 @@ public class WebsocketSessionManager
         {
             // It is necessary to have at least 1 registered Session instance to call getOpenSessions() and get all
             // instances associated to javax.faces.push Endpoint.
-            Map<String, Reference<Session>> map = getSessionMap().getLatestAccessedItems(1);
+            Map<String, Collection<Reference<Session>>> map = getSessionMap().getLatestAccessedItems(1);
             if (map != null && !map.isEmpty())
             {
-                Reference<Session> ref = map.values().iterator().next();
-                if (ref != null)
-                {
-                    Session s = ref.get();
-                    if (s != null)
-                    {
-                        Set<Session> set = s.getOpenSessions();
-                        
-                        for (Iterator<Session> it = set.iterator(); it.hasNext();)
+
+                Collection<Reference<Session>> collectionRef = map.values().iterator().next();
+
+                collectionRef.forEach( ref ->
                         {
-                            Session instance = it.next();
-                            WebsocketSessionClusterSerializedRestore r = 
-                                    (WebsocketSessionClusterSerializedRestore) instance.getUserProperties().get(
-                                        WebsocketSessionClusterSerializedRestore.WEBSOCKET_SESSION_SERIALIZED_RESTORE);
-                            if (r != null && r.isDeserialized())
+                        if (ref != null)
+                        {
+                            Session s = ref.get();
+                            if (s != null)
                             {
-                                addOrUpdateSession(r.getChannelToken(), s);
+                                Set<Session> set = s.getOpenSessions();
+
+                                for (Iterator<Session> it = set.iterator(); it.hasNext(); )
+                                {
+                                    Session instance = it.next();
+                                    WebsocketSessionClusterSerializedRestore r =
+                                            (WebsocketSessionClusterSerializedRestore) instance.
+                                                    getUserProperties().get(
+                            WebsocketSessionClusterSerializedRestore.WEBSOCKET_SESSION_SERIALIZED_RESTORE
+                                                    );
+                                    if (r != null && r.isDeserialized())
+                                    {
+                                        addOrUpdateSession(r.getChannelToken(), s);
+                                    }
+                                }
+
+                                // Remove one element from the queue
+                                queue.poll();
                             }
                         }
-                        
-                        // Remove one element from the queue
-                        queue.poll();
                     }
-                }
+                );
             }
         }
     }
@@ -248,6 +388,40 @@ public class WebsocketSessionManager
     public Queue<String> getRestoredQueue()
     {
         return restoreQueue;
+    }
+
+
+    private class UserChannelKey implements Serializable
+    {
+
+        private final Serializable user;
+        private final String channel;
+        public UserChannelKey(Serializable user, String channel)
+        {
+            this.user = user;
+            this.channel = channel;
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o)
+            {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass())
+            {
+                return false;
+            }
+            UserChannelKey that = (UserChannelKey) o;
+            return Objects.equals(user, that.user) && Objects.equals(channel, that.channel);
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash(user, channel);
+        }
     }
         
 }
