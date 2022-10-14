@@ -1819,7 +1819,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 //this.globalEval(finalScripts.join("\n"));
                 let joinedScripts = [];
                 Stream.of(...finalScripts).each(item => {
-                    if (item.nonce == 'evalText') {
+                    if (!item.nonce) {
                         joinedScripts.push(item.evalText)
                     } else {
                         if (joinedScripts.length) {
@@ -1858,8 +1858,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                         //due to changing the and order instead of relying on left to right
                         //if jsf.js is already registered we do not replace it anymore
                         if (whilteListed(src)) {
+                            //we run the collected scripts before running, the include
                             evalCollectedScripts(finalScripts);
-                            nonce != '' ? this.loadScriptEval(src, 0, "UTF-8", nonce):
+                            (!!nonce) ? this.loadScriptEval(src, 0, "UTF-8", nonce):
                                 //if no nonce is set we do not pass any once
                                 this.loadScriptEval(src, 0, "UTF-8");
                         }
