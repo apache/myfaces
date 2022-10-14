@@ -1,40 +1,30 @@
-/* Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * Lang.work for additional information regarding copyright ownership.
- * The ASF licenses Lang.file to you under the Apache License, Version 2.0
- * (the "License"); you may not use Lang.file except in compliance with
- * the License.  You may obtain a copy of the License at
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package extras.apache.org.jsintegration.protocol;
 
-import extras.apache.org.jsintegration.protocol.xmlNodes.Attribute;
-import extras.apache.org.jsintegration.protocol.xmlNodes.Attributes;
-import extras.apache.org.jsintegration.protocol.xmlNodes.Changes;
-import extras.apache.org.jsintegration.protocol.xmlNodes.Delete;
-import extras.apache.org.jsintegration.protocol.xmlNodes.ErrorResponse;
-import extras.apache.org.jsintegration.protocol.xmlNodes.Eval;
-import extras.apache.org.jsintegration.protocol.xmlNodes.Insert;
-import extras.apache.org.jsintegration.protocol.xmlNodes.Insert2;
-import extras.apache.org.jsintegration.protocol.xmlNodes.PartialResponse;
-import extras.apache.org.jsintegration.protocol.xmlNodes.Update;
-
+import extras.apache.org.jsintegration.protocol.xmlNodes.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+
+import java.io.*;
 
 /**
  * @author werpu
@@ -54,8 +44,8 @@ public class ResponseMockup extends HttpServlet
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws jakarta.servlet.ServletException if a servlet-specific error occurs
-     * @throws java.io.IOException            if an I/O error occurs
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException            if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
@@ -80,13 +70,13 @@ public class ResponseMockup extends HttpServlet
             if (StringUtils.isBlank(op))
             {
                 out.println(defaultResponse);
-            } else if (op.trim().toLowerCase().equals("eval1"))
+            } else if (op.trim().equalsIgnoreCase("eval1"))
             {
                 Changes changes = new Changes(root);
                 changes.addChild(new Eval(changes, "document.getElementById('evalarea1').innerHTML = 'eval test succeeded';"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("updateinsert1"))
+            } else if (op.trim().equalsIgnoreCase("updateinsert1"))
             {
                 Changes changes = new Changes(root);
                 changes.addChild(new Update(changes, "changesArea", "<div id='changesArea'>update succeeded " + (cnt++) + "</div><script type='text/javascript'>document.getElementById('evalarea2').innerHTML='embedded script at update succeed';</script>"));
@@ -94,7 +84,7 @@ public class ResponseMockup extends HttpServlet
                 changes.addChild(new Insert(changes, "inserted2", "<div  id='insertafter'>insert after succeeded should display after test1</div>", null, "changesArea"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("updateinsert2"))
+            } else if (op.trim().equalsIgnoreCase("updateinsert2"))
             {
                 Changes changes = new Changes(root);
                 changes.addChild(new Update(changes, "changesArea", "<div id='changesArea'>update succeeded " + (cnt++) + "</div><script type='text/javascript'>document.getElementById('evalarea2').innerHTML='embedded script at update succeed';</script>"));
@@ -105,19 +95,19 @@ public class ResponseMockup extends HttpServlet
                 root.addElement(changes);
                 out.println(root.toString());
 
-            } else if (op.trim().toLowerCase().equals("delete1"))
+            } else if (op.trim().equalsIgnoreCase("delete1"))
             {
                 Changes changes = new Changes(root);
                 changes.addChild(new Delete(changes, "deleteable"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("viewstate"))
+            } else if (op.trim().equalsIgnoreCase("viewstate"))
             {
                 Changes changes = new Changes(root);
                 changes.addChild(new Update(changes, "jakarta.faces.ViewState", "hello world"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("attributes"))
+            } else if (op.trim().equalsIgnoreCase("attributes"))
             {
                 Changes changes = new Changes(root);
                 Attributes attr = new Attributes(changes, "attributeChange");
@@ -170,7 +160,7 @@ public class ResponseMockup extends HttpServlet
                 root.addElement(changes);
                 changes.addChild(new Update(changes, "jakarta.faces.ViewBody", replacement.toString()));
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("body2"))
+            } else if (op.trim().equalsIgnoreCase("body2"))
             {
                 //we omit our xml builder for now
                 StringBuilder replacement = new StringBuilder();
@@ -309,7 +299,7 @@ public class ResponseMockup extends HttpServlet
                         "            </tr>", null, "body_row1"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("table_insert_column_head"))
+            } else if (op.trim().equalsIgnoreCase("table_insert_column_head"))
             {
                 Changes changes = new Changes(root);
                 changes.addChild(new Insert2(changes, "head_col1", "<td id='head_col1_1_" + (elemCnt++) + "'>inserted " +
@@ -325,7 +315,7 @@ public class ResponseMockup extends HttpServlet
 
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("table_insert_column_body"))
+            } else if (op.trim().equalsIgnoreCase("table_insert_column_body"))
             {
                 Changes changes = new Changes(root);
                 changes.addChild(new Insert2(changes, "body_row1_col1", "<td id='body_row1_col1_1_" + (elemCnt++) +
@@ -343,7 +333,7 @@ public class ResponseMockup extends HttpServlet
 
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("table_insert_footer"))
+            } else if (op.trim().equalsIgnoreCase("table_insert_footer"))
             {
                 Changes changes = new Changes(root);
                 changes.addChild(new Insert2(changes, "body_row1_col1", "<tfooter>footer inserted</tfooter>",
@@ -360,7 +350,7 @@ public class ResponseMockup extends HttpServlet
                         "tbody1"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("executenone"))
+            } else if (op.trim().equalsIgnoreCase("executenone"))
             {
                 boolean execute = request.getParameter("jakarta.faces.partial.execute") != null;
                 boolean render = request.getParameter("jakarta.faces.partial.render") != null;
@@ -371,8 +361,38 @@ public class ResponseMockup extends HttpServlet
                                                 "id='result'>fail</div>"));
                 root.addElement(changes);
                 out.println(root.toString());
-            }
 
+            } else if (op.trim().equalsIgnoreCase("execute_nonce")) {
+
+                Changes changes = new Changes(root);
+                changes.addChild(new Update(changes, "result", "<script nonce='test12d3' type='text/javascript' src='./nonce_script.js'></script>"));
+
+                root.addElement(changes);
+                out.println(root.toString());
+            } else if (op.trim().equalsIgnoreCase("execute_nonce2")) {
+
+                Changes changes = new Changes(root);
+                changes.addChild(new Update(changes, "result", "<script nonce='test123' type='text/javascript' src='./nonce_script2.js'></script>"));
+
+                root.addElement(changes);
+                out.println(root.toString());
+            } else if (op.trim().equalsIgnoreCase("execute_nonce3")) {
+
+                Changes changes = new Changes(root);
+                changes.addChild(new Update(changes, "result", "<script nonce='test12d3' type='text/javascript'>document.getElementById(\"result2\").innerHTML = \"success\";</script>"));
+
+                root.addElement(changes);
+                out.println(root.toString());
+
+            } else if (op.trim().equalsIgnoreCase("execute_nonce4")) {
+
+                Changes changes = new Changes(root);
+                changes.addChild(new Update(changes, "result", "<script nonce='test123' type='text/javascript'>document.getElementById(\"result3\").innerHTML = \"success\";</script>"));
+
+                root.addElement(changes);
+                out.println(root.toString());
+
+            }
         }
         finally
         {
@@ -387,8 +407,8 @@ public class ResponseMockup extends HttpServlet
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws jakarta.servlet.ServletException if a servlet-specific error occurs
-     * @throws java.io.IOException            if an I/O error occurs
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException            if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -402,8 +422,8 @@ public class ResponseMockup extends HttpServlet
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws jakarta.servlet.ServletException if a servlet-specific error occurs
-     * @throws java.io.IOException            if an I/O error occurs
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException            if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

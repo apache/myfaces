@@ -15,24 +15,26 @@
  */
 afterEach(function () {
     setTimeout(function () {
-        myfaces.testcases.redirect("./test21-nonce.jsf");
+        myfaces.testcases.redirect("./test22-nonce.jsf");
     }, 1000);
 });
-describe("Execute none handling", function () {
-    it("runs an execute request with execute @none", function (done) {
-            DQ$("#centerForm").getAsElem(0).value.action = './test.mockup'
 
-            jsfAjaxRequestPromise(document.getElementById("submitme"), null, {
-                render: "booga @none",
-                execute: "booga2 @none",
-                op: "executeNone"
-            }).finally(function () {
-                setTimeout(function () {
-                    //we wont get any success
-                    expect(DQ$("#result").innerHTML.indexOf("success")).not.toEqual(-1);
-                    done();
-                }, 500);
+describe("Nonce testing", function () {
+    it("runs an embedded script with a nonce and fails", function (done) {
+
+        emitPPR("cmd_eval", null, "execute_nonce").then(function () {
+            //another faster and better way we use wait untilDom
+            DomQuery.byId("body")
+                .waitUntilDom(() => DQ$("#result2").innerHTML == "success")
+                .then(() => {
+                    done(new Error("fail nonce error was ignrored"));
+                }).catch(() => {
+                    expect(true).toEqual(true);
+                    done()
             });
-
+        })
     });
+
+
 });
+

@@ -77,6 +77,17 @@
         <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
     </listener>
 
+    <filter>
+        <filter-name>NonceFilter</filter-name>
+        <filter-class>extras.apache.org.jsintegration.protocol.NonceFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>NonceFilter</filter-name>
+        <url-pattern>*.jsf</url-pattern>
+    </filter-mapping>
+
+
     <servlet>
         <servlet-name>MockupServlet</servlet-name>
         <servlet-class>extras.apache.org.jsintegration.protocol.ResponseMockup22</servlet-class>
