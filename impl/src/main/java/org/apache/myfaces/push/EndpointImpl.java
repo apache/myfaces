@@ -62,10 +62,23 @@ public class EndpointImpl extends Endpoint
         if (Boolean.TRUE.equals(config.getUserProperties().get(WebsocketConfigurator.WEBSOCKET_VALID)) &&
                 sessionManager.addOrUpdateSession(channelToken, session))
         {
+            // default value 0, could be reconfigured if needed
             session.setMaxIdleTimeout((Long) config.getUserProperties().getOrDefault(
-                    WebsocketConfigurator.MAX_IDLE_TIMEOUT, 300000L));
+                    WebsocketConfigurator.MAX_IDLE_TIMEOUT, 0));
 
             Serializable user = (Serializable) session.getUserProperties().get(WebsocketConfigurator.WEBSOCKET_USER);
+
+            if (LOG.isLoggable(Level.FINE))
+            {
+                LOG.log(Level.FINE, "EndPointImpl.onOpen (channel = {0}, token = {1}, user = {2})",
+                        new Object[] {channel, channelToken, user});
+            }
+
+            // register user
+            if (user != null)
+            {
+                sessionManager.registerUser(user, channel, channelToken);
+            }
 
             beanManager.get().getEvent()
                     .select(WebsocketEvent.Opened.Literal.INSTANCE)
@@ -97,6 +110,11 @@ public class EndpointImpl extends Endpoint
         String channelToken = session.getQueryString();
 
         Serializable user = (Serializable) session.getUserProperties().get(WebsocketConfigurator.WEBSOCKET_USER);
+        if (LOG.isLoggable(Level.FINE))
+        {
+            LOG.log(Level.FINE, "EndPointImpl.onClose (channel = {0}, token = {1}, user = {2})",
+                    new Object[] {channel, channelToken, user});
+        }
 
         if (!beanManager.isInitialized())
         {
@@ -115,7 +133,12 @@ public class EndpointImpl extends Endpoint
         }
 
         WebsocketSessionManager sessionManager = CDIUtils.get(beanManager.get(), WebsocketSessionManager.class);
-        sessionManager.removeSession(channelToken);
+        sessionManager.removeSession(channelToken, session);
+        // deregister user
+        if (user != null)
+        {
+            sessionManager.deregisterUser(user, channel, channelToken);
+        }
 
         beanManager.get().getEvent()
                 .select(WebsocketEvent.Closed.Literal.INSTANCE)
