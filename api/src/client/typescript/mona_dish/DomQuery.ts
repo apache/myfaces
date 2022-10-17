@@ -1812,13 +1812,13 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * defaults to the standard jsf.js exclusion (we use this code for myfaces)
      */
     runScripts(whilteListed: (val: string) => boolean = DEFAULT_WHITELIST): DomQuery {
-        const evalCollectedScripts = (finalScripts: {evalText: string, nonce: string}[]) => {
-            if (finalScripts.length) {
+        const evalCollectedScripts = (scriptsToProcess: {evalText: string, nonce: string}[]) => {
+            if (scriptsToProcess.length) {
                 //script source means we have to eval the existing
                 //scripts before running the include
                 //this.globalEval(finalScripts.join("\n"));
                 let joinedScripts = [];
-                Stream.of(...finalScripts).each(item => {
+                Stream.of(...scriptsToProcess).each(item => {
                     if (!item.nonce) {
                         joinedScripts.push(item.evalText)
                     } else {
@@ -1834,8 +1834,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                     joinedScripts.length = 0;
                 }
 
-                finalScripts = [];
+                scriptsToProcess = [];
             }
+            return scriptsToProcess;
         }
 
         let finalScripts = [],
@@ -1859,7 +1860,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                         //if jsf.js is already registered we do not replace it anymore
                         if (whilteListed(src)) {
                             //we run the collected scripts before running, the include
-                            evalCollectedScripts(finalScripts);
+                            finalScripts = evalCollectedScripts(finalScripts);
                             (!!nonce) ? this.loadScriptEval(src, 0, "UTF-8", nonce):
                                 //if no nonce is set we do not pass any once
                                 this.loadScriptEval(src, 0, "UTF-8");
