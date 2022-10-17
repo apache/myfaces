@@ -141,7 +141,12 @@ public final class TagAttributeImpl extends TagAttribute
         }
         else
         {
-            return ((Boolean) this.getObject(ctx, Boolean.class)).booleanValue();
+            Boolean result = ((Boolean) this.getObject(ctx, Boolean.class)).booleanValue();
+            if(result == null)
+            {
+                return false;
+            }
+            return result;
         }
     }
 
