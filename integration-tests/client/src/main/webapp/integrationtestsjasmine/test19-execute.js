@@ -23,7 +23,7 @@ describe("Execute none handling", function () {
     it("runs an execute request with execute @none", function () {
 
             document.getElementById("centerForm").action = "./test.mockup";
-            jsfAjaxRequestPromise(document.getElementById("submitme"), null, {
+            facesRequest(document.getElementById("submitme"), null, {
                 render: "booga @none",
                 execute: "booga2 @none",
                 op: "executeNone"

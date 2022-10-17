@@ -61,7 +61,7 @@ describe("Event handler phases test", function () {
     });
     it("Checks the local events", function (done) {
 
-        jsfAjaxRequestPromise(document.getElementById("updateTrigger"), null, {
+        facesRequest(document.getElementById("updateTrigger"), null, {
             render: "updatePanel",
             execute: "updatePanel updateTrigger",
             onevent: localEventHandler
@@ -80,7 +80,7 @@ describe("Event handler phases test", function () {
     it("Checks the global events", function (done) {
 
         faces.ajax.addOnEvent(globalEventHandler);
-        jsfAjaxRequestPromise(document.getElementById("updateTrigger"), null, {
+        facesRequest(document.getElementById("updateTrigger"), null, {
             render: "updatePanel",
             execute: "updatePanel updateTrigger"
         }).then(function () {

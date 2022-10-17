@@ -41,7 +41,7 @@ beforeEach(function () {
     faces.getViewState = (formElement) => {
         try {
             viest = true;
-            oldViewst(formElement);
+            return oldViewst(formElement);
         } finally {
             faces.getViewState = oldViewst;
         }
@@ -52,9 +52,9 @@ afterEach(function () {
         myfaces.testcases.redirect("./test13-cssreplacementhead.jsf");
     }, 1000);
 });
-describe("Test for decoratable calls within our jsf lifecycle", function () {
+describe("Test for decoratable calls within our Faces lifecycle", function () {
     it("checks whether all functions are properly called", function (done) {
-        jsfAjaxRequestPromise('reloader', null, {
+        facesRequest('reloader', null, {
             execute: '@none',
             render: 'outputWriter',
             'jakarta.faces.behavior.event': 'action'
@@ -65,11 +65,6 @@ describe("Test for decoratable calls within our jsf lifecycle", function () {
                 expect(viest).toEqual(true);
                 done();
             }, 500);
-        }).catch(function () {
-            expect(req).toEqual(true);
-            expect(resp).toEqual(true);
-            expect(viest).toEqual(true);
-            done();
-        });
+        }).catch(done);
     });
 });

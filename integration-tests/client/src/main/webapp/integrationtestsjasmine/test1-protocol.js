@@ -22,10 +22,10 @@ afterEach(function () {
 
 describe("Testsuite testing the protocol", function () {
     beforeEach(function () {
-        //we reset the ajax counter before each spec
-        //because every spec has only one ajax request
+        //we reset the Ajax counter before each spec.
+        //Because every spec has only one Ajax request
         //and needs the counter to detect the end of the
-        //ajax cycle
+        //Ajax cycle
         myfaces.testcases.ajaxCnt = 0;
     });
     it("It should run an Eval Ajax command", function (done) {
@@ -33,8 +33,8 @@ describe("Testsuite testing the protocol", function () {
             //another faster and better way we use wait untilDom
             const condition = (element) => element.html().value.indexOf("succeed") != -1;
             DomQuery.querySelectorAll("#evalarea1").waitUntilDom(condition).then(() => {
-                //  jasmine expects at least one expectation, but tat this stage we
-                //  already are correct
+                //  jasmine expects at least one expectation, but at this point in time, we
+                //  already have fulfilled it
                 expect(true).toBeTruthy();
                 done();
             }).catch(done);

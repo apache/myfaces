@@ -22,13 +22,13 @@ describe("JSF 22 delay test", function () {
 
             let promises = [];
 
-            promises.push(jsfAjaxRequestPromise(document.getElementById("delayControl"), null, {
+            promises.push(facesRequest(document.getElementById("delayControl"), null, {
                 execute: "delayControl",
                 render: "delayoutput",
                 op: "cleardelay"
             }));
             for (let cnt = 0; cnt < 100; cnt++) {
-                promises.push(jsfAjaxRequestPromise(document.getElementById("delayControl"), null, {
+                promises.push(facesRequest(document.getElementById("delayControl"), null, {
                     execute: "delayControl",
                     render: "delayoutput",
                     op: "delay",

@@ -29,18 +29,20 @@ describe("Partial Page Rendering Nav Case", function () {
         DQ$("#lastName").val = "Tester";
         DQ$("#city").val = "Linz";
         DQ$("#zip").val = "Tester";
-        jsfAjaxRequestPromise('forward', null, {
+        facesRequest('forward', null, {
             execute: 'mainForm',
             render: 'fullContent',
             'jakarta.faces.behavior.event': 'action'
         }).then(function () {
-            setTimeout(function () {
-                htmlReporter.appendTo("body");
-                expect(DQ$("span#firstName").innerHTML.indexOf("Werner")).not.toBe(-1);
-                expect(DQ$("span#lastName").innerHTML.indexOf("Tester")).not.toBe(-1);
-                expect(DQ$("body").innerHTML.indexOf("script executed")).not.toBe(-1);
-                done();
-            }, 500);
+            DQ$("body").waitUntilDom(() => {
+                const ret = DQ$("span#firstName").innerHTML.indexOf("Werner") !== -1 &&
+                    DQ$("span#lastName").innerHTML.indexOf("Tester") !== -1 &&
+                    DQ$("body").innerHTML.indexOf("script executed") !== -1;
+                return ret;
+            }).then(() => {
+                DQ$("body").append(htmlReporter);
+                success(done);
+            }).catch(done);
         });
     });
 });

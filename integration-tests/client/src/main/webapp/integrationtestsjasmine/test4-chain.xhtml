@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html
-     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+        PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
       xmlns:ui="jakarta.faces.facelets" xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <ui:composition template="../templates/template.xhtml">
     <ui:define name="content">
-        <components:jasmineTest testRunner="./test4-chain.js" />
+        <components:jasmineTest testRunner="./test4-chain.js"/>
 
         <div id="centerDiv">
             <h1>Chain Test</h1>
@@ -32,14 +32,15 @@
                     element.innerHTML = "test1 succeeded ";
                     return true;
                 }
+
                 let testFunc2 = "  let element = document.getElementById('testResults'); element.innerHTML += ('test2 succeeded'); return true;";
-                let testFunc3 = function() {
+                let testFunc3 = function () {
                     let element = document.getElementById("testResults");
                     element.innerHTML += "test3 succeeded ";
                     //this function returns false so the  chain should stop here!
                     return false;
                 }
-                let testFunc4 = function() {
+                let testFunc4 = function () {
                     let element = document.getElementById("testResults");
                     element.innerHTML += ("test4 failed ");
                     return false;

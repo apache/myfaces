@@ -196,6 +196,7 @@ describe('Integration Testsuite MyFaces', function () {
         pageEvalResult = await runStandardPage.call(this, "test24-nonce");
         expect(pageEvalResult.innerText.match(/0\s*failures/gi) != null, 'nonce pass on embedded script').to.be.true;
     });
+
 });
 
 // close browser and reset global variables
@@ -204,3 +205,5 @@ after(function () {
     global.browser = filteredGlobal.browser;
     global.expect = filteredGlobal.expect;
 });
+
+//booga

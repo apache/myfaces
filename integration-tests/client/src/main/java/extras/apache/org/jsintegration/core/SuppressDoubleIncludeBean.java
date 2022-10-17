@@ -19,6 +19,8 @@
 
 package extras.apache.org.jsintegration.core;
 
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
@@ -37,15 +39,20 @@ import java.io.Serializable;
 @ViewScoped
 public class SuppressDoubleIncludeBean implements Serializable
 {
-    int restoreCnt = 0;
+    int restoreCnt = -1;
+
+    public void handlePreRenderViewEvent(ComponentSystemEvent event) {
+        this.restoreCnt++;
+    }
 
     public boolean isAlreadyCalled()
     {
+
         return restoreCnt > 0;
     }
 
     private void readObject(java.io.ObjectInputStream stream) throws IOException,
-                                                                            ClassNotFoundException
+            ClassNotFoundException
     {
         restoreCnt = stream.readInt();
         restoreCnt++;

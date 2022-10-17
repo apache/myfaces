@@ -21,19 +21,17 @@ afterEach(function () {
 });
 describe("Script blocks in various formats", function () {
     it("Performs a script bloc test", function (done) {
-
         DQ$("#resultArea").innerHTML = "";
-        jsfAjaxRequestPromise('reloader', null, {
+        facesRequest('reloader', null, {
             execute: '@none',
             render: 'outputWriter',
             'jakarta.faces.behavior.event': 'action'
         }).finally(function () {
-            setTimeout(function () {
-                expect(DQ$(".result2").innerHTML == "normal script --&gt;").toBeTruthy();//contents of result2 must match
-                expect(DQ$(".result3").innerHTML == "normal script --&gt;").toBeTruthy();//contents of result3 must match
-                expect(DQ$(".result4").innerHTML == "normal script ]]&gt;").toBeTruthy();//contents of result4 must match
-                done();
-            }, 500);
+            DQ$("#resultArea").waitUntilDom(() =>  {
+                return DQ$(".result2").innerHTML === "normal script --&gt;" &&
+                DQ$(".result3").innerHTML === "normal script --&gt;" &&
+                DQ$(".result4").innerHTML === "normal script ]]&gt;";
+            }).then(() => success(done)).catch(done);
         });
 
     });

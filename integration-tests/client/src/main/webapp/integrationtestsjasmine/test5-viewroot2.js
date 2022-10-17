@@ -13,50 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+let originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+window.viewRoot = true;
+let htmlReporter, found;
 
-if (!window.viewRoot) {
-    window.viewRoot = true;
+afterEach(function () {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+    setTimeout(function () {
+        myfaces.testcases.redirect("./test6-tablebasic.jsf");
+    }, 1000);
+});
 
-    afterEach(function () {
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-        setTimeout(function () {
-            myfaces.testcases.redirect("./test6-tablebasic.jsf");
-        }, 1000);
-    });
-
-    beforeEach(function () {
-        originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-    });
-
+beforeEach(function () {
+    htmlReporter = DQ$(".jasmine_html-reporter");
+    htmlReporter.detach();
+    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+});
 
 
-    describe("Viewroot with execute @all and render @all", function () {
+describe("ViewRoot with execute @all and render @all", function () {
 
-        beforeEach(function (done) {
-            let htmlReporter = DomQuery.querySelectorAll(".jasmine_html-reporter");
-            htmlReporter.detach();
-            //render all kills the new jasmine code because it kills off old script configs
-            jsfAjaxRequestPromise("allKeyword", null, {render: "@all", execute: "@all"}).then(function () {
 
-                setTimeout(function() {
-                    htmlReporter.appendTo(DomQuery.querySelectorAll("body"));
-                    done();
-                }, 1000)
-
+    //expect does not like double includes
+    it("Needs to have the root replaced", function (done) {
+        facesRequest("allKeyword", null, {render: "@all", execute: "@all"})
+            .then(() => {
+                DQ$("body").waitUntilDom(element => {
+                    return (found = found || (DQ$("body").innerHTML.indexOf("refresh successul2") !== -1 && window.__mf_import_cnt == 2));
+                }).then(element => {
+                    htmlReporter.appendTo(DQ$("body"))
+                    expect(true).toBeTruthy();
+                    success(done);
+                }).catch((err) => {
+                    DQ$("body").append(htmlReporter);
+                    done(err);
+                });
             });
 
-        });
-        //expect does not like double includes
-        it("Needs to have the root replaced", function (done) {
-            let body = DomQuery.querySelectorAll("body");
-            if(body.html().value.indexOf("refresh successul2") == -1 || window.__mf_import_cnt != 2) {
-                throw new Error("Test not passed");
-            }
-            done();
 
-
-        });
     });
+});
 
-}

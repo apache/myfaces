@@ -24,7 +24,7 @@ describe("CSS Head replacement test", function () {
         let htmlReporter = DQ$(".jasmine_html-reporter");
 
             htmlReporter.detach();
-            jsfAjaxRequestPromise('nextPage', null, {
+            facesRequest('nextPage', null, {
                 execute: 'mainForm',
                 render: '@all',
                 'jakarta.faces.behavior.event': 'action'

@@ -19,13 +19,13 @@ afterEach(function () {
         myfaces.testcases.redirect("./test3-viewbody.jsf");
     }, 1000);
 });
-describe("Full root replacement via protocol view root", function () {
-    it("Should run the ajax and replace the viewroot", function (done) {
+describe("Full root replacement via protocol ViewRoot", function () {
+    it("Should run the Ajax cycle and replace the ViewRoot element", function (done) {
         let htmlReporter = DQ$(".jasmine_html-reporter");
         htmlReporter.detach();
         emitPPR("form1", null, "body").then(function () {
             setTimeout(function () {
-                htmlReporter.appendTo(DQ$("body"));
+                DQ$("body").append(htmlReporter);
                 expect(DQ$("#scriptreceiver").innerHTML.indexOf("hello from embedded script")).not.toBe(-1);
                 done();
             }, 500);

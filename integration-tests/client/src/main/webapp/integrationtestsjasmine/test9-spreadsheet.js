@@ -37,15 +37,21 @@ describe("Spreadsheet test for the replacement of table elements", function () {
             currentField2 = currentField2.replace("#", "").replace(/\\/g, "");
             currentField1 = currentField1.replace("#", "").replace(/\\/g, "");
             start = Date.now();
-            promises.push(jsfAjaxRequestPromise(origin, null, {
+            promises.push(facesRequest(origin, null, {
                 execute: currentField2 + " " + currentField1,
                 render: currentOutput1 + " " + currentOutput2,
                 'jakarta.faces.behavior.event': 'action'
             }));
         }
         Promise.all(promises).finally(function() {
-            setTimeout(function () {
-
+            console.log("Processing time last request:"+(Date.now() - 500 - start));
+            DQ$("#testTable2").waitUntilDom(() => {
+                const LAST_ELEMENT = 99;
+                let currentOutput1 = "#testTable2" + faces.separatorchar + LAST_ELEMENT + faces.separatorchar + "field1";
+                let currentOutput2 = "#testTable2" + faces.separatorchar + LAST_ELEMENT + faces.separatorchar + "field2";
+                return DQ$(currentOutput1.replace(/\:/g, "\\:")).innerHTML.indexOf("value1:" + LAST_ELEMENT) != -1 &&
+                    DQ$(currentOutput2.replace(/\:/g, "\\:")).innerHTML.indexOf("value2:" + LAST_ELEMENT) != -1;
+            }).then(() => {
                 for (let cnt = 0; cnt < 100; cnt++) {
                     let currentOutput1 = "#testTable2" + faces.separatorchar + cnt + faces.separatorchar + "field1";
                     let currentOutput2 = "#testTable2" + faces.separatorchar + cnt + faces.separatorchar + "field2";
@@ -53,9 +59,8 @@ describe("Spreadsheet test for the replacement of table elements", function () {
                     let assert2 = DQ$(currentOutput2.replace(/\:/g, "\\:")).innerHTML.indexOf("value2:" + cnt) != -1;
                     expect( assert1 && assert2).toBeTruthy(); //field must have ajax content
                 }
-                console.log("Processing time last request:"+(Date.now() - 500 - start))
                 done();
-            }, 500);
+            }).catch(done);
         });
     });
 });

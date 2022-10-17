@@ -57,7 +57,7 @@ describe("Various response tests giving the codebase something to chew on in the
     });
     it("handles a normal reset case", function (done) {
 
-        jsfAjaxRequestPromise('resetme', null, {
+        facesRequest('resetme', null, {
             execute: '@this',
             render: 'myVal',
             'jakarta.faces.behavior.event': 'action'
@@ -72,7 +72,7 @@ describe("Various response tests giving the codebase something to chew on in the
     it("minimalistic context, source id is given", function (done) {
 
         applySourceOnly();
-        jsfAjaxRequestPromise('idgiven', null, {
+        facesRequest('idgiven', null, {
             execute: '@this',
             render: 'myVal',
             'jakarta.faces.behavior.event': 'action'
@@ -90,7 +90,7 @@ describe("Various response tests giving the codebase something to chew on in the
     });
     it("runs on an empty context map", function (done) {
         applyEmpty();
-        jsfAjaxRequestPromise('emptymap', null, {
+        facesRequest('emptymap', null, {
             execute: '@none',
             render: 'outputWriter',
             'jakarta.faces.behavior.event': 'action'

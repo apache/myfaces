@@ -32,7 +32,7 @@
 
 
             <div id="testResults">
-                <h3>After triggering this test the entier page should be replaced by the test result</h3>
+                <h3>After triggering this test the entire page content should be replaced by the test result</h3>
             </div>
 
 
@@ -40,13 +40,6 @@
                 <input type="button" id="cmd_body1" value="replace the entire body"
                        onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'body');"/>
             </h:form>
-
-            <!--
-            <h:form id="form1_iframe" prependId="false">
-                <input type="button" id="cmd_body1_iframe" value="replace the entire body"
-                       onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'body',true);"/>
-            </h:form>
-            -->
 
         </div>
 

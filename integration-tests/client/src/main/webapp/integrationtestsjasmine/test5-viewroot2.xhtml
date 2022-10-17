@@ -33,9 +33,9 @@
             }, 500);
             // ]]>
         </script>
+        <component:jasmineTest testRunner="test5-viewroot2.js" rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" />
     </ui:define>
     <ui:define name="content">
-        <component:jasmineTest testRunner="test5-viewroot2.js" />
 
         <h1>ViewRoot Replacement 2</h1>
 

@@ -46,7 +46,7 @@ afterEach(function () {
 describe("event location test, success must be called in response function", function () {
     it("runs the ajax cycle and checks for the proper event location of the success event", function (done) {
 
-        jsfAjaxRequestPromise('idgiven', null, {
+        facesRequest('idgiven', null, {
             execute: '@this',
             render: 'myVal',
             'jakarta.faces.behavior.event': 'action'

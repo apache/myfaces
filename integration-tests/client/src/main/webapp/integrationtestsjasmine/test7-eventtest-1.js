@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 let localEvents = [];
 let globalEvents = [];
 let DEFAULT_EVENTTYPES = {
@@ -61,38 +60,37 @@ describe("Event handler phases test", function () {
         globalEvents = [];
     });
     it("Checks the local events", function (done) {
-
-        jsfAjaxRequestPromise(document.getElementById("updateTrigger"), null, {
+        facesRequest(document.getElementById("updateTrigger"), null, {
             render: "updatePanel",
             execute: "updatePanel updateTrigger",
             onevent: localEventHandler
         }).then(function () {
-            setTimeout(function () {
-                expect(localEvents.length).toBe(3);
+            DQ("body").waitUntilDom(() => {
+                return localEvents.length == 3;
+            }).then(() => {
                 for (let pos = 0; pos < localEvents.length; pos++) {
                     expectations(expect, localEvents[pos]);
                 }
                 done();
-            }, 500);
+            }).catch(done);
         });
 
     });
 
     it("Checks the global events", function (done) {
-
         faces.ajax.addOnEvent(globalEventHandler);
-        jsfAjaxRequestPromise(document.getElementById("updateTrigger"), null, {
+        facesRequest(document.getElementById("updateTrigger"), null, {
             render: "updatePanel",
             execute: "updatePanel updateTrigger"
         }).then(function () {
-            setTimeout(function () {
-                expect(globalEvents.length).toBe(3);
+            DQ("body").waitUntilDom(() => {
+                return globalEvents.length == 3;
+            }).then(() => {
                 for (let pos = 0; pos < globalEvents.length; pos++) {
                     expectations(expect, globalEvents[pos]);
                 }
                 done();
-            }, 500);
+            }).catch(done);
         });
-
     });
 });
