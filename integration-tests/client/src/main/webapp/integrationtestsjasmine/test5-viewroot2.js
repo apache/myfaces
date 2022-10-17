@@ -16,7 +16,6 @@
 let originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
 window.viewRoot = true;
 let htmlReporter, found;
-
 afterEach(function () {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     setTimeout(function () {
@@ -39,16 +38,18 @@ describe("ViewRoot with execute @all and render @all", function () {
     it("Needs to have the root replaced", function (done) {
         facesRequest("allKeyword", null, {render: "@all", execute: "@all"})
             .then(() => {
-                DQ$("body").waitUntilDom(element => {
-                    return (found = found || (DQ$("body").innerHTML.indexOf("refresh successul2") !== -1 && window.__mf_import_cnt == 2));
-                }).then(element => {
-                    htmlReporter.appendTo(DQ$("body"))
-                    expect(true).toBeTruthy();
-                    success(done);
-                }).catch((err) => {
-                    DQ$("body").append(htmlReporter);
-                    done(err);
-                });
+                setTimeout(() => {
+                    DQ$("body").waitUntilDom(element => {
+                        return (found = found || (DQ$("body").innerHTML.indexOf("refresh successul2") !== -1 && window.__mf_import_cnt == 2));
+                    }).then(element => {
+                        htmlReporter.appendTo(DQ$("body"))
+                        expect(true).toBeTruthy();
+                        success(done);
+                    }).catch((err) => {
+                        DQ$("body").append(htmlReporter);
+                        done(err);
+                    });
+                }, 500);
             });
 
 

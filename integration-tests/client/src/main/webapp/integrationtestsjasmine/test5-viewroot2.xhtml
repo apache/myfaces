@@ -33,7 +33,7 @@
             }, 500);
             // ]]>
         </script>
-        <component:jasmineTest testRunner="test5-viewroot2.js" rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" />
+
     </ui:define>
     <ui:define name="content">
 
@@ -53,6 +53,7 @@
             </h:commandButton>
 
         </h:form>
+        <component:jasmineTest testRunner="test5-viewroot2.js" rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" />
     </ui:define>
 </ui:composition>
 </html>
