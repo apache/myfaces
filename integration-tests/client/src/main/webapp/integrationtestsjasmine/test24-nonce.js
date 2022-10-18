@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./finalResults.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./finalResults.jsf");
 });
 
 describe("Nonce testing working", function () {
 
-        it("runs an embedded script with a nonce and works", function (done) {
-            emitPPR("cmd_eval", null, "execute_nonce4").then(function () {
-                //another faster and better way we use wait untilDom
-                DomQuery.byId("body")
-                    .waitUntilDom(() => DQ$("#result3").innerHTML == "success")
-                    .then(() => {
-                        expect(DQ$("#result3").innerHTML == "success").toBe(true);
-                        done();
-                    }).catch(done);
-            })
-        });
+    it("runs an embedded script with a nonce and works", function (done) {
+        emitPPR("cmd_eval", null, "execute_nonce4").then(function () {
+            //another faster and better way we use wait untilDom
+            DomQuery.byId("body")
+                .waitUntilDom(() => DQ$("#result3").innerHTML == "success")
+                .then(() => {
+                    expect(DQ$("#result3").innerHTML == "success").toBe(true);
+                    done();
+                }).catch(done);
+        })
+    });
 
 });
 

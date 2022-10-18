@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test22-nonce.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test22-nonce.jsf");
 });
 
 describe("Nonce testing", function () {
@@ -29,8 +27,8 @@ describe("Nonce testing", function () {
                 .then(() => {
                     done(new Error("fail nonce error was ignrored"));
                 }).catch(() => {
-                    expect(true).toEqual(true);
-                    done()
+                expect(true).toEqual(true);
+                done()
             });
         })
     });

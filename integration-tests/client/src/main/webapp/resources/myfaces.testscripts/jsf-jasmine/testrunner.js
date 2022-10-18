@@ -20,6 +20,7 @@
  * from the integration test pages
  * and collect the data on the server
  */
+
 (function () {
     let jasmineEnv = jasmine.getEnv();
     jasmineEnv.configure({
@@ -34,6 +35,7 @@
      */
     //let consoleReporter = new jasmine.ConsoleReporter(jasmineEnv);
     //jasmineEnv.addReporter(consoleReporter);
+
     jasmineEnv.addReporter(jasmine.SessionReporter);
     /**
      Delegate filtering of specs to the reporter. Allows for clicking on single suites or specs in the results to only run a subset of the suite.

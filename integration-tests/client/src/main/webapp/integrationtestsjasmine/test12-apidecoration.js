@@ -48,9 +48,9 @@ beforeEach(function () {
     };
 });
 afterEach(function () {
-    setTimeout(function () {
+
         myfaces.testcases.redirect("./test13-cssreplacementhead.jsf");
-    }, 1000);
+
 });
 describe("Test for decoratable calls within our Faces lifecycle", function () {
     it("checks whether all functions are properly called", function (done) {
@@ -58,13 +58,12 @@ describe("Test for decoratable calls within our Faces lifecycle", function () {
             execute: '@none',
             render: 'outputWriter',
             'jakarta.faces.behavior.event': 'action'
-        }).then(function (success) {
-            setTimeout(function () {
-                expect(req).toEqual(true);
-                expect(resp).toEqual(true);
-                expect(viest).toEqual(true);
-                done();
-            }, 500);
+        }).then(() => {
+            DQ$("body")
+                .waitUntilDom(() => req && resp && viest)
+                .then(() => {
+                success(done);
+            });
         }).catch(done);
     });
 });

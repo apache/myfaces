@@ -15,9 +15,7 @@
  */
 
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test3-viewbody.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test3-viewbody.jsf");
 });
 describe("Full root replacement via protocol ViewRoot", function () {
     it("Should run the Ajax cycle and replace the ViewRoot element", function (done) {

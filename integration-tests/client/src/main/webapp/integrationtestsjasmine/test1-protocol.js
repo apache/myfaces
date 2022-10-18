@@ -15,9 +15,9 @@
  */
 
 afterEach(function () {
-    setTimeout(function () {
+
         myfaces.testcases.redirect("./test2-viewroot.jsf");
-    }, 1000);
+
 });
 
 describe("Testsuite testing the protocol", function () {
@@ -44,10 +44,9 @@ describe("Testsuite testing the protocol", function () {
     it("It should run Update Insert Spec - Insert Path", function (done) {
 
         emitPPR("cmd_update_insert2", null, "updateinsert2").then(function () {
-            DomQuery.querySelectorAll("body").waitUntilDom(() => {
-                return
-                DomQuery.byId("evalarea2").html().value.indexOf("succeed") != -1 &&
-                DomQuery.byId("evalarea3").html().value.indexOf("succeed") != -1 &&
+            DQ$("body").waitUntilDom(() => {
+                return DomQuery.byId("evalarea2").innerHTML.indexOf("succeed") != -1 &&
+                DomQuery.byId("evalarea3").innerHTML.indexOf("succeed") != -1 &&
                 DomQuery.byId("insertbefore").length &&
                 DomQuery.byId("insertafter").length;
             }).then(() => {

@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,51 +16,54 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:f="jakarta.faces.core"
+      xmlns:pr="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:cc="jakarta.faces.composite"
       xmlns:jstl="http://xmlns.jcp.org/jstl/core">
 
-<!-- INTERFACE -->
-<!-- INTERFACE -->
-<cc:interface>
-    <cc:attribute name="extended" default="true"/>
+    <!-- INTERFACE -->
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="extended" default="true"/>
 
-</cc:interface>
+    </cc:interface>
 
-<cc:implementation>
-    <f:event listener="#{suppressDoubleIncludeBean.handlePreRenderViewEvent}" type="preRenderView" />
-    <!--
-   Import the official scripts, (note old scripts fail on one test hence disabled)
-   -->
-    <h:outputScript name="faces.js" library="jakarta.faces" target="head" />
-    <!--
-    <script type="text/javascript" src="/IntegrationJSTest/jakarta.faces.resource/faces.js.jsf?ln=jakarta.faces"></script>
-    -->
-    <!--
-    you can use this import for cross verification this is the latest script from github
-    -->
-    <!--
-    <h:outputScript  name="jsf.js_next_gen/dist/window/faces-development.js" library="node_modules" target="head"/>
+    <cc:implementation>
+        <f:event listener="#{suppressDoubleIncludeBean.handlePreRenderViewEvent}" type="preRenderView" />
+        <!--
+       Import the official scripts, (note old scripts fail on one test hence disabled)
+       -->
+        <!--
+        <h:outputScript pr:nonce="test123" name="faces.js" library="jakarta.faces" target="head" />
         -->
-    <!--
-    <script type="text/javascript" nonce="test123" src="../resources/compiled/faces.js"></script>
-    -->
-    <!--
-    <script type="text/javascript" nonce="test123" src="http://127.0.0.1:8900/dist/window/faces-development.js"></script>
-    -->
+        <!--
+       <script type="text/javascript" nonce="test123" src="http://127.0.0.1:8900/dist/window/faces-development.js"></script>
+        -->
+        <!--
+        <script type="text/javascript" src="/IntegrationJSTest/jakarta.faces.resource/faces.js.jsf?ln=jakarta.faces"></script>
+        -->
+        <!--
+        you can use this import for cross verification this is the latest script from github
+        -->
+
+        <h:outputScript pr:nonce="test123"  name="jsf.js_next_gen/dist/window/faces-development.js" library="node_modules" target="head"/>
+        <!--
+        <script type="text/javascript" nonce="test123" src="../resources/compiled/faces.js"></script>
+        -->
 
 
-    <!-- runtime for testing -->
 
-    <script type="text/javascript" nonce="test123" src="../resources/myfaces.testscripts/myfaces/_impl/_util/_Lang.js"></script>
-    <script type="text/javascript" nonce="test123" src="../resources/myfaces.testscripts/myfaces/_impl/_util/_ImportCounter.js"></script>
+        <!-- runtime for testing -->
 
-    <script nonce="test123" type="text/javascript" defer="defer">
-        //disable for impl testing not local testing
-        myfaces = window.myfaces ||{};
-        myfaces.config = myfaces.config ||{};
-        myfaces.config.projectStage = "Development";
-        window.myfaces = myfaces;
-    </script>
+        <script type="text/javascript" nonce="test123" src="../resources/myfaces.testscripts/myfaces/_impl/_util/_Lang.js"></script>
+        <script type="text/javascript" nonce="test123" src="../resources/myfaces.testscripts/myfaces/_impl/_util/_ImportCounter.js"></script>
 
-</cc:implementation>
+        <script nonce="test123" type="text/javascript" defer="defer">
+            //disable for impl testing not local testing
+            myfaces = window.myfaces ||{};
+            myfaces.config = myfaces.config ||{};
+            myfaces.config.projectStage = "Development";
+            window.myfaces = myfaces;
+        </script>
+
+    </cc:implementation>
 </html>

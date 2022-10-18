@@ -13,6 +13,7 @@
 -->
 <ui:component xmlns=""
               xmlns:ui="jakarta.faces.facelets"
+              xmlns:pr="http://xmlns.jcp.org/jsf/passthrough"
               xmlns:composite="jakarta.faces.composite" xmlns:h="jakarta.faces.html">
 
     <composite:interface>
@@ -20,15 +21,16 @@
     </composite:interface>
 
     <composite:implementation>
-        <h:panelGroup layout="block" rendered="#{!suppressDoubleIncludeBean.alreadyCalled}">
-            <script type="text/javascript" src="../resources/node_modules/jasmine-core/lib/jasmine-core/jasmine.js"></script>
-            <script type="text/javascript" src="../resources/node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
-            <script type="text/javascript" src="../resources/node_modules/jasmine-core/lib/jasmine-core/boot0.js"></script>
-            <script type="text/javascript" src="../resources/node_modules/jasmine-core/lib/jasmine-core/boot1.js"></script>
-            <script type="text/javascript" src="../resources/myfaces.testscripts/jsf-jasmine/custom-reporters.js"></script>
-            <script type="text/javascript" src="../resources/myfaces.testscripts/jsf-jasmine/jsf-jasmineintegration.js"></script>
-            <script type="text/javascript" src="#{cc.attrs.testRunner}"></script>
-            <script type="text/javascript" src="../resources/myfaces.testscripts/jsf-jasmine/testrunner.js"></script>
+            <h:outputScript pr:nonce="test123" library="node_modules" name="jasmine-core/lib/jasmine-core/jasmine.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="node_modules" name="jasmine-core/lib/jasmine-core/jasmine-html.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="node_modules" name="jasmine-core/lib/jasmine-core/boot0.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="node_modules" name="jasmine-core/lib/jasmine-core/boot1.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="myfaces.testscripts" name="jsf-jasmine/custom-reporters.js" rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="myfaces.testscripts" name="jsf-jasmine/jsf-jasmineintegration.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="myfaces.testscripts" name="/jasmine-core/lib/jasmine-core/jasmine.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="myfaces.testscripts" name="jsf-jasmine/testrunner.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:panelGroup layout="block" rendered="#{!suppressDoubleIncludeBean.alreadyCalled}">
+            <script nonce="test123" type="text/javascript" async="true" src="#{cc.attrs.testRunner}"></script>
             <div class="version">Version</div>
         </h:panelGroup>
     </composite:implementation>

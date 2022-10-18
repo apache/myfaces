@@ -49,9 +49,7 @@ function expectations(expectFunc, data) {
 }
 
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test8-navcase1.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test8-navcase1.jsf");
 });
 describe("Event handler phases test", function () {
     beforeEach(function () {
@@ -66,15 +64,16 @@ describe("Event handler phases test", function () {
             execute: "updatePanel updateTrigger",
             onevent: localEventHandler
         }).then(function () {
-            setTimeout(function () {
-                expect(localEvents.length).toBe(3);
-                for (let pos = 0; pos < localEvents.length; pos++) {
-                    expectations(expect, localEvents[pos]);
-                }
-                done();
-            }, 500);
-        });
-
+            DQ$("body")
+                .waitUntilDom(() => localEvents.length === 3)
+                .then(() => {
+                    expect(localEvents.length).toBe(3);
+                    for (let pos = 0; pos < localEvents.length; pos++) {
+                        expectations(expect, localEvents[pos]);
+                    }
+                    done();
+                }).catch(done);
+        }).catch(done);
     });
 
     it("Checks the global events", function (done) {

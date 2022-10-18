@@ -15,18 +15,16 @@
  */
 
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test4-chain.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test4-chain.jsf");
 });
 describe("Full body replacement via protocol view body", function () {
     it("Should run the Ajax cycle and replace the body", function (done) {
         let htmlReporter = DomQuery.querySelectorAll(".jasmine_html-reporter");
         htmlReporter.detach();
         emitPPR("form1", null, "body2").then(function () {
-            DQ$("body").waitUntilDom((element) =>  {
+            DQ$("body").waitUntilDom((element) => {
                 return element.innerHTML.indexOf('Body replacement test successful') != -1;
-            }).then(() =>  {
+            }).then(() => {
                 expect(DQ$("body").append(htmlReporter).innerHTML.indexOf("testResults102")).not.toBe(-1);
                 done();
             }).catch((err) => {

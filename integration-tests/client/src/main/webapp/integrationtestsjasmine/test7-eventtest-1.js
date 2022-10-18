@@ -49,9 +49,7 @@ function expectations(expectFunc, data) {
 }
 
 afterEach(function () {
-    setTimeout(function () {
-        window.location.href = "./test7-eventtest-2.jsf";
-    }, 1000);
+    window.location.href = "./test7-eventtest-2.jsf";
 });
 describe("Event handler phases test", function () {
     beforeEach(function () {

@@ -15,16 +15,18 @@
  */
 
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test9-spreadsheet.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test9-spreadsheet.jsf");
 });
 describe("Partial Page Rendering Nav Case", function () {
     it("Nav Case Test", function (done) {
         let htmlReporter = DQ$(".jasmine_html-reporter");
 
-
         htmlReporter.detach();
+        const testFail = (err) => {
+            DQ$("body").append(htmlReporter);
+            done(err);
+        };
+
         DQ$("#firstName").val = "Werner";
         DQ$("#lastName").val = "Tester";
         DQ$("#city").val = "Linz";
@@ -42,7 +44,11 @@ describe("Partial Page Rendering Nav Case", function () {
             }).then(() => {
                 DQ$("body").append(htmlReporter);
                 success(done);
-            }).catch(done);
+            }).catch(err => {
+                testFail(err);
+            });
+        }).catch(err => {
+            testFail(err);
         });
     });
 });

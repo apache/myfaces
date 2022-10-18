@@ -15,9 +15,9 @@
  */
 
 afterEach(function () {
-    setTimeout(function () {
+ 
         myfaces.testcases.redirect("./test14-multiform.jsf");
-    }, 1000);
+ 
 });
 describe("CSS Head replacement test", function () {
     it("replaces the head and checks whether the css has been replaced", function (done) {
@@ -28,8 +28,10 @@ describe("CSS Head replacement test", function () {
                 execute: 'mainForm',
                 render: '@all',
                 'jakarta.faces.behavior.event': 'action'
-            }).finally(function () {
-                htmlReporter.appendTo("body");
+            }).then(function () {
+                DQ$("body").append(htmlReporter);
+                // mutation observer cannot trigger here because the changes are in the styles on the head
+                // we have to rely on timeouts
                 setTimeout(function () {
                     expect(DQ$("#div1").offsetWidth > 120).toBeTruthy();//"div1 has no width anymore",
                     expect(DQ$("#div2").offsetWidth > 120).toBeTruthy();//"div2 has no width anymore",
@@ -41,7 +43,7 @@ describe("CSS Head replacement test", function () {
                     done();
                 }, 500);
 
-            });
+            }).catch(done);
 
 
     });

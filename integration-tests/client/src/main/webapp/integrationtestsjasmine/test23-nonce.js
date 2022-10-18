@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test24-nonce.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test24-nonce.jsf");
 });
 
 describe("Nonce testing", function () {

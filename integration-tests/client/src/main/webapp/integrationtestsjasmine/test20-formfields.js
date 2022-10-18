@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test21-nonce.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test21-nonce.jsf");
 });
 describe("Execute none handling", function () {
     it("runs an execute request with execute @none", function (done) {
-            DQ$("#centerForm").getAsElem(0).value.action = './test.mockup'
+        DQ$("#centerForm").getAsElem(0).value.action = './test.mockup'
 
-            facesRequest(document.getElementById("submitme"), null, {
-                render: "booga @none",
-                execute: "booga2 @none",
-                op: "executeNone"
-            }).finally(function () {
-                setTimeout(function () {
-                    //we wont get any success
-                    expect(DQ$("#result").innerHTML.indexOf("success")).not.toEqual(-1);
-                    done();
-                }, 500);
-            });
+        facesRequest(document.getElementById("submitme"), null, {
+            render: "booga @none",
+            execute: "booga2 @none",
+            op: "executeNone"
+        }).finally(function () {
+            setTimeout(function () {
+                //we wont get any success
+                expect(DQ$("#result").innerHTML.indexOf("success")).not.toEqual(-1);
+                done();
+            }, 500);
+        });
 
     });
 });

@@ -15,9 +15,7 @@
  */
 
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test17-responseonly.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test17-responseonly.jsf");
 });
 let timer = null;
 describe("Multi form situation", function () {
@@ -25,13 +23,12 @@ describe("Multi form situation", function () {
     afterEach(function () {
         clearInterval(timer);
     });
-    it("runs multiform testing", function () {
+    it("runs multiform testing", function (done) {
 
         let promises = [];
         for (let cnt = 0; cnt < 100; cnt++) {
             if (cnt % 2) {
                 DQ$("#first_input").val = Math.random();
-
                 promises.push(faces.ajax.request("first_input", null, {
                     execute: 'firstForm',
                     render: 'renderTarget1 renderTarget2'
@@ -47,14 +44,7 @@ describe("Multi form situation", function () {
         }
 
         //no error after 100 requests we have passed
-        Promise.all(promises).then(function() {
-
-            expect(true).toBeTruthy();
-        }).catch(function (val) {
-            expect(false).toBeTruthy();
-        });
-
-
+        Promise.all(promises).then(() => success(done)).catch(done);
     });
 
 });

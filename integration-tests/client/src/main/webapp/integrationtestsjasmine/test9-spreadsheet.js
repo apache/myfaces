@@ -15,9 +15,7 @@
  */
 
 afterEach(function () {
-    setTimeout(function () {
         myfaces.testcases.redirect("./test10-doubleeval.jsf");
-    }, 1000);
 });
 describe("Spreadsheet test for the replacement of table elements", function () {
     it("Runs the spreadsheet test", function (done) {
@@ -61,6 +59,6 @@ describe("Spreadsheet test for the replacement of table elements", function () {
                 }
                 done();
             }).catch(done);
-        });
+        }).catch(done);
     });
 });

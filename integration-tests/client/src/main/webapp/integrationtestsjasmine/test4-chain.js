@@ -15,9 +15,7 @@
  */
 
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test5-viewroot2.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test5-viewroot2.jsf");
 });
 describe("Chain function suite", function () {
     it("Should process faces.util.chain properly", function () {

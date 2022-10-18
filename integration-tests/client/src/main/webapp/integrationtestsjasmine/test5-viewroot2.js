@@ -18,9 +18,7 @@ window.viewRoot = true;
 let htmlReporter, found;
 afterEach(function () {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test6-tablebasic.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test6-tablebasic.jsf");
 });
 
 beforeEach(function () {
@@ -36,21 +34,19 @@ describe("ViewRoot with execute @all and render @all", function () {
 
     //expect does not like double includes
     it("Needs to have the root replaced", function (done) {
-        facesRequest("allKeyword", null, {render: "@all", execute: "@all"})
-            .then(() => {
-                setTimeout(() => {
-                    DQ$("body").waitUntilDom(element => {
-                        return (found = found || (DQ$("body").innerHTML.indexOf("refresh successul2") !== -1 && window.__mf_import_cnt == 2));
-                    }).then(element => {
-                        htmlReporter.appendTo(DQ$("body"))
-                        expect(true).toBeTruthy();
-                        success(done);
-                    }).catch((err) => {
-                        DQ$("body").append(htmlReporter);
-                        done(err);
-                    });
-                }, 500);
-            });
+        DQ$("body").waitUntilDom(() => {
+            return (found = found || (DQ$("body").innerHTML.indexOf("refresh successul2") !== -1 && window.__mf_import_cnt == 2));
+        }, {attributes: true, childList: true, subtree: true, timeout: 2000}).then(element => {
+            htmlReporter.appendTo(DQ$("body"))
+            console.log(found);
+            expect(DQ$("body").innerHTML.indexOf("refresh successul2") !== -1).toBeTruthy();
+
+            success(done);
+        }).catch((err) => {
+            DQ$("body").append(htmlReporter);
+            done(err);
+        });
+        facesRequest("allKeyword", null, {render: "@all", execute: "@all"});
 
 
     });

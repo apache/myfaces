@@ -15,9 +15,7 @@
  */
 
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test7-eventtest.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test7-eventtest.jsf");
 });
 describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function () {
 
@@ -37,7 +35,7 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
                     headCol2.indexOf("replaced") !== -1;
 
                 return ret;
-            }).then(() =>success(done)).catch(done);
+            }).then(() => success(done)).catch(done);
 
 
         });
@@ -55,7 +53,7 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
                     col1.indexOf("evaled") !== -1 &&
                     col2.indexOf("replaced") !== -1;
                 return ret;
-            }).then(() =>success(done)).catch(done);
+            }).then(() => success(done)).catch(done);
         });
     });
 
@@ -68,7 +66,7 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
                     rows.last().hasClass("insert_after");
 
                 return ret;
-            }).then(() =>success(done)).catch(done);
+            }).then(() => success(done)).catch(done);
         });
     });
 
@@ -80,7 +78,7 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
                     rows.first().hasClass("insert_before") &&
                     rows.last().hasClass("insert_after");
                 return ret;
-            }).then(() =>success(done)).catch(done);
+            }).then(() => success(done)).catch(done);
         });
     });
 
@@ -90,10 +88,10 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
             DQ$("#table1").waitUntilDom((element) => {
                 let cols = DQ$("#table1  #head_row1 td");
                 let ret = cols.length >= 6 &&
-                    cols.first().hasClass("insert_before") &&
-                    cols.last().hasClass("insert_after");
+                    cols.first().innerHTML.indexOf("inserted before") != -1 &&
+                    cols.last().innerHTML.indexOf("inserted after") != -1;
                 return ret;
-            }).then(() =>success(done)).catch(done);
+            }).then(() => success(done)).catch(done);
         });
     });
 
@@ -103,17 +101,17 @@ describe("Basic DOM Table Operation Tests utilizing the JSF protocol", function 
             DQ$("#table1").waitUntilDom((element) => {
                 let cols = DQ$("#table1  #body_row1 td");
                 let ret = cols.length >= 6 &&
-                    cols.first().hasClass("insert_before") &&
-                    cols.last().hasClass("insert_after");
+                    cols.first().innerHTML.indexOf("inserted before") != -1 &&
+                    cols.last().innerHTML.indexOf("inserted after") != -1;
                 return ret;
-            }).then(() =>success(done)).catch(done);
+            }).then(() => success(done)).catch(done);
         });
     });
     it("Inserts a second body", function (done) {
         emitPPR("insert_body", null, "table_insert_body", "form2").then(function () {
             DQ$("#table1").waitUntilDom((element) => {
-                return element.querySelectorAll("tbody").length >= 2;
-            }).then(() =>success(done)).catch(done);
+                return DQ$("#table1 tbody").length >= 2;
+            }).then(() => success(done)).catch(done);
         });
     });
 });

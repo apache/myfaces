@@ -15,9 +15,9 @@
  */
 
 afterEach(function () {
-    setTimeout(function () {
+
         myfaces.testcases.redirect("./test12-apidecoration.jsf");
-    }, 1000);
+
 });
 describe("Script blocks in various formats", function () {
     it("Performs a script bloc test", function (done) {
@@ -26,13 +26,12 @@ describe("Script blocks in various formats", function () {
             execute: '@none',
             render: 'outputWriter',
             'jakarta.faces.behavior.event': 'action'
-        }).finally(function () {
+        }).then(function () {
             DQ$("#resultArea").waitUntilDom(() =>  {
                 return DQ$(".result2").innerHTML === "normal script --&gt;" &&
                 DQ$(".result3").innerHTML === "normal script --&gt;" &&
                 DQ$(".result4").innerHTML === "normal script ]]&gt;";
             }).then(() => success(done)).catch(done);
-        });
-
+        }).catch(done);
     });
 });

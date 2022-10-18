@@ -32,16 +32,13 @@ faces.ajax.response = function (request, context) {
     };
 
 
-
     assertSuccessPosition = successCalled == 0;
     oldResponse(request, newContext);
     assertSuccessPosition = assertSuccessPosition && successCalled == 1;
 };
 
 afterEach(function () {
-    setTimeout(function () {
-        myfaces.testcases.redirect("./test19-execute.jsf");
-    }, 1000);
+    myfaces.testcases.redirect("./test19-execute.jsf");
 });
 describe("event location test, success must be called in response function", function () {
     it("runs the ajax cycle and checks for the proper event location of the success event", function (done) {
