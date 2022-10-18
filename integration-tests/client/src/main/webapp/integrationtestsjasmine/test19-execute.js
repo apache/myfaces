@@ -18,18 +18,18 @@ afterEach(function () {
     myfaces.testcases.redirect("./test20-formfields.jsf");
 });
 describe("Execute none handling", function () {
-    it("runs an execute request with execute @none", function () {
+    it("runs an execute request with execute @none", function (done) {
 
         document.getElementById("centerForm").action = "./test.mockup";
         facesRequest(document.getElementById("submitme"), null, {
             render: "booga @none",
             execute: "booga2 @none",
             op: "executeNone"
-        }).finally(function () {
-            setTimeout(function () {
-                expect(document.getElementById("result").innerHTML.indexOf("success")).not.toBe(-1);
-            }, 500);
-        });
-
+        }).then(() => {
+            DQ$("#result")
+                .waitUntilDom(item => item.innerHTML.indexOf("success") !== -1)
+                .then(() => success(done))
+                .catch(done);
+        }).catch(done);
     });
 });

@@ -19,17 +19,15 @@ afterEach(function () {
 describe("Execute none handling", function () {
     it("runs an execute request with execute @none", function (done) {
         DQ$("#centerForm").getAsElem(0).value.action = './test.mockup'
-
         facesRequest(document.getElementById("submitme"), null, {
             render: "booga @none",
             execute: "booga2 @none",
             op: "executeNone"
         }).finally(function () {
-            setTimeout(function () {
-                //we wont get any success
-                expect(DQ$("#result").innerHTML.indexOf("success")).not.toEqual(-1);
-                done();
-            }, 500);
+            DQ$("#result")
+                .waitUntilDom(item => item.innerHTML.indexOf("success") !== -1)
+                .then(() => success(done))
+                .catch(done);
         });
 
     });

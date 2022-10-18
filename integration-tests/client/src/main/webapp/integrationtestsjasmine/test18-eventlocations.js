@@ -42,16 +42,14 @@ afterEach(function () {
 });
 describe("event location test, success must be called in response function", function () {
     it("runs the ajax cycle and checks for the proper event location of the success event", function (done) {
-
         facesRequest('idgiven', null, {
             execute: '@this',
             render: 'myVal',
             'jakarta.faces.behavior.event': 'action'
         }).finally(function () {
-            setTimeout(function () {
-                expect(assertSuccessPosition).toBeTruthy();
-                done();
-            }, 500);
+            DQ$("body").waitUntilDom(() => assertSuccessPosition)
+                .then(success(done))
+                .catch(done);
         });
     });
 });

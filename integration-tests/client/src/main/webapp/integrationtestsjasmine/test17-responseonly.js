@@ -61,9 +61,7 @@ describe("Various response tests giving the codebase something to chew on in the
             'jakarta.faces.behavior.event': 'action'
         }).then(function () {
             done();
-        }).catch(function (val) {
-            fail();
-        });
+        }).catch(done);
 
 
     });
@@ -75,15 +73,11 @@ describe("Various response tests giving the codebase something to chew on in the
             render: 'myVal',
             'jakarta.faces.behavior.event': 'action'
         }).then(function () {
-            setTimeout(function () {
-
-                //TODO sometimes this test fails due to timing issues
-                expect(DQ$("#myVal").innerHTML.indexOf("1") != -1).toBeTruthy(); //"innerHTML of result must be 1",
-                done();
-            }, 500);
-        }).catch(function (val) {
-            fail();
-        });
+            DQ$("body")
+                .waitUntilDom(() => DQ$("#myVal").innerHTML.indexOf("1") !== -1)
+                .then(() => success(done))
+                .catch(done);
+        }).catch(done);
 
     });
     it("runs on an empty context map", function (done) {
@@ -93,13 +87,10 @@ describe("Various response tests giving the codebase something to chew on in the
             render: 'outputWriter',
             'jakarta.faces.behavior.event': 'action'
         }).then(function () {
-            setTimeout(function () {
-                expect(DQ$("#myVal").innerHTML.indexOf("1") != -1).toBeTruthy(); //"innerHTML of result must be 1",
-            }, 500);
-            done();
-        }).catch(function (val) {
-            fail();
-        });
-
+            DQ$("body")
+                .waitUntilDom(() => DQ$("#myVal").innerHTML.indexOf("1") !== -1)
+                .then(() => success(done))
+                .catch(done);
+        }).catch(done);
     });
 });

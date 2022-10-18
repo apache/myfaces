@@ -21,7 +21,7 @@ let resultData = JSON.parse(sessionStorage.getItem("_jasmine_log__") || "[]");
 
 let failures = resultData.filter(item => 'undefined' != typeof item.status && item.status != 'passed');
 
-let failureHolder = DomQuery.byId("failures");
+let failureHolder = DQ$("#failures");
 if (!resultData.length) {
     DomQuery.fromMarkup(`<h2> No test results found, please rerun the tests </h2>`).appendTo(failureHolder);
 } else if (!failures.length) {

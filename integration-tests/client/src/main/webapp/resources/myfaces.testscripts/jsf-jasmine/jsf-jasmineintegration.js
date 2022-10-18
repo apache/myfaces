@@ -91,6 +91,7 @@
      */
     window.facesRequest = function (element, event, options) {
         return new Promise(function (resolve, reject) {
+            let errorTriggered = false;
             let finalArgs = [];
             finalArgs.push(element);
             finalArgs.push(event);
@@ -101,15 +102,21 @@
             }
             let oldOnError = finalArgs[2]["onerror"];
             finalArgs[2]["onerror"] = function (evt) {
-                reject();
+                reject(new Error(evt));
+                errorTriggered = true;
                 if (oldOnError) {
                     oldOnError(evt);
                 }
             };
             let oldOnEvent = finalArgs[2]["onevent"];
             finalArgs[2]["onevent"] = function (evt) {
-                if (evt.status.toLowerCase() === "success")
-                    resolve(evt);
+                if (evt.status.toLowerCase() === "success") {
+                    // if an error already was triggered this promise already
+                    // is rejected
+                    if(!errorTriggered) {
+                        resolve(evt);
+                    }
+                }
                 if (oldOnEvent) {
                     oldOnEvent(evt);
                 }

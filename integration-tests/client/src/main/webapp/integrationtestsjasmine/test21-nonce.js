@@ -22,13 +22,12 @@ describe("Nonce testing", function () {
 
         emitPPR("cmd_eval", null, "execute_nonce").then(function () {
             //another faster and better way we use wait untilDom
-            DomQuery.byId("body")
-                .waitUntilDom(() => DQ$("#result2").innerHTML == "success")
+            DQ$("body")
+                .waitUntilDom(() => DQ$("#result2").innerHTML === "success")
                 .then(() => {
                     done(new Error("fail nonce error was ignrored"));
                 }).catch(() => {
-                expect(true).toEqual(true);
-                done()
+                success(done);
             });
         })
     });

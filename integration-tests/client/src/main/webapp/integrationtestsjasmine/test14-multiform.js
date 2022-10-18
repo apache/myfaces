@@ -15,7 +15,7 @@
  */
 
 afterEach(function () {
-    myfaces.testcases.redirect("./test17-responseonly.jsf");
+    myfaces.testcases.redirect("./test15-jsf22delay.jsf");
 });
 let timer = null;
 describe("Multi form situation", function () {

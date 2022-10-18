@@ -14,33 +14,30 @@
  * limitations under the License.
  */
 afterEach(function () {
-    myfaces.testcases.redirect("./finalResults.jsf");
+    myfaces.testcases.redirect("./test17-responseonly.jsf");
 });
 describe("JSF 22 delay test", function () {
     it("Runs the delay test", function () {
-
-
-            let promises = [];
-
+        let promises = [];
+        promises.push(facesRequest(document.getElementById("delayControl"), null, {
+            execute: "delayControl",
+            render: "delayoutput",
+            op: "cleardelay"
+        }));
+        for (let cnt = 0; cnt < 100; cnt++) {
             promises.push(facesRequest(document.getElementById("delayControl"), null, {
                 execute: "delayControl",
                 render: "delayoutput",
-                op: "cleardelay"
+                op: "delay",
+                delay: 500,
+                myfaces: {delay: 500}
             }));
-            for (let cnt = 0; cnt < 100; cnt++) {
-                promises.push(facesRequest(document.getElementById("delayControl"), null, {
-                    execute: "delayControl",
-                    render: "delayoutput",
-                    op: "delay",
-                    delay: 500,
-                    myfaces: {delay: 500}
-                }));
-            }
-
+        }
         Promise.all(promises).finally(function () {
-            setTimeout(function () {
-                expect(document.getElementById("delayoutput").innerHTML.indexOf("Number of requests so far 1") != -1).toBeTruthy(); //"Check for correct content",
-            }, 500)
+            DQ$("delayoutput")
+                .waitUntilDom(element => element.innerHTML.indexOf("Number of requests so far 1") !== -1)
+                .then(() => success(done))
+                .catch(done)
         })
     });
 });

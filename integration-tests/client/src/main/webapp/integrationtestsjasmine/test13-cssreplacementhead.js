@@ -15,35 +15,38 @@
  */
 
 afterEach(function () {
- 
-        myfaces.testcases.redirect("./test14-multiform.jsf");
- 
+
+    myfaces.testcases.redirect("./test14-multiform.jsf");
+
 });
 describe("CSS Head replacement test", function () {
     it("replaces the head and checks whether the css has been replaced", function (done) {
         let htmlReporter = DQ$(".jasmine_html-reporter");
 
-            htmlReporter.detach();
-            facesRequest('nextPage', null, {
-                execute: 'mainForm',
-                render: '@all',
-                'jakarta.faces.behavior.event': 'action'
-            }).then(function () {
-                DQ$("body").append(htmlReporter);
-                // mutation observer cannot trigger here because the changes are in the styles on the head
-                // we have to rely on timeouts
-                setTimeout(function () {
-                    expect(DQ$("#div1").offsetWidth > 120).toBeTruthy();//"div1 has no width anymore",
-                    expect(DQ$("#div2").offsetWidth > 120).toBeTruthy();//"div2 has no width anymore",
-                    expect(DQ$("#div3").offsetWidth > 120).toBeTruthy();//"div3 has no width anymore",
-                    expect(DQ$("#div4").offsetWidth < 120).toBeTruthy();//"div4 has a width",
-                    expect(DQ$("#div5").offsetWidth < 120).toBeTruthy();//"div5 has a width",
-                    expect(DQ$("#div6").offsetWidth < 120).toBeTruthy();//"div6 has a width",
-                    expect(DQ$("#div7").offsetWidth < 120).toBeTruthy();//"div6 has a width",
-                    done();
-                }, 500);
-
+        htmlReporter.detach();
+        facesRequest('nextPage', null, {
+            execute: 'mainForm',
+            render: '@all',
+            'jakarta.faces.behavior.event': 'action'
+        }).then(function () {
+            // this triggers the waitUntil in the dom and reattaches the html reporter
+            // this is needed because the style variations do not trigger a change anymore
+            setTimeout(() => DQ$("body").innerHTML = DQ$("body").innerHTML + " ", 100);
+            DQ$("body")
+                .append(htmlReporter)
+                .waitUntilDom(() => {
+                let ret = DQ$("#div1").offsetWidth > 120 &&
+                DQ$("#div2").offsetWidth > 120 &&
+                DQ$("#div3").offsetWidth > 120 &&
+                DQ$("#div4").offsetWidth < 120 &&
+                DQ$("#div5").offsetWidth < 120 &&
+                DQ$("#div6").offsetWidth < 120 &&
+                DQ$("#div7").offsetWidth < 120;
+                return ret;
+            }).then(() => {
+                success(done)
             }).catch(done);
+        }).catch(done);
 
 
     });

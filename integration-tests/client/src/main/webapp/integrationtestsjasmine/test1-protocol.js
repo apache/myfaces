@@ -15,10 +15,9 @@
  */
 
 afterEach(function () {
-
-        myfaces.testcases.redirect("./test2-viewroot.jsf");
-
+    myfaces.testcases.redirect("./test2-viewroot.jsf");
 });
+//const _it = () => {}
 
 describe("Testsuite testing the protocol", function () {
     beforeEach(function () {
@@ -31,87 +30,76 @@ describe("Testsuite testing the protocol", function () {
     it("It should run an Eval Ajax command", function (done) {
         emitPPR("cmd_eval", null, "eval1").then(function () {
             //another faster and better way we use wait untilDom
-            const condition = (element) => element.html().value.indexOf("succeed") != -1;
-            DomQuery.querySelectorAll("#evalarea1").waitUntilDom(condition).then(() => {
-                //  jasmine expects at least one expectation, but at this point in time, we
-                //  already have fulfilled it
-                expect(true).toBeTruthy();
-                done();
-            }).catch(done);
-        })
-    });
+            const condition = (element) => element.innerHTML.indexOf("succeed") !== -1;
+            DQ$("#evalarea1")
+                .waitUntilDom(condition)
+                .then(() => success(done));
+        }).catch(done);
+    })
 
     it("It should run Update Insert Spec - Insert Path", function (done) {
-
         emitPPR("cmd_update_insert2", null, "updateinsert2").then(function () {
             DQ$("body").waitUntilDom(() => {
-                return DomQuery.byId("evalarea2").innerHTML.indexOf("succeed") != -1 &&
-                DomQuery.byId("evalarea3").innerHTML.indexOf("succeed") != -1 &&
-                DomQuery.byId("insertbefore").length &&
-                DomQuery.byId("insertafter").length;
+                return DQ$("#evalarea2").innerHTML.indexOf("succeed") !== -1 &&
+                    DQ$("#evalarea3").innerHTML.indexOf("succeed") !== -1 &&
+                    DQ$("#insertbefore").length &&
+                    DQ$("#insertafter").length;
             }).then(() => {
-                DomQuery.byId("insertbefore").delete();
-                DomQuery.byId("insertafter").delete();
-                expect(true).toBeTruthy();
-                done();
+                DQ$("#insertbefore").delete();
+                DQ$("#insertafter").delete();
+                success(done);
             }).catch(done);
         });
     });
 
     it("It should run delete", function (done) {
-
         emitPPR("cmd_delete", null, "delete1").then(function () {
-            DomQuery.byId("deleteable").waitUntilDom((element) => element.isAbsent())
+            DQ$("#deleteable").waitUntilDom((element) => element.isAbsent())
                 .then(() => {
                     let newNode = DomQuery.fromMarkup("<div id='deleteable'>deletearea readded by automated test</div>");
-                    newNode.appendTo(DomQuery.byId("testResults"));
-                    expect(true).toBeTruthy();
-                    done();
+                    newNode.appendTo(DQ$("#testResults"));
+                    success(done);
                 }).catch(done);
         });
     });
 
     it("Should run change attributes", function (done) {
-
-        emitPPR("cmd_attributeschange", null, "attributes").catch(ex => {
-            fail();
-        }).then(function () {
-            DomQuery.byId("attributeChange")
-                .waitUntilDom((element) => element.style('borderWidth').value == "1px")
+        emitPPR("cmd_attributeschange", null, "attributes").catch(done).then(function () {
+            DQ$("#attributeChange")
+                .waitUntilDom((element) => element.style('borderWidth').value === "1px")
                 .then((element) => {
                     element.style('borderWidth').value = "0px";
-                    expect(true).toBeTruthy();
-                    done();
+                    success(done);
                 }).catch(done);
         });
     });
 
     it("should trigger Error Trigger Ajax Illegal Response", function (done) {
-        emitPPR("cmd_illegalresponse", null, "illegalResponse").then(() => {
-            fail();
-        }).catch(function () {
-            DomQuery.byId("body").waitUntilDom(() => {
+        emitPPR("cmd_illegalresponse", null, "illegalResponse").then(() => done(new Error("fail"))).catch(function () {
+            DQ$("body").waitUntilDom(() => {
                 return myfaces.testcases.ajaxEvent.type === "error" &&
                     myfaces.testcases.ajaxEvent.status === "malformedXML" &&
-                    myfaces.testcases.ajaxEvent.responseCode == 200 &&
-                    myfaces.testcases.ajaxEvent.source.id == "cmd_illegalresponse";
-            }).then(() => {
-                expect(true).toBeTruthy();
-                done();
-            }).catch(done);
+                    myfaces.testcases.ajaxEvent.responseCode === "200" &&
+                    myfaces.testcases.ajaxEvent.source.id === "cmd_illegalresponse";
+            }).then(() => success(done)).catch(done);
         });
     });
 
-    it("Should trigger an ajax server error and onerror and onsuccess must have been called in this case", function (done) {
-        emitPPR("cmd_error", null, "errors").catch(function () {
-            DomQuery.byId("body")
-                .waitUntilDom(() => myfaces.testcases.ajaxEvents["error"] && myfaces.testcases.ajaxEvents["success"])
+    it("Should trigger an ajax server error and onerror and onsuccess must have been called in this case",
+        (done) => {
+            emitPPR("cmd_error", null, "errors")
                 .then(() => {
-                    expect(true).toBeTruthy();
-                    done();
+                    debugger;
+                    done("Fail");
                 })
-                .catch(done);
+                .catch(() => {
+                    DQ$("body")
+                        .waitUntilDom(() => {
+                            return myfaces.testcases.ajaxEvents["error"] && myfaces.testcases.ajaxEvents["success"]
+                        })
+                        .then(() => success(done))
+                        .catch(done);
+                })
         });
-    });
 });
 

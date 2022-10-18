@@ -22,10 +22,10 @@ describe("Nonce testing working", function () {
     it("runs an embedded script with a nonce and works", function (done) {
         emitPPR("cmd_eval", null, "execute_nonce2").then(function () {
             //another faster and better way we use wait untilDom
-            DomQuery.byId("body")
-                .waitUntilDom(() => DQ$("#result3").innerHTML == "success")
+            DQ$("body")
+                .waitUntilDom(() => DQ$("#result3").innerHTML === "success")
                 .then(() => {
-                    expect(DQ$("#result3").innerHTML == "success").toBe(true);
+                    expect(DQ$("#result3").innerHTML === "success").toBe(true);
                     done();
                 }).catch(done);
         })
