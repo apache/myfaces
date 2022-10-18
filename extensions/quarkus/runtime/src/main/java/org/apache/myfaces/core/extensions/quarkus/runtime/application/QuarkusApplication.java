@@ -24,7 +24,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationWrapper;
 import jakarta.faces.context.FacesContext;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.config.RuntimeConfig;
 
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusELResolverBuilder;

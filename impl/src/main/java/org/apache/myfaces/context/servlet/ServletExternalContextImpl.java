@@ -56,8 +56,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.apache.myfaces.config.MyfacesConfig;
 
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.context.flash.FlashImpl;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.lang.EnumerationIterator;

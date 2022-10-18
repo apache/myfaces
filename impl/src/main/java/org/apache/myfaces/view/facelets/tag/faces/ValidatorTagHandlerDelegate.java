@@ -36,11 +36,11 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagException;
 import jakarta.faces.view.facelets.TagHandlerDelegate;
 import jakarta.faces.view.facelets.ValidatorHandler;
-import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerUtils;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 /**

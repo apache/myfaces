@@ -35,7 +35,7 @@ import jakarta.faces.application.Resource;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**

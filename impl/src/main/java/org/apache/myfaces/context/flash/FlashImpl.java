@@ -19,6 +19,7 @@
 package org.apache.myfaces.context.flash;
 
 import org.apache.myfaces.util.lang.SubKeyMap;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.ExternalContextUtils;
 
 import jakarta.faces.application.FacesMessage;
@@ -44,7 +45,7 @@ import jakarta.faces.event.PostPutFlashValueEvent;
 import jakarta.faces.event.PreClearFlashEvent;
 import jakarta.faces.event.PreRemoveFlashValueEvent;
 import jakarta.faces.lifecycle.ClientWindow;
-import org.apache.myfaces.config.MyfacesConfig;
+
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.token.TokenGenerator;
 

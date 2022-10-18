@@ -21,9 +21,8 @@ package org.apache.myfaces.renderkit;
 import java.io.StringWriter;
 
 import org.junit.Assert;
-
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Test;

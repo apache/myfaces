@@ -30,11 +30,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
+
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
-import org.apache.myfaces.config.MyfacesConfig;
 
 /**
  * ResourceLoader that uses a temporal folder to cache resources, avoiding the problem

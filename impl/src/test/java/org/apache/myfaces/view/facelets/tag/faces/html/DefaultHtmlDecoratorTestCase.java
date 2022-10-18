@@ -46,7 +46,8 @@ import jakarta.faces.view.Location;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagDecorator;
-import org.apache.myfaces.config.MyfacesConfig;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;

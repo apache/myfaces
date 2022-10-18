@@ -24,8 +24,8 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.el.CompositeComponentExpressionHolder;
-import org.apache.myfaces.config.MyfacesConfig;
 
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.el.resolver.CompositeComponentELResolver;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Assert;

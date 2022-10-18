@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 
 public class AcidARCacheELMyFacesRequestTestCase extends AcidMyFacesRequestTestCase
 {

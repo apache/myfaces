@@ -23,9 +23,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.faces.context.ExternalContext;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import jakarta.faces.context.ExternalContext;
 
 public final class JavascriptUtils
 {

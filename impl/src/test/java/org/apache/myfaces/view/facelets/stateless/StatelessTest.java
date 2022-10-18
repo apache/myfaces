@@ -22,7 +22,7 @@ import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.render.ResponseStateManager;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.junit.Assert;
 import org.junit.Test;

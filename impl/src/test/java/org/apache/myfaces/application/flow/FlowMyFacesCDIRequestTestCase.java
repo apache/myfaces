@@ -24,8 +24,9 @@ import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UICommand;
 import jakarta.faces.flow.Flow;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.junit.Assert;
 import org.junit.Test;
 

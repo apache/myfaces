@@ -45,7 +45,7 @@ import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
 import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory;
@@ -333,7 +333,7 @@ class MyFacesProcessor
             combinedIndex.getIndex()
                     .getAnnotations(DotName.createSimple(clazz))
                     .stream()
-                    .forEach(annotation -> 
+                    .forEach(annotation ->
                     {
                         if (annotation.target().kind() == AnnotationTarget.Kind.CLASS)
                         {
@@ -425,7 +425,7 @@ class MyFacesProcessor
     {
         List<String> classNames = new ArrayList<>();
         List<Class<?>> classes = new ArrayList<>();
-       
+
         classNames.addAll(collectSubclasses(combinedIndex, Renderer.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ClientBehaviorRenderer.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, javax.el.ValueExpression.class.getName()));
@@ -438,7 +438,7 @@ class MyFacesProcessor
         classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLocalPart");
         classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNot");
         classNames.add("com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
-        
+
         for (String factory : FACTORIES)
         {
             classNames.addAll(collectSubclasses(combinedIndex, factory));
@@ -467,17 +467,17 @@ class MyFacesProcessor
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(false, false, classes.toArray(new Class[classes.size()])));
     }
-    
+
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
     void registerForMethodReflection(MyFacesRecorder recorder, BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
                                CombinedIndexBuildItem combinedIndex)
-    {        
+    {
         List<String> classNames = new ArrayList<>();
         List<Class<?>> classes = new ArrayList<>();
-        
+
         classNames.add("jakarta.faces._FactoryFinderProviderFactory");
-        
+
         classNames.addAll(collectSubclasses(combinedIndex, TagHandler.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ConverterHandler.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ComponentHandler.class.getName()));
@@ -499,21 +499,21 @@ class MyFacesProcessor
                 AbstractFacesInitializer.class,
                 ExternalContextUtils.class,
                 BeanEntry.class));
-        
+
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, false, classNames.toArray(new String[classNames.size()])));
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, false, classes.toArray(new Class[classes.size()])));
     }
 
-    
+
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
     NativeImageConfigBuildItem registerForFieldReflection(MyFacesRecorder recorder,
                                BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
                                CombinedIndexBuildItem combinedIndex)
-    {     
-        reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, 
+    {
+        reflectiveClass.produce(new ReflectiveClassBuildItem(true, true,
                 "javax.faces.context._MyFacesExternalContextHelper"));
 
         // Register ViewScopeBeanHolder to be initialized at runtime, it uses a static random
@@ -529,23 +529,23 @@ class MyFacesProcessor
     {
         nativeImageResourceProducer.produce(new NativeImageResourceBuildItem(
                 "META-INF/rsc/myfaces-dev-error.xml",
-                "META-INF/rsc/myfaces-dev-debug.xml", 
+                "META-INF/rsc/myfaces-dev-debug.xml",
                 "org/apache/myfaces/resource/default.dtd",
-                "org/apache/myfaces/resource/datatypes.dtd", 
+                "org/apache/myfaces/resource/datatypes.dtd",
                 "META-INF/web-fragment.xml",
                 "META-INF/resources/org/apache/myfaces/windowId/windowhandler.html",
-                "org/apache/myfaces/resource/facelet-taglib_1_0.dtd", 
+                "org/apache/myfaces/resource/facelet-taglib_1_0.dtd",
                 "org/apache/myfaces/resource/javaee_5.xsd",
                 "org/apache/myfaces/resource/jakartaee_9.xsd",
                 "org/apache/myfaces/resource/jakartaee_10.xsd",
                 "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd",
-                "org/apache/myfaces/resource/XMLSchema.dtd", 
+                "org/apache/myfaces/resource/XMLSchema.dtd",
                 "org/apache/myfaces/resource/facesconfig_1_0.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_1_1.dtd",
-                "org/apache/myfaces/resource/web-facesconfig_1_2.dtd", 
+                "org/apache/myfaces/resource/web-facesconfig_1_2.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_2_0.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_2_1.dtd",
-                "org/apache/myfaces/resource/web-facesconfig_2_2.dtd", 
+                "org/apache/myfaces/resource/web-facesconfig_2_2.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_2_3.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_3_0.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_4_0.dtd",
@@ -576,7 +576,7 @@ class MyFacesProcessor
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.servlet.LocalStrings"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.el.LocalStrings"));
     }
-    
+
     public List<String> collectSubclasses(CombinedIndexBuildItem combinedIndex, String className)
     {
         List<String> classes = combinedIndex.getIndex()
@@ -610,7 +610,7 @@ class MyFacesProcessor
         List<String> typeNames = new ArrayList<>();
 
         DotName produces = DotName.createSimple(Produces.class.getName());
-        
+
         // loop all @Named beans and @Produces
         for (AnnotationInstance ai :
                 combinedIndex.getIndex().getAnnotations(DotName.createSimple(Named.class.getName())))
@@ -618,7 +618,7 @@ class MyFacesProcessor
             if (ai.target().kind() == AnnotationTarget.Kind.CLASS)
             {
                 types.add(ai.target().asClass());
-            } 
+            }
             else if (ai.target().kind() == AnnotationTarget.Kind.FIELD)
             {
                 if (ai.target().asField().annotation(produces) != null)
@@ -664,7 +664,7 @@ class MyFacesProcessor
                         if (ci == null)
                         {
                             //try to add the name
-                            typeNames.add(ai.target().asMethod().returnType().asClassType().name().toString()); 
+                            typeNames.add(ai.target().asMethod().returnType().asClassType().name().toString());
                         }
                         else
                         {
@@ -713,7 +713,7 @@ class MyFacesProcessor
             // and try to register the ClientProxy
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, type.name().toString() + "_ClientProxy"));
         }
-        
+
 
         // sort our duplicate
         typeNames = typeNames.stream().distinct().collect(Collectors.toList());
@@ -727,14 +727,14 @@ class MyFacesProcessor
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName + "_ClientProxy"));
         }
     }
-    
+
     void collectPublicTypes(ClassInfo type, List<ClassInfo> publicTypes, CombinedIndexBuildItem combinedIndex)
     {
         if (type == null)
         {
             return;
         }
-        
+
         ClassInfo ci = (ClassInfo) type;
         for (MethodInfo mi : ci.methods())
         {
@@ -765,7 +765,7 @@ class MyFacesProcessor
             }
         }
     }
-    
+
 
     @BuildStep
     void buildPrimeFacesRecommendedInitParams(BuildProducer<ServletInitParamBuildItem> initParam) throws IOException
@@ -782,19 +782,19 @@ class MyFacesProcessor
     {
         additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("org/primefaces/component"));
     }
-    
+
     @BuildStep
     void substratePrimeFacesResourceBuildItems(BuildProducer<NativeImageResourceBuildItem> nativeImageResourceProducer,
                                      BuildProducer<NativeImageResourceBundleBuildItem> resourceBundleBuildItem)
     {
         nativeImageResourceProducer
                 .produce(new NativeImageResourceBuildItem("META-INF/maven/org.primefaces/primefaces/pom.properties"));
-        
+
 
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_en"));
     }
-    
+
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
     void registerPrimeFaces(MyFacesRecorder recorder,
@@ -806,8 +806,8 @@ class MyFacesProcessor
                 "org.primefaces.expression.SearchExpressionUtils","org.primefaces.util.EscapeUtils",
                 "org.primefaces.util.SecurityUtils",
                 "org.primefaces.util.LangUtils"));
-        
-        reflectiveClass.produce(new ReflectiveClassBuildItem(false, false, 
+
+        reflectiveClass.produce(new ReflectiveClassBuildItem(false, false,
                 "org.primefaces.config.PrimeEnvironment",
                 "org.primefaces.util.MessageFactory",
                 "com.lowagie.text.pdf.MappedRandomAccessFile"));
@@ -823,6 +823,6 @@ class MyFacesProcessor
         runtimeInitClassBuildItem.produce(
                 new RuntimeInitializedClassBuildItem(PropertyDescriptorUtils.class.getCanonicalName()));
     }
-    
-    
+
+
 }

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 import jakarta.faces.context.FacesContext;
 import java.util.function.Consumer;
 import org.apache.myfaces.cdi.view.ViewScopeContext;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.LRULinkedHashMap;
 
 /**
