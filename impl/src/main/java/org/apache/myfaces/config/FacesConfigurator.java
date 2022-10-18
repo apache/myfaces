@@ -531,16 +531,28 @@ public class FacesConfigurator
         //
         ApplicationFactory applicationFactory
                 = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+        while(!(applicationFactory instanceof org.apache.myfaces.application.ApplicationFactoryImpl))
+        {
+            applicationFactory = applicationFactory.getWrapped(); // MYFACES-4469
+        }
         //appFactoryPurgeMethod = applicationFactory.getClass().getMethod("purgeApplication", NO_PARAMETER_TYPES);
         appFactoryPurgeMethod = getPurgeMethod(applicationFactory, "purgeApplication", NO_PARAMETER_TYPES);
 
         RenderKitFactory renderKitFactory
                 = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        while(!(renderKitFactory instanceof org.apache.myfaces.renderkit.RenderKitFactoryImpl))
+        {
+            renderKitFactory = renderKitFactory.getWrapped(); // MYFACES-4469
+        }
         //renderKitPurgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", NO_PARAMETER_TYPES);
         renderKitPurgeMethod = getPurgeMethod(renderKitFactory, "purgeRenderKit", NO_PARAMETER_TYPES);
 
         LifecycleFactory lifecycleFactory
                 = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+        while(!(lifecycleFactory instanceof org.apache.myfaces.lifecycle.LifecycleFactoryImpl))
+        {
+            lifecycleFactory = lifecycleFactory.getWrapped(); // MYFACES-4469
+        }
         //lifecyclePurgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", NO_PARAMETER_TYPES);
         lifecyclePurgeMethod = getPurgeMethod(lifecycleFactory, "purgeLifecycle", NO_PARAMETER_TYPES);
 
