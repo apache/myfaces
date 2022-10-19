@@ -60,7 +60,8 @@ import java.util.stream.StreamSupport;
 import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.view.ViewDeclarationLanguage;
-import org.apache.myfaces.config.MyfacesConfig;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.LocaleUtils;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;

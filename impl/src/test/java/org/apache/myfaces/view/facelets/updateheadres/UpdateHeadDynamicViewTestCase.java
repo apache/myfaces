@@ -21,9 +21,9 @@ package org.apache.myfaces.view.facelets.updateheadres;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
-import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 

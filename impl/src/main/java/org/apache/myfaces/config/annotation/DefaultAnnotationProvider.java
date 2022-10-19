@@ -50,7 +50,7 @@ import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.validator.FacesValidator;
 
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;

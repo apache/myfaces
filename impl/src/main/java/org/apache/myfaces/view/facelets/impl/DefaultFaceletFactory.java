@@ -41,8 +41,7 @@ import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.config.MyfacesConfig;
-
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.resource.ResourceLoaderUtils;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.ExternalSpecifications;

@@ -33,8 +33,9 @@ import java.util.concurrent.Future;
 import java.util.logging.Logger;
 import jakarta.faces.context.ExternalContext;
 import jakarta.websocket.Session;
-import org.apache.myfaces.config.MyfacesConfig;
+
 import org.apache.myfaces.push.WebsocketSessionClusterSerializedRestore;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.push.Json;
 import org.apache.myfaces.util.lang.ConcurrentLRUCache;
 import org.apache.myfaces.util.lang.Lazy;

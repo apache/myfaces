@@ -126,6 +126,7 @@ import org.apache.myfaces.config.element.FaceletsTemplateMapping;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.el.TracingELResolverPhaseListener;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.renderkit.LazyRenderKit;

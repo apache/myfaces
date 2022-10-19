@@ -24,7 +24,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.config.MyfacesConfig;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.ConcurrentLRUCache;
 
 /**

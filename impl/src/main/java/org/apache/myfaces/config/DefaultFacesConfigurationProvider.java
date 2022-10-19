@@ -70,6 +70,7 @@ import org.apache.myfaces.config.impl.element.FacesConfigImpl;
 import org.apache.myfaces.config.impl.element.FacesFlowDefinitionImpl;
 import org.apache.myfaces.config.impl.element.FacesFlowReturnImpl;
 import org.apache.myfaces.config.impl.element.NavigationCaseImpl;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.FaceletConfigResourceProvider;

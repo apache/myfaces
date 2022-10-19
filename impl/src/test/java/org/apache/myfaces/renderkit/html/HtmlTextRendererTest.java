@@ -34,10 +34,10 @@ import jakarta.faces.convert.ConverterException;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;

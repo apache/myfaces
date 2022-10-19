@@ -23,9 +23,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import jakarta.el.ELResolver;
-import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.el.resolver.CompositeELResolver;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.After;

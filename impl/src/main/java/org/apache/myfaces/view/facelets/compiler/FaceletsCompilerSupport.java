@@ -31,7 +31,7 @@ import jakarta.faces.view.facelets.TagDecorator;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.tag.ComponentTagDeclarationLibrary;

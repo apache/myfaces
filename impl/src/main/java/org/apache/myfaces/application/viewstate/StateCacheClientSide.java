@@ -18,12 +18,11 @@
  */
 package org.apache.myfaces.application.viewstate;
 
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactory;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactoryRandom;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactorySecureRandom;
 import jakarta.faces.context.FacesContext;
-
-import org.apache.myfaces.config.MyfacesConfig;
 
 class StateCacheClientSide extends StateCache<Object, Object>
 {

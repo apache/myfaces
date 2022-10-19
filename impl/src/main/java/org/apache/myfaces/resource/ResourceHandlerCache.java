@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 import jakarta.faces.context.FacesContext;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.ConcurrentLRUCache;
 
 public class ResourceHandlerCache

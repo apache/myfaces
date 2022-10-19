@@ -20,7 +20,7 @@ package org.apache.myfaces.core.extensions.quarkus.runtime.spi;
 
 import javax.el.ELResolver;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.DefaultELResolverBuilder;
 

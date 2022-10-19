@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid;
 
-import jakarta.faces.application.StateManager;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import jakarta.faces.application.StateManager;
 
 public class AcidPssRefreshMyFacesRequestTestCase extends AcidMyFacesRequestTestCase
 {

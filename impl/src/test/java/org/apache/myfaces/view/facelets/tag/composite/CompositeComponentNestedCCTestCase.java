@@ -24,8 +24,8 @@ import java.io.StringWriter;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
-import org.apache.myfaces.config.MyfacesConfig;
 
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;

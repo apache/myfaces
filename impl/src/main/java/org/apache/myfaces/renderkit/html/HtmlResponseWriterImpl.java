@@ -34,7 +34,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.ContentTypeUtils;
 import org.apache.myfaces.renderkit.html.util.UnicodeEncoder;

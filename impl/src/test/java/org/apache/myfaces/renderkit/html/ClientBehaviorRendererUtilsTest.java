@@ -24,6 +24,7 @@ import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorBase;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.junit.Assert;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
@@ -31,7 +32,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.html.HtmlInputText;
 
 import java.util.*;
-import org.apache.myfaces.config.MyfacesConfig;
+
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.test.mock.MockFacesContext;
 

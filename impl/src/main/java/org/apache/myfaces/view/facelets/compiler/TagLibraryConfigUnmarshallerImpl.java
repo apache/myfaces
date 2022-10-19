@@ -42,7 +42,7 @@ import org.apache.myfaces.config.impl.element.facelets.FaceletSourceTagImpl;
 import org.apache.myfaces.config.impl.element.facelets.FaceletTagImpl;
 import org.apache.myfaces.config.impl.element.facelets.FaceletTagLibraryImpl;
 import org.apache.myfaces.config.impl.element.facelets.FaceletValidatorTagImpl;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;

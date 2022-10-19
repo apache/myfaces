@@ -91,8 +91,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.myfaces.application.StateManagerImpl;
 
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.application.ViewIdSupport;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.util.WebConfigParamUtils;

@@ -26,9 +26,8 @@ import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewResource;
 
 import org.apache.myfaces.config.RuntimeConfig;
-
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -32,9 +32,9 @@ import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewParameter;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.view.ViewMetadata;
-import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.pool.impl.ViewPoolImpl;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;

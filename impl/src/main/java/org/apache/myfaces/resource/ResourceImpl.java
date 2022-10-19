@@ -30,7 +30,7 @@ import jakarta.faces.application.Resource;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.application.FacesServletMapping;
 import org.apache.myfaces.application.FacesServletMappingUtils;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 
 /**
  * Default implementation for resources

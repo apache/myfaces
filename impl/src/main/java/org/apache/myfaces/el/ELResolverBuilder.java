@@ -32,8 +32,8 @@ import jakarta.faces.context.FacesContext;
 import java.util.stream.Collectors;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 /**

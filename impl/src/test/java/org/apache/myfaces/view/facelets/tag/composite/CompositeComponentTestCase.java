@@ -35,10 +35,10 @@ import jakarta.faces.component.html.HtmlGraphicImage;
 import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.event.PostRenderViewEvent;
 import jakarta.faces.event.PreRenderViewEvent;
-import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.config.NamedEventManager;
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
