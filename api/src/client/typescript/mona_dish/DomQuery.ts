@@ -1909,7 +1909,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 .sort((node1, node2) => node1.compareDocumentPosition(node2) - 3) //preceding 2, following == 4)
                 .each(item => execScrpt(item));
 
-            evalCollectedScripts(finalScripts);
+             evalCollectedScripts(finalScripts);
         } catch (e) {
             if (console && console.error) {
                 //not sure if we
