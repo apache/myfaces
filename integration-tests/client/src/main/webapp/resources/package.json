@@ -20,6 +20,6 @@
     "jasmine": "^4.4.0",
     "jsf.js_next_gen": "^4.0.0-beta-16",
     "mocha": "^10.1.0",
-    "mona-dish": "0.22.19"
+    "mona-dish": "0.22.20"
   }
 }

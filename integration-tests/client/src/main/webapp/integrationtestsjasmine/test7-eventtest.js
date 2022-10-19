@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// noinspection DuplicatedCode
 let localEvents = [];
 let globalEvents = [];
 let DEFAULT_EVENTTYPES = {
@@ -41,7 +42,7 @@ function globalEventHandler(data) {
 }
 
 function expectations(expectFunc, data) {
-    expectFunc(data.type == "event").toBeTruthy();
+    expectFunc(data.type === "event").toBeTruthy();
     expectFunc(!!data.status).toBeTruthy();
     expectFunc(DEFAULT_EVENTTYPES[data.status]).toBeTruthy();
     expectFunc(!!data.source).toBeTruthy();
@@ -58,7 +59,7 @@ describe("Event handler phases test", function () {
         globalEvents = [];
     });
     it("Checks the local events", function (done) {
-
+        // noinspection JSUnresolvedVariable,JSUnresolvedFunction
         facesRequest(document.getElementById("updateTrigger"), null, {
             render: "updatePanel",
             execute: "updatePanel updateTrigger",
@@ -79,6 +80,7 @@ describe("Event handler phases test", function () {
     it("Checks the global events", function (done) {
 
         faces.ajax.addOnEvent(globalEventHandler);
+        // noinspection JSUnresolvedVariable,JSUnresolvedFunction
         facesRequest(document.getElementById("updateTrigger"), null, {
             render: "updatePanel",
             execute: "updatePanel updateTrigger"

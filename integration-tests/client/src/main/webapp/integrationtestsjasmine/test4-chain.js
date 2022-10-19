@@ -20,6 +20,7 @@ afterEach(function () {
 describe("Chain function suite", function () {
     it("Should process faces.util.chain properly", function () {
         //testfunc1 til 4 are defined in the html page
+        // noinspection JSUnresolvedVariable,JSUnresolvedFunction
         faces.util.chain(document.getElementById("chaincall"), null, testFunc1, testFunc2, testFunc3, testFunc4);
         expect(DQ$("body").innerHTML.indexOf("test1 succeeded test2 succeededtest3 succeeded")).not.toBe(-1);
     });

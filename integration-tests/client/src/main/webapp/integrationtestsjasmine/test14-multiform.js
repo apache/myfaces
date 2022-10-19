@@ -26,17 +26,17 @@ describe("Multi form situation", function () {
     it("runs multiform testing", function (done) {
 
         let promises = [];
-        for (let cnt = 0; cnt < 100; cnt++) {
+        let cnt = 0;
+        for (; cnt < 100; cnt++) {
             if (cnt % 2) {
                 DQ$("#first_input").val = Math.random();
-                promises.push(faces.ajax.request("first_input", null, {
+                promises.push(facesRequest("first_input", null, {
                     execute: 'firstForm',
                     render: 'renderTarget1 renderTarget2'
                 }));
             } else {
-
                 DQ$("#second_input").val = Math.random();
-                promises.push(faces.ajax.request("second_input", null, {
+                promises.push(facesRequest("second_input", null, {
                     execute: 'firstForm',
                     render: 'renderTarget1 renderTarget2'
                 }));
@@ -44,7 +44,10 @@ describe("Multi form situation", function () {
         }
 
         //no error after 100 requests we have passed
-        Promise.all(promises).then(() => success(done)).catch(done);
+        Promise.all(promises).then(() => {
+            expect(cnt).toEqual(100);
+            done();
+        }).catch(done);
     });
 
 });

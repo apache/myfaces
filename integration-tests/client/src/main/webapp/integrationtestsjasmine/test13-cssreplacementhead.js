@@ -35,14 +35,13 @@ describe("CSS Head replacement test", function () {
             DQ$("body")
                 .append(htmlReporter)
                 .waitUntilDom(() => {
-                let ret = DQ$("#div1").offsetWidth > 120 &&
-                DQ$("#div2").offsetWidth > 120 &&
-                DQ$("#div3").offsetWidth > 120 &&
-                DQ$("#div4").offsetWidth < 120 &&
-                DQ$("#div5").offsetWidth < 120 &&
-                DQ$("#div6").offsetWidth < 120 &&
-                DQ$("#div7").offsetWidth < 120;
-                return ret;
+                    return DQ$("#div1").offsetWidth > 120 &&
+                    DQ$("#div2").offsetWidth > 120 &&
+                    DQ$("#div3").offsetWidth > 120 &&
+                    DQ$("#div4").offsetWidth < 120 &&
+                    DQ$("#div5").offsetWidth < 120 &&
+                    DQ$("#div6").offsetWidth < 120 &&
+                    DQ$("#div7").offsetWidth < 120;
             }).then(() => {
                 success(done)
             }).catch(done);

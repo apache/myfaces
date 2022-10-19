@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 afterEach(function () {
     myfaces.testcases.redirect("./test9-spreadsheet.jsf");
 });
@@ -37,10 +36,9 @@ describe("Partial Page Rendering Nav Case", function () {
             'jakarta.faces.behavior.event': 'action'
         }).then(function () {
             DQ$("body").waitUntilDom(() => {
-                const ret = DQ$("span#firstName").innerHTML.indexOf("Werner") !== -1 &&
+                return DQ$("span#firstName").innerHTML.indexOf("Werner") !== -1 &&
                     DQ$("span#lastName").innerHTML.indexOf("Tester") !== -1 &&
                     DQ$("body").innerHTML.indexOf("script executed") !== -1;
-                return ret;
             }).then(() => {
                 DQ$("body").append(htmlReporter);
                 success(done);

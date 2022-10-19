@@ -41,7 +41,7 @@ function globalEventHandler(data) {
 }
 
 function expectations(expectFunc, data) {
-    expectFunc(data.type == "event").toBeTruthy();
+    expectFunc(data.type === "event").toBeTruthy();
     expectFunc(!!data.status).toBeTruthy();
     expectFunc(DEFAULT_EVENTTYPES[data.status]).toBeTruthy();
     expectFunc(!!data.source).toBeTruthy();
@@ -49,6 +49,7 @@ function expectations(expectFunc, data) {
 }
 
 afterEach(function () {
+    // noinspection JSUnresolvedVariable
     window.location.href = "./test7-eventtest-2.jsf";
 });
 describe("Event handler phases test", function () {
@@ -58,13 +59,14 @@ describe("Event handler phases test", function () {
         globalEvents = [];
     });
     it("Checks the local events", function (done) {
+        // noinspection JSUnresolvedVariable,JSUnresolvedFunction
         facesRequest(document.getElementById("updateTrigger"), null, {
             render: "updatePanel",
             execute: "updatePanel updateTrigger",
             onevent: localEventHandler
         }).then(function () {
             DQ("body").waitUntilDom(() => {
-                return localEvents.length == 3;
+                return localEvents.length === 3;
             }).then(() => {
                 for (let pos = 0; pos < localEvents.length; pos++) {
                     expectations(expect, localEvents[pos]);
@@ -82,7 +84,7 @@ describe("Event handler phases test", function () {
             execute: "updatePanel updateTrigger"
         }).then(function () {
             DQ("body").waitUntilDom(() => {
-                return globalEvents.length == 3;
+                return globalEvents.length === 3;
             }).then(() => {
                 for (let pos = 0; pos < globalEvents.length; pos++) {
                     expectations(expect, globalEvents[pos]);

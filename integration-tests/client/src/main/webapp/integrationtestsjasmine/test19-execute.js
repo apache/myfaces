@@ -19,8 +19,9 @@ afterEach(function () {
 });
 describe("Execute none handling", function () {
     it("runs an execute request with execute @none", function (done) {
-
+        // noinspection JSUnresolvedVariable,JSUnresolvedFunction
         document.getElementById("centerForm").action = "./test.mockup";
+        // noinspection JSUnresolvedVariable,JSUnresolvedFunction
         facesRequest(document.getElementById("submitme"), null, {
             render: "booga @none",
             execute: "booga2 @none",

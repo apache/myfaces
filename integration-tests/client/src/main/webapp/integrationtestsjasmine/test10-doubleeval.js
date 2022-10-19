@@ -31,7 +31,7 @@ describe("Regression test for double eval on a single script element", function 
         }
         Promise.all(promises).then(() => {
             DQ$("#output")
-                .waitUntilDom(element => element.innerHTML == "0 1 2 ")
+                .waitUntilDom(element => element.innerHTML === "0 1 2 ")
                 .then(() => success(done))
                 .catch(done);
         }).catch(done);

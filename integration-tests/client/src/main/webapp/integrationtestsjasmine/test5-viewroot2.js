@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 let originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-window.viewRoot = true;
 let htmlReporter, found;
+
 afterEach(function () {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     myfaces.testcases.redirect("./test6-tablebasic.jsf");
@@ -30,13 +30,11 @@ beforeEach(function () {
 
 
 describe("ViewRoot with execute @all and render @all", function () {
-
-
     //expect does not like double includes
     it("Needs to have the root replaced", function (done) {
         DQ$("body").waitUntilDom(() => {
-            return (found = found || (DQ$("body").innerHTML.indexOf("refresh successul2") !== -1 && window.__mf_import_cnt == 2));
-        }, {attributes: true, childList: true, subtree: true, timeout: 2000}).then(element => {
+            return (found = found || (DQ$("body").innerHTML.indexOf("refresh successul2") !== -1 && window.__mf_import_cnt === 2));
+        }, {attributes: true, childList: true, subtree: true, timeout: 2000}).then(() => {
             htmlReporter.appendTo(DQ$("body"))
             console.log(found);
             expect(DQ$("body").innerHTML.indexOf("refresh successul2") !== -1).toBeTruthy();

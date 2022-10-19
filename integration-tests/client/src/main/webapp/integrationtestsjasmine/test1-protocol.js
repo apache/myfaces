@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+
 afterEach(function () {
     myfaces.testcases.redirect("./test2-viewroot.jsf");
 });
-//const _it = () => {}
 
 describe("Testsuite testing the protocol", function () {
+
     beforeEach(function () {
         //we reset the Ajax counter before each spec.
         //Because every spec has only one Ajax request

@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 let formatHref = (href) => {
-    return href.substring(href.lastIndexOf('/'));
+    return href.substring(href.lastIndexOf('/')+1);
+}
+
+let pathOnly = (href) => {
+    let autoTestPos = href.indexOf("?autoTest=true");
+    if(autoTestPos != 1) {
+        return href.substring(0, autoTestPos);
+    }
+    return href;
 }
 
 let resultData = JSON.parse(sessionStorage.getItem("_jasmine_log__") || "[]");
@@ -33,7 +41,7 @@ if (!resultData.length) {
     details.appendTo(failureHolder);
 
     failures.forEach(failure => {
-        DomQuery.fromMarkup(`<li> <b style='color: darkred;'>${formatHref(failure.from)}</b>: ${failure.message}</li>`).appendTo(details);
+        DomQuery.fromMarkup(`<li> <b style='color: darkred;'><a href="${pathOnly(failure.from)}">${pathOnly(formatHref(failure.from))}</b></a>: ${failure.message}</li>`).appendTo(details);
     })
 }
 

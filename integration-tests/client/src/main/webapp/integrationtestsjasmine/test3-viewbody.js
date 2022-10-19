@@ -23,7 +23,7 @@ describe("Full body replacement via protocol view body", function () {
         htmlReporter.detach();
         emitPPR("form1", null, "body2").then(function () {
             DQ$("body").waitUntilDom((element) => {
-                return element.innerHTML.indexOf('Body replacement test successful') != -1;
+                return element.innerHTML.indexOf('Body replacement test successful') !== -1;
             }).then(() => {
                 expect(DQ$("body").append(htmlReporter).innerHTML.indexOf("testResults102")).not.toBe(-1);
                 done();

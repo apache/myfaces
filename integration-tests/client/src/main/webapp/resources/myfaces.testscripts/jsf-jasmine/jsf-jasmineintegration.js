@@ -20,6 +20,11 @@
  * jasmine hooks
  */
 
+// globals to avoid stylecheck issues
+// noinspection JSUnresolvedVariable
+var DQ$ = window.DQ$;
+// noinspection JSUnresolvedVariable
+var DomQuery = window.DomQuery;
 var target = "./test.mockup";
 window['myfaces'] = window.myfaces || {};
 myfaces.testcases = myfaces.testcases || {};
@@ -30,6 +35,8 @@ myfaces.testcases.ajaxCnt = 0;
 myfaces.testcases.ajaxRequest = faces.ajax.request;
 myfaces.testcases.ajaxEvent = null;
 myfaces.testcases.ajaxEvents = {};
+
+
 
 /**
  * bookeeping decorators, some tests rely on this data

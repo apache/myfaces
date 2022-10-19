@@ -23,7 +23,7 @@ faces.ajax.response = function (request, context) {
     let newContext = {};
     newContext.source = context.source;
     newContext.onevent = function (evt) {
-        if (evt.status == "success") {
+        if (evt.status === "success") {
             successCalled++;
         }
         if (context.onevent) {
@@ -32,9 +32,9 @@ faces.ajax.response = function (request, context) {
     };
 
 
-    assertSuccessPosition = successCalled == 0;
+    assertSuccessPosition = successCalled === 0;
     oldResponse(request, newContext);
-    assertSuccessPosition = assertSuccessPosition && successCalled == 1;
+    assertSuccessPosition = assertSuccessPosition && successCalled === 1;
 };
 
 afterEach(function () {
@@ -48,7 +48,7 @@ describe("event location test, success must be called in response function", fun
             'jakarta.faces.behavior.event': 'action'
         }).finally(function () {
             DQ$("body").waitUntilDom(() => assertSuccessPosition)
-                .then(success(done))
+                .then(() => success(done))
                 .catch(done);
         });
     });

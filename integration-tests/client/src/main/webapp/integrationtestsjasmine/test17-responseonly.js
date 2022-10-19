@@ -17,33 +17,27 @@ let oldResponse = faces.ajax.response;
 
 //we are going to decorate the response for the first testcase
 function applySourceOnly() {
-
-    let newResponse = function (request, context) {
+    faces.ajax.response = function (request, context) {
         let newContext = {};
         newContext.source = context.source;
         newContext.onevent = context.onevent;
         newContext.onerror = context.onerror;
 
         oldResponse(request, newContext);
-    }
-    faces.ajax.response = newResponse;
-};
-
-function resetResponse() {
-    faces.ajax.response = oldResponse;
+    };
 }
+
 
 function applyEmpty() {
 
-    let newResponse = function (request, context) {
+    faces.ajax.response = function (request, context) {
         let newContext = {};
 
         newContext.onevent = context.onevent;
         newContext.onerror = context.onerror;
 
         oldResponse(request, newContext);
-    }
-    faces.ajax.response = newResponse;
+    };
 }
 
 afterEach(function () {
@@ -75,11 +69,7 @@ describe("Various response tests giving the codebase something to chew on in the
                 .waitUntilDom(() => DQ$("#myVal").innerHTML.replace(/\s+/gi, "").indexOf("1") !== -1)
                 .then(() => success(done))
                 .catch(done);
-        }).catch(ex => {
-            debugger;
-            alert(ex);
-            done(ex);
-        });
+        }).catch(done);
 
     });
     it("runs on an empty context map", function (done) {
