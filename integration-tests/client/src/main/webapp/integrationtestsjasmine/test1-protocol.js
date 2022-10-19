@@ -71,7 +71,7 @@ describe("Testsuite testing the protocol", function () {
                     element.style('borderWidth').value = "0px";
                     success(done);
                 }).catch(done);
-        });
+        }).catch(done);
     });
 
     it("should trigger Error Trigger Ajax Illegal Response", function (done) {

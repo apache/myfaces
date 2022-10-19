@@ -59,9 +59,7 @@ describe("Various response tests giving the codebase something to chew on in the
             execute: '@this',
             render: 'myVal',
             'jakarta.faces.behavior.event': 'action'
-        }).then(function () {
-            done();
-        }).catch(done);
+        }).then(() => success(done)).catch(done);
 
 
     });
@@ -74,10 +72,14 @@ describe("Various response tests giving the codebase something to chew on in the
             'jakarta.faces.behavior.event': 'action'
         }).then(function () {
             DQ$("body")
-                .waitUntilDom(() => DQ$("#myVal").innerHTML.indexOf("1") !== -1)
+                .waitUntilDom(() => DQ$("#myVal").innerHTML.replace(/\s+/gi, "").indexOf("1") !== -1)
                 .then(() => success(done))
                 .catch(done);
-        }).catch(done);
+        }).catch(ex => {
+            debugger;
+            alert(ex);
+            done(ex);
+        });
 
     });
     it("runs on an empty context map", function (done) {
@@ -88,7 +90,7 @@ describe("Various response tests giving the codebase something to chew on in the
             'jakarta.faces.behavior.event': 'action'
         }).then(function () {
             DQ$("body")
-                .waitUntilDom(() => DQ$("#myVal").innerHTML.indexOf("1") !== -1)
+                .waitUntilDom(() => DQ$("#myVal").innerHTML.replace(/\s+/gi, "").indexOf("1") !== -1)
                 .then(() => success(done))
                 .catch(done);
         }).catch(done);

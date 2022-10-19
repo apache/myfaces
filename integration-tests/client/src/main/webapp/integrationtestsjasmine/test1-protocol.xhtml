@@ -34,9 +34,10 @@
         <h2>protocol testcase1</h2>
 
         <div id="centerDiv">
-            <h1>Selenium Testprobe for insert update delete and attribute change</h1>
+            <h1>This test tests all aspects of the protocol</h1>
+            <h2>Testprobe for eval, insert, update, delete and attribute change</h2>
 
-            <h2>This test tests all aspects of the protocol, under xhr and iframe conditions</h2>
+
 
 
             <div id="testResults">
@@ -76,26 +77,7 @@
                 <input type="button" id="cmd_error_component" value="Error: no component given"
                        onclick="faces.ajax.request(null, event, {}); return false"/>
 
-                <h2>Same with an iframe transport</h2>
 
-                <input type="button" id="cmd_eval2" value="eval"
-                       onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'eval1', true);"/>
-                <input type="button" id="cmd_update_insert22" value="update insert"
-                       onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'updateinsert1', true);"/>
-                <input type="button" id="cmd_update_insert23" value="update insert second protocol path"
-                       onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'updateinsert2',
-                           true);"/>
-                <input type="button" id="cmd_delete2" value="delete"
-                       onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'delete1', true);"/>
-                <input type="button" id="cmd_attributeschange2" value="change attributes"
-                       onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'attributes', true);"/>
-                <input type="button" id="cmd_illegalresponse2" value="illegal response, error trigger"
-                       onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'illegalResponse', true);"/>
-
-                <input type="button" id="cmd_error2" value="Server error with error response"
-                       onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'errors',
-                                       true
-                                       );"/>
 
             </form>
             <br/>

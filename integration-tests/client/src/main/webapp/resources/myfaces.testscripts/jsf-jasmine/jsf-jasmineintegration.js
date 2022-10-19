@@ -19,114 +19,113 @@
  * We basically decorate the vital jsf api functions with promises and
  * jasmine hooks
  */
-//if (!window.emitPPR) {
-    var target = "./test.mockup";
-    window['myfaces'] = window.myfaces || {};
-    myfaces.testcases = myfaces.testcases || {};
-//marks the current ajax request cycle to be finished
+
+var target = "./test.mockup";
+window['myfaces'] = window.myfaces || {};
+myfaces.testcases = myfaces.testcases || {};
+//  marks the current ajax request cycle to be finished
 
 
-    myfaces.testcases.ajaxCnt = 0;
-    myfaces.testcases.ajaxRequest = faces.ajax.request;
-    myfaces.testcases.ajaxEvent = null;
+myfaces.testcases.ajaxCnt = 0;
+myfaces.testcases.ajaxRequest = faces.ajax.request;
+myfaces.testcases.ajaxEvent = null;
+myfaces.testcases.ajaxEvents = {};
+
+/**
+ * bookeeping decorators, some tests rely on this data
+ * does not hurt to collect them for every page
+ *
+ * @param source
+ * @param evt
+ * @param options
+ */
+faces.ajax.request = function (source, evt, options) {
     myfaces.testcases.ajaxEvents = {};
+    myfaces.testcases.ajaxRequest(source, evt, options);
+};
 
-    /**
-     * bookeeping decorators, some tests rely on this data
-     * does not hurt to collect them for every page
-     *
-     * @param source
-     * @param evt
-     * @param options
-     */
-    faces.ajax.request = function (source, evt, options) {
-        myfaces.testcases.ajaxEvents = {};
-        myfaces.testcases.ajaxRequest(source, evt, options);
-    };
-
-    faces.ajax.addOnEvent(function (evt) {
-        myfaces.testcases.ajaxEvent = evt;
-        myfaces.testcases.ajaxEvents[evt.status] = true;
-        if (evt.status === "success") {
-            myfaces.testcases.ajaxCnt++;
-        }
-    });
-
-    faces.ajax.addOnError(function (evt) {
-        myfaces.testcases.ajaxEvent = evt;
-        myfaces.testcases.ajaxEvents["error"] = true;
+faces.ajax.addOnEvent(function (evt) {
+    myfaces.testcases.ajaxEvent = evt;
+    myfaces.testcases.ajaxEvents[evt.status] = true;
+    if (evt.status === "success") {
         myfaces.testcases.ajaxCnt++;
+    }
+});
+
+faces.ajax.addOnError(function (evt) {
+    myfaces.testcases.ajaxEvent = evt;
+    myfaces.testcases.ajaxEvents["error"] = true;
+    myfaces.testcases.ajaxCnt++;
+});
+
+
+window.emitPPR = function (source, event, action, formName) {
+    document.getElementById(formName || "form1").action = target;
+    return facesRequest(/*String|Dom Node*/ source, /*|EVENT|*/ (window.event) ? window.event : event, /*{|OPTIONS|}*/ {
+        op: action
     });
-
-
-    window.emitPPR = function (source, event, action, formName) {
-        document.getElementById(formName || "form1").action = target;
-        return facesRequest(/*String|Dom Node*/ source, /*|EVENT|*/ (window.event) ? window.event : event, /*{|OPTIONS|}*/ {
-            op: action
-        });
-    };
+};
 
 //missing success expectation
-    window.success = (done) => {
-        expect(true).toBeTruthy();
-        if (!!done) {
-            done();
-        }
+window.success = (done) => {
+    expect(true).toBeTruthy();
+    if (!!done) {
+        done();
     }
+}
 
-    myfaces.testcases.redirect = function (href) {
-        if (window.location.href.indexOf("autoTest=true") !== -1) {
-            window.location.href = href + "?autoTest=true";
+myfaces.testcases.redirect = function (href) {
+    if (window.location.href.indexOf("autoTest=true") !== -1) {
+        window.location.href = href + "?autoTest=true";
+    }
+};
+
+/**
+ * we decorate the (jsf/faces).ajax.request to return a Promise.
+ * That way, we can use it more efficiently in our testcases.
+ *
+ * @param element
+ * @param event
+ * @param options
+ * @returns {Promise<unknown>}
+ */
+window.facesRequest = function (element, event, options) {
+    return new Promise(function (resolve, reject) {
+        let errorTriggered = false;
+        let finalArgs = [];
+        finalArgs.push(element);
+        finalArgs.push(event);
+        if (options) {
+            finalArgs.push(options);
+        } else {
+            finalArgs.push({});
         }
-    };
-
-    /**
-     * we decorate the (jsf/faces).ajax.request to return a Promise.
-     * That way, we can use it more efficiently in our testcases.
-     *
-     * @param element
-     * @param event
-     * @param options
-     * @returns {Promise<unknown>}
-     */
-    window.facesRequest = function (element, event, options) {
-        return new Promise(function (resolve, reject) {
-            let errorTriggered = false;
-            let finalArgs = [];
-            finalArgs.push(element);
-            finalArgs.push(event);
-            if (options) {
-                finalArgs.push(options);
-            } else {
-                finalArgs.push({});
+        let oldOnError = finalArgs[2]["onerror"];
+        finalArgs[2]["onerror"] = function (evt) {
+            reject(new Error(evt || "OnErrorCalled"));
+            errorTriggered = true;
+            if (oldOnError) {
+                oldOnError(evt);
             }
-            let oldOnError = finalArgs[2]["onerror"];
-            finalArgs[2]["onerror"] = function (evt) {
-                reject(new Error(evt));
-                errorTriggered = true;
-                if (oldOnError) {
-                    oldOnError(evt);
+        };
+        let oldOnEvent = finalArgs[2]["onevent"];
+        finalArgs[2]["onevent"] = function (evt) {
+            if (evt.status.toLowerCase() === "success") {
+                // if an error already was triggered this promise already
+                // is rejected
+                if (!errorTriggered) {
+                    resolve(evt);
                 }
-            };
-            let oldOnEvent = finalArgs[2]["onevent"];
-            finalArgs[2]["onevent"] = function (evt) {
-                if (evt.status.toLowerCase() === "success") {
-                    // if an error already was triggered this promise already
-                    // is rejected
-                    if(!errorTriggered) {
-                        resolve(evt);
-                    }
-                }
-                if (oldOnEvent) {
-                    oldOnEvent(evt);
-                }
-            };
-
-            try {
-                faces.ajax.request.apply(faces.ajax.request, finalArgs)
-            } catch (e) {
-                reject(e);
             }
-        });
-    };
-//}
+            if (oldOnEvent) {
+                oldOnEvent(evt);
+            }
+        };
+
+        try {
+            faces.ajax.request.apply(faces.ajax.request, finalArgs)
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
