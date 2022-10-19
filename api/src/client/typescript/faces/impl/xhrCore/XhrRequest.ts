@@ -202,14 +202,12 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
     }
 
     catch(func: (data: any) => any): AsyncRunnable<XMLHttpRequest> {
-        //this.$promise.catch(func);
         this.catchFuncs.push(func);
         return this;
     }
 
     finally(func: () => void): AsyncRunnable<XMLHttpRequest> {
         //no ie11 support we probably are going to revert to shims for that one
-        //(<any>this.$promise).then(func).catch(func);
         this.catchFuncs.push(func);
         this.thenFunc.push(func);
         return this;
@@ -244,16 +242,35 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
             this.onDone(this.xhrObject, resolve);
         };
         xhrObject.onerror = (errorData: any) => {
+            // some browsers trigger an error when cancelling a request internally
+            // in this case we simply ignore the request and clear up the queue, because
+            // it is not safe anymore to proceed with the current queue
+
+            // This bypasses a Safari issue where it keeps requests hanging after page unload
+            // and then triggers a cancel error on then instead of just stopping
+            // and clearing the code
+            if(this.isCancelledResponse(this.xhrObject)) {
+                reject();
+                this.stopProgress = true;
+                return;
+            }
             this.onError(errorData, reject);
         };
     }
 
+    private isCancelledResponse(currentTarget: XMLHttpRequest): boolean {
+        return currentTarget?.status === 0 && //cancelled by browser
+            currentTarget?.readyState === 4 &&
+            currentTarget?.responseText === '' &&
+            currentTarget?.responseXML === null;
+    }
+
     /*
-     * xhr processing callbacks
-     *
-     * Those methods are the callbacks called by
-     * the xhr object depending on its own state
-     */
+         * xhr processing callbacks
+         *
+         * Those methods are the callbacks called by
+         * the xhr object depending on its own state
+         */
 
     private onAbort(reject: Consumer<any>) {
         reject();
@@ -291,14 +308,15 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
         try {
             this.handleError(errorData, true);
         } finally {
-            //we issue a resolve in this case to allow the system to recover
+            // we issue a resolve in this case to allow the system to recover
+            // reject would clean up the queue
             resolve(errorData);
-            //reject();
         }
         //non blocking non clearing
     }
 
     private onDone(data: any, resolve: Consumer<any>) {
+        // if stop progress a special handling including resolve is already performed
         if (this.stopProgress) {
             return;
         }
@@ -329,7 +347,7 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
         try {
             //user code error, we might cover
             //this in onError but also we cannot swallow it
-            //we need to resolve the local handlers lazyly,
+            //we need to resolve the local handlers lazily,
             //because some frameworks might decorate them over the context in the response
             let eventHandler = resolveHandlerFunc(this.requestContext, this.responseContext, ON_EVENT);
 
