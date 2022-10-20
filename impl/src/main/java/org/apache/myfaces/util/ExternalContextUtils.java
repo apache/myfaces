@@ -23,6 +23,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
 
 
 import jakarta.faces.context.ExternalContext;
+import jakarta.servlet.ServletRequestWrapper;
 import jakarta.servlet.ServletResponseWrapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -109,6 +110,26 @@ public final class ExternalContextUtils
 
         return null;
     }
+
+    /**
+     * Returns an HttpServletRequest if one exists on the externalContext or null
+     * if it does not.  Please note that some portal environments implement the
+     * PortletRequest and Response objects as HttpServletRequest/Response objects.
+     * This method handles these types of requests properly and will therefore
+     * return null in portal environments.
+     *
+     * @param ec
+     * @return an HttpServletResponse if we have one or null if we do not
+     */
+    public static HttpServletRequest getHttpServletRequest(ExternalContext ec)
+    {
+        if (isHttpServletRequest(ec))
+        {
+            return (HttpServletRequest) ec.getRequest();
+        }
+
+        return null;
+    }
     
     /**
      * Trys to obtain a HttpServletResponse from the Response.
@@ -133,6 +154,35 @@ public final class ExternalContextUtils
                 response = ((ServletResponseWrapper) response).getResponse();
             }
             // no more possibilities to find a HttpServletResponse
+            break;
+        }
+        return null; // not found
+    }
+
+
+    /**
+     * Trys to obtain a HttpServletRequest from the Request.
+     * Note that this method also trys to unwrap any ServletRequestWrapper
+     * in order to retrieve a valid HttpServletRequest.
+     * @param request
+     * @return if found, the HttpServletRequest, null otherwise
+     */
+    public static HttpServletRequest getHttpServletRequest(Object request)
+    {
+        // unwrap the response until we find a HttpServletResponse
+        while (request != null)
+        {
+            if (request instanceof HttpServletRequest)
+            {
+                // found
+                return (HttpServletRequest) request;
+            }
+            if (request instanceof ServletRequestWrapper)
+            {
+                // unwrap
+                request = ((ServletRequestWrapper) request).getRequest();
+            }
+            // no more possibilities to find a HttpServletRequest
             break;
         }
         return null; // not found

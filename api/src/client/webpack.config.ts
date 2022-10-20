@@ -63,13 +63,6 @@ function build(env: {[key:string]: string}, argv: {[key:string]: string}) {
                             configFile: path.resolve(__dirname, "./tsconfig-myfaces.json")
                         }
                     }], exclude: /node_modules/
-                }, {
-                    test: /faces\.js$/,
-                    loader: 'string-replace-loader',
-                    options: {
-                        search: 'sourceMappingURL=[name].js.map$',
-                        replace: 'sourceMappingURL=[name].js.map\n//# sourceMappingURL=[name].js.map.jsf?ln=jakarta.faces',
-                    }
                 }
             ]
         },
