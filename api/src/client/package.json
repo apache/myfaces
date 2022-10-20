@@ -5,8 +5,8 @@
     "doc": "npx typedoc --tsconfig typescript/faces/tsconfig-typedoc.json",
     "test": "env TS_NODE_PROJECT=./tsconfig-myfaces.json mocha",
     "copy:npm-sources": "ts-node typescript/node_build/copysources.ts",
-    "build:development": "webpack --mode development --env FILE_NAME=faces-development  && ts-node typescript/node_build/remap.ts --development",
-    "build:production": "webpack --mode production --env FILE_NAME=faces  && ts-node typescript/node_build/remap.ts --production",
+    "build:development": "webpack --mode development --env FILE_NAME=faces-development ",
+    "build:production": "webpack --mode production --env FILE_NAME=faces",
     "build": "npm run build:development && npm run build:production"
   },
   "devDependencies": {
