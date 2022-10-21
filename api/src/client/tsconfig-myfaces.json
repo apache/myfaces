@@ -38,7 +38,8 @@
     * we have to compile mona-dish in directly on source level
     */
     "typeRoots": [
-      "./node_modules/@types"
+      "./node_modules/@types",
+      "./typescript/faces/@types/"
     ],
     "paths": {
       "mona-dish": ["./typescript/mona_dish/index_core.ts"]
