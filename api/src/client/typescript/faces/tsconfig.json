@@ -21,7 +21,7 @@
       "es2015.collection",
       "dom"
     ],
-    "sourceMap": false,
+
     "outDir": "../../../target",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -30,7 +30,6 @@
     "typeRoots": [
       "../../build/npm/node_modules/@types",
       "./@types/"
-    ],
-    "types": ["node"]
+    ]
   }
 }
