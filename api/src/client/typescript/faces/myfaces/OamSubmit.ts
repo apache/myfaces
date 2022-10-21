@@ -27,9 +27,6 @@ import {DQ, Stream} from "mona-dish";
  *
  * we might move the code over in the future, but for now a straight 1:1 port suffices
  */
-declare const window: any;
-declare const myfaces: any;
-
 export module oam {
     /**
      * sets a hidden input field
@@ -37,7 +34,7 @@ export module oam {
      * @param name the hidden field
      * @param value the value to be rendered
      */
-    export const setHiddenInput = function (formName: string, name: string, value: string) {
+    export const setHiddenInput = function (formName: string, name: string, value: string): void {
         DQ.byId(document.forms[formName])
             .each(form => {
                 const input = form.querySelectorAll(`input[type='hidden'][name='${name}']`);
@@ -57,7 +54,7 @@ export module oam {
      * @param formName formName for the input
      * @param name the name of the input field
      */
-    export const clearHiddenInput = function (formName: string, name: string) {
+    export const clearHiddenInput = function (formName: string, name: string): void {
         let element = document.forms?.[formName]?.elements?.[name];
         if(!element) {
             return;
@@ -76,13 +73,13 @@ export module oam {
      * @param target
      * @param params
      */
-    export const submitForm = function (formName: string, linkId: string, target: string, params: { [key: string]: any }) {
+    export const submitForm = function (formName: string, linkId: string, target: string, params: { [key: string]: any }): boolean {
         let clearFn = 'clearFormHiddenParams_' + formName.replace(/-/g, '\$:').replace(/:/g, '_');
         window?.[clearFn]?.(formName);
 
         //autoscroll code
-        if (window?.myfaces?.core?.config?.autoScroll && window?.getScrolling) {
-            myfaces.oam.setHiddenInput(formName, 'autoScroll', window?.getScrolling());
+        if (window?.myfaces?.core?.config?.autoScroll && (window as any)?.getScrolling) {
+            myfaces.oam.setHiddenInput(formName, 'autoScroll', (window as any)?.getScrolling());
         }
         Stream.ofAssoc(params).each((param: [string, any]) => {
             myfaces.oam.setHiddenInput(formName, param[0], param[1]);

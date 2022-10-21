@@ -56,10 +56,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr;
-            (<any>window).XMLHttpRequest = this.xhr;
+            window.XMLHttpRequest = this.xhr;
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 Implementation.reset();
                 close();
             }

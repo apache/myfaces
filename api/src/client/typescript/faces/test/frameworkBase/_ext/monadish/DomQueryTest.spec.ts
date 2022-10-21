@@ -67,11 +67,11 @@ describe('DOMQuery tests', function () {
             this.requests.push(xhr);
         };
         (<any>global).XMLHttpRequest = this.xhr;
-        (<any>window).XMLHttpRequest = this.xhr;
+        window.XMLHttpRequest = this.xhr;
     });
 
     this.afterEach(function () {
-        (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
+        (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
     });
 
     it('basic init', function () {

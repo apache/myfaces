@@ -46,7 +46,7 @@ export enum ErrorType {
  * everything into the same attributes,
  * I will add deprecated myfaces backwards compatibility attributes as well
  */
-export class ErrorData extends EventData {
+export class ErrorData extends EventData implements IErrorData {
 
     type: string = "error";
     source: string;
@@ -59,7 +59,6 @@ export class ErrorData extends EventData {
     status: string;
     typeDetails: ErrorType;
 
-    //TODO backwards compatible attributes
     serverErrorName: string;
     serverErrorMessage: string;
     message: string;

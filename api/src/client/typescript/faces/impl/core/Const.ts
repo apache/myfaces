@@ -172,9 +172,6 @@ export const MAX_RECONNECT_ATTEMPTS = 25;
 
 export const UNKNOWN = "UNKNOWN";
 
-declare const window: any;
-
-
 /**
  * helper to remap the namespaces variables for 2.3
  * from 2.3 to 4.0 every javax namespace has been changed

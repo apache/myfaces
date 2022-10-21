@@ -22,6 +22,7 @@ import {Messages} from "../i18n/Messages";
 import {EMPTY_STR, TAG_FORM} from "../core/Const";
 import {getEventTarget} from "../xhrCore/RequestDataResolver";
 
+
 export module ExtLang {
 
     let installedLocale: Messages;
@@ -134,7 +135,7 @@ export module ExtLang {
          * given this function here is called very often
          * is a single entry without . in between we can do the lighter shortcut
          */
-        return (<any>window)?.myfaces?.config?.[configName] ?? defaultValue;
+        return window?.myfaces?.config?.[configName] ?? defaultValue;
     }
 
     /**
@@ -198,13 +199,12 @@ export module ExtLang {
      */
     export function getLocalOrGlobalConfig(localOptions: Config, configName: string, defaultValue: any): any {
         return localOptions.value?.myfaces?.config?.[configName] ??
-            (<any>window)?.myfaces?.config?.[configName] ??
+            window?.myfaces?.config?.[configName] ??
             defaultValue;
     }
 
     /**
      * assert that the form exists and throw an exception in the case it does not
-     * (TODO move this into the assertions)
      *
      * @param form the form to check for
      */
@@ -213,5 +213,4 @@ export module ExtLang {
             throw makeException(new Error(), null, null, "Impl", "getForm", getMessage("ERR_FORM"));
         }
     }
-
 }

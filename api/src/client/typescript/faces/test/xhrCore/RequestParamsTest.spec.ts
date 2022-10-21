@@ -16,7 +16,6 @@
 import * as sinon from "sinon";
 import {Implementation} from "../../impl/AjaxImpl";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import defaultMyFaces = StandardInits.defaultMyFaces;
 import protocolPage = StandardInits.protocolPage;
 import {DQ} from "mona-dish";
 import {XhrFormData} from "../../impl/xhrCore/XhrFormData";
@@ -81,12 +80,12 @@ describe("test for proper request param patterns identical to the old implementa
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr;
-            (<any>window).XMLHttpRequest = this.xhr;
+            window.XMLHttpRequest = this.xhr;
 
             this.jsfAjaxResponse = sinon.stub((<any>global).faces.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();

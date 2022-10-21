@@ -17,14 +17,13 @@ import {Implementation} from "../impl/AjaxImpl";
 import {PushImpl} from "../impl/PushImpl";
 import {oam as _oam} from "../myfaces/OamSubmit";
 import {$nsp, CTX_PARAM_EXECUTE, CTX_PARAM_RENDER, P_BEHAVIOR_EVENT} from "../impl/core/Const";
+import {ErrorData} from "../impl/xhrCore/ErrorData";
+import {EventData} from "../impl/xhrCore/EventData";
 
-
-declare const window: any;
 //we use modules to get a proper jsdoc and static/map structure in the calls
 //as per spec requirement
 export module faces {
 
-    export var contextpath = '#{facesContext.externalContext.requestContextPath}';
 
     /**
      * Version of the implementation for the faces.ts.
@@ -101,7 +100,7 @@ export module faces {
     }
 
     //private helper functions
-    function getSeparatorChar() {
+    function getSeparatorChar(): string {
         const sep = '#{facesContext.namingContainerSeparatorChar}';
         //We now enable standalone mode, the separator char was not mapped we make a fallback to 2.3 behavior
         //the idea is that the separator char is provided from the underlying container, but if not then we
@@ -130,9 +129,8 @@ export module faces {
          * @param {EVENT} event: any javascript event supported by that object
          * @param {Map} options : map of options being pushed into the ajax cycle
          */
-        export function request(element: Element, event?: Event, options?: Context) {
+        export function request(element: Element, event?: Event, options?: Context): void {
             Implementation.request(element, event, options)
-            //Implementation.getInstance().requestInternal(element, event, options);
         }
 
         /**
@@ -142,7 +140,7 @@ export module faces {
          *
          * TODO add info on what can be in the context
          */
-        export function response(request: XMLHttpRequest, context?: Context) {
+        export function response(request: XMLHttpRequest, context?: Context): void {
             Implementation.response(request, context);
         }
 
@@ -163,7 +161,7 @@ export module faces {
          *
          * @param {function} errorListener error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
          */
-        export function addOnError(errorFunc: (data: ErrorData) => void) {
+        export function addOnError(errorFunc: (data: ErrorData) => void): void {
             Implementation.addOnError(<any>errorFunc);
         }
 
@@ -173,7 +171,7 @@ export module faces {
          *
          * @param {function} eventListener event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
          */
-        export function addOnEvent(eventFunc: (data: EventData) => void) {
+        export function addOnEvent(eventFunc: (data: EventData) => void): void {
             Implementation.addOnEvent(<any>eventFunc);
         }
     }
@@ -210,7 +208,7 @@ export module faces {
                     onmessage: Function,
                     onclose: Function,
                     behaviorScripts: any,
-                    autoconnect: boolean) {
+                    autoconnect: boolean): void {
             PushImpl.init(socketClientId, uri, channel, onopen, onmessage, onclose, behaviorScripts, autoconnect);
         }
 
@@ -219,7 +217,7 @@ export module faces {
          * @param {string} channel The name of the web socket channel.
          * @throws {Error} When channel is unknown.
          */
-        export function open(socketClientId: string) {
+        export function open(socketClientId: string): void {
             PushImpl.open(socketClientId);
         }
 
@@ -228,7 +226,7 @@ export module faces {
          * @param {string} channel The name of the web socket channel.
          * @throws {Error} When channel is unknown.
          */
-        export function close(socketClientId: string) {
+        export function close(socketClientId: string): void {
             PushImpl.close(socketClientId);
         }
 
@@ -248,7 +246,7 @@ export module myfaces {
      * @param render
      * @param options
      */
-    export function ab(source: Element, event: Event, eventName: string, execute: string, render: string, options: Context = {}) {
+    export function ab(source: Element, event: Event, eventName: string, execute: string, render: string, options: Context = {}): void {
         if (eventName) {
            options[$nsp(P_BEHAVIOR_EVENT)] = eventName;
         }
