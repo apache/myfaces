@@ -103,9 +103,13 @@ public class WebsocketScopeManager
             // When current session scope is about to be destroyed, deregister all session scope channels and
             // explicitly close any open web sockets associated with it to avoid stale websockets.
             // If any, also deregister session users.
-            for (String token : tokens.keySet())
+            for (Map.Entry<String, WebsocketChannelMetadata> entry : tokens.entrySet())
             {
-                sessionManager.removeSession(token);
+                // remove channelToken - only if it is session scope
+                if (WebsocketScopeManager.SCOPE_SESSION.equals(entry.getValue().getScope()))
+                {
+                    sessionManager.removeChannelToken(entry.getKey());
+                }
             }
 
             // we dont need to destroy child sockets ("view")
@@ -172,12 +176,6 @@ public class WebsocketScopeManager
                 {
                     sessionScope.destroyChannelToken(token);
                 }
-            }
-
-            // remove sessions
-            for (String token : tokens.keySet())
-            {
-                sessionManager.removeSession(token);
             }
 
             channelTokens.clear();
