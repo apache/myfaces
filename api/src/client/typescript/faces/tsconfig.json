@@ -28,7 +28,8 @@
     "module": "commonjs",
     "sourceMap": true,
     "typeRoots": [
-      "../../build/npm/node_modules/@types"
+      "../../build/npm/node_modules/@types",
+      "./@types/"
     ],
     "types": ["node"]
   }
