@@ -60,12 +60,12 @@ describe('Tests on the xhr core when it starts to call the request', function ()
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr;
-            (<any>window).XMLHttpRequest = this.xhr;
+            window.XMLHttpRequest = this.xhr;
 
             this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();
@@ -165,12 +165,13 @@ describe('Tests after core when it hits response', function () {
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
-            (<any>window).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
+            // @ts-ignore
+            window.XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest() as XMLHttpRequest;
 
             this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();

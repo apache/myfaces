@@ -16,7 +16,7 @@
 import {Config, IValueHolder, Optional, DomQuery, DQ, Stream, ArrayCollector} from "mona-dish";
 import {$nsp, P_WINDOW_ID} from "../core/Const";
 
-declare let window: any;
+
 
 
 /**

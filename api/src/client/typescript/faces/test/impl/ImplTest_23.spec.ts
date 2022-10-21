@@ -25,6 +25,7 @@ import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {P_EXECUTE, P_RENDER} from "../../impl/core/Const";
 import defaultMyFaces23 = StandardInits.defaultMyFaces23;
 
+
 sinon.reset();
 
 declare var jsf: any;
@@ -82,7 +83,7 @@ describe('javax.ajax.request test suite', () => {
 
     it("javax.util.chain must work", () => {
         let called = {};
-        (<any>window).called = called;
+        window.called = called;
 
         let func1 = () => {
             called["func1"] = true;
@@ -109,7 +110,7 @@ describe('javax.ajax.request test suite', () => {
             return false;
         };
 
-        (window as any).jsf.util.chain(this, called, func1, func2, func3, func4, func5);
+        window.jsf.util.chain(this, called, func1, func2, func3, func4, func5);
 
         expect(called["func1"]).to.be.true;
         expect(called["func2"]).to.be.true;
@@ -118,7 +119,7 @@ describe('javax.ajax.request test suite', () => {
         expect(!!called["func5"]).to.be.false;
 
         called = {};
-        (window as any).jsf.util.chain(this, called, func1, func2, func4, func5);
+        window.jsf.util.chain(this, called, func1, func2, func4, func5);
         expect(called["func1"]).to.be.true;
         expect(called["func2"]).to.be.true;
         expect(!!called["func4"]).to.be.true;

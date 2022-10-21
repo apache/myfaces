@@ -25,6 +25,7 @@ import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import defaultMyFaces = StandardInits.defaultMyFaces;
 import {P_EXECUTE, P_RENDER} from "../../impl/core/Const";
 
+
 sinon.reset();
 
 declare var faces: any;
@@ -81,7 +82,7 @@ describe('faces.ajax.request test suite', () => {
 
     it("faces.util.chain must work", () => {
         let called = {};
-        (<any>window).called = called;
+        window.called = called;
 
         let func1 = () => {
             called["func1"] = true;

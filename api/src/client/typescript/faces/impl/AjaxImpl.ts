@@ -25,6 +25,7 @@ import {ExtDomquery} from "./util/ExtDomQuery";
 import {ErrorData} from "./xhrCore/ErrorData";
 import {EventData} from "./xhrCore/EventData";
 import {ExtLang} from "./util/Lang";
+
 import {
     $nsp,
     CTX_PARAM_EXECUTE,
@@ -149,8 +150,6 @@ export module Implementation {
     import getMessage = ExtLang.getMessage;
     import getGlobalConfig = ExtLang.getGlobalConfig;
     import assert = Assertions.assert;
-
-    declare const window: any;
 
     let projectStage: string = null;
     let separator: string = null;

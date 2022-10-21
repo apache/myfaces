@@ -56,7 +56,6 @@ import {
 import trim = Lang.trim;
 import {ExtConfig, ExtDomquery} from "../util/ExtDomQuery";
 
-declare const window: any;
 
 /**
  * Response processor
@@ -179,7 +178,7 @@ export class ResponseProcessor implements IResponseProcessor {
 
         let redirectUrl = trim(node.attr(ATTR_URL).value);
         if (redirectUrl != EMPTY_STR) {
-            (<any>window).location.href = redirectUrl;
+            window.location.href = redirectUrl;
         }
     }
 

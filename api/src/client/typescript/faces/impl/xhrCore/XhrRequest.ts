@@ -54,7 +54,6 @@ import failSaveExecute = ExtLang.failSaveExecute;
  * and let the queue do the processing.
  *
  */
-declare const window: any;
 
 export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
 
