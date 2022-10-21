@@ -57,9 +57,9 @@ function remapNamespacesFor23() {
 
 
 let {
-    P_PARTIAL_SOURCE, P_VIEWSTATE, P_VIEWROOT, P_VIEWHEAD, P_VIEWBODY,
-    P_AJAX, P_EXECUTE, P_RENDER, P_EVT, P_CLIENT_WINDOW, P_RESET_VALUES,
-    P_WINDOW_ID, ENCODED_URL
+    P_PARTIAL_SOURCE, P_VIEWSTATE,
+    P_AJAX, P_EXECUTE, P_RENDER,
+    P_WINDOW_ID
 } = remapNamespacesFor23();
 
 
@@ -232,7 +232,7 @@ describe('Tests after core when it hits response', function () {
                 render: "@form",
                 pass1: "pass1",
                 pass2: "pass2",
-                onevent: (evt: any) => {
+                onevent: () => {
                     localCnt++;
                 }
             });
@@ -325,7 +325,6 @@ describe('Tests after core when it hits response', function () {
         let xhrReq = null;
 
         try {
-            let errorCnt = 0;
             let element = DomQuery.byId("input_2").getAsElem(0).value;
             jsf.ajax.request(element, null, {
                 execute: "input_1",

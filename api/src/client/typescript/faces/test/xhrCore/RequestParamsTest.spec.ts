@@ -16,22 +16,13 @@
 import * as sinon from "sinon";
 import {Implementation} from "../../impl/AjaxImpl";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
+
 import protocolPage = StandardInits.protocolPage;
 import {DQ} from "mona-dish";
 import {XhrFormData} from "../../impl/xhrCore/XhrFormData";
 import { expect } from "chai";
 
 describe("test for proper request param patterns identical to the old implementation", function () {
-    const DELETE_PATTERN = {
-        op: "delete1",
-        "jakarta.faces.source": "cmd_delete",
-        "jakarta.faces.partial.event": "click",
-        "jakarta.faces.partial.ajax": "true",
-        "jakarta.faces.partial.execute": "cmd_delete",
-        "form1": "form1",
-        "jakarta.faces.ViewState": "blubbblubblubb"
-    }
-
     const UPDATE_INSERT_2 = {
         "op": "updateinsert2",
         "jakarta.faces.partial.event": "click",
@@ -41,17 +32,6 @@ describe("test for proper request param patterns identical to the old implementa
         "form1": "form1",
         "jakarta.faces.ViewState": "blubbblubblubb"
     }
-
-    const ERRORS = {
-        "op": "errors",
-        "jakarta.faces.partial.event": "click",
-        "jakarta.faces.source": "cmd_error",
-        "jakarta.faces.partial.ajax": "true",
-        "jakarta.faces.partial.execute": "cmd_error",
-        "form1": "form1",
-        "jakarta.faces.ViewState": "blubbblubblubb"
-    }
-
     /**
      * matches two maps for absolute identicality
      */

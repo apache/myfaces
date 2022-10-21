@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import {Config} from "mona-dish";
+import {Config, DomQuery} from "mona-dish";
 import {describe, it} from 'mocha';
 import {expect} from 'chai';
 import * as sinon from 'sinon';
-
-import {DomQuery} from "mona-dish";
 
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {P_EXECUTE, P_RENDER} from "../../impl/core/Const";
@@ -41,16 +39,14 @@ declare var Implementation: any;
 describe('javax.ajax.request test suite', () => {
 
     beforeEach(async () => {
-        let ret = await defaultMyFaces23();
-        return ret;
+        return await defaultMyFaces23();
     });
 
     it("jsf.ajax.request can be called", () => {
         //we stub the addRequestToQueue, to enable the request check only
         //without any xhr and response, both will be tested separately for
         //proper behavior
-        const Impl = Implementation;
-        const addRequestToQueue = sinon.stub(Impl.queueHandler, "addRequestToQueue");
+        const addRequestToQueue = sinon.stub(Implementation.queueHandler, "addRequestToQueue");
         //now the javax.ajax.request should trigger but should not go into
         //the asynchronous event loop.
         //lets check it out
@@ -62,8 +58,6 @@ describe('javax.ajax.request test suite', () => {
 
             expect(addRequestToQueue.called).to.be.true;
             expect(addRequestToQueue.callCount).to.eq(1);
-
-            const argElement = <Config>addRequestToQueue.args[0][2];
             const context = (<Config>addRequestToQueue.args[0][2]);
 
             expect(context.getIf("passThrgh", P_RENDER).value).eq("@all");

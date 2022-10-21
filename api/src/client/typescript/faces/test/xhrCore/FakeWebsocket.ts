@@ -19,14 +19,14 @@ export class FakeWebsocket {
     onmessage: Function = () => {}
     onclose: Function = () => {}
 
-    constructor(data?: any) {
+    constructor() {
         setTimeout(() => {
             this.onopen();
         }, 10);
     }
 
 
-    send(msg: any) {
+    send() {
     }
 
     _respond(response: any) {

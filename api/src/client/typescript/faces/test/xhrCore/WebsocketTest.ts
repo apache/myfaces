@@ -126,13 +126,13 @@ describe('Tests the jsf websocket client side api on high level (generic test wi
 
         let msg = null;
         let cnl = null;
-        new Promise((resolve, reject) => {
+        new Promise((resolve) => {
             faces.push.init("blarg", "booga.ws", "mychannel", () => {
                     openCalled = true;
                     this.fakeWebsocket._respond({data: '"booga"'});
                 },
 
-                (message: string, channel: string, event: any) => {
+                (message: string, channel: string) => {
                     messageCalled = true;
                     msg = message;
                     cnl = channel;
@@ -174,13 +174,13 @@ describe('Tests the jsf websocket client side api on high level (generic test wi
 
         let msg = null;
         let cnl = null;
-        new Promise((resolve, reject) => {
+        new Promise((resolve) => {
             faces.push.init("blarg", "booga.ws", "mychannel", () => {
                     openCalled = true;
                     this.fakeWebsocket._respond({data: '"booga"'});
                 },
 
-                (message: string, channel: string, event: any) => {
+                (message: string, channel: string) => {
                     messageCalled = true;
                     msg = message;
                     cnl = channel;

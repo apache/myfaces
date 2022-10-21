@@ -21,9 +21,8 @@ import * as sinon from "sinon";
 
 import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
 import {expect} from "chai";
-import protocolPage = StandardInits.protocolPage;
 import {DQ} from "mona-dish";
-import {Optional} from "mona-dish";
+import protocolPage = StandardInits.protocolPage;
 
 declare var faces: any;
 declare var Implementation: any;
@@ -70,8 +69,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
     it("must have a simple field updated as well as the viewstate", function (done) {
         //DQ.byId("cmd_update_insert").click();
-        let issuer = DQ.byId("cmd_update_insert").click();
-
+        DQ.byId("cmd_update_insert").click();
         this.respond(XmlResponses.UPDATE_INSERT_1);
 
         expect(DQ.byId("changesArea")
@@ -102,8 +100,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
     it("must have a simple field updated  with the second before update rendering path", function (done) {
         //DQ.byId("cmd_update_insert").click();
-        let issuer = DQ.byId("cmd_update_insert").click();
-
+        DQ.byId("cmd_update_insert").click();
         this.respond(XmlResponses.UPDATE_INSERT_2);
 
         expect(DQ.byId("changesArea")
@@ -158,7 +155,6 @@ describe('Tests of the various aspects of the response protocol functionality', 
         this.respond(XmlResponses.HEAD_REPLACEMENT);
 
         //basic replacement
-        let newHead = DQ.byId(document.head);
         let newBody = DQ.byId(document.body);
         let newContent = <string>newBody.html().value;
 
@@ -219,8 +215,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
     });
 
     it("must have processed a proper eval of a script given in the eval tag", function () {
-        let issuer = DQ.byId("cmd_eval").click();
-
+        DQ.byId("cmd_eval").click();
         this.respond(XmlResponses.EVAL_1);
 
         let resultHTML: string = <string>DQ.byId(document.body).html().value;
@@ -229,9 +224,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
     });
 
     it("must have updated the viewstates properly", function () {
-
-        let issuer = DQ.byId("cmd_eval").click();
-
+        DQ.byId("cmd_eval").click();
         /*js full submit form, coming from the integration tests*/
         window.document.body.innerHTML = `<form id="j_id__v_0" name="j_id__v_0" method="post" action="/IntegrationJSTest/integrationtestsjasmine/test7-eventtest.jsf"
       enctype="application/x-www-form-urlencoded"><span id="updatePanel">hello world</span><a href="#"
@@ -266,9 +259,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
 
     it("must have updated the viewstates properly with lenient update block", function () {
-
-        let issuer = DQ.byId("cmd_eval").click();
-
+        DQ.byId("cmd_eval").click();
         /*js full submit form, coming from the integration tests*/
         window.document.body.innerHTML = `<form id="j_id__v_0" name="j_id__v_0" method="post" action="/IntegrationJSTest/integrationtestsjasmine/test7-eventtest.jsf"
       enctype="application/x-www-form-urlencoded"><span id="updatePanel">hello world</span><a href="#"

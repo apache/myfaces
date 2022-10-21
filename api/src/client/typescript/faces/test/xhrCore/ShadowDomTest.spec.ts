@@ -84,7 +84,6 @@ describe('shadow dom testsuite', () => {
 
 
     it("shadow dom updated triggered from outside", function() {
-        const Impl = Implementation;
         //const addRequestToQueue = sinon.stub(Impl.queueHandler, "addRequestToQueue");
 
         expect(DomQuery.querySelectorAll("#shadowDomArea").length).to.eq(1);
