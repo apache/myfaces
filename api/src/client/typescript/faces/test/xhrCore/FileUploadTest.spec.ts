@@ -18,33 +18,10 @@ import * as sinon from "sinon";
 import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {DomQuery} from "mona-dish";
-import {
-    COMPLETE,
-    P_AJAX,
-    P_EXECUTE,
-    P_PARTIAL_SOURCE,
-    P_RENDER,
-    P_VIEWSTATE,
-    P_WINDOW_ID,
-    SUCCESS
-} from "../../impl/core/Const";
-import defaultMyFaces = StandardInits.defaultMyFaces;
-import STD_XML = StandardInits.STD_XML;
 import defaultFileForm = StandardInits.defaultFileForm;
 import {Implementation} from "../../impl/AjaxImpl";
 
 declare var faces: any;
-declare var Impl
-
-
-let issueStdReq = function (element) {
-    faces.ajax.request(element, null, {
-        execute: "input_1",
-        render: "@form",
-        pass1: "pass1",
-        pass2: "pass2"
-    });
-};
 
 /**
  * specialized tests testing the xhr core behavior when it hits the xmlHttpRequest object
@@ -87,7 +64,6 @@ describe('Tests on the xhr core when it starts to call the request', function ()
     it('must have sent a form multipart request', function (done) {
         let send = sinon.spy(XMLHttpRequest.prototype, "send");
         const CONTENT_TYPE = "Content-Type";
-        const MULTIPART_FORM = "multipart/form-data";
         const POST = "POST";
 
         try {
@@ -119,7 +95,6 @@ describe('Tests on the xhr core when it starts to call the request', function ()
         let send = sinon.spy(XMLHttpRequest.prototype, "send");
 
         const CONTENT_TYPE = "Content-Type";
-        const MULTIPART_FORM = "multipart/form-data";
         const POST = "POST";
 
         try {
