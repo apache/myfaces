@@ -24,6 +24,8 @@ export const P_VIEWROOT = "jakarta.faces.ViewRoot";
 export const P_VIEWHEAD = "jakarta.faces.ViewHead";
 export const P_VIEWBODY = "jakarta.faces.ViewBody";
 
+export const P_RESOURCE = "jakarta.faces.Resource";
+
 /*some useful definitions*/
 
 export const EMPTY_FUNC = Object.freeze(() => {
@@ -155,6 +157,10 @@ export const CMD_REDIRECT = "redirect";
 
 export const UPDATE_FORMS = "_updateForms";
 export const UPDATE_ELEMS = "_updateElems";
+
+//we want the head elements to be processed before we process the body
+//but after the inner html is done
+export const DEFERRED_HEAD_INSERTS = "_headElems";
 
 export const MYFACES = "myfaces";
 

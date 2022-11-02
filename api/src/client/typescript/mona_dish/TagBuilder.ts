@@ -17,12 +17,14 @@
 
 //poliyfill from @webcomponents/webcomponentsjs
 import {DomQuery} from "./DomQuery";
+import {_global$} from "./Global";
 
-if ("undefined" != typeof window) {
+
+if ("undefined" != typeof _global$) {
     (function () {
-        if (void 0 === window.Reflect || void 0 === window.customElements || (<any>window.customElements).polyfillWrapFlushCallback) return;
+        if (void 0 === _global$().Reflect || void 0 === _global$().customElements || (<any>_global$().customElements).polyfillWrapFlushCallback) return;
         const a = HTMLElement;
-        (<any>window).HTMLElement = {
+        _global$().HTMLElement = {
             HTMLElement: function HTMLElement() {
                 return Reflect.construct(a, [], this.constructor)
             }
@@ -157,7 +159,7 @@ export class TagBuilder {
                 });
             }
 
-            window.customElements.define(this.tagName, this.clazz, this.theOptions || null);
+            _global$().customElements.define(this.tagName, this.clazz, this.theOptions || null);
         } else {
             let _t_ = this;
             let applyCallback = (name: string, scope: any) => {
@@ -166,7 +168,7 @@ export class TagBuilder {
                 }
             };
 
-            window.customElements.define(this.tagName, class extends this.extendsType {
+            _global$().customElements.define(this.tagName, class extends this.extendsType {
                 constructor() {
                     super();
                     this.innerHTML = _t_.markup;

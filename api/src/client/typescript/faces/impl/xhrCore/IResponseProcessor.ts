@@ -32,6 +32,14 @@ export interface IResponseProcessor {
      */
     replaceHead(shadowHead: XMLQuery | DQ): void;
 
+
+    /**
+     * adds new elements to the head
+     *
+     * @param newElements the elements which need addition
+     */
+    addToHead(newElements: XMLQuery | DQ): void;
+
     /**
      * replace the body
      *

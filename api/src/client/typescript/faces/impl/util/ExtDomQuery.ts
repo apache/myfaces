@@ -132,6 +132,8 @@ export class ExtDomquery extends DQ {
         return null;
     }
 
+
+
     private extractNonce(curScript: DomQuery) {
         return (curScript.getAsElem(0).value as HTMLElement)?.nonce ?? curScript.attr("nonce").value;
     }
@@ -160,17 +162,23 @@ export class ExtDomquery extends DQ {
         return new ExtDomquery(super.globalEval(code, nonce ?? this.nonce));
     }
 
+    globalEvalSticky(code: string, nonce ?: string): DQ {
+        return new ExtDomquery(super.globalEvalSticky(code, nonce ?? this.nonce));
+    }
+
     /**
      * decorated run scripts which takes our jsf extensions into consideration
      * (standard DomQuery will let you pass anything)
      * @param whilteListed
      */
-    runScripts(whilteListed?: (src: string) => boolean): DomQuery {
+    runScripts(sticky = false, whilteListed?: (src: string) => boolean): DomQuery {
         const whitelistFunc = (src: string): boolean => {
             return (whilteListed?.(src) ?? true) && !IS_FACES_SOURCE(src) && !IS_INTERNAL_SOURCE(src);
         };
-        return super.runScripts(whitelistFunc);
+        return super.runScripts(false, whitelistFunc);
     }
+
+
 
     /**
      * byId producer
@@ -183,6 +191,7 @@ export class ExtDomquery extends DQ {
         const ret = DomQuery.byId(selector, deep);
         return new ExtDomquery(ret);
     }
+
 }
 
 export const ExtDQ = ExtDomquery;

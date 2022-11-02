@@ -21,6 +21,8 @@
  */
 import {Observable, Subject} from "rxjs";
 import {Stream} from "./Stream";
+import {_global$} from "./Global";
+
 
 /**
  * generic crypto interface
@@ -334,8 +336,8 @@ abstract class BaseBroker {
 }
 
 let broadCastChannelBrokerGenerator = (name) => {
-    if (window?.BroadcastChannel) {
-        return new window.BroadcastChannel(name);
+    if (_global$()?.BroadcastChannel) {
+        return new (_global$()).BroadcastChannel(name);
     }
     throw Error("No Broadcast channel in the system, use a shim or provide a factory function" +
         "in the constructor");
@@ -630,10 +632,10 @@ export class Broker extends BaseBroker {
             this.msgCallListeners(channel, message);
         }
         this.markMessageAsProcessed(message);
-        if (window.parent != null) {
+        if (_global$().parent != null) {
 
             let messageWrapper = new MessageWrapper(channel, message);
-            window.parent.postMessage(JSON.parse(JSON.stringify(messageWrapper)), message.targetOrigin);
+            _global$().parent.postMessage(JSON.parse(JSON.stringify(messageWrapper)), message.targetOrigin);
         }
         if (callBrokerListeners) {
             this.dispatchSameLevel(channel, message);
@@ -643,7 +645,7 @@ export class Broker extends BaseBroker {
     private dispatchSameLevel(channel: string, message: Message) {
         let event = this.transformToEvent(channel, message, true);
         //we also dispatch sideways
-        window.dispatchEvent(event);
+        _global$().dispatchEvent(event);
     }
 
     //a dispatch of our own should never trigger the listeners hence the default true
@@ -686,7 +688,7 @@ export class Broker extends BaseBroker {
     }
 
     private static createCustomEvent(name: string, wrapper: MessageWrapper): any {
-        if ('function' != typeof window.CustomEvent) {
+        if ('function' != typeof _global$().CustomEvent) {
             let e: any = document.createEvent('HTMLEvents');
             e.detail = wrapper.detail;
             e.channel = wrapper.channel;
@@ -694,7 +696,7 @@ export class Broker extends BaseBroker {
             return e;
 
         } else {
-            let customEvent = new window.CustomEvent(name, wrapper);
+            let customEvent = new (_global$()).CustomEvent(name, wrapper);
             (<any>customEvent).channel = wrapper.channel;
             return customEvent;
         }

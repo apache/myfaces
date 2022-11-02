@@ -358,5 +358,5 @@ describe('Tests of the various aspects of the response protocol functionality', 
     });
 
 
-    //TODO update head all and redirect
+
 });

@@ -51,7 +51,8 @@ import {
     TAG_FORM,
     TAG_HEAD,
     UPDATE_ELEMS,
-    UPDATE_FORMS
+    UPDATE_FORMS,
+    DEFERRED_HEAD_INSERTS
 } from "../core/Const";
 import trim = Lang.trim;
 import {ExtConfig, ExtDomquery} from "../util/ExtDomQuery";
@@ -86,7 +87,7 @@ export class ResponseProcessor implements IResponseProcessor {
             return;
         }
 
-        let oldHead = DQ.querySelectorAll(TAG_HEAD);
+        let oldHead = ExtDomquery.querySelectorAll(TAG_HEAD);
 
         //delete all to avoid script and style overlays
         oldHead.querySelectorAll(SEL_SCRIPTS_STYLES).delete();
@@ -95,7 +96,16 @@ export class ResponseProcessor implements IResponseProcessor {
         // eval means the scripts will get attached (eval script attach method)
         // but this is done by DomQuery not in this code
         this.storeForEval(shadowHead);
+        //incoming either the outer head tag or its childs
+        //shadowHead = (shadowHead.tagName.value === "HEAD") ? shadowHead.childNodes : shadowHead;
+        //this.addToHead(shadowHead);
     }
+
+    addToHead(newElements: XMLQuery | DQ) {
+        this.internalContext.assign(DEFERRED_HEAD_INSERTS).value.push(newElements);
+    }
+
+
 
     /**
      * replaces the body in the expected manner
@@ -114,7 +124,7 @@ export class ResponseProcessor implements IResponseProcessor {
 
         let shadowInnerHTML: string = <string>shadowBody.html().value;
 
-        let resultingBody = <DQ>DQ.querySelectorAll(TAG_BODY).html(shadowInnerHTML);
+        let resultingBody = <DQ>ExtDomquery.querySelectorAll(TAG_BODY).html(shadowInnerHTML);
         let updateForms = resultingBody.querySelectorAll(TAG_FORM);
 
         // main difference, we cannot replace the body itself, but only its content
@@ -130,7 +140,7 @@ export class ResponseProcessor implements IResponseProcessor {
      * @param node the node to eval
      */
     eval(node: XMLQuery) {
-        DQ.globalEval(node.cDATAAsString);
+        ExtDomquery.globalEval(node.cDATAAsString);
     }
 
     /**
@@ -303,8 +313,14 @@ export class ResponseProcessor implements IResponseProcessor {
      * generic global eval which runs the embedded css and scripts
      */
     globalEval() {
+        //  phase one, if we have head inserts, we build up those before going into the script eval phase
+        let insertHeadElems = new ExtDomquery(...this.internalContext.getIf(DEFERRED_HEAD_INSERTS).value);
+        this.runHeadInserts(insertHeadElems);
+
+        // phase 2 we run a script eval on all updated elements in the body
         let updateElems = new ExtDomquery(...this.internalContext.getIf(UPDATE_ELEMS).value);
         updateElems.runCss();
+        // phase 3, we do the same for the css
         updateElems.runScripts();
     }
 
@@ -433,6 +449,11 @@ export class ResponseProcessor implements IResponseProcessor {
         this.internalContext.assign(UPDATE_ELEMS).value.push(toBeEvaled);
     }
 
+    // head eval is always sticky
+    private storeForHeadEval(toBeEvaled: DQ, sticky) {
+        this.internalContext.assign(DEFERRED_HEAD_INSERTS).value.push(toBeEvaled);
+    }
+
     /**
      * check whether a given XMLQuery node is an explicit viewstate node
      *
@@ -463,4 +484,27 @@ export class ResponseProcessor implements IResponseProcessor {
         this.externalContext.getIf(ON_ERROR).orElse(this.internalContext.getIf(ON_ERROR).value).orElse(EMPTY_FUNC).value(errorData);
     }
 
+
+    /**
+     * adds new elements to the head as per spec, we use it in a deferred way
+     * to have the html buildup first then the head inserts which run the head evals
+     * and then the body and css evals from the markup
+     *
+     * This is only performed upon a head replacement or resource insert
+     *
+     * @param newElements the elements which need addition
+     */
+    private runHeadInserts(newElements: ExtDomquery): void {
+        let head = ExtDomquery.byId(document.head);
+        //automated nonce handling
+        newElements.each(element => {
+            if(element.tagName.value != "SCRIPT" || element.attr("src").isPresent()) {
+                head.append(element);
+                return;
+            }
+            // special corner case
+            // embedded script code,
+            element.globalEvalSticky(element.innerHTML);
+        });
+    }
 }

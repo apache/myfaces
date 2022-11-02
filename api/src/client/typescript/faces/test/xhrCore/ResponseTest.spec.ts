@@ -150,8 +150,9 @@ describe('Tests of the various aspects of the response protocol functionality', 
     });
 
 
-    it("must have a proper workiung head replace", function () {
+    it("must have a proper working head replace", function () {
         DQ.byId("cmd_replace").click();
+
         this.respond(XmlResponses.HEAD_REPLACEMENT);
 
         //basic replacement
@@ -355,5 +356,25 @@ describe('Tests of the various aspects of the response protocol functionality', 
     });
 
 
-    //TODO update head all and redirect
+
+    it("must handle simple resource responses properly", function() {
+        DQ.byId("cmd_simple_resource").click();
+        this.respond(XmlResponses.SIMPLE_RESOURCE_RESPONSE);
+        expect(document.head.innerHTML.indexOf("/test-faces23-ajax-4466/jakarta.faces.resource/addedViaHead.js.xhtml?ln=spec1423") != -1).to.be.true;
+    })
+    it("must handle complex resource responses properly", function() {
+        DQ.byId("cmd_complex_resource").click();
+        this.respond(XmlResponses.MULTIPLE_RESOURCE_RESPONSE);
+        let headHTML = document.head.innerHTML;
+        expect(headHTML.indexOf("/test-faces23-ajax-4466/jakarta.faces.resource/addedViaHead.js.xhtml?ln=spec1423")).not.eq(-1);
+        expect(headHTML.indexOf("rel=\"/test-faces23-ajax-4466/jakarta.faces.resource/addedViaHead.css.xhtml?ln=spec1423\"")).not.eq(-1);
+    })
+    it("embedded scripts must be evaled", function() {
+        DQ.byId("cmd_complex_resource").click();
+        this.respond(XmlResponses.EMBEDDED_SCRIPTS_RESOURCE_RESPONSE);
+        let headHTML = document.head.innerHTML;
+        expect(headHTML.indexOf("/test-faces23-ajax-4466/jakarta.faces.resource/addedViaHead.js.xhtml?ln=spec1423")).not.eq(-1);
+        expect(headHTML.indexOf("rel=\"/test-faces23-ajax-4466/jakarta.faces.resource/addedViaHead.css.xhtml?ln=spec1423\"")).not.eq(-1);
+        expect(document.body.innerHTML === "booga").to.be.true;
+    })
 });
