@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.component.UIComponent;
@@ -40,6 +43,7 @@ import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.push.cdi.WebsocketChannelMetadata;
 import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilder;
 import org.apache.myfaces.push.cdi.WebsocketScopeManager;
+import org.apache.myfaces.push.cdi.WebsocketSessionManager;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
@@ -51,6 +55,7 @@ import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class WebsocketComponentRenderer extends Renderer implements ComponentSystemEventListener
 {
+    private static final Logger LOG = Logger.getLogger(WebsocketComponentRenderer.class.getName());
 
     @Override
     public void processEvent(ComponentSystemEvent event)
@@ -125,16 +130,61 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
 
         // Create channel token 
         // TODO: Use ResponseStateManager to create the token
-        String scope = component.getScope() == null
-                ? WebsocketScopeManager.SCOPE_APPLICATION
-                : component.getScope();
+        // The default scope is application. When the user attribute is specified, then the default scope is session.
+        String scope = component.getScope();
+        if (scope == null)
+        {
+            scope = (component.getUser() == null ?
+                    WebsocketScopeManager.SCOPE_APPLICATION : WebsocketScopeManager.SCOPE_SESSION);
+        }
+
         WebsocketChannelMetadata metadata = new WebsocketChannelMetadata(
                 channel, scope, component.getUser(), component.isConnected());
 
         WebsocketScopeManager scopeManager = CDIUtils.get(beanManager, WebsocketScopeManager.class);
 
+        // try to find an existing channelToken
         String channelToken = null;
-        // Force a new channelToken if "connected" property is set to false, because in that case websocket creation 
+        if (scopeManager.getScope(scope, true).isChannelAvailable(channel))
+        {
+            if (component.getUser() == null)
+            {
+                List<String> channelTokenList = scopeManager.getScope (scope, true).getChannelTokens(channel);
+                if (LOG.isLoggable(Level.FINE))
+                {
+                    LOG.log(Level.FINE, "WebsocketComponentRenderer.encodeEnd: for channel = {0} found : ",
+                            channel);
+                    channelTokenList.forEach (p -> LOG.log(Level.FINE, "  {0}", p));
+                }
+                // should be just one
+                if (channelTokenList.size() == 1)
+                {
+                    channelToken = channelTokenList.get(0);
+                }
+            }
+            else
+            {
+                List<String> channelTokenList = scopeManager.getScope (scope, true)
+                        .getChannelTokens(channel, component.getUser());
+                if (LOG.isLoggable(Level.FINE))
+                {
+                    LOG.log(Level.FINE,
+                            "WebsocketComponentRenderer.encodeEnd: for channel = {0}, user = {1} found : ",
+                            new Object[] {channel, component.getUser()});
+                    channelTokenList.forEach (p -> LOG.log(Level.FINE, "  {0}", p));
+                }
+                // should be just one for combination channel / user
+                if (channelTokenList.size() == 1)
+                {
+                    channelToken = channelTokenList.get(0);
+                }
+
+            }
+        }
+
+        // Create channel token if needed
+        // TODO: Use ResponseStateManager to create the token
+        // Force a new channelToken if "connected" property is set to false, because in that case websocket creation
         if (!component.isConnected())
         {
             // This bean is required because you always need to register the token, so it can be properly destroyed
@@ -144,15 +194,18 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         {
             // No channel token found for that combination, create a new token for this view
             channelToken = channelTokenBuilder.createChannelToken(facesContext, channel);
-            
-            // Register channel in view scope to chain discard view algorithm using @PreDestroy
-            scopeManager.getViewScope(true).registerToken(channelToken, metadata);
-            
-            // Register channel in session scope to allow validation on handshake  WebsocketConfigurator)
-            scopeManager.getSessionScope(true).registerToken(channelToken, metadata);
-        }        
+            scopeManager.getScope(scope, true).registerWebsocketSession(channelToken, metadata);
+        }
 
-        scopeManager.getScope(scope, true).registerWebsocketSession(channelToken, metadata);
+        // Register channel in view scope to chain discard view algorithm using @PreDestroy
+        scopeManager.getViewScope(true).registerToken(channelToken, metadata);
+
+        // Register channel in session scope to allow validation on handshake  WebsocketConfigurator)
+        scopeManager.getSessionScope(true).registerToken(channelToken, metadata);
+
+        // Prepare channelToken to websocket sessionMap (real session will be connected later)
+        WebsocketSessionManager sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
+        sessionManager.registerSessionToken(channelToken);
 
         writer.startElement(HTML.SCRIPT_ELEM, component);
         HtmlRendererUtils.renderScriptType(facesContext, writer);

@@ -23,19 +23,24 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jakarta.faces.FacesException;
 
+import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
+import org.apache.myfaces.util.ExternalContextUtils;
+import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.util.UrlPatternMatcher;
+import org.apache.myfaces.util.lang.ConcurrentLRUCache;
+import org.apache.myfaces.util.lang.StringUtils;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.FacesException;
+import jakarta.faces.annotation.View;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.ViewDeclarationLanguage;
-
-import org.apache.myfaces.util.lang.ConcurrentLRUCache;
-import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
-import org.apache.myfaces.util.ExternalContextUtils;
-import org.apache.myfaces.util.lang.StringUtils;
-import org.apache.myfaces.util.UrlPatternMatcher;
+import jakarta.faces.view.facelets.Facelet;
 
 /**
  * A ViewHandlerSupport implementation for use with standard Java Servlet engines,
@@ -482,12 +487,11 @@ public class ViewIdSupport
             }
         }
 
-        // Otherwise, if a physical resource exists with the name requestViewId let that value be viewId.
         if (isViewExistent(context,requestViewId))
         {
             return requestViewId;
         }
-        
+
         //Otherwise return null.
         return null;
     }
@@ -516,6 +520,15 @@ public class ViewIdSupport
                 if (vdl != null)
                 {
                     resourceExists = vdl.viewExists(facesContext, viewId);
+                    // Check if it might be a programmatic java-built view (MYFACES-4477)
+                    if(resourceExists == null || resourceExists == false)
+                    {
+                        if (ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
+                        {
+                            BeanManager bm = CDIUtils.getBeanManager(facesContext);
+                            resourceExists = CDIUtils.get(bm, Facelet.class, true, View.Literal.of(viewId)) != null;
+                        }
+                    }
                 }
                 else
                 {
