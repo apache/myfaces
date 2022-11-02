@@ -27,7 +27,8 @@ import {
     SOURCE,
     TAG_FORM,
     UPDATE_ELEMS,
-    UPDATE_FORMS
+    UPDATE_FORMS,
+    DEFERRED_HEAD_INSERTS
 } from "../core/Const";
 import {ExtConfig} from "../util/ExtDomQuery";
 
@@ -75,6 +76,7 @@ export function resolveContexts(context: { [p: string]: any }): any {
     /**
      * prepare storage for some deferred operations
      */
+    internalContext.assign(DEFERRED_HEAD_INSERTS).value = [];
     internalContext.assign(UPDATE_FORMS).value = [];
     internalContext.assign(UPDATE_ELEMS).value = [];
     return {externalContext, internalContext};

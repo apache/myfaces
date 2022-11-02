@@ -24,6 +24,9 @@ import trim = Lang.trim;
 import objToArray = Lang.objToArray;
 import isString = Lang.isString;
 import equalsIgnoreCase = Lang.equalsIgnoreCase;
+import {_global$} from "./Global";
+
+declare var ownerDocument: any;
 
 /**
  * in order to poss custom parameters we need to extend the mutation observer init
@@ -105,7 +108,7 @@ function waitUntilDom(root: DomQuery, condition: (element: DomQuery) => boolean,
                     success(new DomQuery(found || root));
                 }
             }
-            observer = new window.MutationObserver(callback);
+            observer = new MutationObserver(callback);
 
             // browsers might ignore it, but we cannot break the api in the case
             // hence no timeout is passed
@@ -210,6 +213,11 @@ const DEFAULT_WHITELIST = () => {
 };
 
 interface IDomQuery {
+    /**
+     * reference to the systems global object
+     * (globalThis, window, global, depending on the environment)
+     */
+    readonly global: any;
     /**
      * reads the first element if it exists and returns an optional
      */
@@ -517,6 +525,16 @@ interface IDomQuery {
     globalEval(code: string, nonce ?: string): DomQuery;
 
     /**
+     * Runs an eval and keeps the evaled code in the head
+     * This is a corner condition, where we want to update the head with custom
+     * code and leave the code in (instead of deleting ig)
+     *
+     * @param code the code to be evaled
+     * @param  nonce optional  nonce key for higher security
+     */
+    globalEvalSticky(code: string, nonce ?: string): DomQuery;
+
+    /**
      * detaches a set of nodes from their parent elements
      * in a browser independend manner
      * @return {DomQuery} DomQuery of nodes with the detached dom nodes
@@ -622,7 +640,7 @@ interface IDomQuery {
      * @param whilteListed: optional whitelist function which can filter out script tags which are not processed
      * defaults to the standard jsf.js exclusion (we use this code for myfaces)
      */
-    runScripts(whilteListed: (val: string) => boolean): DomQuery;
+    runScripts(sticky?: boolean, whilteListed?: (val: string) => boolean): DomQuery;
 
     /**
      * runs the embedded css
@@ -732,6 +750,11 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     static absent = new DomQuery();
 
+    /**
+     * reference to the environmental global object
+     */
+    static global = _global$;
+
     private rootNode: Array<Element> = [];
 
     pos = -1;
@@ -772,6 +795,10 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     get values(): Element[] {
         return this.allElems();
+    }
+
+    get global(): any {
+        return _global$;
     }
 
     /**
@@ -1032,6 +1059,10 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     static globalEval(code: string, nonce?: string): DomQuery {
         return new DomQuery(document).globalEval(code, nonce);
+    }
+
+    static globalEvalSticky(code: string, nonce?: string): DomQuery {
+        return new DomQuery(document).globalEvalSticky(code, nonce);
     }
 
     /**
@@ -1398,7 +1429,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             prot.oMatchesSelector ||
             prot.webkitMatchesSelector ||
             function (s: string) {
-                let matches: NodeListOf<HTMLElement> = (document || (<any>window).ownerDocument).querySelectorAll(s),
+                let matches: NodeListOf<HTMLElement> = (document || ownerDocument).querySelectorAll(s),
                     i = matches.length;
                 while (--i >= 0 && matches.item(i) !== toMatch) {
                 }
@@ -1561,6 +1592,28 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     /**
+     * global eval head appendix method
+     * no other methods are supported anymore
+     * @param code the code to be evaled
+     * @param  nonce optional  nonce key for higher security
+     */
+    globalEvalSticky(code: string, nonce ?: string): DomQuery {
+        let head = document.getElementsByTagName("head")[0] || document.documentElement;
+        let script = document.createElement("script");
+        if (nonce) {
+            if('undefined' != typeof script?.nonce) {
+                script.nonce = nonce;
+            } else {
+                script.setAttribute("nonce", nonce);
+            }
+        }
+        script.type = "text/javascript";
+        script.innerHTML = code;
+        head.appendChild(script);
+        return this;
+    }
+
+    /**
      * detaches a set of nodes from their parent elements
      * in a browser independend manner
      * @return {Array} an array of nodes with the detached dom nodes
@@ -1621,6 +1674,47 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 //but since it is not in use yet, it is ok
                 setTimeout(() => {
                     this.globalEval(xhr.responseText + "\r\n//@ sourceURL=" + src, nonce);
+                }, defer);
+            }
+        };
+
+        xhr.onerror = (data: any) => {
+            throw Error(data);
+        };
+        //since we are synchronous we do it after not with onReadyStateChange
+        xhr.send(null);
+
+        return this;
+    }
+
+
+    /**
+     * loads and evals a script from a source uri
+     *
+     * @param src the source to be loaded and evaled
+     * @param defer in miliseconds execution default (0 == no defer)
+     * @param charSet
+     */
+    loadScriptEvalSticky(src: string, defer: number = 0, charSet: string = "utf-8", nonce?:string) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", src, false);
+
+        if (charSet) {
+            xhr.setRequestHeader("Content-Type", "application/x-javascript; charset:" + charSet);
+        }
+
+        xhr.onload = () => {
+            //defer also means we have to process after the ajax response
+            //has been processed
+            //we can achieve that with a small timeout, the timeout
+            //triggers after the processing is done!
+            if (!defer) {
+                this.globalEvalSticky(xhr.responseText.replace(/\n/g, "\r\n") + "\r\n//@ sourceURL=" + src, nonce);
+            } else {
+                //TODO not ideal we maybe ought to move to something else here
+                //but since it is not in use yet, it is ok
+                setTimeout(() => {
+                    this.globalEvalSticky(xhr.responseText + "\r\n//@ sourceURL=" + src, nonce);
                 }, defer);
             }
         };
@@ -1811,10 +1905,11 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     /**
      * Run through the given nodes in the DomQuery execute the inline scripts
+     * @param sticky if set to true the evaled elements will stick to the head, default false
      * @param whilteListed: optional whitelist function which can filter out script tags which are not processed
      * defaults to the standard jsf.js exclusion (we use this code for myfaces)
      */
-    runScripts(whilteListed: (val: string) => boolean = DEFAULT_WHITELIST): DomQuery {
+    runScripts(sticky = false, whilteListed: (val: string) => boolean = DEFAULT_WHITELIST): DomQuery {
         const evalCollectedScripts = (scriptsToProcess: {evalText: string, nonce: string}[]) => {
             if (scriptsToProcess.length) {
                 //script source means we have to eval the existing
@@ -1829,11 +1924,15 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                             this.globalEval(joinedScripts.join("\n"));
                             joinedScripts.length = 0;
                         }
-                        this.globalEval(item.evalText, item.nonce);
+
+                        (!sticky) ?
+                            this.globalEval(item.evalText, item.nonce) :
+                            this.globalEvalSticky(item.evalText, item.nonce);
                     }
                 });
                 if (joinedScripts.length) {
-                    this.globalEval(joinedScripts.join("\n"));
+                    (!sticky) ? this.globalEval(joinedScripts.join("\n")) :
+                    this.globalEvalSticky(joinedScripts.join("\n"));
                     joinedScripts.length = 0;
                 }
 
@@ -1864,9 +1963,15 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                         if (whilteListed(src)) {
                             //we run the collected scripts before running, the include
                             finalScripts = evalCollectedScripts(finalScripts);
-                            (!!nonce) ? this.loadScriptEval(src, 0, "UTF-8", nonce):
-                                //if no nonce is set we do not pass any once
-                                this.loadScriptEval(src, 0, "UTF-8");
+                            if(!sticky) {
+                                (!!nonce) ? this.loadScriptEval(src, 0, "UTF-8", nonce):
+                                    //if no nonce is set we do not pass any once
+                                    this.loadScriptEval(src, 0, "UTF-8");
+                            } else {
+                                (!!nonce) ? this.loadScriptEvalSticky(src, 0, "UTF-8", nonce):
+                                    //if no nonce is set we do not pass any once
+                                    this.loadScriptEvalSticky(src, 0, "UTF-8");
+                            }
                         }
 
                     } else {

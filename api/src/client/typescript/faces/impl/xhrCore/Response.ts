@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Config, DQ, XMLQuery} from "mona-dish";
+import {DQ, XMLQuery} from "mona-dish";
 import {ResponseProcessor} from "./ResponseProcessor";
 
 import {IResponseProcessor} from "./IResponseProcessor";
@@ -28,7 +28,7 @@ import {
     CMD_EXTENSION,
     CMD_INSERT,
     CMD_REDIRECT,
-    CMD_UPDATE,
+    CMD_UPDATE, P_RESOURCE,
     P_VIEWBODY,
     P_VIEWHEAD,
     P_VIEWROOT,
@@ -203,6 +203,10 @@ export module Response {
 
             case $nsp(P_VIEWBODY):
                 responseProcessor.replaceBody(DQ.fromMarkup(cdataBlock));
+                break;
+
+            case $nsp(P_RESOURCE):
+                responseProcessor.addToHead(DQ.fromMarkup(cdataBlock))
                 break;
 
             default://htmlItem replacement
