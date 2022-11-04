@@ -3,3 +3,4 @@ webpack.config.js
 webpack.config.js.map
 typescript/**/*.js
 typescript/**/*.js.map
+!typescript/**/fixtures/*.js

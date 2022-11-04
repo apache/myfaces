@@ -21,8 +21,9 @@ import * as sinon from "sinon";
 
 import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
 import {expect} from "chai";
-import {DQ} from "mona-dish";
+import {DomQuery, DQ} from "mona-dish";
 import protocolPage = StandardInits.protocolPage;
+import exp from "constants";
 
 declare var faces: any;
 declare var Implementation: any;
@@ -357,24 +358,66 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
 
 
-    it("must handle simple resource responses properly", function() {
+    it("must handle simple resource responses properly", function(done) {
+
+        // we need to fake the response as well to see whether the server has loaded the addedViewHead code and has interpreted it
+        //(window as any)["test"] = "booga";
+
         DQ.byId("cmd_simple_resource").click();
         this.respond(XmlResponses.SIMPLE_RESOURCE_RESPONSE);
-        expect(document.head.innerHTML.indexOf("/test-faces23-ajax-4466/jakarta.faces.resource/addedViaHead.js.xhtml?ln=spec1423") != -1).to.be.true;
+
+        expect(document.head.innerHTML.indexOf("../../../xhrCore/fixtures/addedViewHead1.js") != -1).to.be.true;
+        DQ.byId(document.body).waitUntilDom(() => DQ.byId('resource_area_1').innerHTML === "true")
+            .then(() => done())
+            .catch(done);
     })
-    it("must handle complex resource responses properly", function() {
+
+
+    it("only single resources are allowed", function(done) {
+        // we need to fake the response as well to see whether the server has loaded the addedViewHead code and has interpreted it
+        //(window as any)["test"] = "booga";
+        for(let cnt = 0; cnt < 10; cnt++) {
+            DQ.byId("cmd_simple_resource").click();
+            this.respond(XmlResponses.MULTIPLE_RESOURCE_RESPONSE);
+        }
+
+        expect(document.head.innerHTML.indexOf("../../../xhrCore/fixtures/addedViewHead2.js") != -1).to.be.true;
+        let addedScriptsCnt = DomQuery.byId(document.head).querySelectorAll("script[src='../../../xhrCore/fixtures/addedViewHead2.js']").length;
+        expect(addedScriptsCnt).to.eq(1);
+        addedScriptsCnt = DomQuery.byId(document.head).querySelectorAll("style[rel='../../../xhrCore/fixtures/addedViewHead2.css']").length;
+        expect(addedScriptsCnt).to.eq(1);
+        done();
+    })
+
+    //TODO implement secondary response mockup
+    it("must handle complex resource responses properly", function(done) {
         DQ.byId("cmd_complex_resource").click();
         this.respond(XmlResponses.MULTIPLE_RESOURCE_RESPONSE);
+
         let headHTML = document.head.innerHTML;
-        expect(headHTML.indexOf("/test-faces23-ajax-4466/jakarta.faces.resource/addedViaHead.js.xhtml?ln=spec1423")).not.eq(-1);
-        expect(headHTML.indexOf("rel=\"/test-faces23-ajax-4466/jakarta.faces.resource/addedViaHead.css.xhtml?ln=spec1423\"")).not.eq(-1);
+        expect(headHTML.indexOf("../../../xhrCore/fixtures/addedViewHead2.js")).not.eq(-1);
+        expect(headHTML.indexOf("rel=\"../../../xhrCore/fixtures/addedViewHead2.css\"")).not.eq(-1);
+
+        DQ.byId(document.body).waitUntilDom(() => DQ.byId('resource_area_2').innerHTML === "true2")
+            .then(() => done())
+            .catch(done);
     })
-    it("embedded scripts must be evaled", function() {
-        DQ.byId("cmd_complex_resource").click();
+
+    it("embedded scripts must be evaled", function(done) {
+
+        DQ.byId("cmd_complex_resource2").click();
         this.respond(XmlResponses.EMBEDDED_SCRIPTS_RESOURCE_RESPONSE);
+       // this.respond("debugger; document.getElementById('resource_area_1').innerHTML = 'true3'",  {'Content-Type': 'text/javascript'});
         let headHTML = document.head.innerHTML;
-        expect(headHTML.indexOf("/test-faces23-ajax-4466/jakarta.faces.resource/addedViaHead.js.xhtml?ln=spec1423")).not.eq(-1);
-        expect(headHTML.indexOf("rel=\"/test-faces23-ajax-4466/jakarta.faces.resource/addedViaHead.css.xhtml?ln=spec1423\"")).not.eq(-1);
-        expect(document.body.innerHTML === "booga").to.be.true;
+        expect(headHTML.indexOf("../../../xhrCore/fixtures/addedViewHead3.js")).not.eq(-1);
+        expect(headHTML.indexOf("rel=\"../../../xhrCore/fixtures/addedViewHead2.css\"")).not.eq(-1);
+        setTimeout(() => {
+            let evalAreaHtml = DQ.byId('resource_area_1').innerHTML;
+            //last one must be the last item, order must be preserved
+            expect(evalAreaHtml).to.eq("booga");
+            done();
+        }, 800)
+
     })
+
 });

@@ -315,7 +315,7 @@ export class ResponseProcessor implements IResponseProcessor {
     globalEval() {
         //  phase one, if we have head inserts, we build up those before going into the script eval phase
         let insertHeadElems = new ExtDomquery(...this.internalContext.getIf(DEFERRED_HEAD_INSERTS).value);
-        this.runHeadInserts(insertHeadElems);
+        insertHeadElems.runHeadInserts(true);
 
         // phase 2 we run a script eval on all updated elements in the body
         let updateElems = new ExtDomquery(...this.internalContext.getIf(UPDATE_ELEMS).value);
@@ -485,26 +485,4 @@ export class ResponseProcessor implements IResponseProcessor {
     }
 
 
-    /**
-     * adds new elements to the head as per spec, we use it in a deferred way
-     * to have the html buildup first then the head inserts which run the head evals
-     * and then the body and css evals from the markup
-     *
-     * This is only performed upon a head replacement or resource insert
-     *
-     * @param newElements the elements which need addition
-     */
-    private runHeadInserts(newElements: ExtDomquery): void {
-        let head = ExtDomquery.byId(document.head);
-        //automated nonce handling
-        newElements.each(element => {
-            if(element.tagName.value != "SCRIPT" || element.attr("src").isPresent()) {
-                head.append(element);
-                return;
-            }
-            // special corner case
-            // embedded script code,
-            element.globalEvalSticky(element.innerHTML);
-        });
-    }
 }

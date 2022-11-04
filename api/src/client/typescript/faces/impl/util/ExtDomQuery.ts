@@ -17,8 +17,6 @@ import {Config, IValueHolder, Optional, DomQuery, DQ, Stream, ArrayCollector} fr
 import {$nsp, P_WINDOW_ID} from "../core/Const";
 
 
-
-
 /**
  * detects whether a source is a faces.js request
  *
@@ -42,7 +40,7 @@ const IS_FACES_SOURCE = (source?: string): boolean => {
 
 /**
  * namespace myfaces.testscripts can be used as extension point for internal
- * tests, those will be handled similarly to faces.js regarding
+ * tests, those will be handled similarly to faces.js - regarding
  * reload blocking on ajax requests
  *
  * @param source the source to check
@@ -169,15 +167,65 @@ export class ExtDomquery extends DQ {
     /**
      * decorated run scripts which takes our jsf extensions into consideration
      * (standard DomQuery will let you pass anything)
+     * @param sticky if set to true the internally generated element for the script is left in the dom
      * @param whilteListed
      */
     runScripts(sticky = false, whilteListed?: (src: string) => boolean): DomQuery {
         const whitelistFunc = (src: string): boolean => {
             return (whilteListed?.(src) ?? true) && !IS_FACES_SOURCE(src) && !IS_INTERNAL_SOURCE(src);
         };
-        return super.runScripts(false, whitelistFunc);
+        return super.runScripts(sticky, whitelistFunc);
     }
 
+    /**
+     * adds the elements in this ExtDomQuery to the head
+     *
+     * @param suppressDoubleIncludes checks for existing elements in the head before running the insert
+     */
+    runHeadInserts(suppressDoubleIncludes = true): void {
+        let head = ExtDomquery.byId(document.head);
+        //automated nonce handling
+        let processedScripts = [];
+
+        // the idea is only to run head inserts on resources
+        // which do not exist already, that way
+        // we can avoid double includes on subsequent resource
+        // requests.
+        function resourceIsNew(element: DomQuery) {
+            if(!suppressDoubleIncludes) {
+                return true;
+            }
+            const tagName = element.tagName.value;
+            if(!tagName) {
+                // textnode
+                return true;
+            }
+            let reference = element.attr("href")
+                .orElse(element.attr("src").value)
+                .orElse(element.attr("rel").value);
+
+            if (!reference.isPresent()) {
+                return true;
+            }
+            return !head.querySelectorAll(`${tagName}[href='${reference.value}']`).length &&
+                !head.querySelectorAll(`${tagName}[src='${reference.value}']`).length &&
+                !head.querySelectorAll(`${tagName}[rel='${reference.value}']`).length;
+        }
+
+        this
+            .filter(resourceIsNew)
+            .each(element => {
+                if(element.tagName.value != "SCRIPT") {
+                    //we need to run runScripts properly to deal with the rest
+                    new ExtDomquery(...processedScripts).runScripts(true);
+                    processedScripts = [];
+                    head.append(element);
+                } else {
+                    processedScripts.push(element);
+                }
+            });
+        new ExtDomquery(...processedScripts).runScripts(true);
+    }
 
 
     /**
@@ -191,6 +239,7 @@ export class ExtDomquery extends DQ {
         const ret = DomQuery.byId(selector, deep);
         return new ExtDomquery(ret);
     }
+
 
 }
 
@@ -270,5 +319,6 @@ export class ExtConfig extends  Config {
     private remap(accessPath: any[]) {
         return Stream.of(...accessPath).map(key => $nsp(key)).collect(new ArrayCollector());
     }
+
 
 }

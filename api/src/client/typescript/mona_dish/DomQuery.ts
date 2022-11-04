@@ -32,11 +32,11 @@ declare var ownerDocument: any;
  * in order to poss custom parameters we need to extend the mutation observer init
  */
 export interface WAIT_OPTS extends MutationObserverInit {
-    timeout ?: number;
+    timeout?: number;
     /**
      * interval on non legacy browsers
      */
-    interval ?: number;
+    interval?: number;
 }
 
 
@@ -66,7 +66,13 @@ enum Submittables {
  * @param condition the condition lambda to be fulfilled
  * @param options options for the search
  */
-function waitUntilDom(root: DomQuery, condition: (element: DomQuery) => boolean, options: WAIT_OPTS = { attributes: true, childList: true, subtree: true, timeout: 500, interval: 100 }): Promise<DomQuery> {
+function waitUntilDom(root: DomQuery, condition: (element: DomQuery) => boolean, options: WAIT_OPTS = {
+    attributes: true,
+    childList: true,
+    subtree: true,
+    timeout: 500,
+    interval: 100
+}): Promise<DomQuery> {
     return new Promise<DomQuery>((success, error) => {
         let observer: MutationObserver = null;
         const MUT_ERROR = new Error("Mutation observer timeout");
@@ -167,8 +173,8 @@ export class ElementAttribute extends ValueEmbedder<string> {
         return ElementAttribute;
     }
 
-    static fromNullable<ElementAttribute,T>(value?: any, valueKey: string = "value"): ElementAttribute {
-        return <any> new ElementAttribute(value, valueKey);
+    static fromNullable<ElementAttribute, T>(value?: any, valueKey: string = "value"): ElementAttribute {
+        return <any>new ElementAttribute(value, valueKey);
     }
 
 }
@@ -198,8 +204,8 @@ export class Style extends ValueEmbedder<string> {
         return ElementAttribute;
     }
 
-    static fromNullable<ElementAttribute,T>(value?: any, valueKey: string = "value"): ElementAttribute {
-        return <any> new ElementAttribute(value, valueKey);
+    static fromNullable<ElementAttribute, T>(value?: any, valueKey: string = "value"): ElementAttribute {
+        return <any>new ElementAttribute(value, valueKey);
     }
 
 }
@@ -637,6 +643,7 @@ interface IDomQuery {
 
     /**
      * Run through the given nodes in the DomQuery execute the inline scripts
+     * @param sticky if set to true the element must be left in the head after eval default === false
      * @param whilteListed: optional whitelist function which can filter out script tags which are not processed
      * defaults to the standard jsf.js exclusion (we use this code for myfaces)
      */
@@ -761,13 +768,13 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     constructor(...rootNode: Array<Element | ShadowRoot | DomQuery | Document | Array<any> | string>) {
 
-        if (Optional.fromNullable(rootNode).isAbsent() || !rootNode.length ) {
+        if (Optional.fromNullable(rootNode).isAbsent() || !rootNode.length) {
             return;
         } else {
             //we need to flatten out the arrays
 
             for (let cnt = 0; cnt < rootNode.length; cnt++) {
-                if(!rootNode[cnt]) {
+                if (!rootNode[cnt]) {
                     //we skip possible null entries which can happen in
                     //certain corner conditions due to the constructor re-wrapping single elements into arrays.
                 } else if (isString(rootNode[cnt])) {
@@ -783,7 +790,6 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             }
         }
     }
-
 
 
     /**
@@ -906,19 +912,18 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     querySelectorAllDeep(queryStr: string): DomQuery {
         let found: Array<DomQuery> = [];
         let queryRes = this.querySelectorAll(queryStr);
-        if(queryRes.length) {
+        if (queryRes.length) {
             found.push(queryRes);
         }
         let shadowRoots = this.querySelectorAll("*").shadowRoot;
-        if(shadowRoots.length) {
+        if (shadowRoots.length) {
             let shadowRes = shadowRoots.querySelectorAllDeep(queryStr);
-            if(shadowRes.length) {
+            if (shadowRes.length) {
                 found.push(shadowRes);
             }
         }
         return new DomQuery(...found);
     }
-
 
 
     /**
@@ -983,27 +988,28 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return LazyStream.of(...this.rootNode)
             .filter(item => item != null)
             .map(elem => (elem as HTMLElement).offsetWidth)
-            .reduce((accumulate, incoming) => accumulate + incoming,0).value;
+            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
     }
+
     get offsetHeight(): number {
         return LazyStream.of(...this.rootNode)
             .filter(item => item != null)
             .map(elem => (elem as HTMLElement).offsetHeight)
-            .reduce((accumulate, incoming) => accumulate + incoming,0).value;
+            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
     }
 
     get offsetLeft(): number {
         return LazyStream.of(...this.rootNode)
             .filter(item => item != null)
             .map(elem => (elem as HTMLElement).offsetLeft)
-            .reduce((accumulate, incoming) => accumulate + incoming,0).value;
+            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
     }
 
     get offsetTop(): number {
         return LazyStream.of(...this.rootNode)
             .filter(item => item != null)
             .map(elem => (elem as HTMLElement).offsetTop)
-            .reduce((accumulate, incoming) => accumulate + incoming,0).value;
+            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
     }
 
     get asNodeArray(): Array<DomQuery> {
@@ -1014,6 +1020,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     static querySelectorAllDeep(selector: string) {
         return new DomQuery(document).querySelectorAllDeep(selector);
     }
+
     /**
      * easy query selector all producer
      *
@@ -1125,7 +1132,6 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
 
-
     /**
      * returns the nth element as optional of an Element object
      * @param index the number from the index
@@ -1140,7 +1146,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * @param index
      */
     filesFromElem(index: number): Array<any> {
-        return (index < this.rootNode.length) ? (<any>this.rootNode[index])?.files ?  (<any>this.rootNode[index]).files : [] : [];
+        return (index < this.rootNode.length) ? (<any>this.rootNode[index])?.files ? (<any>this.rootNode[index]).files : [] : [];
     }
 
     /**
@@ -1286,7 +1292,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         }
 
         let subItems = this.querySelectorAllDeep(`[id="${id}"]`);
-        if(subItems.length) {
+        if (subItems.length) {
             res.push(subItems);
         }
 
@@ -1302,7 +1308,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     byTagName(tagName: string, includeRoot ?: boolean, deep ?: boolean): DomQuery {
         let res: Array<Element | DomQuery> = [];
         if (includeRoot) {
-            res = <any> LazyStream.of(...(this?.rootNode ?? []))
+            res = <any>LazyStream.of(...(this?.rootNode ?? []))
                 .filter(element => element?.tagName == tagName)
                 .reduce<Array<Element | DomQuery>>((reduction: any, item: Element) => reduction.concat([item]), res)
                 .orElse(res).value;
@@ -1578,7 +1584,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         let head = document.getElementsByTagName("head")[0] || document.documentElement;
         let script = document.createElement("script");
         if (nonce) {
-            if('undefined' != typeof script?.nonce) {
+            if ('undefined' != typeof script?.nonce) {
                 script.nonce = nonce;
             } else {
                 script.setAttribute("nonce", nonce);
@@ -1601,7 +1607,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         let head = document.getElementsByTagName("head")[0] || document.documentElement;
         let script = document.createElement("script");
         if (nonce) {
-            if('undefined' != typeof script?.nonce) {
+            if ('undefined' != typeof script?.nonce) {
                 script.nonce = nonce;
             } else {
                 script.setAttribute("nonce", nonce);
@@ -1631,7 +1637,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * @param elem
      */
     appendTo(elem: DomQuery | string): DomQuery {
-        if(Lang.isString(elem)) {
+        if (Lang.isString(elem)) {
             this.appendTo(DomQuery.querySelectorAll(elem as string));
             return this;
         }
@@ -1654,35 +1660,8 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * @param defer in miliseconds execution default (0 == no defer)
      * @param charSet
      */
-    loadScriptEval(src: string, defer: number = 0, charSet: string = "utf-8", nonce?:string) {
-        let xhr = new XMLHttpRequest();
-        xhr.open("GET", src, false);
-
-        if (charSet) {
-            xhr.setRequestHeader("Content-Type", "application/x-javascript; charset:" + charSet);
-        }
-
-        xhr.onload = () => {
-            //defer also means we have to process after the ajax response
-            //has been processed
-            //we can achieve that with a small timeout, the timeout
-            //triggers after the processing is done!
-            if (!defer) {
-                this.globalEval(xhr.responseText.replace(/\n/g, "\r\n") + "\r\n//@ sourceURL=" + src, nonce);
-            } else {
-                //TODO not ideal we maybe ought to move to something else here
-                //but since it is not in use yet, it is ok
-                setTimeout(() => {
-                    this.globalEval(xhr.responseText + "\r\n//@ sourceURL=" + src, nonce);
-                }, defer);
-            }
-        };
-
-        xhr.onerror = (data: any) => {
-            throw Error(data);
-        };
-        //since we are synchronous we do it after not with onReadyStateChange
-        xhr.send(null);
+    loadScriptEval(src: string, defer: number = 0,  nonce?: string) {
+        this._loadScriptEval(false, src, defer, nonce);
 
         return this;
     }
@@ -1695,35 +1674,49 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * @param defer in miliseconds execution default (0 == no defer)
      * @param charSet
      */
-    loadScriptEvalSticky(src: string, defer: number = 0, charSet: string = "utf-8", nonce?:string) {
-        let xhr = new XMLHttpRequest();
-        xhr.open("GET", src, false);
+    loadScriptEvalSticky(src: string, defer: number = 0,  nonce?: string) {
+        this._loadScriptEval(true, src, defer, nonce);
 
-        if (charSet) {
-            xhr.setRequestHeader("Content-Type", "application/x-javascript; charset:" + charSet);
+        return this;
+    }
+
+
+    private _loadScriptEval(sticky: boolean, src: string, defer: number = 0, nonce ?: string) {
+        let srcNode = this.createSourceNode(src, nonce);
+        let nonceCheck = this.createSourceNode(null, nonce);
+        let marker = `nonce_${Date.now()}_${Math.random()}`;
+        nonceCheck.innerHTML = `document.head["${marker}"] = true` //noop
+
+        let head = document.head;
+        //  upfront nonce check, needed mostly for testing
+        //  but cannot hurt to block src calls which have invalid nonce on localhost
+        // the reason for doing this up until now we have a similar construct automatically
+        // by loading the scripts via xhr and then embedding them.
+        // this is not needed anymore but the nonce is more relaxed with script src
+        // we now enforce it the old way
+
+        head.appendChild(nonceCheck);
+        head.removeChild(nonceCheck);
+        if(!head[marker]) {
+            return;
         }
-
-        xhr.onload = () => {
-            //defer also means we have to process after the ajax response
-            //has been processed
-            //we can achieve that with a small timeout, the timeout
-            //triggers after the processing is done!
+        try {
             if (!defer) {
-                this.globalEvalSticky(xhr.responseText.replace(/\n/g, "\r\n") + "\r\n//@ sourceURL=" + src, nonce);
+                head.appendChild(srcNode);
+                if(!sticky) {
+                    head.removeChild(srcNode);
+                }
             } else {
-                //TODO not ideal we maybe ought to move to something else here
-                //but since it is not in use yet, it is ok
                 setTimeout(() => {
-                    this.globalEvalSticky(xhr.responseText + "\r\n//@ sourceURL=" + src, nonce);
+                    head.appendChild(srcNode);
+                    if(!sticky) {
+                        head.removeChild(srcNode);
+                    }
                 }, defer);
             }
-        };
-
-        xhr.onerror = (data: any) => {
-            throw Error(data);
-        };
-        //since we are synchronous we do it after not with onReadyStateChange
-        xhr.send(null);
+        } finally {
+            delete head[marker];
+        }
 
         return this;
     }
@@ -1798,7 +1791,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         };
 
         this.eachElem((item: Element) => {
-            while (item.parentNode || (<any> item).host) {
+            while (item.parentNode || (<any>item).host) {
                 item = <Element>item?.parentNode ?? (<any>item)?.host;
 
                 resolveItem(item);
@@ -1910,7 +1903,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * defaults to the standard jsf.js exclusion (we use this code for myfaces)
      */
     runScripts(sticky = false, whilteListed: (val: string) => boolean = DEFAULT_WHITELIST): DomQuery {
-        const evalCollectedScripts = (scriptsToProcess: {evalText: string, nonce: string}[]) => {
+        const evalCollectedScripts = (scriptsToProcess: { evalText: string, nonce: string }[]) => {
             if (scriptsToProcess.length) {
                 //script source means we have to eval the existing
                 //scripts before running the include
@@ -1932,7 +1925,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 });
                 if (joinedScripts.length) {
                     (!sticky) ? this.globalEval(joinedScripts.join("\n")) :
-                    this.globalEvalSticky(joinedScripts.join("\n"));
+                        this.globalEvalSticky(joinedScripts.join("\n"));
                     joinedScripts.length = 0;
                 }
 
@@ -1956,21 +1949,21 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                         && null != src
                         && src.length > 0
                     ) {
-                        let nonce =  item?.nonce ?? item.getAttribute('nonce').value;
+                        let nonce = item?.nonce ?? item.getAttribute('nonce').value;
                         //we have to move this into an inner if because chrome otherwise chokes
                         //due to changing the and order instead of relying on left to right
                         //if jsf.js is already registered we do not replace it anymore
                         if (whilteListed(src)) {
                             //we run the collected scripts before running, the include
                             finalScripts = evalCollectedScripts(finalScripts);
-                            if(!sticky) {
-                                (!!nonce) ? this.loadScriptEval(src, 0, "UTF-8", nonce):
+                            if (!sticky) {
+                                (!!nonce) ? this.loadScriptEval(src, 0,  nonce) :
                                     //if no nonce is set we do not pass any once
-                                    this.loadScriptEval(src, 0, "UTF-8");
+                                    this.loadScriptEval(src, 0);
                             } else {
-                                (!!nonce) ? this.loadScriptEvalSticky(src, 0, "UTF-8", nonce):
+                                (!!nonce) ? this.loadScriptEvalSticky(src, 0,  nonce) :
                                     //if no nonce is set we do not pass any once
-                                    this.loadScriptEvalSticky(src, 0, "UTF-8");
+                                    this.loadScriptEvalSticky(src, 0);
                             }
                         }
 
@@ -1996,7 +1989,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                                 go = true;
                             }
                         }
-                        let nonce =  item?.nonce ?? item.getAttribute('nonce').value ?? '';
+                        let nonce = item?.nonce ?? item.getAttribute('nonce').value ?? '';
                         // we have to run the script under a global context
                         //we store the script for less calls to eval
                         finalScripts.push({
@@ -2014,7 +2007,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 .sort((node1, node2) => node1.compareDocumentPosition(node2) - 3) //preceding 2, following == 4)
                 .each(item => execScrpt(item));
 
-             evalCollectedScripts(finalScripts);
+            evalCollectedScripts(finalScripts);
         } catch (e) {
             if (console && console.error) {
                 //not sure if we
@@ -2327,16 +2320,15 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
 
     lookAhead(cnt = 1): ITERATION_STATUS | DomQuery {
-        if((this.values.length - 1) < (this.pos + cnt)) {
+        if ((this.values.length - 1) < (this.pos + cnt)) {
             return ITERATION_STATUS.EO_STRM;
         }
         return new DomQuery(this.values[this.pos + cnt]);
     }
 
 
-
     current(): DomQuery | ITERATION_STATUS {
-        if(this.pos == -1) {
+        if (this.pos == -1) {
             return ITERATION_STATUS.BEF_STRM;
         }
         return new DomQuery(this.values[this.pos]);
@@ -2367,7 +2359,13 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * @param condition
      * @param options
      */
-    async waitUntilDom(condition: (element: DomQuery) => boolean, options: WAIT_OPTS = { attributes: true, childList: true, subtree: true, timeout: 500, interval: 100 }): Promise<DomQuery> {
+    async waitUntilDom(condition: (element: DomQuery) => boolean, options: WAIT_OPTS = {
+        attributes: true,
+        childList: true,
+        subtree: true,
+        timeout: 500,
+        interval: 100
+    }): Promise<DomQuery> {
         return waitUntilDom(this, condition, options);
     }
 
@@ -2465,7 +2463,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     concat(toAttach: DomQuery, filterDoubles = true): any {
         const ret = this.lazyStream.concat(toAttach.lazyStream).collect(new DomQueryCollector());
         //we now filter the doubles out
-        if(!filterDoubles) {
+        if (!filterDoubles) {
             return ret;
         }
         let idx = {}; //ie11 does not support sets, we have to fake it
@@ -2526,8 +2524,24 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return new Observable(observerFunc);
     }*/
 
-}
+    private createSourceNode(src: string | null, nonce?: string) {
+        let srcNode: HTMLScriptElement = document.createElement("script");
+        srcNode.type = "text/javascript";
+        if (!!nonce) {
+            if ('undefined' != typeof srcNode?.nonce) {
+                srcNode.nonce = nonce;
+            } else {
+                srcNode.setAttribute("nonce", nonce);
+            }
+        }
+        if(!!src) {
+            srcNode.src = src;
+        }
 
+        return srcNode;
+    }
+
+}
 
 
 /**
