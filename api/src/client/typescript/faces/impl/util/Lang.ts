@@ -38,11 +38,11 @@ export module ExtLang {
 
     //should be in lang, but for now here to avoid recursive imports, not sure if typescript still has a problem with those
     /**
-     * helper function to savely resolve anything
+     * helper function to safely resolve anything
      * this is not an elvis operator, it resolves
      * a value without exception in a tree and if
      * it is not resolvable then an optional of
-     * a default value is restored or Optional.empty
+     * a default value is restored or Optional\.empty
      * if none is given
      *
      * usage
@@ -51,7 +51,7 @@ export module ExtLang {
      * </code>
      *
      * @param resolverProducer a lambda which can produce the value
-     * @param defaultValue an optional default value if the producer failes to produce anything
+     * @param defaultValue an optional default value if the producer fails to produce anything
      * @returns an Optional of the produced value
      */
     export function failSaveResolve<T>(resolverProducer: () => T, defaultValue: T = null): Optional<T> {
@@ -75,10 +75,10 @@ export module ExtLang {
      * returns a given localized message upon a given key
      * basic java log like templating functionality is included
      *
-     * @param {String} key the key for the message
-     * @param {String} defaultMessage optional default message if none was found
+     * @param  key the key for the message
+     * @param  defaultMessage optional default message if none was found
      *
-     * Additionally you can pass additional arguments, which are used
+     * Additionally, you can pass additional arguments, which are used
      * in the same way java log templates use the params
      *
      * @param templateParams the param list to be filled in
@@ -106,15 +106,15 @@ export module ExtLang {
     }
 
     /**
-     * creates an exeption with additional internal parameters
+     * creates an exception with additional internal parameters
      * for extra information
      *
      * @param error
-     * @param {String} title the exception title
-     * @param {String} name  the exception name
-     * @param {String} callerCls the caller class
-     * @param {String} callFunc the caller function
-     * @param {String} message the message for the exception
+     * @param  title the exception title
+     * @param  name  the exception name
+     * @param  callerCls the caller class
+     * @param  callFunc the caller function
+     * @param  message the message for the exception
      */
     export function makeException(error: Error, title: string, name: string, callerCls: string, callFunc: string, message: string): Error {
 
@@ -124,14 +124,14 @@ export module ExtLang {
 
     /**
      * fetches a global config entry
-     * @param {String} configName the name of the configuration entry
-     * @param {Object} defaultValue
+     * @param  configName the name of the configuration entry
+     * @param  defaultValue
      *
      * @return either the config entry or if none is given the default value
      */
     export function getGlobalConfig(configName: string, defaultValue: any): any {
         /**
-         * note we could use exists but this is an heavy operation, since the config name usually
+         * note we could use exists but this is a heavy operation, since the config name usually
          * given this function here is called very often
          * is a single entry without . in between we can do the lighter shortcut
          */
@@ -139,7 +139,7 @@ export module ExtLang {
     }
 
     /**
-     * fetches the form in an fuzzy manner depending
+     * fetches the form in a fuzzy manner depending
      * on an element or event target.
      *
      * The idea is that according to the jsf spec
@@ -148,7 +148,7 @@ export module ExtLang {
      * This is fine, but since then html5 came into the picture with the form attribute the element
      * can be anywhere referencing its parent form.
      *
-     * Also theoretically you can have the case of an issuing element enclosing a set of forms
+     * Also, theoretically you can have the case of an issuing element enclosing a set of forms
      * (not really often used, but theoretically it could be input button allows to embed html for instance)
      *
      * So the idea is not to limit the issuing form determination to the spec case
@@ -190,10 +190,11 @@ export module ExtLang {
      * gets the local or global options with local ones having higher priority
      * if no local or global one was found then the default value is given back
      *
-     * @param {String} configName the name of the configuration entry
-     * @param {String} localOptions the local options root for the configuration myfaces as default marker is added implicitely
+     * @param  configName the name of the configuration entry
+     * @param  localOptions the local options root for the configuration myfaces as default marker is added
+     * implicitly
      *
-     * @param {Object} defaultValue
+     * @param  defaultValue
      *
      * @return either the config entry or if none is given the default value
      */

@@ -27,7 +27,7 @@ import {
 } from "../core/Const";
 import {XhrFormData} from "./XhrFormData";
 import {ExtLang} from "../util/Lang";
-import {ExtConfig, ExtDomquery} from "../util/ExtDomQuery";
+import {ExtConfig, ExtDomQuery} from "../util/ExtDomQuery";
 
 /**
  * Resolver functions for various aspects of the request data
@@ -37,7 +37,7 @@ import {ExtConfig, ExtDomquery} from "../util/ExtDomQuery";
  */
 
 /**
- * resolves the event handlers lazly
+ * resolves the event handlers lazily
  * so that if some decoration happens in between we can deal with it
  *
  * @param requestContext
@@ -95,12 +95,12 @@ export function resolveDelay(options: Config): number {
 }
 
 /**
- * resolves the window Id from various sources
+ * resolves the window-id from various sources
  *
  * @param options
  */
 export function resolveWindowId(options: Config) {
-    return options?.value?.windowId ?? ExtDomquery.windowId;
+    return options?.value?.windowId ?? ExtDomQuery.windowId;
 }
 
 /**
@@ -108,19 +108,20 @@ export function resolveWindowId(options: Config) {
  * browser save event resolution
  * @param evt the event object
  * (with a fallback for ie events if none is present)
+ * @deprecated soon will be removed
  */
 export function getEventTarget(evt: Event): Element {
-    //ie6 and 7 fallback
+    // ie6 and 7 fallback
     let finalEvent = evt;
-    /**
+    /*
      * evt source is defined in the jsf events
-     * seems like some component authors use our code
+     * seems like some component authors use our code,
      * so we add it here see also
      * https://issues.apache.org/jira/browse/MYFACES-2458
      * not entirely a bug but makes sense to add this
-     * behavior. I dont use it that way but nevertheless it
+     * behavior. I don´t use it that way but nevertheless it
      * does not break anything so why not
-     * */
+     */
     let t = finalEvent?.srcElement ?? finalEvent?.target ?? (<any>finalEvent)?.source;
     while ((t) && (t.nodeType != 1)) {
         t = t.parentNode;

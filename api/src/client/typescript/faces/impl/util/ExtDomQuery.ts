@@ -39,9 +39,12 @@ const IS_FACES_SOURCE = (source?: string): boolean => {
 }
 
 /**
- * namespace myfaces.testscripts can be used as extension point for internal
- * tests, those will be handled similarly to faces.js - regarding
- * reload blocking on ajax requests
+ * namespace myfaces\.testscripts can be used as extension point for internal
+ * tests, those will be handled similarly to faces.js, in regard
+ * to reload blocking on ajax requests
+ *
+ * Note: atm not used, used to be used in the old implementation
+ * but still is reserved for now
  *
  * @param source the source to check
  * @constructor
@@ -55,21 +58,21 @@ const ATTR_SRC = 'src';
 
 /**
  * Extension which adds implementation specific
- * meta data to our dom query
+ * meta-data to our dom query
  *
  * Usage
  * el = new ExtDQ(oldReference)
  * nonce = el.nonce
  * windowId = el.getWindowId
  */
-export class ExtDomquery extends DQ {
+export class ExtDomQuery extends DQ {
 
     static get windowId() {
-        return new ExtDomquery(document.body).windowId;
+        return new ExtDomQuery(document.body).windowId;
     }
 
     static get nonce(): string {
-        return new ExtDomquery(document.body).nonce;
+        return new ExtDomQuery(document.body).nonce;
     }
 
     get windowId(): string | null {
@@ -112,7 +115,7 @@ export class ExtDomquery extends DQ {
         let curScript = new DQ(document.currentScript);
         //since our baseline atm is ie11 we cannot use document.currentScript globally
         if (!!this.extractNonce(curScript)) {
-            // fastpath for modern browsers
+            // fast-path for modern browsers
             return this.extractNonce(curScript);
         }
         // fallback if the currentScript method fails, we just search the jsf tags for nonce, this is
@@ -130,26 +133,20 @@ export class ExtDomquery extends DQ {
         return null;
     }
 
-
-
-    private extractNonce(curScript: DomQuery) {
-        return (curScript.getAsElem(0).value as HTMLElement)?.nonce ?? curScript.attr("nonce").value;
-    }
-
     static searchJsfJsFor(item: RegExp): Optional<String> {
-        return new ExtDomquery(document).searchJsfJsFor(item);
+        return new ExtDomQuery(document).searchJsfJsFor(item);
     }
 
     /**
-     * searches the embedded faces.js for items like separator char etc..
+     * searches the embedded faces.js for items like separator char etc.
      * expects a match as variable under position 1 in the result match
-     * @param rexp
+     * @param regExp
      */
-    searchJsfJsFor(rexp: RegExp): Optional<string> {
+    searchJsfJsFor(regExp: RegExp): Optional<string> {
         //perfect application for lazy stream
         return DQ.querySelectorAll("script[src], link[src]").lazyStream
             .filter(item => IS_FACES_SOURCE(item.attr(ATTR_SRC).value))
-            .map(item => item.attr(ATTR_SRC).value.match(rexp))
+            .map(item => item.attr(ATTR_SRC).value.match(regExp))
             .filter(item => item != null && item.length > 1)
             .map((result: string[]) => {
                 return decodeURIComponent(result[1]);
@@ -157,22 +154,24 @@ export class ExtDomquery extends DQ {
     }
 
     globalEval(code: string, nonce ?: string): DQ {
-        return new ExtDomquery(super.globalEval(code, nonce ?? this.nonce));
+        return new ExtDomQuery(super.globalEval(code, nonce ?? this.nonce));
     }
 
+    // called from base class runScripts, do not delete
+    // noinspection JSUnusedGlobalSymbols
     globalEvalSticky(code: string, nonce ?: string): DQ {
-        return new ExtDomquery(super.globalEvalSticky(code, nonce ?? this.nonce));
+        return new ExtDomQuery(super.globalEvalSticky(code, nonce ?? this.nonce));
     }
 
     /**
      * decorated run scripts which takes our jsf extensions into consideration
      * (standard DomQuery will let you pass anything)
      * @param sticky if set to true the internally generated element for the script is left in the dom
-     * @param whilteListed
+     * @param whiteListed
      */
-    runScripts(sticky = false, whilteListed?: (src: string) => boolean): DomQuery {
+    runScripts(sticky = false, whiteListed?: (src: string) => boolean): DomQuery {
         const whitelistFunc = (src: string): boolean => {
-            return (whilteListed?.(src) ?? true) && !IS_FACES_SOURCE(src) && !IS_INTERNAL_SOURCE(src);
+            return (whiteListed?.(src) ?? true) && !IS_FACES_SOURCE(src) && !IS_INTERNAL_SOURCE(src);
         };
         return super.runScripts(sticky, whitelistFunc);
     }
@@ -183,7 +182,7 @@ export class ExtDomquery extends DQ {
      * @param suppressDoubleIncludes checks for existing elements in the head before running the insert
      */
     runHeadInserts(suppressDoubleIncludes = true): void {
-        let head = ExtDomquery.byId(document.head);
+        let head = ExtDomQuery.byId(document.head);
         //automated nonce handling
         let processedScripts = [];
 
@@ -197,7 +196,8 @@ export class ExtDomquery extends DQ {
             }
             const tagName = element.tagName.value;
             if(!tagName) {
-                // textnode
+                // text node they do not have tag names, so we can process them as they are without
+                // any further ado
                 return true;
             }
             let reference = element.attr("href")
@@ -217,14 +217,14 @@ export class ExtDomquery extends DQ {
             .each(element => {
                 if(element.tagName.value != "SCRIPT") {
                     //we need to run runScripts properly to deal with the rest
-                    new ExtDomquery(...processedScripts).runScripts(true);
+                    new ExtDomQuery(...processedScripts).runScripts(true);
                     processedScripts = [];
                     head.append(element);
                 } else {
                     processedScripts.push(element);
                 }
             });
-        new ExtDomquery(...processedScripts).runScripts(true);
+        new ExtDomQuery(...processedScripts).runScripts(true);
     }
 
 
@@ -237,13 +237,16 @@ export class ExtDomquery extends DQ {
      */
     static byId(selector: string | DomQuery | Element, deep = false): DomQuery {
         const ret = DomQuery.byId(selector, deep);
-        return new ExtDomquery(ret);
+        return new ExtDomQuery(ret);
     }
 
+    private extractNonce(curScript: DomQuery) {
+        return (curScript.getAsElem(0).value as HTMLElement)?.nonce ?? curScript.attr("nonce").value;
+    }
 
 }
 
-export const ExtDQ = ExtDomquery;
+export const ExtDQ = ExtDomQuery;
 
 /**
  * in order to reduce the number of interception points for the fallbacks we add
@@ -256,13 +259,13 @@ export class ExtConfig extends  Config {
     }
 
     assignIf(condition: boolean, ...accessPath): IValueHolder<any> {
-        const acessPathMapped = this.remap(accessPath);
-        return super.assignIf(condition, ...acessPathMapped);
+        const accessPathMapped = this.remap(accessPath);
+        return super.assignIf(condition, ...accessPathMapped);
     }
 
     assign(...accessPath): IValueHolder<any> {
-        const acessPathMapped = this.remap(accessPath);
-        return super.assign(...acessPathMapped);
+        const accessPathMapped = this.remap(accessPath);
+        return super.assign(...accessPathMapped);
     }
 
     append(...accessPath): IValueHolder<any> {
@@ -270,13 +273,13 @@ export class ExtConfig extends  Config {
     }
 
     appendIf(condition: boolean, ...accessPath): IValueHolder<any> {
-        const acessPathMapped = this.remap(accessPath);
-        return super.appendIf(condition, ...acessPathMapped);
+        const accessPathMapped = this.remap(accessPath);
+        return super.appendIf(condition, ...accessPathMapped);
     }
 
     getIf(...accessPath): Config {
-        const acessPathMapped = this.remap(accessPath);
-        return super.getIf(...acessPathMapped);
+        const accessPathMapped = this.remap(accessPath);
+        return super.getIf(...accessPathMapped);
     }
 
     get(defaultVal: any): Config {
@@ -315,10 +318,12 @@ export class ExtConfig extends  Config {
         return new ExtConfig(super.deepCopy$());
     }
 
-
+    /**
+     * helper to remap the namespaces of an array of access paths
+     * @param accessPath the access paths to be remapped
+     * @private returns an array of access paths with version remapped namespaces
+     */
     private remap(accessPath: any[]) {
         return Stream.of(...accessPath).map(key => $nsp(key)).collect(new ArrayCollector());
     }
-
-
 }

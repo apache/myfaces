@@ -45,7 +45,7 @@ import {ExtConfig} from "../util/ExtDomQuery";
  *
  * @param request the request hosting the responseXML
  *
- * Throws an error in case of non existent or wrong xml data
+ * Throws an error in case of non-existent or wrong xml data
  *
  */
 export function resolveResponseXML(request: Config): XMLQuery {
@@ -56,8 +56,8 @@ export function resolveResponseXML(request: Config): XMLQuery {
 }
 
 /**
- * Splits the incoming passthrough context apart
- * in an internal and an external nomalized context
+ * Splits the incoming pass-through context apart
+ * in an internal and an external normalized context
  * the internal one is just for our internal processing
  *
  * @param context the root context as associative array
@@ -83,10 +83,10 @@ export function resolveContexts(context: { [p: string]: any }): any {
 }
 
 /**
- * fetches the source element out of our conexts
+ * fetches the source element out of our contexts
  *
- * @param context the external context which shpuld host the source id
- * @param internalContext internal passthrough fall back
+ * @param context the external context which should host the source id
+ * @param internalContext internal pass-through fall back
  *
  */
 export function resolveSourceElement(context: Config, internalContext: Config): DQ {

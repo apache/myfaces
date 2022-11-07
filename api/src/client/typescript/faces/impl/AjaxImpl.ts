@@ -21,13 +21,12 @@ import {AsynchronousQueue} from "./util/AsyncQueue";
 import {AssocArrayCollector, Config, DQ, Lang, LazyStream, Optional, Stream} from "mona-dish";
 import {Assertions} from "./util/Assertions";
 import {XhrFormData} from "./xhrCore/XhrFormData";
-import {ExtDomquery} from "./util/ExtDomQuery";
+import {ExtDomQuery} from "./util/ExtDomQuery";
 import {ErrorData} from "./xhrCore/ErrorData";
 import {EventData} from "./xhrCore/EventData";
 import {ExtLang} from "./util/Lang";
 
 import {
-    $nsp,
     CTX_PARAM_EXECUTE,
     CTX_PARAM_PASS_THR,
     CTX_PARAM_SRC_CTL_ID,
@@ -60,9 +59,6 @@ import {
     resolveTimeout
 } from "./xhrCore/RequestDataResolver";
 
-
-declare var faces: any;
-
 /*
  * allowed project stages
  */
@@ -74,8 +70,8 @@ enum ProjectStages {
 }
 
 /*
- *   blockfilter for the passthrough filtering; the attributes given here
- *   will not be transmitted from the options into the passthrough
+ *   Block-filter for the pass-through filtering; the attributes given here
+ *   will not be transmitted from the options into the pass-through
  */
 enum BlockFilter {
     onerror = "onerror",
@@ -167,20 +163,8 @@ export module Implementation {
     export function getSeparatorChar(): string {
         return resolveGlobalConfig()?.separator ??
             this?.separator ??
-            (separator = ExtDomquery.searchJsfJsFor(/separator=([^&;]*)/).orElse(":").value);
+            (separator = ExtDomQuery.searchJsfJsFor(/separator=([^&;]*)/).orElse(":").value);
     }
-
-    /**
-     * fetches the separator char from the given script tags
-     *
-     * @return {string} the separator char for the given script tags
-     */
-    export function getContextPath(): string {
-        return resolveGlobalConfig()?.separator ??
-            this?.separator ??
-            (separator = ExtDomquery.searchJsfJsFor(/separator=([^&;]*)/).orElse(":").value);
-    }
-
 
     /**
      * this is for testing purposes only, since AjaxImpl is a module
@@ -212,7 +196,7 @@ export module Implementation {
     export function resolveProjectStateFromURL(): string | null {
 
         /* run through all script tags and try to find the one that includes faces.js */
-        const foundStage = ExtDomquery.searchJsfJsFor(/stage=([^&;]*)/).value as string;
+        const foundStage = ExtDomQuery.searchJsfJsFor(/stage=([^&;]*)/).value as string;
         return (foundStage in ProjectStages) ? foundStage : null;
     }
 
@@ -283,7 +267,7 @@ export module Implementation {
 
         requestCtx.assignIf(!!windowId, P_WINDOW_ID).value = windowId;
 
-        requestCtx.assign(CTX_PARAM_PASS_THR).value = filterPassthroughValues(options.value);
+        requestCtx.assign(CTX_PARAM_PASS_THR).value = filterPassThroughValues(options.value);
         requestCtx.assignIf(!!resolvedEvent, CTX_PARAM_PASS_THR, P_EVT).value = resolvedEvent?.type;
 
         /**
@@ -455,17 +439,17 @@ export module Implementation {
         const ALTERED = "___mf_id_altered__";
         const INIT = "___init____";
 
-        /**
+        /*
          * the search root for the dom element search
          */
         let searchRoot = new DQ(node || document.body).querySelectorAll(`form input [name='${P_CLIENT_WINDOW}']`);
 
-        /**
+        /*
          * lazy helper to fetch the window id from the window url
          */
-        let fetchWindowIdFromUrl = () => ExtDomquery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null).value;
+        let fetchWindowIdFromUrl = () => ExtDomQuery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null).value;
 
-        /**
+        /*
          * functional double check based on stream reduction
          * the values should be identical or on INIT value which is a premise to
          * skip the first check
@@ -482,16 +466,16 @@ export module Implementation {
             return value2;
         };
 
-        /**
+        /*
          * helper for cleaner code, maps the value from an item
          *
          * @param item
          */
         let getValue = (item: DQ) => item.attr("value").value;
-        /**
+        /*
          * fetch the window id from the forms
          * window ids must be present in all forms
-         * or non existent. If they exist all of them must be the same
+         * or non-existent. If they exist all of them must be the same
          */
 
         let formWindowId: Optional<string> = searchRoot.stream.map<string>(getValue).reduce(differenceCheck, INIT);
@@ -500,9 +484,8 @@ export module Implementation {
         //if the resulting window id is set on altered then we have an unresolvable problem
         assert(ALTERED != formWindowId.value, "Multiple different windowIds found in document");
 
-        /**
+        /*
          * return the window id or null
-         * prio, forms under node/document and if not given then from the url
          */
         return formWindowId.value != INIT ? formWindowId.value : fetchWindowIdFromUrl();
     }
@@ -517,7 +500,7 @@ export module Implementation {
      */
     export function getViewState(form: Element | string): string {
         /**
-         *  typecheck assert!, we opt for strong typing here
+         *  type-check assert!, we opt for strong typing here
          *  because it makes it easier to detect bugs
          */
 
@@ -537,7 +520,7 @@ export module Implementation {
      */
     export let queueHandler = {
         /**
-         * public to make it shimmable for tests
+         * public to make it accessible for tests
          *
          * adds a new request to our queue for further processing
          */
@@ -667,12 +650,12 @@ export module Implementation {
     }
 
     /**
-     * filter the options given with a blacklist so that only
-     * the values required for passthough land in the ajax request
+     * Filter the options given with a blacklist, so that only
+     * the values required for pass-through are processed in the ajax request
      *
      * @param {Context} mappedOpts the options to be filtered
      */
-    function filterPassthroughValues(mappedOpts: Context): Context {
+    function filterPassThroughValues(mappedOpts: Context): Context {
         //we now can use the full code reduction given by our stream api
         //to filter
         return Stream.ofAssoc(mappedOpts)

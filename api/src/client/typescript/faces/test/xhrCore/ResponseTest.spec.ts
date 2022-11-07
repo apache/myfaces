@@ -32,7 +32,7 @@ declare var Implementation: any;
  * response test
  * the idea is simply to pass in a dom
  * the context and a response xml and then check what happens
- * we do not need to to through the entire ajax cyle for that.
+ * we do not need to go through the entire ajax cycle for that.
  */
 describe('Tests of the various aspects of the response protocol functionality', function () {
 
