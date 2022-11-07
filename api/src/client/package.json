@@ -23,7 +23,7 @@
     "html-webpack-plugin": "^5.5.0",
     "jsdom": "^20.0.2",
     "jsdom-global": "^3.0.2",
-    "jsf.js_next_gen": "^4.0.0-beta-23",
+    "jsf.js_next_gen": "4.0.0-RC.1",
     "mocha": "^10.1.0",
     "npm-check-updates": "^16.3.16",
     "nyc": "^15.1.0",

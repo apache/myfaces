@@ -48,7 +48,7 @@ export module Assertions {
 
     export function assertUrlExists(node: XMLQuery): void | never {
         if (node.attr(ATTR_URL).isAbsent()) {
-            throw Assertions.raiseError(new Error(), getMessage("ERR_RED_URL", null, "_Ajaxthis.processRedirect"), "processRedirect");
+            throw Assertions.raiseError(new Error(), getMessage("ERR_RED_URL", null, "processRedirect"), "processRedirect");
         }
     }
 

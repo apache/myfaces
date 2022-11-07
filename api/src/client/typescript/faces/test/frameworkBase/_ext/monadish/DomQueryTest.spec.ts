@@ -18,7 +18,6 @@ import {expect} from 'chai';
 import {describe, it} from 'mocha';
 import {ArrayCollector, DomQuery, DomQueryCollector, Lang, LazyStream} from "mona-dish";
 import trim = Lang.trim;
-import {ExtDomquery} from "../../../../impl/util/ExtDomQuery";
 import {from} from "rxjs";
 
 
@@ -30,6 +29,7 @@ describe('DOMQuery tests', function () {
 
     beforeEach(function () {
 
+        // language=HTML
         dom = new JSDOM(`
             <!DOCTYPE html>
         <html lang="en">
@@ -93,7 +93,7 @@ describe('DOMQuery tests', function () {
         let isDQuery = false;
         let cnt2 = 0;
 
-        o1.subscribe((item: any) => {
+        o1.subscribe(() => {
             cnt1++;
         });
 
@@ -119,7 +119,7 @@ describe('DOMQuery tests', function () {
         let isDQuery = false;
         let cnt2 = 0;
 
-        o1.subscribe((item: any) => {
+        o1.subscribe(() => {
             cnt1++;
         });
 
@@ -183,7 +183,7 @@ describe('DOMQuery tests', function () {
     it('domquery ops test2 eachNode', function () {
         let probe2 = DomQuery.querySelectorAll("div");
         let noIter = 0;
-        probe2 = probe2.each((item, cnt) => {
+        probe2.each((item, cnt) => {
             expect(item instanceof DomQuery).to.be.true;
             expect(noIter == cnt).to.be.true;
             noIter++;
@@ -345,19 +345,19 @@ describe('DOMQuery tests', function () {
     it("must have a working input handling", function () {
         DomQuery.querySelectorAll("body").innerHTML = `<form id="blarg">
     <div id="embed1">
-        <input type="text" id="id_1" name="id_1" value="id_1_val"></input>
-        <input type="text" id="id_2" name="id_2" value="id_2_val" disabled="disabled"> </input>
-        <textarea type="text" id="id_3" name="id_3">textareaVal</textarea>
+        <input type="text" id="id_1" name="id_1" value="id_1_val">
+        <input type="text" id="id_2" name="id_2" value="id_2_val" disabled="disabled">
+        <textarea id="id_3" name="id_3">textareaVal</textarea>
 
         <fieldset>
-            <input type="radio" id="mc" name="cc_1" value="Mastercard" checked="checked"></input>
+            <input type="radio" id="mc" name="cc_1" value="Mastercard" checked="checked">
             <label for="mc"> Mastercard</label>
-            <input type="radio" id="vi" name="cc_1" value="Visa"></input>
+            <input type="radio" id="vi" name="cc_1" value="Visa">
             <label for="vi"> Visa</label>
-            <input type="radio" id="ae" name="cc_1" value="AmericanExpress"></input>
+            <input type="radio" id="ae" name="cc_1" value="AmericanExpress">
             <label for="ae"> American Express</label>
         </fieldset>
-        <select id="val_5" name="val_5" name="top5" size="5">
+        <select id="val_5" name="val_5" size="5">
             <option>barg</option>
             <option>jjj</option>
             <option selected>akaka</option>
@@ -451,7 +451,7 @@ describe('DOMQuery tests', function () {
             //-->   
             </script>
         
-            <style type="text/css">
+            <style>
                 #first {
                     border: 1px solid black;
                 }
@@ -482,7 +482,7 @@ describe('DOMQuery tests', function () {
 
     it("it must handle events properly", function () {
         let clicked = 0;
-        let listener = (evt: any) => {
+        let listener = () => {
             clicked++;
         };
         let eventReceiver = DomQuery.byId("id_1");
@@ -629,14 +629,11 @@ describe('DOMQuery tests', function () {
 
     it('must by recycleable', function () {
         let probe = DomQuery.querySelectorAll("div");
-        let probe2 = DomQuery.querySelectorAll("body");
 
         let res1 = probe.filter(item => item.matchesSelector("div"));
         expect(res1.length).to.eq(4);
         let res2 = probe.filter(item => item.matchesSelector("div"));
         expect(res2.length).to.eq(4);
-
-
     })
 
     it('delete must work', function () {
@@ -654,8 +651,8 @@ describe('DOMQuery tests', function () {
         let probe2 = DomQuery.querySelectorAll("div");
         let probeCnt = 0;
         let probe2Cnt = 0;
-        from(probe).subscribe(el => probeCnt++);
-        from(probe2.stream).subscribe(el => probe2Cnt++);
+        from(probe).subscribe(() => probeCnt++);
+        from(probe2.stream).subscribe(() => probe2Cnt++);
         expect(probeCnt).to.be.above(0);
         expect(probeCnt).to.eq(probe2Cnt);
     })

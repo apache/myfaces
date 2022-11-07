@@ -49,14 +49,14 @@ export module faces {
 
     /**
      * SeparatorChar as defined by facesContext.getNamingContainerSeparatorChar()
-     * @type {Char}
      */
-    export var separatorchar = getSeparatorChar();
+    export var separatorchar: string = getSeparatorChar();
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Context Path as defined externalContext.requestContextPath
      */
-    export var contextpath = '#{facesContext.externalContext.requestContextPath}';
+    export var contextpath: string = '#{facesContext.externalContext.requestContextPath}';
     // we do not have a fallback here, for now
 
     /**
@@ -159,7 +159,7 @@ export module faces {
          *     <li> eventData.responseXML: the requestInternal response xml </li>
          * </ul>
          *
-         * @param {function} errorListener error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
+         * @param errorListener error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
          */
         export function addOnError(errorFunc: (data: ErrorData) => void): void {
             Implementation.addOnError(<any>errorFunc);
@@ -169,7 +169,7 @@ export module faces {
          * Adds a global event listener to the ajax event queue. The event listener must be a function
          * of following format: <i>function eventListener(&lt;eventData&gt;)</i>
          *
-         * @param {function} eventListener event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
+         * @param eventListener event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
          */
         export function addOnEvent(eventFunc: (data: EventData) => void): void {
             Implementation.addOnEvent(<any>eventFunc);
@@ -196,26 +196,30 @@ export module faces {
 
     export module push {
         /**
-         * @param {function} onopen The function to be invoked when the web socket is opened.
-         * @param {function} onmessage The function to be invoked when a message is received.
-         * @param {function} onclose The function to be invoked when the web socket is closed.
-         * @param {boolean} autoconnect Whether or not to immediately open the socket. Defaults to <code>false</code>.
+         * @param socketClientId the sockets client identifier
+         * @param url the uri to reach the socket
+         * @param channel the channel name/id
+         * @param onopen The function to be invoked when the web socket is opened.
+         * @param onmessage The function to be invoked when a message is received.
+         * @param onclose The function to be invoked when the web socket is closed.
+         * @param behaviors functions which are invoked whenever a message is received
+         * @param autoConnect Whether or not to automatically open the socket. Defaults to <code>false</code>.
          */
         export function init(socketClientId: string,
-                    uri: string,
+                    url: string,
                     channel: string,
                     onopen: Function,
                     onmessage: Function,
                     onclose: Function,
-                    behaviorScripts: any,
-                    autoconnect: boolean): void {
-            PushImpl.init(socketClientId, uri, channel, onopen, onmessage, onclose, behaviorScripts, autoconnect);
+                    behaviors: any,
+                    autoConnect: boolean): void {
+            PushImpl.init(socketClientId, url, channel, onopen, onmessage, onclose, behaviors, autoConnect);
         }
 
         /**
          * Open the web socket on the given channel.
-         * @param {string} channel The name of the web socket channel.
-         * @throws {Error} When channel is unknown.
+         * @param  channel The name of the web socket channel.
+         * @throws  Error is thrown, if the channel is unknown.
          */
         export function open(socketClientId: string): void {
             PushImpl.open(socketClientId);
@@ -223,8 +227,8 @@ export module faces {
 
         /**
          * Close the web socket on the given channel.
-         * @param {string} channel The name of the web socket channel.
-         * @throws {Error} When channel is unknown.
+         * @param  channel The name of the web socket channel.
+         * @throws  Error is thrown, if the channel is unknown.
          */
         export function close(socketClientId: string): void {
             PushImpl.close(socketClientId);

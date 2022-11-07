@@ -15,14 +15,9 @@
  */
 
 /**
- * Typescript port of the faces.push part in the myfaces implementation
+ * Typescript port of the faces\.push part in the myfaces implementation
  */
-
-//TODO still work in progress
-//this is a 1:1 port for the time being
 import {MAX_RECONNECT_ATTEMPTS, REASON_EXPIRED, RECONNECT_INTERVAL} from "./core/Const";
-;
-
 
 /**
  * Implementation class for the push functionality
@@ -32,8 +27,8 @@ export module PushImpl {
     const URL_PROTOCOL = window.location.protocol.replace("http", "ws") + "//";
 
 
-    //we expose the member variables for testing purposes
-    //they are not directly touched outside of tests
+    // we expose the member variables for testing purposes
+    // they are not directly touched outside of tests
 
     /* socket map by token */
     export let sockets = {};
@@ -43,7 +38,7 @@ export module PushImpl {
     export let clientIdsByTokens = {};
 
 
-    //needed for testing
+    // needed for testing
     export function reset() {
         sockets = {};
         components = {}
@@ -55,20 +50,23 @@ export module PushImpl {
      */
 
     /**
-     *
-     * @param {function} onopen The function to be invoked when the web socket is opened.
-     * @param {function} onmessage The function to be invoked when a message is received.
-     * @param {function} onclose The function to be invoked when the web socket is closed.
-     * @param {boolean} autoconnect Whether or not to immediately open the socket. Defaults to <code>false</code>.
+     * @param socketClientId the sockets client identifier
+     * @param url the uri to reach the socket
+     * @param channel the channel name/id
+     * @param onopen The function to be invoked when the web socket is opened.
+     * @param onmessage The function to be invoked when a message is received.
+     * @param onclose The function to be invoked when the web socket is closed.
+     * @param behaviors functions which are invoked whenever a message is received
+     * @param autoConnect Whether or not to automatically open the socket. Defaults to <code>false</code>.
      */
     export function init(socketClientId: string,
-                         uri: string,
+                         url: string,
                          channel: string,
                          onopen: Function,
                          onmessage: Function,
                          onclose: Function,
-                         behaviorScripts: any,
-                         autoconnect: boolean) {
+                         behaviors: any,
+                         autoConnect: boolean) {
         onclose = resolveFunction(onclose);
 
         if (!window.WebSocket) { // IE6-9.
@@ -76,7 +74,7 @@ export module PushImpl {
             return;
         }
 
-        let channelToken = uri.substr(uri.indexOf('?') + 1);
+        let channelToken = url.substr(url.indexOf('?') + 1);
 
         if (!components[socketClientId]) {
             components[socketClientId] = {
@@ -84,19 +82,19 @@ export module PushImpl {
                 'onopen': resolveFunction(onopen),
                 'onmessage' : resolveFunction(onmessage),
                 'onclose': onclose,
-                'behaviors': behaviorScripts,
-                'autoconnect': autoconnect};
+                'behaviors': behaviors,
+                'autoconnect': autoConnect};
             if (!clientIdsByTokens[channelToken]) {
                 clientIdsByTokens[channelToken] = [];
             }
             clientIdsByTokens[channelToken].push(socketClientId);
             if (!sockets[channelToken]){
                 sockets[channelToken] = new Socket(channelToken,
-                    getBaseURL(uri), channel);
+                    getBaseURL(url), channel);
             }
         }
 
-        if (autoconnect) {
+        if (autoConnect) {
             (window?.faces ?? window?.jsf).push.open(socketClientId);
         }
     }
@@ -138,6 +136,7 @@ export module PushImpl {
             this.bindCallbacks();
         }
 
+        // noinspection JSUnusedLocalSymbols
         onopen(event: any) {
             if (!this.reconnectAttempts) {
                 let clientIds = clientIdsByTokens[this.channelToken];
@@ -175,7 +174,7 @@ export module PushImpl {
                 }
             }
             if (clientIdsByTokens[this.channelToken].length == 0) {
-                //tag dissapeared
+                // tag disappeared
                 this.close();
             }
         }
@@ -227,9 +226,9 @@ export module PushImpl {
 
     /**
      * Get socket associated with given channelToken.
-     * @param {string} channelToken The name of the web socket channelToken.
-     * @return {Socket} Socket associated with given channelToken.
-     * @throws {Error} When channelToken is unknown, you may need to initialize
+     * @param channelToken The name of the web socket channelToken.
+     * @return Socket associated with given channelToken.
+     * @throws Error, when the channelToken is unknown, you may need to initialize
      *                 it first via <code>init()</code> function.
      */
     function getSocket(channelToken: string): Socket {

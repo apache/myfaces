@@ -42,14 +42,14 @@ describe('javax.ajax.request test suite', () => {
         return await defaultMyFaces23();
     });
 
-    it("jsf.ajax.request can be called", () => {
-        //we stub the addRequestToQueue, to enable the request check only
-        //without any xhr and response, both will be tested separately for
-        //proper behavior
+    it("jsf.ajax.request can be called", (done) => {
+        // we stub the addRequestToQueue, to enable the request check only
+        // without any xhr and response, both will be tested separately for
+        // proper behavior
         const addRequestToQueue = sinon.stub(Implementation.queueHandler, "addRequestToQueue");
-        //now the javax.ajax.request should trigger but should not go into
-        //the asynchronous event loop.
-        //lets check it out
+        // now the javax.ajax.request should trigger but should not go into
+        // the asynchronous event loop.
+        // let`s check it out
 
         try {
             DomQuery.byId("input_2").addEventListener("click", (event: Event) => {
@@ -66,6 +66,7 @@ describe('javax.ajax.request test suite', () => {
         } finally {
             //once done we restore the proper state
             addRequestToQueue.restore();
+            done();
         }
 
     });

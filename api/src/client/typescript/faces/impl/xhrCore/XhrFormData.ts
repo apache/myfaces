@@ -45,7 +45,7 @@ export class XhrFormData extends Config {
      * data collector from a given form
      *
      * @param dataSource either a form as DomQuery object or an encoded url string
-     * @param viewState the form view state or an external viewstate coming in as string
+     * @param viewState the form view state or an external viewState coming in as string
      * @param executes the executes id list for the elements to being processed
      * @param partialIds partial ids to collect, to reduce the data sent down
      */
@@ -68,8 +68,9 @@ export class XhrFormData extends Config {
     }
 
     /**
-     * generic post init code, for now, this peforms some post assign data post processing
-     * @param executes
+     * generic post init code, for now, this performs some post assign data post-processing
+     * @param executes the executable dom nodes which need to be processed into the form data, which we can send
+     * in our ajax request
      */
     postInit(...executes: Array<string>) {
         let fetchInput = (id: string): DQ => {

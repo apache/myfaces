@@ -55,7 +55,7 @@ import {
     DEFERRED_HEAD_INSERTS
 } from "../core/Const";
 import trim = Lang.trim;
-import {ExtConfig, ExtDomquery} from "../util/ExtDomQuery";
+import {ExtConfig, ExtDomQuery} from "../util/ExtDomQuery";
 
 
 /**
@@ -87,7 +87,7 @@ export class ResponseProcessor implements IResponseProcessor {
             return;
         }
 
-        let oldHead = ExtDomquery.querySelectorAll(TAG_HEAD);
+        let oldHead = ExtDomQuery.querySelectorAll(TAG_HEAD);
 
         //delete all to avoid script and style overlays
         oldHead.querySelectorAll(SEL_SCRIPTS_STYLES).delete();
@@ -96,7 +96,7 @@ export class ResponseProcessor implements IResponseProcessor {
         // eval means the scripts will get attached (eval script attach method)
         // but this is done by DomQuery not in this code
         this.storeForEval(shadowHead);
-        //incoming either the outer head tag or its childs
+        //incoming either the outer head tag or its children
         //shadowHead = (shadowHead.tagName.value === "HEAD") ? shadowHead.childNodes : shadowHead;
         //this.addToHead(shadowHead);
     }
@@ -124,23 +124,24 @@ export class ResponseProcessor implements IResponseProcessor {
 
         let shadowInnerHTML: string = <string>shadowBody.html().value;
 
-        let resultingBody = <DQ>ExtDomquery.querySelectorAll(TAG_BODY).html(shadowInnerHTML);
+        let resultingBody = <DQ>ExtDomQuery.querySelectorAll(TAG_BODY).html(shadowInnerHTML);
         let updateForms = resultingBody.querySelectorAll(TAG_FORM);
 
         // main difference, we cannot replace the body itself, but only its content
-        // we need a separate step for post processing the incoming attributes, like classes, styles etc...
+        // we need a separate step for post-processing the incoming
+        // attributes, like classes, styles etc...
         resultingBody.copyAttrs(shadowBody);
 
         this.storeForPostProcessing(updateForms, resultingBody);
     }
 
     /**
-     * Leaf Tag eval... process whatever is in the evals cdata block
+     * Leaf Tag eval... process whatever is in the eval cdata block
      *
      * @param node the node to eval
      */
     eval(node: XMLQuery) {
-        ExtDomquery.globalEval(node.cDATAAsString);
+        ExtDomQuery.globalEval(node.cDATAAsString);
     }
 
     /**
@@ -167,12 +168,12 @@ export class ResponseProcessor implements IResponseProcessor {
         //we now store the response xml also in the error data for further details
         mergedErrorData.assignIf(hasResponseXML, RESPONSE_XML).value = this.internalContext.getIf(RESPONSE_XML).value.get(0).value;
 
-        // error post processing and enrichment (standard messages from keys)
+        // error post-processing and enrichment (standard messages from keys)
         let errorData = ErrorData.fromServerError(mergedErrorData);
 
-        // we now trigger an internally stored onError function which might be a attached to the context
-        // either we haven an internal on error, or an on error has been bassed via params from the outside
-        // in both cases they are attached to our contexts
+        // we now trigger an internally stored onError function which might be an attached to the context
+        // either we do not have an internal on error, or an on error has been based via params from the outside.
+        // In both cases they are attached to our contexts
 
         this.triggerOnError(errorData);
         Implementation.sendError(errorData);
@@ -198,7 +199,7 @@ export class ResponseProcessor implements IResponseProcessor {
      * @param cdataBlock the cdata block with the new html code
      */
     update(node: XMLQuery, cdataBlock: string) {
-        let result = ExtDomquery.byId(node.id.value, true).outerHTML(cdataBlock, false, false);
+        let result = ExtDomQuery.byId(node.id.value, true).outerHTML(cdataBlock, false, false);
         let sourceForm = result?.parents(TAG_FORM).orElseLazy(() => result.byTagName(TAG_FORM, true));
         if (sourceForm) {
             this.storeForPostProcessing(sourceForm, result);
@@ -206,7 +207,7 @@ export class ResponseProcessor implements IResponseProcessor {
     }
 
     /**
-     * Delete handler, simply deleetes the node referenced by the xml data
+     * Delete handler, simply deletes the node referenced by the xml data
      * @param node
      */
     delete(node: XMLQuery) {
@@ -264,7 +265,7 @@ export class ResponseProcessor implements IResponseProcessor {
      *
      * @param node the node hosting the insert data
      */
-    insertWithSubtags(node: XMLQuery) {
+    insertWithSubTags(node: XMLQuery) {
         let before = node.querySelectorAll(TAG_BEFORE);
         let after = node.querySelectorAll(TAG_AFTER);
 
@@ -289,7 +290,7 @@ export class ResponseProcessor implements IResponseProcessor {
 
     /**
      * Process the viewState update, update the affected
-     * forms with their respective new viewstate values
+     * forms with their respective new viewState values
      *
      */
     processViewState(node: XMLQuery): boolean {
@@ -314,11 +315,11 @@ export class ResponseProcessor implements IResponseProcessor {
      */
     globalEval() {
         //  phase one, if we have head inserts, we build up those before going into the script eval phase
-        let insertHeadElems = new ExtDomquery(...this.internalContext.getIf(DEFERRED_HEAD_INSERTS).value);
+        let insertHeadElems = new ExtDomQuery(...this.internalContext.getIf(DEFERRED_HEAD_INSERTS).value);
         insertHeadElems.runHeadInserts(true);
 
         // phase 2 we run a script eval on all updated elements in the body
-        let updateElems = new ExtDomquery(...this.internalContext.getIf(UPDATE_ELEMS).value);
+        let updateElems = new ExtDomQuery(...this.internalContext.getIf(UPDATE_ELEMS).value);
         updateElems.runCss();
         // phase 3, we do the same for the css
         updateElems.runScripts();
@@ -370,10 +371,10 @@ export class ResponseProcessor implements IResponseProcessor {
     }
 
     /**
-     * proper viewstate -> form assignment
+     * proper viewState -> form assignment
      *
-     * @param forms the forms to append the viewstate to
-     * @param viewState the final viewstate
+     * @param forms the forms to append the viewState to
+     * @param viewState the final viewState
      */
     private appendViewStateToForms(forms: DQ, viewState: string) {
         this.assignState(forms, $nsp(SEL_VIEWSTATE_ELEM), viewState);
@@ -381,10 +382,10 @@ export class ResponseProcessor implements IResponseProcessor {
 
 
     /**
-     * proper clientwindow -> form assignment
+     * proper clientWindow -> form assignment
      *
-     * @param forms the forms to append the viewstate to
-     * @param clientWindow the final viewstate
+     * @param forms the forms to append the viewState to
+     * @param clientWindow the final viewState
      */
     private appendClientWindowToForms(forms: DQ, clientWindow: string) {
         this.assignState(forms, $nsp(SEL_CLIENT_WINDOW_ELEM), clientWindow);
@@ -411,7 +412,7 @@ export class ResponseProcessor implements IResponseProcessor {
     /**
      * Helper to Create a new JSF ViewState Element
      *
-     * @param parent, the parent node to attach the viewstate element to
+     * @param parent, the parent node to attach the viewState element to
      * (usually a form node)
      */
     private static newViewStateElement(parent: DQ): DQ {
@@ -421,18 +422,18 @@ export class ResponseProcessor implements IResponseProcessor {
     }
 
     /**
-     * Stores certain aspects of the dom for later post processing
+     * Stores certain aspects of the dom for later post-processing
      *
      * @param updateForms the update forms which should receive standardized internal jsf data
-     * @param toBeEvaled the resulting elements which should be evaled
+     * @param toBeEvaluated the resulting elements which should be evaluated
      */
-    private storeForPostProcessing(updateForms: DQ, toBeEvaled: DQ) {
+    private storeForPostProcessing(updateForms: DQ, toBeEvaluated: DQ) {
         this.storeForUpdate(updateForms);
-        this.storeForEval(toBeEvaled);
+        this.storeForEval(toBeEvaluated);
     }
 
     /**
-     * helper to store a given form for the update post processing (viewstate)
+     * helper to store a given form for the update post-processing (viewState)
      *
      * @param updateForms the dom query object pointing to the forms which need to be updated
      */
@@ -443,22 +444,17 @@ export class ResponseProcessor implements IResponseProcessor {
     /**
      * same for eval (js and css)
      *
-     * @param toBeEvaled
+     * @param toBeEvaluated
      */
-    private storeForEval(toBeEvaled: DQ) {
-        this.internalContext.assign(UPDATE_ELEMS).value.push(toBeEvaled);
-    }
-
-    // head eval is always sticky
-    private storeForHeadEval(toBeEvaled: DQ, sticky) {
-        this.internalContext.assign(DEFERRED_HEAD_INSERTS).value.push(toBeEvaled);
+    private storeForEval(toBeEvaluated: DQ) {
+        this.internalContext.assign(UPDATE_ELEMS).value.push(toBeEvaluated);
     }
 
     /**
-     * check whether a given XMLQuery node is an explicit viewstate node
+     * check whether a given XMLQuery node is an explicit viewState node
      *
      * @param node the node to check
-     * @returns true of it ii
+     * @returns if it is a viewState node
      */
     private static isViewStateNode(node: XMLQuery): boolean {
         let separatorChar = (window?.faces ?? window?.jsf).separatorchar;

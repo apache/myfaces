@@ -66,16 +66,16 @@ export module Response {
 
         internalContext.assign(RESPONSE_XML).value = responseXML;
 
-        //we now process the partial tags, or in none given raise an error
+        // we now process the partial tags, or in none given raise an error
         responseXML.querySelectorAll(RESP_PARTIAL)
             .each(item => processPartialTag(<XMLQuery>item, responseProcessor, internalContext));
 
-        //we now process the viewstates, client windows and the evals deferred
-        //the reason for this is that often it is better
-        //to wait until the document has caught up before
-        //doing any evals even on embedded scripts
-        //usually this does not matter, the client window comes in almost last always anyway
-        //we maybe drop this deferred assignment in the future, but myfaces did it until now
+        // We now process the viewStates, client windows and the elements to be evaluated are delayed.
+        // The reason for this is that often it is better
+        // to wait until the document has caught up before
+        // doing any evaluations even on embedded scripts.
+        // Usually this does not matter, the client window comes in almost last always anyway
+        // we maybe drop this deferred assignment in the future, but myfaces did it until now.
         responseProcessor.fixViewStates();
         responseProcessor.fixClientWindow();
         responseProcessor.globalEval();
@@ -91,7 +91,7 @@ export module Response {
         internalContext.assign(PARTIAL_ID).value = node.id;
         const SEL_SUB_TAGS = [CMD_ERROR, CMD_REDIRECT, CMD_CHANGES].join(",");
 
-        //now we can process the main operations
+        // now we can process the main operations
         node.querySelectorAll(SEL_SUB_TAGS).each((node: XMLQuery) => {
             switch (node.tagName.value) {
                 case CMD_ERROR:
@@ -109,10 +109,10 @@ export module Response {
     }
 
     let processInsert = function (responseProcessor: IResponseProcessor, node: XMLQuery) {
-         //path1 insert after as child tags
+         // path1 insert after as child tags
          if(node.querySelectorAll([TAG_BEFORE, TAG_AFTER].join(",")).length) {
-             responseProcessor.insertWithSubtags(node);
-         } else { //insert before after with id
+             responseProcessor.insertWithSubTags(node);
+         } else { // insert before after with id
              responseProcessor.insert(node);
          }
 
@@ -171,14 +171,14 @@ export module Response {
 
     /**
      * branch tag update. drill further down into the updates
-     * special case viewstate in that case it is a leaf
-     * and the viewstate must be processed
+     * special case viewState in that case it is a leaf
+     * and the viewState must be processed
      *
      * @param node
      * @param responseProcessor
      */
      function processUpdateTag(node: XMLQuery, responseProcessor: IResponseProcessor) {
-         //early state storing, if no state we perform a normal update cycle
+         // early state storing, if no state we perform a normal update cycle
         if (!storeState(responseProcessor, node)) {
             handleElementUpdate(node, responseProcessor);
         }
@@ -209,7 +209,7 @@ export module Response {
                 responseProcessor.addToHead(DQ.fromMarkup(cdataBlock))
                 break;
 
-            default://htmlItem replacement
+            default:// htmlItem replacement
                 responseProcessor.update(node, cdataBlock);
                 break;
         }

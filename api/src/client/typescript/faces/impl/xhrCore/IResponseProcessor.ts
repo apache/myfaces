@@ -48,7 +48,7 @@ export interface IResponseProcessor {
     replaceBody(shadowBody: XMLQuery | DQ): void;
 
     /**
-     * Leaf Tag eval... process whatever is in the evals cdata block
+     * Leaf Tag eval... process whatever is in the evaluated cdata block
      *
      * @param node
      */
@@ -91,11 +91,11 @@ export interface IResponseProcessor {
     attributes(node: XMLQuery): void;
 
     /**
-     * replace the entire viewroot
+     * replace the entire viewRoot
      * with shadowResponse
-     * @param shadownResponse
+     * @param shadowResponse
      */
-    replaceViewRoot(shadownResponse: XMLQuery | DQ): void;
+    replaceViewRoot(shadowResponse: XMLQuery | DQ): void;
 
     /**
      * jsf insert resolution
@@ -106,34 +106,34 @@ export interface IResponseProcessor {
     insert(node: XMLQuery): void;
 
     /**
-     * insert with before, after subtags
+     * insert with before, after sub-tags
      * @param node
      */
-    insertWithSubtags(node: XMLQuery);
+    insertWithSubTags(node: XMLQuery);
 
     /**
      * process the viewState update, update the affected
-     * forms with their respective new viewstate values
+     * forms with their respective new viewState values
      *
      */
     processViewState(node: XMLQuery): boolean;
 
     /**
      * process the viewState update, update the affected
-     * forms with their respective new viewstate values
+     * forms with their respective new viewState values
      *
      */
     processClientWindow(node: XMLQuery): boolean;
 
 
     /**
-     * evals all processed elements of so far
+     * Eval - all processed elements so far
      * and executes the embedded scripts
      */
     globalEval(): void;
 
     /**
-     * fix the viewstates of all processed forms
+     * fix the viewStates of all processed forms
      */
     fixViewStates(): void;
 
