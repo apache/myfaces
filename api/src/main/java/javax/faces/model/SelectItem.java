@@ -141,10 +141,6 @@ public class SelectItem implements Serializable
 
     public void setLabel(String label)
     {
-        if (label == null)
-        {
-            throw new NullPointerException("label");
-        }
         _label = label;
     }
 
