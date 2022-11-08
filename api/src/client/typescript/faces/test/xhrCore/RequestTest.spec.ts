@@ -198,14 +198,20 @@ describe('Tests after core when it hits response', function () {
                 render: "@form",
                 pass1: "pass1",
                 pass2: "pass2",
+                message: "Hello World",
                 onevent: (evt: any) => {
                     localCnt++;
                 }
             });
 
             let xhrReq = this.requests[0];
+            let requestBody = xhrReq.requestBody.split("&");
 
             xhrReq.respond(200, {'Content-Type': 'text/xml'}, STD_XML);
+            expect(requestBody.indexOf("pass1=pass1")).not.to.eq(-1);
+            expect(requestBody.indexOf("pass2=pass2")).not.to.eq(-1);
+            expect(requestBody.indexOf("message=Hello%20World")).not.to.eq(-1);
+
             expect(this.jsfAjaxResponse.callCount).to.eq(1);
             //success ommitted due to fake response
             expect(globalCnt == 3).to.eq(true);

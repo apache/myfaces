@@ -16,7 +16,7 @@
 import {ArrayCollector, Config, DQ, Lang, LazyStream, Stream} from "mona-dish";
 import {EMPTY_STR, IDENT_ALL, IDENT_FORM, P_VIEWSTATE} from "../core/Const";
 import isString = Lang.isString;
-import {ExtConfig} from "../util/ExtDomQuery";
+import {ExtConfig, ExtDomQuery} from "../util/ExtDomQuery";
 
 
 /**
@@ -54,15 +54,20 @@ export class XhrFormData extends Config {
         //a call to getViewState before must pass the encoded line
         //a call from getViewState passes the form element as datasource,
         //so we have two call points
+        // atm we basically encode twice, to keep the code leaner
+        // this will be later optmized, practically elements
+        // which are already covered by an external viewstate do not need
+        // the encoding a second time, because they are overwritten by the viewstate again
         if (isString(dataSource)) {
             this.assignEncodedString(<string>this.dataSource);
         } else {
             this.applyFormDataToConfig();
         }
-        if('undefined' != typeof viewState) {
+        //now assign the external viewstate overrides
+        if ('undefined' != typeof viewState) {
             this.assignEncodedString(viewState)
         }
-        if(executes) {
+        if (executes) {
             this.postInit(...executes);
         }
     }
@@ -73,14 +78,17 @@ export class XhrFormData extends Config {
      * in our ajax request
      */
     postInit(...executes: Array<string>) {
-        let fetchInput = (id: string): DQ => {
+        let fetchFileInputs = (id: string): DQ => {
+            const INPUT_FILE = "input[type='file']";
             if (id == IDENT_ALL) {
-                return DQ.querySelectorAllDeep("input[type='file']");
+                return DQ.querySelectorAllDeep(INPUT_FILE);
             } else if (id == IDENT_FORM) {
-                return (<DQ>this.dataSource).querySelectorAllDeep("input[type='file']");
+                return (<DQ>this.dataSource).matchesSelector(INPUT_FILE) ?
+                    (<DQ>this.dataSource) :
+                    (<DQ>this.dataSource).querySelectorAllDeep(INPUT_FILE);
             } else {
                 let element = DQ.byId(id, true);
-                return this.getFileInputs(element);
+                return element.matchesSelector(INPUT_FILE) ? element : this.getFileInputs(element);
             }
         };
 
@@ -90,7 +98,7 @@ export class XhrFormData extends Config {
 
 
         this.isMultipartRequest = LazyStream.of(...executes)
-            .map(fetchInput)
+            .map(fetchFileInputs)
             .filter(inputExists)
             .first().isPresent();
     }
@@ -113,8 +121,8 @@ export class XhrFormData extends Config {
     assignEncodedString(encoded: string) {
         // this code filters out empty strings as key value pairs
         let keyValueEntries = decodeURIComponent(encoded).split(/&/gi)
-                .filter(item => !!(item || '')
-                .replace(/\s+/g,''));
+            .filter(item => !!(item || '')
+                .replace(/\s+/g, ''));
         this.assignString(keyValueEntries);
     }
 
@@ -133,8 +141,8 @@ export class XhrFormData extends Config {
             return keyVal.length < 3 ? [keyVal?.[0] ?? [], keyVal?.[1] ?? []] : keyVal;
         }
 
+        //TODO fix files...
         Stream.of(...keyValueEntries)
-            //split only the first =
             .map(line => splitToKeyVal(line))
             //special case of having keys without values
             .map(keyVal => fixKeyWithoutVal(keyVal))
@@ -171,7 +179,11 @@ export class XhrFormData extends Config {
         }
         let entries = LazyStream.of(...Object.keys(this.value))
             .filter(key => this.value.hasOwnProperty(key))
-            .flatMap(key => Stream.of(...this.value[key]).map(val => [key, val]).collect(new ArrayCollector()))
+            .flatMap(key => Stream.of(...this.value[key]).map(val => [key, val])
+                //we cannot encode file elements that is handled by multipart requests anyway
+                .filter(([, value]) => !(value instanceof ExtDomQuery.global().File))
+                .collect(new ArrayCollector()))
+
             .map(keyVal => {
                 return `${encodeURIComponent(keyVal[0])}=${encodeURIComponent(keyVal[1])}`;
             })

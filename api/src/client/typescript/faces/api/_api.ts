@@ -201,6 +201,7 @@ export module faces {
          * @param channel the channel name/id
          * @param onopen The function to be invoked when the web socket is opened.
          * @param onmessage The function to be invoked when a message is received.
+         * @param onerror The function to be invoked when an error occurs.
          * @param onclose The function to be invoked when the web socket is closed.
          * @param behaviors functions which are invoked whenever a message is received
          * @param autoConnect Whether or not to automatically open the socket. Defaults to <code>false</code>.
@@ -210,10 +211,11 @@ export module faces {
                     channel: string,
                     onopen: Function,
                     onmessage: Function,
+                    onerror: Function,
                     onclose: Function,
                     behaviors: any,
                     autoConnect: boolean): void {
-            PushImpl.init(socketClientId, url, channel, onopen, onmessage, onclose, behaviors, autoConnect);
+            PushImpl.init(socketClientId, url, channel, onopen, onmessage, onerror, onclose, behaviors, autoConnect);
         }
 
         /**
