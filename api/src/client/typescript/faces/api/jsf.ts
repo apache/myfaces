@@ -26,6 +26,24 @@ if(!window?.jsf) {
     (window as any)['jsf'] = window?.jsf ?? faces;
     window.jsf.specversion = 230000;
     delete window.jsf.contextpath;
+
+    let faces4Init = faces.push.init;
+    /*
+     * we shim back the breaking api change from 3.0 to 4.0
+     * onerror is gone
+     */
+    faces.push.init = (socketClientId: string,
+                       url: string,
+                       channel: string,
+                       onopen: Function,
+                       onmessage: Function,
+                       // no on error api change for 4.0
+                       //onerror: Function,
+                       onclose: Function,
+                       behaviors: any,
+                       autoConnect: boolean) => {
+        faces4Init(socketClientId, url, channel, onopen, onmessage, null, onclose, behaviors, autoConnect);
+    }
 }
 if(!window?.myfaces?.ab) {
     const myfaces = require("./_api").myfaces;
