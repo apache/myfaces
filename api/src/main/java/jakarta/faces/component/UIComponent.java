@@ -1091,41 +1091,49 @@ public abstract class UIComponent
     {
     }
 
-    private Resource getLocalizedCompositeResource(String resourceName, String libraryName, FacesContext context) 
+    private Resource getLocalizedCompositeResource(String resourceName, String libraryName, FacesContext context)
     {
-    	List<String> localizedPaths = getLocalizedPropertiesPaths(resourceName, context);
-    	Resource resource = null;
-    	
-    	for (String path_: localizedPaths) {
-    		resource = context.getApplication().getResourceHandler().createResource(path_, libraryName);
-    		if (resource != null)
-    		{
-    			break;
-    		}
-    	}
-    	
-    	return resource;
+        List<String> localizedPaths = getLocalizedPropertiesPaths(resourceName, context);
+        Resource resource = null;
+        for (String localizedPath: localizedPaths)
+        {
+            resource = context.getApplication().getResourceHandler().createResource(localizedPath, libraryName);
+            if (resource != null)
+            {
+              break;
+            }
+        }
+        
+        return resource;
     }
     
-    private List<String> getLocalizedPropertiesPaths(String path, FacesContext ctx) 
+    private List<String> getLocalizedPropertiesPaths(String path, FacesContext ctx)
     {
-    	Locale loc = (ctx != null && ctx.getViewRoot() != null) ? ctx.getViewRoot().getLocale() : null;
-    	if (!path.endsWith(".properties") || loc == null) {
-    		return Collections.singletonList(path);
-    	}
-    	List<String> list = new ArrayList<>();
-    	String base = path.substring(0, path.lastIndexOf(".properties"));
-    	if (!loc.getVariant().isEmpty()) {
-    		list.add(String.format("%s_%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry(), loc.getVariant()));
-    	}
-    	if (!loc.getCountry().isEmpty()) {
-    		list.add(String.format("%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry()));
-    	}
-    	if (!loc.getLanguage().isEmpty()) {
-    		list.add(String.format("%s_%s.properties", base, loc.getLanguage()));
-    	}
-    	list.add(path);
-    	return list;
+        Locale loc = (ctx != null && ctx.getViewRoot() != null) ? ctx.getViewRoot().getLocale() : null;
+        if (!path.endsWith(".properties") || loc == null)
+        {
+            return Collections.singletonList(path);
+        }
+        
+        List<String> list = new ArrayList<>();
+        String base = path.substring(0, path.lastIndexOf(".properties"));
+        
+        if (!loc.getVariant().isEmpty())
+        {
+            list.add(String.format("%s_%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry(), loc.getVariant()));
+        }
+        
+        if (!loc.getCountry().isEmpty())
+        {
+            list.add(String.format("%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry()));
+        }
+        
+        if (!loc.getLanguage().isEmpty())
+        {
+          list.add(String.format("%s_%s.properties", base, loc.getLanguage()));
+        }
+        list.add(path);
+        
+        return list;
     }
-
 }
