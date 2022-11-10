@@ -32,6 +32,7 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.event.SystemEventListenerHolder;
+import org.apache.myfaces.util.lang.Assert;
 
 public class ApplicationImplEventManager
 {
@@ -51,12 +52,17 @@ public class ApplicationImplEventManager
     
     public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass, Object source)
     {
+        Assert.notNull(source, "source");
         publishEvent(facesContext, systemEventClass, source.getClass(), source);
     }
 
     public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,
                              Class<?> sourceBaseType, Object source)
-    {        
+    {
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(systemEventClass, "systemEventClass");
+        Assert.notNull(source, "source");
+
         //Call events only if event processing is enabled.
         if (!facesContext.isProcessingEvents())
         {
@@ -113,6 +119,9 @@ public class ApplicationImplEventManager
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                  SystemEventListener listener)
     {
+        Assert.notNull(systemEventClass, "systemEventClass");
+        Assert.notNull(listener, "listener");
+
         List<EventInfo> eventInfos = globalListeners.get(systemEventClass);
         if (eventInfos == null)
         {
@@ -136,6 +145,9 @@ public class ApplicationImplEventManager
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                      SystemEventListener listener)
     {
+        Assert.notNull(systemEventClass, "systemEventClass");
+        Assert.notNull(listener, "listener");
+
         List<EventInfo> eventInfos = globalListeners.get(systemEventClass);
         if (eventInfos == null || eventInfos.isEmpty())
         {
