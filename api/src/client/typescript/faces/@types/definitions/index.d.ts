@@ -25,7 +25,19 @@ declare global {
     type Consumer<T> = (s?: T) => void;
     type AssocArr<T> = { [key: string]: T };
     type EvalFuncs = Array<Function | string>;
-    type Options = { [key: string]: string | Function | { [key: string]: string | Function } };
+
+
+    type Options = {
+        execute ?: string, //space separated list of client ids
+        onevent ?: Function, // event handler callback
+        onerror ?: Function, // error handler callback
+        params ?: {[key: string]: any} | [[string, any]], //passthrough params
+        delay ?: number, // delay in milliseconds
+        resetValues ?: boolean, //if set to true jakarta.faces.partial.resetValues is sent
+        /* @deprecated non-spec conform fallback behavior that anything can be passed and is used as passthrough */
+        [key: string]: any
+    }
+
     type Context = AssocArr<any>;
     type ElemDef = Element | string;
 

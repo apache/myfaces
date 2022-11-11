@@ -252,7 +252,7 @@ export module myfaces {
      * @param render
      * @param options
      */
-    export function ab(source: Element, event: Event, eventName: string, execute: string, render: string, options: Context = {}): void {
+    export function ab(source: Element, event: Event, eventName: string, execute: string, render: string, options: Options = {}): void {
         if (eventName) {
            options[$nsp(P_BEHAVIOR_EVENT)] = eventName;
         }

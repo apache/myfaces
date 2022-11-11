@@ -93,6 +93,8 @@ export const CTX_PARAM_SRC_FRM_ID = "_mfSourceFormId";
 export const CTX_PARAM_SRC_CTL_ID = "_mfSourceControlId";
 export const CTX_PARAM_TR_TYPE = "_mfTransportType";
 export const CTX_PARAM_PASS_THR = "passThrgh";
+export const CTX_PARAM_SPEC_PARAMS = "params";
+
 export const CTX_PARAM_DELAY = "delay";
 export const CTX_PARAM_TIMEOUT = "timeout";
 export const CTX_PARAM_RST = "resetValues";

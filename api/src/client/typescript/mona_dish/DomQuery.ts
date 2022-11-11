@@ -2159,11 +2159,16 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                         element.checked
                     )
                 ) {
-                    let files: any = (<any>element.value).value?.files ?? [];
-                    if (files?.length) {
-                        // xhr level2
-                        target.append(name).value = files[0];
+                    let uploadedFiles = (<any>element.value)?.value?.files;
+                    let filesArr: any = uploadedFiles ?? [];
+                    if (filesArr?.length) { //files can be empty but set
+                        // xhr level2, single multiple must be passes as they are
+                        target.assign(name).value = Array.from(filesArr);
                     } else {
+                        if(!!uploadedFiles) { //we skip empty file elements i
+                            return;
+                        }
+                        //checkboxes etc.. need to be appended
                         target.append(name).value = element.inputValue.value;
                     }
                 }

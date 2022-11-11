@@ -483,6 +483,9 @@ export class Config extends Optional<any> {
      */
     shallowMerge(other: Config, overwrite = true, withAppend = false) {
         for (let key in other.value) {
+            if('undefined' == typeof key || null == key) {
+                continue;
+            }
             if (overwrite || !(key in this.value)) {
                 if (!withAppend) {
                     this.assign(key).value = other.getIf(key).value;

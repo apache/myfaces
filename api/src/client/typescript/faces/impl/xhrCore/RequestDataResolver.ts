@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Config, DomQuery, DQ} from "mona-dish";
+import {AssocArrayCollector, Config, DomQuery, DQ, Stream} from "mona-dish";
 import {
     CTX_PARAM_DELAY,
     CTX_PARAM_TIMEOUT,
@@ -138,7 +138,7 @@ export function getEventTarget(evt: Event): Element {
  * @param opts
  * @param el
  */
-export function resolveDefaults(event: Event, opts: any = {}, el: Element | string = null) {
+export function resolveDefaults(event: Event, opts: Options | [[string, any]] , el: Element | string = null) {
     //deep copy the options, so that further transformations to not backfire into the callers
     const resolvedEvent = event,
         options = new ExtConfig(opts).deepCopy,
