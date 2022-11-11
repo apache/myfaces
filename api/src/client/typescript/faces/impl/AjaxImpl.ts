@@ -50,7 +50,7 @@ import {
     CTX_PARAM_RENDER,
     REQ_TYPE_POST,
     SOURCE,
-    TAG_FORM
+    TAG_FORM, CTX_PARAM_SPEC_PARAMS
 } from "./core/Const";
 import {
     resolveDefaults,
@@ -81,7 +81,9 @@ enum BlockFilter {
     myfaces = "myfaces",
     delay = "delay",
     timeout = "timeout",
-    windowId = "windowId"
+    resetValues = "resetValues",
+    windowId = "windowId",
+    params = "params"
 }
 
 /**
@@ -267,7 +269,12 @@ export module Implementation {
 
         requestCtx.assignIf(!!windowId, P_WINDOW_ID).value = windowId;
 
+        // old non spec behavior will be removed after it is clear whether the removal breaks any code
         requestCtx.assign(CTX_PARAM_PASS_THR).value = filterPassThroughValues(options.value);
+
+        // spec conform behavior, all passthrough params must be under "passthrough
+        const params = remapArrayToAssocArr(options.getIf(CTX_PARAM_SPEC_PARAMS).orElse({}).value);
+        requestCtx.getIf(CTX_PARAM_PASS_THR).shallowMerge(new Config(params), true);
         requestCtx.assignIf(!!resolvedEvent, CTX_PARAM_PASS_THR, P_EVT).value = resolvedEvent?.type;
 
         /**
@@ -653,7 +660,13 @@ export module Implementation {
      * Filter the options given with a blacklist, so that only
      * the values required for pass-through are processed in the ajax request
      *
+     * Note this is a bug carried over from the old implementation
+     * the spec conform behavior is to use params for passthrough values
+     * this will be removed soon, after it is cleared up wheter removing
+     * it breaks any legacy code
+     *
      * @param {Context} mappedOpts the options to be filtered
+     * @deprecated
      */
     function filterPassThroughValues(mappedOpts: Context): Context {
         //we now can use the full code reduction given by our stream api
@@ -661,6 +674,13 @@ export module Implementation {
         return Stream.ofAssoc(mappedOpts)
             .filter(item => !(item[0] in BlockFilter))
             .collect(new AssocArrayCollector());
+    }
+
+    function remapArrayToAssocArr(arrayedParams: [[string, any]] | {[key: string]: any}): {[key: string]: any} {
+        if(Array.isArray(arrayedParams)) {
+            return Stream.of(... arrayedParams).collect(new AssocArrayCollector());
+        }
+        return arrayedParams;
     }
 
     function resolveGlobalConfig(): any {
