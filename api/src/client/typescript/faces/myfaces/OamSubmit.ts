@@ -62,18 +62,18 @@ export module oam {
         DQ.byId(element).delete();
     };
 
-    // noinspection JSUnusedGlobalSymbols
+    // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
     /**
      * does special form submit remapping
      * re-maps the issuing command link into something,
-     * a decode of the command link on the server can understand
+     * the "decode" of the command link on the server can understand
      *
      * @param formName
      * @param linkId
      * @param target
      * @param params
      */
-    export const submitForm = function (formName: string, linkId: string, target: string, params: { [key: string]: any }): boolean {
+    export const submitForm = function (formName: string, linkId: string | null, target: string |null, params: AssocArr<any> | Tuples<string, any>): boolean {
         let clearFn = 'clearFormHiddenParams_' + formName.replace(/-/g, '\$:').replace(/:/g, '_');
         window?.[clearFn]?.(formName);
 
@@ -81,14 +81,14 @@ export module oam {
         if (window?.myfaces?.core?.config?.autoScroll && (window as any)?.getScrolling) {
             myfaces.oam.setHiddenInput(formName, 'autoScroll', (window as any)?.getScrolling());
         }
-        Stream.ofAssoc(params).each((param: [string, any]) => {
-            myfaces.oam.setHiddenInput(formName, param[0], param[1]);
-        });
+        let paramsStream: Stream<[string, any]> = Array.isArray(params) ? Stream.of(...params) : Stream.ofAssoc(params);
+        paramsStream.each(([key, data]) => myfaces.oam.setHiddenInput(formName, key, data));
 
         //we call the namespaced function, to allow decoration, via a direct call we would
-        myfaces.oam.setHiddenInput(formName, `${formName}:_idcl`, linkId);
+        myfaces.oam.setHiddenInput(formName, `${formName}:_idcl`, linkId ?? '');
 
-        DQ.byId(document.forms[formName]).each(form => {
+
+        DQ.byId(document.forms?.[formName] ?? document.getElementById(formName)).each(form => {
             const ATTR_TARGET = "target";
             const formElement = form.getAsElem(0).value as HTMLFormElement;
             const oldTarget = form.attr(ATTR_TARGET).value;
@@ -104,8 +104,9 @@ export module oam {
                 window?.console.error(e);
             } finally {
                 form.attr(ATTR_TARGET).value = oldTarget;
-                Stream.ofAssoc(params).each((param: [string, any]) => {
-                    myfaces.oam.clearHiddenInput(formName, param[0]);
+                // noinspection JSUnusedLocalSymbols
+                paramsStream.each(([key, data]) => {
+                    myfaces.oam.clearHiddenInput(formName, key);
                 });
                 myfaces.oam.clearHiddenInput(formName, `${formName}:_idcl`);
             }
