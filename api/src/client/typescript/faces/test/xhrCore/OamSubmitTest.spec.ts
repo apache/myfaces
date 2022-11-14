@@ -48,9 +48,7 @@ describe('Tests for the MyFaces specifig oam submit', function () {
             done();
             return false;
         };
-
         myfaces.oam.submitForm("blarg", null, null, options);
-
     });
     it(("must handle oam submit correctly, associative array"), (done) => {
 
