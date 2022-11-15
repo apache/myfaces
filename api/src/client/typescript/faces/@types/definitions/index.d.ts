@@ -121,7 +121,7 @@ declare global {
     interface OAM {
         clearHiddenInput(formName: string, name: string): void;
         setHiddenInput(formName: string, name: string, value: string): void;
-        submitForm(formName: string, linkId: string, target: string, params: { [key: string]: any }): boolean;
+        submitForm(formName: string, linkId?: string |null, target?: string | null, params?: AssocArr<any> |Tuples<string, any> | null): boolean;
     }
 
     interface MyFacesAPI {
