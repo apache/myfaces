@@ -787,6 +787,10 @@ public class MyfacesConfig
     public static final String EL_RESOLVER_TRACING = "org.apache.myfaces.EL_RESOLVER_TRACING";
     public static final boolean EL_RESOLVER_TRACING_DEFAULT = false;
 
+    @JSFWebConfigParam(name="org.apache.myfaces.UI_REPEAT_STATE_SAVING", since="4.0", defaultValue = "true")
+    public static final String UI_REPEAT_STATE_SAVING = "org.apache.myfaces.UI_REPEAT_STATE_SAVING";
+    public static final boolean UI_REPEAT_STATE_SAVING_DEFAULT  = true;
+
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
     private boolean strictJsf2AllowSlashLibraryName;
@@ -866,6 +870,7 @@ public class MyfacesConfig
     private ResourceBundle.Control resourceBundleControl;
     private boolean automaticExtensionlessMapping = AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT;
     private boolean elResolverTracing = EL_RESOLVER_TRACING_DEFAULT;
+    private boolean uiRepeatStateSaving = UI_REPEAT_STATE_SAVING_DEFAULT;
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1290,6 +1295,9 @@ public class MyfacesConfig
         cfg.elResolverTracing = getBoolean(extCtx, EL_RESOLVER_TRACING,
                 EL_RESOLVER_TRACING_DEFAULT);
         
+        cfg.uiRepeatStateSaving = getBoolean(extCtx, UI_REPEAT_STATE_SAVING,
+                UI_REPEAT_STATE_SAVING_DEFAULT);
+
         return cfg;
     }
 
@@ -1754,5 +1762,11 @@ public class MyfacesConfig
     {
         return elResolverTracing;
     }
+
+    public boolean isUiRepeatStateSaving()
+    {
+        return uiRepeatStateSaving;
+    }
+
 }
 

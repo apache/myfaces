@@ -58,6 +58,7 @@ import jakarta.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -1701,11 +1702,18 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             {
                 if (parentSaved == null)
                 {
-                    Object[] values = new Object[3];
-                    values[0] = super.saveState(context);
-                    values[1] = null;
-                    values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
-                    return values;
+                    if (MyfacesConfig.getCurrentInstance().isUiRepeatStateSaving())
+                    {
+                        Object[] values = new Object[3];
+                        values[0] = super.saveState(context);
+                        values[1] = null;
+                        values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+                        return values;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
