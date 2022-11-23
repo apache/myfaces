@@ -312,7 +312,13 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
         /* jsf2.2 only: options.delay || */
         var delayTimeout = options.delay || this._RT.getLocalOrGlobalConfig(context, "delay", false);
-        if (delayTimeout) {
+
+        if (!!delayTimeout) {
+            if(!(delayTimeout >= 0)) {
+                // abbreviation which covers all cases of non positive values,
+                // including NaN and non-numeric strings, no type equality is deliberate here,
+                throw new Error("Invalid delay value: " + value);
+            }
             if (this._delayTimeout) {
                 clearTimeout(this._delayTimeout);
             }
