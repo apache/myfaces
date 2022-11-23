@@ -28,6 +28,8 @@ import {
 import {XhrFormData} from "./XhrFormData";
 import {ExtLang} from "../util/Lang";
 import {ExtConfig, ExtDomQuery} from "../util/ExtDomQuery";
+import {Assertions} from "../util/Assertions";
+import assertDelay = Assertions.assertDelay;
 
 /**
  * Resolver functions for various aspects of the request data
@@ -91,7 +93,15 @@ export function resolveTimeout(options: Config): number {
 export function resolveDelay(options: Config): number {
     let getCfg = ExtLang.getLocalOrGlobalConfig;
 
-    return options.getIf(CTX_PARAM_DELAY).value ?? getCfg(options.value, CTX_PARAM_DELAY, 0);
+    // null or non undefined will automatically be mapped to 0 aka no delay
+    let ret = options.getIf(CTX_PARAM_DELAY).value ?? getCfg(options.value, CTX_PARAM_DELAY, 0);
+    // if delay === none, no delay must be used, aka delay 0
+    if('none' === ret) {
+        ret = 0;
+    }
+    // negative, or invalid values will automatically get a js exception
+    assertDelay(ret);
+    return ret;
 }
 
 /**
