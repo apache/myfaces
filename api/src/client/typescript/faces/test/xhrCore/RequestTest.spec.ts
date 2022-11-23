@@ -491,5 +491,70 @@ describe('Tests after core when it hits response', function () {
         }
 
     });
+
+    // We can cover this TCK issue in a simple code unit test, the case is simple enough
+    it("must throw an error on invalid delays (MYFACES-4499, TCK_ISSUE320IT )", (done) => {
+
+        let element = DomQuery.byId("input_2").getAsElem(0).value;
+        try {
+            faces.ajax.request(element, null, {
+                execute: "input_1",
+                render: "@form",
+                delay: NaN,
+                params: {
+                    pass1: "pass1",
+                    pass2: "pass2",
+                }
+            });
+        } catch (e) {
+            expect(e.message.indexOf("NaN") > 0).to.eq(true, "Invalid NaN in message");
+            done();
+            return;
+        }
+        done("Expecting a client error to be thrown")
+    });
+
+    it("must throw an error on invalid delays (MYFACES-4499, TCK_ISSUE320IT ) - 2", (done) => {
+
+        let element = DomQuery.byId("input_2").getAsElem(0).value;
+        try {
+            faces.ajax.request(element, null, {
+                execute: "input_1",
+                render: "@form",
+                delay: -1,
+                params: {
+                    pass1: "pass1",
+                    pass2: "pass2",
+                }
+            });
+        } catch (e) {
+            expect(e.message.indexOf("-1") > 0).to
+                .eq(true, "Invalid integer value in message");
+            done();
+            return;
+        }
+        done("Expecting a client error to be thrown")
+    });
+    it("must throw an error on invalid delays (MYFACES-4499, TCK_ISSUE320IT ) - 3", (done) => {
+
+        let element = DomQuery.byId("input_2").getAsElem(0).value;
+        try {
+            faces.ajax.request(element, null, {
+                execute: "input_1",
+                render: "@form",
+                delay: "booga",
+                params: {
+                    pass1: "pass1",
+                    pass2: "pass2",
+                }
+            });
+        } catch (e) {
+            expect(e.message.indexOf("booga") > 0).to.be
+                .eq(true, "Invalid string value in message");
+            done();
+            return;
+        }
+        done("Expecting a client error to be thrown")
+    });
 });
 
