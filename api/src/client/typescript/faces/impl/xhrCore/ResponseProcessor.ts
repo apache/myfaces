@@ -203,7 +203,7 @@ export class ResponseProcessor implements IResponseProcessor {
      */
     update(node: XMLQuery, cdataBlock: string) {
         let result = ExtDomQuery.byId(node.id.value, true).outerHTML(cdataBlock, false, false);
-        let sourceForm = result?.parents(TAG_FORM).orElseLazy(() => result.byTagName(TAG_FORM, true));
+        let sourceForm = result?.firstParent(TAG_FORM).orElseLazy(() => result.byTagName(TAG_FORM, true));
         if (sourceForm) {
             this.storeForPostProcessing(sourceForm, result);
         }
@@ -526,7 +526,7 @@ export class ResponseProcessor implements IResponseProcessor {
             //either the form directly is in execute or render or one of its children or one of its parents
             return affectedForm.matchesSelector(nameOrIdSelector) ||
                 affectedForm.querySelectorAll(nameOrIdSelector).isPresent() ||
-                affectedForm.parents(nameOrIdSelector).isPresent();
+                affectedForm.firstParent(nameOrIdSelector).isPresent();
         }).first().isPresent();
     }
 

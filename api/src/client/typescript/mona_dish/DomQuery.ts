@@ -640,11 +640,24 @@ interface IDomQuery {
      */
     orElseLazy(func: () => any): DomQuery;
 
+
     /**
-     * all parents with a matching selector
+     * find all parents in the hierarchy for which the selector matches
+     * @param selector
+     */
+    allParents(selector: string): DomQuery;
+
+    /**
+     * first parents with a matching selector
+     * @param selector
+     */
+    firstParent(selector: string): DomQuery;
+
+    /**
+     * all parents until the selector match stops
      * @param tagName
      */
-    parents(selector: string): DomQuery;
+    parentsWhileMatch(selector: string): DomQuery;
 
 
     /**
@@ -1740,7 +1753,42 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         }
     }
 
-    parents(selector: string): DomQuery {
+    /**
+     * find all parents in the hierarchy for which the selector matches
+     * @param selector
+     */
+    allParents(selector: string): DomQuery {
+        let parent = this.parent();
+        let ret = [];
+        while(parent.isPresent()) {
+            if(parent.matchesSelector(selector)) {
+               ret.push(parent);
+            }
+            parent = parent.parent();
+        }
+        return new DomQuery(...ret);
+    }
+
+    /**
+     * finds the first parent in the hierarchy for which the selector matches
+     * @param selector
+     */
+    firstParent(selector: string): DomQuery {
+        let parent = this.parent();
+        while(parent.isPresent()) {
+            if(parent.matchesSelector(selector)) {
+                return parent;
+            }
+            parent = parent.parent();
+        }
+        return DomQuery.absent;
+    }
+
+    /**
+     * fetches all parents as long as the filter criterium matches
+     * @param selector
+     */
+    parentsWhileMatch(selector: string): DomQuery {
         const retArr: Array<DomQuery> = [];
         let parent = this.parent().filter(item => item.matchesSelector(selector));
         while(parent.isPresent()) {
@@ -1754,7 +1802,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     parent(): DomQuery {
         let ret = [];
         this.eachElem((item: Element) => {
-            let parent = item.parentNode || (<any>item).host;
+            let parent = item.parentNode || (<any>item).host || item.shadowRoot;
             if (parent && ret.indexOf(parent) == -1) {
                 ret.push(parent);
             }

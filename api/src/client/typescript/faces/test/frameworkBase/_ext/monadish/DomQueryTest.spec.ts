@@ -319,7 +319,7 @@ describe('DOMQuery tests', function () {
 
     it('it must have parents', function () {
         let probe1 = new DomQuery(document).querySelectorAll("div");
-        let coll: Array<any> = probe1.parents("body").stream.collect(new ArrayCollector());
+        let coll: Array<any> = probe1.firstParent("body").stream.collect(new ArrayCollector());
         expect(coll.length == 1).to.be.true;
 
     });
