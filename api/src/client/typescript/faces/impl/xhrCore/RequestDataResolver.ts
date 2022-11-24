@@ -29,7 +29,7 @@ import {XhrFormData} from "./XhrFormData";
 import {ExtLang} from "../util/Lang";
 import {ExtConfig, ExtDomQuery} from "../util/ExtDomQuery";
 import {Assertions} from "../util/Assertions";
-import assertDelay = Assertions.assertDelay;
+
 
 /**
  * Resolver functions for various aspects of the request data
@@ -100,7 +100,7 @@ export function resolveDelay(options: Config): number {
         ret = 0;
     }
     // negative, or invalid values will automatically get a js exception
-    assertDelay(ret);
+    Assertions.assertDelay(ret);
     return ret;
 }
 

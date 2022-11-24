@@ -235,7 +235,7 @@ export class ExtDomQuery extends DQ {
      * @param deep whether the search should go into embedded shadow dom elements
      * @return a DomQuery containing the found elements
      */
-    static byId(selector: string | DomQuery | Element, deep = false): DomQuery {
+    static byId(selector: string | DomQuery | Element, deep = false): ExtDomQuery {
         const ret = DomQuery.byId(selector, deep);
         return new ExtDomQuery(ret);
     }
@@ -244,6 +244,9 @@ export class ExtDomQuery extends DQ {
         return (curScript.getAsElem(0).value as HTMLElement)?.nonce ?? curScript.attr("nonce").value;
     }
 
+    filter(func: (item: DomQuery) => boolean): ExtDomQuery {
+        return new ExtDomQuery(super.filter(func));
+    }
 }
 
 export const ExtDQ = ExtDomQuery;
