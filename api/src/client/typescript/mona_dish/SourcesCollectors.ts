@@ -121,7 +121,7 @@ export class SequenceDataSource implements IStreamDataSource<number> {
     }
 
     lookAhead(cnt = 1): number | ITERATION_STATUS {
-        if((this.value + cnt) > this.total - 1) {
+        if ((this.value + cnt) > this.total - 1) {
             return ITERATION_STATUS.EO_STRM;
         } else {
             return this.value + cnt;
@@ -150,8 +150,8 @@ export class ArrayStreamDataSource<T> implements IStreamDataSource<T> {
         this.value = value;
     }
 
-    lookAhead(cnt = 1): T |ITERATION_STATUS {
-        if((this.dataPos+cnt) > this.value.length - 1) {
+    lookAhead(cnt = 1): T | ITERATION_STATUS {
+        if ((this.dataPos + cnt) > this.value.length - 1) {
             return ITERATION_STATUS.EO_STRM;
         }
         return this.value[this.dataPos + cnt];
@@ -208,7 +208,7 @@ export class FilteredStreamDatasource<T> implements IStreamDataSource<T> {
         let found = false;
         let next;
 
-        while(!found && (next = this.inputDataSource.lookAhead(steps)) != ITERATION_STATUS.EO_STRM) {
+        while (!found && (next = this.inputDataSource.lookAhead(steps)) != ITERATION_STATUS.EO_STRM) {
             if (this.filterFunc(next)) {
                 this._filterIdx[this._unfilteredPos + steps] = true;
                 found = true;
@@ -225,7 +225,7 @@ export class FilteredStreamDatasource<T> implements IStreamDataSource<T> {
     next(): T | ITERATION_STATUS {
         let found: T | ITERATION_STATUS = ITERATION_STATUS.EO_STRM;
         while (this.inputDataSource.hasNext()) {
-            this._unfilteredPos ++;
+            this._unfilteredPos++;
             let next: T = <T>this.inputDataSource.next();
             //again here we cannot call the filter function twice, because its state might change, so if indexed, we have a decent snapshot, either has next or next can trigger
             //the snapshot
@@ -241,12 +241,12 @@ export class FilteredStreamDatasource<T> implements IStreamDataSource<T> {
     }
 
     lookAhead(cnt = 1): ITERATION_STATUS | T {
-        let lookupVal: T |ITERATION_STATUS;
+        let lookupVal: T | ITERATION_STATUS;
 
-        for(let loop = 1; cnt > 0 && (lookupVal = this.inputDataSource.lookAhead(loop)) != ITERATION_STATUS.EO_STRM; loop++) {
+        for (let loop = 1; cnt > 0 && (lookupVal = this.inputDataSource.lookAhead(loop)) != ITERATION_STATUS.EO_STRM; loop++) {
             let inCache = this._filterIdx?.[this._unfilteredPos + loop];
-            if(inCache || this.filterFunc(lookupVal)) {
-                cnt --;
+            if (inCache || this.filterFunc(lookupVal)) {
+                cnt--;
                 this._filterIdx[this._unfilteredPos + loop] = true;
             }
         }
@@ -254,7 +254,7 @@ export class FilteredStreamDatasource<T> implements IStreamDataSource<T> {
     }
 
     current(): T | ITERATION_STATUS {
-       return this._current;
+        return this._current;
     }
 
     reset(): void {
@@ -295,7 +295,7 @@ export class MappedStreamDataSource<T, S> implements IStreamDataSource<S> {
         return this.mapFunc(this.inputDataSource.current());
     }
 
-    lookAhead(cnt= 1): ITERATION_STATUS | S {
+    lookAhead(cnt = 1): ITERATION_STATUS | S {
         const lookAheadVal = this.inputDataSource.lookAhead(cnt);
         return (lookAheadVal == ITERATION_STATUS.EO_STRM) ? lookAheadVal as ITERATION_STATUS : this.mapFunc(lookAheadVal) as S;
     }
@@ -318,7 +318,7 @@ export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
      * from the next element
      */
     activeDataSource: IStreamDataSource<S>;
-    walkedDataSources= [];
+    walkedDataSources = [];
     _currPos = 0;
 
     constructor(func: StreamMapper<T>, parent: IStreamDataSource<T>) {
@@ -341,7 +341,7 @@ export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
 
     lookAhead(cnt = 1): ITERATION_STATUS | S {
         //easy access trial
-        if(this?.activeDataSource && this?.activeDataSource?.lookAhead(cnt) != ITERATION_STATUS.EO_STRM) {
+        if (this?.activeDataSource && this?.activeDataSource?.lookAhead(cnt) != ITERATION_STATUS.EO_STRM) {
             //this should coverr 95% of all accesses
             return this?.activeDataSource.lookAhead(cnt);
         }
@@ -353,17 +353,18 @@ export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
          */
         function howManyElems(datasource: IStreamDataSource<any>): number {
             let cnt = 1;
-            while(datasource.lookAhead(cnt) !== ITERATION_STATUS.EO_STRM) {
+            while (datasource.lookAhead(cnt) !== ITERATION_STATUS.EO_STRM) {
                 cnt++;
             }
             return cnt - 1;
         }
+
         function readjustSkip(dataSource) {
             let skippedElems = (dataSource) ? howManyElems(dataSource) : 0;
             cnt = cnt - skippedElems;
         }
 
-        if(this.activeDataSource) {
+        if (this.activeDataSource) {
             readjustSkip(this.activeDataSource)
         }
 
@@ -371,17 +372,17 @@ export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
         //after each stream we have to take into consideration that the skipCnt is
         //reduced by the number of datasets we already have looked into in the previous stream/datasource
         //unfortunately for now we have to loop into them so we introduce a small o2 here
-        for(let dsLoop = 1; true ; dsLoop++) {
+        for (let dsLoop = 1; true; dsLoop++) {
             let currDatasource = this.inputDataSource.lookAhead(dsLoop);
             //we have looped out
-            if(currDatasource === ITERATION_STATUS.EO_STRM) {
+            if (currDatasource === ITERATION_STATUS.EO_STRM) {
                 return ITERATION_STATUS.EO_STRM;
             }
             let mapped = this.mapFunc(currDatasource as T);
             //it either comes in as datasource or as array
             let currentDataSource = this.toDatasource(mapped);
             let ret = currentDataSource.lookAhead(cnt);
-            if(ret != ITERATION_STATUS.EO_STRM) {
+            if (ret != ITERATION_STATUS.EO_STRM) {
                 return ret;
             }
             readjustSkip(currDatasource);
@@ -399,14 +400,15 @@ export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
         let next = false;
         while (!next && this.inputDataSource.hasNext()) {
             let mapped = this.mapFunc(this.inputDataSource.next() as T);
-            this.activeDataSource = this.toDatasource(mapped);;
+            this.activeDataSource = this.toDatasource(mapped);
+            ;
             next = this.activeDataSource.hasNext();
         }
         return next;
     }
 
     next(): S | ITERATION_STATUS {
-        if(this.hasNext()) {
+        if (this.hasNext()) {
             this._currPos++;
             return this.activeDataSource.next();
         }
@@ -420,8 +422,8 @@ export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
         this.activeDataSource = null;
     }
 
-    current(): S | ITERATION_STATUS{
-        if(!this.activeDataSource) {
+    current(): S | ITERATION_STATUS {
+        if (!this.activeDataSource) {
             this.hasNext();
         }
         return this.activeDataSource.current();
@@ -445,14 +447,30 @@ export class ArrayCollector<S> implements ICollector<S, Array<S>> {
 }
 
 /**
+ * collects the values as inverse array
+ */
+export class InverseArrayCollector<S> implements ICollector<S, Array<S>> {
+    private data: Array<S> = [];
+
+    collect(element: S) {
+        this.data.unshift(element);
+    }
+
+    get finalValue(): Array<S> {
+        return this.data;
+    }
+}
+
+
+/**
  * collects an tuple array stream into an assoc array with elements being collected into arrays
  *
  */
-export class ArrayAssocArrayCollector<S> implements ICollector<[string, S] | string, {[key: string]: S} > {
-    finalValue: {[key:string]: any} = {};
+export class ArrayAssocArrayCollector<S> implements ICollector<[string, S] | string, { [key: string]: S }> {
+    finalValue: { [key: string]: any } = {};
 
     collect(element: [string, S] | string) {
-        let key = element?.[0] ?? <string> element;
+        let key = element?.[0] ?? <string>element;
         this.finalValue[key] = this.finalValue?.[key] ?? [];
         this.finalValue[key].push(element?.[1] ?? true);
     }

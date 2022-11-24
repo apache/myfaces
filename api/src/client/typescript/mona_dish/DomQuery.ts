@@ -29,7 +29,7 @@ import {Lang} from "./Lang";
 import trim = Lang.trim;
 
 import isString = Lang.isString;
-import eIgnoreC = Lang.equalsIgnoreCase;
+import eqi = Lang.equalsIgnoreCase;
 import {_global$} from "./Global";
 import objToArray = Lang.objToArray;
 
@@ -394,6 +394,15 @@ interface IDomQuery {
      */
     querySelectorAll(selector): DomQuery;
 
+
+    /**
+     * closest, walks up the dom tree to fid the closest element to match
+     *
+     * @param selector the standard selector
+     * @return a DomQuery with the results
+     */
+    querySelectorAll(selector): DomQuery;
+
     /**
      * core byId method
      * @param id the id to search for
@@ -570,6 +579,14 @@ interface IDomQuery {
     append(elem: DomQuery): DomQuery;
 
     /**
+     * replace convenience function replaces the domquery elements with the
+     * elements passed as parameter
+     * @param toReplace the replacement elements
+     * @return a reference on the replacement elements
+     */
+    replace(toReplace: DomQuery): DomQuery;
+
+    /**
      * appends the passed elements to our existing queries
      * note, double appends can happen if you are not careful
      *
@@ -624,10 +641,16 @@ interface IDomQuery {
     orElseLazy(func: () => any): DomQuery;
 
     /**
-     * all parents with TagName
+     * all parents with a matching selector
      * @param tagName
      */
-    parents(tagName: string): DomQuery;
+    parents(selector: string): DomQuery;
+
+
+    /**
+     * the parent of the elements
+     */
+    parent(): DomQuery;
 
     /**
      * copy all attributes of sourceItem to this DomQuery items
@@ -1216,6 +1239,16 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         }
     }
 
+    closest(selector): DomQuery {
+        // We could merge both methods, but for now this is more readable
+        if (selector.indexOf("/shadow/") != -1) {
+            return this._closestDeep(selector);
+        } else {
+            return this._closest(selector);
+        }
+    }
+
+
     /**
      * core byId method
      * @param id the id to search for
@@ -1487,6 +1520,29 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     /**
+     * replace convenience function, replaces one or more elements with
+     * a set of elements passed as DomQuery
+     * @param toReplace the replaced nodes as reference (original node has been replaced)
+     */
+    replace(toReplace: DomQuery): DomQuery {
+        this.each(item => {
+            let asElem = item.getAsElem(0).value;
+            let parent = asElem.parentElement;
+            let nextElement = asElem.nextElementSibling;
+            let previousElement = asElem.previousElementSibling;
+            if(nextElement != null) {
+                new DomQuery(nextElement).insertBefore(toReplace);
+            } else if(previousElement) {
+                new DomQuery(previousElement).insertAfter(toReplace)
+            } else {
+                new DomQuery(parent).append(toReplace);
+            }
+            item.delete();
+        });
+        return toReplace;
+    }
+
+    /**
      * returns a new dom query containing only the first element max
      *
      * @param func a an optional callback function to perform an operation on the first element
@@ -1684,31 +1740,27 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         }
     }
 
-    parents(tagName: string): DomQuery {
-        const retSet: Set<Element> = new Set();
-        const retArr: Array<Element> = [];
-        const lowerTagName = tagName.toLowerCase();
+    parents(selector: string): DomQuery {
+        const retArr: Array<DomQuery> = [];
+        let parent = this.parent().filter(item => item.matchesSelector(selector));
+        while(parent.isPresent()) {
+            retArr.push(parent);
+            parent = parent.parent().filter(item => item.matchesSelector(selector));
+        }
 
-        let resolveItem = (item: Element) => {
-            if ((item.tagName || "").toLowerCase() == lowerTagName && !retSet.has(item)) {
-                retSet.add(item);
-                retArr.push(item);
-            }
-        };
+        return new DomQuery(...retArr);
+    }
 
+    parent(): DomQuery {
+        let ret = [];
         this.eachElem((item: Element) => {
-            while (item.parentNode || (<any>item).host) {
-                item = <Element>item?.parentNode ?? (<any>item)?.host;
-
-                resolveItem(item);
-                // nested forms not possible, performance shortcut
-                if (tagName == "form" && retArr.length) {
-                    return false;
-                }
+            let parent = item.parentNode || (<any>item).host;
+            if (parent && ret.indexOf(parent) == -1) {
+                ret.push(parent);
             }
         });
 
-        return new DomQuery(...retArr);
+        return new DomQuery(...ret);
     }
 
     copyAttrs(sourceItem: DomQuery | XMLQuery): DomQuery {
@@ -1834,7 +1886,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 let tagName = item.tagName;
                 let itemType = (item?.type ?? '').toLowerCase();
                 if (tagName &&
-                    eIgnoreC(tagName, "script") &&
+                    eqi(tagName, "script") &&
                     allowedItemTypes.indexOf(itemType) != -1) {
                     let src = item.getAttribute('src');
                     if ('undefined' != typeof src
@@ -1922,38 +1974,30 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     runCss(): DomQuery {
 
-        const applyStyle = (item: Element, style: string) => {
-                let newSS: HTMLStyleElement = document.createElement("style");
-                document.getElementsByTagName("head")[0].appendChild(newSS);
+        const execCss = (toReplace: HTMLElement) => {
+                const _toReplace = DomQuery.byId(toReplace);
+                const tagName = _toReplace.tagName.orElse("").value;
+                const head = DomQuery.byTagName("head");
 
-                let styleSheet = newSS.sheet ?? (<any>newSS).styleSheet;
+                if (tagName && eqi(tagName, "link") && eqi(toReplace.getAttribute("rel"), "stylesheet")) {
+                    const rel = toReplace.getAttribute("rel");
+                    //if possible we are now replacing the existing elements where we reference this stylesheet
+                    const matches = head.querySelectorAll(`link[rel='stylesheet'][href='${rel}']`);
 
-                newSS.setAttribute("rel", item.getAttribute("rel") ?? "stylesheet");
-                newSS.setAttribute("type", item.getAttribute("type") ?? "text/css");
-
-                if (styleSheet?.cssText ?? false) {
-                    styleSheet.cssText = style;
-                } else {
-                    newSS.appendChild(document.createTextNode(style));
-                }
-            },
-
-            execCss = (item: Element) => {
-                const tagName = item.tagName;
-                if (tagName && eIgnoreC(tagName, "link") && eIgnoreC(item.getAttribute("type"), "text/css")) {
-                    applyStyle(item, "@import url('" + item.getAttribute("href") + "');");
-                } else if (tagName && eIgnoreC(tagName, "style") && eIgnoreC(item.getAttribute("type"), "text/css")) {
-                    let innerText = [];
-                    // compliant browsers know child nodes
-                    let childNodes: Array<Node> = Array.prototype.slice.call(item.childNodes);
-                    if (childNodes) {
-                        childNodes.forEach(child => innerText.push((<Element>child).innerHTML || (<CharacterData>child).data));
-                        // non-compliant elements innerHTML
-                    } else if (item.innerHTML) {
-                        innerText.push(item.innerHTML);
+                    if(matches.length) {
+                        matches.replace(_toReplace);
+                    } else {
+                        head.append(_toReplace);
                     }
-
-                    applyStyle(item, innerText.join(""));
+                } else if (tagName && eqi(tagName, "style")) {
+                    let innerText = _toReplace.innerHTML.replace(/\s+/gi, "");
+                    let styles = head.querySelectorAll("style");
+                    styles = styles.stream.filter(style => {
+                        return style.innerHTML.replace(/\s+/gi, "") == innerText;
+                    }).collect(new DomQueryCollector())
+                    if(!styles.length) { //already present
+                        head.append(_toReplace);
+                    }
                 }
             };
 
@@ -2439,6 +2483,52 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             }
             let levelSelector = selectors[cnt2];
             foundNodes = foundNodes.querySelectorAll(levelSelector);
+            if (cnt2 < selectors.length - 1) {
+                foundNodes = foundNodes.shadowRoot;
+            }
+        }
+
+        return foundNodes;
+    }
+
+
+    /**
+     * query selector all on the existing dom queryX object
+     *
+     * @param selector the standard selector
+     * @return a DomQuery with the results
+     */
+    private _closest(selector): DomQuery {
+        if (!this?.rootNode?.length) {
+            return this;
+        }
+        let nodes = [];
+        for (let cnt = 0; cnt < this.rootNode.length; cnt++) {
+            if (!this.rootNode[cnt]?.closest) {
+                continue;
+            }
+            let res = [this.rootNode[cnt].closest(selector)];
+            nodes = nodes.concat(...res);
+        }
+
+        return new DomQuery(...nodes);
+    }
+
+    /*deep with a selector and a pseudo /shadow/ marker to break into the next level*/
+    private _closestDeep(selector): DomQuery {
+        if (!this?.rootNode?.length) {
+            return this;
+        }
+
+        let foundNodes: DomQuery = new DomQuery(...this.rootNode);
+        let selectors = selector.split(/\/shadow\//);
+
+        for (let cnt2 = 0; cnt2 < selectors.length; cnt2++) {
+            if (selectors[cnt2] == "") {
+                continue;
+            }
+            let levelSelector = selectors[cnt2];
+            foundNodes = foundNodes.closest(levelSelector);
             if (cnt2 < selectors.length - 1) {
                 foundNodes = foundNodes.shadowRoot;
             }

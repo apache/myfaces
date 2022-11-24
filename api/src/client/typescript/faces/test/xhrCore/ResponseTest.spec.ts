@@ -21,9 +21,9 @@ import * as sinon from "sinon";
 
 import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
 import {expect} from "chai";
-import {DomQuery, DQ} from "mona-dish";
+import {DomQuery, DQ, DQ$} from "mona-dish";
 import protocolPage = StandardInits.protocolPage;
-import exp from "constants";
+
 
 declare var faces: any;
 declare var Implementation: any;
@@ -199,7 +199,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
             "embedded scripts must be executed").to.be.true;
     });
 
-    it("must have a viewstate update to be peformed", function () {
+    it("must have a viewState update to be performed", function () {
         DQ.byId("cmd_viewstate").click();
 
         this.respond(XmlResponses.VIEWSTATE_1);
@@ -253,10 +253,9 @@ describe('Tests of the various aspects of the response protocol functionality', 
             </partial-response>`);
 
 
-        expect(DQ.byId("jakarta.faces.ViewState").isAbsent()).to.be.false;
+        expect(DQ$("[name='jakarta.faces.ViewState']").isPresent()).to.be.true;
 
-        expect((<HTMLInputElement>document.getElementById("jakarta.faces.ViewState")).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
-        expect(DQ.byId("jakarta.faces.ViewState").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect(DQ$("[name='jakarta.faces.ViewState']").val == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
     });
 
 
@@ -290,10 +289,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
             </partial-response>`);
 
 
-        expect(DQ.byId("jakarta.faces.ViewState").isAbsent()).to.be.false;
+        expect(DQ$("[name='jakarta.faces.ViewState']").isAbsent()).to.be.false;
 
-        expect((<HTMLInputElement>document.getElementById("jakarta.faces.ViewState")).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
-        expect(DQ.byId("jakarta.faces.ViewState").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect((<HTMLInputElement>document.getElementsByName("jakarta.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect(DQ$("[name='jakarta.faces.ViewState']").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
     });
 
 
@@ -410,7 +409,8 @@ describe('Tests of the various aspects of the response protocol functionality', 
        // this.respond("debugger; document.getElementById('resource_area_1').innerHTML = 'true3'",  {'Content-Type': 'text/javascript'});
         let headHTML = document.head.innerHTML;
         expect(headHTML.indexOf("../../../xhrCore/fixtures/addedViewHead3.js")).not.eq(-1);
-        expect(headHTML.indexOf("rel=\"../../../xhrCore/fixtures/addedViewHead2.css\"")).not.eq(-1);
+        expect(headHTML.indexOf("href=\"../../../xhrCore/fixtures/addedViewHead2.css\"")).not.eq(-1);
+        expect(DQ$("head link[rel='stylesheet'][href='../../../xhrCore/fixtures/addedViewHead2.css']").length).to.eq(1);
         setTimeout(() => {
             let evalAreaHtml = DQ.byId('resource_area_1').innerHTML;
             //last one must be the last item, order must be preserved
@@ -420,4 +420,168 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
     })
 
+
+    it("head replacement must work (https://issues.apache.org/jira/browse/MYFACES-4498 and TCK Issue 4345IT)", function(done) {
+
+        DQ.byId("cmd_complex_resource2").click();
+        this.respond(XmlResponses.HEAD_REPLACE);
+        let headHTML = document.head.innerHTML;
+
+        //failing now, no elements in the html head after respond!!!
+        expect(headHTML.indexOf("href=\"../../../xhrCore/fixtures/addedViewHead2.css\"")).not.eq(-1);
+        expect(DQ$("head link[rel='stylesheet'][href='../../../xhrCore/fixtures/addedViewHead2.css']").length).to.eq(1);
+
+        expect(headHTML.indexOf("../../../xhrCore/fixtures/addedViewHead3.js")).not.eq(-1);
+        setTimeout(() => {
+            let evalAreaHtml = DQ.byId('resource_area_1').innerHTML;
+            //last one must be the last item, order must be preserved
+            expect(evalAreaHtml).to.eq("booga");
+            done();
+        }, 800)
+
+    })
+
+
+    it("complex head replacement must work", function(done) {
+
+        DQ.byId("cmd_complex_resource2").click();
+        this.respond(XmlResponses.HEAD_REPLACE2);
+        let headHTML = document.head.innerHTML;
+
+        //failing now, no elements in the html head after respond!!!
+        expect(headHTML.indexOf("href=\"../../../xhrCore/fixtures/addedViewHead2.css\"")).not.eq(-1);
+        expect(DQ$("head link[rel='stylesheet'][href='../../../xhrCore/fixtures/addedViewHead2.css']").length).to.eq(1);
+
+        let metas = DQ$("head meta");
+        expect(metas.length).to.eq(5);
+        expect(metas.get(0).attr("charSet").value == "UTF-8");
+        expect(metas.get(4).attr("author").value == "Whoever");
+
+        expect(headHTML.indexOf("../../../xhrCore/fixtures/addedViewHead3.js")).not.eq(-1);
+        setTimeout(() => {
+            let evalAreaHtml = DQ.byId('resource_area_1').innerHTML;
+            //last one must be the last item, order must be preserved
+            expect(evalAreaHtml).to.eq("booga");
+            done();
+        }, 800)
+
+    })
+    const INNER_HTML_MULIT_VIEW = `
+        <div id="viewroot_1">
+            <form id="viewroot_1:form1">
+                <button type="submit" id="submit_1"></button>
+                <input type="hidden" id="viewroot_1:form1:jakarta.faces.ViewState:1" name="jakarta.faces.ViewState" value="booga"></input>
+            </form>
+            <form id="viewroot_1:form2">
+                <button type="submit" id="submit_2"></button>
+            </form>
+        </div>
+        
+        <div id="viewroot_2">
+            <form id="viewroot_2:form1">
+                <button type="submit" id="submit_2"></button>
+            </form>
+        </div>
+        `;
+    it("must handle multiple view roots", function (done) {
+
+
+        const RESPONSE_1 = `<?xml version="1.0" encoding="UTF-8"?>
+        <partial-response id='viewroot_1'>
+        <changes>
+        <update id='viewroot_1:jakarta.faces.ViewState:1'><![CDATA[updatedVST]]></update>
+        </changes>
+        </partial-response>`
+
+        window.document.body.innerHTML = INNER_HTML_MULIT_VIEW;
+
+        faces.ajax.request(window.document.getElementById("submit_1"), null, {
+            "javax.faces.behavior.event": "change",
+            execute: "submit_1",
+            render: "viewroot_1:form1"
+        });
+        this.respond(RESPONSE_1);
+        expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ViewState']").isAbsent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ViewState']").isPresent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ViewState']").val).to.be.eq("updatedVST");
+
+        done();
+    })
+
+    it("must handle multiple view roots multi forms", function (done) {
+        const RESPONSE_1 = `<?xml version="1.0" encoding="UTF-8"?>
+        <partial-response id='viewroot_1'>
+        <changes>
+        <update id='viewroot_1:jakarta.faces.ViewState:1'><![CDATA[updatedVST]]></update>
+        </changes>
+        </partial-response>`
+
+        window.document.body.innerHTML = INNER_HTML_MULIT_VIEW;
+
+        faces.ajax.request(window.document.getElementById("submit_1"), null, {
+            "javax.faces.behavior.event": "change",
+            execute: "submit_1",
+            render: "viewroot_1:form1 submit_2"
+        });
+        this.respond(RESPONSE_1);
+        expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ViewState']").isPresent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ViewState']").isPresent()).to.be.true;
+        expect(DQ$("#viewroot_2\\:form1\\:form1 [name='jakarta.faces.ViewState']").isAbsent()).to.be.true;
+
+        expect(faces.getViewState(DQ$("#viewroot_1\\:form2").getAsElem(0).value)).to.be.eq("jakarta.faces.ViewState=updatedVST");
+        expect(faces.getViewState("viewroot_1:form1")).to.be.eq("jakarta.faces.ViewState=updatedVST");
+
+        done();
+    })
+
+
+    it("must handle multiple view roots with ClientWindow ids", function (done) {
+
+
+        const RESPONSE_1 = `<?xml version="1.0" encoding="UTF-8"?>
+        <partial-response id='viewroot_1'>
+        <changes>
+        <update id='viewroot_1:jakarta.faces.ClientWindow:1'><![CDATA[updatedViewId]]></update>
+        </changes>
+        </partial-response>`
+
+        window.document.body.innerHTML = INNER_HTML_MULIT_VIEW;
+
+        faces.ajax.request(window.document.getElementById("submit_1"), null, {
+            "javax.faces.behavior.event": "change",
+            execute: "submit_1",
+            render: "viewroot_1:form1"
+        });
+        this.respond(RESPONSE_1);
+        expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ClientWindow']").isAbsent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ClientWindow']").isPresent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ClientWindow']").val).to.be.eq("updatedViewId");
+
+        done();
+    })
+
+    it("must handle multiple view roots multi forms with ClientWindow ids", function (done) {
+        const RESPONSE_1 = `<?xml version="1.0" encoding="UTF-8"?>
+        <partial-response id='viewroot_1'>
+        <changes>
+        <update id='viewroot_1:jakarta.faces.ClientWindow:1'><![CDATA[updatedViewId]]></update>
+        </changes>
+        </partial-response>`
+
+        window.document.body.innerHTML = INNER_HTML_MULIT_VIEW;
+
+        faces.ajax.request(window.document.getElementById("submit_1"), null, {
+            "javax.faces.behavior.event": "change",
+            execute: "submit_1",
+            render: "viewroot_1:form1 submit_2"
+        });
+        this.respond(RESPONSE_1);
+        expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ClientWindow']").isPresent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ClientWindow']").isPresent()).to.be.true;
+        expect(DQ$("#viewroot_2\\:form1\\:form1 [name='jakarta.faces.ClientWindow']").isAbsent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ClientWindow']").val).to.be.eq("updatedViewId");
+        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ClientWindow']").val).to.be.eq("updatedViewId");
+
+        done();
+    })
 });

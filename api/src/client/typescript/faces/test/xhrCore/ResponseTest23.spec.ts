@@ -22,7 +22,7 @@ import * as sinon from "sinon";
 import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
 import {expect} from "chai";
 import protocolPage = StandardInits.protocolPage;
-import {DQ} from "mona-dish";
+import {DQ, DQ$} from "mona-dish";
 import {$nsp} from "../../impl/core/Const";
 
 
@@ -254,10 +254,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
             </partial-response>`);
 
 
-        expect(DQ.byId("javax.faces.ViewState").isAbsent()).to.be.false;
+        expect(DQ$("[name='javax.faces.ViewState']").isAbsent()).to.be.false;
 
         expect((<HTMLInputElement>document.getElementsByName("javax.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
-        expect(DQ.byId("javax.faces.ViewState").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect(DQ$("[name='javax.faces.ViewState']").val == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
     });
 
 
@@ -291,10 +291,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
             </partial-response>`);
 
 
-        expect(DQ.byId("javax.faces.ViewState").isAbsent()).to.be.false;
+        expect(DQ$("[name='javax.faces.ViewState']").isAbsent()).to.be.false;
 
-        expect((<HTMLInputElement>document.getElementById("javax.faces.ViewState")).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
-        expect(DQ.byId("javax.faces.ViewState").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect((<HTMLInputElement>document.getElementsByName("javax.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect(DQ$("[name='javax.faces.ViewState']").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
     });
 
 
@@ -356,6 +356,8 @@ describe('Tests of the various aspects of the response protocol functionality', 
         expect(DQ.byId("j_id__v_0:javax.faces.ViewState:1").isAbsent()).to.be.false;
         expect(DQ.byId("j_id__v_0:javax.faces.ClientWindow:1").isAbsent()).to.be.false;
     });
+
+    
 
 
 
