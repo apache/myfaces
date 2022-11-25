@@ -299,12 +299,18 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //this is not documented behavior but can be determined by running
         //mojarra under blackbox conditions
         //i assume it does the same as our formId_submit=1 so leaving it out
-        //wont hurt but for the sake of compatibility we are going to add it
+        //won´t hurt but for the sake of compatibility we are going to add it
         passThrgh[form.id] = form.id;
 
         /* jsf2.2 only: options.delay || */
         var delayTimeout = options.delay || this._RT.getLocalOrGlobalConfig(context, "delay", false);
-        if (delayTimeout) {
+
+        if (!!delayTimeout) {
+            if(!(delayTimeout >= 0)) {
+                // abbreviation which covers all cases of non positive values,
+                // including NaN and non-numeric strings, no type equality is deliberate here,
+                throw new Error("Invalid delay value: " + value);
+            }
             if (this._delayTimeout) {
                 clearTimeout(this._delayTimeout);
             }
@@ -657,7 +663,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
             /* run through all script tags and try to find the one that includes jsf.js */
             for (var i = 0; i < scriptTags.length && !found; i++) {
-                if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
+                if (scriptTags[i] && scriptTags[i].src && scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
                     var result = scriptTags[i].src.match(/stage=([^&;]*)/);
                     found = true;
                     if (result) {
