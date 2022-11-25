@@ -1312,7 +1312,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      * and bypasses a non script insert bug that way
      * @param markup the markup code to be executed from
      */
-    fromMarkup(markup, reqiredTag) {
+    fromMarkup: function(markup) {
 
         // https:// developer.mozilla.org/de/docs/Web/API/DOMParser license creative commons
         var doc = document.implementation.createHTMLDocument("");
