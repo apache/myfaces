@@ -60,7 +60,7 @@ import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.extensions.quarkus.runtime.MyFacesRecorder;
-import org.apache.myfaces.core.extensions.quarkus.runtime.QuarkusFacesInitilializer;
+import org.apache.myfaces.core.extensions.quarkus.runtime.QuarkusFacesInitializer;
 import org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory;
 import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFacesScopeContext;
 import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFlowScopedContext;
@@ -211,8 +211,7 @@ class MyFacesProcessor
     }
 
     @BuildStep
-    void buildServlet(WebMetadataBuildItem  webMetaDataBuildItem,
-            BuildProducer<FeatureBuildItem> feature,
+    void buildServlet(WebMetadataBuildItem webMetaDataBuildItem,
             BuildProducer<ServletBuildItem> servlet,
             BuildProducer<ListenerBuildItem> listener) throws IOException
     {
@@ -227,7 +226,7 @@ class MyFacesProcessor
         }
         if (facesServlet == null)
         {
-            // Only define here if not explictly defined in web.xml
+            // Only define here if not explicitly defined in web.xml
             servlet.produce(ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
                     .setMultipartConfig(new MultipartConfigElement(""))
                     .addMapping("*.xhtml")
@@ -314,7 +313,7 @@ class MyFacesProcessor
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.INJECTION_PROVIDER, QuarkusInjectionProvider.class.getName()));
         initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.FACES_INITIALIZER, QuarkusFacesInitilializer.class.getName()));
+                MyfacesConfig.FACES_INITIALIZER, QuarkusFacesInitializer.class.getName()));
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.SUPPORT_JSP, "false"));
     }
