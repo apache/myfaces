@@ -342,10 +342,6 @@ class MyFacesProcessor
                 MyfacesConfig.EARLY_FLUSH_ENABLED, "true"));
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.COMPRESS_STATE_IN_SESSION, "false"));
-        initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "15"));
-        initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "3"));
 
         // MyFaces uses default 0, which means always recompile
         if (ProjectStage.valueOf(projectStage.get()) == ProjectStage.Development)
