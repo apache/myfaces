@@ -135,6 +135,22 @@ public final class ExternalSpecifications
         return available;
     });
 
+    private static Lazy<Boolean> sevlet6Available = new Lazy<>(() ->
+    {
+        boolean available;
+        try
+        {
+            available = jakarta.servlet.SessionCookieConfig.class.getMethod("getAttribute", String.class) != null;
+        }
+        catch (Throwable t)
+        {
+            available = false;
+        }
+        log.info("MyFaces Core Servlet 6.0 support " + (available ? "enabled" : "disabled"));
+
+        return available;
+    });
+    
     /**
      * This method determines if Bean Validation is present.
      *
@@ -161,6 +177,11 @@ public final class ExternalSpecifications
     public static boolean isServlet4Available()
     {
         return sevlet4Available.get();
+    }
+
+    public static boolean isServlet6Available()
+    {
+        return sevlet6Available.get();
     }
 
     /**
