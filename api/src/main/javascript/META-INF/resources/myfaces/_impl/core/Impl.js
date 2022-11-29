@@ -309,7 +309,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             if(!(delayTimeout >= 0)) {
                 // abbreviation which covers all cases of non positive values,
                 // including NaN and non-numeric strings, no type equality is deliberate here,
-                throw new Error("Invalid delay value: " + value);
+                throw new Error("Invalid delay value: " + delayTimeout);
             }
             if (this._delayTimeout) {
                 clearTimeout(this._delayTimeout);
