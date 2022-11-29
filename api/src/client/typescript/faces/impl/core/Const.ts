@@ -48,6 +48,8 @@ export const IDENT_FORM = "@form";
 export const P_AJAX = "jakarta.faces.partial.ajax";
 export const P_EXECUTE = "jakarta.faces.partial.execute";
 export const P_RENDER = "jakarta.faces.partial.render";
+/*render override for viewbody or viewroot, in both cases an all is performed*/
+export const P_RENDER_OVERRIDE = "_myfaces.rendeOverride";
 export const P_EVT = "jakarta.faces.partial.event";
 
 export const P_RESET_VALUES = "jakarta.faces.partial.resetValues";
