@@ -245,12 +245,12 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         // language=XML
         this.respond(`<?xml version="1.0" encoding="UTF-8"?>
-        <partial-response id="j_id__v_0">
-            <changes>
-                <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
-                <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]></update>
-            </changes>
-        </partial-response>`);
+            <partial-response id="j_id__v_0">
+                <changes>
+                    <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
+                    <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]></update>
+                </changes>
+            </partial-response>`);
 
 
         expect(DQ$("[name='jakarta.faces.ViewState']").isPresent()).to.be.true;
@@ -279,14 +279,14 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         // language=XML
         this.respond(`<?xml version="1.0" encoding="UTF-8"?>
-        <partial-response id="j_id__v_0">
-            <changes>
-                <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
-                <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]><!-- 
+            <partial-response id="j_id__v_0">
+                <changes>
+                    <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
+                    <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]><!-- 
                         Some random junk which is sent by the server
                     --></update>
-            </changes>
-        </partial-response>`);
+                </changes>
+            </partial-response>`);
 
 
         expect(DQ$("[name='jakarta.faces.ViewState']").isAbsent()).to.be.false;
@@ -585,12 +585,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         done();
     })
 
-    /**
-     * Similar to TCK 790
-     */
-    it("must handle a more complex replace with several forms and one issuing form and a viewstate and a viewroot id in response but viewroot is not present in page", function (done) {        //special case, viewid given but no viewid in page special result all render and executes must be updated
-
-        document.body.innerHTML = `
+    const TCK_790_MARKUP = `
         <div id="panel1">
             <form id="form1" name="form1" method="post"
                   action="booga"
@@ -613,6 +608,25 @@ describe('Tests of the various aspects of the response protocol functionality', 
         </div>
         `;
 
+
+    const TCK_790_NAV_MARKUP = `
+            <form id="form1" name="form1" method="post"
+                  action="booga"
+                  ><input id="form1:button" name="form1:button" type="submit"
+                                                                     value="submit form1 via ajax">
+                   <input type="hidden" name="jakarta.faces.ViewState"
+                                        id="viewroot_1:jakarta.faces.ViewState:1"
+                                        value="beforeUpdate">
+            </form>
+    `;
+
+    /**
+     * Similar to TCK 790
+     */
+    it("must handle a more complex replace with several forms and one issuing form and a viewstate and a viewroot id in response but viewroot is not present in page", function (done) {        //special case, viewid given but no viewid in page special result all render and executes must be updated
+
+        document.body.innerHTML = TCK_790_MARKUP;
+
         const RESPONSE_1 = `<partial-response id="viewroot_1">
     <changes>
         <update id="panel2"><![CDATA[
@@ -633,7 +647,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
             </div>
             ]]>
         </update>
-        <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[booga_after_update]]></update>
+        <update id="viewroot_1:jakarta.faces.ViewState:1"><![CDATA[booga_after_update]]></update>
     </changes>
 </partial-response>`;
         faces.ajax.request(window.document.getElementById("form1:button"), null, {
@@ -648,4 +662,59 @@ describe('Tests of the various aspects of the response protocol functionality', 
         expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
         done();
     })
+
+    it("must handle a complex navigation response (TCK Spec790)", function (done) {
+        /*we start from a simple form which triggers a an internal navigation*/
+        document.body.innerHTML = TCK_790_NAV_MARKUP;
+
+        faces.ajax.request(window.document.getElementById("form1:button"), null, {
+            "javax.faces.behavior.event": "click",
+            execute: "form1",
+            render: "@all"
+        });
+
+        this.respond(`<?xml version="1.0" encoding="UTF-8"?>
+<partial-response id="j_id__v_0">
+    <changes>
+        <update id="jakarta.faces.ViewRoot"><![CDATA[<!DOCTYPE html>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <title>JAVASERVERFACES_SPEC_PUBLIC-790 - Integration Test</title>
+                <script src="/jakarta.faces.resource/faces.js.xhtml?ln=jakarta.faces;stage=Development"></script>
+            </head>
+            <body>
+                <div id="panel1">
+                 <form id="form1" name="form1" method="post"
+                  action="booga"
+                  ><input id="form1:button" name="form1:button" type="submit"
+                                                                     value="submit form1 via ajax">
+                </form>
+                </div>
+                <div id="panel2">
+                after update
+                    <form id="form2" name="form2" method="post" action="booga2"
+                          ><a href="#" id="form2:link" name="form2:link"></a>
+                         <input type="hidden" name="form2_SUBMIT" value="1"/></form>
+                </div>
+                  <div id="panel3">
+                    after update
+                        <form id="form3" name="form3" method="post" action="booga3"
+                              ><a href="#"  id="form3:link" name="form3:link"></a>
+                        </form>
+                    </div>
+            </body>
+             </html>
+          ]]>
+        </update>
+        <update id="viewroot_1:jakarta.faces.ViewState:1"><![CDATA[booga_after_update]]></update>
+    </changes>
+</partial-response>
+        `)
+        expect(DQ$("#form1 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        done();
+    });
+
+
 });
