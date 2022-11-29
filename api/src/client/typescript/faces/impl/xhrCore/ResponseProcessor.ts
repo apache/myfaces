@@ -51,7 +51,7 @@ import {
     TAG_HEAD,
     UPDATE_ELEMS,
     UPDATE_FORMS,
-    DEFERRED_HEAD_INSERTS, PARTIAL_ID, P_EXECUTE, P_RENDER, HTML_CLIENT_WINDOW
+    DEFERRED_HEAD_INSERTS, PARTIAL_ID, P_EXECUTE, P_RENDER, HTML_CLIENT_WINDOW, P_RENDER_OVERRIDE
 } from "../core/Const";
 import trim = Lang.trim;
 import {ExtConfig, ExtDomQuery} from "../util/ExtDomQuery";
@@ -134,7 +134,7 @@ export class ResponseProcessor implements IResponseProcessor {
         // we need a separate step for post-processing the incoming
         // attributes, like classes, styles etc...
         resultingBody.copyAttrs(shadowBody);
-
+        this.externalContext.assign($nsp(P_RENDER_OVERRIDE)).value = "@all";
         this.storeForPostProcessing(updateForms, resultingBody);
     }
 
@@ -502,17 +502,19 @@ export class ResponseProcessor implements IResponseProcessor {
     }
 
     private triggerOnError(errorData: ErrorData) {
-        this.externalContext.getIf(ON_ERROR).orElse(this.internalContext.getIf(ON_ERROR).value).orElse(EMPTY_FUNC).value(errorData);
+        this.externalContext.getIf(ON_ERROR).orElseLazy(() => this.internalContext.getIf(ON_ERROR).value).orElse(EMPTY_FUNC).value(errorData);
     }
 
     /**
-     * filters the forms according to being in the execute or render cycle
+     * filters the forms according to being member of the "execute" or "render" cycle
      * @param affectedForm
      * @private
      */
     private executeOrRenderFilter(affectedForm) {
         let executes = this.externalContext.getIf($nsp(P_EXECUTE)).orElse("@none").value.split(/\s+/gi);
-        let renders = this.externalContext.getIf($nsp(P_RENDER)).orElse("@none").value.split(/\s+/gi);
+        let renders = this.externalContext.getIf(P_RENDER_OVERRIDE)
+            .orElseLazy(() => this.externalContext.getIf($nsp(P_RENDER)).value)
+            .orElse("@none").value.split(/\s+/gi);
         let executeAndRenders = executes.concat(...renders);
         return LazyStream.of(...executeAndRenders).filter(nameOrId => {
             if (nameOrId == "@all") {

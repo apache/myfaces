@@ -229,7 +229,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         DQ.byId("cmd_eval").click();
         /*js full submit form, coming from the integration tests*/
         window.document.body.innerHTML = `<form id="j_id__v_0" name="j_id__v_0" method="post" action="/IntegrationJSTest/integrationtestsjasmine/test7-eventtest.jsf"
-      enctype="application/x-www-form-urlencoded"><span id="updatePanel">hello world</span><a href="#"
+      ><span id="updatePanel">hello world</span><a href="#"
                                                                                               onclick="return faces.util.chain(this, event,'return false;', 'return myfaces.ab(\'j_id_1l\',\'updateTrigger\');');"
                                                                                               id="updateTrigger"
                                                                                               name="updateTrigger"
@@ -263,7 +263,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         DQ.byId("cmd_eval").click();
         /*js full submit form, coming from the integration tests*/
         window.document.body.innerHTML = `<form id="j_id__v_0" name="j_id__v_0" method="post" action="/IntegrationJSTest/integrationtestsjasmine/test7-eventtest.jsf"
-      enctype="application/x-www-form-urlencoded"><span id="updatePanel">hello world</span><a href="#"
+      ><span id="updatePanel">hello world</span><a href="#"
                                                                                               onclick="return faces.util.chain(this, event,'return false;', 'return myfaces.ab(\'j_id_1l\',\'updateTrigger\');');"
                                                                                               id="updateTrigger"
                                                                                               name="updateTrigger"
@@ -406,7 +406,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         DQ.byId("cmd_complex_resource2").click();
         this.respond(XmlResponses.EMBEDDED_SCRIPTS_RESOURCE_RESPONSE);
-        // this.respond("debugger; document.getElementById('resource_area_1').innerHTML = 'true3'",  {'Content-Type': 'text/javascript'});
+       // this.respond("debugger; document.getElementById('resource_area_1').innerHTML = 'true3'",  {'Content-Type': 'text/javascript'});
         let headHTML = document.head.innerHTML;
         expect(headHTML.indexOf("../../../xhrCore/fixtures/addedViewHead3.js")).not.eq(-1);
         expect(headHTML.indexOf("href=\"../../../xhrCore/fixtures/addedViewHead2.css\"")).not.eq(-1);
@@ -610,9 +610,9 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
 
     const TCK_790_NAV_MARKUP = `
-            <form id="form1" name="form1" method="post"
+            <form id="form1x" name="form1" method="post"
                   action="booga"
-                  ><input id="form1:button" name="form1:button" type="submit"
+                  ><input id="form1x:button" name="form1:button" type="submit"
                                                                      value="submit form1 via ajax">
                    <input type="hidden" name="jakarta.faces.ViewState"
                                         id="viewroot_1:jakarta.faces.ViewState:1"
@@ -667,19 +667,19 @@ describe('Tests of the various aspects of the response protocol functionality', 
         /*we start from a simple form which triggers a an internal navigation*/
         document.body.innerHTML = TCK_790_NAV_MARKUP;
 
-        faces.ajax.request(window.document.getElementById("form1:button"), null, {
+        faces.ajax.request(window.document.getElementById("form1x:button"), null, {
             "javax.faces.behavior.event": "click",
-            execute: "form1",
-            render: "@all"
+            execute: "@form",
+            render: "@this"
         });
 
         this.respond(`<?xml version="1.0" encoding="UTF-8"?>
-<partial-response id="j_id__v_0">
+<partial-response id="viewroot_1">
     <changes>
         <update id="jakarta.faces.ViewRoot"><![CDATA[<!DOCTYPE html>
             <html xmlns="http://www.w3.org/1999/xhtml">
             <head>
-                <title>JAVASERVERFACES_SPEC_PUBLIC-790 - Integration Test</title>
+                <title>Spec 790</title>
                 <script src="/jakarta.faces.resource/faces.js.xhtml?ln=jakarta.faces;stage=Development"></script>
             </head>
             <body>
@@ -709,7 +709,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         <update id="viewroot_1:jakarta.faces.ViewState:1"><![CDATA[booga_after_update]]></update>
     </changes>
 </partial-response>
-        `)
+`)
         expect(DQ$("#form1 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
         expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
         expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");

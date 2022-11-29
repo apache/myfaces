@@ -226,7 +226,7 @@ export class XmlResponses {
     <head>
         <title>After Update</title>
         <meta charset="UTF-8">
-        <meta name="description" content="Unit Test Head Replacement">
+        <meta name="description" content="Free Web tutorials">
         <meta name="keywords" content="HTML, CSS, JavaScript, JSF">
         <meta name="viewport" content="width=device-width, initial-scale=0.8">
         <meta name="author" content="Whoever">
