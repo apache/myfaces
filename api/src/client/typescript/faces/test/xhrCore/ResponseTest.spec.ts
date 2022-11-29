@@ -245,12 +245,12 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         // language=XML
         this.respond(`<?xml version="1.0" encoding="UTF-8"?>
-            <partial-response id="j_id__v_0">
-                <changes>
-                    <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
-                    <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]></update>
-                </changes>
-            </partial-response>`);
+        <partial-response id="j_id__v_0">
+            <changes>
+                <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
+                <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]></update>
+            </changes>
+        </partial-response>`);
 
 
         expect(DQ$("[name='jakarta.faces.ViewState']").isPresent()).to.be.true;
@@ -279,14 +279,14 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         // language=XML
         this.respond(`<?xml version="1.0" encoding="UTF-8"?>
-            <partial-response id="j_id__v_0">
-                <changes>
-                    <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
-                    <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]><!-- 
+        <partial-response id="j_id__v_0">
+            <changes>
+                <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
+                <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]><!-- 
                         Some random junk which is sent by the server
                     --></update>
-                </changes>
-            </partial-response>`);
+            </changes>
+        </partial-response>`);
 
 
         expect(DQ$("[name='jakarta.faces.ViewState']").isAbsent()).to.be.false;
@@ -406,7 +406,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         DQ.byId("cmd_complex_resource2").click();
         this.respond(XmlResponses.EMBEDDED_SCRIPTS_RESOURCE_RESPONSE);
-       // this.respond("debugger; document.getElementById('resource_area_1').innerHTML = 'true3'",  {'Content-Type': 'text/javascript'});
+        // this.respond("debugger; document.getElementById('resource_area_1').innerHTML = 'true3'",  {'Content-Type': 'text/javascript'});
         let headHTML = document.head.innerHTML;
         expect(headHTML.indexOf("../../../xhrCore/fixtures/addedViewHead3.js")).not.eq(-1);
         expect(headHTML.indexOf("href=\"../../../xhrCore/fixtures/addedViewHead2.css\"")).not.eq(-1);
@@ -582,6 +582,70 @@ describe('Tests of the various aspects of the response protocol functionality', 
         expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ClientWindow']").val).to.be.eq("updatedViewId");
         expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ClientWindow']").val).to.be.eq("updatedViewId");
 
+        done();
+    })
+
+    /**
+     * Similar to TCK 790
+     */
+    it("must handle a more complex replace with several forms and one issuing form and a viewstate and a viewroot id in response but viewroot is not present in page", function (done) {        //special case, viewid given but no viewid in page special result all render and executes must be updated
+
+        document.body.innerHTML = `
+        <div id="panel1">
+            <form id="form1" name="form1" method="post"
+                  action="booga"
+                  ><input id="form1:button" name="form1:button" type="submit"
+                                                                     value="submit form1 via ajax">
+                   <input type="hidden" name="jakarta.faces.ViewState"
+                                        id="viewroot_1:jakarta.faces.ViewState:1"
+                                        value="beforeUpdate">
+            </form>
+        </div>
+        <div id="panel2">
+            <form id="form2" name="form2" method="post" action="booga2"
+                  ><a href="#" id="form2:link" name="form2:link"></a>
+           </form>
+        </div>
+        <div id="panel3">
+            <form id="form3" name="form3" method="post" action="booga3"
+                  ><a href="#" id="form3:link" name="form3:link"></a>
+            </form>
+        </div>
+        `;
+
+        const RESPONSE_1 = `<partial-response id="viewroot_1">
+    <changes>
+        <update id="panel2"><![CDATA[
+            <div id="panel2">
+            after update
+                <form id="form2" name="form2" method="post" action="booga2"
+                      ><a href="#" id="form2:link" name="form2:link"></a>
+                      <input type="hidden" name="form2_SUBMIT" value="1"/></form>
+            </div>
+            ]]>
+        </update>
+        <update id="panel3"><![CDATA[
+            <div id="panel3">
+            after update
+                <form id="form3" name="form3" method="post" action="booga3"
+                      ><a href="#"  id="form3:link" name="form3:link"></a>
+                </form>
+            </div>
+            ]]>
+        </update>
+        <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[booga_after_update]]></update>
+    </changes>
+</partial-response>`;
+        faces.ajax.request(window.document.getElementById("form1:button"), null, {
+            "javax.faces.behavior.event": "click",
+            execute: "form1",
+            render: "form2 form3"
+        });
+
+        this.respond(RESPONSE_1);
+        expect(DQ$("#form1 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
         done();
     })
 });

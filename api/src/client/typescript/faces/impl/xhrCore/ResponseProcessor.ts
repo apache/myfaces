@@ -538,7 +538,12 @@ export class ResponseProcessor implements IResponseProcessor {
     private getContainerForms(namingContainerId: Config) {
         if (namingContainerId.isPresent()) {
             //naming container mode, all forms under naming container id must be processed
-            return DQ.byId(namingContainerId.value).orElse(DQ$(`form[name='${namingContainerId.value}']`)).byTagName(TAG_FORM, true);
+            return DQ.byId(namingContainerId.value)
+                .orElse(DQ$(`form[id='${namingContainerId.value}'], form[name='${namingContainerId.value}']`))
+                // missing condition if the naming container is not present we have to
+                // use the body as fallback
+                .orElse(DQ.byTagName(TAG_BODY))
+                .byTagName(TAG_FORM, true);
         } else {
             return DQ.byTagName(TAG_FORM);
         }
