@@ -27,6 +27,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  * Contains information about whether the user has
@@ -106,13 +107,14 @@ public class ClientConfig implements Serializable
                 Cookie cookie = new Cookie(COOKIE_NAME_NOSCRIPT_ENABLED, "" + javaScriptEnabled);
                 cookie.setPath("/"); // for all the server
                 Object context = facesContext.getExternalContext().getContext();
-                String sameSite = null;
-                if (context instanceof ServletContext)
+
+                if (context instanceof ServletContext && ExternalSpecifications.isServlet6Available())
                 {
                     ServletContext servletContext = (ServletContext)context;
-                    sameSite = servletContext.getSessionCookieConfig().getAttribute("SameSite");
+                    String sameSite = servletContext.getSessionCookieConfig().getAttribute("SameSite");
+                    cookie.setAttribute("SameSite", Objects.toString(sameSite, "Strict"));
                 }
-                cookie.setAttribute("SameSite", Objects.toString(sameSite, "Strict"));
+
                 HttpServletResponse response = (HttpServletResponse) r;
                 response.addCookie(cookie);
             }

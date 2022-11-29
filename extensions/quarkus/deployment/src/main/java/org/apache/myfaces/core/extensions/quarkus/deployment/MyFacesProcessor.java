@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import jakarta.faces.application.ProjectStage;
-import jakarta.faces.application.StateManager;
-import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.FacesComponent;
 import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.convert.FacesConverter;
@@ -294,33 +292,6 @@ class MyFacesProcessor
 
         Optional<String> projectStage = resolveProjectStage(config);
         initParam.produce(new ServletInitParamBuildItem(ProjectStage.PROJECT_STAGE_PARAM_NAME, projectStage.get()));
-
-        // common
-        initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.LOG_WEB_CONTEXT_PARAMS, "false"));
-        initParam.produce(new ServletInitParamBuildItem(
-                StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER));
-        initParam.produce(new ServletInitParamBuildItem(
-                StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, "false"));
-
-        // perf
-        initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.CHECK_ID_PRODUCTION_MODE, "false"));
-        initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.EARLY_FLUSH_ENABLED, "true"));
-        initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.COMPRESS_STATE_IN_SESSION, "false"));
-        initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "15"));
-        initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "3"));
-
-        // MyFaces uses default 0, which means always recompile
-        if (ProjectStage.valueOf(projectStage.get()) == ProjectStage.Development)
-        {
-            initParam.produce(new ServletInitParamBuildItem(
-                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "1"));
-        }
     }
 
     @BuildStep
@@ -764,16 +735,6 @@ class MyFacesProcessor
                 collectPublicTypes(fieldType, publicTypes, combinedIndex);
             }
         }
-    }
-
-
-    @BuildStep
-    void buildPrimeFacesRecommendedInitParams(BuildProducer<ServletInitParamBuildItem> initParam) throws IOException
-    {
-        initParam.produce(new ServletInitParamBuildItem(
-                "primefaces.SUBMIT", "partial"));
-        initParam.produce(new ServletInitParamBuildItem(
-                "primefaces.MOVE_SCRIPTS_TO_BOTTOM", "true"));
     }
 
     @BuildStep

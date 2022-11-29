@@ -45,6 +45,7 @@ import jakarta.faces.event.PostPutFlashValueEvent;
 import jakarta.faces.event.PreClearFlashEvent;
 import jakarta.faces.event.PreRemoveFlashValueEvent;
 import jakarta.faces.lifecycle.ClientWindow;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.token.TokenGenerator;
@@ -1188,13 +1189,14 @@ public class FlashImpl extends Flash implements ReleasableFlash
         cookie.setSecure(externalContext.isSecure());
         cookie.setHttpOnly(true);
         Object context = externalContext.getContext();
-        String sameSite = null;
-        if (context instanceof ServletContext)
+
+        if (context instanceof ServletContext && ExternalSpecifications.isServlet6Available())
         {
             ServletContext servletContext = (ServletContext)context;
-            sameSite = servletContext.getSessionCookieConfig().getAttribute("SameSite");
+            String sameSite = servletContext.getSessionCookieConfig().getAttribute("SameSite");
+            cookie.setAttribute("SameSite", Objects.toString(sameSite, "Strict"));
         }
-        cookie.setAttribute("SameSite", Objects.toString(sameSite, "Strict"));
+
         return cookie;
     }
 
