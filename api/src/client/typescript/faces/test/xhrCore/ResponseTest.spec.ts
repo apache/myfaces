@@ -612,7 +612,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
     const TCK_790_NAV_MARKUP = `
             <form id="form1x" name="form1" method="post"
                   action="booga"
-                  ><input id="form1x:button" name="form1:button" type="submit"
+                  ><input id="form1x:button" name="form1x:button" type="submit"
                                                                      value="submit form1 via ajax">
                    <input type="hidden" name="jakarta.faces.ViewState"
                                         id="viewroot_1:jakarta.faces.ViewState:1"
@@ -670,8 +670,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
         faces.ajax.request(window.document.getElementById("form1x:button"), null, {
             "javax.faces.behavior.event": "click",
             execute: "@form",
-            render: "@this"
+            render: ":form1x:button"
         });
+
+        //TODO xhr stubbing, to check if the viewId is prepended in render!
 
         this.respond(`<?xml version="1.0" encoding="UTF-8"?>
 <partial-response id="viewroot_1">
@@ -712,7 +714,12 @@ describe('Tests of the various aspects of the response protocol functionality', 
 `)
         expect(DQ$("#form1 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
         expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
-        expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        expect(DQ$("#form3 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+
+        expect(DQ$("#form1 [name='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:0") === 0).to.be.true;
+        expect(DQ$("#form2 [name='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:1") === 0).to.be.true;
+        expect(DQ$("#form3 [name='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:2") === 0).to.be.true;
+
         done();
     });
 

@@ -23,7 +23,7 @@ import {
     ON_ERROR,
     ON_EVENT,
     PHASE_PROCESS_RESPONSE,
-    RESP_PARTIAL
+    XML_TAG_PARTIAL_RESP
 } from "../core/Const";
 import {ExtLang} from "./Lang";
 
@@ -60,7 +60,7 @@ export module Assertions {
     export function assertValidXMLResponse(responseXML: XMLQuery) : void | never  {
         assert(!responseXML.isAbsent(), EMPTY_RESPONSE, PHASE_PROCESS_RESPONSE);
         assert(!responseXML.isXMLParserError(),  responseXML.parserErrorText(EMPTY_STR), PHASE_PROCESS_RESPONSE);
-        assert(responseXML.querySelectorAll(RESP_PARTIAL).isPresent(), ERR_NO_PARTIAL_RESPONSE, PHASE_PROCESS_RESPONSE);
+        assert(responseXML.querySelectorAll(XML_TAG_PARTIAL_RESP).isPresent(), ERR_NO_PARTIAL_RESPONSE, PHASE_PROCESS_RESPONSE);
     }
 
     /**

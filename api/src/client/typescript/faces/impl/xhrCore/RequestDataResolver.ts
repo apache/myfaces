@@ -16,12 +16,14 @@
 
 import {AssocArrayCollector, Config, DomQuery, DQ, Stream} from "mona-dish";
 import {
-    CTX_PARAM_DELAY,
-    CTX_PARAM_TIMEOUT,
+    $faces,
+    $nsp,
+    CTX_OPTIONS_DELAY,
+    CTX_OPTIONS_TIMEOUT,
     EMPTY_FUNC,
     EMPTY_STR,
     ENCODED_URL,
-    MF_NONE,
+    MF_NONE, P_VIEWSTATE,
     REQ_TYPE_GET,
     REQ_TYPE_POST
 } from "../core/Const";
@@ -80,9 +82,19 @@ export function resolveForm(requestCtx: Config, elem: DQ, event: Event): DQ {
         .orElseLazy(() => ExtLang.getForm(elem.getAsElem(0).value, event));
 }
 
+export function resolveViewId(form: DQ): string {
+    let viewState = form.querySelectorAll(`input[type='hidden'][name*='${$nsp(P_VIEWSTATE)}']`).id.orElse("").value;
+    let divider = $faces().separatorchar;
+    let viewId = viewState.split(divider, 2)[0];
+    if(viewId.indexOf($nsp(P_VIEWSTATE)) === -1) {
+        return viewId;
+    }
+    return "";
+}
+
 export function resolveTimeout(options: Config): number {
     let getCfg = ExtLang.getLocalOrGlobalConfig;
-    return options.getIf(CTX_PARAM_TIMEOUT).value ?? getCfg(options.value, CTX_PARAM_TIMEOUT, 0);
+    return options.getIf(CTX_OPTIONS_TIMEOUT).value ?? getCfg(options.value, CTX_OPTIONS_TIMEOUT, 0);
 }
 
 /**
@@ -94,7 +106,7 @@ export function resolveDelay(options: Config): number {
     let getCfg = ExtLang.getLocalOrGlobalConfig;
 
     // null or non undefined will automatically be mapped to 0 aka no delay
-    let ret = options.getIf(CTX_PARAM_DELAY).value ?? getCfg(options.value, CTX_PARAM_DELAY, 0);
+    let ret = options.getIf(CTX_OPTIONS_DELAY).value ?? getCfg(options.value, CTX_OPTIONS_DELAY, 0);
     // if delay === none, no delay must be used, aka delay 0
     if('none' === ret) {
         ret = 0;

@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * todo replace singleton with module definition
- *
  */
 
 import {Lang as LangBase, Config, Optional, DomQuery, DQ, Stream} from "mona-dish";
 import {Messages} from "../i18n/Messages";
-import {EMPTY_STR, TAG_FORM} from "../core/Const";
+import {EMPTY_STR, HTML_TAG_FORM} from "../core/Const";
 import {getEventTarget} from "../xhrCore/RequestDataResolver";
 
 
@@ -162,23 +160,23 @@ export module ExtLang {
         let queryElem = new DQ(elem);
         let eventTarget = (event) ?  new DQ(getEventTarget(event)) : DomQuery.absent;
 
-        if (queryElem.isTag(TAG_FORM)) {
+        if (queryElem.isTag(HTML_TAG_FORM)) {
             return queryElem;
         }
 
         //html 5 for handling
-        if (queryElem.attr(TAG_FORM).isPresent()) {
-            let formId = queryElem.attr(TAG_FORM).value;
+        if (queryElem.attr(HTML_TAG_FORM).isPresent()) {
+            let formId = queryElem.attr(HTML_TAG_FORM).value;
             let foundForm = DQ.byId(formId, true);
             if (foundForm.isPresent()) {
                 return foundForm;
             }
         }
 
-        let form = queryElem.firstParent(TAG_FORM)
-            .orElseLazy(() => queryElem.byTagName(TAG_FORM, true))
-            .orElseLazy(() => eventTarget.firstParent(TAG_FORM))
-            .orElseLazy(() => eventTarget.byTagName(TAG_FORM))
+        let form = queryElem.firstParent(HTML_TAG_FORM)
+            .orElseLazy(() => queryElem.byTagName(HTML_TAG_FORM, true))
+            .orElseLazy(() => eventTarget.firstParent(HTML_TAG_FORM))
+            .orElseLazy(() => eventTarget.byTagName(HTML_TAG_FORM))
             .first();
 
         assertFormExists(form);

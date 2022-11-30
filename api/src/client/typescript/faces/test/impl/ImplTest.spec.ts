@@ -20,7 +20,7 @@ import {expect} from 'chai';
 import * as sinon from 'sinon';
 
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import {P_EXECUTE, P_RENDER} from "../../impl/core/Const";
+import {CTX_PARAM_REQ_PASS_THR, P_EXECUTE, P_RENDER} from "../../impl/core/Const";
 import defaultMyFaces = StandardInits.defaultMyFaces;
 
 
@@ -60,9 +60,9 @@ describe('faces.ajax.request test suite', () => {
             expect(addRequestToQueue.callCount).to.eq(1);
             const context = (<Config>addRequestToQueue.args[0][2]);
 
-            expect(context.getIf("passThrgh", P_RENDER).value).eq("@all");
+            expect(context.getIf(CTX_PARAM_REQ_PASS_THR, P_RENDER).value).eq("@all");
             //Execute issuing form due to @form and always the issuing element
-            expect(context.getIf("passThrgh", P_EXECUTE).value).eq("blarg input_2");
+            expect(context.getIf(CTX_PARAM_REQ_PASS_THR, P_EXECUTE).value).eq("blarg input_2");
         } finally {
             //once done we restore the proper state
             addRequestToQueue.restore();

@@ -90,6 +90,22 @@ export module StandardInits {
 </html>`;
 
 
+    const HTML_FORM_NAMESPACED = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="jd_0:blarg">
+    <input type="text" id="jd_0:input_1" name="jd_0:input_1" value="input_1_val"></input>
+    <input type="hidden" id="jd_0:jakarta.faces.ViewState" name="jakarta.faces.ViewState" value="blubbblubblubb"></input>
+    <input type="button" id="jd_0:input_2" name="input_2" value="input_1_val"></input>
+</form>
+</body>
+</html>`;
+
+
 
     /**
      * a page simulating basically a simple faces form
@@ -276,6 +292,9 @@ export module StandardInits {
 
     export function defaultMyFaces(withJsf = true): Promise<() => void> {
         return init(HTML_FORM_DEFAULT, withJsf);
+    }
+    export function defaultMyFacesNamespaces(withJsf = true): Promise<() => void> {
+        return init(HTML_FORM_NAMESPACED, withJsf);
     }
     export function defaultMyFaces23(withJsf = true): Promise<() => void> {
         return init(HTML_FORM_DEFAULT.replace(/jakarta/gi, "javax"), withJsf, false);

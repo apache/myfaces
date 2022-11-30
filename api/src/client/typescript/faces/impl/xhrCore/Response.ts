@@ -20,23 +20,23 @@ import {ResponseProcessor} from "./ResponseProcessor";
 import {IResponseProcessor} from "./IResponseProcessor";
 import {
     $nsp,
-    CMD_ATTRIBUTES,
-    CMD_CHANGES,
-    CMD_DELETE,
-    CMD_ERROR,
-    CMD_EVAL,
-    CMD_EXTENSION,
-    CMD_INSERT,
-    CMD_REDIRECT,
-    CMD_UPDATE, P_RESOURCE,
+    XML_TAG_ATTRIBUTES,
+    XML_TAG_CHANGES,
+    XML_TAG_DELETE,
+    XML_TAG_ERROR,
+    XML_TAG_EVAL,
+    XML_TAG_EXTENSION,
+    XML_TAG_INSERT,
+    XML_TAG_REDIRECT,
+    XML_TAG_UPDATE, P_RESOURCE,
     P_VIEWBODY,
     P_VIEWHEAD,
     P_VIEWROOT,
     PARTIAL_ID,
-    RESP_PARTIAL,
+    XML_TAG_PARTIAL_RESP,
     RESPONSE_XML,
-    TAG_AFTER,
-    TAG_BEFORE
+    XML_TAG_AFTER,
+    XML_TAG_BEFORE
 } from "../core/Const";
 import {resolveContexts, resolveResponseXML} from "./ResonseDataResolver";
 import {ExtConfig} from "../util/ExtDomQuery";
@@ -67,7 +67,7 @@ export module Response {
         internalContext.assign(RESPONSE_XML).value = responseXML;
 
         // we now process the partial tags, or in none given raise an error
-        responseXML.querySelectorAll(RESP_PARTIAL)
+        responseXML.querySelectorAll(XML_TAG_PARTIAL_RESP)
             .each(item => processPartialTag(<XMLQuery>item, responseProcessor, internalContext));
 
         // We now process the viewStates, client windows and the elements to be evaluated are delayed.
@@ -89,18 +89,18 @@ export module Response {
      function processPartialTag(node: XMLQuery, responseProcessor: IResponseProcessor, internalContext) {
 
         internalContext.assign(PARTIAL_ID).value = node.id;
-        const SEL_SUB_TAGS = [CMD_ERROR, CMD_REDIRECT, CMD_CHANGES].join(",");
+        const SEL_SUB_TAGS = [XML_TAG_ERROR, XML_TAG_REDIRECT, XML_TAG_CHANGES].join(",");
 
         // now we can process the main operations
         node.querySelectorAll(SEL_SUB_TAGS).each((node: XMLQuery) => {
             switch (node.tagName.value) {
-                case CMD_ERROR:
+                case XML_TAG_ERROR:
                     responseProcessor.error(node);
                     break;
-                case CMD_REDIRECT:
+                case XML_TAG_REDIRECT:
                     responseProcessor.redirect(node);
                     break;
-                case CMD_CHANGES:
+                case XML_TAG_CHANGES:
                     processChangesTag(node, responseProcessor);
                     break;
             }
@@ -110,7 +110,7 @@ export module Response {
 
     let processInsert = function (responseProcessor: IResponseProcessor, node: XMLQuery) {
          // path1 insert after as child tags
-         if(node.querySelectorAll([TAG_BEFORE, TAG_AFTER].join(",")).length) {
+         if(node.querySelectorAll([XML_TAG_BEFORE, XML_TAG_AFTER].join(",")).length) {
              responseProcessor.insertWithSubTags(node);
          } else { // insert before after with id
              responseProcessor.insert(node);
@@ -125,31 +125,31 @@ export module Response {
      * @param responseProcessor
      */
      function processChangesTag(node: XMLQuery, responseProcessor: IResponseProcessor): boolean {
-        const ALLOWED_TAGS = [CMD_UPDATE, CMD_EVAL, CMD_INSERT, CMD_DELETE, CMD_ATTRIBUTES, CMD_EXTENSION].join(", ");
+        const ALLOWED_TAGS = [XML_TAG_UPDATE, XML_TAG_EVAL, XML_TAG_INSERT, XML_TAG_DELETE, XML_TAG_ATTRIBUTES, XML_TAG_EXTENSION].join(", ");
         node.querySelectorAll(ALLOWED_TAGS).each(
             (node: XMLQuery) => {
                 switch (node.tagName.value) {
-                    case CMD_UPDATE:
+                    case XML_TAG_UPDATE:
                         processUpdateTag(node, responseProcessor);
                         break;
 
-                    case CMD_EVAL:
+                    case XML_TAG_EVAL:
                         responseProcessor.eval(node);
                         break;
 
-                    case CMD_INSERT:
+                    case XML_TAG_INSERT:
                         processInsert(responseProcessor, node);
                         break;
 
-                    case CMD_DELETE:
+                    case XML_TAG_DELETE:
                         responseProcessor.delete(node);
                         break;
 
-                    case CMD_ATTRIBUTES:
+                    case XML_TAG_ATTRIBUTES:
                         responseProcessor.attributes(node);
                         break;
 
-                    case CMD_EXTENSION:
+                    case XML_TAG_EXTENSION:
                         break;
                 }
             }
