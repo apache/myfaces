@@ -201,8 +201,8 @@ export class ExtDomQuery extends DQ {
                 return true;
             }
             let reference = element.attr("href")
-                .orElse(element.attr("src").value)
-                .orElse(element.attr("rel").value);
+                .orElseLazy(() => element.attr("src").value)
+                .orElseLazy(() => element.attr("rel").value);
 
             if (!reference.isPresent()) {
                 return true;

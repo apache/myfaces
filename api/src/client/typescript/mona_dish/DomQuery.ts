@@ -332,6 +332,11 @@ interface IDomQuery {
     innerHtml: string;
 
     /**
+     * convenience for dq.id.value to make the code a little bit tighter
+     */
+    nodeId: string;
+
+    /**
      * returns true if the elements have the tag *tagName* as tag embedded ( highest level )
      * @param tagName
      */
@@ -926,6 +931,14 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     set val(value: string | boolean) {
         this.inputValue.value = value;
+    }
+
+    get nodeId(): string {
+        return this.id.value;
+    }
+
+    set nodeId(value: string) {
+        this.id.value = value;
     }
 
     get checked(): boolean {

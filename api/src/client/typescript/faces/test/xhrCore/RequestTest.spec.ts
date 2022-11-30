@@ -556,5 +556,7 @@ describe('Tests after core when it hits response', function () {
         }
         done("Expecting a client error to be thrown")
     });
+
+
 });
 

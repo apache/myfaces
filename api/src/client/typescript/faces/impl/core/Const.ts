@@ -17,8 +17,11 @@
 /*
  * [export const] constants
  */
+
+
 export const P_PARTIAL_SOURCE = "jakarta.faces.source";
 export const PARTIAL_ID = "partialId";
+export const VIEW_ID = "myfaves.viewId";
 export const P_VIEWSTATE = "jakarta.faces.ViewState";
 export const P_CLIENT_WINDOW = "jakarta.faces.ClientWindow";
 export const P_VIEWROOT = "jakarta.faces.ViewRoot";
@@ -91,21 +94,16 @@ export const SERVER_ERROR = "serverError";
 export const CLIENT_ERROR = "clientError";
 export const TIMEOUT_EVENT = "timeout";
 
-export const CTX_PARAM_MF_INTERNAL = "_mfInternal";
+export const CTX_OPTIONS_PARAMS = "params";
+export const CTX_OPTIONS_DELAY = "delay";
+export const CTX_OPTIONS_TIMEOUT = "timeout";
+export const CTX_OPTIONS_RESET = "resetValues";
+export const CTX_OPTIONS_EXECUTE = "execute";
 
-export const CTX_PARAM_SRC_FRM_ID = "_mfSourceFormId";
-export const CTX_PARAM_SRC_CTL_ID = "_mfSourceControlId";
-export const CTX_PARAM_TR_TYPE = "_mfTransportType";
-export const CTX_PARAM_PASS_THR = "passThrgh";
-export const CTX_PARAM_SPEC_PARAMS = "params";
-
-export const CTX_PARAM_DELAY = "delay";
-export const CTX_PARAM_TIMEOUT = "timeout";
-export const CTX_PARAM_RST = "resetValues";
-export const CTX_PARAM_EXECUTE = "execute";
-
-export const STAGE_DEVELOPMENT = "Development";
-
+export const CTX_PARAM_MF_INTERNAL = "myfaces.internal";
+export const CTX_PARAM_SRC_FRM_ID = "myfaces.source.formId";
+export const CTX_PARAM_SRC_CTL_ID = "myfaces.source.controlId";
+export const CTX_PARAM_REQ_PASS_THR = "myfaces.request.passThrough";
 
 export const CONTENT_TYPE = "Content-Type";
 export const HEAD_FACES_REQ = "Faces-Request";
@@ -122,13 +120,12 @@ export const MULTIPART = "multipart/form-data";
 export const NO_TIMEOUT = 0;
 export const STD_ACCEPT = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 
-export const TAG_HEAD = "HEAD";
-export const TAG_FORM = "FORM";
-export const TAG_BODY = "BODY";
-export const TAG_BEFORE = "before";
-export const TAG_AFTER = "after";
-
-export const TAG_ATTR = "attribute";
+export const HTML_TAG_HEAD = "HEAD";
+export const HTML_TAG_FORM = "FORM";
+export const HTML_TAG_BODY = "BODY";
+export const HTML_TAG_LINK = "LINK";
+export const HTML_TAG_SCRIPT = "SCRIPT";
+export const HTML_TAG_STYLE = "STYLE";
 
 
 export const SEL_VIEWSTATE_ELEM = "[name='" + P_VIEWSTATE + "']";
@@ -146,38 +143,40 @@ export const ATTR_VALUE = "value";
 export const ATTR_ID = "id";
 
 /*partial response types*/
-export const RESP_PARTIAL = "partial-response";
+export const XML_TAG_PARTIAL_RESP = "partial-response";
 
 /*partial commands*/
-export const CMD_CHANGES = "changes";
-export const CMD_UPDATE = "update";
-export const CMD_DELETE = "delete";
-export const CMD_INSERT = "insert";
-export const CMD_EVAL = "eval";
-export const CMD_ERROR = "error";
-export const CMD_ATTRIBUTES = "attributes";
-export const CMD_EXTENSION = "extension";
-export const CMD_REDIRECT = "redirect";
+export const XML_TAG_CHANGES = "changes";
+export const XML_TAG_UPDATE = "update";
+export const XML_TAG_DELETE = "delete";
+export const XML_TAG_INSERT = "insert";
+export const XML_TAG_EVAL = "eval";
+export const XML_TAG_ERROR = "error";
+export const XML_TAG_ATTRIBUTES = "attributes";
+export const XML_TAG_EXTENSION = "extension";
+export const XML_TAG_REDIRECT = "redirect";
+export const XML_TAG_BEFORE = "before";
+export const XML_TAG_AFTER = "after";
+export const XML_TAG_ATTR = "attribute";
+
 
 /*other constants*/
 
-export const UPDATE_FORMS = "_updateForms";
-export const UPDATE_ELEMS = "_updateElems";
+export const UPDATE_FORMS = "myfaces.updateForms";
+export const UPDATE_ELEMS = "myfaces.updateElems";
 
 //we want the head elements to be processed before we process the body
 //but after the inner html is done
-export const DEFERRED_HEAD_INSERTS = "_headElems";
+export const DEFERRED_HEAD_INSERTS = "myfaces.headElems";
 
 export const MYFACES = "myfaces";
-
-export const SEL_SCRIPTS_STYLES = "script, style, link";
 
 export const MF_NONE = "__mf_none__";
 
 export const REASON_EXPIRED = "Expired";
 
-export const APPLIED_VST = "appliedViewState";
-export const APPLIED_CLIENT_WINDOW = "appliedClientWindow";
+export const APPLIED_VST = "myfaces.appliedViewState";
+export const APPLIED_CLIENT_WINDOW = "myfaces.appliedClientWindow";
 
 export const RECONNECT_INTERVAL = 500;
 export const MAX_RECONNECT_ATTEMPTS = 25;
@@ -191,6 +190,10 @@ export const UNKNOWN = "UNKNOWN";
  * To take the compatibility layer out this method just has to be
  * changed to a simple value passthrough
  */
+
+export function $faces(): FacesAPI {
+     return (window?.faces ?? window?.jsf) as FacesAPI;
+}
 
 export function $nsp(inputNamespace?: any): any {
      if((!inputNamespace) || !inputNamespace?.replace) {

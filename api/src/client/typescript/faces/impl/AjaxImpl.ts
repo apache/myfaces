@@ -27,11 +27,10 @@ import {EventData} from "./xhrCore/EventData";
 import {ExtLang} from "./util/Lang";
 
 import {
-    CTX_PARAM_EXECUTE,
-    CTX_PARAM_PASS_THR,
+    CTX_OPTIONS_EXECUTE,
+    CTX_PARAM_REQ_PASS_THR,
     CTX_PARAM_SRC_CTL_ID,
     CTX_PARAM_SRC_FRM_ID,
-    CTX_PARAM_TR_TYPE,
     IDENT_ALL,
     IDENT_FORM,
     IDENT_NONE,
@@ -48,15 +47,14 @@ import {
     P_RESET_VALUES,
     P_WINDOW_ID,
     CTX_PARAM_RENDER,
-    REQ_TYPE_POST,
     SOURCE,
-    TAG_FORM, CTX_PARAM_SPEC_PARAMS
+    HTML_TAG_FORM, CTX_OPTIONS_PARAMS, VIEW_ID, $faces
 } from "./core/Const";
 import {
     resolveDefaults,
     resolveDelay,
     resolveForm,
-    resolveTimeout
+    resolveTimeout, resolveViewId
 } from "./xhrCore/RequestDataResolver";
 
 /*
@@ -263,6 +261,7 @@ export module Implementation {
          * with detached objects
          */
         const form: DQ = resolveForm(requestCtx, elem, resolvedEvent);
+        const viewId: string = resolveViewId(form);
         const formId = form.id.value;
         const delay: number = resolveDelay(options);
         const timeout: number = resolveTimeout(options);
@@ -270,18 +269,20 @@ export module Implementation {
         requestCtx.assignIf(!!windowId, P_WINDOW_ID).value = windowId;
 
         // old non spec behavior will be removed after it is clear whether the removal breaks any code
-        requestCtx.assign(CTX_PARAM_PASS_THR).value = filterPassThroughValues(options.value);
+        requestCtx.assign(CTX_PARAM_REQ_PASS_THR).value = filterPassThroughValues(options.value);
 
         // spec conform behavior, all passthrough params must be under "passthrough
-        const params = remapArrayToAssocArr(options.getIf(CTX_PARAM_SPEC_PARAMS).orElse({}).value);
-        requestCtx.getIf(CTX_PARAM_PASS_THR).shallowMerge(new Config(params), true);
-        requestCtx.assignIf(!!resolvedEvent, CTX_PARAM_PASS_THR, P_EVT).value = resolvedEvent?.type;
+        const params = remapArrayToAssocArr(options.getIf(CTX_OPTIONS_PARAMS).orElse({}).value);
+        requestCtx.getIf(CTX_PARAM_REQ_PASS_THR).shallowMerge(new Config(params), true);
+        requestCtx.assignIf(!!resolvedEvent, CTX_PARAM_REQ_PASS_THR, P_EVT).value = resolvedEvent?.type;
 
         /**
          * ajax pass through context with the source
          * onresolved Event and onerror Event
          */
         requestCtx.assign(SOURCE).value = elementId;
+
+        requestCtx.assign(VIEW_ID).value = viewId;
 
         /**
          * on resolvedEvent and onError...
@@ -299,12 +300,12 @@ export module Implementation {
         /**
          * binding contract the jakarta.faces.source must be set
          */
-        requestCtx.assign(CTX_PARAM_PASS_THR, P_PARTIAL_SOURCE).value = elementId;
+        requestCtx.assign(CTX_PARAM_REQ_PASS_THR, P_PARTIAL_SOURCE).value = elementId;
 
         /**
          * jakarta.faces.partial.ajax must be set to true
          */
-        requestCtx.assign(CTX_PARAM_PASS_THR, P_AJAX).value = true;
+        requestCtx.assign(CTX_PARAM_REQ_PASS_THR, P_AJAX).value = true;
 
         /**
          * if resetValues is set to true
@@ -313,7 +314,7 @@ export module Implementation {
          * the value has to be explicitly true, according to
          * the specs jsdoc
          */
-        requestCtx.assignIf(isResetValues, CTX_PARAM_PASS_THR, P_RESET_VALUES).value = true;
+        requestCtx.assignIf(isResetValues, CTX_PARAM_REQ_PASS_THR, P_RESET_VALUES).value = true;
 
         // additional meta information to speed things up, note internal non jsf
         // pass through options are stored under _mfInternal in the context
@@ -324,9 +325,8 @@ export module Implementation {
         // mojarra under blackbox conditions.
         // I assume it does the same as our formId_submit=1 so leaving it out
         // won't hurt but for the sake of compatibility we are going to add it
-        requestCtx.assign(CTX_PARAM_PASS_THR, formId).value = formId;
+        requestCtx.assign(CTX_PARAM_REQ_PASS_THR, formId).value = formId;
         internalCtx.assign(CTX_PARAM_SRC_CTL_ID).value = elementId;
-        internalCtx.assign(CTX_PARAM_TR_TYPE).value = REQ_TYPE_POST;
 
         assignClientWindowId(form, requestCtx);
         assignExecute(options, requestCtx, form, elementId);
@@ -512,7 +512,7 @@ export module Implementation {
          */
 
         let element: DQ = DQ.byId(form, true);
-        if (!element.isTag(TAG_FORM)) {
+        if (!element.isTag(HTML_TAG_FORM)) {
             throw new Error(getMessage("ERR_VIEWSTATE"));
         }
 
@@ -553,7 +553,7 @@ export module Implementation {
      */
     function assignRender(requestOptions: Config, targetContext: Config, issuingForm: DQ, sourceElementId: string) {
         if (requestOptions.getIf(CTX_PARAM_RENDER).isPresent()) {
-            remapDefaultConstants(targetContext.getIf(CTX_PARAM_PASS_THR).get({}), P_RENDER, <string>requestOptions.getIf(CTX_PARAM_RENDER).value, issuingForm, <any>sourceElementId);
+            remapDefaultConstants(targetContext.getIf(CTX_PARAM_REQ_PASS_THR).get({}), P_RENDER, <string>requestOptions.getIf(CTX_PARAM_RENDER).value, issuingForm, <any>sourceElementId, targetContext.getIf(VIEW_ID).value);
         }
     }
 
@@ -571,15 +571,15 @@ export module Implementation {
      */
     function assignExecute(requestOptions: Config, targetContext: Config, issuingForm: DQ, sourceElementId: string) {
 
-        if (requestOptions.getIf(CTX_PARAM_EXECUTE).isPresent()) {
+        if (requestOptions.getIf(CTX_OPTIONS_EXECUTE).isPresent()) {
             /*the options must be a blank delimited list of strings*/
             /*compliance with Mojarra which automatically adds @this to an execute
              * the spec rev 2.0a however states, if none is issued nothing at all should be sent down
              */
-            requestOptions.assign(CTX_PARAM_EXECUTE).value = [requestOptions.getIf(CTX_PARAM_EXECUTE).value, IDENT_THIS].join(" ");
-            remapDefaultConstants(targetContext.getIf(CTX_PARAM_PASS_THR).get({}), P_EXECUTE, <string>requestOptions.getIf(CTX_PARAM_EXECUTE).value, issuingForm, <any>sourceElementId);
+            requestOptions.assign(CTX_OPTIONS_EXECUTE).value = [requestOptions.getIf(CTX_OPTIONS_EXECUTE).value, IDENT_THIS].join(" ");
+            remapDefaultConstants(targetContext.getIf(CTX_PARAM_REQ_PASS_THR).get({}), P_EXECUTE, <string>requestOptions.getIf(CTX_OPTIONS_EXECUTE).value, issuingForm, <any>sourceElementId, targetContext.getIf(VIEW_ID).value);
         } else {
-            targetContext.assign(CTX_PARAM_PASS_THR, P_EXECUTE).value = sourceElementId;
+            targetContext.assign(CTX_PARAM_REQ_PASS_THR, P_EXECUTE).value = sourceElementId;
         }
     }
 
@@ -591,9 +591,9 @@ export module Implementation {
      */
     function assignClientWindowId(form: DQ, targetContext: Config) {
 
-        let clientWindow = (window?.faces ?? window?.jsf).getClientWindow(form.getAsElem(0).value);
+        let clientWindow = $faces().getClientWindow(form.getAsElem(0).value);
         if (clientWindow) {
-            targetContext.assign(CTX_PARAM_PASS_THR, P_CLIENT_WINDOW).value = clientWindow;
+            targetContext.assign(CTX_PARAM_REQ_PASS_THR, P_CLIENT_WINDOW).value = clientWindow;
         }
     }
 
@@ -611,13 +611,24 @@ export module Implementation {
      * @param userValues the passed user values (aka input string which needs to be transformed)
      * @param issuingForm the form where the issuing element originates
      * @param issuingElementId the issuing element
+     * @param viewId the naming container id ("" default if none is given)
      */
-    function remapDefaultConstants(targetConfig: Config, targetKey: string, userValues: string, issuingForm: DQ, issuingElementId: string): Config {
+    function remapDefaultConstants(targetConfig: Config, targetKey: string, userValues: string, issuingForm: DQ, issuingElementId: string, viewId: string = ""): Config {
         //a cleaner implementation of the transform list method
-
+        const SEP = $faces().separatorchar;
         let iterValues: string[] = (userValues) ? trim(userValues).split(/\s+/gi) : [];
         let ret = [];
         let processed: {[key: string]: boolean} = {};
+
+        //TODO check if this is right
+        const remapNamingContainer = item => {
+            if(item.indexOf(SEP) === 0 && viewId !== "") {
+                item = [viewId, SEP, item.substring(1)].join("");
+            } else if(item.indexOf(SEP) === 0) {
+                item = item.substring(1);
+            }
+            return item;
+        };
 
         // in this case we do not use lazy stream because it wont bring any code reduction
         // or speedup
@@ -636,22 +647,22 @@ export module Implementation {
                     return targetConfig;
                 //@form pushes the issuing form id into our list
                 case IDENT_FORM:
-                    ret.push(issuingForm.id.value);
+                    ret.push(remapNamingContainer(issuingForm.id.value));
                     processed[issuingForm.id.value] = true;
                     break;
                 //@this is replaced with the current issuing element id
                 case IDENT_THIS:
                     if (!(issuingElementId in processed)) {
-                        ret.push(issuingElementId);
+                        ret.push(remapNamingContainer(issuingElementId));
                         processed[issuingElementId] = true;
                     }
                     break;
                 default:
-                    ret.push(iterValues[cnt]);
+                    ret.push(remapNamingContainer(iterValues[cnt]));
                     processed[iterValues[cnt]] = true;
             }
         }
-        //We now add the target as joined list
+
         targetConfig.assign(targetKey).value = ret.join(" ");
         return targetConfig;
     }
