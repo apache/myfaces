@@ -202,7 +202,7 @@ public class NumberConverterTest extends AbstractJsfTestCase
     {
         facesContext.getViewRoot().setLocale(Locale.US);
         mock.setLocale(Locale.GERMANY);
-        mock.setIntegerOnly(true);
+        // mock.setIntegerOnly(true); MYFACES-4508
         mock.setGroupingUsed(false);
         UIInput input = new UIInput();
         facesContext.getELContext().getELResolver().setValue(facesContext.getELContext(), null,
@@ -220,6 +220,24 @@ public class NumberConverterTest extends AbstractJsfTestCase
         catch (ConverterException e)
         {
             // expected
+        }
+    }
+
+    @Test
+    public void testGetAsObjectParseIntOnly(){
+        facesContext.getViewRoot().setLocale(Locale.US);
+        mock.setLocale(Locale.US);
+        mock.setIntegerOnly(true);
+        UIInput input = new UIInput();
+        
+        try
+        {
+            Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "1,234.56");
+            assertEquals(number.intValue(), 1234);
+        }
+        catch (ConverterException e)
+        {
+            Assert.fail();
         }
     }
 }
