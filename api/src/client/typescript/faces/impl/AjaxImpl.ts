@@ -21,7 +21,7 @@ import {AsynchronousQueue} from "./util/AsyncQueue";
 import {AssocArrayCollector, Config, DQ, Lang, LazyStream, Optional, Stream} from "mona-dish";
 import {Assertions} from "./util/Assertions";
 import {XhrFormData} from "./xhrCore/XhrFormData";
-import {ExtDomQuery} from "./util/ExtDomQuery";
+import {ExtConfig, ExtDomQuery} from "./util/ExtDomQuery";
 import {ErrorData} from "./xhrCore/ErrorData";
 import {EventData} from "./xhrCore/EventData";
 import {ExtLang} from "./util/Lang";
@@ -48,7 +48,7 @@ import {
     P_WINDOW_ID,
     CTX_PARAM_RENDER,
     SOURCE,
-    HTML_TAG_FORM, CTX_OPTIONS_PARAMS, VIEW_ID, $faces
+    HTML_TAG_FORM, CTX_OPTIONS_PARAMS, VIEW_ID, $faces, EMPTY_STR
 } from "./core/Const";
 import {
     resolveDefaults,
@@ -241,15 +241,14 @@ export module Implementation {
     export function request(el: ElemDef, event?: Event, opts ?: Options) {
 
         const {
-            resolvedEvent,
             options,
             elem,
             elementId,
-            requestCtx,
-            internalCtx,
             windowId,
             isResetValues
         } = resolveDefaults(event, opts, el);
+        const requestCtx = new ExtConfig({});
+        const internalCtx = new ExtConfig({});
 
         Assertions.assertRequestIntegrity(options, elem);
 
@@ -260,7 +259,7 @@ export module Implementation {
          * so that people can use dummy forms and work
          * with detached objects
          */
-        const form: DQ = resolveForm(requestCtx, elem, resolvedEvent);
+        const form: DQ = resolveForm(elem, event);
         const viewId: string = resolveViewId(form);
         const formId = form.id.value;
         const delay: number = resolveDelay(options);
@@ -269,12 +268,12 @@ export module Implementation {
         requestCtx.assignIf(!!windowId, P_WINDOW_ID).value = windowId;
 
         // old non spec behavior will be removed after it is clear whether the removal breaks any code
-        requestCtx.assign(CTX_PARAM_REQ_PASS_THR).value = filterPassThroughValues(options.value);
+        requestCtx.assign(CTX_PARAM_REQ_PASS_THR).value = extractLegacyParams(options.value);
 
         // spec conform behavior, all passthrough params must be under "passthrough
         const params = remapArrayToAssocArr(options.getIf(CTX_OPTIONS_PARAMS).orElse({}).value);
         requestCtx.getIf(CTX_PARAM_REQ_PASS_THR).shallowMerge(new Config(params), true);
-        requestCtx.assignIf(!!resolvedEvent, CTX_PARAM_REQ_PASS_THR, P_EVT).value = resolvedEvent?.type;
+        requestCtx.assignIf(!!event, CTX_PARAM_REQ_PASS_THR, P_EVT).value = event?.type;
 
         /**
          * ajax pass through context with the source
@@ -600,7 +599,7 @@ export module Implementation {
     /**
      * transforms the user values to the expected one
      * with the proper none all form and this handling
-     * (note we also could use a simple string replace but then
+     * (note we also could use a simple string replace, but then
      * we would have had double entries under some circumstances)
      *
      * there are several standardized constants which need a special treatment
@@ -611,23 +610,53 @@ export module Implementation {
      * @param userValues the passed user values (aka input string which needs to be transformed)
      * @param issuingForm the form where the issuing element originates
      * @param issuingElementId the issuing element
-     * @param viewId the naming container id ("" default if none is given)
+     * @param rootNamingContainerId the naming container id ("" default if none is given)
      */
-    function remapDefaultConstants(targetConfig: Config, targetKey: string, userValues: string, issuingForm: DQ, issuingElementId: string, viewId: string = ""): Config {
+    function remapDefaultConstants(targetConfig: Config, targetKey: string, userValues: string, issuingForm: DQ, issuingElementId: string, rootNamingContainerId: string = ""): Config {
         //a cleaner implementation of the transform list method
         const SEP = $faces().separatorchar;
         let iterValues: string[] = (userValues) ? trim(userValues).split(/\s+/gi) : [];
         let ret = [];
         let processed: {[key: string]: boolean} = {};
 
-        //TODO check if this is right
-        const remapNamingContainer = item => {
-            if(item.indexOf(SEP) === 0 && viewId !== "") {
-                item = [viewId, SEP, item.substring(1)].join("");
-            } else if(item.indexOf(SEP) === 0) {
-                item = item.substring(1);
+        /**
+         * remaps the client ids for the portlet case so that the server
+         * can deal with them either prefixed ir not
+         * also resolves the absolute id case (it was assumed the server does this, but
+         * apparently the RI does not, so we have to follow the RI behavior here)
+         * @param componentIdToTransform the componentId which needs post processing
+         */
+        const remapNamingContainer = componentIdToTransform => {
+            // pattern :<anything> must be prepended by viewRoot if there is one,
+            // otherwise we are in a not namespaced then only the id has to match
+            const rootNamingContainerPrefix = (rootNamingContainerId.length) ? rootNamingContainerId+SEP : EMPTY_STR;
+            let formClientId = issuingForm.id.value;
+            // nearest parent naming container relative to the form
+            const nearestNamingContainer = formClientId.substring(0, formClientId.lastIndexOf(SEP));
+            const nearestNamingContainerPrefix = (nearestNamingContainer.length) ? nearestNamingContainer + SEP : EMPTY_STR;
+            // Absolute search expressions, always start with SEP or the name of the root naming container
+            const hasLeadingSep = componentIdToTransform.indexOf(SEP) === 0;
+            const isAbsolutSearchExpr = hasLeadingSep || (rootNamingContainerId.length
+                && componentIdToTransform.indexOf(rootNamingContainerPrefix) == 0);
+
+            if (isAbsolutSearchExpr) {
+                //we cut off the leading sep if there is one
+                componentIdToTransform = hasLeadingSep ? componentIdToTransform.substring(1) : componentIdToTransform;
+                componentIdToTransform = componentIdToTransform.indexOf(rootNamingContainerPrefix) == 0 ? componentIdToTransform.substring(rootNamingContainerPrefix.length) : componentIdToTransform;
+                //now we prepend either the prefix or "" from the cut-off string to get the final result
+                return  [rootNamingContainerPrefix, componentIdToTransform].join(EMPTY_STR);
+            } else { //relative search according to the javadoc
+                //we cut off the root naming container id from the form
+                if (formClientId.indexOf(rootNamingContainerPrefix) == 0) {
+                    formClientId = formClientId.substring(rootNamingContainerPrefix.length);
+                }
+
+                //If prependId = true, the outer form id must be present in the id if same form
+                let hasPrependId = componentIdToTransform.indexOf(formClientId) == 0;
+                return hasPrependId ?
+                    [rootNamingContainerPrefix, componentIdToTransform].join(EMPTY_STR) :
+                    [nearestNamingContainerPrefix,  componentIdToTransform].join(EMPTY_STR);
             }
-            return item;
         };
 
         // in this case we do not use lazy stream because it wont bring any code reduction
@@ -669,17 +698,17 @@ export module Implementation {
 
     /**
      * Filter the options given with a blacklist, so that only
-     * the values required for pass-through are processed in the ajax request
+     * the values required for params-through are processed in the ajax request
      *
      * Note this is a bug carried over from the old implementation
      * the spec conform behavior is to use params for passthrough values
-     * this will be removed soon, after it is cleared up wheter removing
+     * this will be removed soon, after it is cleared up whether removing
      * it breaks any legacy code
      *
      * @param {Context} mappedOpts the options to be filtered
      * @deprecated
      */
-    function filterPassThroughValues(mappedOpts: Context): Context {
+    function extractLegacyParams(mappedOpts: Options): Context {
         //we now can use the full code reduction given by our stream api
         //to filter
         return Stream.ofAssoc(mappedOpts)

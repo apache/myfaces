@@ -469,17 +469,17 @@ describe('Tests of the various aspects of the response protocol functionality', 
     const INNER_HTML_MULIT_VIEW = `
         <div id="viewroot_1">
             <form id="viewroot_1:form1">
-                <button type="submit" id="submit_1"></button>
+                <button type="submit" id="viewroot_1:submit_1"></button>
                 <input type="hidden" id="viewroot_1:form1:jakarta.faces.ViewState:1" name="jakarta.faces.ViewState" value="booga"></input>
             </form>
             <form id="viewroot_1:form2">
-                <button type="submit" id="submit_2"></button>
+                <button type="submit" id="viewroot_1:submit_2"></button>
             </form>
         </div>
         
         <div id="viewroot_2">
             <form id="viewroot_2:form1">
-                <button type="submit" id="submit_2"></button>
+                <button type="submit" id="viewroot_1:submit_2"></button>
             </form>
         </div>
         `;
@@ -495,10 +495,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         window.document.body.innerHTML = INNER_HTML_MULIT_VIEW;
 
-        faces.ajax.request(window.document.getElementById("submit_1"), null, {
+        faces.ajax.request(window.document.getElementById("viewroot_1:submit_1"), null, {
             "javax.faces.behavior.event": "change",
             execute: "submit_1",
-            render: "viewroot_1:form1"
+            render: "form1"
         });
         this.respond(RESPONSE_1);
         expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ViewState']").isAbsent()).to.be.true;
@@ -518,7 +518,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         window.document.body.innerHTML = INNER_HTML_MULIT_VIEW;
 
-        faces.ajax.request(window.document.getElementById("submit_1"), null, {
+        faces.ajax.request(window.document.getElementById("viewroot_1:submit_1"), null, {
             "javax.faces.behavior.event": "change",
             execute: "submit_1",
             render: "viewroot_1:form1 submit_2"
@@ -547,7 +547,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         window.document.body.innerHTML = INNER_HTML_MULIT_VIEW;
 
-        faces.ajax.request(window.document.getElementById("submit_1"), null, {
+        faces.ajax.request(window.document.getElementById("viewroot_1:submit_1"), null, {
             "javax.faces.behavior.event": "change",
             execute: "submit_1",
             render: "viewroot_1:form1"
@@ -570,10 +570,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         window.document.body.innerHTML = INNER_HTML_MULIT_VIEW;
 
-        faces.ajax.request(window.document.getElementById("submit_1"), null, {
+        faces.ajax.request(window.document.getElementById("viewroot_1:submit_1"), null, {
             "javax.faces.behavior.event": "change",
             execute: "submit_1",
-            render: "viewroot_1:form1 submit_2"
+            render: "viewroot_1:form1 :submit_2"
         });
         this.respond(RESPONSE_1);
         expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ClientWindow']").isPresent()).to.be.true;
@@ -657,6 +657,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         });
 
         this.respond(RESPONSE_1);
+        // all forms in execute and render must receive the latest viewstate
         expect(DQ$("#form1 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
         expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
         expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
