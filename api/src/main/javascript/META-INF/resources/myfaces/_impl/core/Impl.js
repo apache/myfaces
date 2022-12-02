@@ -192,7 +192,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             source:elem,
             onevent:options.onevent,
             onerror:options.onerror,
-
+            viewId: "",
             //TODO move the myfaces part into the _mfInternal part
             myfaces:options.myfaces,
             _mfInternal:{}
@@ -211,6 +211,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         var form = (options.myfaces && options.myfaces.form) ?
             _Lang.byId(options.myfaces.form) :
             this._getForm(elem, event);
+
+        context.viewId = this.getViewId(form);
 
         /**
          * faces2.2 client window must be part of the issuing form so it is encoded
@@ -461,8 +463,60 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         }
 
         //the final list must be blank separated
-        passThrgh[target] = vals.join(" ");
+        passThrgh[target] = this._remapNamingContainer(elementId, form, namingContainerId,vals).join(" ");
         return passThrgh;
+    },
+
+    /**
+     * in namespaced situations root naming containers must be resolved
+     * ":" absolute searches must be mapped accordingly, the same
+     * goes for absolut searches containing already the root naming container id
+     *
+     * @param issuingElementId the issuing element id
+     * @param form the hosting form of the issiung element id
+     * @param rootNamingContainerId the root naming container id
+     * @param elements a list of element client ids to be processed
+     * @returns {*} the mapped element client ids, which are resolved correctly to their naming containers
+     * @private
+     */
+    _remapNamingContainer(issuingElementId, form, rootNamingContainerId, elements) {
+        var SEP = faces.separatorchar;
+        function remapViewId(toTransform) {
+            var EMPTY_STR = "";
+            var rootNamingContainerPrefix = (rootNamingContainerId.length) ? rootNamingContainerId+SEP : EMPTY_STR;
+            var formClientId = form.id;
+            // nearest parent naming container relative to the form
+            var nearestNamingContainer = formClientId.substring(0, formClientId.lastIndexOf(SEP));
+            var nearestNamingContainerPrefix = (nearestNamingContainer.length) ? nearestNamingContainer + SEP : EMPTY_STR;
+            // absolut search expression, always starts with SEP or the name of the root naming container
+            var hasLeadingSep = toTransform.indexOf(SEP) === 0;
+            var isAbsolutSearchExpr = hasLeadingSep || (rootNamingContainerId.length
+                && toTransform.indexOf(rootNamingContainerPrefix) == 0);
+            if (isAbsolutSearchExpr) {
+                //we cut off the leading sep if there is one
+                toTransform = hasLeadingSep ? toTransform.substring(1) : toTransform;
+                toTransform = toTransform.indexOf(rootNamingContainerPrefix) == 0 ? toTransform.substring(rootNamingContainerPrefix.length) : toTransform;
+                //now we prepend either the prefix or "" from the cut-off string to get the final result
+                return  [rootNamingContainerPrefix, toTransform].join(EMPTY_STR);
+            } else { //relative search according to the javadoc
+                //we cut off the root naming container id from the form
+                if (formClientId.indexOf(rootNamingContainerPrefix) == 0) {
+                    formClientId = formClientId.substring(rootNamingContainerPrefix.length);
+                }
+
+                //If prependId = true, the outer form id must be present in the id if same form
+                var hasPrependId = toTransform.indexOf(formClientId) == 0;
+                return hasPrependId ?
+                    [rootNamingContainerPrefix, toTransform].join(EMPTY_STR) :
+                    [nearestNamingContainerPrefix, toTransform.substring(toTransform.lastIndexOf(SEP) + 1)].join(EMPTY_STR);
+            }
+        }
+
+        for(var cnt = 0; cnt < elements.length; cnt++) {
+            elements[cnt] = remapViewId(this._Lang.trim(elements[cnt]));
+        }
+
+        return elements;
     },
 
     addOnError:function (/*function*/errorListener) {
@@ -831,6 +885,23 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         var forms = this._Dom.findByTagName(finalNode, "form");
         var result = fetchWindowIdFromForms(forms);
         return (null != result) ? result : fetchWindowIdFromURL();
+    },
+
+    /**
+     * returns the view id from an incoming form
+     * crossport from new codebase
+     * @param form
+     */
+    getViewId: function (form) {
+        var _t = this;
+        var foundViewStates = this._Dom.findAll(form, function(node) {
+            return node.tagName === "INPUT" && node.type === "hidden" && (node.name || "").indexOf(_t.P_VIEWSTATE) !== -1
+        }, true);
+        if(!foundViewStates.length) {
+            return "";
+        }
+        var viewId =  foundViewStates[0].id.split(faces.separatorchar, 2)[0];
+        return viewId.indexOf(this.P_VIEWSTATE) === -1 ? viewId : "";
     }
 });
 
