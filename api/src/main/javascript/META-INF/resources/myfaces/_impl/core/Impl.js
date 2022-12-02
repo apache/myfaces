@@ -270,13 +270,13 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
              */
             options.execute = (options.execute.indexOf("@this") == -1) ? options.execute : options.execute;
 
-            this._transformList(passThrgh, this.P_EXECUTE, options.execute, form, elementId);
+            this._transformList(passThrgh, this.P_EXECUTE, options.execute, form, elementId, context.viewId);
         } else {
             passThrgh[this.P_EXECUTE] = elementId;
         }
 
         if (options.render) {
-            this._transformList(passThrgh, this.P_RENDER, options.render, form, elementId);
+            this._transformList(passThrgh, this.P_RENDER, options.render, form, elementId, context.viewId);
         }
 
         /**
@@ -422,7 +422,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * @param form
      * @param elementId
      */
-    _transformList:function (passThrgh, target, srcStr, form, elementId) {
+    _transformList:function (passThrgh, target, srcStr, form, elementId, namingContainerId) {
         var _Lang = this._Lang;
         //this is probably the fastest transformation method
         //it uses an array and an index to position all elements correctly
@@ -506,9 +506,10 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
                 //If prependId = true, the outer form id must be present in the id if same form
                 var hasPrependId = toTransform.indexOf(formClientId) == 0;
+
                 return hasPrependId ?
                     [rootNamingContainerPrefix, toTransform].join(EMPTY_STR) :
-                    [nearestNamingContainerPrefix, toTransform.substring(toTransform.lastIndexOf(SEP) + 1)].join(EMPTY_STR);
+                    [nearestNamingContainerPrefix, toTransform].join(EMPTY_STR);
             }
         }
 
@@ -901,7 +902,10 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             return "";
         }
         var viewId =  foundViewStates[0].id.split(faces.separatorchar, 2)[0];
-        return viewId.indexOf(this.P_VIEWSTATE) === -1 ? viewId : "";
+        var viewStateViewId = viewId.indexOf(this.P_VIEWSTATE) === -1 ? viewId : "";
+        // myfaces specific, we in non portlet environments prepend the viewId
+        // even without being in a naming container, the other components ignore that
+        return form.id.indexOf(viewStateViewId) === 0 ? viewStateViewId : "";
     }
 });
 
