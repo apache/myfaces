@@ -367,8 +367,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //for now we turn off the transport auto selection, to enable 2.0 backwards compatibility
         //on protocol level, the file upload only can be turned on if the auto selection is set to true
         var getConfig = this._RT.getLocalOrGlobalConfig,
-                _Lang = this._Lang,
-                _Dom = this._Dom;
+            _Lang = this._Lang,
+            _Dom = this._Dom;
 
         var transportAutoSelection = getConfig(context, "transportAutoSelection", true);
         /*var isMultipart = (transportAutoSelection && _Dom.getAttribute(form, "enctype") == "multipart/form-data") ?
@@ -379,7 +379,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             return getConfig(context, "transportType", "xhrQueuedPost");
         }
         var multiPartCandidate = _Dom.isMultipartCandidate((!getConfig(context, "pps", false)) ?
-                form : passThrgh[this.P_EXECUTE]);
+            form : passThrgh[this.P_EXECUTE]);
         var multipartForm = (_Dom.getAttribute(form, "enctype") || "").toLowerCase() == "multipart/form-data";
         //spec section jsdoc, if we have a multipart candidate in our execute (aka fileupload)
         //and the form is not multipart then we have to raise an error
@@ -400,8 +400,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
          *
          */
         var transportType = (!isMultipart) ?
-                getConfig(context, "transportType", "xhrQueuedPost") :
-                getConfig(context, "transportType", "multipartQueuedPost");
+            getConfig(context, "transportType", "xhrQueuedPost") :
+            getConfig(context, "transportType", "multipartQueuedPost");
         if (!this._transport[transportType]) {
             //throw new Error("Transport type " + transportType + " does not exist");
             throw new Error(_Lang.getMessage("ERR_TRANSPORT", null, transportType));
@@ -431,14 +431,14 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //false
         srcStr = this._Lang.trim(srcStr);
         var offset = 1,
-                vals = (srcStr) ? srcStr.split(/\s+/) : [],
-                idIdx = (vals.length) ? _Lang.arrToMap(vals, offset) : {},
+            vals = (srcStr) ? srcStr.split(/\s+/) : [],
+            idIdx = (vals.length) ? _Lang.arrToMap(vals, offset) : {},
 
-        //helpers to improve speed and compression
-                none = idIdx[this.IDENT_NONE],
-                all = idIdx[this.IDENT_ALL],
-                theThis = idIdx[this.IDENT_THIS],
-                theForm = idIdx[this.IDENT_FORM];
+            //helpers to improve speed and compression
+            none = idIdx[this.IDENT_NONE],
+            all = idIdx[this.IDENT_ALL],
+            theThis = idIdx[this.IDENT_THIS],
+            theForm = idIdx[this.IDENT_FORM];
 
         if (none) {
             //in case of none nothing is returned
@@ -507,9 +507,10 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
                 //If prependId = true, the outer form id must be present in the id if same form
                 var hasPrependId = toTransform.indexOf(formClientId) == 0;
+
                 return hasPrependId ?
                     [rootNamingContainerPrefix, toTransform].join(EMPTY_STR) :
-                    [nearestNamingContainerPrefix, toTransform.substring(toTransform.lastIndexOf(SEP) + 1)].join(EMPTY_STR);
+                    [nearestNamingContainerPrefix, toTransform].join(EMPTY_STR);
             }
         }
 
@@ -902,7 +903,10 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             return "";
         }
         var viewId =  foundViewStates[0].id.split(jsf.separatorchar, 2)[0];
-        return viewId.indexOf(this.P_VIEWSTATE) === -1 ? viewId : "";
+        var viewStateViewId = viewId.indexOf(this.P_VIEWSTATE) === -1 ? viewId : "";
+        // myfaces specific, we in non portlet environments prepend the viewId
+        // even without being in a naming container, the other components ignore that
+        return form.id.indexOf(viewStateViewId) === 0 ? viewStateViewId : "";
     }
 });
 
