@@ -99,6 +99,8 @@ export class ResponseProcessor implements IResponseProcessor {
         // full replace we delete everything
         head.childNodes.delete();
         this.addToHead(shadowHead);
+        //we copy the attributes as well (just in case myfaces introduces the id in head)
+        head.copyAttrs(shadowHead);
     }
 
     addToHead(shadowHead: XMLQuery | DQ) {
@@ -113,6 +115,7 @@ export class ResponseProcessor implements IResponseProcessor {
         // after the rest of the "physical build up", head before body
         const evalElements = nodesToAdd.stream
             .filter(item => postProcessTags.indexOf(item.tagName.orElse("").value) != -1).collect(new DomQueryCollector());
+
         this.addToHeadDeferred(evalElements);
     }
 

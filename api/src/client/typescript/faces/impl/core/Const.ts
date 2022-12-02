@@ -96,6 +96,7 @@ export const TIMEOUT_EVENT = "timeout";
 
 export const CTX_OPTIONS_PARAMS = "params";
 export const CTX_OPTIONS_DELAY = "delay";
+export const DELAY_NONE = 'none';
 export const CTX_OPTIONS_TIMEOUT = "timeout";
 export const CTX_OPTIONS_RESET = "resetValues";
 export const CTX_OPTIONS_EXECUTE = "execute";

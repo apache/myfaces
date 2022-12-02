@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-import {AssocArrayCollector, Config, DomQuery, DQ, Stream} from "mona-dish";
+import {Config, DomQuery, DQ} from "mona-dish";
 import {
     $faces,
     $nsp,
     CTX_OPTIONS_DELAY,
     CTX_OPTIONS_TIMEOUT,
+    DELAY_NONE,
     EMPTY_FUNC,
     EMPTY_STR,
     ENCODED_URL,
-    MF_NONE, P_VIEWSTATE,
+    P_VIEWSTATE,
     REQ_TYPE_GET,
     REQ_TYPE_POST
 } from "../core/Const";
@@ -71,25 +72,21 @@ export function resolveFinalUrl(sourceForm: DomQuery, formData: XhrFormData, aja
  * it is either the id or the parent form of the element or an embedded form
  * of the element
  *
- * @param requestCtx
  * @param elem
  * @param event
  */
-export function resolveForm(requestCtx: Config, elem: DQ, event: Event): DQ {
-    const configId = requestCtx.value?.myfaces?.form ?? MF_NONE;
-    return DQ
-        .byId(configId, true)
-        .orElseLazy(() => ExtLang.getForm(elem.getAsElem(0).value, event));
+export function resolveForm(elem: DQ, event: Event): DQ {
+    return ExtLang.getForm(elem.getAsElem(0).value, event);
 }
 
 export function resolveViewId(form: DQ): string {
-    let viewState = form.querySelectorAll(`input[type='hidden'][name*='${$nsp(P_VIEWSTATE)}']`).id.orElse("").value;
-    let divider = $faces().separatorchar;
-    let viewId = viewState.split(divider, 2)[0];
-    if(viewId.indexOf($nsp(P_VIEWSTATE)) === -1) {
-        return viewId;
-    }
-    return "";
+    const viewState = form.querySelectorAll(`input[type='hidden'][name*='${$nsp(P_VIEWSTATE)}']`).id.orElse("").value;
+    const divider = $faces().separatorchar;
+    const viewId = viewState.split(divider, 2)[0];
+    const viewStateViewId = viewId.indexOf($nsp(P_VIEWSTATE)) === -1 ? viewId : "";
+    // myfaces specific, we in non portlet environments prepend the viewId
+    // even without being in a naming container, the other components ignore that
+    return form.id.value.indexOf(viewStateViewId) === 0 ? viewStateViewId : "";
 }
 
 export function resolveTimeout(options: Config): number {
@@ -103,14 +100,12 @@ export function resolveTimeout(options: Config): number {
  * @param options ... the options object, in most cases it will host the delay value
  */
 export function resolveDelay(options: Config): number {
-    let getCfg = ExtLang.getLocalOrGlobalConfig;
-
-    // null or non undefined will automatically be mapped to 0 aka no delay
-    let ret = options.getIf(CTX_OPTIONS_DELAY).value ?? getCfg(options.value, CTX_OPTIONS_DELAY, 0);
+    // null, 'none', or undefined will automatically be mapped to 0 aka no delay
+    // the config delay will be dropped not needed anymore, it does not really
+    // make sense anymore now that it is part of a local spec
+    let ret = options.getIf(CTX_OPTIONS_DELAY).orElse(0).value;
     // if delay === none, no delay must be used, aka delay 0
-    if('none' === ret) {
-        ret = 0;
-    }
+    ret = (DELAY_NONE === ret) ? 0 : ret;
     // negative, or invalid values will automatically get a js exception
     Assertions.assertDelay(ret);
     return ret;
@@ -160,14 +155,15 @@ export function getEventTarget(evt: Event): Element {
  * @param opts
  * @param el
  */
-export function resolveDefaults(event: Event, opts: Options | [[string, any]] , el: Element | string = null) {
+export function resolveDefaults(event: Event, opts: Options | [[string, any]] , el: Element | string = null): any {
     //deep copy the options, so that further transformations to not backfire into the callers
-    const resolvedEvent = event,
-        options = new ExtConfig(opts).deepCopy,
-        elem = DQ.byId(el || <Element>resolvedEvent.target, true),
-        elementId = elem.id.value, requestCtx = new ExtConfig({}),
-        internalCtx = new ExtConfig({}), windowId = resolveWindowId(options),
-        isResetValues = true === options.value?.resetValues;
-
-    return {resolvedEvent, options, elem, elementId, requestCtx, internalCtx, windowId, isResetValues};
+    const elem = DQ.byId(el || <Element>event.target, true);
+    const options = new ExtConfig(opts).deepCopy as ExtConfig;
+    return {
+        options: options,
+        elem: elem,
+        elementId: elem.id.value,
+        windowId: resolveWindowId(options),
+        isResetValues: true === options.value?.resetValues
+    };
 }
