@@ -480,7 +480,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * @returns {*} the mapped element client ids, which are resolved correctly to their naming containers
      * @private
      */
-    _remapNamingContainer(issuingElementId, form, rootNamingContainerId, elements) {
+    _remapNamingContainer: function(issuingElementId, form, rootNamingContainerId, elements) {
         var SEP = jsf.separatorchar;
         function remapViewId(toTransform) {
             var EMPTY_STR = "";
@@ -506,7 +506,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
                 }
 
                 //If prependId = true, the outer form id must be present in the id if same form
-                let hasPrependId = toTransform.indexOf(formClientId) == 0;
+                var hasPrependId = toTransform.indexOf(formClientId) == 0;
                 return hasPrependId ?
                     [rootNamingContainerPrefix, toTransform].join(EMPTY_STR) :
                     [nearestNamingContainerPrefix, toTransform.substring(toTransform.lastIndexOf(SEP) + 1)].join(EMPTY_STR);
