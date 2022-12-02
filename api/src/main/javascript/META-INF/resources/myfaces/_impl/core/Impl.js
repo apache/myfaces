@@ -479,7 +479,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * @returns {*} the mapped element client ids, which are resolved correctly to their naming containers
      * @private
      */
-    _remapNamingContainer(issuingElementId, form, rootNamingContainerId, elements) {
+    _remapNamingContainer: function(issuingElementId, form, rootNamingContainerId, elements) {
         var SEP = faces.separatorchar;
         function remapViewId(toTransform) {
             var EMPTY_STR = "";
