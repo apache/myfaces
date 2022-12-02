@@ -620,7 +620,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var oldTags = head.childNodes;
 
         _Dom.deleteItems(_Lang.objToArray(oldTags));
-        var childNodes = Lang.objToArray(newHead.childNodes);
+        var childNodes = _Lang.objToArray(newHead.childNodes);
 
         var placeHolder = document.createElement("meta");
 
