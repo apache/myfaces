@@ -1937,9 +1937,13 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 //Ensure calculateResourceLibraryContracts() can be decorated
                 ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
                         .getViewDeclarationLanguage(context, viewId);
-                List<String> contracts = vdl.calculateResourceLibraryContracts(
-                    context, root.getViewId() != null ? root.getViewId() : viewId);
-                context.setResourceLibraryContracts(contracts);
+
+                if (vdl != null)
+                {
+                    List<String> contracts = vdl.calculateResourceLibraryContracts(
+                        context, root.getViewId() != null ? root.getViewId() : viewId);
+                    context.setResourceLibraryContracts(contracts);
+                }
             }
             return root;
         }
