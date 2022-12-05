@@ -466,7 +466,7 @@ describe('Tests after core when it hits response', function () {
                     expect(error.type).to.eq("error");
                     expect(!!error.status).to.eq(true);
                     expect(!!error.message).to.eq(true);
-                    expect(!!error.source).to.eq(true);
+                    expect(!!error.source?.id).to.eq(true);
                     expect(!!error.responseCode).to.eq(true);
                     expect(!!error.responseText).to.eq(true);
                     expect(!error.responseXML).to.eq(true);

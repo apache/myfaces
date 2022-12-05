@@ -245,12 +245,12 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         // language=XML
         this.respond(`<?xml version="1.0" encoding="UTF-8"?>
-            <partial-response id="j_id__v_0">
-                <changes>
-                    <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
-                    <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]></update>
-                </changes>
-            </partial-response>`);
+        <partial-response id="j_id__v_0">
+            <changes>
+                <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
+                <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]></update>
+            </changes>
+        </partial-response>`);
 
 
         expect(DQ$("[name='jakarta.faces.ViewState']").isPresent()).to.be.true;
@@ -279,14 +279,14 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         // language=XML
         this.respond(`<?xml version="1.0" encoding="UTF-8"?>
-            <partial-response id="j_id__v_0">
-                <changes>
-                    <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
-                    <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]><!-- 
+        <partial-response id="j_id__v_0">
+            <changes>
+                <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
+                <update id="j_id__v_0:jakarta.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]><!-- 
                         Some random junk which is sent by the server
                     --></update>
-                </changes>
-            </partial-response>`);
+            </changes>
+        </partial-response>`);
 
 
         expect(DQ$("[name='jakarta.faces.ViewState']").isAbsent()).to.be.false;
@@ -356,8 +356,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
     });
 
 
-
-    it("must handle simple resource responses properly", function(done) {
+    it("must handle simple resource responses properly", function (done) {
 
         // we need to fake the response as well to see whether the server has loaded the addedViewHead code and has interpreted it
         //(window as any)["test"] = "booga";
@@ -372,10 +371,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
     })
 
 
-    it("only single resources are allowed", function(done) {
+    it("only single resources are allowed", function (done) {
         // we need to fake the response as well to see whether the server has loaded the addedViewHead code and has interpreted it
         //(window as any)["test"] = "booga";
-        for(let cnt = 0; cnt < 10; cnt++) {
+        for (let cnt = 0; cnt < 10; cnt++) {
             DQ.byId("cmd_simple_resource").click();
             this.respond(XmlResponses.MULTIPLE_RESOURCE_RESPONSE);
         }
@@ -389,7 +388,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
     })
 
     //TODO implement secondary response mockup
-    it("must handle complex resource responses properly", function(done) {
+    it("must handle complex resource responses properly", function (done) {
         DQ.byId("cmd_complex_resource").click();
         this.respond(XmlResponses.MULTIPLE_RESOURCE_RESPONSE);
 
@@ -402,11 +401,11 @@ describe('Tests of the various aspects of the response protocol functionality', 
             .catch(done);
     })
 
-    it("embedded scripts must be evaled", function(done) {
+    it("embedded scripts must be evaled", function (done) {
 
         DQ.byId("cmd_complex_resource2").click();
         this.respond(XmlResponses.EMBEDDED_SCRIPTS_RESOURCE_RESPONSE);
-       // this.respond("debugger; document.getElementById('resource_area_1').innerHTML = 'true3'",  {'Content-Type': 'text/javascript'});
+        // this.respond("debugger; document.getElementById('resource_area_1').innerHTML = 'true3'",  {'Content-Type': 'text/javascript'});
         let headHTML = document.head.innerHTML;
         expect(headHTML.indexOf("../../../xhrCore/fixtures/addedViewHead3.js")).not.eq(-1);
         expect(headHTML.indexOf("href=\"../../../xhrCore/fixtures/addedViewHead2.css\"")).not.eq(-1);
@@ -421,7 +420,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
     })
 
 
-    it("head replacement must work (https://issues.apache.org/jira/browse/MYFACES-4498 and TCK Issue 4345IT)", function(done) {
+    it("head replacement must work (https://issues.apache.org/jira/browse/MYFACES-4498 and TCK Issue 4345IT)", function (done) {
 
         DQ.byId("cmd_complex_resource2").click();
         this.respond(XmlResponses.HEAD_REPLACE);
@@ -442,7 +441,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
     })
 
 
-    it("complex head replacement must work", function(done) {
+    it("complex head replacement must work", function (done) {
 
         DQ.byId("cmd_complex_resource2").click();
         this.respond(XmlResponses.HEAD_REPLACE2);
@@ -723,6 +722,39 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         done();
     });
+
+    it('must handle a ViewExpired Error correctly, and only once in a listener', function (done) {
+
+        document.body.innerHTML = TCK_790_NAV_MARKUP;
+
+        let errorCalled = 0;
+        faces.ajax.addOnError((error)=> {
+            expect(error.errorName).to.eq("jakarta.faces.application.ViewExpiredException");
+            expect(error.errorMessage).to.eq("View \"/testhmtl.xhtml\" could not be restored.");
+            expect(error.source.id).to.eq("form1x:button");
+            errorCalled++;
+        });
+
+        faces.ajax.request(window.document.getElementById("form1x:button"), null, {
+            "javax.faces.behavior.event": "click",
+            execute: "@form",
+            render: ":form1x:button"
+        });
+
+        this.respond(`<?xml version="1.0" encoding="UTF-8"?>
+        <partial-response><error>
+        <error-name>jakarta.faces.application.ViewExpiredException</error-name>
+        <error-message><![CDATA[View "/testhmtl.xhtml" could not be restored.]]></error-message>
+        </error>
+        </partial-response>`)
+
+        expect(errorCalled).to.eq(1);
+
+        done();
+
+    });
+
+
 
 
 });
