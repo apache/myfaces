@@ -49,7 +49,8 @@ export enum ErrorType {
 export class ErrorData extends EventData implements IErrorData {
 
     type: string = "error";
-    source: string;
+    source: HTMLElement;
+    sourceId: string;
     errorName: string;
     errorMessage: string;
 
@@ -65,7 +66,8 @@ export class ErrorData extends EventData implements IErrorData {
 
     constructor(source: string, errorName: string, errorMessage: string, responseText: string = null, responseXML: any = null, responseCode: string = "200", status: string = "UNKNOWN", type = ErrorType.CLIENT_ERROR) {
         super();
-        this.source = source;
+        this.source = document.getElementById(source);
+        this.sourceId = source;
         this.type = "error";
         this.errorName = errorName;
         this.message = this.errorMessage = errorMessage;
@@ -81,7 +83,7 @@ export class ErrorData extends EventData implements IErrorData {
     }
 
     static fromClient(e: Error): ErrorData {
-        return new ErrorData("client", e?.name ?? '', e?.message ?? '', e?.stack ?? '');
+        return new ErrorData((e as any)?.source ?? "client", e?.name ?? '', e?.message ?? '', e?.stack ?? '');
     }
 
     static fromHttpConnection(source: any, name: string, message: string, responseText, responseCode: number, status: string = 'UNKNOWN'): ErrorData {

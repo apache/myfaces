@@ -49,9 +49,18 @@ export class HiddenInputBuilder {
 
 
     build(): DomQuery {
-        //TODO naming container id?
-        const cnt = DQ$(`[name='${$nsp(this.name)}']`).length;
         const SEP = $faces().separatorchar;
+
+        let existingStates = DQ$(`[name*='${$nsp(this.name)}']`);
+        let cnt = existingStates.stream.map(state => {
+            let ident: string = state.id.orElse("-1").value;
+            ident = ident.substring(ident.lastIndexOf(SEP)+1);
+            return parseInt(ident) || -1;
+        }).reduce((item1, item2) => Math.max(item1, item2), -1).value;
+        //the maximum  new ident is the current max + 1
+        cnt++;
+
+
         const newElement = DQ.fromMarkup($nsp(this.template));
         newElement.id.value = ((this.namingContainerId?.length) ?
             [this.namingContainerId,  $nsp(this.name),  cnt]:

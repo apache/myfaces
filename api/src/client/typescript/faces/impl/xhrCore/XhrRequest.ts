@@ -34,10 +34,10 @@ import {
     MALFORMEDXML,
     NO_TIMEOUT,
     ON_ERROR,
-    ON_EVENT, P_EXECUTE,
+    ON_EVENT, P_EXECUTE, P_PARTIAL_SOURCE,
     REQ_ACCEPT,
     REQ_TYPE_GET,
-    REQ_TYPE_POST,
+    REQ_TYPE_POST, SOURCE,
     STATE_EVT_TIMEOUT,
     STD_ACCEPT,
     URL_ENCODED,
@@ -353,6 +353,7 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
 
             Implementation.sendEvent(eventData, eventHandler);
         } catch (e) {
+            e.source = e?.source ?? this.requestContext.getIf(SOURCE).value;
             this.handleError(e);
             throw e;
         }
