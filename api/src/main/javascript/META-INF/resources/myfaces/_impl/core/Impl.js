@@ -178,7 +178,13 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
          * this copy is also the pass through parameters
          * which are sent down our request
          */
+        // this is legacy behavior which is faulty, will be removed if we decide to do it
+        // that way
         var passThrgh = _Lang.mixMaps({}, options, true, this._BLOCKFILTER);
+        // jsdoc spec everything under params must be passed through
+        if(options.params)  {
+            passThrgh = _Lang.mixMaps(passThrgh, options.params, true, {});
+        }
 
         if (event) {
             passThrgh[this.P_EVT] = event.type;
