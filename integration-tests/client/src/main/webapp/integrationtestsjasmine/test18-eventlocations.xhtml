@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+
+<ui:composition template="../templates/template.xhtml">
+    <ui:define name="content">
+        <components:jasmineTest testRunner="test18-eventlocations.js" />
+
+        <h2>response only handling</h2>
+
+        <p>
+            This is a regression test for
+            <a href="https://issues.apache.org/jira/browse/MYFACES-3431">MYFACES-3431</a>
+        </p>
+
+        <p>
+            This test tests for the proper event handler locations.
+            The event handlers must be called on following locations
+            <ul>
+                <li> begin before response is called</li>
+                <li>b) complete before response is called</li>
+                <li> success within response (pretty much at the end)</li>
+            </ul>
+        </p>
+
+        <h:form id="testForm" prependId="false">
+            <!-- needed for the test trigger -->
+            <h:commandLink id="resetme" action="#{responseOnly.resetCnt}" value="reset"/>
+            <h:commandLink id="idgiven" action="#{responseOnly.doTheAction}" value="press me"/>
+            <h:commandLink id="emptymap" action="#{responseOnly.doTheAction}" value="press me"/>
+            <h:outputText id="myVal" value="#{responseOnly.cnt}"/>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+</html>

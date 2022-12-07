@@ -1,0 +1,25 @@
+{
+  "name": "myfaces-js-integrationtests",
+  "version": "0.0.1",
+  "description": "package json used external resources",
+  "scripts": {
+    "integration-tests": "mocha src/main/webapp/resources/myfaces.testscripts/integrationtestrunner_frontend/integrationtests.spec.js"
+  },
+  "keywords": [
+    "typescript",
+    "javascript",
+    "integration test",
+    "faces",
+    "jakarta faces"
+  ],
+  "author": "Werner Punz",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "famfamfam-silk": "^1.0.0",
+    "jasmine": "^4.4.0",
+    "jsf.js_next_gen": "^4.0.0-beta-16",
+    "mocha": "^10.1.0",
+    "mona-dish": "0.22.20"
+  }
+}

@@ -152,12 +152,12 @@
     </dependencies>
 
     <modules>
+        <module>client</module>
         <module>faceletToXhtmlMapping</module>
         <module>faceletToXhtmlMappingDisabled</module>
         <module>exactMapping</module>
         <module>autoLookupExpressionFactoryWithoutJSP</module>
         <module>protectedViews</module>
-        <module>ajax</module>
         <module>automaticExtensionlessMapping</module>
     </modules>
 

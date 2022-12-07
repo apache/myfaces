@@ -60,7 +60,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     @JSFWebConfigParam(since = "2.0.10,2.1.4", defaultValue = "normal",
                        expectedValues = "normal, minimal-modern, minimal", group = "render")
     public static final String MYFACES_JSF_MODE = "org.apache.myfaces.JSF_JS_MODE";
-    
+
     private final boolean _useMultipleJsFilesForJsfUncompressedJs;
     private final String _jsfMode;
     private final boolean _developmentStage;
@@ -135,7 +135,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             return url;
         }
     }
-    
+
     @Override
     public URL getResourceURL(ResourceMeta resourceMeta)
     {
@@ -243,7 +243,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     }
 
     @Override
-    public Iterator<String> iterator(FacesContext facesContext, String path, 
+    public Iterator<String> iterator(FacesContext facesContext, String path,
             int maxDepth, ResourceVisitOption... options)
     {
         String basePath = path;

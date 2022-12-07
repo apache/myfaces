@@ -1,0 +1,38 @@
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<ui:component xmlns=""
+              xmlns:ui="jakarta.faces.facelets"
+              xmlns:pr="http://xmlns.jcp.org/jsf/passthrough"
+              xmlns:composite="jakarta.faces.composite" xmlns:h="jakarta.faces.html">
+
+    <composite:interface>
+        <composite:attribute name="testRunner" default="" required="true"/>
+    </composite:interface>
+
+    <composite:implementation>
+            <h:outputScript pr:nonce="test123" library="node_modules" name="jasmine-core/lib/jasmine-core/jasmine.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="node_modules" name="jasmine-core/lib/jasmine-core/jasmine-html.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="node_modules" name="jasmine-core/lib/jasmine-core/boot0.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="node_modules" name="jasmine-core/lib/jasmine-core/boot1.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="myfaces.testscripts" name="jsf-jasmine/custom-reporters.js" rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="myfaces.testscripts" name="jsf-jasmine/jsf-jasmineintegration.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="myfaces.testscripts" name="/jasmine-core/lib/jasmine-core/jasmine.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:outputScript pr:nonce="test123" library="myfaces.testscripts" name="jsf-jasmine/testrunner.js"  rendered="#{!suppressDoubleIncludeBean.alreadyCalled}" target="head"></h:outputScript>
+            <h:panelGroup layout="block" rendered="#{!suppressDoubleIncludeBean.alreadyCalled}">
+            <script nonce="test123" type="text/javascript" async="true" src="#{cc.attrs.testRunner}"></script>
+            <div class="version">Version</div>
+        </h:panelGroup>
+    </composite:implementation>
+
+</ui:component>

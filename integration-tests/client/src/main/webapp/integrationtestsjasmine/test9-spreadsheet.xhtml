@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core" xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<ui:composition template="../templates/template.xhtml">
+    <ui:define name="content">
+
+        <components:jasmineTest testRunner="test9-spreadsheet.js" />
+
+        <h1>Spreadsheet table test</h1>
+
+        <h2>
+            This simulates the basic spreadsheet mechanisms
+            of update on a single element row level. This test
+            tries to cover the basic update table operations on ajax level
+            and a proper row handling on server level.
+        </h2>
+        <h:form id="testForm2" prependId="false">
+
+
+            <h:selectOneMenu id="menu" value="#{myBean2.searchTerm}">
+                <f:ajax event="change" execute="@this" render="register"/>
+                <f:selectItem itemValue="1" itemLabel="one"/>
+                <f:selectItem itemValue="2" itemLabel="two"/>
+            </h:selectOneMenu>
+            <h:outputText id="register" value="#{myBean2.searchTerm}"/>
+
+
+            <h:inputText id="myTest22" value="#{myBean2.searchTerm}" onblur="faces.ajax.request(this, event);">
+            </h:inputText>
+
+
+            <h:dataTable value="#{tableBean.entries}" id="testTable1" var="entry">
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputFormat value="field1"/>
+                    </f:facet>
+
+                    <h:inputText id="afield1" value="#{entry.field1}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputFormat value="field2"/>
+                    </f:facet>
+                    <h:inputText id="afield2" value="#{entry.field2}"/>
+                </h:column>
+
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputFormat value="command"/>
+                    </f:facet>
+                    <h:commandLink action="#{tableBean.doTableSubmit2}" value="press me">
+                        <!--
+                        <f:ajax execute="@this afield1 afield2" />
+                        -->
+                        <f:setPropertyActionListener value="#{entry.field1}" target="#{tableBean.lineInput1}"/>
+                        <f:setPropertyActionListener value="#{entry.field2}" target="#{tableBean.lineInput2}"/>
+                    </h:commandLink>
+                </h:column>
+
+            </h:dataTable>
+
+            <h:dataTable value="#{tableBean.entries}" id="testTable2" var="entry">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputFormat value="field1"/>
+                    </f:facet>
+
+                    <h:outputText id="field1" value="#{entry.field1}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputFormat value="field2"/>
+                    </f:facet>
+                    <h:outputText id="field2" value="#{entry.field2}"/>
+                </h:column>
+
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputFormat value="command"/>
+                    </f:facet>
+                    <h:inputText id="input1" value="#{entry.field1}"/>
+                    <h:inputText id="input2" value="#{entry.field2}"/>
+                    <h:commandLink id="submitall" action="#{tableBean.doTableSubmit}" value="press me">
+                        <f:ajax execute="input1 input2" render="field1 field2"/>
+                    </h:commandLink>
+                </h:column>
+            </h:dataTable>
+
+            <h:commandLink action="#{tableBean.doTableSubmit}" value="press me">
+            </h:commandLink>
+
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

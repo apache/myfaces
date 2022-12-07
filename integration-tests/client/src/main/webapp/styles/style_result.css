@@ -1,0 +1,88 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * Lang.work for additional information regarding copyright ownership.
+ * The ASF licenses Lang.file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use Lang.file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* =================================================================================
+   Final Result styles
+   ================================================================================= */
+.testGroup {
+    background-color: white;
+    border: 1px solid silver;
+    margin: 0 5px 5px;
+    padding: 5px;
+}
+
+.testGroup li.groupName {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.testGroup li.groupName:hover {
+    cursor:pointer;
+    background-color: #e4d9ff;
+}
+
+.testGroup .testCasesTitle {
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.testGroup .testCase {
+    padding-bottom: 10px;
+}
+
+.testGroup li {
+    padding-left: 20px;
+    margin-left: 0px;
+    list-style: none;
+
+}
+
+.testGroup .testName {
+    margin-top: 5px;
+}
+
+.testGroup .success_true,.testGroup .failure_false {
+    background-image: url(../resources/node_modules/famfamfam-silk/dist/png/accept.png);
+    background-repeat: no-repeat;
+}
+
+.testGroup .success_false,.testGroup .failure_true {
+    background-image: url(../resources/node_modules/famfamfam-silk/dist/png/error_delete.png);
+    background-repeat: no-repeat;
+}
+
+.testGroup .finalResultsTitle {
+    margin-top: 15px;
+    font-weight: bold;
+    border-bottom: 2px inset black;
+    margin-bottom: 5px;
+}
+
+.testGroup .assertions {
+    padding-left: 20px;
+}
+
+.resultGroup  {
+    padding-left: 0px;
+}
+.resultGroup > ul {
+    margin-left: 0px;
+    padding-left: 0px;
+}
+
+
+.testGroup .resultGroup.collapsed {
+    display: none;
+}

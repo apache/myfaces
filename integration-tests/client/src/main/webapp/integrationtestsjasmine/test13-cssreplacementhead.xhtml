@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core" xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<ui:composition template="../templates/template.xhtml">
+    <ui:define name="header">
+        <style type="text/css">
+            @import "../styles/testcases/css1_orig.css";
+        </style>
+        <link rel="stylesheet" type="text/css" href="../styles/testcases/css2_orig.css" />
+        <style type="text/css">
+            #div3 {
+                border:  1px solid yellow;
+            }
+        </style>
+
+    </ui:define>
+
+    <ui:define name="content">
+        <components:jasmineTest testRunner="test13-cssreplacementhead.js" />
+
+        <h1>CSS Replacement head</h1>
+
+        <h2>
+            This test performs a navigation and tries
+            different methods of a css replacement.
+            All css must be replaced in the head.
+        </h2>
+        <h:form id="mainForm" prependId="false">
+            <div id="div1">div1</div>
+            <div id="div2">div1</div>
+            <div id="div3">div1</div>
+
+            <h:commandButton id="nextPage" value="go to next page" action="test13-cssreplacementhead2">
+                <f:ajax execute="@this" render="@all" />
+            </h:commandButton>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

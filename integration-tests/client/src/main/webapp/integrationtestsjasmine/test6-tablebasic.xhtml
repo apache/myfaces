@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core" xmlns:component="http://xmlns.jcp.org/jsf/composite/components">
+<ui:composition template="../templates/template.xhtml">
+    <ui:define name="content">
+
+        <component:jasmineTest testRunner="test6-tablebasic.js" />
+
+        <h1>Table Tests</h1>
+
+        <h2>Table tests for the basic protocol operations. Due to the different
+            handling of table elements in the dom operations, this separate
+            test is needed.</h2>
+
+
+        <div id="testTable">
+
+
+            <table id="table1">
+                <thead id="head1">
+                <tr id="head_row1">
+                    <td id="head_col1">column1 in line1</td>
+                    <td id="head_col2">colum2 in line2</td>
+                </tr>
+                </thead>
+                <tbody id="tbody1">
+                <tr id="body_row1">
+                    <td id="body_row1_col1">column1 in line1 body</td>
+                    <td id="body_row1_col2">column2 in line1
+                        body
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <form id="form2" action="boog.html">
+            <input type="button" id="replace_head" value="replace head" onclick="emitPPR(this,
+        ('undefined' == typeof event)? null:
+        event,
+    'table_replace_head','form2');"></input>
+            <input type="button" id="replace_body" value="replace body" onclick="emitPPR(this,
+        ('undefined' == typeof event)? null:
+        event,
+        'table_replace_body','form2');"></input>
+            <input type="button" id="insert_row_head" value="insert row in head" onclick="emitPPR(this,
+        ('undefined' == typeof event)? null: event,
+        'table_insert_row_head','form2');"></input>
+            <input type="button" id="insert_row_body" value="insert insert row in body" onclick="emitPPR(this,
+        ('undefined' == typeof event)? null: event,
+        'table_insert_row_body','form2');"></input>
+            <input type="button" id="insert_column_head" value="insert column in head" onclick="emitPPR(this,
+        ('undefined' == typeof event)? null: event,
+        'table_insert_column_head','form2');"></input>
+            <input type="button" id="insert_column_body" value="insert column in body" onclick="emitPPR(this,
+        ('undefined' == typeof event)? null: event,
+        'table_insert_column_body','form2');"></input>
+            <input type="button" value="insert footer" onclick="emitPPR(this, ('undefined' == typeof event)? null: event,
+        'table_insert_footer',
+        'form2');"></input>
+            <input type="button" id="insert_body" value="insert body" onclick="emitPPR(this,
+        ('undefined' == typeof event)? null:
+            event,
+        'table_insert_body','form2');"></input>
+        </form>
+
+
+    </ui:define>
+</ui:composition>
+</html>
