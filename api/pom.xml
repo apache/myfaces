@@ -120,31 +120,14 @@
                         </goals>
                         <phase>process-resources</phase>
                         <configuration>
+                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
                             <descriptor>${basedir}/src/assembler/jsfscripts-compiler.xml</descriptor>
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
-                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
-                                <exclude>**/myfaces/_impl/_util/_ExtLang.js</exclude>
                             </excludes>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>compile-uncompressed</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-compiler.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
-                            <excludes>
-                                <exclude>**/myfaces/_impl/core/Impl.js</exclude>
-                                <exclude>**/myfaces/_impl/_util/*</exclude>
-                                <exclude>**/myfaces/_impl/xhrCore/*</exclude>
-                                <exclude>**/myfaces/api/*</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
+
                     <execution>
                         <id>compile-uncompressed-full</id>
                         <goals>
@@ -152,14 +135,15 @@
                         </goals>
                         <phase>process-resources</phase>
                         <configuration>
+                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
                             <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-full-compiler.xml</descriptor>
                             <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
-                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
                             </excludes>
                         </configuration>
                     </execution>
+
                     <execution>
                         <id>compile-minimal</id>
                         <goals>
@@ -167,29 +151,15 @@
                         </goals>
                         <phase>process-resources</phase>
                         <configuration>
+                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
                             <descriptor>${basedir}/src/assembler/jsfscripts-minimal-compiler.xml</descriptor>
                             <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
-                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
                             </excludes>
                         </configuration>
                     </execution>
-                     <execution>
-                        <id>compile-minimal-modern</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <descriptor>${basedir}/src/assembler/jsfscripts-minimal-modern-compiler.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
-                            <excludes>
-                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
-                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
+
                     <execution>
                         <id>compile-i18n</id>
                         <goals>
@@ -197,41 +167,11 @@
                         </goals>
                         <phase>process-resources</phase>
                         <configuration>
+                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
                             <descriptor>${basedir}/src/assembler/jsfscripts-i18n-compiler.xml</descriptor>
                             <outputDirectory>${basedir}/target/classes/META-INF/resources/myfaces/</outputDirectory>
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
-                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                     <execution>
-                        <id>compile-experimental</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <descriptor>${basedir}/src/assembler/jsfscripts-experimental.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/resources/myfaces/</outputDirectory>
-                            <excludes>
-                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
-                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-legacy</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <descriptor>${basedir}/src/assembler/jsfscripts-legacy.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/resources/myfaces/</outputDirectory>
-                            <excludes>
-                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
-                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -242,7 +182,6 @@
                             <goal>compress</goal>
                         </goals>
                         <phase>process-resources</phase>
-
                         <configuration>
                             <scripts>target/classes/META-INF/resources/javax.faces/</scripts>
                             <excludes>
@@ -250,16 +189,15 @@
                                 <exclude>jsf-uncompressed-full.js</exclude>
                             </excludes>
                             <compressor>yahooUI</compressor>
-
                         </configuration>
                     </execution>
+
                     <execution>
                         <id>compress-extended</id>
                         <goals>
                             <goal>compress</goal>
                         </goals>
                         <phase>process-resources</phase>
-
                         <configuration>
                             <scripts>target/classes/META-INF/resources/myfaces/</scripts>
                             <excludes>
@@ -267,25 +205,22 @@
                                 <exclude>jsf-uncompressed-full.js</exclude>
                             </excludes>
                             <compressor>yahooUI</compressor>
-
                         </configuration>
                     </execution>
 
-                <execution>
+                    <execution>
                         <id>compress-alternatives</id>
                         <goals>
                             <goal>compress</goal>
                         </goals>
                         <phase>process-resources</phase>
-
                         <configuration>
                             <scripts>target/classes/META-INF/internal-resources/javax.faces/</scripts>
                             <excludes>
-                                <exclude>jsf-uncompressed.js</exclude>
                                 <exclude>jsf-uncompressed-full.js</exclude>
+                                <exclude>META-INF/**/*.js</exclude>
                             </excludes>
                             <compressor>yahooUI</compressor>
-
                         </configuration>
                     </execution>
                 </executions>
