@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -648,7 +650,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         {
             if (propertyDescriptor instanceof LambdaPropertyDescriptor)
             {
-                return ((LambdaPropertyDescriptor) propertyDescriptor).getReadFunction().apply(_component);
+                Function<Object, Object> readFunction = ((LambdaPropertyDescriptor) propertyDescriptor).getReadFunction();
+                if (readFunction != null)
+                {
+                    return readFunction.apply(_component);
+                }
             }
 
             return readMethod.invoke(_component, EMPTY_ARGS);
@@ -681,9 +687,15 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
 
         try
         {
+            BiConsumer<Object, Object> writeFunction = null;
             if (propertyDescriptor instanceof LambdaPropertyDescriptor)
             {
-                ((LambdaPropertyDescriptor) propertyDescriptor).getWriteFunction().accept(_component, value);
+                writeFunction = ((LambdaPropertyDescriptor) propertyDescriptor).getWriteFunction();
+            }
+
+            if (writeFunction != null)
+            {
+                writeFunction.accept(_component, value);
             }
             else
             {

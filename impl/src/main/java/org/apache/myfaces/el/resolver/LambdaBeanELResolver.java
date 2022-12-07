@@ -21,6 +21,8 @@ package org.apache.myfaces.el.resolver;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import javax.el.BeanELResolver;
 import javax.el.ELContext;
@@ -70,9 +72,16 @@ public class LambdaBeanELResolver extends BeanELResolver
         try
         {
             PropertyDescriptorWrapper pd = getPropertyDescriptor(base, property);
+
+            Function<Object, Object> readFunction = null;
             if (pd instanceof LambdaPropertyDescriptor)
             {
-                return ((LambdaPropertyDescriptor) pd).getReadFunction().apply(base);
+                readFunction = ((LambdaPropertyDescriptor) pd).getReadFunction();
+            }
+
+            if (readFunction != null)
+            {
+                return readFunction.apply(base);
             }
 
             return pd.getWrapped().getReadMethod().invoke(base);
@@ -104,9 +113,15 @@ public class LambdaBeanELResolver extends BeanELResolver
 
         try
         {
+            BiConsumer<Object, Object> writeFunction = null;
             if (pd instanceof LambdaPropertyDescriptor)
             {
-                ((LambdaPropertyDescriptor) pd).getWriteFunction().accept(base, value);
+                writeFunction = ((LambdaPropertyDescriptor) pd).getWriteFunction();
+            }
+
+            if (writeFunction != null)
+            {
+                writeFunction.accept(base, value);
             }
             else
             {

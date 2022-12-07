@@ -1678,59 +1678,12 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 _rowStates.clear();
             }
         }
-        if (initialStateMarked())
-        {
-            Object parentSaved = super.saveState(context);
-            if (context.getCurrentPhaseId() != null && 
-                !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
-            {
-                if (parentSaved == null /*&&_rowDeltaStates.isEmpty()*/ && _rowStates.isEmpty())
-                {
-                    return null;
-                }
-                else
-                {
-                    Object values[] = new Object[3];
-                    values[0] = super.saveState(context);
-                    values[1] = null;
-                    values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
-                    return values;
-                }
-            }
-            else
-            {
-                if (parentSaved == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    Object values[] = new Object[2];
-                    values[0] = super.saveState(context);
-                    values[1] = null;
-                    return values; 
-                }
-            }
-        }
-        else
-        {
-            if (context.getCurrentPhaseId() != null && 
-                !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
-            {
-                Object values[] = new Object[3];
-                values[0] = super.saveState(context);
-                values[1] = null;
-                values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
-                return values; 
-            }
-            else
-            {
-                Object values[] = new Object[2];
-                values[0] = super.saveState(context);
-                values[1] = null;
-                return values;
-            }
-        }
+
+        Object values[] = new Object[3];
+        values[0] = super.saveState(context);
+        values[1] = null;
+        values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+        return values;
     }
     
     @Override
