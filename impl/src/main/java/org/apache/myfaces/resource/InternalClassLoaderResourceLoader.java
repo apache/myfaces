@@ -58,19 +58,15 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
      * is Development, this param is ignored.</p>
      */
     @JSFWebConfigParam(since = "2.0.10,2.1.4", defaultValue = "normal",
-                       expectedValues = "normal, minimal-modern, minimal", group = "render")
+                       expectedValues = "normal, minimal", group = "render")
     public static final String MYFACES_JSF_MODE = "org.apache.myfaces.JSF_JS_MODE";
-    
-    private final boolean _useMultipleJsFilesForJsfUncompressedJs;
+
     private final String _jsfMode;
     private final boolean _developmentStage;
 
     public InternalClassLoaderResourceLoader(String prefix)
     {
         super(prefix);
-        _useMultipleJsFilesForJsfUncompressedJs
-                = WebConfigParamUtils.getBooleanInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
-                    USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS, false);
 
         _jsfMode = WebConfigParamUtils.getStringInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
                     MYFACES_JSF_MODE, ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
@@ -162,29 +158,16 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
         {
             if (_developmentStage)
             {
-                if (_useMultipleJsFilesForJsfUncompressedJs)
-                {
-                    return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
-                            resourceName, resourceVersion, ResourceUtils.JSF_UNCOMPRESSED_JS_RESOURCE_NAME, true);
-                }
-                else
-                {
-                    //normall we would have to take care about the standard jsf.js case also
-                    //but our standard resource loader takes care of it,
-                    // because this part is only called in debugging mode
-                    //in production only in debugging
                     return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
                                                      ResourceUtils.JSF_UNCOMPRESSED_FULL_JS_RESOURCE_NAME, false);
-                }
             }
-            else if (_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_MINIMAL) )
+            else
             {
                 return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
                         ResourceUtils.JSF_MINIMAL_JS_RESOURCE_NAME, false);
             }
-            return null;
         }
-        else if (javaxFacesLib && !_developmentStage && !_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL) &&
+        else if (javaxFacesLib && !_developmentStage &&
                                    (ResourceUtils.JSF_MYFACES_JSFJS_I18N.equals(resourceName)))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
