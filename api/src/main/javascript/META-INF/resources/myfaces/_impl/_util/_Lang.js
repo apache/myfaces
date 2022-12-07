@@ -585,12 +585,12 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         if (!this.FormDataDecoratorOther) {
             this.FormDataDecoratorOther = function (theFormData) {
-                this._valBuf = theFormData;
+                this._valBuf = theFormData || [];
                 this._idx = {};
             };
             _newCls = this.FormDataDecoratorOther;
             _newCls.prototype.append = function (key, val) {
-                this._valBuf.append(key, val);
+                this._valBuf.push([encodeURIComponent(key), encodeURIComponent(val)]);
                 this._idx[key] = true;
             };
             _newCls.prototype.hasKey = function (key) {

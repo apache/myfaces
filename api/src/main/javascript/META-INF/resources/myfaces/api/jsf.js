@@ -356,7 +356,7 @@ if (!jsf.push) {
     }
 
     // Public static functions ----------------------------------------------------------------------------------------
-
+    var _t = this;
     /**
      *
      * @param {function} onopen The function to be invoked when the web socket is opened.
@@ -394,7 +394,7 @@ if (!jsf.push) {
         }
 
         if (autoconnect) {
-            this.open(socketClientId);
+            _t.open(socketClientId);
         }
     }
 
@@ -455,4 +455,29 @@ if (!jsf.push) {
 
     //return self;
   }
+}
+
+
+(!window.myfaces) ? window.myfaces = {} : null;
+if (!myfaces.ab) {
+    /*
+     * Shortcut of the jsf.ajax.request, to shorten the rendered JS.
+     */
+    myfaces.ab = function(source, event, eventName, execute, render, options) {
+        if (!options) {
+            options = {};
+        }
+
+        if (eventName) {
+            options["javax.faces.behavior.event"] = eventName;
+        }
+        if (execute) {
+            options["execute"] = execute;
+        }
+        if (render) {
+            options["render"] = render;
+        }
+
+        jsf.ajax.request(source, event, options);
+    };
 }

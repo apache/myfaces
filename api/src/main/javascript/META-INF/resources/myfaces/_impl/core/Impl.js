@@ -200,7 +200,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             source:elem,
             onevent:options.onevent,
             onerror:options.onerror,
-
+            viewId: "",
             //TODO move the myfaces part into the _mfInternal part
             myfaces:options.myfaces,
             _mfInternal:{}
@@ -219,6 +219,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         var form = (options.myfaces && options.myfaces.form) ?
                 _Lang.byId(options.myfaces.form) :
                 this._getForm(elem, event);
+
+        context.viewId = this.getViewId(form);
 
         /**
          * JSF2.2 client window must be part of the issuing form so it is encoded
@@ -276,13 +278,13 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
              */
             options.execute = (options.execute.indexOf("@this") == -1) ? options.execute : options.execute;
 
-            this._transformList(passThrgh, this.P_EXECUTE, options.execute, form, elementId);
+            this._transformList(passThrgh, this.P_EXECUTE, options.execute, form, elementId, context.viewId);
         } else {
             passThrgh[this.P_EXECUTE] = elementId;
         }
 
         if (options.render) {
-            this._transformList(passThrgh, this.P_RENDER, options.render, form, elementId);
+            this._transformList(passThrgh, this.P_RENDER, options.render, form, elementId, context.viewId);
         }
 
         /**
@@ -307,7 +309,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //this is not documented behavior but can be determined by running
         //mojarra under blackbox conditions
         //i assume it does the same as our formId_submit=1 so leaving it out
-        //wont hurt but for the sake of compatibility we are going to add it
+        //won´t hurt but for the sake of compatibility we are going to add it
         passThrgh[form.id] = form.id;
 
         /* jsf2.2 only: options.delay || */
@@ -317,7 +319,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             if(!(delayTimeout >= 0)) {
                 // abbreviation which covers all cases of non positive values,
                 // including NaN and non-numeric strings, no type equality is deliberate here,
-                throw new Error("Invalid delay value: " + value);
+                throw new Error("Invalid delay value: " + delayTimeout);
             }
             if (this._delayTimeout) {
                 clearTimeout(this._delayTimeout);
@@ -373,8 +375,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //for now we turn off the transport auto selection, to enable 2.0 backwards compatibility
         //on protocol level, the file upload only can be turned on if the auto selection is set to true
         var getConfig = this._RT.getLocalOrGlobalConfig,
-                _Lang = this._Lang,
-                _Dom = this._Dom;
+            _Lang = this._Lang,
+            _Dom = this._Dom;
 
         var transportAutoSelection = getConfig(context, "transportAutoSelection", true);
         /*var isMultipart = (transportAutoSelection && _Dom.getAttribute(form, "enctype") == "multipart/form-data") ?
@@ -385,7 +387,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             return getConfig(context, "transportType", "xhrQueuedPost");
         }
         var multiPartCandidate = _Dom.isMultipartCandidate((!getConfig(context, "pps", false)) ?
-                form : passThrgh[this.P_EXECUTE]);
+            form : passThrgh[this.P_EXECUTE]);
         var multipartForm = (_Dom.getAttribute(form, "enctype") || "").toLowerCase() == "multipart/form-data";
         //spec section jsdoc, if we have a multipart candidate in our execute (aka fileupload)
         //and the form is not multipart then we have to raise an error
@@ -406,8 +408,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
          *
          */
         var transportType = (!isMultipart) ?
-                getConfig(context, "transportType", "xhrQueuedPost") :
-                getConfig(context, "transportType", "multipartQueuedPost");
+            getConfig(context, "transportType", "xhrQueuedPost") :
+            getConfig(context, "transportType", "multipartQueuedPost");
         if (!this._transport[transportType]) {
             //throw new Error("Transport type " + transportType + " does not exist");
             throw new Error(_Lang.getMessage("ERR_TRANSPORT", null, transportType));
@@ -427,8 +429,9 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * @param srcStr
      * @param form
      * @param elementId
+     * @param namingContainerId the naming container namingContainerId
      */
-    _transformList:function (passThrgh, target, srcStr, form, elementId) {
+    _transformList:function (passThrgh, target, srcStr, form, elementId, namingContainerId) {
         var _Lang = this._Lang;
         //this is probably the fastest transformation method
         //it uses an array and an index to position all elements correctly
@@ -436,14 +439,14 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //false
         srcStr = this._Lang.trim(srcStr);
         var offset = 1,
-                vals = (srcStr) ? srcStr.split(/\s+/) : [],
-                idIdx = (vals.length) ? _Lang.arrToMap(vals, offset) : {},
+            vals = (srcStr) ? srcStr.split(/\s+/) : [],
+            idIdx = (vals.length) ? _Lang.arrToMap(vals, offset) : {},
 
-        //helpers to improve speed and compression
-                none = idIdx[this.IDENT_NONE],
-                all = idIdx[this.IDENT_ALL],
-                theThis = idIdx[this.IDENT_THIS],
-                theForm = idIdx[this.IDENT_FORM];
+            //helpers to improve speed and compression
+            none = idIdx[this.IDENT_NONE],
+            all = idIdx[this.IDENT_ALL],
+            theThis = idIdx[this.IDENT_THIS],
+            theForm = idIdx[this.IDENT_FORM];
 
         if (none) {
             //in case of none nothing is returned
@@ -469,8 +472,61 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         }
 
         //the final list must be blank separated
-        passThrgh[target] = vals.join(" ");
+        passThrgh[target] = this._remapNamingContainer(elementId, form, namingContainerId,vals).join(" ");
         return passThrgh;
+    },
+
+    /**
+     * in namespaced situations root naming containers must be resolved
+     * ":" absolute searches must be mapped accordingly, the same
+     * goes for absolut searches containing already the root naming container id
+     *
+     * @param issuingElementId the issuing element id
+     * @param form the hosting form of the issiung element id
+     * @param rootNamingContainerId the root naming container id
+     * @param elements a list of element client ids to be processed
+     * @returns {*} the mapped element client ids, which are resolved correctly to their naming containers
+     * @private
+     */
+    _remapNamingContainer: function(issuingElementId, form, rootNamingContainerId, elements) {
+        var SEP = jsf.separatorchar;
+        function remapViewId(toTransform) {
+            var EMPTY_STR = "";
+            var rootNamingContainerPrefix = (rootNamingContainerId.length) ? rootNamingContainerId+SEP : EMPTY_STR;
+            var formClientId = form.id;
+            // nearest parent naming container relative to the form
+            var nearestNamingContainer = formClientId.substring(0, formClientId.lastIndexOf(SEP));
+            var nearestNamingContainerPrefix = (nearestNamingContainer.length) ? nearestNamingContainer + SEP : EMPTY_STR;
+            // absolut search expression, always starts with SEP or the name of the root naming container
+            var hasLeadingSep = toTransform.indexOf(SEP) === 0;
+            var isAbsolutSearchExpr = hasLeadingSep || (rootNamingContainerId.length
+                && toTransform.indexOf(rootNamingContainerPrefix) == 0);
+            if (isAbsolutSearchExpr) {
+                //we cut off the leading sep if there is one
+                toTransform = hasLeadingSep ? toTransform.substring(1) : toTransform;
+                toTransform = toTransform.indexOf(rootNamingContainerPrefix) == 0 ? toTransform.substring(rootNamingContainerPrefix.length) : toTransform;
+                //now we prepend either the prefix or "" from the cut-off string to get the final result
+                return  [rootNamingContainerPrefix, toTransform].join(EMPTY_STR);
+            } else { //relative search according to the javadoc
+                //we cut off the root naming container id from the form
+                if (formClientId.indexOf(rootNamingContainerPrefix) == 0) {
+                    formClientId = formClientId.substring(rootNamingContainerPrefix.length);
+                }
+
+                //If prependId = true, the outer form id must be present in the id if same form
+                var hasPrependId = toTransform.indexOf(formClientId) == 0;
+
+                return hasPrependId ?
+                    [rootNamingContainerPrefix, toTransform].join(EMPTY_STR) :
+                    [nearestNamingContainerPrefix, toTransform].join(EMPTY_STR);
+            }
+        }
+
+        for(var cnt = 0; cnt < elements.length; cnt++) {
+            elements[cnt] = remapViewId(this._Lang.trim(elements[cnt]));
+        }
+
+        return elements;
     },
 
     addOnError:function (/*function*/errorListener) {
@@ -671,7 +727,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
             /* run through all script tags and try to find the one that includes jsf.js */
             for (var i = 0; i < scriptTags.length && !found; i++) {
-                if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
+                if (scriptTags[i] && scriptTags[i].src && scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
                     var result = scriptTags[i].src.match(/stage=([^&;]*)/);
                     found = true;
                     if (result) {
@@ -839,6 +895,26 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         var forms = this._Dom.findByTagName(finalNode, "form");
         var result = fetchWindowIdFromForms(forms);
         return (null != result) ? result : fetchWindowIdFromURL();
+    },
+
+    /**
+     * returns the view id from an incoming form
+     * crossport from new codebase
+     * @param form
+     */
+    getViewId: function (form) {
+        var _t = this;
+        var foundViewStates = this._Dom.findAll(form, function(node) {
+            return node.tagName === "INPUT" && node.type === "hidden" && (node.name || "").indexOf(_t.P_VIEWSTATE) !== -1
+        }, true);
+        if(!foundViewStates.length) {
+            return "";
+        }
+        var viewId =  foundViewStates[0].id.split(jsf.separatorchar, 2)[0];
+        var viewStateViewId = viewId.indexOf(this.P_VIEWSTATE) === -1 ? viewId : "";
+        // myfaces specific, we in non portlet environments prepend the viewId
+        // even without being in a naming container, the other components ignore that
+        return form.id.indexOf(viewStateViewId) === 0 ? viewStateViewId : "";
     }
 });
 
