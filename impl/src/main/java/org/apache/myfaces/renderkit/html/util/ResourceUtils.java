@@ -31,14 +31,11 @@ import org.apache.myfaces.resource.ContractResource;
 
 public class ResourceUtils
 {
-    public final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";
 
-    public final static String JSF_MYFACES_JSFJS_MINIMAL = "minimal";
     public final static String JSF_MYFACES_JSFJS_NORMAL = "normal";
-    
-    public final static String JSF_UNCOMPRESSED_JS_RESOURCE_NAME = "jsf-uncompressed.js";
-    public final static String JSF_UNCOMPRESSED_FULL_JS_RESOURCE_NAME = "jsf-uncompressed-full.js";
-    public final static String JSF_MINIMAL_JS_RESOURCE_NAME = "jsf-minimal.js";
+
+    public final static String JSF_DEVELOPMENT_JS = "jsf-development.js";
+    public final static String JSF_PRODUCTION_JS = "jsf-production.js";
     public final static String JSF_MYFACES_JSFJS_I18N = "jsf-i18n.js";
 
     private final static String RENDERED_JSF_JS = "org.apache.myfaces.RENDERED_JSF_JS";

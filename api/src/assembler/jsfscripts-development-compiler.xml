@@ -19,7 +19,7 @@
     <scripts>
 
         <script>
-            <fileName>jsf-uncompressed-full.js</fileName>
+            <fileName>jsf-development.js</fileName>
             <includes>
                 <include>**/_impl/core/_EvalHandlers.js</include>
                 <include>**/_impl/core/_Runtime.js</include>
