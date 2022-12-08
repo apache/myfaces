@@ -93,7 +93,8 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         // add the ELResolvers to a List first to be able to sort them
         List<ELResolver> list = new ArrayList<>();
 
-        // Add CDI ELResolver for Faces 2.3
+        // Since Faces 4.0 CDI is a required dependency 
+        // but our mocked tests doesnt run in a CDI container
         if (isReplaceImplicitObjectResolverWithCDIResolver(facesContext))
         {
             list.add(ImplicitObjectResolver.makeResolverForCDI());

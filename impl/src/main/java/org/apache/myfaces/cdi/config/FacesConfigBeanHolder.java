@@ -25,15 +25,15 @@ import jakarta.faces.annotation.FacesConfig;
 @ApplicationScoped
 public class FacesConfigBeanHolder
 {
-    private FacesConfig.Version facesConfigVersion = null;
+    private FacesConfig facesConfig = null;
 
-    public FacesConfig.Version getFacesConfigVersion()
+    public FacesConfig getFacesConfig()
     {
-        return facesConfigVersion;
+        return facesConfig;
     }
 
-    public void setFacesConfigVersion(FacesConfig.Version facesConfigVersion)
+    public void setFacesConfig(FacesConfig facesConfig)
     {
-        this.facesConfigVersion = facesConfigVersion;
+        this.facesConfig = facesConfig;
     }
 }

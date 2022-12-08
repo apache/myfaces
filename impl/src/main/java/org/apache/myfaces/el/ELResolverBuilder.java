@@ -26,11 +26,9 @@ import java.util.logging.Logger;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELResolver;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
 import java.util.stream.Collectors;
-import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
@@ -157,27 +155,12 @@ public class ELResolverBuilder
         }
 
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
-        if (beanManager != null)
+        if (beanManager == null)
         {
-            FacesConfigBeanHolder holder = CDIUtils.get(beanManager, FacesConfigBeanHolder.class);
-            if (holder != null)
-            {
-                FacesConfig.Version version = holder.getFacesConfigVersion();
-                if (version == null)
-                {
-                    return false;
-                }
-                else if (version.ordinal() >= FacesConfig.Version.JSF_2_3.ordinal())
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            return false;
         }
-        return false;
+
+        return true;
     }
     
     
