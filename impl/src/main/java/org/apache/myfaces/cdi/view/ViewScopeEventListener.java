@@ -79,12 +79,12 @@ public class ViewScopeEventListener implements ViewMapListener
         {
             if (event instanceof PostConstructViewMapEvent)
             {
-                viewScopeInitializedEvent.fire((UIViewRoot) ((PostConstructViewMapEvent) event).getSource());
+                viewScopeInitializedEvent.fire((UIViewRoot) event.getSource());
             }
 
             if (event instanceof PreDestroyViewMapEvent)
             {
-                viewScopeDestroyedEvent.fire((UIViewRoot) ((PostConstructViewMapEvent) event).getSource());
+                viewScopeDestroyedEvent.fire((UIViewRoot) event.getSource());
             }
         }
     }
