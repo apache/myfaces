@@ -657,10 +657,8 @@ public class FlashImpl extends Flash implements ReleasableFlash
         }
         else
         {
-            // Note that on portlet world we can't create cookies,
-            // so we are forced to use the session map. Anyway, 
-            // according to the Bridge implementation(for example see 
-            // org.apache.myfaces.portlet.faces.bridge.BridgeImpl)
+            // Note that on portlet world we can't create cookies, so we are forced to use the session map. Anyway, 
+            // according to the Bridge implementation(for example see org.apache.myfaces.portlet.faces.bridge.BridgeImpl)
             // session object is created at start faces request
             Map<String, Object> sessionMap = externalContext.getSessionMap();
             
@@ -755,7 +753,6 @@ public class FlashImpl extends Flash implements ReleasableFlash
         {
             if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
             {
-                //Use HttpSession or PortletSession object
                 Map<String, Object> sessionMap = externalContext.getSessionMap();
                 sessionMap.put(FLASH_RENDER_MAP_TOKEN+SEPARATOR_CHAR+clientWindow.getId(), tokenValue);
             }
@@ -778,7 +775,6 @@ public class FlashImpl extends Flash implements ReleasableFlash
             }
             else
             {
-                //Use HttpSession or PortletSession object
                 Map<String, Object> sessionMap = externalContext.getSessionMap();
                 sessionMap.put(FLASH_RENDER_MAP_TOKEN, tokenValue);
             }
@@ -829,7 +825,6 @@ public class FlashImpl extends Flash implements ReleasableFlash
             }
             else
             {
-                //Use HttpSession or PortletSession object
                 Map<String, Object> sessionMap = externalContext.getSessionMap();
                 tokenValue = (String) sessionMap.get(FLASH_RENDER_MAP_TOKEN);
             }
