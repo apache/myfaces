@@ -19,21 +19,12 @@
     <scripts>
 
         <script>
-            <fileName>jsf-uncompressed-full.js</fileName>
+            <fileName>jsf-development.js</fileName>
             <includes>
                 <include>**/_impl/core/_EvalHandlers.js</include>
                 <include>**/_impl/core/_Runtime.js</include>
                 <include>**/_impl/core/_StartImpl.js</include>
                 <include>**/_impl/i18n/Messages.js</include>
-                <include>**/_impl/i18n/Messages_de.js</include>
-                <include>**/_impl/i18n/Messages_nl.js</include>
-                <include>**/_impl/i18n/Messages_fr.js</include>
-                <include>**/_impl/i18n/Messages_it.js</include>
-                <include>**/_impl/i18n/Messages_es.js</include>
-                <include>**/_impl/i18n/Messages_ru.js</include>
-                <include>**/_impl/i18n/Messages_zh_CN.js</include>
-                <include>**/_impl/i18n/Messages_zh_HK.js</include>
-                <include>**/_impl/i18n/Messages_zh_TW.js</include>
 
                 <include>**/_impl/_util/_Lang.js</include>
                 <include>**/_impl/core/Object.js</include>
