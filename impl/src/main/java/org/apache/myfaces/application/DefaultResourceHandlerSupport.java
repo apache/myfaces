@@ -52,9 +52,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
     private static final String CONTRACTS = "contracts";
 
     private ResourceLoader[] _resourceLoaders;
-    
     private ContractResourceLoader[] _contractResourceLoaders;
-    
     private ResourceLoader[] _viewResourceLoaders;
     
     public DefaultResourceHandlerSupport()
@@ -62,6 +60,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
         super();
     }
 
+    @Override
     public ResourceLoader[] getResourceLoaders()
     {
         if (_resourceLoaders == null)
@@ -85,7 +84,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
                 };
             }
             else
-            {            
+            {
                 //The ExternalContextResourceLoader has precedence over
                 //ClassLoaderResourceLoader, so it goes first.
 
