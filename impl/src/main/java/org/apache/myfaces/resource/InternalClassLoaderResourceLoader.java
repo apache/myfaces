@@ -134,11 +134,6 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
                             rescourceName, false);
         }
-        else if (javaxFacesLib && !_developmentStage &&
-                                   (ResourceUtils.JSF_MYFACES_JSFJS_I18N.equals(resourceName)))
-        {
-            return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
-        }
         else if (_developmentStage && libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);

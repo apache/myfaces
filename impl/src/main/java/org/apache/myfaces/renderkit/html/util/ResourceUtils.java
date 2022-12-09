@@ -36,7 +36,6 @@ public class ResourceUtils
 
     public final static String JSF_DEVELOPMENT_JS = "jsf-development.js";
     public final static String JSF_PRODUCTION_JS = "jsf-production.js";
-    public final static String JSF_MYFACES_JSFJS_I18N = "jsf-i18n.js";
 
     private final static String RENDERED_JSF_JS = "org.apache.myfaces.RENDERED_JSF_JS";
 
