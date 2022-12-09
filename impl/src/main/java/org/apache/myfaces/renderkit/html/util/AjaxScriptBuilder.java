@@ -196,8 +196,11 @@ public class AjaxScriptBuilder
             {
                 appendProperty(sb, "resetValues", resetValues, false);
             }
+
             if ((params != null && !params.isEmpty()) || (uiParams != null && !uiParams.isEmpty()))
             {
+                StringBuilder paramsBuilder = new StringBuilder();
+                paramsBuilder.append('{');
                 if (params != null && !params.isEmpty())
                 {
                     if (params instanceof RandomAccess)
@@ -206,14 +209,14 @@ public class AjaxScriptBuilder
                         for (int i = 0, size = list.size(); i < size; i++)
                         {
                             ClientBehaviorContext.Parameter param = list.get(i);
-                            appendProperty(sb, param.getName(), param.getValue(), true);
+                            appendProperty(paramsBuilder, param.getName(), param.getValue(), true);
                         }
                     }
                     else
                     {
                         for (ClientBehaviorContext.Parameter param : params)
                         {
-                            appendProperty(sb, param.getName(), param.getValue(), true);
+                            appendProperty(paramsBuilder, param.getName(), param.getValue(), true);
                         }
                     }
                 }
@@ -223,9 +226,12 @@ public class AjaxScriptBuilder
                     for (int i = 0, size = uiParams.size(); i < size; i++)
                     {
                         UIParameter param = uiParams.get(i);
-                        appendProperty(sb, param.getName(), param.getValue(), true);
+                        appendProperty(paramsBuilder, param.getName(), param.getValue(), true);
                     }
                 }
+                paramsBuilder.append('}');
+                sb.append("params: ");
+                sb.append(paramsBuilder);
             }
 
             sb.append('}');
@@ -259,6 +265,7 @@ public class AjaxScriptBuilder
         
         sb.append('\'');
     }
+
 
     public static void appendProperty(StringBuilder builder, 
                                       String name,
