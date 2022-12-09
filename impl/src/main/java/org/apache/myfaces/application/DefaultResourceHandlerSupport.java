@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.application;
 
-import javax.faces.application.ProjectStage;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.resource.ClassLoaderContractResourceLoader;
@@ -29,7 +28,6 @@ import org.apache.myfaces.resource.InternalClassLoaderResourceLoader;
 import org.apache.myfaces.resource.RootExternalContextResourceLoader;
 import org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader;
 import org.apache.myfaces.resource.TempDirFileCacheResourceLoader;
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.resource.BaseResourceHandlerSupport;
 import org.apache.myfaces.shared.resource.ClassLoaderResourceLoader;
 import org.apache.myfaces.shared.resource.ContractResourceLoader;
@@ -75,58 +73,28 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
             
             if (TempDirFileCacheResourceLoader.isValidCreateTemporalFiles(facesContext))
             {
-                //The ExternalContextResourceLoader has precedence over
-                //ClassLoaderResourceLoader, so it goes first.
-                String renderedJSFJS = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
-                        InternalClassLoaderResourceLoader.MYFACES_JSF_MODE,
-                        ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
-
-                if (facesContext.isProjectStage(ProjectStage.Development) ||
-                     !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
-                {
-                    _resourceLoaders = new ResourceLoader[] {
-                            new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader("/"+directory)),
-                            new TempDirFileCacheResourceLoader(new FacesFlowClassLoaderResourceLoader()),
-                            new TempDirFileCacheResourceLoader(
-                                             new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES)),
-                            new TempDirFileCacheResourceLoader(new ClassLoaderResourceLoader(META_INF_RESOURCES))
-                    };
-                }
-                else
-                {
-                    _resourceLoaders = new ResourceLoader[] {
-                            new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader("/"+directory)),
-                            new TempDirFileCacheResourceLoader(new FacesFlowClassLoaderResourceLoader()),
-                            new TempDirFileCacheResourceLoader(new ClassLoaderResourceLoader(META_INF_RESOURCES))
-                    };
-                }
+                // The ExternalContextResourceLoader has precedence over
+                // The internal one
+                _resourceLoaders = new ResourceLoader[] {
+                        new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader('/' +directory)),
+                        new TempDirFileCacheResourceLoader(new FacesFlowClassLoaderResourceLoader()),
+                        // jsf-development and production hosted in internal-resources
+                        new TempDirFileCacheResourceLoader(
+                                         new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES)),
+                        new TempDirFileCacheResourceLoader(new ClassLoaderResourceLoader(META_INF_RESOURCES))
+                };
             }
             else
             {            
                 //The ExternalContextResourceLoader has precedence over
                 //ClassLoaderResourceLoader, so it goes first.
-                String renderedJSFJS = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
-                        InternalClassLoaderResourceLoader.MYFACES_JSF_MODE,
-                        ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
 
-                if (facesContext.isProjectStage(ProjectStage.Development) ||
-                     !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
-                {
-                    _resourceLoaders = new ResourceLoader[] {
-                            new ExternalContextResourceLoader("/"+directory),
-                            new FacesFlowClassLoaderResourceLoader(),
-                            new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES),
-                            new ClassLoaderResourceLoader(META_INF_RESOURCES)
-                    };
-                }
-                else
-                {
-                    _resourceLoaders = new ResourceLoader[] {
-                            new ExternalContextResourceLoader("/"+directory),
-                            new FacesFlowClassLoaderResourceLoader(),
-                            new ClassLoaderResourceLoader(META_INF_RESOURCES)
-                    };
-                }
+                _resourceLoaders = new ResourceLoader[] {
+                        new ExternalContextResourceLoader('/' +directory),
+                        new FacesFlowClassLoaderResourceLoader(),
+                        new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES),
+                        new ClassLoaderResourceLoader(META_INF_RESOURCES)
+                };
             }
         }
         return _resourceLoaders;
@@ -151,7 +119,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
             {
                 _contractResourceLoaders= new ContractResourceLoader[] { 
                     new TempDirFileCacheContractResourceLoader(
-                        new ExternalContextContractResourceLoader("/"+directory)),
+                        new ExternalContextContractResourceLoader('/' +directory)),
                     new TempDirFileCacheContractResourceLoader(
                         new ClassLoaderContractResourceLoader(META_INF_CONTRACTS))
                 };
@@ -160,7 +128,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
             {
             
                 _contractResourceLoaders= new ContractResourceLoader[] { 
-                    new ExternalContextContractResourceLoader("/"+directory),
+                    new ExternalContextContractResourceLoader('/' +directory),
                     new ClassLoaderContractResourceLoader(META_INF_CONTRACTS)
                 };
             }
