@@ -32,7 +32,7 @@ import org.apache.myfaces.cdi.util.CDIUtils;
 
 public class FacesConfigExtension implements Extension
 {
-    private FacesConfig.Version facesConfigVersion;
+    private FacesConfig facesConfig;
     
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
@@ -46,17 +46,7 @@ public class FacesConfigExtension implements Extension
         {
             Annotated annotated = event.getAnnotatedBeanClass();
             
-            FacesConfig config = (FacesConfig) annotated.getAnnotation(FacesConfig.class);
-
-            if (facesConfigVersion != null)
-            {
-                facesConfigVersion = facesConfigVersion.ordinal() < config.version().ordinal() ? 
-                        config.version() : facesConfigVersion;
-            }
-            else
-            {
-                facesConfigVersion = config.version();
-            }
+            facesConfig = (FacesConfig) annotated.getAnnotation(FacesConfig.class);
         }
     }
     
@@ -64,7 +54,7 @@ public class FacesConfigExtension implements Extension
     {
         FacesConfigBeanHolder holder = CDIUtils.get(beanManager, FacesConfigBeanHolder.class);
         
-        holder.setFacesConfigVersion(facesConfigVersion);
+        holder.setFacesConfig(facesConfig);
     }
 
 }
