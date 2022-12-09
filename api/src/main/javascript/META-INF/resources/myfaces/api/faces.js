@@ -474,8 +474,7 @@ if (!myfaces.ab) {
         }
 
         if (eventName) {
-            options["params"] = options.params || {};
-            options.params["jakarta.faces.behavior.event"] = eventName;
+            options["jakarta.faces.behavior.event"] = eventName;
         }
         if (execute) {
             options["execute"] = execute;
