@@ -19,7 +19,7 @@
     <scripts>
 
         <script>
-            <fileName>faces-uncompressed-full.js</fileName>
+            <fileName>faces-development.js</fileName>
             <includes>
                 <include>**/_impl/core/_EvalHandlers.js</include>
                 <include>**/_impl/core/_Runtime.js</include>

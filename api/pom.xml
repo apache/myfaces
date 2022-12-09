@@ -80,7 +80,7 @@
                             <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
                             <descriptor>${basedir}/src/assembler/jsfscripts-compiler.xml</descriptor>
                             <excludes>
-                                <exclude>**/myfaces/_impl/core/faces-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/core/faces-development.js</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -93,10 +93,10 @@
                         <phase>process-resources</phase>
                         <configuration>
                             <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
-                            <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-full-compiler.xml</descriptor>
+                            <descriptor>src/assembler/jsfscripts-development-compiler.xml</descriptor>
                             <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/jakarta.faces/</outputDirectory>
                             <excludes>
-                                <exclude>**/myfaces/_impl/core/faces-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/core/faces-development.js</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -109,10 +109,10 @@
                         <phase>process-resources</phase>
                         <configuration>
                             <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
-                            <descriptor>${basedir}/src/assembler/jsfscripts-minimal-compiler.xml</descriptor>
+                            <descriptor>src/assembler/jsfscripts-production-compiler.xml</descriptor>
                             <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/jakarta.faces/</outputDirectory>
                             <excludes>
-                                <exclude>**/myfaces/_impl/core/faces-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/core/faces-development.js</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -128,7 +128,7 @@
                             <descriptor>${basedir}/src/assembler/jsfscripts-i18n-compiler.xml</descriptor>
                             <outputDirectory>${basedir}/target/classes/META-INF/resources/myfaces/</outputDirectory>
                             <excludes>
-                                <exclude>**/myfaces/_impl/core/faces-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/core/faces-development.js</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -142,8 +142,8 @@
                         <configuration>
                             <scripts>target/classes/META-INF/resources/jakarta.faces/</scripts>
                             <excludes>
-                                <exclude>faces-uncompressed.js</exclude>
-                                <exclude>faces-uncompressed-full.js</exclude>
+                                <exclude>faces-development.js</exclude>
+
                             </excludes>
                             <compressor>yahooUI</compressor>
                         </configuration>
@@ -158,8 +158,7 @@
                         <configuration>
                             <scripts>target/classes/META-INF/resources/myfaces/</scripts>
                             <excludes>
-                                <exclude>faces-uncompressed.js</exclude>
-                                <exclude>faces-uncompressed-full.js</exclude>
+                                <exclude>faces-development.js</exclude>
                             </excludes>
                             <compressor>yahooUI</compressor>
                         </configuration>
@@ -174,7 +173,7 @@
                         <configuration>
                             <scripts>target/classes/META-INF/internal-resources/jakarta.faces/</scripts>
                             <excludes>
-                                <exclude>faces-uncompressed-full.js</exclude>
+                                <exclude>faces-development.js</exclude>
                                 <exclude>META-INF/**/*.js</exclude>
                             </excludes>
                             <compressor>yahooUI</compressor>
