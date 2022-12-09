@@ -31,15 +31,8 @@ import org.apache.myfaces.resource.ContractResource;
 
 public class ResourceUtils
 {
-    public final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";
-
-    public final static String JSF_MYFACES_JSFJS_MINIMAL = "minimal";
-    public final static String JSF_MYFACES_JSFJS_NORMAL = "normal";
-    
-    public final static String FACES_UNCOMPRESSED_JS_RESOURCE_NAME = "faces-uncompressed.js";
-    public final static String FACES_UNCOMPRESSED_FULL_JS_RESOURCE_NAME = "faces-uncompressed-full.js";
-    public final static String FACES_MINIMAL_JS_RESOURCE_NAME = "faces-minimal.js";
-    public final static String FACES_MYFACES_JSFJS_I18N = "faces-i18n.js";
+    public final static String FACES_DEVELOPMENT_JS = "faces-development.js";
+    public final static String FACES_PRODUCTION_JS = "faces-minimal.js";
 
     private final static String RENDERED_FACES_JS = "org.apache.myfaces.RENDERED_FACES_JS";
 

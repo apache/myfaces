@@ -186,8 +186,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                         //we have to move this into an inner if because chrome otherwise chokes
                         //due to changing the and order instead of relying on left to right
                         //if jsf.js is already registered we do not replace it anymore
-                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
-                            && src.indexOf("/jsf-uncompressed.js") == -1)) {
+                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=jakarta.faces") == -1) || (src.indexOf("/faces.js") == -1
+                            && src.indexOf("/faces-development.js") == -1)) {
 
                             finalScripts = evalCollectedScripts(finalScripts);
                             _RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false, nonce ? {nonce: nonce} : null );
@@ -233,8 +233,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         } catch (e) {
             //we are now in accordance with the rest of the system of showing errors only in development mode
             //the default error output is alert we always can override it with
-            //window.myfaces = window.myfaces || {};
-            //myfaces.config =  myfaces.config || {};
+            //window.myfaces = window.myfaces || {};
+            //myfaces.config =  myfaces.config || {};
             //myfaces.config.defaultErrorOutput = console.error;
             if(faces.getProjectStage() === "Development") {
                 var defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert);
