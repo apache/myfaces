@@ -586,7 +586,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
             new HtmlRenderedAttr("onclick", 
                     "jsf.util.chain(this, event,'alert(\\'hello\\')', "
                     + "'jsf.ajax.request(this,event,{render:\\'myForm:box5 \\',"
-                            + "\\'javax.faces.behavior.event\\':\\'click\\'})');"),
+                            + "params:{\\'javax.faces.behavior.event\\':\\'click\\'}})');"),
         };
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
