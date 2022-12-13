@@ -127,8 +127,16 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     public void startDocument() throws IOException
     {
         // JSF 2.2 section 2.2.6.1 Render Response Partial Processing
-        // use writePreamble(...)
-        //_wrapped.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+        
+        String encoding = getCharacterEncoding();
+        if (encoding == null)
+        {
+            encoding = "UTF-8";
+        }
+
+        String preamble = "<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>";
+
+        writePreamble(preamble); // MYFACES-4501
         
         startElement("partial-response", null);
         
