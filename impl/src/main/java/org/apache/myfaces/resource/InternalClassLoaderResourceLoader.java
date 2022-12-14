@@ -44,24 +44,40 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
 {
 
     /**
+     * If this param is true and the project stage is development mode,
+     * the source javascript files will be loaded separately instead have
+     * all in just one file, to preserve line numbers and make javascript
+     * debugging of the default jsf javascript file more simple.
+     */
+    @JSFWebConfigParam(since = "2.0.1", defaultValue = "false", expectedValues = "true,false", group = "render")
+    public static final String USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS
+            = "org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS";
+
+    /**
      * Define the mode used for jsf.js file:
      * <ul>
-     * <li>normal : contains everything, including i18n (jsf-i18n.js)</li>
-     * <li>minimal: contains everything, excluding i18n (jsf-i18n.js)</li>
+     * <li>normal : contains everything, including jsf-i18n.js, jsf-experimental.js and jsf-legacy.js</li>
+     * <li>minimal-modern : is the core jsf with a baseline of ie9+,
+     * without jsf-i18n.js, jsf-experimental.js and jsf-legacy.js</li>
+     * <li>minimal: which is the same with a baseline of ie6, without jsf-i18n.js, jsf-experimental.js</li>
      * </ul>
      * <p>If org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS param is set to true and project stage
      * is Development, this param is ignored.</p>
      */
     @JSFWebConfigParam(since = "2.0.10,2.1.4", defaultValue = "normal",
-                       expectedValues = "normal, minimal", group = "render")
+                       expectedValues = "normal, minimal-modern, minimal", group = "render")
     public static final String MYFACES_JSF_MODE = "org.apache.myfaces.JSF_JS_MODE";
-
+    
+    private final boolean _useMultipleJsFilesForJsfUncompressedJs;
     private final String _jsfMode;
     private final boolean _developmentStage;
 
     public InternalClassLoaderResourceLoader(String prefix)
     {
         super(prefix);
+        _useMultipleJsFilesForJsfUncompressedJs
+                = WebConfigParamUtils.getBooleanInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
+                    USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS, false);
 
         _jsfMode = WebConfigParamUtils.getStringInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
                     MYFACES_JSF_MODE, ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
@@ -78,11 +94,9 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     public InputStream getResourceInputStream(ResourceMeta resourceMeta)
     {
         InputStream is;
-
-        String prefix = getPrefix();
-        if (prefix != null && !prefix.isEmpty())
+        if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            String name = prefix + '/' + resourceMeta.getResourceIdentifier();
+            String name = getPrefix() + '/' + resourceMeta.getResourceIdentifier();
             is = getClassLoader().getResourceAsStream(name);
             if (is == null)
             {
@@ -104,11 +118,9 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     public URL getResourceURL(String resourceId)
     {
         URL url;
-
-        String prefix = getPrefix();
-        if (prefix != null && !prefix.isEmpty())
+        if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            String name = prefix + '/' + resourceId;
+            String name = getPrefix() + '/' + resourceId;
             url = getClassLoader().getResource(name);
             if (url == null)
             {
@@ -153,19 +165,50 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
         {
             if (_developmentStage)
             {
+                if (_useMultipleJsFilesForJsfUncompressedJs)
+                {
+                    return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
+                            resourceName, resourceVersion, ResourceUtils.JSF_UNCOMPRESSED_JS_RESOURCE_NAME, true);
+                }
+                else
+                {
+                    //normall we would have to take care about the standard jsf.js case also
+                    //but our standard resource loader takes care of it,
+                    // because this part is only called in debugging mode
+                    //in production only in debugging
                     return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
-                                                     ResourceUtils.JSF_UNCOMPRESSED_FULL_JS_RESOURCE_NAME, false);
+                                                     "jsf-uncompressed-full.js", false);
+                }
             }
-            else
+            else if (_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_MINIMAL) )
             {
                 return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
                         ResourceUtils.JSF_MINIMAL_JS_RESOURCE_NAME, false);
             }
+            else if (_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_MINIMAL_MODERN) )
+            {
+                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
+                        ResourceUtils.JSF_MINIMAL_MODERN_JS_RESOURCE_NAME, false);
+            }
+            else
+            {
+                return null;
+            }
         }
-        else if (javaxFacesLib && !_developmentStage &&
-                                   (ResourceUtils.JSF_MYFACES_JSFJS_I18N.equals(resourceName)))
+        else if (javaxFacesLib && !_developmentStage && !_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL) &&
+                                   (ResourceUtils.JSF_MYFACES_JSFJS_I18N.equals(resourceName) ||
+                                   ResourceUtils.JSF_MYFACES_JSFJS_EXPERIMENTAL.equals(resourceName) ||
+                                   ResourceUtils.JSF_MYFACES_JSFJS_LEGACY.equals(resourceName)) )
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
+        }
+        else if (_developmentStage && libraryName != null &&
+                ResourceUtils.MYFACES_LIBRARY_NAME.equals(libraryName) &&
+                ResourceUtils.MYFACES_JS_RESOURCE_NAME.equals(resourceName))
+        {
+            //handle the oamSubmit.js
+            return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
+                    resourceName, resourceVersion, ResourceUtils.MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED, true);
         }
         else if (_developmentStage && libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
         {
@@ -191,14 +234,12 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     @Override
     public boolean libraryExists(String libraryName)
     {
-        String prefix = getPrefix();
-        if (prefix != null && !prefix.isEmpty())
+        if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            String name = prefix + '/' + libraryName;
-            URL url = getClassLoader().getResource(name);
+            URL url = getClassLoader().getResource(getPrefix() + '/' + libraryName);
             if (url == null)
             {
-                url = this.getClass().getClassLoader().getResource(name);
+                url = this.getClass().getClassLoader().getResource(getPrefix() + '/' + libraryName);
             }
             if (url != null)
             {
@@ -225,11 +266,10 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             int maxDepth, ResourceVisitOption... options)
     {
         String basePath = path;
-
-        String prefix = getPrefix();
-        if (prefix != null)
+        
+        if (getPrefix() != null)
         {
-            basePath = prefix + '/' + (path.startsWith("/") ? path.substring(1) : path);
+            basePath = getPrefix() + '/' + (path.startsWith("/") ? path.substring(1) : path);
         }
 
         URL url = getClassLoader().getResource(basePath);

@@ -66,8 +66,12 @@ public abstract class ResourceHandler
      * @since 2.3
      */
     public static final String JSF_SCRIPT_LIBRARY_NAME = "javax.faces";
-
+    
+    private final static String MYFACES_JS_RESOURCE_NAME = "oamSubmit.js";
+    private final static String MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED = "oamSubmit-uncompressed.js";
     private final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
+    private final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";
+    private final static String RENDERED_MYFACES_JS = "org.apache.myfaces.RENDERED_MYFACES_JS";
 
     public abstract Resource createResource(String resourceName);
     
@@ -165,6 +169,14 @@ public abstract class ResourceHandler
     {
         getRenderedResources(facesContext).put(
                 libraryName != null ? libraryName+'/'+resourceName : resourceName, Boolean.TRUE);
+        if (ResourceHandler.JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) &&
+            ResourceHandler.JSF_SCRIPT_RESOURCE_NAME.equals(resourceName))
+        {
+            // If we are calling this method, it is expected myfaces core is being used as runtime and note
+            // oamSubmit script is included inside jsf.js, so mark this one too.
+            getRenderedResources(facesContext).put(
+                    MYFACES_LIBRARY_NAME+'/'+MYFACES_JS_RESOURCE_NAME, Boolean.TRUE);
+        }
     }
     
     /**
