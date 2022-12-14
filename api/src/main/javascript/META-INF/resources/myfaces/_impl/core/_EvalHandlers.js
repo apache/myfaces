@@ -70,83 +70,114 @@ if (!myfaces._impl.core._EvalHandlers) {
          */
         var _T = this;
 
+        /*cascaded eval methods depending upon the browser*/
 
         /**
-         * an implementation of eval which drops legacy support
-         * and allows nonce
+         * @function
          * @param code
-         * @param cspMeta optional csp metadata, only allowed key atm nonce
-         */
-        _T.globalEval = function(code, cspMeta) {
-            //check for jsf nonce
-            var nonce = cspMeta ? cspMeta.nonce : this._currentScriptNonce();
 
-            var element = document.createElement("script");
-            element.setAttribute("type", "text/javascript");
-            element.innerHTML = code;
-            if(nonce) {
-                element.setAttribute("nonce", nonce);
+         *
+         * evals a script globally using exec script (ie6 fallback)
+         * @param {String} code the code which has to be evaluated
+         * @borrows myfaces._impl.core._Runtime as _T
+         *
+         * TODO eval if we cannot replace this method with the head appendix
+         * method which is faster for ie this also would reduce our code
+         * by a few bytes
+         */
+        _T._evalExecScript = function(code) {
+            //execScript definitely only for IE otherwise we might have a custom
+            //window extension with undefined behavior on our necks
+            //window.execScript does not return anything
+            //on htmlunit it return "null object"
+            //_r == ret
+            var _r = window.execScript(code);
+            if ('undefined' != typeof _r && _r == "null" /*htmlunit bug*/) {
+                return null;
             }
-            //head appendix method, modern browsers use this method savely to eval scripts
-            //we did not use it up until now because there were really old legacy browsers where
-            //it did not work
-            var htmlScriptElement = document.head.appendChild(element);
-            document.head.removeChild(htmlScriptElement);
+            return _r;
         };
 
-        _T.resolveNonce = function(item) {
-            var nonce = null;
-            if(!!(item && item.nonce)) {
-                nonce = item.nonce;
-            } else if(!!item) {
-                nonce = item.getAttribute("nonce");
-            }
-            //empty nonce means no nonce, the rest
-            //of the code treats it like null
-            return (!nonce) ? null : nonce;
-        }
-        /*
-        * determines the jsfjs nonce and adds them to the namespace
-        * this is done once and only lazily
-        */
-        _T._currentScriptNonce = function() {
-            //already processed
-            if(myfaces.config && myfaces.config.cspMeta) {
-                return myfaces.config.cspMeta.nonce;
-            }
+        /**
+         * flakey head appendix method which does not work in the correct
+         * order or at all for all modern browsers
+         * but seems to be the only method which works on blackberry correctly
+         * hence we are going to use it as fallback
+         *
+         * @param {String} code the code part to be evaled
+         * @borrows myfaces._impl.core._Runtime as _T
+         */
+        _T._evalHeadAppendix = function(code) {
+            //_l == location
+            var _l = document.getElementsByTagName("head")[0] || document.documentElement;
+            //_p == placeHolder
+            var _p = document.createElement("script");
+            _p.type = "text/javascript";
+            _p.text = code;
+            _l.insertBefore(_p, _l.firstChild);
+            _l.removeChild(_p);
+            return null;
+        };
 
-            //since our baseline atm is ie11 we cannot use document.currentScript globally
-            if(_T.resolveNonce(document.currentScript)) {
-                //fastpath for modern browsers
-                return _T.resolveNonce(document.currentScript);
-            }
-
-            var scripts = document.querySelectorAll("script[src], link[src]");
-            var jsf_js = null;
-
-            //we search all scripts
-            for(var cnt = 0; scripts && cnt < scripts.length; cnt++) {
-                var scriptNode = scripts[cnt];
-                if(!_T.resolveNonce(scriptNode)) {
-                    continue;
-                }
-                var src = scriptNode.getAttribute("src") || "";
-                if(src && !src.match(/jsf\.js\?ln\=javax\.faces/gi)) {
-                    jsf_js = scriptNode;
-                    //the first one is the one we have our code in
-                    //subsequent ones do not overwrite our code
-                    break;
-                }
-            }
-            //found
-            myfaces.config = myfaces.config || {};
-            myfaces.config.cspMeta = myfaces.config.cspMeta || {
-                nonce: null
+        /**
+         * @name myfaces._impl.core._Runtime._standardGlobalEval
+         * @private
+         * @param {String} code
+         */
+        _T._standardGlobalEval = function(code) {
+            //fix which works in a cross browser way
+            //we used to scope an anonymous function
+            //but I think this is better
+            //the reason is some Firefox versions
+            // apply a wrong scope
+            //if we call eval by not scoping
+            //_U == "undefined"
+            var _U = "undefined";
+            var gEval = function () {
+                //_r == retVal;
+                var _r = window.eval.call(window, code);
+                if (_U == typeof _r) return null;
+                return _r;
             };
-            if(jsf_js) {
-                myfaces.config.cspMeta.nonce = _T.resolveNonce(jsf_js);
+            var _r = gEval();
+            if (_U == typeof _r) return null;
+            return _r;
+        };
+
+        /**
+         * global eval on scripts
+         * @param {String} c (code abbreviated since the compression does not work here)
+         * @name myfaces._impl.core._Runtime.globalEval
+         * @function
+         */
+        _T.globalEval = function(c) {
+            //TODO add a config param which allows to evaluate global scripts even if the call
+            //is embedded in an iframe
+            //We lazy init the eval type upon the browsers
+            //capabilities   
+            var _e = "_evalType";
+            var _w = window;
+            var _b = myfaces._impl.core._Runtime.browser;
+            //central routine to determine the eval method
+            if (!_T[_e]) {
+                //execScript supported
+                _T[_e] = _w.execScript ? "_evalExecScript" : null;
+
+                //in case of no support we go to the standard global eval  window.eval.call(window,
+                // with Firefox fixes for scoping
+                _T[_e] = _T[_e] ||(( _w.eval && (!_b.isBlackBerry ||_b.isBlackBerry >= 6)) ? "_standardGlobalEval" : null);
+
+                //this one routes into the hed appendix method
+                _T[_e] = _T[_e] ||((_w.eval ) ? "_evalHeadAppendix" : null);
             }
-            return myfaces.config.cspMeta.nonce;
+            if (_T[_e]) {
+                //we now execute the eval method
+                return _T[_T[_e]](c);
+            }
+            //we probably have covered all browsers, but this is a safety net which might be triggered
+            //by some foreign browser which is not covered by the above cases
+            eval.call(window, c);
+            return null;
         };
 
     };

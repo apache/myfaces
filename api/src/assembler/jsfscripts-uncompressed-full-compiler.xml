@@ -37,26 +37,25 @@
             <script type = "text/javascript" src = "./myfaces/api/jsf.js"></script>
         -->
 
+
         <script>
-            <fileName>jsf.js</fileName>
+            <fileName>jsf-uncompressed-full.js</fileName>
             <includes>
                 <include>**/_impl/core/_EvalHandlers.js</include>
-
                 <include>**/_impl/core/_Runtime.js</include>
                 <include>**/_impl/core/_RuntimeQuirks.js</include>
-
                 <include>**/_impl/core/_StartImpl.js</include>
                 <include>**/_impl/i18n/Messages.js</include>
+
                 <include>**/_impl/i18n/Messages_de.js</include>
                 <include>**/_impl/i18n/Messages_nl.js</include>
+                <include>**/_impl/i18n/Messages_es.js</include>
                 <include>**/_impl/i18n/Messages_fr.js</include>
                 <include>**/_impl/i18n/Messages_it.js</include>
-                <include>**/_impl/i18n/Messages_es.js</include>
                 <include>**/_impl/i18n/Messages_ru.js</include>
                 <include>**/_impl/i18n/Messages_zh_CN.js</include>
                 <include>**/_impl/i18n/Messages_zh_HK.js</include>
                 <include>**/_impl/i18n/Messages_zh_TW.js</include>
-
                 <include>**/_impl/_util/_Lang.js</include>
                 <include>**/_impl/_util/_LangQuirks.js</include>
                 <include>**/_impl/core/Object.js</include>
@@ -67,6 +66,7 @@
                 <include>**/_impl/_util/_DomExperimental.js</include>
                 <include>**/_impl/_util/_DomQuirks.js</include>
                 <include>**/_impl/_util/_HtmlStripper.js</include>
+
                 <include>**/_impl/_util/_OamSubmit.js</include>
 
                 <include>**/_impl/xhrCore/_AjaxUtils.js</include>
@@ -79,18 +79,18 @@
                 <include>**/_impl/xhrCore/engine/Xhr1.js</include>
                 <include>**/_impl/xhrCore/engine/IFrame.js</include>
 
-
                 <include>**/_impl/xhrCore/_AjaxRequest.js</include>
-                <include>**/_impl/xhrCore/_ExtAjaxRequest.js</include>
                 <include>**/_impl/xhrCore/_AjaxRequestLevel2.js</include>
-                <!-- this is pure 2.2 functionality -->
+                <!-- not yet used in 2.0 but for development purposes it makes sense to include it here -->
                 <include>**/_impl/xhrCore/_IFrameRequest.js</include>
-
                 <include>**/_impl/xhrCore/_AjaxResponse.js</include>
                 <include>**/_impl/xhrCore/_Transports.js</include>
                 <include>**/_impl/xhrCore/_ExtTransport.js</include>
                 <include>**/_impl/core/Impl.js</include>
+
+                <!-- optimization helper -->
                 <include>**/_impl/core/_EndImpl.js</include>
+                <!-- api -->
                 <include>**/api/jsf.js</include>
             </includes>
         </script>
