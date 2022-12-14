@@ -97,6 +97,16 @@ if (!myfaces.oam) {
                 myfaces.oam.setHiddenInput(formName, 'autoScroll', getScrolling());
             }
 
+            if (myfaces.core.config.ieAutoSave) {
+                var agentString = navigator.userAgent.toLowerCase();
+                var version = navigator.appVersion;
+                if (agentString.indexOf('msie') != -1) {
+                    if (!(agentString.indexOf('ppc') != -1 && agentString.indexOf('windows ce') != -1 && version >= 4.0)) {
+                        window.external.AutoCompleteSaveForm(form);
+                    }
+                }
+            }
+
             var oldTarget = form.target;
             if (target != null) {
                 form.target = target;
