@@ -301,9 +301,9 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
             status: MALFORMEDXML,
             responseCode: 200,
             responseText: this.xhrObject?.responseText,
-            source: {
-                id: this.source.id.value
-            }
+            // we remap the element just in case it gets replaced
+            // it will be unremapped
+            source:  this.source.id.value
         };
         try {
             this.handleError(errorData, true);

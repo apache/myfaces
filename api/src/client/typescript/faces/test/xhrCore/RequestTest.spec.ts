@@ -20,7 +20,7 @@ import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {DomQuery} from "mona-dish";
 import {
-    COMPLETE,
+    COMPLETE, EMPTY_STR,
     P_AJAX,
     P_EXECUTE,
     P_PARTIAL_SOURCE,
@@ -464,7 +464,7 @@ describe('Tests after core when it hits response', function () {
                 },
                 onerror: (error: any) => {
                     expect(error.type).to.eq("error");
-                    expect(!!error.status).to.eq(true);
+                    expect(error.status).to.eq(EMPTY_STR);
                     expect(!!error.message).to.eq(true);
                     expect(!!error.source?.id).to.eq(true);
                     expect(!!error.responseCode).to.eq(true);

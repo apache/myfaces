@@ -108,7 +108,7 @@ describe('tests the addOnEvent and addOnError handling', function () {
         expect(onErrorCalled1).to.eq(1);
         expect(onErrorCalled2).to.eq(1);
         expect(errorTitle).to.eq('Erro21');
-        expect(errorMessage).to.eq('Error2 Text');
+        expect(errorMessage).to.eq('serverError: Error2 Text');
     });
 
     it("must have an id set if there is an emitting element", function () {
