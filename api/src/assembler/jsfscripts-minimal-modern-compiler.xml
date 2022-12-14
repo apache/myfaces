@@ -20,26 +20,30 @@
         <!--
             Minimal assembly with all experimental features
             and all extra i18n languages stripped out
+
+            Support for legacy browsers stripped out.
+            Minimal baseline all current browsers in
+            their latest version (including ie9)
+            The baseline will be increased whenever
+            the browsers update.
         -->
 
 
         <script>
-            <fileName>jsf-minimal.js</fileName>
+            <fileName>jsf-minimal-modern.js</fileName>
             <includes>
                 <include>**/_impl/core/_EvalHandlers.js</include>
                 <include>**/_impl/core/_Runtime.js</include>
-                <include>**/_impl/core/_RuntimeQuirks.js</include>
                 <include>**/_impl/core/_StartImpl.js</include>
                 <include>**/_impl/i18n/Messages.js</include>
 
 
                 <include>**/_impl/_util/_Lang.js</include>
-                <include>**/_impl/_util/_LangQuirks.js</include>
                 <include>**/_impl/core/Object.js</include>
+
                 <include>**/_impl/_util/_Queue.js</include>
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Dom.js</include>
-                <include>**/_impl/_util/_DomQuirks.js</include>
                 <include>**/_impl/_util/_HtmlStripper.js</include>
                 <include>**/_impl/_util/_OamSubmit.js</include>
 
@@ -50,8 +54,6 @@
                 <include>**/_impl/xhrCore/engine/XhrConst.js</include>
                 <include>**/_impl/xhrCore/engine/FormData.js</include>
                 <include>**/_impl/xhrCore/engine/BaseRequest.js</include>
-                <include>**/_impl/xhrCore/engine/Xhr1.js</include>
-                <include>**/_impl/xhrCore/engine/IFrame.js</include>
 
                 <include>**/_impl/xhrCore/_AjaxRequest.js</include>
                 <include>**/_impl/xhrCore/_AjaxRequestLevel2.js</include>
