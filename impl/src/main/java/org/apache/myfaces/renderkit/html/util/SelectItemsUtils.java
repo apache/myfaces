@@ -93,7 +93,7 @@ public class SelectItemsUtils
             }
             else
             {
-                String itemStrValue = org.apache.myfaces.renderkit.RendererUtils
+                String itemStrValue = org.apache.myfaces.core.api.shared.SharedRendererUtils
                         .getConvertedStringValue(context, component, converter,
                                 selectItem);
                 boolean selected = lookupSet.contains(itemStrValue); 
