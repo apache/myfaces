@@ -27,11 +27,13 @@ import javax.faces.application.ResourceHandler;
 import javax.faces.application.ResourceVisitOption;
 import javax.faces.context.FacesContext;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.resource.AliasResourceMetaImpl;
 import org.apache.myfaces.shared.resource.ResourceLoader;
 import org.apache.myfaces.shared.resource.ResourceMeta;
 import org.apache.myfaces.shared.resource.ResourceMetaImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.resource.ClassLoaderResourceLoaderIterator;
 
@@ -41,12 +43,28 @@ import org.apache.myfaces.shared.resource.ClassLoaderResourceLoaderIterator;
 public class InternalClassLoaderResourceLoader extends ResourceLoader
 {
 
+    /**
+     * Define the mode used for jsf.js file:
+     * <ul>
+     * <li>normal : contains everything, including i18n (jsf-i18n.js)</li>
+     * <li>minimal: contains everything, excluding i18n (jsf-i18n.js)</li>
+     * </ul>
+     * <p>If org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS param is set to true and project stage
+     * is Development, this param is ignored.</p>
+     */
+    @JSFWebConfigParam(since = "2.0.10,2.1.4", defaultValue = "normal",
+                       expectedValues = "normal, minimal", group = "render")
+    public static final String MYFACES_JSF_MODE = "org.apache.myfaces.JSF_JS_MODE";
+
+    private final String _jsfMode;
     private final boolean _developmentStage;
 
     public InternalClassLoaderResourceLoader(String prefix)
     {
         super(prefix);
 
+        _jsfMode = WebConfigParamUtils.getStringInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
+                    MYFACES_JSF_MODE, ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
         _developmentStage = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
     }
 
@@ -133,11 +151,16 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
 
         if (javaxFaces)
         {
-            String rescourceName = _developmentStage ?
-                    ResourceUtils.JSF_DEVELOPMENT_JS :
-                    ResourceUtils.JSF_PRODUCTION_JS;
-            return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
-                            rescourceName, false);
+            if (_developmentStage)
+            {
+                    return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
+                                                     ResourceUtils.JSF_UNCOMPRESSED_FULL_JS_RESOURCE_NAME, false);
+            }
+            else
+            {
+                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
+                        ResourceUtils.JSF_MINIMAL_JS_RESOURCE_NAME, false);
+            }
         }
         else if (javaxFacesLib && !_developmentStage &&
                                    (ResourceUtils.JSF_MYFACES_JSFJS_I18N.equals(resourceName)))

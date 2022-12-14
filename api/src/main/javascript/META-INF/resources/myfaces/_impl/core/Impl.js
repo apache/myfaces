@@ -602,7 +602,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
         if (jsf.getProjectStage() === "Development" && this._errListeners.length() == 0 && !context["onerror"]) {
             var DIVIDER = "--------------------------------------------------------",
-                    defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", (console && console.error) ? console.error : alert),
+                    defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert),
                     finalMessage = [],
             //we remap the function to achieve a better compressability
                     pushMsg = _Lang.hitch(finalMessage, finalMessage.push);
