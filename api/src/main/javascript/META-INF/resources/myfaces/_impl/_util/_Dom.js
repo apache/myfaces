@@ -1325,7 +1325,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             return doc.documentElement;
         } else {
             var dummyPlaceHolder = document.createElement("div");
-            dummyPlaceHolder.html(markup);
+            dummyPlaceHolder.innerHTML = markup;
             return dummyPlaceHolder;
         }
     }
