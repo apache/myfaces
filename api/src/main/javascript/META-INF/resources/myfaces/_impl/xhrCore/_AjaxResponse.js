@@ -651,7 +651,6 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
     _replaceBody: function (request, context, newData /*varargs*/) {
         var _RT = this._RT,
             _Dom = this._Dom,
-            _Lang = this._Lang,
 
         oldBody = document.getElementsByTagName("body")[0],
         placeHolder = document.createElement("div");
@@ -663,10 +662,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
         _Dom._removeChildNodes(oldBody);
         oldBody.innerHTML = "";
-        let bodyElements = _Lang.toArray(placeHolder.childNodes);
-        _Lang.forEach(bodyElements, function(bodyElement) {
-            oldBody.appendChild(bodyElement);
-        });
+        oldBody.appendChild(placeHolder);
+
 
         //speedwise we serialize back into the code
         //for code reduction, speedwise we will take a small hit
