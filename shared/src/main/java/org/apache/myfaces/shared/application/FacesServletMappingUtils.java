@@ -291,7 +291,7 @@ public class FacesServletMappingUtils
                                 }                                
                                 if (mapping.equals(servletPath))
                                 {
-                                    return FacesServletMapping.createPrefixMapping(mapping);
+                                    return FacesServletMapping.createExactMapping(mapping); // MYFACES-4524
                                 }
                             }
                        }
