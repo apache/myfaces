@@ -156,17 +156,17 @@
     };
 
 
-    _T.loadScript = function (src, type, defer, charSet, async) {
+    _T.loadScript = function (src, type, defer, charSet, async, cspMeta) {
         //the chrome engine has a nasty javascript bug which prevents
         //a correct order of scripts being loaded
         //if you use script source on the head, we  have to revert
         //to xhr+ globalEval for those
         var b = _T.browser;
         if (!b.isFF && !b.isWebkit && !b.isOpera >= 10) {
-            _T.loadScriptEval(src, type, defer, charSet);
+            _T.loadScriptEval(src, type, defer, charSet, cspMeta);
         } else {
             //only firefox keeps the order, sorry ie...
-            _T.loadScriptByBrowser(src, type, defer, charSet, async);
+            _T.loadScriptByBrowser(src, type, defer, charSet, async, cspMeta);
         }
     };
 
