@@ -53,77 +53,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     constructor_: function() {
     },
 
-    runCss: function(item/*, xmlData*/) {
-
-        var  UDEF = "undefined",
-        _T = this;
-        _RT = this._RT,
-            _Lang = this._Lang;
-        var applyStyle = function(item, style) {
-                var newSS = document.createElement("style");
-
-                newSS.setAttribute("rel", item.getAttribute("rel") || "stylesheet");
-                newSS.setAttribute("type", item.getAttribute("type") || "text/css");
-                const nonceValue = _RT.resolveNonce(item);
-                if(nonceValue) {
-                    if('undefined' != typeof newSS.nonce) {
-                        newSS['nonce'] = nonceValue;
-                    } else {
-                        newSS.setAttribute("nonce", nonceValue);
-                    }
-                }
-
-                document.getElementsByTagName("head")[0].appendChild(newSS);
-                //ie merrily again goes its own way
-                if (window.attachEvent && !_RT.isOpera && UDEF != typeof newSS.styleSheet && UDEF != newSS.styleSheet.cssText) newSS.styleSheet.cssText = style;
-                else newSS.appendChild(document.createTextNode(style));
-            },
-
-            execCss = function(item) {
-                var equalsIgnoreCase = _Lang.equalsIgnoreCase;
-                var tagName = item.tagName;
-                if (tagName && equalsIgnoreCase(tagName, "link") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
-                    applyStyle(item, "@import url('" + item.getAttribute("href") + "');");
-                } else if (tagName && equalsIgnoreCase(tagName, "style") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
-                    // we do not handle css items blockwise like we do scripts
-                    // but we do have to deal with the child elements instead of the markup
-                    // nonce can be handled on tag level though
-                    var innerText = [];
-                    //compliant browsers know child nodes
-                    var childNodes = item.childNodes;
-                    if (childNodes) {
-                        var len = childNodes.length;
-                        for (var cnt = 0; cnt < len; cnt++) {
-                            innerText.push(childNodes[cnt].innerHTML || childNodes[cnt].data);
-                        }
-                        //non compliant ones innerHTML
-                    } else if (item.innerHTML) {
-                        innerText.push(item.innerHTML);
-                    }
-
-                    applyStyle(item, innerText.join(""));
-                }
-            };
-
-        try {
-            var scriptElements = this.findByTagNames(item, {"link":1,"style":1}, true);
-            if (scriptElements == null) return;
-            for (var cnt = 0; cnt < scriptElements.length; cnt++) {
-                execCss(scriptElements[cnt]);
-            }
-
-        } finally {
-            //the usual ie6 fix code
-            //the IE6 garbage collector is broken
-            //nulling closures helps somewhat to reduce
-            //mem leaks, which are impossible to avoid
-            //at this browser
-            execCss = null;
-            applyStyle = null;
-        }
-    },
-
-
     /**
      * Run through the given Html item and execute the inline scripts
      * (IE doesn't do this by itself)
@@ -1324,7 +1253,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             return doc.documentElement;
         } else {
             var dummyPlaceHolder = document.createElement("div");
-            dummyPlaceHolder.html(markup);
+            dummyPlaceHolder.innerHTML = markup;
             return dummyPlaceHolder;
         }
     },
@@ -1359,7 +1288,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                     break;
                 case "link":
                     var href = item.getAttribute("href");
-                    console.log("Link href:"+ href);
                     var content = item.innerText;
                     var links = document.head.getElementsByTagName("link");
                     for(var cnt = 0; cnt < links.length; cnt++) {
