@@ -611,7 +611,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
         var newDom = _Dom.fromMarkup(newData);
         var newHead = newDom.getElementsByTagName("head")[0];
-        var oldTags = head.childNodes;
+        var oldTags = document.head.childNodes;
 
         _Dom.deleteItems(_Lang.objToArray(oldTags));
         _Dom.apendToHead(newHead.innerHTML);
