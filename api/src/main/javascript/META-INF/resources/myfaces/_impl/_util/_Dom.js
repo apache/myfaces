@@ -1240,6 +1240,121 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
     getNamedElementFromForm: function(form, elementId) {
         return form[elementId];
+    },
+
+
+    appendToHead: function(markup) {
+
+        //we filter out only those evalNodes which do not match
+        var _RT = this._RT;
+        var doubleExistsFilter = function(item)  {
+            switch((item.tagName || "").toLowerCase()) {
+                case "script":
+                    var src = item.getAttribute("src");
+                    var content = item.innerText;
+                    var scripts = document.head.getElementsByTagName("script");
+
+                    for(var cnt = 0; cnt < scripts.length; cnt++) {
+                        if(src && scripts[cnt].getAttribute("src") == src) {
+                            return false;
+                        } else if(!src && scripts[cnt].innerText == content) {
+                            return false;
+                        }
+                    }
+                    break;
+                case "style":
+                    var content = item.innerText;
+                    var styles = document.head.getElementsByTagName("style");
+                    for(var cnt = 0; cnt < styles.length; cnt++) {
+                        if(content && styles[cnt].innerText == content) {
+                            return false;
+                        }
+                    }
+                    break;
+                case "link":
+                    var href = item.getAttribute("href");
+                    var content = item.innerText;
+                    var links = document.head.getElementsByTagName("link");
+                    for(var cnt = 0; cnt < links.length; cnt++) {
+                        if(href && links[cnt].getAttribute("href") == href) {
+                            return false;
+                        } else if(!href && links[cnt].innerText == content) {
+                            return false;
+                        }
+                    }
+                    break;
+                default: break;
+            }
+            return true;
+        };
+
+        var appendElement = function (item) {
+            var tagName = (item.tagName || "").toLowerCase();
+            var nonce = _RT.resolveNonce(item);
+            if (tagName === "script") {
+                var newItem = document.createElement("script");
+                if(!!item.getAttribute("type")) {
+                    newItem.setAttribute("type", item.getAttribute("type"));
+                }
+                if(!!item.getAttribute("defer")) {
+                    newItem.setAttribute("defer", item.getAttribute("defer"));
+                }
+                newItem.textContent = item.textContent;
+                if(!!item.getAttribute("src")) {
+                    newItem.setAttribute("src", item.getAttribute("src"));
+                }
+                if(nonce) {
+                    newItem["nonce"] = nonce;
+                }
+                item = newItem;
+            } else if (tagName === "link") {
+                var newItem = document.createElement("link");
+                newItem.textContent = item.textContent;
+                if(!!item.getAttribute("rel")) {
+                    newItem.setAttribute("rel", item.getAttribute("rel"));
+                }
+                if(!!item.getAttribute("href")) {
+                    newItem.setAttribute("href", item.getAttribute("href"));
+                }
+                if(nonce) {
+                    newItem["nonce"] = nonce;
+                }
+                item = newItem;
+            } else if (tagName === "style") {
+                var newItem = document.createElement("style");
+                if(!!item.getAttribute("type")) {
+                    newItem.setAttribute("type", item.getAttribute("type"));
+                }
+                newItem.textContent = item.textContent;
+                if(!!item.getAttribute("rel")) {
+                    newItem.setAttribute("rel", item.getAttribute("rel"));
+                }
+                if(nonce) {
+                    newItem["nonce"] = nonce;
+                }
+                item = newItem;
+            }
+
+            document.head.appendChild(item);
+        };
+
+        var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
+        //resource requests only hav one item anyway
+        var evalNodes = this._buildEvalNodes(lastHeadChildTag, markup);
+        var scripts = this._Lang.arrFilter(evalNodes, function(item) {
+           return (item.tagName || "").toLowerCase() == "script";
+        }, 0, this);
+        var other = this._Lang.arrFilter(evalNodes, function(item) {
+            return (item.tagName || "").toLowerCase() != "script";
+        }, 0, this);
+
+        var finalOther = this._Lang.arrFilter(other, doubleExistsFilter , 0, this);
+        var finalScripts = this._Lang.arrFilter(scripts, doubleExistsFilter , 0, this);
+        //var finalAll = this._Lang.arrFilter(evalNodes, doubleExistsFilter , 0, this);
+
+        this._Lang.arrForEach(finalOther, appendElement);
+        this._Lang.arrForEach(finalScripts, appendElement);
+        //this._Lang.arrForEach(finalAll, appendElement);
     }
 });
 
