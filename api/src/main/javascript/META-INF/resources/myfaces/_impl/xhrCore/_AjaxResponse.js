@@ -614,7 +614,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var oldTags = document.head.childNodes;
 
         _Dom.deleteItems(_Lang.objToArray(oldTags));
-        _Dom.apendToHead(newHead.innerHTML);
+        _Dom.appendToHead(newHead.innerHTML);
 
 
         return document.head;

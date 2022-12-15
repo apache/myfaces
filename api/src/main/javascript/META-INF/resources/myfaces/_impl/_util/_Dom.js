@@ -805,7 +805,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      */
     _buildEvalNodes: function(item, markup) {
         var evalNodes = null;
-        if (this._isTableElement(item)) {
+        if (item && this._isTableElement(item)) {
             evalNodes = this._buildTableNodes(item, markup);
         } else {
             var nonIEQuirks = (!this._RT.browser.isIE || this._RT.browser.isIE > 8);
@@ -1330,12 +1330,10 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     },
 
     appendToHead: function(markup) {
-        var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
-        //resource requests only hav one item anyway
-        var evalNodes = this._buildEvalNodes(lastHeadChildTag, markup);
-        //we filter out only those evalNodes which do not match
 
-        var finalAppendNodes = this._Lang.arrFilter(this._Lang.objToArray(evalNodes), function(item)  {
+        //we filter out only those evalNodes which do not match
+        var _RT = this._RT;
+        var doubleExistsFilter = function(item)  {
             switch((item.tagName || "").toLowerCase()) {
                 case "script":
                     var src = item.getAttribute("src");
@@ -1375,12 +1373,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                 default: break;
             }
             return true;
-        }, 0, this);
+        };
 
-
-
-        var _RT = this._RT;
-        this._Lang.arrForEach(finalAppendNodes, function (item) {
+        var appendElement = function (item) {
             var tagName = (item.tagName || "").toLowerCase();
             var nonce = _RT.resolveNonce(item);
             if (tagName === "script") {
@@ -1428,7 +1423,25 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             }
 
             document.head.appendChild(item);
-        });
+        };
+
+        var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
+        //resource requests only hav one item anyway
+        var evalNodes = this._buildEvalNodes(lastHeadChildTag, markup);
+        var scripts = this._Lang.arrFilter(evalNodes, function(item) {
+           return (item.tagName || "").toLowerCase() == "script";
+        }, 0, this);
+        var other = this._Lang.arrFilter(evalNodes, function(item) {
+            return (item.tagName || "").toLowerCase() != "script";
+        }, 0, this);
+
+        var finalOther = this._Lang.arrFilter(other, doubleExistsFilter , 0, this);
+        var finalScripts = this._Lang.arrFilter(scripts, doubleExistsFilter , 0, this);
+        //var finalAll = this._Lang.arrFilter(evalNodes, doubleExistsFilter , 0, this);
+
+        this._Lang.arrForEach(finalOther, appendElement);
+        this._Lang.arrForEach(finalScripts, appendElement);
+        //this._Lang.arrForEach(finalAll, appendElement);
     }
 });
 
