@@ -641,6 +641,9 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var oldChildren = _Lang.objToArray(head.childNodes);
         var newChildren = _Lang.objToArray(newHead.childNodes);
 
+        _Lang.arrForEach(oldChildren, function (item) {
+            head.removeChild(item);
+        });
 
         _Lang.arrForEach(newChildren, function (item) {
             var tagName = (item.tagName || "").toLowerCase();
@@ -689,9 +692,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             head.appendChild(item);
         });
 
-        _Lang.arrForEach(oldChildren, function (item) {
-            head.removeChild(item);
-        });
+
 
         return head;
     },
