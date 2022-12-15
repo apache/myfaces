@@ -609,12 +609,11 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var _Lang = this._Lang,
             _Dom = this._Dom;
 
-
+        // note we have a simplified version of the markup transition here
+        // this method is not supported below ie9, a working although hacky way of doing it
+        // is implemented in the 2.3.x branch, if not wanted please revert this code
+        // to the more hacky 2.3.x version
         var newDom = _Dom.fromMarkup(newData);
-
-        //newHead = _Dom.createElement("head");
-        //newHead.innerHTML = parsedHead.content();
-
         var head = document.getElementsByTagName("head")[0];
         var newHead = newDom.getElementsByTagName("head")[0];
         var oldTags = head.childNodes;

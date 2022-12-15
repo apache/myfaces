@@ -70,7 +70,9 @@ if (!myfaces._impl.core._EvalHandlers) {
          */
         var _T = this;
 
-
+        // note it is safe to remove the cascaded global eval
+        // the head appendix method is the standard method and has been
+        // for over a decade even on ie6 (see file history)
         /**
          * an implementation of eval which drops legacy support
          * and allows nonce
@@ -98,7 +100,7 @@ if (!myfaces._impl.core._EvalHandlers) {
             var nonce = null;
             if(!!(item && item.nonce)) {
                 nonce = item.nonce;
-            } else if(!!item) {
+            } else if(!!item && item.getAttribute) {
                 nonce = item.getAttribute("nonce");
             }
             //empty nonce means no nonce, the rest
@@ -117,11 +119,14 @@ if (!myfaces._impl.core._EvalHandlers) {
 
             //since our baseline atm is ie11 we cannot use document.currentScript globally
             if(_T.resolveNonce(document.currentScript)) {
-                //fastpath for modern browsers
+                // fastpath for modern browsers
                 return _T.resolveNonce(document.currentScript);
             }
 
-            var scripts = document.querySelectorAll("script[src], link[src]");
+            var _Lang = myfaces._impl._util._Lang;
+            var scripts = _Lang.objToArray(document.getElementsByTagName("script"))
+                .concat(_Lang.objToArray(document.getElementsByTagName("link")));
+
             var jsf_js = null;
 
             //we search all scripts
