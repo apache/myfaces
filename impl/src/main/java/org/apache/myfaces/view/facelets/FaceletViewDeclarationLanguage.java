@@ -1864,7 +1864,11 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             //}
 
             // setup writer and assign it to the context
-            ResponseWriter origWriter = createResponseWriter(context);
+            ResponseWriter origWriter = context.getResponseWriter();
+            if(origWriter == null)
+            {
+                origWriter = createResponseWriter(context);
+            }
 
             ExternalContext extContext = context.getExternalContext();
             Writer outputWriter = extContext.getResponseOutputWriter();
