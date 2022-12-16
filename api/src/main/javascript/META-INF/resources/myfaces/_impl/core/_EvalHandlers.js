@@ -98,7 +98,7 @@ if (!myfaces._impl.core._EvalHandlers) {
             var nonce = null;
             if(!!(item && item.nonce)) {
                 nonce = item.nonce;
-            } else if(!!item) {
+            } else if(!!item && item.getAttribute) {
                 nonce = item.getAttribute("nonce");
             }
             //empty nonce means no nonce, the rest

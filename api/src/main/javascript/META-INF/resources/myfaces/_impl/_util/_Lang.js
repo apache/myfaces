@@ -360,10 +360,10 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *  <li> scope (optional) the scope to apply the closure to</li>
      * </ul>
      */
-    arrFilter:function (arr, func /*startPos, scope*/) {
+    arrFilter:function (arr, func, startPos, scope) {
         if (!arr || !arr.length) return [];
         arr = this.objToArray(arr);
-        return ((startPos) ? arr.slice(startPos).filter(func, thisObj) : arr.filter(func, thisObj));
+        return (startPos || 0) ? arr.slice(startPos).filter(func, scope || arr) : arr.filter(func, scope || arr);
     },
     /**
      * adds a EcmaScript optimized indexOf to our mix,

@@ -53,77 +53,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     constructor_: function() {
     },
 
-    runCss: function(item/*, xmlData*/) {
-
-        var  UDEF = "undefined",
-        _T = this;
-        _RT = this._RT,
-            _Lang = this._Lang;
-        var applyStyle = function(item, style) {
-                var newSS = document.createElement("style");
-
-                newSS.setAttribute("rel", item.getAttribute("rel") || "stylesheet");
-                newSS.setAttribute("type", item.getAttribute("type") || "text/css");
-                const nonceValue = _RT.resolveNonce(item);
-                if(nonceValue) {
-                    if('undefined' != typeof newSS.nonce) {
-                        newSS['nonce'] = nonceValue;
-                    } else {
-                        newSS.setAttribute("nonce", nonceValue);
-                    }
-                }
-
-                document.getElementsByTagName("head")[0].appendChild(newSS);
-                //ie merrily again goes its own way
-                if (window.attachEvent && !_RT.isOpera && UDEF != typeof newSS.styleSheet && UDEF != newSS.styleSheet.cssText) newSS.styleSheet.cssText = style;
-                else newSS.appendChild(document.createTextNode(style));
-            },
-
-            execCss = function(item) {
-                var equalsIgnoreCase = _Lang.equalsIgnoreCase;
-                var tagName = item.tagName;
-                if (tagName && equalsIgnoreCase(tagName, "link") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
-                    applyStyle(item, "@import url('" + item.getAttribute("href") + "');");
-                } else if (tagName && equalsIgnoreCase(tagName, "style") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
-                    // we do not handle css items blockwise like we do scripts
-                    // but we do have to deal with the child elements instead of the markup
-                    // nonce can be handled on tag level though
-                    var innerText = [];
-                    //compliant browsers know child nodes
-                    var childNodes = item.childNodes;
-                    if (childNodes) {
-                        var len = childNodes.length;
-                        for (var cnt = 0; cnt < len; cnt++) {
-                            innerText.push(childNodes[cnt].innerHTML || childNodes[cnt].data);
-                        }
-                        //non compliant ones innerHTML
-                    } else if (item.innerHTML) {
-                        innerText.push(item.innerHTML);
-                    }
-
-                    applyStyle(item, innerText.join(""));
-                }
-            };
-
-        try {
-            var scriptElements = this.findByTagNames(item, {"link":1,"style":1}, true);
-            if (scriptElements == null) return;
-            for (var cnt = 0; cnt < scriptElements.length; cnt++) {
-                execCss(scriptElements[cnt]);
-            }
-
-        } finally {
-            //the usual ie6 fix code
-            //the IE6 garbage collector is broken
-            //nulling closures helps somewhat to reduce
-            //mem leaks, which are impossible to avoid
-            //at this browser
-            execCss = null;
-            applyStyle = null;
-        }
-    },
-
-
     /**
      * Run through the given Html item and execute the inline scripts
      * (IE doesn't do this by itself)
@@ -455,7 +384,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     cloneAttributes: function(target, source) {
 
         // enumerate core element attributes - without 'dir' as special case
-        var coreElementProperties = ['className', 'title', 'lang', 'xmllang'];
+        var coreElementProperties = ['className', 'title', 'lang', 'xmllang', "href", "rel", "src"];
         // enumerate additional input element attributes
         var inputElementProperties = [
             'name', 'value', 'size', 'maxLength', 'src', 'alt', 'useMap', 'tabIndex', 'accessKey', 'accept', 'type'
@@ -574,6 +503,26 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             }
         } catch (ex) {
             //most probably dataset properties are not supported
+        }
+
+        // still works in ie6
+        var attrs = source.hasAttributes() ? source.attributes: [];
+        var dataAttributes = this._Lang.arrFilter(attrs, function(attr) {
+            return attr.name && attr.name.indexOf("data-") == 0;
+        });
+        this._Lang.arrForEach(dataAttributes, function(name) {
+           if(target.setAttribute) {
+               var attrValue = source.getAttribute(name)  || source[name];
+               target.setAttribute(name, attrValue)
+           } else {
+               target[name] = attrValue;
+           }
+        });
+
+        //special nonce handling
+        var nonce = this._RT.resolveNonce(source);
+        if(!!nonce) {
+            target["nonce"] = nonce;
         }
     },
     //from
@@ -805,7 +754,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      */
     _buildEvalNodes: function(item, markup) {
         var evalNodes = null;
-        if (this._isTableElement(item)) {
+        if (item && this._isTableElement(item)) {
             evalNodes = this._buildTableNodes(item, markup);
         } else {
             var nonIEQuirks = (!this._RT.browser.isIE || this._RT.browser.isIE > 8);
@@ -1314,7 +1263,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      */
     fromMarkup: function(markup) {
 
-        // https:// developer.mozilla.org/de/docs/Web/API/DOMParser license creative commons
         var doc = document.implementation.createHTMLDocument("");
         var lowerMarkup = markup.toLowerCase();
         if (lowerMarkup.indexOf('<!doctype') != -1 ||
@@ -1325,9 +1273,104 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             return doc.documentElement;
         } else {
             var dummyPlaceHolder = document.createElement("div");
-            dummyPlaceHolder.html(markup);
+            dummyPlaceHolder.innerHTML = markup;
             return dummyPlaceHolder;
         }
+    },
+
+    appendToHead: function(markup) {
+
+        //we filter out only those evalNodes which do not match
+        var _RT = this._RT;
+        var _T = this;
+        var doubleExistsFilter = function(item)  {
+            switch((item.tagName || "").toLowerCase()) {
+                case "script":
+                    var src = item.getAttribute("src");
+                    var content = item.innerText;
+                    var scripts = document.head.getElementsByTagName("script");
+
+                    for(var cnt = 0; cnt < scripts.length; cnt++) {
+                        if(src && scripts[cnt].getAttribute("src") == src) {
+                            return false;
+                        } else if(!src && scripts[cnt].innerText == content) {
+                            return false;
+                        }
+                    }
+                    break;
+                case "style":
+                    var content = item.innerText;
+                    var styles = document.head.getElementsByTagName("style");
+                    for(var cnt = 0; cnt < styles.length; cnt++) {
+                        if(content && styles[cnt].innerText == content) {
+                            return false;
+                        }
+                    }
+                    break;
+                case "link":
+                    var href = item.getAttribute("href");
+                    var content = item.innerText;
+                    var links = document.head.getElementsByTagName("link");
+                    for(var cnt = 0; cnt < links.length; cnt++) {
+                        if(href && links[cnt].getAttribute("href") == href) {
+                            return false;
+                        } else if(!href && links[cnt].innerText == content) {
+                            return false;
+                        }
+                    }
+                    break;
+                default: break;
+            }
+            return true;
+        };
+
+        var appendElement = function (item) {
+            var tagName = (item.tagName || "").toLowerCase();
+            var nonce = _RT.resolveNonce(item);
+            if (tagName === "script") {
+                var newItem = document.createElement("script");
+                newItem.textContent = item.textContent;
+                _T.cloneAttributes(newItem, item);
+                item = newItem;
+            } else if (tagName === "link") {
+                var newItem = document.createElement("link");
+                newItem.textContent = item.textContent;
+                _T.cloneAttributes(newItem, item);
+                item = newItem;
+            } else if (tagName === "style") {
+                var newItem = document.createElement("style");
+                newItem.textContent = item.textContent;
+                _T.cloneAttributes(newItem, item);
+                item = newItem;
+            }
+
+            document.head.appendChild(item);
+        };
+        var evalNodes = [];
+        if(this._Lang.isString(markup)) {
+            var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
+            //resource requests only hav one item anyway
+            evalNodes = this._buildEvalNodes(null, markup);
+        } else {
+            evalNodes = markup.childNodes;
+        }
+
+
+        //var evalNodes = this._buildEvalNodes(lastHeadChildTag, markup);
+        var scripts = this._Lang.arrFilter(evalNodes, function(item) {
+           return (item.tagName || "").toLowerCase() == "script";
+        }, 0, this);
+        var other = this._Lang.arrFilter(evalNodes, function(item) {
+            return (item.tagName || "").toLowerCase() != "script";
+        }, 0, this);
+
+        var finalOther = this._Lang.arrFilter(other, doubleExistsFilter , 0, this);
+        var finalScripts = this._Lang.arrFilter(scripts, doubleExistsFilter , 0, this);
+        //var finalAll = this._Lang.arrFilter(evalNodes, doubleExistsFilter , 0, this);
+
+        this._Lang.arrForEach(finalOther, appendElement);
+        this._Lang.arrForEach(finalScripts, appendElement);
+        //this._Lang.arrForEach(finalAll, appendElement);
     }
 });
 
