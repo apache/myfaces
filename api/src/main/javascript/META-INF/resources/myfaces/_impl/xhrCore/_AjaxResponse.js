@@ -641,7 +641,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
 
         _Dom.deleteItems(_Lang.objToArray(oldTags));
-        _Dom.appendToHead(newHead.innerHTML);
+        _Dom.appendToHead(newHead);
 
 
         return document.head;
