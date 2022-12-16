@@ -384,7 +384,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     cloneAttributes: function(target, source) {
 
         // enumerate core element attributes - without 'dir' as special case
-        var coreElementProperties = ['className', 'title', 'lang', 'xmllang'];
+        var coreElementProperties = ['className', 'title', 'lang', 'xmllang', "href", "rel", "src"];
         // enumerate additional input element attributes
         var inputElementProperties = [
             'name', 'value', 'size', 'maxLength', 'src', 'alt', 'useMap', 'tabIndex', 'accessKey', 'accept', 'type'
@@ -504,6 +504,26 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         } catch (ex) {
             //most probably dataset properties are not supported
         }
+
+        // still works in ie6
+        var attrs = source.hasAttributes() ? source.attributes: [];
+        var dataAttributes = this._Lang.arrFilter(attrs, function(attr) {
+            return attr.name && attr.name.indexOf("data-") == 0;
+        });
+        this._Lang.arrForEach(dataAttributes, function(name) {
+           if(target.setAttribute) {
+               var attrValue = source.getAttribute(name)  || source[name];
+               target.setAttribute(name, attrValue)
+           } else {
+               target[name] = attrValue;
+           }
+        });
+
+        //special nonce handling
+        var nonce = this._RT.resolveNonce(source);
+        if(!!nonce) {
+            target["nonce"] = nonce;
+        }
     },
     //from
     // http://blog.vishalon.net/index.php/javascript-getting-and-setting-caret-position-in-textarea/
@@ -515,8 +535,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             // other browsers make it simpler by simply having a selection start element
             if (ctrl.selectionStart || ctrl.selectionStart == '0')
                 caretPos = ctrl.selectionStart;
-                // ie 5 quirks mode as second option because
-                // this option is flakey in conjunction with text areas
+            // ie 5 quirks mode as second option because
+            // this option is flakey in conjunction with text areas
             // TODO move this into the quirks class
             else if (document.selection) {
                 ctrl.focus();
@@ -734,7 +754,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      */
     _buildEvalNodes: function(item, markup) {
         var evalNodes = null;
-        if (this._isTableElement(item)) {
+        if (item && this._isTableElement(item)) {
             evalNodes = this._buildTableNodes(item, markup);
         } else {
             var nonIEQuirks = (!this._RT.browser.isIE || this._RT.browser.isIE > 8);
@@ -1263,6 +1283,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
         //we filter out only those evalNodes which do not match
         var _RT = this._RT;
+        var _T = this;
         var doubleExistsFilter = function(item)  {
             switch((item.tagName || "").toLowerCase()) {
                 case "script":
@@ -1289,7 +1310,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                     break;
                 case "link":
                     var href = item.getAttribute("href");
-                    console.log("Link href:"+ href);
                     var content = item.innerText;
                     var links = document.head.getElementsByTagName("link");
                     for(var cnt = 0; cnt < links.length; cnt++) {
@@ -1310,54 +1330,34 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             var nonce = _RT.resolveNonce(item);
             if (tagName === "script") {
                 var newItem = document.createElement("script");
-                if(!!item.getAttribute("type")) {
-                    newItem.setAttribute("type", item.getAttribute("type"));
-                }
-                if(!!item.getAttribute("defer")) {
-                    newItem.setAttribute("defer", item.getAttribute("defer"));
-                }
                 newItem.textContent = item.textContent;
-                if(!!item.getAttribute("src")) {
-                    newItem.setAttribute("src", item.getAttribute("src"));
-                }
-                if(nonce) {
-                    newItem["nonce"] = nonce;
-                }
+                _T.cloneAttributes(newItem, item);
                 item = newItem;
             } else if (tagName === "link") {
                 var newItem = document.createElement("link");
                 newItem.textContent = item.textContent;
-                if(!!item.getAttribute("rel")) {
-                    newItem.setAttribute("rel", item.getAttribute("rel"));
-                }
-                if(!!item.getAttribute("href")) {
-                    newItem.setAttribute("href", item.getAttribute("href"));
-                }
-                if(nonce) {
-                    newItem["nonce"] = nonce;
-                }
+                _T.cloneAttributes(newItem, item);
                 item = newItem;
             } else if (tagName === "style") {
                 var newItem = document.createElement("style");
-                if(!!item.getAttribute("type")) {
-                    newItem.setAttribute("type", item.getAttribute("type"));
-                }
                 newItem.textContent = item.textContent;
-                if(!!item.getAttribute("rel")) {
-                    newItem.setAttribute("rel", item.getAttribute("rel"));
-                }
-                if(nonce) {
-                    newItem["nonce"] = nonce;
-                }
+                _T.cloneAttributes(newItem, item);
                 item = newItem;
             }
 
             document.head.appendChild(item);
         };
+        var evalNodes = [];
+        if(this._Lang.isString(markup)) {
+            var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
+            //resource requests only hav one item anyway
+            evalNodes = this._buildEvalNodes(null, markup);
+        } else {
+            evalNodes = markup.childNodes;
+        }
 
-        var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
-        //resource requests only hav one item anyway
-        var evalNodes = this._buildEvalNodes(lastHeadChildTag, markup);
+
+        //var evalNodes = this._buildEvalNodes(lastHeadChildTag, markup);
         var scripts = this._Lang.arrFilter(evalNodes, function(item) {
            return (item.tagName || "").toLowerCase() == "script";
         }, 0, this);
@@ -1374,3 +1374,5 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         //this._Lang.arrForEach(finalAll, appendElement);
     }
 });
+
+
