@@ -16,7 +16,7 @@
 import {Implementation} from "../impl/AjaxImpl";
 import {PushImpl} from "../impl/PushImpl";
 import {oam as _oam} from "../myfaces/OamSubmit";
-import {$nsp, CTX_OPTIONS_EXECUTE, CTX_PARAM_RENDER, P_BEHAVIOR_EVENT} from "../impl/core/Const";
+import {$nsp, CTX_OPTIONS_EXECUTE, CTX_OPTIONS_PARAMS, CTX_PARAM_RENDER, P_BEHAVIOR_EVENT} from "../impl/core/Const";
 import {ErrorData} from "../impl/xhrCore/ErrorData";
 import {EventData} from "../impl/xhrCore/EventData";
 
@@ -254,7 +254,8 @@ export module myfaces {
      */
     export function ab(source: Element, event: Event, eventName: string, execute: string, render: string, options: Options = {}): void {
         if (eventName) {
-           options[$nsp(P_BEHAVIOR_EVENT)] = eventName;
+           options[CTX_OPTIONS_PARAMS] = options?.[CTX_OPTIONS_PARAMS] ?? {};
+           options[CTX_OPTIONS_PARAMS][$nsp(P_BEHAVIOR_EVENT)] = eventName;
         }
         if (execute) {
             options[CTX_OPTIONS_EXECUTE] = execute;
