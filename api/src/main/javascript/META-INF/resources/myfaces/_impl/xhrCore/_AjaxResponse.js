@@ -609,31 +609,19 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var _Lang = this._Lang,
             _Dom = this._Dom;
 
-        // note we have a simplified version of the markup transition here
-        // this method is not supported below ie9, a working although hacky way of doing it
-        // is implemented in the 2.3.x branch, if not wanted please revert this code
-        // to the more hacky 2.3.x version
         var newDom = _Dom.fromMarkup(newData);
-        var head = document.getElementsByTagName("head")[0];
         var newHead = newDom.getElementsByTagName("head")[0];
-        var oldTags = head.childNodes;
+        var oldTags = document.head.childNodes;
 
         _Dom.deleteItems(_Lang.objToArray(oldTags));
-        var childNodes = _Lang.objToArray(newHead.childNodes);
+        _Dom.appendToHead(newHead);
 
-        var placeHolder = document.createElement("meta");
 
-        head.appendChild(placeHolder);
-        _Dom.replaceElements(placeHolder, childNodes);
-        _Dom.runScripts(head);
-        return head;
+        return document.head;
     },
 
     _addResourceToHead: function (request, context, newData) {
-        var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
-
-        this._Dom.insertAfter(lastHeadChildTag, newData);
-
+       this._Dom.appendToHead(newData);
     },
 
     /**
