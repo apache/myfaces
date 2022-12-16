@@ -75,6 +75,7 @@ export module oam {
      */
     export const submitForm = function (formName: string, linkId: string | null = null, target: string |null = null, params: AssocArr<any> | Tuples<string, any> | null = {} ): boolean {
 
+
         //handle a possible incoming null, not sure if this is used that way anywhere, but we allow it
         params = (!params) ? {} : params;
 
@@ -95,8 +96,13 @@ export module oam {
         DQ.byId(document.forms?.[formName] ?? document.getElementById(formName)).each(form => {
             const ATTR_TARGET = "target";
             const formElement = form.getAsElem(0).value as HTMLFormElement;
-            const oldTarget = form.attr(ATTR_TARGET).value;
-            form.attr(ATTR_TARGET).value = target;
+            const oldTarget = (form.getAsElem(0).value as HTMLFormElement).getAttribute("target");
+
+            if(target != "null" && target) {
+                (form.getAsElem(0).value as HTMLFormElement).setAttribute("target", target);
+            }
+
+
 
             const result = formElement?.onsubmit?.(null);
 
@@ -107,7 +113,12 @@ export module oam {
             } catch (e) {
                 window?.console.error(e);
             } finally {
-                form.attr(ATTR_TARGET).value = oldTarget;
+                if(oldTarget == null || oldTarget == "null") {
+                    (form.getAsElem(0).value as HTMLFormElement).removeAttribute("target");
+                } else {
+                    (form.getAsElem(0).value as HTMLFormElement).setAttribute("target", oldTarget);
+                }
+
                 // noinspection JSUnusedLocalSymbols
                 paramsStream.each(([key, data]) => {
                     myfaces.oam.clearHiddenInput(formName, key);

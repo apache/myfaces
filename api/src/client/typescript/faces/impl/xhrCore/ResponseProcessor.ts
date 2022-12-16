@@ -105,18 +105,18 @@ export class ResponseProcessor implements IResponseProcessor {
 
     addToHead(shadowHead: XMLQuery | DQ) {
         const mappedHeadData = new ExtDomQuery(shadowHead);
-        const postProcessTags = [HTML_TAG_STYLE, HTML_TAG_LINK, HTML_TAG_SCRIPT];
-        const nonExecutables = mappedHeadData.filter(item => postProcessTags.indexOf(item.tagName.orElse("").value) == -1);
+        const scriptTags = [HTML_TAG_SCRIPT];
+        const nonExecutables = mappedHeadData.filter(item => scriptTags.indexOf(item.tagName.orElse("").value) == -1);
         nonExecutables.runHeadInserts(true);
 
         //incoming either the outer head tag or its children
         const nodesToAdd = (shadowHead.tagName.value === "HEAD") ? shadowHead.childNodes : shadowHead;
         // this is stored for "post" processing
         // after the rest of the "physical build up", head before body
-        const evalElements = nodesToAdd.stream
-            .filter(item => postProcessTags.indexOf(item.tagName.orElse("").value) != -1).collect(new DomQueryCollector());
+        const scriptElements = nodesToAdd.stream
+            .filter(item => scriptTags.indexOf(item.tagName.orElse("").value) != -1).collect(new DomQueryCollector());
 
-        this.addToHeadDeferred(evalElements);
+        this.addToHeadDeferred(scriptElements);
     }
 
     addToHeadDeferred(newElements: XMLQuery | DQ) {
