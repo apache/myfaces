@@ -637,71 +637,18 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             newHead = doc.getElementsByTagName("head")[0];
         }
 
-        var head = document.head;
-        var oldChildren = _Lang.objToArray(head.childNodes);
-        var newChildren = _Lang.objToArray(newHead.childNodes);
-
-        _Lang.arrForEach(oldChildren, function (item) {
-            head.removeChild(item);
-        });
-
-        _Lang.arrForEach(newChildren, function (item) {
-            var tagName = (item.tagName || "").toLowerCase();
-            var nonce = _RT.resolveNonce(item);
-            if (tagName === "script") {
-                var newItem = document.createElement("script");
-                if(!!item.getAttribute("type")) {
-                    newItem.setAttribute("type", item.getAttribute("type"));
-                }
-                newItem.textContent = item.textContent;
-                if(!!item.getAttribute("src")) {
-                    newItem.setAttribute("src", item.getAttribute("src"));
-                }
-                if(nonce) {
-                    newItem["nonce"] = nonce;
-                }
-                item = newItem;
-            } else if (tagName === "link") {
-                var newItem = document.createElement("link");
-                newItem.textContent = item.textContent;
-                if(!!item.getAttribute("rel")) {
-                    newItem.setAttribute("rel", item.getAttribute("rel"));
-                }
-                if(!!item.getAttribute("href")) {
-                    newItem.setAttribute("href", item.getAttribute("href"));
-                }
-                if(nonce) {
-                    newItem["nonce"] = nonce;
-                }
-                item = newItem;
-            } else if (tagName === "style") {
-                var newItem = document.createElement("style");
-                if(!!item.getAttribute("type")) {
-                    newItem.setAttribute("type", item.getAttribute("type"));
-                }
-                newItem.textContent = item.textContent;
-                if(!!item.getAttribute("rel")) {
-                    newItem.setAttribute("rel", item.getAttribute("rel"));
-                }
-                if(nonce) {
-                    newItem["nonce"] = nonce;
-                }
-                item = newItem;
-            }
-
-            head.appendChild(item);
-        });
+        var oldTags = _Lang.objToArray(document.head.childNodes);
 
 
+        _Dom.deleteItems(_Lang.objToArray(oldTags));
+        _Dom.appendToHead(newHead);
 
-        return head;
+
+        return document.head;
     },
 
     _addResourceToHead: function (request, context, newData) {
-        var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
-
-        this._Dom.insertAfter(lastHeadChildTag, newData);
-
+       this._Dom.appendToHead(newData);
     },
 
     /**
