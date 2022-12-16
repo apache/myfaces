@@ -122,6 +122,7 @@
                         <exclude>**/src/main/resources/META-INF/services/**</exclude>
                         <exclude>.git</exclude>
                         <exclude>.gitignore</exclude>
+                        <exclude>.vscode/**</exclude>
                         <exclude>**/target/**/*</exclude>
                         <!-- The xsd files are CDDL+GLP:
                Category B: Reciprocal Licenses
