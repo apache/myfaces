@@ -55,8 +55,8 @@
         <module>test</module>
         <module>impl</module>
         <module>bundle</module>
-        <!--
         <module>integration-tests</module>
+        <!--
         <module>extensions</module>
         -->
     </modules>
