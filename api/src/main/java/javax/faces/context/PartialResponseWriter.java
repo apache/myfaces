@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * @since 2.0
  */
-public class PartialResponseWriter extends ResponseWriterWrapper
+public class PartialResponseWriter
 {
     public static final String RENDER_ALL_MARKER = "javax.faces.ViewRoot";
     public static final String VIEW_STATE_MARKER = "javax.faces.ViewState";
