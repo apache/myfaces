@@ -42,9 +42,9 @@ public class IntegrationTest
     public static WebArchive createDeployment()
     {
         WebArchive webArchive = (WebArchive) EmbeddedMaven.forProject(new File("pom.xml"))
-                .useMaven3Version("3.3.9")
+                .useMaven3Version("3.8.6")
                 .setGoals("package")
-                .setQuiet()
+                .setQuiet(false)
                 .skipTests(true)
                 .ignoreFailure()
                 .build().getDefaultBuiltArchive();
