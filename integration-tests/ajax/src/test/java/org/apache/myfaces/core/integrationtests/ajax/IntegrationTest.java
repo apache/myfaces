@@ -25,8 +25,9 @@ import org.jboss.arquillian.graphene.javascript.JavaScript;
 import org.jboss.arquillian.graphene.request.RequestGuard;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,15 +60,9 @@ public class IntegrationTest {
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-        WebArchive webArchive = (WebArchive) EmbeddedMaven.forProject(new File("pom.xml"))
-                .useMaven3Version("3.3.9")
-                .setGoals("package")
-                .setQuiet()
-                .skipTests(true)
-                .ignoreFailure()
-                .build().getDefaultBuiltArchive();
-
-        return webArchive;
+        return ShrinkWrap.create(ZipImporter.class, "ajax.war")
+                .importFrom(new File("target/ajax.war"))
+                .as(WebArchive.class);
     }
 
     @Drone
