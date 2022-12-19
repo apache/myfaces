@@ -85,7 +85,7 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
-            <version>10.1.4</version>
+            <version>10.0.27</version>
             <scope>provided</scope>
         </dependency>
 
@@ -183,19 +183,19 @@
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-core</artifactId>
-                    <version>10.1.4</version>
+                    <version>10.0.27</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-jasper</artifactId>
-                    <version>10.1.4</version>
+                    <version>10.0.27</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-websocket</artifactId>
-                    <version>10.1.4</version>
+                    <version>10.0.27</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
