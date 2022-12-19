@@ -98,62 +98,61 @@ public class AjaxHandler extends TagHandler implements
 
     @JSFFaceletAttribute(name = "disabled", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.Boolean")
-    private final TagAttribute _disabled;
+    private final TagAttribute disabled;
 
     @JSFFaceletAttribute(name = "event", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.String")
-    private final TagAttribute _event;
+    private final TagAttribute event;
 
     @JSFFaceletAttribute(name = "execute", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.Object")
-    private final TagAttribute _execute;
+    private final TagAttribute execute;
 
     @JSFFaceletAttribute(name = "immediate", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.Boolean")
-    private final TagAttribute _immediate;
+    private final TagAttribute immediate;
 
     @JSFFaceletAttribute(name = "listener", className = "jakarta.el.MethodExpression",
             deferredMethodSignature = "public void m(jakarta.faces.event.AjaxBehaviorEvent evt) "
                                       + "throws jakarta.faces.event.AbortProcessingException")
-    private final TagAttribute _listener;
-
+    private final TagAttribute listener;
 
     @JSFFaceletAttribute(name = "onevent", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.String")
-    private final TagAttribute _onevent;
-
+    private final TagAttribute onevent;
 
     @JSFFaceletAttribute(name = "onerror", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.String")
-    private final TagAttribute _onerror;
+    private final TagAttribute onerror;
 
     @JSFFaceletAttribute(name = "render", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.Object")
-    private final TagAttribute _render;
+    private final TagAttribute render;
 
     @JSFFaceletAttribute(name = "delay", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.String")
-    private final TagAttribute _delay;
+    private final TagAttribute delay;
     
     @JSFFaceletAttribute(name = "resetValues", className = "jakarta.el.ValueExpression",
             deferredValueType = "java.lang.Boolean")
-    private final TagAttribute _resetValues;
+    private final TagAttribute resetValues;
     
-    private final boolean _wrapMode;
+    private final boolean wrappingMode;
 
     public AjaxHandler(TagConfig config)
     {
         super(config);
-        _disabled = getAttribute("disabled");
-        _event = getAttribute("event");
-        _execute = getAttribute("execute");
-        _immediate = getAttribute("immediate");
-        _listener = getAttribute("listener");
-        _onerror = getAttribute("onerror");
-        _onevent = getAttribute("onevent");
-        _render = getAttribute("render");
-        _delay = getAttribute("delay");
-        _resetValues = getAttribute("resetValues");
+        disabled = getAttribute("disabled");
+        event = getAttribute("event");
+        execute = getAttribute("execute");
+        immediate = getAttribute("immediate");
+        listener = getAttribute("listener");
+        onerror = getAttribute("onerror");
+        onevent = getAttribute("onevent");
+        render = getAttribute("render");
+        delay = getAttribute("delay");
+        resetValues = getAttribute("resetValues");
+
         // According to the spec, this tag works in two different ways:
         // 1. Apply an ajax behavior for a selected component in this way
         //    <x:component><f:ajax ..../></x:component>
@@ -167,47 +166,36 @@ public class AjaxHandler extends TagHandler implements
         // <composite:interface> handler: traverse the tree for instances of 
         // ComponentHandler. If it is found, wrapMode is used otherwise
         // suppose f:ajax is the one wrapped by a component.
-        Collection<FaceletHandler> compHandlerList = 
-            TagHandlerUtils.findNextByType(nextHandler, ComponentHandler.class, 
-                    InsertChildrenHandler.class, InsertHandler.class, DecorateHandler.class, IncludeHandler.class);
-        
-        _wrapMode = !compHandlerList.isEmpty();
+        Collection<FaceletHandler> compHandlerList = TagHandlerUtils.findNextByType(nextHandler,
+                ComponentHandler.class, InsertChildrenHandler.class, InsertHandler.class,
+                DecorateHandler.class, IncludeHandler.class);
+        wrappingMode = !compHandlerList.isEmpty();
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        //Apply only if we are creating a new component
-        if (!ComponentHandler.isNew(parent))
-        {
-            if (_wrapMode)
-            {
-                AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-                // In this case it will be only applied to components inserted by 
-                // c:if or related tags, in other cases, ComponentTagHandlerDelegate should
-                // not reapply ajax tag.
-                actx.pushAjaxHandlerToStack(this);
-                nextHandler.apply(ctx, parent);
-                actx.popAjaxHandlerToStack();
-            }
-            return;
-        }
-        if (_wrapMode)
+        if (wrappingMode)
         {
             AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-            // Push and pop this ajax handler to the stack, to delegate the
-            // call to applyAttachedObject to ComponentTagHandlerDelegate
-            // The default one proposed here is
-            // use a different stack on DefaultFaceletContext.applyCompositeComponent,
-            // so components inside composite:implementation tag will not be
-            // affected by f:ajax outsider handlers.
+            // In this case it will be only applied to components inserted by 
+            // c:if or related tags, in other cases, ComponentTagHandlerDelegate should
+            // not reapply ajax tag.
             actx.pushAjaxHandlerToStack(this);
             nextHandler.apply(ctx, parent);
             actx.popAjaxHandlerToStack();
+            
+            registerFacesJsResource(ctx, parent);
         }
         else
         {
+            //Apply only if we are creating a new component
+            if (!ComponentHandler.isNew(parent))
+            {
+                return;
+            }
+
             if (parent instanceof ClientBehaviorHolder)
             {
                 //Apply this handler directly over the parent
@@ -229,12 +217,11 @@ public class AjaxHandler extends TagHandler implements
             else
             {
                 throw new TagException(this.tag,
-                        "Parent is not composite component or of type ClientBehaviorHolder, type is: "
-                                + parent);
+                        "Parent is not composite component or of type ClientBehaviorHolder; Type is: " + parent);
             }
+            
+            registerFacesJsResource(ctx, parent);
         }
-        
-        registerFacesJsResource(ctx, parent);
     }
     
     public static void registerFacesJsResource(FaceletContext ctx, UIComponent parent)
@@ -284,21 +271,21 @@ public class AjaxHandler extends TagHandler implements
     @Override
     public String getEventName()
     {
-        if (_event == null)
+        if (event == null)
         {
             return null;
         }
         else
         {
-            if (_event.isLiteral())
+            if (event.isLiteral())
             {
-                return _event.getValue();
+                return event.getValue();
             }
             else
             {
                 FaceletContext faceletContext = (FaceletContext) FacesContext.getCurrentInstance().
                         getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-                return (String) _event.getValueExpression(faceletContext, String.class).getValue(faceletContext);
+                return (String) event.getValueExpression(faceletContext, String.class).getValue(faceletContext);
             }
         }
     }
@@ -319,15 +306,15 @@ public class AjaxHandler extends TagHandler implements
         ClientBehaviorHolder cvh = (ClientBehaviorHolder) parent;
 
         String eventName = null;
-        if (_event != null)
+        if (event != null)
         {
-            if (_event.isLiteral())
+            if (event.isLiteral())
             {
-                eventName = _event.getValue();
+                eventName = event.getValue();
             }
             else
             {
-                eventName = (String) _event.getValueExpression(faceletContext, String.class).getValue(faceletContext);
+                eventName = (String) event.getValueExpression(faceletContext, String.class).getValue(faceletContext);
             }
         }
         if (eventName == null)
@@ -335,7 +322,7 @@ public class AjaxHandler extends TagHandler implements
             eventName = cvh.getDefaultEventName();
             if (eventName == null)
             {
-                if (_wrapMode)
+                if (wrappingMode)
                 {
                     // No eventName defined, we can't apply this tag to this component, because
                     // there is no event defined to attach it, but since we are in wrap mode
@@ -345,14 +332,14 @@ public class AjaxHandler extends TagHandler implements
                 }
                 else
                 {
-                    throw new TagAttributeException(_event,
+                    throw new TagAttributeException(event,
                             "eventName could not be defined for f:ajax tag with no wrap mode.");
                 }
             }
         }
         else if (!cvh.getEventNames().contains(eventName))
         {
-            if (_wrapMode)
+            if (wrappingMode)
             {
                 // The current component does not implement the event selected,
                 // this ajax behavior cannot be applied, but we can't throw any exception
@@ -362,23 +349,23 @@ public class AjaxHandler extends TagHandler implements
             }
             else
             {
-                throw new TagAttributeException(_event,
+                throw new TagAttributeException(event,
                         "event it is not a valid eventName defined for this component");
             }
         }
 
-        AjaxBehavior ajaxBehavior = createBehavior(context);
-        setAttribute(faceletContext, ajaxBehavior, _disabled, Boolean.class, (v) -> ajaxBehavior.setDisabled(v));
-        setAttribute(faceletContext, ajaxBehavior, _execute, Object.class);
-        setAttribute(faceletContext, ajaxBehavior, _immediate, Boolean.class, (v) -> ajaxBehavior.setImmediate(v));
-        setAttribute(faceletContext, ajaxBehavior, _onerror, String.class, (v) -> ajaxBehavior.setOnerror(v));
-        setAttribute(faceletContext, ajaxBehavior, _onevent, String.class, (v) -> ajaxBehavior.setOnevent(v));
-        setAttribute(faceletContext, ajaxBehavior, _render, Object.class);
-        setAttribute(faceletContext, ajaxBehavior, _delay, String.class, (v) -> ajaxBehavior.setDelay(v));
-        setAttribute(faceletContext, ajaxBehavior, _resetValues, Boolean.class, (v) -> ajaxBehavior.setResetValues(v));
-        if (_listener != null)
+        AjaxBehavior ajaxBehavior = (AjaxBehavior) context.getApplication().createBehavior(AjaxBehavior.BEHAVIOR_ID);
+        setAttribute(faceletContext, ajaxBehavior, disabled, Boolean.class, (v) -> ajaxBehavior.setDisabled(v));
+        setAttribute(faceletContext, ajaxBehavior, execute, Object.class);
+        setAttribute(faceletContext, ajaxBehavior, immediate, Boolean.class, (v) -> ajaxBehavior.setImmediate(v));
+        setAttribute(faceletContext, ajaxBehavior, onerror, String.class, (v) -> ajaxBehavior.setOnerror(v));
+        setAttribute(faceletContext, ajaxBehavior, onevent, String.class, (v) -> ajaxBehavior.setOnevent(v));
+        setAttribute(faceletContext, ajaxBehavior, render, Object.class);
+        setAttribute(faceletContext, ajaxBehavior, delay, String.class, (v) -> ajaxBehavior.setDelay(v));
+        setAttribute(faceletContext, ajaxBehavior, resetValues, Boolean.class, (v) -> ajaxBehavior.setResetValues(v));
+        if (listener != null)
         {
-            MethodExpression expr = _listener.getMethodExpression(
+            MethodExpression expr = listener.getMethodExpression(
                     faceletContext, Void.TYPE, AJAX_BEHAVIOR_LISTENER_SIG);
             AjaxBehaviorListener abl = new AjaxBehaviorListenerImpl(expr);
             ajaxBehavior.addAjaxBehaviorListener(abl);
@@ -440,11 +427,6 @@ public class AjaxHandler extends TagHandler implements
                 }
             }
         }
-    }
-    
-    protected AjaxBehavior createBehavior(FacesContext context)
-    {
-        return (AjaxBehavior) context.getApplication().createBehavior(AjaxBehavior.BEHAVIOR_ID);
     }
 
     /**

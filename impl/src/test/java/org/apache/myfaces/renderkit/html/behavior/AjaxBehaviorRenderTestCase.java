@@ -24,7 +24,6 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Test;
 
@@ -131,6 +130,24 @@ public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
 
         String response = sw.toString();
         assertTrue(response.contains("myfaces.ab"));
+    }
+    
+    @Test
+    public void testAjax7() throws Exception {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ajax_7.xhtml");
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        root.encodeAll(facesContext);
+        sw.flush();
+
+        String response = sw.toString();
+        assertTrue(response.contains("myfaces.ab"));
+        assertTrue(response.contains("faces.util.chain"));
+        assertEquals(countMatches(response, "faces.util.chain"), 1);
+        assertEquals(countMatches(response, "myfaces.ab"), 2);
     }
     
     public int countMatches(String all, String search)
