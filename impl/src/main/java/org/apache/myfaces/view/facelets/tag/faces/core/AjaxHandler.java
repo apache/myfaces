@@ -20,19 +20,14 @@ package org.apache.myfaces.view.facelets.tag.faces.core;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 import jakarta.el.MethodExpression;
 import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.component.behavior.AjaxBehavior;
-import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.event.AjaxBehaviorListener;
 import jakarta.faces.view.BehaviorHolderAttachedObjectHandler;
@@ -45,6 +40,7 @@ import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
 import jakarta.faces.view.facelets.TagHandler;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
@@ -318,14 +314,10 @@ public class AjaxHandler extends TagHandler implements
     @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
-        // Retrieve the current FaceletContext from FacesContext object
-        FaceletContext faceletContext = (FaceletContext) context.getAttributes()
-                .get(FaceletContext.FACELET_CONTEXT_KEY);
-
-        // cast to a ClientBehaviorHolder
+        FaceletContext faceletContext =
+                (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
         ClientBehaviorHolder cvh = (ClientBehaviorHolder) parent;
-        
-        
+
         String eventName = null;
         if (_event != null)
         {
@@ -374,115 +366,22 @@ public class AjaxHandler extends TagHandler implements
                         "event it is not a valid eventName defined for this component");
             }
         }
-        
-        Map<String, List<ClientBehavior>> clientBehaviors = cvh.getClientBehaviors();
-
-        List<ClientBehavior> clientBehaviorList = clientBehaviors.get(eventName);
-        if (clientBehaviorList != null && !clientBehaviorList.isEmpty())
-        {
-            for (ClientBehavior cb : clientBehaviorList)
-            {
-                if (cb instanceof AjaxBehavior)
-                {
-                    // The most inner one has been applied, so according to 
-                    // jsf 2.0 spec section 10.4.1.1 it is not necessary to apply
-                    // this one, because the inner one has precendece over
-                    // the outer one.
-                    return;
-                }
-            }
-        }
 
         AjaxBehavior ajaxBehavior = createBehavior(context);
-
-        if (_disabled != null)
-        {
-            if (_disabled.isLiteral())
-            {
-                ajaxBehavior.setDisabled(_disabled.getBoolean(faceletContext));
-            }
-            else
-            {
-                ajaxBehavior.setValueExpression("disabled",
-                        _disabled.getValueExpression(faceletContext, Boolean.class));
-            }
-        }
-        if (_execute != null)
-        {
-            ajaxBehavior.setValueExpression("execute", 
-                    _execute.getValueExpression(faceletContext, Object.class));
-        }
-        if (_immediate != null)
-        {
-            if (_immediate.isLiteral())
-            {
-                ajaxBehavior.setImmediate(_immediate.getBoolean(faceletContext));
-            }
-            else
-            {
-                ajaxBehavior.setValueExpression("immediate",
-                        _immediate.getValueExpression(faceletContext, Boolean.class));
-            }
-        }
+        setAttribute(faceletContext, ajaxBehavior, _disabled, Boolean.class, (v) -> ajaxBehavior.setDisabled(v));
+        setAttribute(faceletContext, ajaxBehavior, _execute, Object.class);
+        setAttribute(faceletContext, ajaxBehavior, _immediate, Boolean.class, (v) -> ajaxBehavior.setImmediate(v));
+        setAttribute(faceletContext, ajaxBehavior, _onerror, String.class, (v) -> ajaxBehavior.setOnerror(v));
+        setAttribute(faceletContext, ajaxBehavior, _onevent, String.class, (v) -> ajaxBehavior.setOnevent(v));
+        setAttribute(faceletContext, ajaxBehavior, _render, Object.class);
+        setAttribute(faceletContext, ajaxBehavior, _delay, String.class, (v) -> ajaxBehavior.setDelay(v));
+        setAttribute(faceletContext, ajaxBehavior, _resetValues, Boolean.class, (v) -> ajaxBehavior.setResetValues(v));
         if (_listener != null)
         {
             MethodExpression expr = _listener.getMethodExpression(
                     faceletContext, Void.TYPE, AJAX_BEHAVIOR_LISTENER_SIG);
             AjaxBehaviorListener abl = new AjaxBehaviorListenerImpl(expr);
             ajaxBehavior.addAjaxBehaviorListener(abl);
-        }
-        if (_onerror != null)
-        {
-            if (_onerror.isLiteral())
-            {
-                ajaxBehavior.setOnerror(_onerror.getValue(faceletContext));
-            }
-            else
-            {
-                ajaxBehavior.setValueExpression("onerror",
-                        _onerror.getValueExpression(faceletContext, String.class));
-            }
-        }
-        if (_onevent != null)
-        {
-            if (_onevent.isLiteral())
-            {
-                ajaxBehavior.setOnevent(_onevent.getValue(faceletContext));
-            }
-            else
-            {
-                ajaxBehavior.setValueExpression("onevent",
-                        _onevent.getValueExpression(faceletContext, String.class));
-            }
-        }
-        if (_render != null)
-        {
-            ajaxBehavior.setValueExpression("render",
-                    _render.getValueExpression(faceletContext, Object.class));
-        }
-        if (_delay != null)
-        {
-            if (_delay.isLiteral())
-            {
-                ajaxBehavior.setDelay(_delay.getValue(faceletContext));
-            }
-            else
-            {
-                ajaxBehavior.setValueExpression("delay",
-                        _delay.getValueExpression(faceletContext, String.class));
-            }
-        }
-        if (_resetValues != null)
-        {
-            if (_resetValues.isLiteral())
-            {
-                ajaxBehavior.setResetValues(_resetValues.getBoolean(faceletContext));
-            }
-            else
-            {
-                ajaxBehavior.setValueExpression("resetValues",
-                        _resetValues.getValueExpression(faceletContext, Boolean.class));
-            }
         }
 
         // map @this in a composite to @composite
@@ -514,6 +413,35 @@ public class AjaxHandler extends TagHandler implements
         cvh.addClientBehavior(eventName, ajaxBehavior);
     }
 
+    protected <T> void setAttribute(FaceletContext faceletContext, AjaxBehavior behavior, TagAttribute attr,
+            Class<T> type)
+    {
+        setAttribute(faceletContext, behavior, attr, type, null);
+    }
+    
+    protected <T> void setAttribute(FaceletContext faceletContext, AjaxBehavior behavior, TagAttribute attr,
+            Class<T> type, Consumer<T> setter)
+    {
+        if (attr != null)
+        {
+            if (!attr.isLiteral() || setter == null)
+            {
+                behavior.setValueExpression(attr.getLocalName(), attr.getValueExpression(faceletContext, type));
+            }
+            else
+            {
+                if (type == Boolean.class)
+                {
+                    ((Consumer<Boolean>) setter).accept(attr.getBoolean(faceletContext));
+                }
+                else
+                {
+                    setter.accept((T) attr.getValue(faceletContext));
+                }
+            }
+        }
+    }
+    
     protected AjaxBehavior createBehavior(FacesContext context)
     {
         return (AjaxBehavior) context.getApplication().createBehavior(AjaxBehavior.BEHAVIOR_ID);
@@ -528,80 +456,5 @@ public class AjaxHandler extends TagHandler implements
     public String getFor()
     {
         return null;
-    }
-
-    /**
-     * Wraps a method expression in a AjaxBehaviorListener
-     */
-    public final static class AjaxBehaviorListenerImpl implements AjaxBehaviorListener, PartialStateHolder
-    {
-        private MethodExpression _expr;
-        private boolean _transient;
-        private boolean _initialStateMarked;
-        
-        public AjaxBehaviorListenerImpl ()
-        {
-        }
-        
-        public AjaxBehaviorListenerImpl(MethodExpression expr)
-        {
-            _expr = expr;
-        }
-
-        @Override
-        public void processAjaxBehavior(AjaxBehaviorEvent event) throws AbortProcessingException
-        {
-            _expr.invoke(FacesContext.getCurrentInstance().getELContext(), new Object[] { event });
-        }
-
-        @Override
-        public boolean isTransient()
-        {
-            return _transient;
-        }
-
-        @Override
-        public void restoreState(FacesContext context, Object state)
-        {
-            if (state == null)
-            {
-                return;
-            }
-            _expr = (MethodExpression) state;
-        }
-
-        @Override
-        public Object saveState(FacesContext context)
-        {
-            if (initialStateMarked())
-            {
-                return null;
-            }
-            return _expr;
-        }
-
-        @Override
-        public void setTransient(boolean newTransientValue)
-        {
-            _transient = newTransientValue;
-        }
-        
-        @Override
-        public void clearInitialState()
-        {
-            _initialStateMarked = false;
-        }
-
-        @Override
-        public boolean initialStateMarked()
-        {
-            return _initialStateMarked;
-        }
-
-        @Override
-        public void markInitialState()
-        {
-            _initialStateMarked = true;
-        }
     }
 }
