@@ -663,6 +663,13 @@ public final class HtmlRendererUtils
             String componentProperty, String attrName, Object value)
             throws IOException
     {
+
+        if(attrName.equals(HTML.ONCHANGE_ATTR) && value != null && value.toString().length() == 0)
+        {
+            // don't write onchange attribute if value is ""
+            return false; 
+        }
+
         if (!RendererUtils.isDefaultAttributeValue(value))
         {
             // render Faces "styleClass" and "itemStyleClass" attributes as "class"
