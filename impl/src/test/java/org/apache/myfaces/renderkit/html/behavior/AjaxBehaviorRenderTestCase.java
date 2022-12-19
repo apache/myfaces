@@ -65,9 +65,7 @@ public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        assertTrue(response.contains("faces.util.chain"));
         assertTrue(response.contains("myfaces.ab"));
-        assertEquals(countMatches(response, "faces.util.chain"), 1);
         assertEquals(countMatches(response, "myfaces.ab"), 1);
     }
     
@@ -83,9 +81,7 @@ public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        assertTrue(response.contains("faces.util.chain"));
         assertTrue(response.contains("myfaces.ab"));
-        assertEquals(countMatches(response, "faces.util.chain"), 1);
         assertEquals(countMatches(response, "myfaces.ab"), 1);
     }
     
@@ -101,10 +97,40 @@ public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        assertTrue(response.contains("faces.util.chain"));
         assertTrue(response.contains("myfaces.ab"));
         assertEquals(countMatches(response, "faces.util.chain"), 1);
         assertEquals(countMatches(response, "myfaces.ab"), 2);
+    }
+    
+    @Test
+    public void testAjax5() throws Exception {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ajax_5.xhtml");
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        root.encodeAll(facesContext);
+        sw.flush();
+
+        String response = sw.toString();
+        assertFalse(response.contains("myfaces.ab"));
+        assertFalse(response.contains("faces.util.chain"));
+    }
+    
+    @Test
+    public void testAjax6() throws Exception {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ajax_6.xhtml");
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        root.encodeAll(facesContext);
+        sw.flush();
+
+        String response = sw.toString();
+        assertTrue(response.contains("myfaces.ab"));
     }
     
     public int countMatches(String all, String search)
