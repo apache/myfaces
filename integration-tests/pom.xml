@@ -42,6 +42,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M7</version>
                 <configuration>
+                    <trimStackTrace>false</trimStackTrace>
                     <systemPropertyVariables>
                         <tomcat.util.scan.StandardJarScanFilter.jarsToSkip>serializer.jar</tomcat.util.scan.StandardJarScanFilter.jarsToSkip>
                         <tomcat.util.scan.DefaultJarScanner.jarsToSkip>serializer.jar</tomcat.util.scan.DefaultJarScanner.jarsToSkip>
