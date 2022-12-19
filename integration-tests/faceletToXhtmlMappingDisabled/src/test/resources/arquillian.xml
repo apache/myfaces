@@ -22,7 +22,7 @@
         xmlns="http://jboss.org/schema/arquillian">
 
     <extension qualifier="webdriver">
-        <property name="browser">chrome</property>
+        <property name="browser">chromeHeadless</property>
     </extension>
 
     <container qualifier="tomcat" default="true">

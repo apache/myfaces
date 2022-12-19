@@ -114,7 +114,13 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>3.13.0</version>
+            <version>3.141.59</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10</version>
             <scope>test</scope>
         </dependency>
 
@@ -122,7 +128,7 @@
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
-            <version>1.7.0.Alpha10</version>
+            <version>1.7.0.Alpha13</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -192,7 +198,7 @@
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
                     <artifactId>arquillian-tomcat-embedded-10</artifactId>
-                    <version>1.2.0.Alpha1</version>
+                    <version>1.2.0.Final</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
