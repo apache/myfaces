@@ -28,6 +28,7 @@
     <packaging>pom</packaging>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -47,7 +48,26 @@
                         <tomcat.util.scan.StandardJarScanFilter.jarsToSkip>serializer.jar</tomcat.util.scan.StandardJarScanFilter.jarsToSkip>
                         <tomcat.util.scan.DefaultJarScanner.jarsToSkip>serializer.jar</tomcat.util.scan.DefaultJarScanner.jarsToSkip>
                     </systemPropertyVariables>
+                    <excludes>
+                        <exclude>**/*IntegrationTest</exclude>
+                    </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>none</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/*IntegrationTest</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
