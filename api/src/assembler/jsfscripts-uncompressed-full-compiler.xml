@@ -60,7 +60,7 @@
                 <include>**/_impl/quirks/_LangQuirks.js</include>
                 <include>**/_impl/core/Object.js</include>
                 <include>**/_impl/quirks/ObjectQuirks.js</include>
-                <include>**/_impl/core/InitObject.js</include>
+
                 <include>**/_impl/_util/_Queue.js</include>
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Dom.js</include>
@@ -81,12 +81,15 @@
                 <include>**/_impl/xhrCore/engine/IFrame.js</include>
 
                 <include>**/_impl/xhrCore/_AjaxRequest.js</include>
+                <include>**/_impl/quirks/_AjaxRequestQuirks.js</include>
                 <include>**/_impl/xhrCore/_AjaxRequestLevel2.js</include>
+                <include>**/_impl/xhrCore/_FormDataRequest.js</include>
                 <!-- not yet used in 2.0 but for development purposes it makes sense to include it here -->
                 <include>**/_impl/xhrCore/_IFrameRequest.js</include>
                 <include>**/_impl/xhrCore/_AjaxResponse.js</include>
                 <include>**/_impl/quirks/_AjaxResponseQuirks.js</include>
                 <include>**/_impl/xhrCore/_Transports.js</include>
+                <include>**/_impl/quirks/_TransportQuirks.js</include>
                 <include>**/_impl/xhrCore/_ExtTransport.js</include>
                 <include>**/_impl/core/Impl.js</include>
 
