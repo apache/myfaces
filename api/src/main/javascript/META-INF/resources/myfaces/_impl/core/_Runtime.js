@@ -780,9 +780,6 @@ if (!myfaces._impl.core._Runtime) {
         * does not alter the user agent, which they normally dont!
         *
         * the exception is the ie detection which relies on specific quirks in ie
-        *
-        * TODO check if the browser detection still is needed
-        * for 2.3 since our baseline will be IE11 most likely not
         */
        var n = navigator;
        var dua = n.userAgent,

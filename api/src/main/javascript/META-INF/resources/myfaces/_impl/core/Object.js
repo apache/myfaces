@@ -38,17 +38,19 @@ _MF_CLS(_PFX_CORE+"Object", Object, {
     /*optional functionality can be provided
      * for ie6 but is turned off by default*/
     _initDefaultFinalizableFields: function() {
-        var isIE = this._RT.browser.isIE;
-        if(!isIE || isIE > 7) return;
-        for (var key in this) {
-            //per default we reset everything which is not preinitalized
-            if (null == this[key] && key != "_resettableContent" && key.indexOf("_mf") != 0 && key.indexOf("_") == 0) {
-                this._resettableContent[key] = true;
-            }
-        }
     },
 
-
+    /**
+     * ie6 cleanup
+     * This method disposes all properties manually in case of ie6
+     * hence reduces the chance of running into a gc problem tremendously
+     * on other browsers this method does nothing
+     */
+    _finalize: function() {
+        // not needed anymore but to preserve
+        // the connection to quirks mode
+        // we keep it as empty implementation
+    },
 
     attr: function(name, value) {
        return this._Lang.attr(this, name, value);
@@ -75,8 +77,6 @@ _MF_CLS(_PFX_CORE+"Object", Object, {
 (function() {
     /*some mobile browsers do not have a window object*/
     var target = window ||document;
-    var _RT = myfaces._impl.core._Runtime;
-    _RT._MF_OBJECT = target._MF_OBJECT;
+    target._MF_OBJECT = myfaces._impl.core.Object;
 
-     target._MF_OBJECT = myfaces._impl.core.Object;
 })();

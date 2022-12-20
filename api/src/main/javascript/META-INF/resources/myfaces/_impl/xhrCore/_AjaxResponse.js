@@ -621,7 +621,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
     },
 
     _addResourceToHead: function (request, context, newData) {
-       this._Dom.appendToHead(newData);
+        this._Dom.appendToHead(newData);
     },
 
     /**
@@ -639,8 +639,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var _RT = this._RT,
             _Dom = this._Dom,
 
-        oldBody = document.getElementsByTagName("body")[0],
-        placeHolder = document.createElement("div");
+            oldBody = document.getElementsByTagName("body")[0],
+            placeHolder = document.createElement("div");
 
         placeHolder.id = "myfaces_bodyplaceholder";
 
