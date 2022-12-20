@@ -170,23 +170,23 @@
         }
     };
 
-      //internal class namespace reservation depending on the type (string or function)
-      _T._reserveClsNms = function(newCls, protoFuncs) {
-            var constr = null;
-            var UDEF = "undefined";
-            if (UDEF != typeof protoFuncs && null != protoFuncs) {
-                constr = (UDEF != typeof null != protoFuncs['constructor_'] && null != protoFuncs['constructor_']) ? protoFuncs['constructor_'] : function() {
-                };
-            } else {
-                constr = function() {
-                };
-            }
+    //internal class namespace reservation depending on the type (string or function)
+    _T._reserveClsNms = function(newCls, protoFuncs) {
+        var constr = null;
+        var UDEF = "undefined";
+        if (UDEF != typeof protoFuncs && null != protoFuncs) {
+            constr = (UDEF != typeof null != protoFuncs['constructor_'] && null != protoFuncs['constructor_']) ? protoFuncs['constructor_'] : function() {
+            };
+        } else {
+            constr = function() {
+            };
+        }
 
-            if (!_T.reserveNamespace(newCls, constr)) {
-                return null;
-            }
-            newCls = _T.fetchNamespace(newCls);
-            return newCls;
-        };
+        if (!_T.reserveNamespace(newCls, constr)) {
+            return null;
+        }
+        newCls = _T.fetchNamespace(newCls);
+        return newCls;
+    };
 
 })();

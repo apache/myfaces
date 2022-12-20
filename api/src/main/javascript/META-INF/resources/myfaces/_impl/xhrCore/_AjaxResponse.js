@@ -609,32 +609,19 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var _Lang = this._Lang,
             _Dom = this._Dom;
 
-
         var newDom = _Dom.fromMarkup(newData);
-
-        //newHead = _Dom.createElement("head");
-        //newHead.innerHTML = parsedHead.content();
-
-        var head = document.getElementsByTagName("head")[0];
         var newHead = newDom.getElementsByTagName("head")[0];
-        var oldTags = head.childNodes;
+        var oldTags = document.head.childNodes;
 
         _Dom.deleteItems(_Lang.objToArray(oldTags));
-        var childNodes = _Lang.objToArray(newHead.childNodes);
+        _Dom.appendToHead(newHead);
 
-        var placeHolder = document.createElement("meta");
 
-        head.appendChild(placeHolder);
-        _Dom.replaceElements(placeHolder, childNodes);
-        _Dom.runScripts(head);
-        return head;
+        return document.head;
     },
 
     _addResourceToHead: function (request, context, newData) {
-        var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
-
-        this._Dom.insertAfter(lastHeadChildTag, newData);
-
+        this._Dom.appendToHead(newData);
     },
 
     /**
@@ -652,8 +639,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var _RT = this._RT,
             _Dom = this._Dom,
 
-        oldBody = document.getElementsByTagName("body")[0],
-        placeHolder = document.createElement("div");
+            oldBody = document.getElementsByTagName("body")[0],
+            placeHolder = document.createElement("div");
 
         placeHolder.id = "myfaces_bodyplaceholder";
 
