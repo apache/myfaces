@@ -126,7 +126,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
              * definitely not a null value to avoid type confusions later on
              */
             mfInternal.namingModeId = (partials.id || "");
-            mfInternal.namespaced =  (partials.namedViewRoot || "");
+            mfInternal.namespaced =  (partials.attributes.getAttribute("namedViewRoot") || ""); // getAttribute not a function?
 
             var childNodesLength = partials.childNodes.length;
 
