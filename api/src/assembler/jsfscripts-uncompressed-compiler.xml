@@ -23,7 +23,7 @@
             <includes>
                 <include>**/_impl/core/_EvalHandlers.js</include>
                 <include>**/_impl/core/_Runtime.js</include>
-                <include>**/_impl/core/_RuntimeQuirks.js</include>
+                <include>**/_impl/quirks/_RuntimeQuirks.js</include>
                 <include>**/_impl/core/jsf-uncompressed.js</include>
             </includes>
         </script>
