@@ -156,37 +156,37 @@
     };
 
 
-    _T.loadScript = function (src, type, defer, charSet, async, cspMeta) {
+    _T.loadScript = function (src, type, defer, charSet, async) {
         //the chrome engine has a nasty javascript bug which prevents
         //a correct order of scripts being loaded
         //if you use script source on the head, we  have to revert
         //to xhr+ globalEval for those
         var b = _T.browser;
         if (!b.isFF && !b.isWebkit && !b.isOpera >= 10) {
-            _T.loadScriptEval(src, type, defer, charSet, cspMeta);
+            _T.loadScriptEval(src, type, defer, charSet);
         } else {
             //only firefox keeps the order, sorry ie...
-            _T.loadScriptByBrowser(src, type, defer, charSet, async, cspMeta);
+            _T.loadScriptByBrowser(src, type, defer, charSet, async);
         }
     };
 
-      //internal class namespace reservation depending on the type (string or function)
-      _T._reserveClsNms = function(newCls, protoFuncs) {
-            var constr = null;
-            var UDEF = "undefined";
-            if (UDEF != typeof protoFuncs && null != protoFuncs) {
-                constr = (UDEF != typeof null != protoFuncs['constructor_'] && null != protoFuncs['constructor_']) ? protoFuncs['constructor_'] : function() {
-                };
-            } else {
-                constr = function() {
-                };
-            }
+    //internal class namespace reservation depending on the type (string or function)
+    _T._reserveClsNms = function(newCls, protoFuncs) {
+        var constr = null;
+        var UDEF = "undefined";
+        if (UDEF != typeof protoFuncs && null != protoFuncs) {
+            constr = (UDEF != typeof null != protoFuncs['constructor_'] && null != protoFuncs['constructor_']) ? protoFuncs['constructor_'] : function() {
+            };
+        } else {
+            constr = function() {
+            };
+        }
 
-            if (!_T.reserveNamespace(newCls, constr)) {
-                return null;
-            }
-            newCls = _T.fetchNamespace(newCls);
-            return newCls;
-        };
+        if (!_T.reserveNamespace(newCls, constr)) {
+            return null;
+        }
+        newCls = _T.fetchNamespace(newCls);
+        return newCls;
+    };
 
 })();

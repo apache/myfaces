@@ -40,7 +40,7 @@
 
                 <include>**/_impl/_util/_Lang.js</include>
                 <include>**/_impl/core/Object.js</include>
-
+                <include>**/_impl/core/InitObject.js</include>
                 <include>**/_impl/_util/_Queue.js</include>
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Dom.js</include>

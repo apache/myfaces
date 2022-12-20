@@ -28,18 +28,20 @@
             <includes>
                 <include>**/_impl/core/_EvalHandlers.js</include>
                 <include>**/_impl/core/_Runtime.js</include>
-                <include>**/_impl/core/_RuntimeQuirks.js</include>
+                <include>**/_impl/quirks/_RuntimeQuirks.js</include>
                 <include>**/_impl/core/_StartImpl.js</include>
                 <include>**/_impl/i18n/Messages.js</include>
 
 
                 <include>**/_impl/_util/_Lang.js</include>
-                <include>**/_impl/_util/_LangQuirks.js</include>
+                <include>**/_impl/quirks/_LangQuirks.js</include>
                 <include>**/_impl/core/Object.js</include>
+                <include>**/_impl/quirks/ObjectQuirks.js</include>
+                <include>**/_impl/core/InitObject.js</include>
                 <include>**/_impl/_util/_Queue.js</include>
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Dom.js</include>
-                <include>**/_impl/_util/_DomQuirks.js</include>
+                <include>**/_impl/quirks/_DomQuirks.js</include>
                 <include>**/_impl/_util/_HtmlStripper.js</include>
                 <include>**/_impl/_util/_OamSubmit.js</include>
 
@@ -57,6 +59,7 @@
                 <include>**/_impl/xhrCore/_AjaxRequestLevel2.js</include>
                 <!-- not yet used in 2.0 but for development purposes it makes sense to include it here -->
                 <include>**/_impl/xhrCore/_AjaxResponse.js</include>
+                <include>**/_impl/quirks/_AjaxResponseQuirks.js</include>
                 <include>**/_impl/xhrCore/_Transports.js</include>
                 <include>**/_impl/core/Impl.js</include>
                 <!-- optimization helper -->

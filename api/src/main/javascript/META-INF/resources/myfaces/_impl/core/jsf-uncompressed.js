@@ -30,13 +30,15 @@ if (!window.jsf) {
 
 
     _ls("#{resource['org.apache.myfaces.core.impl.util:_Lang.js']}", null, null, "UTF-8", false);
-    _ls("#{resource['org.apache.myfaces.core.impl.util:_LangQuirks.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.quirks:_LangQuirks.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.core:Object.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.quirks:ObjectQuirks.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.core:InitObject.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_Queue.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_ListenerQueue.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_Dom.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_DomExperimental.js']}", null, null, "UTF-8", false);
-    _ls("#{resource['org.apache.myfaces.core.impl.util:_DomQuirks.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.quirks:_DomQuirks.js']}", null, null, "UTF-8", false);
 
     _ls("#{resource['org.apache.myfaces.core.impl.util:_HtmlStripper.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_OamSubmit.js']}", null, null, "UTF-8", false);
@@ -59,6 +61,7 @@ if (!window.jsf) {
 
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_IFrameRequest.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxResponse.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.quirks:_AjaxResponseQuirks.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_Transports.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_ExtTransport.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.core:Impl.js']}", null, null, "UTF-8", false);
