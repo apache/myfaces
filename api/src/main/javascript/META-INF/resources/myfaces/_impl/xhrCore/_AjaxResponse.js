@@ -126,7 +126,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
              * definitely not a null value to avoid type confusions later on
              */
             mfInternal.namingModeId = (partials.id || "");
-
+            mfInternal.namespaced =  (partials.namedViewRoot || "");
 
             var childNodesLength = partials.childNodes.length;
 
@@ -197,6 +197,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
          * faces 2.3 we set all the viewstates under a given declared viewRoot or all forms
          * if none is given
          */
+
         this._updateFacesClientArtifacts(context,  mfInternal.appliedViewState, this.P_VIEWSTATE);
     },
 
@@ -231,6 +232,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var _Lang = this._Lang;
         var _Dom = this._Dom;
         var prefix = this._getPrefix(context);
+        var nameSpaced = context._mfInternal.namedViewRoot;
 
         //in IE7 looking up form elements with complex names (such as 'jakarta.faces.ViewState') fails in certain cases
         //iterate through the form elements to find the element, instead
@@ -258,7 +260,11 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
             //per faces 2.3 spec the identifier of the element must be unique in the dom tree
             //otherwise we will break the html spec here
-            element.innerHTML = ["<input type='hidden'", "id='", this._fetchUniqueId(prefix, identifier), "' name='", identifier, "' value='", value, "' />"].join("");
+            var nameValue = identifier;
+            if(nameSpaced == "true") {
+                nameValue =  prefix = ":" + identifier;
+            }
+            element.innerHTML = ["<input type='hidden'", "id='", this._fetchUniqueId(prefix, identifier), "' name='", nameValue, "' value='", value, "' />"].join("");
             //now we go to proper dom handling after having to deal with another ie screw-up
             try {
                 theForm.appendChild(element.childNodes[0]);

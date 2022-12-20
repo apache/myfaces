@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewParameter;
 import jakarta.faces.component.UIViewRoot;
@@ -435,6 +436,15 @@ public class PartialViewContextImpl extends PartialViewContext
             writer.startDocument();
             
             writer.writeAttribute("id", viewRoot.getContainerClientId(context),"id");
+
+            if(viewRoot instanceof NamingContainer)
+            {
+                writer.writeAttribute("namedViewRoot", "true", "namedViewRoot");
+            }
+            else
+            {
+                writer.writeAttribute("namedViewRoot", "false", "namedViewRoot");
+            }
             
             inDocument = true;
             context.setResponseWriter(writer);
