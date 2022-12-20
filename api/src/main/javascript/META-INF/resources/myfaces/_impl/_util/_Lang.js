@@ -336,14 +336,14 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *      <li>param scope (optional) the scope to apply the closure to  </li>
      * </ul>
      */
-    arrForEach:function (arr, func /*startPos, scope*/) {
+    arrForEach:function (arr, func, startPos, scope) {
         if (!arr || !arr.length) return;
-        var startPos = Number(arguments[2]) || 0;
-        var thisObj = arguments[3];
+        var start = startPos || 0;
+        var thisObj = scope || arr;
         //check for an existing foreach mapping on array prototypes
         //IE9 still does not pass array objects as result for dom ops
         arr = this.objToArray(arr);
-        (startPos) ? arr.slice(startPos).forEach(func, thisObj) : arr.forEach(func, thisObj);
+        (start) ? arr.slice(start).forEach(func, thisObj) : arr.forEach(func, thisObj);
     },
     /**
      * foreach implementation utilizing the
@@ -360,10 +360,12 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *  <li> scope (optional) the scope to apply the closure to</li>
      * </ul>
      */
-    arrFilter:function (arr, func /*startPos, scope*/) {
+    arrFilter:function (arr, func, startPos, scope) {
         if (!arr || !arr.length) return [];
+        var start = startPos || 0;
+        var thisObj = scope || arr;
         arr = this.objToArray(arr);
-        return ((startPos) ? arr.slice(startPos).filter(func, thisObj) : arr.filter(func, thisObj));
+        return ((start) ? arr.slice(start).filter(func, thisObj) : arr.filter(func, thisObj));
     },
     /**
      * adds a EcmaScript optimized indexOf to our mix,
@@ -585,12 +587,12 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         if (!this.FormDataDecoratorOther) {
             this.FormDataDecoratorOther = function (theFormData) {
-                this._valBuf = theFormData;
+                this._valBuf = theFormData || [];
                 this._idx = {};
             };
             _newCls = this.FormDataDecoratorOther;
             _newCls.prototype.append = function (key, val) {
-                this._valBuf.append(key, val);
+                this._valBuf.push([encodeURIComponent(key), encodeURIComponent(val)]);
                 this._idx[key] = true;
             };
             _newCls.prototype.hasKey = function (key) {
