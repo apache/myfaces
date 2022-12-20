@@ -356,7 +356,7 @@ if (!jsf.push) {
     }
 
     // Public static functions ----------------------------------------------------------------------------------------
-
+    var _t = this;
     /**
      *
      * @param {function} onopen The function to be invoked when the web socket is opened.
@@ -394,7 +394,7 @@ if (!jsf.push) {
         }
 
         if (autoconnect) {
-            this.open(socketClientId);
+            _t.open(socketClientId);
         }
     }
 
