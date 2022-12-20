@@ -83,8 +83,6 @@
 
                 <include>**/_impl/xhrCore/_AjaxRequest.js</include>
                 <include>**/_impl/quirks/_AjaxRequestQuirks.js</include>
-                <include>**/_impl/xhrCore/_ExtAjaxRequest.js</include>
-                <include>**/_impl/xhrCore/_AjaxRequestLevel2.js</include>
                 <include>**/_impl/xhrCore/_FormDataRequest.js</include>
                 <!-- this is pure 2.2 functionality -->
                 <include>**/_impl/xhrCore/_IFrameRequest.js</include>

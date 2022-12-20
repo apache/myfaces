@@ -284,5 +284,4 @@ _MF_CLS(_PFX_XHR + "_AjaxRequestQuirks", myfaces._impl.xhrCore._AjaxRequest, /**
 (function() {
     /*some mobile browsers do not have a window object*/
     myfaces._impl.xhrCore._AjaxRequest = myfaces._impl.xhrCore._AjaxRequestQuirks;
-
 })();
