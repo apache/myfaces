@@ -197,7 +197,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
          * JSF 2.3 we set all the viewstates under a given declared viewRoot or all forms
          * if none is given
          */
-        this._updateJSFClientArtifacts(context, mfInternal.appliedViewState, this.P_VIEWSTATE);
+        this._updateJSFClientArtifacts(context,  mfInternal.appliedViewState, this.P_VIEWSTATE);
     },
 
 
@@ -268,10 +268,10 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
     },
 
-    _fetchUniqueId: function (prefix, identifier) {
+    _fetchUniqueId: function(prefix, identifier) {
         var cnt = 0;
         var retVal = prefix + identifier + jsf.separatorchar + cnt;
-        while (this._Dom.byId(retVal) != null) {
+        while(this._Dom.byId(retVal) != null) {
             cnt++;
             retVal = prefix + identifier + jsf.separatorchar + cnt;
         }
@@ -308,6 +308,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
 
 
+
         var viewRoot = this._getViewRoot(context);
         var forms = this._Dom.findByTagNames(viewRoot, {"form": 1}) || [];
 
@@ -316,7 +317,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         //to deal with multiple render targets.
 
 
-        if (this._RT.getLocalOrGlobalConfig(context, "no_portlet_env", false)) {
+        if(this._RT.getLocalOrGlobalConfig(context, "no_portlet_env", false)) {
 
             //We update all elements under viewroot
             //this clearly violates the jsf 2.3 jsdocs
@@ -339,7 +340,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
             var viewRootId = viewRoot.id || "";
 
-            for (var cnt = 0; cnt < context._mfInternal._updateForms.length; cnt++) {
+            for(var cnt = 0; cnt < context._mfInternal._updateForms.length; cnt++) {
                 var updateForm = context._mfInternal._updateForms[cnt];
 
                 //follow the spec 2.3 path 1:1 we update the forms hosting the render targets which start
@@ -354,7 +355,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                 //(aka fallback into the old behavior)
 
 
-                if (updateForm.indexOf(viewRootId) != 0) {
+                if(updateForm.indexOf(viewRootId) != 0) {
                     continue;
                 } else { //either an empty viewroot, or a namespace match
                     this._applyJSFArtifactValueToForm(context, this._Dom.byId(updateForm), value, identifier);
@@ -455,6 +456,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                 case this.CMD_UPDATE:
                     this.processUpdate(request, context, changes[i]);
                     break;
+                //this one needs a csp spec extension for the global eval
+                //for now we recycle the csp for this case from the jsf.js file
                 case this.CMD_EVAL:
                     _Lang.globalEval(changes[i].firstChild.data);
                     break;
@@ -495,7 +498,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             } else if (node.getAttribute('id').indexOf(this.P_CLIENTWINDOW) != -1) {
                 mfInternal.appliedClientWindow = node.firstChild.nodeValue;
             }
-        } else {
+        }
+        else {
             // response may contain several blocks
             var cDataBlock = this._Dom.concatCDATABlocks(node),
                 resultNode = null,
@@ -541,30 +545,31 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         return true;
     },
 
-    _pushOperationResult: function (context, resultNode) {
+    _pushOperationResult: function(context, resultNode) {
         var mfInternal = context._mfInternal;
-        var pushSubnode = this._Lang.hitch(this, function (currNode) {
+        var pushSubnode = this._Lang.hitch(this, function(currNode) {
             var parentForm = this._Dom.getParent(currNode, "form");
             //if possible we work over the ids
             //so that elements later replaced are referenced
             //at the latest possibility
             if (null != parentForm) {
                 mfInternal._updateForms.push(parentForm.id || parentForm);
-            } else {
+            }
+            else {
                 mfInternal._updateElems.push(currNode.id || currNode);
             }
         });
 
-        var pushEmbedded = this._Lang.hitch(this, function (currNode) {
-            if (currNode.tagName && this._Lang.equalsIgnoreCase(currNode.tagName, "form")) {
-                if (currNode.id) { //should not happen but just in case someone manipulates the html
+        var pushEmbedded = this._Lang.hitch(this, function(currNode) {
+            if(currNode.tagName && this._Lang.equalsIgnoreCase(currNode.tagName, "form")) {
+                if(currNode.id)  { //should not happen but just in case someone manipulates the html
                     mfInternal._updateForms.push(currNode.id);
                 }
             } else {
                 var childForms = this._Dom.findByTagName(currNode, "form");
-                if (childForms && childForms.length) {
-                    for (var cnt = 0; cnt < childForms.length; cnt++) {
-                        if (childForms[cnt].id) {
+                if(childForms && childForms.length) {
+                    for(var cnt = 0; cnt < childForms.length; cnt++) {
+                        if(childForms[cnt].id) {
                             mfInternal._updateForms.push(childForms[cnt].id);
                         }
                     }
@@ -600,45 +605,13 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @return an xml representation of the page for further processing if possible
      */
     _replaceHead: function (request, context, newData) {
+
         var _Lang = this._Lang,
-            _Dom = this._Dom,
-            _RT = this._RT,
-            isWebkit = this._RT.browser.isWebKit,
-            //we have to work around an xml parsing bug in Webkit
-            //see https://issues.apache.org/jira/browse/MYFACES-3061
-            doc = (!isWebkit) ? _Lang.parseXML(newData) : null,
-            newHead = null;
+            _Dom = this._Dom;
 
-        if (!isWebkit && _Lang.isXMLParseError(doc)) {
-            doc = _Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g, "<!--").replace(/\/\/-->[\s\n]*\/\/-->/g, "//-->"));
-        }
-
-        if (isWebkit || _Lang.isXMLParseError(doc)) {
-            //the standard xml parser failed we retry with the stripper
-            var parser = new (this._RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
-            var headData = parser.parse(newData, "head");
-            //We cannot avoid it here, but we have reduced the parsing now down to the bare minimum
-            //for further processing
-            newHead = _Lang.parseXML("<head>" + headData + "</head>");
-            //last and slowest option create a new head element and let the browser
-            //do its slow job
-            if (_Lang.isXMLParseError(newHead)) {
-                try {
-                    newHead = _Dom.createElement("head");
-                    newHead.innerHTML = headData;
-                } catch (e) {
-                    //we give up no further fallbacks
-                    throw this._raiseError(new Error(), "Error head replacement failed reason:" + e.toString(), "_replaceHead");
-                }
-            }
-            newHead = newHead.childNodes[0];
-        } else {
-            //parser worked we go on
-            newHead = doc.getElementsByTagName("head")[0];
-        }
-
-        var oldTags = _Lang.objToArray(document.head.childNodes);
-
+        var newDom = _Dom.fromMarkup(newData);
+        var newHead = newDom.getElementsByTagName("head")[0];
+        var oldTags = document.head.childNodes;
 
         _Dom.deleteItems(_Lang.objToArray(oldTags));
         _Dom.appendToHead(newHead);
@@ -648,7 +621,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
     },
 
     _addResourceToHead: function (request, context, newData) {
-       this._Dom.appendToHead(newData);
+        this._Dom.appendToHead(newData);
     },
 
     /**
@@ -665,61 +638,36 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
     _replaceBody: function (request, context, newData /*varargs*/) {
         var _RT = this._RT,
             _Dom = this._Dom,
-            _Lang = this._Lang,
 
             oldBody = document.getElementsByTagName("body")[0],
-            placeHolder = document.createElement("div"),
-            isWebkit = _RT.browser.isWebKit;
+            placeHolder = document.createElement("div");
 
         placeHolder.id = "myfaces_bodyplaceholder";
+
+        var newDom = _Dom.fromMarkup(newData);
+        var newBodyData = newDom.getElementsByTagName("body")[0];
 
         _Dom._removeChildNodes(oldBody);
         oldBody.innerHTML = "";
         oldBody.appendChild(placeHolder);
 
-        var bodyData, doc = null, parser;
 
-        //we have to work around an xml parsing bug in Webkit
-        //see https://issues.apache.org/jira/browse/MYFACES-3061
-        if (!isWebkit) {
-            doc = (arguments.length > 3) ? arguments[3] : _Lang.parseXML(newData);
-        }
-
-        if (!isWebkit && _Lang.isXMLParseError(doc)) {
-            doc = _Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g, "<!--").replace(/\/\/-->[\s\n]*\/\/-->/g, "//-->"));
-        }
-
-        if (isWebkit || _Lang.isXMLParseError(doc)) {
-            //the standard xml parser failed we retry with the stripper
-
-            parser = new (_RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
-
-            bodyData = parser.parse(newData, "body");
-        } else {
-            //parser worked we go on
-            var newBodyData = doc.getElementsByTagName("body")[0];
-
-            //speedwise we serialize back into the code
-            //for code reduction, speedwise we will take a small hit
-            //there which we will clean up in the future, but for now
-            //this is ok, I guess, since replace body only is a small subcase
-            //bodyData = _Lang.serializeChilds(newBodyData);
-            var browser = _RT.browser;
-            if (!browser.isIEMobile || browser.isIEMobile >= 7) {
-                //TODO check what is failing there
-                for (var cnt = 0; cnt < newBodyData.attributes.length; cnt++) {
-                    var value = newBodyData.attributes[cnt].value;
-                    if (value)
-                        _Dom.setAttribute(oldBody, newBodyData.attributes[cnt].name, value);
-                }
+        //speedwise we serialize back into the code
+        //for code reduction, speedwise we will take a small hit
+        //there which we will clean up in the future, but for now
+        //this is ok, I guess, since replace body only is a small subcase
+        //bodyData = _Lang.serializeChilds(newBodyData);
+        var browser = _RT.browser;
+        if (!browser.isIEMobile || browser.isIEMobile >= 7) {
+            //TODO check what is failing there
+            for (var cnt = 0; cnt < newBodyData.attributes.length; cnt++) {
+                var value = newBodyData.attributes[cnt].value;
+                if (value)
+                    _Dom.setAttribute(oldBody, newBodyData.attributes[cnt].name, value);
             }
         }
-        //we cannot serialize here, due to escape problems
-        //we must parse, this is somewhat unsafe but should be safe enough
-        parser = new (_RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
-        bodyData = parser.parse(newData, "body");
 
-        var returnedElement = this.replaceHtmlItem(request, context, placeHolder, bodyData);
+        var returnedElement = this.replaceHtmlItem(request, context, placeHolder, newBodyData.innerHTML);
 
         if (returnedElement) {
             this._pushOperationResult(context, returnedElement);
@@ -939,6 +887,6 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var finalName = name || _Impl.MALFORMEDXML;
         var finalMessage = message || "";
 
-        return this._Lang.makeException(error, finalTitle, finalName, this._nameSpace, caller || ((arguments.caller) ? arguments.caller.toString() : "_raiseError"), finalMessage);
+        return this._Lang.makeException(error, finalTitle, finalName, this._nameSpace, caller || ( (arguments.caller) ? arguments.caller.toString() : "_raiseError"), finalMessage);
     }
 });

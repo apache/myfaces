@@ -31,7 +31,6 @@
                 <include>**/_impl/_util/_DomExperimental.js</include>
                 <include>**/_impl/_util/_ExtDom.js</include>
                 <include>**/_impl/xhrCore/engine/IFrame.js</include>
-                <include>**/_impl/xhrCore/_ExtAjaxRequest.js</include>
                 <include>**/_impl/xhrCore/_IFrameRequest.js</include>
                 <include>**/_impl/xhrCore/_PartialSubmitUtils.js</include>
                 <include>**/_impl/xhrCore/_ExtTransports.js</include>
