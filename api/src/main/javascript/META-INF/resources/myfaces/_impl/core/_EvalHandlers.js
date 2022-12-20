@@ -121,7 +121,10 @@ if (!myfaces._impl.core._EvalHandlers) {
                 return _T.resolveNonce(document.currentScript);
             }
 
-            var scripts = document.querySelectorAll("script[src], link[src]");
+            var _Lang = myfaces._impl._util._Lang;
+            var scripts = _Lang.objToArray(document.getElementsByTagName("script"))
+                .concat(_Lang.objToArray(document.getElementsByTagName("link")));
+
             var faces_js = null;
 
             //we search all scripts

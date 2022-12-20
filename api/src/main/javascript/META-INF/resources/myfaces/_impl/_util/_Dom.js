@@ -115,9 +115,11 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                         //we have to move this into an inner if because chrome otherwise chokes
                         //due to changing the and order instead of relying on left to right
                         //if jsf.js is already registered we do not replace it anymore
-                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=jakarta.faces") == -1) || (src.indexOf("/faces.js") == -1
-                            && src.indexOf("/faces-development.js") == -1)) {
-
+                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) ||
+                            (src.indexOf("/jsf.js") == -1
+                            && (src.indexOf("/jsf-uncompressed.js") == -1)
+                            && (src.indexOf("/jsf-development.js") == -1)
+                            )) {
                             finalScripts = evalCollectedScripts(finalScripts);
                             _RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false, nonce ? {nonce: nonce} : null );
                         }
@@ -916,7 +918,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     findByTagName : function(fragment, tagName) {
         this._assertStdParams(fragment, tagName, "findByTagName", ["fragment", "tagName"]);
         var _Lang = this._Lang,
-                nodeType = fragment.nodeType;
+            nodeType = fragment.nodeType;
         if (nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
         //remapping to save a few bytes
@@ -983,8 +985,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         //we use the reject mechanism to prevent a deep scan reject means any
         //child elements will be omitted from the scan
         var FILTER_ACCEPT = NodeFilter.FILTER_ACCEPT,
-                FILTER_SKIP = NodeFilter.FILTER_SKIP,
-                FILTER_REJECT = NodeFilter.FILTER_REJECT;
+            FILTER_SKIP = NodeFilter.FILTER_SKIP,
+            FILTER_REJECT = NodeFilter.FILTER_REJECT;
 
         var walkerFilter = function (node) {
             var retCode = (filter(node)) ? FILTER_ACCEPT : FILTER_SKIP;
@@ -1081,7 +1083,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             //https://issues.apache.org/jira/browse/MYFACES-2793
 
             return (_Lang.equalsIgnoreCase(elem.tagName, "form")) ? elem :
-                    ( this.html5FormDetection(elem) || this.getParent(elem, "form"));
+                ( this.html5FormDetection(elem) || this.getParent(elem, "form"));
         });
 
         if (finalElem) {
@@ -1129,13 +1131,13 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
         if (!item) {
             throw this._Lang.makeException(new Error(), null, null, this._nameSpace, "getParent",
-                    this._Lang.getMessage("ERR_MUST_BE_PROVIDED1", null, "_Dom.getParent", "item {DomNode}"));
+                this._Lang.getMessage("ERR_MUST_BE_PROVIDED1", null, "_Dom.getParent", "item {DomNode}"));
         }
 
         var _Lang = this._Lang;
         var searchClosure = function(parentItem) {
             return parentItem && parentItem.tagName
-                    && _Lang.equalsIgnoreCase(parentItem.tagName, tagName);
+                && _Lang.equalsIgnoreCase(parentItem.tagName, tagName);
         };
         try {
             return this.getFilteredParent(item, searchClosure);
