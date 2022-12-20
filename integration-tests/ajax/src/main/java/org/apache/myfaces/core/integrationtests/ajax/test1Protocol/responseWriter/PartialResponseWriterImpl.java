@@ -34,14 +34,14 @@ import java.util.Map;
  * NOTE the class is a work in progress it is not finished yet
  * and therefore not combined with the rest of the codebase
  *
- * Flow UIViewRoot: insert or update -> eval  javascripts must be deferred
+ * Flow UIViewRoot: insert or update - eval  javascripts must be deferred
  * until the insert update or delete is done
  *
- * insert or update -> script src type="text/javascript"
+ * insert or update - script src type="text/javascript"
  * also must be delayed until the insert
  * or update is done!
  *
- * single elements startElement no script -> passthrough
+ * single elements startElement no script - passthrough
  * script wait for end...
  *
  * Note our evals are directly stored in a stringbuilder, we have
