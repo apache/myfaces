@@ -64,6 +64,7 @@ import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
+import org.apache.myfaces.core.api.shared.SharedRendererUtils;
 
 public final class HtmlRendererUtils
 {
@@ -480,7 +481,7 @@ public final class HtmlRendererUtils
             {
                 lookup = uiSelectOne.getValue();
                 String lookupString =
-                        RendererUtils.getConvertedStringValue(facesContext, uiComponent, converter, lookup);
+                        SharedRendererUtils.getConvertedStringValue(facesContext, uiComponent, converter, lookup);
                 lookupSet = Collections.singleton(lookupString);
             }
             else if (RendererUtils.EMPTY_STRING.equals(lookup))
@@ -575,7 +576,8 @@ public final class HtmlRendererUtils
             }
             else
             {
-                String itemStrValue = RendererUtils.getConvertedStringValue(context, component, converter,selectItem);
+                String itemStrValue = 
+                    SharedRendererUtils.getConvertedStringValue(context, component, converter,selectItem);
                 boolean selected = lookupSet.contains(itemStrValue); 
                 //TODO/FIX: we always compare the String values, better fill lookupSet with Strings 
                 //only when useSubmittedValue==true, else use the real item value Objects
@@ -661,6 +663,13 @@ public final class HtmlRendererUtils
             String componentProperty, String attrName, Object value)
             throws IOException
     {
+
+        if(attrName.equals(HTML.ONCHANGE_ATTR) && value != null && value.toString().length() == 0)
+        {
+            // don't write onchange attribute if value is ""
+            return false; 
+        }
+
         if (!RendererUtils.isDefaultAttributeValue(value))
         {
             // render Faces "styleClass" and "itemStyleClass" attributes as "class"
@@ -935,7 +944,7 @@ public final class HtmlRendererUtils
 
             writer.startElement(HTML.SPAN_ELEM, uiComponent);
             writeIdIfNecessary(writer, uiComponent, facesContext);
-            writer.writeText(RendererUtils.getConvertedStringValue(
+            writer.writeText(SharedRendererUtils.getConvertedStringValue(
                     facesContext, uiComponent, converter,
                     ((UISelectBoolean) uiComponent).getValue()),
                     ComponentAttrs.VALUE_ATTR);
@@ -992,7 +1001,7 @@ public final class HtmlRendererUtils
             }
             else
             {
-                String itemStrValue = RendererUtils.getConvertedStringValue(
+                String itemStrValue = SharedRendererUtils.getConvertedStringValue(
                         context, component, converter, selectItem);
 
                 if (lookupSet.contains(itemStrValue))

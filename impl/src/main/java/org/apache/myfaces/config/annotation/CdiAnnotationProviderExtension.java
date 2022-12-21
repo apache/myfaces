@@ -75,8 +75,12 @@ public class CdiAnnotationProviderExtension implements Extension
     
     public void release()
     {
-        map.clear();
-        map = null;
+        if (map != null) // MYFACES-4534
+        {
+            map.clear();
+            map = null;
+
+        }
 
         annotationsToScan = null;
     }

@@ -25,8 +25,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,15 +42,9 @@ public class IntegrationTest
     @Deployment(testable = false)
     public static WebArchive createDeployment()
     {
-        WebArchive webArchive = (WebArchive) EmbeddedMaven.forProject(new File("pom.xml"))
-                .useMaven3Version("3.3.9")
-                .setGoals("package")
-                .setQuiet()
-                .skipTests(true)
-                .ignoreFailure()
-                .build().getDefaultBuiltArchive();
-
-        return webArchive;
+        return ShrinkWrap.create(ZipImporter.class, "faceletToXhtmlMapping.war")
+                .importFrom(new File("target/faceletToXhtmlMapping.war"))
+                .as(WebArchive.class);
     }
 
     @Drone
