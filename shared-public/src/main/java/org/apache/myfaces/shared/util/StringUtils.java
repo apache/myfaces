@@ -37,6 +37,42 @@ public final class StringUtils
     }
 
     //~ Methods ------------------------------------------------------------------------------------
+    public static boolean isEmpty(String value)
+    {
+        return value == null || value.isEmpty();
+    }
+
+    public static boolean isBlank(String str)
+    {
+        if (str == null)
+        {
+            return true;
+        }
+        int strLen = str.length();
+        if (strLen == 0)
+        {
+            return true;
+        }
+
+        for (int i = 0; i < strLen; i++)
+        {
+            if (!Character.isWhitespace(str.charAt(i)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isNotEmpty(String value)
+    {
+        return !isEmpty(value);
+    }
+
+    public static boolean isNotBlank(String value)
+    {
+        return !isBlank(value);
+    }
 
     /**
      * Checks that the string represents a floating point number that CANNOT be
