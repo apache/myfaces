@@ -29,11 +29,39 @@ import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.lang.StringUtils;
 
 // CHECKSTYLE:OFF
 public class AjaxScriptBuilder
-{    
+{
+
+    private static final String AJAX_PARAM_SB = "oam.renderkit.AJAX_PARAM_SB";
+
+    private static final String QUOTE = "'";
+    private static final String BLANK = " ";
+
+    private static final String AJAX_KEY_ONERROR = "onerror";
+    private static final String AJAX_KEY_ONEVENT = "onevent";
+    private static final String AJAX_KEY_DELAY = "delay";
+    private static final String AJAX_KEY_RESETVALUES = "resetValues";
+
+    private static final String AJAX_VAL_THIS = "this";
+    private static final String AJAX_VAL_EVENT = "event";
+
+    private static final String COLON = ":";
+    private static final String COMMA = ",";
+
+    private static final String L_PAREN = "(";
+    private static final String R_PAREN = ")";
+
+    private static final String L_C_BRACE = "{";
+    private static final String R_C_BRACE = "}";
+    public static final String AJAX_KEY_PARAMS = "params";
+    public static final String AJAX_VAL_NULL = "null";
+    public static final String MYFACES_AB = "myfaces.ab";
+
+
     public static void build(FacesContext context,
             StringBuilder sb,
             UIComponent component,
@@ -77,13 +105,13 @@ public class AjaxScriptBuilder
         String execute = null;
         if (executeList != null && !executeList.isEmpty())
         {
-            execute = String.join(" ", executeList);
+            execute = String.join(BLANK, executeList);
         }
             
         String render = null;
         if (renderList != null && !renderList.isEmpty())
         {
-            render = String.join(" ", renderList);
+            render = String.join(BLANK, renderList);
         }
 
         build(context,
@@ -120,17 +148,17 @@ public class AjaxScriptBuilder
                 ? (HtmlCommandScript) component
                 : null;
    
-        sb.append("myfaces.ab(");
+        sb.append(MYFACES_AB +L_PAREN);
 
         if (sourceId == null)
         {
-            sb.append("this");
+            sb.append(AJAX_VAL_THIS);
         }
         else
         {
-            sb.append('\'');
+            sb.append(QUOTE);
             sb.append(sourceId);
-            sb.append('\'');
+            sb.append(QUOTE);
 
             if (!sourceId.trim().equals(component.getClientId(context)))
             {
@@ -153,13 +181,13 @@ public class AjaxScriptBuilder
                 }
             }
         }
-        sb.append(',');
+        sb.append(COMMA);
 
-        sb.append(commandScript == null ? "event" : "null");
-        sb.append(",'");
+        sb.append(commandScript == null ? AJAX_VAL_EVENT : AJAX_VAL_NULL);
+        sb.append(COMMA+QUOTE);
 
         sb.append(eventName);
-        sb.append("',");
+        sb.append(QUOTE+COMMA);
         
         SearchExpressionHandler seHandler = null;
         SearchExpressionContext seContext = null;
@@ -172,35 +200,35 @@ public class AjaxScriptBuilder
         }
 
         appendIds(sb, execute, seHandler, seContext);
-        sb.append(',');
+        sb.append(COMMA);
 
         appendIds(sb, render, seHandler, seContext);
         
         if (onevent != null || onerror != null || delay != null || resetValues != null
                 || (params != null && !params.isEmpty()) || (uiParams != null && !uiParams.isEmpty()))
         {
-            sb.append(",{");
+            sb.append(COMMA+L_C_BRACE);
             if (onevent != null)
             {
-                appendProperty(sb, "onevent", onevent, false);
+                appendProperty(sb, AJAX_KEY_ONEVENT, onevent, false);
             }
             if (onerror != null)
             {
-                appendProperty(sb, "onerror", onerror, false);
+                appendProperty(sb, AJAX_KEY_ONERROR, onerror, false);
             }
             if (delay != null)
             {
-                appendProperty(sb, "delay", delay, true);
+                appendProperty(sb, AJAX_KEY_DELAY, delay, true);
             }
             if (resetValues != null)
             {
-                appendProperty(sb, "resetValues", resetValues, false);
+                appendProperty(sb, AJAX_KEY_RESETVALUES, resetValues, false);
             }
 
             if ((params != null && !params.isEmpty()) || (uiParams != null && !uiParams.isEmpty()))
             {
-                StringBuilder paramsBuilder = new StringBuilder();
-                paramsBuilder.append('{');
+                StringBuilder paramsBuilder = SharedStringBuilder.get(context, AJAX_PARAM_SB, 60);
+                paramsBuilder.append(L_C_BRACE);
                 if (params != null && !params.isEmpty())
                 {
                     if (params instanceof RandomAccess)
@@ -229,21 +257,21 @@ public class AjaxScriptBuilder
                         appendProperty(paramsBuilder, param.getName(), param.getValue(), true);
                     }
                 }
-                paramsBuilder.append('}');
-                sb.append("params: ");
+                paramsBuilder.append(R_C_BRACE);
+                sb.append(AJAX_KEY_PARAMS+COLON);
                 sb.append(paramsBuilder);
             }
 
-            sb.append('}');
+            sb.append(R_C_BRACE);
         }
 
-        sb.append(')');
+        sb.append(R_PAREN);
     }
     
     private static void appendIds(StringBuilder sb, String expressions,
             SearchExpressionHandler handler, SearchExpressionContext searchExpressionContext)
     {
-        sb.append('\'');
+        sb.append(QUOTE);
         
         if (StringUtils.isNotBlank(expressions))
         {
@@ -256,14 +284,14 @@ public class AjaxScriptBuilder
                 {
                     if (i > 0)
                     {
-                        sb.append(' ');
+                        sb.append(BLANK);
                     }
                     sb.append(clientIds.get(i));
                 }
             }
         }
         
-        sb.append('\'');
+        sb.append(QUOTE);
     }
 
 
@@ -278,30 +306,30 @@ public class AjaxScriptBuilder
         }
 
         char lastChar = builder.charAt(builder.length() - 1);
-        if (lastChar != ',' && lastChar != '{')
+        if (!COMMA.equals(String.valueOf(lastChar)) && !L_C_BRACE.equals(String.valueOf(lastChar)))
         {
-            builder.append(',');
+            builder.append(COMMA);
         }
 
-        builder.append('\'');
+        builder.append(QUOTE);
         builder.append(name);
-        builder.append('\'');
+        builder.append(QUOTE);
         
-        builder.append(':');
+        builder.append(COLON);
 
         if (value == null)
         {
-            builder.append("''");
+            builder.append(QUOTE+QUOTE);
         }
         else if (quoteValue)
         {
-            builder.append('\'');
-            builder.append(value.toString());
-            builder.append('\'');
+            builder.append(QUOTE);
+            builder.append(value);
+            builder.append(QUOTE);
         }
         else
         {
-            builder.append(value.toString());
+            builder.append(value);
         }
     }
 }
