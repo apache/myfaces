@@ -41,6 +41,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.render.ClientBehaviorRenderer;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.shared.util.StringUtils;
 
 /**
  * @author Werner Punz  (latest modification by $Author$)
@@ -73,6 +74,9 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 
     private static final String AJAX_SB = "oam.renderkit.AJAX_SB";
     private static final String AJAX_PARAM_SB = "oam.renderkit.AJAX_PARAM_SB";
+    public static final char L_C_BR = '{';
+    public static final char R_C_BR = '}';
+    public static final String AJAX_KEY_PARAMS = "params";
 
     @Override
     public void decode(FacesContext context, UIComponent component, ClientBehavior behavior)
@@ -276,6 +280,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         int paramSize = (params != null) ? params.size() : 0;
 
         List<String> parameterList = new ArrayList<>(paramSize + 2);
+        List<String> requestParameterList = new ArrayList<>(paramSize + 2);
         if (executes != null)
         {
             parameterList.add(executes);
@@ -320,14 +325,14 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                 for (int i = 0, size = list.size(); i < size; i++)
                 {
                     ClientBehaviorContext.Parameter param = list.get(i);
-                    append(paramBuffer, parameterList, param);
+                    append(paramBuffer, requestParameterList, param);
                 }
             }
             else
             {
                 for (ClientBehaviorContext.Parameter param : params)
                 {
-                    append(paramBuffer, parameterList, param);
+                    append(paramBuffer, requestParameterList, param);
                 }
             }
         }
@@ -341,14 +346,14 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         paramBuffer.append(QUOTE);
         paramBuffer.append(event);
         paramBuffer.append(QUOTE);
-        parameterList.add(paramBuffer.toString());
+        requestParameterList.add(paramBuffer.toString());
 
         /**
          * I assume here for now that the options are the same which also
          * can be sent via the options attribute to javax.faces.ajax
          * this still needs further clarifications but I assume so for now
          */
-        retVal.append(buildOptions(paramBuffer, parameterList));
+        retVal.append(buildOptions(paramBuffer, parameterList, requestParameterList));
 
         retVal.append(R_PAREN);
 
@@ -374,11 +379,11 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     }
 
 
-    private StringBuilder buildOptions(StringBuilder retVal, List<String> options)
+    private StringBuilder buildOptions(StringBuilder retVal, List<String> options, List<String> requestParameterList)
     {
         retVal.setLength(0);
 
-        retVal.append("{");
+        retVal.append(L_C_BR);
 
         boolean first = true;
 
@@ -387,19 +392,48 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             String option = options.get(i);
             if (option != null && !option.trim().equals(EMPTY))
             {
-                if (!first)
-                {
-                    retVal.append(COMMA);
-                }
-                else
-                {
-                    first = false;
-                }
+                first = appendComma(retVal, first);
                 retVal.append(option);
             }
         }
-        retVal.append("}");
+
+        int requestParamSize = requestParameterList.size();
+        if(requestParamSize > 0)
+        {
+            appendComma(retVal, first);
+            retVal.append(AJAX_KEY_PARAMS);
+            retVal.append(COLON);
+            retVal.append(L_C_BR);
+            first = true;
+            for (int i = 0; i < requestParamSize; i++)
+            {
+                String requestParam = requestParameterList.get(i);
+                if (!StringUtils.isBlank(requestParam))
+                {
+                    first = appendComma(retVal, first);
+                    retVal.append(requestParam);
+                }
+            }
+            retVal.append(R_C_BR);
+
+        }
+
+
+        retVal.append(R_C_BR);
         return retVal;
+    }
+
+    private boolean appendComma(StringBuilder retVal, boolean first)
+    {
+        if (!first)
+        {
+            retVal.append(COMMA);
+        }
+        else
+        {
+            first = false;
+        }
+        return first;
     }
 
     private String mapToString(ClientBehaviorContext context, StringBuilder retVal,
