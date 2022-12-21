@@ -203,9 +203,9 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
         } catch (e) {
             this._stdErrorHandler(this._xhr, this._context, e);
         }
-		//add for xhr level2 support
-		//}  finally {
-            //W3C spec onloadend must be called no matter if success or not
+        //add for xhr level2 support
+        //}  finally {
+        //W3C spec onloadend must be called no matter if success or not
         //    this.ondone();
         //}
     },
@@ -230,10 +230,10 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             errorText = _Lang.getMessage("ERR_REQ_FAILED_UNKNOWN", null);
         } finally {
             var _Impl = this.attr("impl");
-            _Impl.sendError(xhr, context, _Impl.HTTPERROR,
-                    _Impl.HTTPERROR, errorText,"","myfaces._impl.xhrCore._AjaxRequest","onerror");
+                _Impl.sendError(xhr, context, _Impl.HTTPERROR,
+                _Impl.HTTPERROR, errorText,"","myfaces._impl.xhrCore._AjaxRequest","onerror");
             //add for xhr level2 support
-			//since chrome does not call properly the onloadend we have to do it manually
+            //since chrome does not call properly the onloadend we have to do it manually
             //to eliminate xhr level1 for the compile profile modern
             //W3C spec onloadend must be called no matter if success or not
             //this.ondone();
