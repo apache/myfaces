@@ -303,7 +303,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         {
             Object itemValue = selectItem.getValue(); // TODO : Check here for getSubmittedValue. 
                                                       // Look at RendererUtils.getValue
-            String itemStrValue = RendererUtils.getConvertedStringValue(
+            String itemStrValue =  org.apache.myfaces.core.api.shared.SharedRendererUtils.getConvertedStringValue(
                     facesContext, selectMany, converter, itemValue);
             
             boolean checked = lookupSet.contains(itemStrValue);
@@ -389,10 +389,8 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
         }
 
-        if ((value != null) && (value.length() > 0))
-        {
-            writer.writeAttribute(HTML.VALUE_ATTR, value, null);
-        }
+        value = value == null ? "" : value;
+        writer.writeAttribute(HTML.VALUE_ATTR, value, null);
 
         Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof UISelectBoolean)
