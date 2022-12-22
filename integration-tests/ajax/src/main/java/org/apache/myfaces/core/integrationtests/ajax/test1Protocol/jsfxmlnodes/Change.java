@@ -27,7 +27,8 @@ package org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes;
  * changes
  * 
  */
-public interface Change {
+public interface Change
+{
 
 
     

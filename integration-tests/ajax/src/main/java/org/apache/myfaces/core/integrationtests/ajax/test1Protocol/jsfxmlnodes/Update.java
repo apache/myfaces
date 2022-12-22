@@ -25,16 +25,19 @@ package org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes;
  * @author Werner Punz(latest modification by $Author: werpu $)
  * @version $Revision: 1.2 $ $Date: 2009/04/17 10:53:30 $
  */
-public class Update implements Change{
+public class Update implements Change
+{
     String id = "";
     String data = "";
 
-    public Update(Changes parent, String id, String data) {
+    public Update(Changes parent, String id, String data)
+    {
         this.id = id;
         this.data = data;
     }
 
-    public String toString() {
+    public String toString()
+    {
         StringBuilder builder = new StringBuilder();
         builder.append("<update id='");
         builder.append(id);

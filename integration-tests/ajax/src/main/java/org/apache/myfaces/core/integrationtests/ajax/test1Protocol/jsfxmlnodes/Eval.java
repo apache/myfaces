@@ -30,11 +30,13 @@ public class Eval implements Change
 
     String javascriptText = "";
 
-    public Eval(Changes parent, String javascript) {
+    public Eval(Changes parent, String javascript)
+    {
         javascriptText = javascript;
     }
 
-    public String toString() {
+    public String toString()
+    {
         StringBuilder retVal = new StringBuilder();
         retVal.append("<eval><![CDATA[");
         retVal.append(javascriptText);

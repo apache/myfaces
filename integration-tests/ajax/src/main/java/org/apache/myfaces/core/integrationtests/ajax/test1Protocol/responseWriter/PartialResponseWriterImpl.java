@@ -1,17 +1,23 @@
 /*
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *  under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
+
 package org.apache.myfaces.core.integrationtests.ajax.test1Protocol.responseWriter;
 
 import jakarta.faces.component.UIComponent;
@@ -60,45 +66,55 @@ public class PartialResponseWriterImpl extends PartialResponseWriterMockup
     ScriptHandler _scriptEntry = null;
     boolean _deferEval = false;
 
-    public PartialResponseWriterImpl() {
+    public PartialResponseWriterImpl()
+    {
         super();
     }
 
     @Override
-    public void startError(String errorName) throws IOException {
+    public void startError(String errorName) throws IOException
+    {
         super.startError(errorName);
         _deferEval = true;
     }
 
     @Override
-    public void startExtension(Map<String, String> attributes) throws IOException {
+    public void startExtension(Map<String, String> attributes) throws IOException
+    {
         super.startExtension(attributes);
         _deferEval = true;
     }
 
     @Override
-    public void startInsertAfter(String targetId) throws IOException {
+    public void startInsertAfter(String targetId) throws IOException
+    {
         super.startInsertAfter(targetId);
         _deferEval = true;
     }
 
     @Override
-    public void startInsertBefore(String targetId) throws IOException {
+    public void startInsertBefore(String targetId) throws IOException
+    {
         super.startInsertBefore(targetId);
         _deferEval = true;
     }
 
     @Override
-    public void startUpdate(String targetId) throws IOException {
+    public void startUpdate(String targetId) throws IOException
+    {
         super.startUpdate(targetId);
         _deferEval = true;
     }
 
-    public void startEval() throws IOException {
-        if (!_deferEval) {
+    public void startEval() throws IOException
+    {
+        if (!_deferEval)
+        {
             super.startEval();
             writeEvals();
-        } else {
+        }
+        else
+        {
             //we are already in an insert update or delete
             //lets open a deferrence element
             _scriptEntry = new ScriptHandler();
@@ -106,24 +122,29 @@ public class PartialResponseWriterImpl extends PartialResponseWriterMockup
         }
     }
 
-    public void endEval() throws IOException {
-        if (_scriptEntry != null) {
+    public void endEval() throws IOException
+    {
+        if (_scriptEntry != null)
+        {
             _evals.append(_scriptEntry.toString());
             _scriptEntry = null;
         }
-        if (!_deferEval) {
+        if (!_deferEval)
+        {
             super.endEval();
         }
     }
 
 
 
-    public void endInsert() throws IOException {
+    public void endInsert() throws IOException
+    {
         super.endInsert();
         flushEvals();
     }
 
-    public void endUpdate() throws IOException {
+    public void endUpdate() throws IOException
+    {
         super.endUpdate();
         flushEvals();
     }
@@ -136,8 +157,10 @@ public class PartialResponseWriterImpl extends PartialResponseWriterMockup
      * eval section
      * @throws java.io.IOException
      */
-    private void flushEvals() throws IOException {
-        if (_evals.length() == 0) {
+    private void flushEvals() throws IOException
+    {
+        if (_evals.length() == 0)
+        {
             return;
         }
         super.startEval();
@@ -145,71 +168,96 @@ public class PartialResponseWriterImpl extends PartialResponseWriterMockup
         super.endEval();
     }
 
-    public void startElement(String name, UIComponent component) throws IOException {
+    public void startElement(String name, UIComponent component) throws IOException
+    {
         //it is either <script type="text/javascript>" or <script>
 
-        if (isScript(name)) {
+        if (isScript(name))
+        {
             _scriptEntry = new ScriptHandler();
             _scriptEntry.setComponent(component);
-        } else {
+        }
+        else
+        {
             super.startElement(name, component);
         }
     }
 
-    public void write(String str) throws IOException {
+    public void write(String str) throws IOException
+    {
 
-        if (_scriptEntry != null) {
+        if (_scriptEntry != null)
+        {
             _scriptEntry.append(str);
-        } else {
+        }
+        else
+        {
             super.write(str);
         }
     }
 
-    public void endElement(String name) throws IOException {
+    public void endElement(String name) throws IOException
+    {
         //We can probably replace this with a simple scriptBuffer check!
-        if (isScript(name) && _scriptEntry != null) {
+        if (isScript(name) && _scriptEntry != null)
+        {
             _evals.append(_scriptEntry.toString());
             _scriptEntry = null;
-        } else {
+        }
+        else
+        {
             super.endElement(name);
         }
     }
 
-    public void writeAttribute(String name, Object value, String property) throws IOException {
-        if (_scriptEntry != null && isType(name)) {
+    public void writeAttribute(String name, Object value, String property) throws IOException
+    {
+        if (_scriptEntry != null && isType(name))
+        {
             _scriptEntry.setScriptType(value.toString());
             return;
-        } else if (_scriptEntry != null && isSource(name)) {
+        }
+        else if (_scriptEntry != null && isSource(name))
+        {
             _scriptEntry.setSource(value.toString());
             return;
-        } else if (_scriptEntry != null && isDefer(name)) {
+        }
+        else if (_scriptEntry != null && isDefer(name))
+        {
             _scriptEntry.setDefer(value.toString());
             return;
-        } else if (_scriptEntry != null && isCharset(name)) {
+        }
+        else if (_scriptEntry != null && isCharset(name))
+        {
             _scriptEntry.setCharSet(value.toString());
             return;
-
-        } else if (_scriptEntry != null) {
+        }
+        else if (_scriptEntry != null)
+        {
             //condition reached which we cannot eval, which means usually
             //a script tag outside of what we can process in javascript
             startElement(HTML.SCRIPT_ELEM, _scriptEntry.getComponent());
 
-            if (_scriptEntry.getScriptType() != null) {
+            if (_scriptEntry.getScriptType() != null)
+            {
                 writeAttribute(HTML.TYPE_ATTR, _scriptEntry.getScriptType(), null);
                 _scriptEntry.setScriptType(null);
             }
 
-            if (_scriptEntry.getSource() != null) {
+            if (_scriptEntry.getSource() != null)
+            {
                 writeAttribute(HTML.SRC_ATTR, _scriptEntry.getSource(), null);
                 _scriptEntry.setSource(null);
             }
 
-            if (_scriptEntry.getDefer() != null) {
+            if (_scriptEntry.getDefer() != null)
+            {
                 writeAttribute("defer", _scriptEntry.getDefer(), null);
                 _scriptEntry.setSource(null);
             }
 
-            if (_scriptEntry.getCharSet() != null) {
+            if (_scriptEntry.getCharSet() != null)
+            {
                 writeAttribute(HTML.CHARSET_ATTR, _scriptEntry.getCharSet(), null);
                 _scriptEntry.setSource(null);
             }
@@ -221,51 +269,61 @@ public class PartialResponseWriterImpl extends PartialResponseWriterMockup
         super.writeAttribute(name, value, property);
     }
 
-    private boolean isDefer(String theType) {
+    private boolean isDefer(String theType)
+    {
         return theType.equalsIgnoreCase("defer");
     }
 
-    private boolean isCharset(String theType) {
+    private boolean isCharset(String theType)
+    {
         return theType.equalsIgnoreCase(HTML.CHARSET_ATTR);
     }
 
-    private boolean isSource(String theType) {
+    private boolean isSource(String theType)
+    {
         return theType.equalsIgnoreCase(HTML.SRC_ATTR);
     }
 
-    private boolean isType(String theType) {
+    private boolean isType(String theType)
+    {
         return theType.equalsIgnoreCase(HTML.TYPE_ATTR);
     }
 
-    private boolean isScript(String name) {
+    private boolean isScript(String name)
+    {
         return name.equalsIgnoreCase(HTML.SCRIPT_ELEM);
     }
 
     /**
      * @return the _evals
      */
-    public String getEvals() {
+    public String getEvals()
+    {
         return _evals.toString();
     }
 
     /**
      * @param evals the _evals to set
      */
-    public void setEvals(String evals) {
+    public void setEvals(String evals)
+    {
         this._evals = new StringBuilder(evals);
     }
 
-    private void writeEvals() throws IOException {
+    private void writeEvals() throws IOException
+    {
         super.write(_evals.toString());
         _evals = new StringBuilder();
     }
 
-    public String toString() {
+    public String toString()
+    {
        return super.getTarget().toString();
     }
 
 
-    private class ScriptHandler {
+    private class ScriptHandler
+    {
 
         private String _scriptType = HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT;
         private String _source = null;
@@ -274,13 +332,16 @@ public class PartialResponseWriterImpl extends PartialResponseWriterMockup
         StringBuilder _content = new StringBuilder();
         private UIComponent _component = null;
 
-        public void append(String content) {
+        public void append(String content)
+        {
             _content.append(content);
         }
 
-        public String toString() {
+        public String toString()
+        {
             StringBuilder retVal = new StringBuilder(128);
-            if (getSource() != null) {
+            if (getSource() != null)
+            {
                 //TODO replace this with a utils method in one of our utils sections
                 retVal.append("myfaces._impl._util._Utils.loadScript('");
                 retVal.append(getSource());
@@ -301,70 +362,80 @@ public class PartialResponseWriterImpl extends PartialResponseWriterMockup
         /**
          * @return the _scriptType
          */
-        public String getScriptType() {
+        public String getScriptType()
+        {
             return _scriptType;
         }
 
         /**
          * @param scriptType the _scriptType to set
          */
-        public void setScriptType(String scriptType) {
+        public void setScriptType(String scriptType)
+        {
             this._scriptType = scriptType;
         }
 
         /**
          * @return the _source
          */
-        public String getSource() {
+        public String getSource()
+        {
             return _source;
         }
 
         /**
          * @param source the _source to set
          */
-        public void setSource(String source) {
+        public void setSource(String source)
+        {
             this._source = source;
         }
 
         /**
          * @return the _component
          */
-        public UIComponent getComponent() {
+        public UIComponent getComponent()
+        {
             return _component;
         }
 
         /**
          * @param component the _component to set
          */
-        public void setComponent(UIComponent component) {
+        public void setComponent(UIComponent component)
+        {
             this._component = component;
         }
 
         /**
          * @return the _charSet
          */
-        public String getCharSet() {
+        public String getCharSet()
+        {
             return _charSet;
         }
 
         /**
          * @param charSet the _charSet to set
          */
-        public void setCharSet(String charSet) {
+        public void setCharSet(String charSet)
+        {
             this._charSet = charSet;
         }
 
         /**
          * @return the _defer
          */
-        public String getDefer() {
+        public String getDefer()
+        {
             return _defer;
         }
 
         /**
          * @param defer the _defer to set
          */
-        public void setDefer(String defer) {
+        public void setDefer(String defer)
+        {
             this._defer = defer;
         }
     }

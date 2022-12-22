@@ -33,7 +33,8 @@ import java.io.IOException;
 public class DeferredScriptMockup
 {
 
-    public String testScriptMockup() throws IOException {
+    public String testScriptMockup() throws IOException
+    {
         PartialResponseWriterImpl writer = new PartialResponseWriterImpl();
         writer.startDocument();
         writer.startUpdate(PartialResponseWriterImpl.RENDER_ALL_MARKER);

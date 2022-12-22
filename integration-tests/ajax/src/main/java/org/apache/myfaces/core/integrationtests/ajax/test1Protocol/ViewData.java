@@ -21,7 +21,8 @@ package org.apache.myfaces.core.integrationtests.ajax.test1Protocol;
 /**
  * a helper model class storing the testing data
  */
-public class ViewData {
+public class ViewData
+{
 
     public int cnt = 0;
     public int elemCnt = 0;

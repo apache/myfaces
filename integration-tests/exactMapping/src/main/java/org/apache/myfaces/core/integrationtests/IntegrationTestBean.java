@@ -22,8 +22,6 @@ import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.annotation.FacesConfig;
-import jakarta.faces.context.FacesContext;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 @FacesConfig(version = JSF_2_3)
