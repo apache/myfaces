@@ -25,16 +25,19 @@ package org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes;
  * @author Werner Punz(latest modification by $Author: werpu $)
  * @version $Revision: 1.1 $ $Date: 2009/04/16 15:45:19 $
  */
-public class Attribute {
+public class Attribute
+{
     String name = "";
     String value = "";
 
-    public Attribute(String name, String value) {
+    public Attribute(String name, String value)
+    {
         this.name = name;
         this.value = value;
     }
 
-    public String toString() {
+    public String toString()
+    {
         StringBuilder retVal = new StringBuilder();
         retVal.append("<attribute name='");
         retVal.append(name);

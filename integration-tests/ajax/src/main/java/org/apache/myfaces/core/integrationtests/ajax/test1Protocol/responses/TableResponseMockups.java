@@ -30,10 +30,12 @@ import java.io.PrintWriter;
 /**
  * A helper class to encapsule the table responses
  */
-public class TableResponseMockups {
+public class TableResponseMockups
+{
 
 
-    public static void execteNone(HttpServletRequest request, PrintWriter out, PartialResponse root) {
+    public static void execteNone(HttpServletRequest request, PrintWriter out, PartialResponse root)
+    {
         boolean execute = request.getParameter("jakarta.faces.partial.execute") != null;
         boolean render = request.getParameter("jakarta.faces.partial.render") != null;
 
@@ -45,7 +47,8 @@ public class TableResponseMockups {
         out.println(root.toString());
     }
 
-    public static void tableInsertBody(PrintWriter out, PartialResponse root) {
+    public static void tableInsertBody(PrintWriter out, PartialResponse root)
+    {
         Changes changes = new Changes(root);
         changes.addChild(new Insert2(changes, "body_row1_col1",
                 "<tbody><tr><td colspan='2'>second body added</td></tr></tbody>",
@@ -55,7 +58,8 @@ public class TableResponseMockups {
         out.println(root.toString());
     }
 
-    public static void tableInsertFooter(PrintWriter out, PartialResponse root) {
+    public static void tableInsertFooter(PrintWriter out, PartialResponse root)
+    {
         Changes changes = new Changes(root);
         changes.addChild(new Insert2(changes, "body_row1_col1", "<tfooter>footer inserted</tfooter>",
                 null,
@@ -64,17 +68,18 @@ public class TableResponseMockups {
         out.println(root.toString());
     }
 
-    public static void tableInsertColumnBody(ViewData viewData, PrintWriter out, PartialResponse root) {
+    public static void tableInsertColumnBody(ViewData viewData, PrintWriter out, PartialResponse root)
+    {
         Changes changes = new Changes(root);
-        changes.addChild(new Insert2(changes, "body_row1_col1", "<td id='body_row1_col1_1_" + (viewData.elemCnt++) +
-                "'>inserted " +
-                "before" + viewData.elemCnt + "</td>" + "<td id='body_row1_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+        changes.addChild(new Insert2(changes, "body_row1_col1", "<td id='body_row1_col1_1_" +
+                (viewData.elemCnt++) + "'>inserted " + "before" + viewData.elemCnt + "</td>" +
+                "<td id='body_row1_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
                 "before " + viewData.elemCnt + "</td>",
                 "body_row1_col1",
                 null));
-        changes.addChild(new Insert2(changes, "body_row1_col1", "<td id='body_row1_col1_1_" + (viewData.elemCnt++) +
-                "'>inserted " +
-                "after" + viewData.elemCnt + "</td>" + "<td id='body_row1_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+        changes.addChild(new Insert2(changes, "body_row1_col1", "<td id='body_row1_col1_1_" +
+                (viewData.elemCnt++) + "'>inserted " + "after" + viewData.elemCnt +
+                "</td>" + "<td id='body_row1_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
                 "after" + viewData.elemCnt + "</td>",
                 null,
                 "body_row1_col2"));
@@ -83,15 +88,20 @@ public class TableResponseMockups {
         out.println(root.toString());
     }
 
-    public static void tableInsetColumnHead(ViewData viewData, PrintWriter out, PartialResponse root) {
+    public static void tableInsetColumnHead(ViewData viewData, PrintWriter out, PartialResponse root)
+    {
         Changes changes = new Changes(root);
-        changes.addChild(new Insert2(changes, "head_col1", "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
-                "before" + viewData.elemCnt + "</td>" + "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+        changes.addChild(new Insert2(changes,
+                "head_col1", "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+                "before" + viewData.elemCnt + "</td>" +
+                "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
                 "before " + viewData.elemCnt + "</td>",
                 "head_col1",
                 null));
-        changes.addChild(new Insert2(changes, "head_col1", "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
-                "after" + viewData.elemCnt + "</td>" + "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+        changes.addChild(new Insert2(changes,
+                "head_col1", "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+                "after" + viewData.elemCnt + "</td>" +
+                "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
                 "after" + viewData.elemCnt + "</td>",
                 null,
                 "head_col2"));
@@ -100,7 +110,8 @@ public class TableResponseMockups {
         out.println(root.toString());
     }
 
-    public static void tableInsertRowBody(ViewData viewData, PrintWriter out, PartialResponse root) {
+    public static void tableInsertRowBody(ViewData viewData, PrintWriter out, PartialResponse root)
+    {
         Changes changes = new Changes(root);
         changes.addChild(new Insert2(changes, "body_row1", " <tr class='insert_before' id=\"body_row1_" +
                 (viewData.elemCnt++) +
@@ -128,9 +139,11 @@ public class TableResponseMockups {
         out.println(root.toString());
     }
 
-    public static void tableInsertRowHead(ViewData viewData, PrintWriter out, PartialResponse root) {
+    public static void tableInsertRowHead(ViewData viewData, PrintWriter out, PartialResponse root)
+    {
         Changes changes = new Changes(root);
-        changes.addChild(new Insert2(changes, "head_row1", " <tr class='insert_before' id=\"head_row1_" + (viewData.elemCnt++) + "\">\n" +
+        changes.addChild(new Insert2(changes, "head_row1",
+                " <tr class='insert_before' id=\"head_row1_" + (viewData.elemCnt++) + "\">\n" +
                 "                <td id=\"head_col1_" + viewData.elemCnt + "\">column1 in line1 inserted " +
                 "before</td>\n" +
                 "                <td id=\"head_col2_" + viewData.elemCnt + "\">colum2 in line2 inserted before</td>\n" +
@@ -153,7 +166,8 @@ public class TableResponseMockups {
         out.println(root.toString());
     }
 
-    public static void tableReplaceBody(ViewData viewData, PrintWriter out, PartialResponse root) {
+    public static void tableReplaceBody(ViewData viewData, PrintWriter out, PartialResponse root)
+    {
         Changes changes = new Changes(root);
         changes.addChild(new Update(changes, "tbody1", "<tbody id=\"tbody1\">" +
                 "<tr id=\"body_row1\">" +
@@ -170,7 +184,8 @@ public class TableResponseMockups {
         out.println(root.toString());
     }
 
-    public static void tableReplaceHead(ViewData viewData, PrintWriter out, PartialResponse root) {
+    public static void tableReplaceHead(ViewData viewData, PrintWriter out, PartialResponse root)
+    {
         Changes changes = new Changes(root);
         changes.addChild(new Update(changes, "head1", "<thead id=\"head1\">" +
                 "<tr id=\"head_row1\">" +

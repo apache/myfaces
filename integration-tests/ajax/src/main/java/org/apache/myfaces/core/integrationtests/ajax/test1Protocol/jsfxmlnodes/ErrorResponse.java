@@ -25,17 +25,20 @@ package org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes;
  * @author Werner Punz(latest modification by $Author: werpu $)
  * @version $Revision: 1.1 $ $Date: 2009/04/17 10:27:53 $
  */
-public class ErrorResponse {
+public class ErrorResponse
+{
 
     String errorMessage = "";
     String errorName = "";
 
-    public ErrorResponse(PartialResponse parent, String errorMessage, String errorName) {
+    public ErrorResponse(PartialResponse parent, String errorMessage, String errorName)
+    {
         this.errorMessage = errorMessage;
         this.errorName = errorName;
     }
 
-    public String toString() {
+    public String toString()
+    {
         StringBuilder retVal = new StringBuilder();
         retVal.append("<error>");
         retVal.append("<error-name>");

@@ -26,14 +26,16 @@ import java.util.Map;
  *
  * @author werpu
  */
-public class PartialResponseWriterMockup extends MockupResponseWriter {
+public class PartialResponseWriterMockup extends MockupResponseWriter
+{
 
     public static final String RENDER_ALL_MARKER = "jakarta.faces.ViewRoot";
     public static final String VIEW_STATE_MARKER = "jakarta.faces.ViewState";
     private boolean hasChanges;
     private String insertType;
 
-    public void delete(String targetId) throws IOException {
+    public void delete(String targetId) throws IOException
+    {
         startChanges();
 
         super.startElement("delete", null);
@@ -45,8 +47,10 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
      * {@inheritDoc}
      */
     @Override
-    public void endDocument() throws IOException {
-        if (hasChanges) {
+    public void endDocument() throws IOException
+    {
+        if (hasChanges)
+        {
             // Close the <insert> element, if any.
 
             endInsert();
@@ -59,7 +63,8 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
         super.endElement("partial-response");
     }
 
-    public void endError() throws IOException {
+    public void endError() throws IOException
+    {
         // Close open <error-message> element.
 
         endCDATA();
@@ -67,19 +72,23 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
         super.endElement("error");
     }
 
-    public void endEval() throws IOException {
+    public void endEval() throws IOException
+    {
         // Close open <eval> element.
 
         endCDATA();
         super.endElement("eval");
     }
 
-    public void endExtension() throws IOException {
+    public void endExtension() throws IOException
+    {
         super.endElement("extension");
     }
 
-    public void endInsert() throws IOException {
-        if (insertType == null) {
+    public void endInsert() throws IOException
+    {
+        if (insertType == null)
+        {
             // No insert started; ignore.
 
             return;
@@ -94,12 +103,14 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
         insertType = null;
     }
 
-    public void endUpdate() throws IOException {
+    public void endUpdate() throws IOException
+    {
         endCDATA();
         super.endElement("update");
     }
 
-    public void redirect(String url) throws IOException {
+    public void redirect(String url) throws IOException
+    {
         super.startElement("redirect", null);
         super.writeAttribute("url", url, null);
         super.endElement("redirect");
@@ -109,13 +120,15 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
      * {@inheritDoc}
      */
     @Override
-    public void startDocument() throws IOException {
+    public void startDocument() throws IOException
+    {
         super.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
 
         super.startElement("partial-response", null);
     }
 
-    public void startError(String errorName) throws IOException {
+    public void startError(String errorName) throws IOException
+    {
         super.startElement("error", null);
 
         super.startElement("error-name", null);
@@ -128,7 +141,8 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
         // Leave open; caller will write message.
     }
 
-    public void startEval() throws IOException {
+    public void startEval() throws IOException
+    {
         startChanges();
 
         super.startElement("eval", null);
@@ -137,7 +151,8 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
         // Leave open; caller will write statements.
     }
 
-    public void startExtension(Map<String, String> attributes) throws IOException {
+    public void startExtension(Map<String, String> attributes) throws IOException
+    {
         Iterator<String> attrNames;
 
         startChanges();
@@ -149,7 +164,8 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
 
         attrNames = attributes.keySet().iterator();
 
-        while (attrNames.hasNext()) {
+        while (attrNames.hasNext())
+        {
             String attrName = attrNames.next();
 
             super.writeAttribute(attrName, attributes.get(attrName), null);
@@ -158,15 +174,18 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
         // Leave open; caller will write extension elements.
     }
 
-    public void startInsertAfter(String targetId) throws IOException {
+    public void startInsertAfter(String targetId) throws IOException
+    {
         startInsertCommon("after", targetId);
     }
 
-    public void startInsertBefore(String targetId) throws IOException {
+    public void startInsertBefore(String targetId) throws IOException
+    {
         startInsertCommon("before", targetId);
     }
 
-    public void startUpdate(String targetId) throws IOException {
+    public void startUpdate(String targetId) throws IOException
+    {
         startChanges();
 
         super.startElement("update", null);
@@ -176,7 +195,8 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
         // Leave open; caller will write content.
     }
 
-    public void updateAttributes(String targetId, Map<String, String> attributes) throws IOException {
+    public void updateAttributes(String targetId, Map<String, String> attributes) throws IOException
+    {
         Iterator<String> attrNames;
 
         startChanges();
@@ -186,7 +206,8 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
 
         attrNames = attributes.keySet().iterator();
 
-        while (attrNames.hasNext()) {
+        while (attrNames.hasNext())
+        {
             String attrName = attrNames.next();
 
             super.startElement("attribute", null);
@@ -198,16 +219,20 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
         super.endElement("attributes");
     }
 
-    private void startChanges() throws IOException {
-        if (!hasChanges) {
+    private void startChanges() throws IOException
+    {
+        if (!hasChanges)
+        {
             super.startElement("changes", null);
 
             hasChanges = true;
         }
     }
 
-    private void startInsertCommon(String type, String targetId) throws IOException {
-        if (insertType != null) {
+    private void startInsertCommon(String type, String targetId) throws IOException
+    {
+        if (insertType != null)
+        {
             // An insert has already been started; ignore.
 
             return;
@@ -229,11 +254,13 @@ public class PartialResponseWriterMockup extends MockupResponseWriter {
      * These methods are needed since we can't be sure that the data written by the caller will not
      * contain reserved characters.
      */
-    public void endCDATA() throws IOException {
+    public void endCDATA() throws IOException
+    {
         super.write("]]>");
     }
 
-    public void startCDATA() throws IOException {
+    public void startCDATA() throws IOException
+    {
         super.write("<![CDATA[");
     }
 }

@@ -31,14 +31,16 @@ package org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes;
  * @author Werner Punz(latest modification by $Author: werpu $)
  * @version $Revision: 1.2 $ $Date: 2009/04/17 10:53:30 $
  */
-public class Insert2 implements Change {
+public class Insert2 implements Change
+{
 
     String id = "";
     String before = "";
     String after = "";
     String data = "";
 
-    public Insert2(Changes parent, String id, String data, String before, String after) {
+    public Insert2(Changes parent, String id, String data, String before, String after)
+    {
         super();
         this.id = id;
         this.before = before;
@@ -47,15 +49,19 @@ public class Insert2 implements Change {
     }
 
 
-    public String toString() {
+    public String toString()
+    {
         StringBuilder builder = new StringBuilder();
 
         builder.append("<insert>");
-        if (before != null && !before.trim().equals("")) {
+        if (before != null && !before.trim().equals(""))
+        {
             builder.append("<before id='");
             builder.append(before);
             builder.append("'>");
-        } else {
+        }
+        else
+        {
             builder.append("<after id='");
             builder.append(after);
             builder.append("' >");
@@ -63,9 +69,12 @@ public class Insert2 implements Change {
         builder.append("<![CDATA[");
         builder.append(data);
         builder.append("]]>");
-        if (before != null && !before.trim().equals("")) {
+        if (before != null && !before.trim().equals(""))
+        {
             builder.append("</before>");
-        } else {
+        }
+        else
+        {
             builder.append("</after>");
         }
         builder.append("</insert>");
