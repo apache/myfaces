@@ -42,7 +42,7 @@ pipeline {
                 axes {
                     axis {
                         name 'JAVA_VERSION'
-                        values 'jdk_11_latest', 'jdk_14_latest'
+                        values 'jdk_11_latest'
                     }
                 }
 
