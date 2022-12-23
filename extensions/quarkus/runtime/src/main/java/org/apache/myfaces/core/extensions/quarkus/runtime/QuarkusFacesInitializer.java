@@ -40,7 +40,6 @@ public class QuarkusFacesInitializer extends FacesInitializerImpl
     @Override
     public void initFaces(ServletContext servletContext)
     {
-
         FactoryFinderProviderFactory.setInstance(new QuarkusFactoryFinderProviderFactory());
 
         // see FacesDataModelExtension
