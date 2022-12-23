@@ -19,12 +19,12 @@
 package org.apache.myfaces.core.extensions.quarkus.showcase.view;
 
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.LazyDataModel;
 

@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.runtime.application;
 
-import javax.el.CompositeELResolver;
-import javax.el.ELResolver;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELResolver;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationWrapper;
 import jakarta.faces.context.FacesContext;
