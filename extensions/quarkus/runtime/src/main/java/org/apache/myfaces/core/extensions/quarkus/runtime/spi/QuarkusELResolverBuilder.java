@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.runtime.spi;
 
-import javax.el.ELResolver;
+import jakarta.el.ELResolver;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -26,7 +26,7 @@ import org.apache.myfaces.el.DefaultELResolverBuilder;
 
 /**
  * Custom {@link org.apache.myfaces.el.ELResolverBuilder} which only works with EL3.x+
- * and replaces the {@link javax.enterprise.inject.spi.BeanManager#getELResolver()}
+ * and replaces the {@link jakarta.enterprise.inject.spi.BeanManager#getELResolver()}
  * with our own {@link QuarkusCdiELResolver}
  */
 public class QuarkusELResolverBuilder extends DefaultELResolverBuilder

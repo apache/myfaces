@@ -21,8 +21,8 @@ package org.apache.myfaces.core.extensions.quarkus.showcase.view;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 import java.io.Serializable;
 
 @RequestScoped

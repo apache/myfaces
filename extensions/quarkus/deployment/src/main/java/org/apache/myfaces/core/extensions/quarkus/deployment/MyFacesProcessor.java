@@ -32,13 +32,13 @@ import jakarta.faces.render.FacesBehaviorRenderer;
 import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.view.ViewScoped;
-import jakarta.faces.view.facelets.FaceletsResourceResolver;
+import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.webapp.FacesServlet;
 
 import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
 import org.apache.myfaces.cdi.FacesScoped;
-import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
-import org.apache.myfaces.cdi.JsfArtifactProducer;
+import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
+import org.apache.myfaces.cdi.FacesArtifactProducer;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
 import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
@@ -67,7 +67,7 @@ import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
 import io.quarkus.arc.deployment.BeanRegistrarBuildItem;
 import io.quarkus.arc.deployment.BeanRegistrationPhaseBuildItem;
-import io.quarkus.arc.deployment.ContextRegistrarBuildItem;
+import io.quarkus.arc.deployment.ContextRegistrationPhaseBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -98,8 +98,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.el.ELResolver;
-import javax.enterprise.inject.Produces;
+import jakarta.el.ELResolver;
+import jakarta.enterprise.inject.Produces;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIComponent;
@@ -116,8 +116,8 @@ import jakarta.faces.view.facelets.ConverterHandler;
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.TagHandler;
 import jakarta.faces.view.facelets.ValidatorHandler;
-import javax.inject.Named;
-import javax.servlet.MultipartConfigElement;
+import jakarta.inject.Named;
+import jakarta.servlet.MultipartConfigElement;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.el.ExpressionFactoryImpl;
 import org.apache.myfaces.application.ApplicationImplEventManager;
@@ -153,8 +153,8 @@ class MyFacesProcessor
 
     private static final Class[] BEAN_CLASSES =
     {
-            JsfApplicationArtifactHolder.class,
-            JsfArtifactProducer.class,
+            FacesApplicationArtifactHolder.class,
+            FacesArtifactProducer.class,
             FacesConfigBeanHolder.class,
             FacesDataModelManager.class,
             ViewScopeBeanHolder.class,
@@ -178,7 +178,7 @@ class MyFacesProcessor
             FacesRenderer.class.getName(),
             NamedEvent.class.getName(),
             FacesBehaviorRenderer.class.getName(),
-            FaceletsResourceResolver.class.getName(),
+            FaceletHandler.class.getName(),
             FlowDefinition.class.getName()
     };
 
@@ -399,7 +399,7 @@ class MyFacesProcessor
 
         classNames.addAll(collectSubclasses(combinedIndex, Renderer.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ClientBehaviorRenderer.class.getName()));
-        classNames.addAll(collectSubclasses(combinedIndex, javax.el.ValueExpression.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, jakarta.el.ValueExpression.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, SystemEvent.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, FacesContext.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, Application.class.getName()));
@@ -485,7 +485,7 @@ class MyFacesProcessor
                                CombinedIndexBuildItem combinedIndex)
     {
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, true,
-                "javax.faces.context._MyFacesExternalContextHelper"));
+                "jakarta.faces.context._MyFacesExternalContextHelper"));
 
         // Register ViewScopeBeanHolder to be initialized at runtime, it uses a static random
         NativeImageConfigBuildItem.Builder builder = NativeImageConfigBuildItem.builder();
@@ -522,7 +522,7 @@ class MyFacesProcessor
                 "org/apache/myfaces/resource/web-facesconfig_4_0.dtd",
                 "org/apache/myfaces/resource/xml.xsd",
                 "META-INF/rsc/myfaces-dev-error-include.xml",
-                "META-INF/services/javax.servlet.ServletContainerInitializer"));
+                "META-INF/services/jakarta.servlet.ServletContainerInitializer"));
 
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_ar"));
@@ -543,9 +543,9 @@ class MyFacesProcessor
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_CN"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_HK"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_TW"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.el.PrivateMessages"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.servlet.LocalStrings"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.el.LocalStrings"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.el.PrivateMessages"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.servlet.LocalStrings"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.el.LocalStrings"));
     }
 
     public List<String> collectSubclasses(CombinedIndexBuildItem combinedIndex, String className)

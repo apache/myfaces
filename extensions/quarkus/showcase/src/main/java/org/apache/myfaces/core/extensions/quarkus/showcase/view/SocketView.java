@@ -25,8 +25,8 @@ import java.util.logging.Logger;
 import jakarta.faces.push.Push;
 import jakarta.faces.push.PushContext;
 import jakarta.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @ViewScoped
 @Named
