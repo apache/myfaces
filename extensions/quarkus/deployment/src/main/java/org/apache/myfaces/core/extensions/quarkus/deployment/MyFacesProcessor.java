@@ -48,13 +48,6 @@ import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory;
 import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
-import org.apache.myfaces.flow.cdi.FlowBuilderFactoryBean;
-import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
-import org.apache.myfaces.push.cdi.PushContextFactoryBean;
-import org.apache.myfaces.push.cdi.WebsocketApplicationBean;
-import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
-import org.apache.myfaces.push.cdi.WebsocketSessionBean;
-import org.apache.myfaces.push.cdi.WebsocketViewBean;
 import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.eclipse.microprofile.config.Config;
@@ -122,10 +115,15 @@ import org.apache.el.ExpressionFactoryImpl;
 import org.apache.myfaces.application.ApplicationImplEventManager;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
+import org.apache.myfaces.cdi.view.ViewScopeContextualStorageHolder;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProvider;
 import org.apache.myfaces.el.DefaultELResolverBuilder;
+import org.apache.myfaces.flow.cdi.FlowScopeContextualStorageHolder;
+import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilder;
+import org.apache.myfaces.push.cdi.WebsocketScopeManager;
+import org.apache.myfaces.push.cdi.WebsocketSessionManager;
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.spi.FactoryFinderProviderFactory;
 import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
@@ -136,8 +134,7 @@ import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
 import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
 import org.apache.myfaces.view.facelets.tag.MethodRule;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
-import org.apache.myfaces.webapp.AbstractFacesInitializer;
-import org.apache.myfaces.webapp.DefaultFacesInitilializer;
+import org.apache.myfaces.webapp.FacesInitializerImpl;
 import org.apache.myfaces.webapp.MyFacesContainerInitializer;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
@@ -156,15 +153,12 @@ class MyFacesProcessor
             FacesArtifactProducer.class,
             FacesConfigBeanHolder.class,
             FacesDataModelManager.class,
-            ViewScopeBeanHolder.class,
+            ViewScopeContextualStorageHolder.class,
             CdiAnnotationProviderExtension.class,
-            PushContextFactoryBean.class,
-            WebsocketChannelTokenBuilderBean.class,
-            WebsocketSessionBean.class,
-            WebsocketViewBean.class,
-            WebsocketApplicationBean.class,
-            FlowBuilderFactoryBean.class,
-            FlowScopeBeanHolder.class
+            WebsocketChannelTokenBuilder.class,
+            WebsocketSessionManager.class,
+            WebsocketScopeManager.class,
+            FlowScopeContextualStorageHolder.class
     };
 
     private static final String[] BEAN_DEFINING_ANNOTATION_CLASSES =
@@ -424,7 +418,7 @@ class MyFacesProcessor
                 MyFacesContainerInitializer.class,
                 ExceptionQueuedEventContext.class,
                 FacesConfigurator.class,
-                DefaultFacesInitilializer.class,
+                FacesInitializerImpl.class,
                 TagLibraryConfig.class,
                 String.class,
                 ViewScopeProxyMap.class,
@@ -466,7 +460,7 @@ class MyFacesProcessor
                 ComponentSupport.class,
                 QuarkusFactoryFinderProvider.class,
                 DefaultELResolverBuilder.class,
-                AbstractFacesInitializer.class,
+                FacesInitializerImpl.class,
                 ExternalContextUtils.class,
                 BeanEntry.class));
 
@@ -486,9 +480,9 @@ class MyFacesProcessor
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, true,
                 "jakarta.faces.context._MyFacesExternalContextHelper"));
 
-        // Register ViewScopeBeanHolder to be initialized at runtime, it uses a static random
+        // Register ViewScopeContextualStorageHolder to be initialized at runtime, it uses a static random
         NativeImageConfigBuildItem.Builder builder = NativeImageConfigBuildItem.builder();
-        builder.addRuntimeInitializedClass(ViewScopeBeanHolder.class.getName());
+        builder.addRuntimeInitializedClass(ViewScopeContextualStorageHolder.class.getName());
 
         return builder.build();
     }
