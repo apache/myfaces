@@ -71,7 +71,7 @@ pipeline {
         stage('Deploy') {
             tools {
                 maven "maven_latest"
-                jdk "jdk_1.8_latest"
+                jdk "jdk_11_latest"
             }
             steps {
                 sh "mvn clean deploy -Pgenerate-assembly"
