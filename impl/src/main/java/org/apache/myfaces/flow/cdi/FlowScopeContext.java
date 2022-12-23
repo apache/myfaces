@@ -287,6 +287,35 @@ public class FlowScopeContext implements Context
         return getStorageHolder(context).getContextualStorage(clientWindowFlowId, createIfNotExist);
     }
 
+    /**
+     * Destroy the Contextual Instance of the given Bean.
+     * @param bean dictates which bean shall get cleaned up
+     * @return <code>true</code> if the bean was destroyed, <code>false</code> if there was no such bean.
+     */
+    public boolean destroy(Contextual bean)
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        List<String> activeFlowMapKeys = getStorageHolder(facesContext).getActiveFlowMapKeys(facesContext);
+        for (String flowMapKey : activeFlowMapKeys)
+        {
+            ContextualStorage storage = getContextualStorage(facesContext, false, flowMapKey);
+            if (storage == null)
+            {
+                continue;
+            }
+            ContextualInstanceInfo<?> contextualInstanceInfo = storage.getStorage().get(storage.getBeanKey(bean));
+
+            if (contextualInstanceInfo == null)
+            {
+                continue;
+            }
+
+            bean.destroy(contextualInstanceInfo.getContextualInstance(), contextualInstanceInfo.getCreationalContext());
+            return true;
+        }
+        return false;
+    }
+
     public static void destroyAll(FacesContext facesContext)
     {
         FlowScopeContextualStorageHolder manager = FlowScopeContextualStorageHolder.getInstance(facesContext);

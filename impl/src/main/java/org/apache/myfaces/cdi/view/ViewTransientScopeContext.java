@@ -162,6 +162,30 @@ public class ViewTransientScopeContext implements Context
         }
     }
 
+    /**
+     * Destroy the Contextual Instance of the given Bean.
+     * @param bean dictates which bean shall get cleaned up
+     * @return <code>true</code> if the bean was destroyed, <code>false</code> if there was no such bean.
+     */
+    public boolean destroy(Contextual bean)
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ContextualStorage storage = getContextualStorage(false, facesContext);
+        if (storage == null)
+        {
+            return false;
+        }
+        ContextualInstanceInfo<?> contextualInstanceInfo = storage.getStorage().get(storage.getBeanKey(bean));
+
+        if (contextualInstanceInfo == null)
+        {
+            return false;
+        }
+
+        bean.destroy(contextualInstanceInfo.getContextualInstance(), contextualInstanceInfo.getCreationalContext());
+        return true;
+    }
+
     public static void destroyAll(FacesContext facesContext)
     {
         if (facesContext == null

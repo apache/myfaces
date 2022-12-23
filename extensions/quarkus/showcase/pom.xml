@@ -25,8 +25,8 @@
     <name>Apache MyFaces Core 4.0 - Extensions - Quarkus - Showcase</name>
 
     <properties>
-        <quarkus.version>2.12.2.Final</quarkus.version>
-        <myfaces.version>2.3-next-SNAPSHOT</myfaces.version>
+        <quarkus.version>3.0.0.Alpha2</quarkus.version>
+        <myfaces.version>4.0.0-SNAPSHOT</myfaces.version>
         <failsafe.version>2.22.0</failsafe.version>
         <surefire.version>2.22.0</surefire.version>
 
