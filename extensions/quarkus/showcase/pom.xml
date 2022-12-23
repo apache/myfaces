@@ -59,7 +59,8 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>8.0</version>
+            <version>12.0.0</version>
+            <classifier>jakarta</classifier>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>

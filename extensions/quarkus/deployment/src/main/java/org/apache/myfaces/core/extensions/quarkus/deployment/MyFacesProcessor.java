@@ -41,7 +41,6 @@ import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
 import org.apache.myfaces.cdi.FacesArtifactProducer;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
-import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
@@ -58,8 +57,8 @@ import org.jboss.jandex.DotName;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
-import io.quarkus.arc.deployment.BeanRegistrarBuildItem;
 import io.quarkus.arc.deployment.BeanRegistrationPhaseBuildItem;
+import io.quarkus.arc.deployment.ContextRegistrationPhaseBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -246,26 +245,47 @@ class MyFacesProcessor
     }
 
     @BuildStep
-    void buildCdiScopes(BuildProducer<ContextRegistrarBuildItem> contextRegistrar) throws IOException
+    ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem registerViewScopedContext(
+            ContextRegistrationPhaseBuildItem phase)
     {
-        contextRegistrar.produce(new ContextRegistrarBuildItem(registrationContext -> {
-            registrationContext.configure(ViewScoped.class)
-                    .normal()
-                    .contextClass(QuarkusViewScopeContext.class)
-                    .done();
-            registrationContext.configure(FacesScoped.class)
-                    .normal()
-                    .contextClass(QuarkusFacesScopeContext.class)
-                    .done();
-            registrationContext.configure(ViewTransientScoped.class)
-                    .normal()
-                    .contextClass(QuarkusViewTransientScopeContext.class)
-                    .done();
-            registrationContext.configure(FlowScoped.class)
-                    .normal()
-                    .contextClass(QuarkusFlowScopedContext.class)
-                    .done();
-        }, ViewScoped.class, FacesScoped.class, ViewTransientScoped.class, FlowScoped.class));
+            return new ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem(
+                    phase.getContext()
+                            .configure(ViewScoped.class)
+                            .normal()
+                            .contextClass(QuarkusViewScopeContext.class));
+    }
+
+    @BuildStep
+    ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem registerFacesScopedContext(
+            ContextRegistrationPhaseBuildItem phase)
+    {
+            return new ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem(
+                    phase.getContext()
+                            .configure(FacesScoped.class)
+                            .normal()
+                            .contextClass(QuarkusFacesScopeContext.class));
+    }
+ 
+    @BuildStep
+    ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem registerViewTransientScopedContext(
+            ContextRegistrationPhaseBuildItem phase)
+    {
+            return new ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem(
+                    phase.getContext()
+                            .configure(ViewTransientScoped.class)
+                            .normal()
+                            .contextClass(QuarkusViewTransientScopeContext.class));
+    }
+
+    @BuildStep
+    ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem registerFlowScopedContext(
+            ContextRegistrationPhaseBuildItem phase)
+    {
+            return new ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem(
+                    phase.getContext()
+                            .configure(FlowScoped.class)
+                            .normal()
+                            .contextClass(QuarkusFlowScopedContext.class));
     }
 
     @BuildStep
@@ -338,7 +358,6 @@ class MyFacesProcessor
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
     void buildFacesDataModels(MyFacesRecorder recorder,
-            BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             CombinedIndexBuildItem combinedIndex) throws IOException
     {
         for (AnnotationInstance ai : combinedIndex.getIndex()
