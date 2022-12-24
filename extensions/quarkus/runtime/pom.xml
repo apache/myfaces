@@ -97,43 +97,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>commons-fileupload</groupId>
-            <!-- primefaces fileupload, needed in quarkus native mode -->
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>4.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
-            <!-- primefaces textEditor renderer -->
-            <artifactId>owasp-java-html-sanitizer</artifactId>
-            <version>20211018.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <!-- primefaces exporter -->
-            <artifactId>poi</artifactId>
-            <version>4.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>4.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.rometools</groupId>
-            <!-- primefaces feed -->
-            <artifactId>rome</artifactId>
-            <version>1.9.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.librepdf</groupId>
-            <artifactId>openpdf</artifactId>
-            <version>1.2.21</version>
         </dependency>
         <dependency>
             <groupId>org.graalvm.nativeimage</groupId>
