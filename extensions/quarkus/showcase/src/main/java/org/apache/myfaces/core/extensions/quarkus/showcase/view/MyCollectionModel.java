@@ -19,12 +19,14 @@
 package org.apache.myfaces.core.extensions.quarkus.showcase.view;
 
 import java.util.List;
+
 import jakarta.faces.model.FacesDataModel;
 import jakarta.faces.model.ListDataModel;
 
 @FacesDataModel(forClass = MyCollection.class)
-public class MyCollectionModel<E> extends ListDataModel<E> {
-    
+public class MyCollectionModel<E> extends ListDataModel<E>
+{
+
     public MyCollectionModel()
     {
         super();

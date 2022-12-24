@@ -38,7 +38,8 @@ import java.net.URL;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @QuarkusTest
-public class QuarkusMyFacesShowcaseTest {
+public class QuarkusMyFacesShowcaseTest
+{
 
     @TestHTTPResource
     URL url;
@@ -46,7 +47,8 @@ public class QuarkusMyFacesShowcaseTest {
     private static WebClient webClient;
 
     @BeforeAll
-    public static void initWebClient() {
+    public static void initWebClient()
+    {
         webClient = new WebClient(BrowserVersion.CHROME);
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.getOptions().setCssEnabled(false);
@@ -57,15 +59,18 @@ public class QuarkusMyFacesShowcaseTest {
     }
 
     @AfterAll
-    public static void closeWebClient() {
-        if (webClient != null) {
+    public static void closeWebClient()
+    {
+        if (webClient != null)
+        {
             webClient.close();
         }
     }
 
 
     @Test
-    public void shouldOpenIndexPage() throws Exception {
+    public void shouldOpenIndexPage() throws Exception
+    {
         final HtmlPage page = webClient.getPage(url + "/index.xhtml");
         final HtmlDivision datatable = (HtmlDivision) page.getElementById("form:carTable");
         assertThat(datatable).isNotNull();
@@ -75,7 +80,8 @@ public class QuarkusMyFacesShowcaseTest {
 
     @Test
     @Disabled("Check HtmlUnit websocket support, for now this test is not working")
-    public void shouldCallWebSocket() throws IOException {
+    public void shouldCallWebSocket() throws IOException
+    {
         HtmlPage page = webClient.getPage(url + "/socket.xhtml");
         final HtmlSubmitInput sendMessageBtn = (HtmlSubmitInput) page.getElementById("form:sendMessage");
         page = sendMessageBtn.click();

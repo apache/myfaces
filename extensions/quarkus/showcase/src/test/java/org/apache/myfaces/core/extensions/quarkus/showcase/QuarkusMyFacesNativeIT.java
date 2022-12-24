@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.showcase;
 
-import io.quarkus.test.junit.NativeImageTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@NativeImageTest
+@QuarkusIntegrationTest
 public class QuarkusMyFacesNativeIT extends QuarkusMyFacesShowcaseTest {
 }

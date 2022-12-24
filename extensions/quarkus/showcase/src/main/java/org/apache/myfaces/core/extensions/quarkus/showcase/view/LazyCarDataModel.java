@@ -23,26 +23,31 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
-import org.primefaces.model.SortOrder;
 
 /**
  * Dummy implementation of LazyDataModel that uses a list to mimic a real datasource like a database.
  */
-public class LazyCarDataModel extends LazyDataModel<Car> {
+public class LazyCarDataModel extends LazyDataModel<Car>
+{
 
     private List<Car> datasource;
 
-    public LazyCarDataModel(List<Car> datasource) {
+    public LazyCarDataModel(List<Car> datasource)
+    {
         this.datasource = datasource;
     }
 
     @Override
-    public Car getRowData(String rowKey) {
-        for (Car car : datasource) {
-            if (car.getId().equals(rowKey)) {
+    public Car getRowData(String rowKey)
+    {
+        for (Car car : datasource)
+        {
+            if (car.getId().equals(rowKey))
+            {
                 return car;
             }
         }
@@ -51,48 +56,59 @@ public class LazyCarDataModel extends LazyDataModel<Car> {
     }
 
     @Override
-    public String getRowKey(Car car) {
+    public String getRowKey(Car car)
+    {
         return car.getId();
     }
 
     @Override
-    public List<Car> load(int first, int pageSize, Map<String, SortMeta> sortMeta, Map<String, FilterMeta> filterMeta) {
+    public List<Car> load(int first, int pageSize, Map<String, SortMeta> sortMeta, Map<String, FilterMeta> filterMeta)
+    {
         List<Car> data = new ArrayList<Car>();
 
         //filter
-        for (Car car : datasource) {
+        for (Car car : datasource)
+        {
             boolean match = true;
 
-            if (filterMeta != null) {
-                for (Iterator<String> it = filterMeta.keySet().iterator(); it.hasNext();) {
-                    try {
+            if (filterMeta != null)
+            {
+                for (Iterator<String> it = filterMeta.keySet().iterator(); it.hasNext(); )
+                {
+                    try
+                    {
                         String filterProperty = it.next();
                         Object filterValue = filterMeta.get(filterProperty).getFilterValue();
                         String fieldValue = String.valueOf(car.getClass().getField(filterProperty).get(car));
 
-                        if (filterValue == null || fieldValue.startsWith(filterValue.toString())) {
+                        if (filterValue == null || fieldValue.startsWith(filterValue.toString()))
+                        {
                             match = true;
                         }
-                        else {
+                        else
+                        {
                             match = false;
                             break;
                         }
                     }
-                    catch (Exception e) {
+                    catch (Exception e)
+                    {
                         match = false;
                     }
                 }
             }
 
-            if (match) {
+            if (match)
+            {
                 data.add(car);
             }
         }
 
         //sort
-        if (sortMeta != null) {
+        if (sortMeta != null)
+        {
             for (SortMeta current : sortMeta.values())
-            { 
+            {
                 Collections.sort(data, new LazySorter(current.getField(), current.getOrder()));
             }
         }
@@ -102,21 +118,26 @@ public class LazyCarDataModel extends LazyDataModel<Car> {
         this.setRowCount(dataSize);
 
         //paginate
-        if (dataSize > pageSize) {
-            try {
+        if (dataSize > pageSize)
+        {
+            try
+            {
                 return data.subList(first, first + pageSize);
             }
-            catch (IndexOutOfBoundsException e) {
+            catch (IndexOutOfBoundsException e)
+            {
                 return data.subList(first, first + (dataSize % pageSize));
             }
         }
-        else {
+        else
+        {
             return data;
         }
     }
 
     @Override
-    public int count(Map<String, FilterMeta> map) {
+    public int count(Map<String, FilterMeta> map)
+    {
         return 0;
     }
 }
