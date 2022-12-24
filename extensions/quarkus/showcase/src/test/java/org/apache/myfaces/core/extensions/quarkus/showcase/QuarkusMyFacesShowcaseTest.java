@@ -69,7 +69,7 @@ public class QuarkusMyFacesShowcaseTest {
         final HtmlPage page = webClient.getPage(url + "/index.xhtml");
         final HtmlDivision datatable = (HtmlDivision) page.getElementById("form:carTable");
         assertThat(datatable).isNotNull();
-        assertThat(datatable.getByXPath("//tr[contains(@role,'row') and contains(@class,'ui-datatable-selectable')]"))
+        assertThat(datatable.getByXPath("//tr[contains(@class,'ui-datatable-selectable')]"))
                 .hasSize(10);
     }
 

@@ -43,7 +43,7 @@ public class ViewScopeExtension implements Extension
         AnnotatedType bean = beanManager.createAnnotatedType(ViewScopeContextualStorageHolder.class);
         event.addAnnotatedType(bean, bean.getJavaClass().getName());
 
-        bean = beanManager.createAnnotatedType(ViewScopeEventListener.Bridge.class);
+        bean = beanManager.createAnnotatedType(ViewScopeEventListenerBridge.class);
         event.addAnnotatedType(bean, bean.getJavaClass().getName());
     }
     
