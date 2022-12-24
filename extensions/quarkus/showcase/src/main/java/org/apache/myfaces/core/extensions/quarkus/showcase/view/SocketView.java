@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import jakarta.faces.push.Push;
 import jakarta.faces.push.PushContext;
 import jakarta.faces.view.ViewScoped;
@@ -30,36 +31,42 @@ import jakarta.inject.Named;
 
 @ViewScoped
 @Named
-public class SocketView implements Serializable {
-    
+public class SocketView implements Serializable
+{
+
     private static final Logger LOG = Logger.getLogger(SocketView.class.getName());
-    
+
     @Inject
     @Push
     PushContext helloChannel;
-    
+
     String message;
-    
-    public void sendMessage() {
+
+    public void sendMessage()
+    {
         LOG.log(Level.INFO, "send push message");
         this.sendPushMessage("hello");
     }
-    
-    private void sendPushMessage(Object message) {
+
+    private void sendPushMessage(Object message)
+    {
         helloChannel.send("" + message + " at " + LocalDateTime.now());
     }
-    
-    public String getMessage() {
+
+    public String getMessage()
+    {
         return message;
     }
-    
-    public void setMessage(String message) {
+
+    public void setMessage(String message)
+    {
         this.message = message;
     }
-    
-    public void sendMessage2() {
+
+    public void sendMessage2()
+    {
         LOG.log(Level.INFO, "send push message from input box::" + this.message);
         this.sendPushMessage(this.message);
     }
-    
+
 }

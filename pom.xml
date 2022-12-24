@@ -113,6 +113,8 @@
                 <configuration>
                     <excludes>
                         <exclude>**/*.md</exclude>
+                        <exclude>**/*.log*</exclude>
+                        <exclude>debug.log</exclude>
                         <exclude>**/*/MANIFEST.MF</exclude>
                         <exclude>**/*.iml</exclude>
                         <exclude>src/main/resources/META-INF/licenses/*-LICENSE.txt</exclude>
