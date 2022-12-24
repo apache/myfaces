@@ -115,6 +115,7 @@ import org.apache.myfaces.application.ApplicationImplEventManager;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.cdi.view.ViewScopeContextualStorageHolder;
+import org.apache.myfaces.cdi.view.ViewScopeEventListenerBridge;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProvider;
@@ -153,6 +154,7 @@ class MyFacesProcessor
             FacesConfigBeanHolder.class,
             FacesDataModelManager.class,
             ViewScopeContextualStorageHolder.class,
+            ViewScopeEventListenerBridge.class,
             CdiAnnotationProviderExtension.class,
             WebsocketChannelTokenBuilder.class,
             WebsocketSessionManager.class,

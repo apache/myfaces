@@ -18,41 +18,39 @@
  */
 package org.apache.myfaces.cdi.view;
 
-import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Event;
 import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.PostConstructViewMapEvent;
+import jakarta.faces.event.PreDestroyViewMapEvent;
 import jakarta.faces.event.SystemEvent;
-import jakarta.faces.event.ViewMapListener;
-import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.util.lang.Lazy;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 
-public class ViewScopeEventListener implements ViewMapListener
+@ApplicationScoped
+public class ViewScopeEventListenerBridge
 {
-    private Lazy<ViewScopeEventListenerBridge> bridge = new Lazy<>(() ->
-    {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
-        {
-            BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
-            return CDIUtils.get(beanManager, ViewScopeEventListenerBridge.class);
-        }
-        return null;
-    });
+    @Inject
+    @Initialized(ViewScoped.class)
+    private Event<UIViewRoot> viewScopeInitializedEvent;
 
-    @Override
-    public boolean isListenerForSource(Object source)
-    {
-        return source instanceof UIViewRoot;
-    }
+    @Inject
+    @Destroyed(ViewScoped.class)
+    private Event<UIViewRoot> viewScopeDestroyedEvent;
 
-    @Override
     public void processEvent(SystemEvent event) throws AbortProcessingException
     {
-        if (bridge.get() != null)
+        if (event instanceof PostConstructViewMapEvent)
         {
-            bridge.get().processEvent(event);
+            viewScopeInitializedEvent.fire((UIViewRoot) event.getSource());
+        }
+
+        if (event instanceof PreDestroyViewMapEvent)
+        {
+            viewScopeDestroyedEvent.fire((UIViewRoot) event.getSource());
         }
     }
 }
