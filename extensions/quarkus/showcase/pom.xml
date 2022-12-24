@@ -26,7 +26,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.quarkus</groupId>
+    <groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
     <artifactId>quarkus-myfaces-showcase</artifactId>
     <name>Apache MyFaces Core 4.0 - Extensions - Quarkus - Showcase</name>
 
