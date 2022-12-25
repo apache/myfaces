@@ -27,4 +27,4 @@ metadata:
   guide: "https://github.com/apache/myfaces"
   categories:
   - "web"
-  status: "experimental"
+  status: "stable"
