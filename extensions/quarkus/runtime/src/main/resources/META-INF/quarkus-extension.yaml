@@ -18,13 +18,16 @@
 #
 
 ---
-name: "MyFaces"
+name: "MyFaces Core"
+description: "MyFaces Core is a JSF / Faces implementation which also provides a Quarkus integration."
 metadata:
   keywords:
   - "JSF"
-  - "Faces"
   - "Java Server Faces"
-  guide: "https://github.com/apache/myfaces"
+  - "Faces"
+  - "Jakarta Faces"
+  guide: "https://myfaces.apache.org/#/coregettingstarted?id=quarkus"
   categories:
   - "web"
   status: "stable"
+
