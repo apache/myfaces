@@ -515,9 +515,11 @@ class MyFacesProcessor
         nativeImageResourceProducer.produce(new NativeImageResourceBuildItem(
                 "META-INF/rsc/myfaces-dev-error.xml",
                 "META-INF/rsc/myfaces-dev-debug.xml",
+                "META-INF/rsc/myfaces-dev-error-include.xhtml",
                 "org/apache/myfaces/resource/default.dtd",
                 "org/apache/myfaces/resource/datatypes.dtd",
                 "META-INF/web-fragment.xml",
+                "META-INF/standard-faces-config.xml",
                 "META-INF/resources/org/apache/myfaces/windowId/windowhandler.html",
                 "org/apache/myfaces/resource/facelet-taglib_1_0.dtd",
                 "org/apache/myfaces/resource/javaee_5.xsd",
@@ -535,7 +537,6 @@ class MyFacesProcessor
                 "org/apache/myfaces/resource/web-facesconfig_3_0.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_4_0.dtd",
                 "org/apache/myfaces/resource/xml.xsd",
-                "META-INF/rsc/myfaces-dev-error-include.xml",
                 "META-INF/services/jakarta.servlet.ServletContainerInitializer"));
 
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages"));
