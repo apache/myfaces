@@ -496,6 +496,12 @@ class MyFacesProcessor
         classNames.addAll(collectImplementors(combinedIndex, Validator.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, Behavior.class.getName()));
 
+        // Register CDI produced servlet objects for EL #{session} and #{request}
+        classes.addAll(Arrays.asList(
+                io.undertow.servlet.spec.HttpServletRequestImpl.class,
+                io.undertow.servlet.spec.HttpServletResponseImpl.class,
+                io.undertow.servlet.spec.HttpSessionImpl.class));
+
         classes.addAll(Arrays.asList(
                 ClassUtils.class,
                 FactoryFinderProviderFactory.class,
@@ -782,10 +788,31 @@ class MyFacesProcessor
     {
         nativeImageResourceProducer
                 .produce(new NativeImageResourceBuildItem("META-INF/maven/org.primefaces/primefaces/pom.properties"));
-        
 
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_cs"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_de"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_el"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_en"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_es"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_fa"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_fr"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_hi"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_in"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_it"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ka"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ko"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_lv"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_nl"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_no"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_pl"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_pt"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ro"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ru"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_sk"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_sv"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_tr"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_zh"));
     }
     
     @BuildStep
@@ -795,10 +822,23 @@ class MyFacesProcessor
             CombinedIndexBuildItem combinedIndex)
     {
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, false,
-                "org.primefaces.util.ComponentUtils","org.primefaces.util.ComponentTraversalUtils",
-                "org.primefaces.expression.SearchExpressionUtils","org.primefaces.util.EscapeUtils",
-                "org.primefaces.util.SecurityUtils",
-                "org.primefaces.util.LangUtils"));
+                "org.primefaces.expression.SearchExpressionUtils",
+                "org.primefaces.util.AgentUtils",
+                "org.primefaces.util.BeanUtils",
+                "org.primefaces.util.CalendarUtils",
+                "org.primefaces.util.ChartUtils",
+                "org.primefaces.util.ComponentTraversalUtils",
+                "org.primefaces.util.ComponentUtils",
+                "org.primefaces.util.CompositeUtils",
+                "org.primefaces.util.ELUtils",
+                "org.primefaces.util.EscapeUtils",
+                "org.primefaces.util.FileUploadUtils",
+                "org.primefaces.util.GridLayoutUtils",
+                "org.primefaces.util.IOUtils",
+                "org.primefaces.util.LangUtils",
+                "org.primefaces.util.LocaleUtils",
+                "org.primefaces.util.ResourceUtils",
+                "org.primefaces.util.SecurityUtils"));
         
         reflectiveClass.produce(new ReflectiveClassBuildItem(false, false, 
                 "org.primefaces.config.PrimeEnvironment",
