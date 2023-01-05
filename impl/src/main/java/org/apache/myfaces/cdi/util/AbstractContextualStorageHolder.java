@@ -211,10 +211,12 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
                 if (!skip)
                 {
                     Contextual bean = contextualStorage.getBean(entry.getKey());
-
                     ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
-                    bean.destroy(contextualInstanceInfo.getContextualInstance(), 
-                        contextualInstanceInfo.getCreationalContext());
+                    if (bean != null && contextualInstanceInfo != null)
+                    {
+                        bean.destroy(contextualInstanceInfo.getContextualInstance(), 
+                            contextualInstanceInfo.getCreationalContext());
+                    }
                 }
             }
 
