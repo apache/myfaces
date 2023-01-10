@@ -19,6 +19,7 @@
 package org.apache.myfaces.context.flash;
 
 import org.apache.myfaces.util.lang.SubKeyMap;
+import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.ExternalContextUtils;
 
@@ -128,6 +129,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
     
      // ~ static methods  -----------------------------------------------------
     
+    private boolean _defaultWindowModeEnabled = false; // MYFACES-4543
     /**
      * Return a Flash instance from the application map
      * 
@@ -171,6 +173,8 @@ public class FlashImpl extends Flash implements ReleasableFlash
     {
         // Read whether flash scope is disabled.
         _flashScopeDisabled = MyfacesConfig.getCurrentInstance(externalContext).isFlashScopeDisabled();
+
+        _defaultWindowModeEnabled = FacesConfigurator.isEnableDefaultWindowMode(FacesContext.getCurrentInstance());
     }
     
     // ~ methods from jakarta.faces.context.Flash -------------------------------
@@ -750,7 +754,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         ExternalContext externalContext = facesContext.getExternalContext();
         String tokenValue = (String) externalContext.getRequestMap().get(FLASH_RENDER_MAP_TOKEN);
         ClientWindow clientWindow = externalContext.getClientWindow();
-        if (clientWindow != null)
+        if (clientWindow != null && !_defaultWindowModeEnabled)
         {
             if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
             {
@@ -795,7 +799,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         ExternalContext externalContext = facesContext.getExternalContext();
         String tokenValue = null;
         ClientWindow clientWindow = externalContext.getClientWindow();
-        if (clientWindow != null)
+        if (clientWindow != null && !_defaultWindowModeEnabled)
         {
             if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
             {
