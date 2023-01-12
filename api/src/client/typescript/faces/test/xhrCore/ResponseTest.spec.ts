@@ -516,7 +516,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         </partial-response>`
 
         window.document.body.innerHTML = INNER_HTML_MULIT_VIEW;
-
+        global["debug4"] = true;
         faces.ajax.request(window.document.getElementById("viewroot_1:submit_1"), null, {
             "javax.faces.behavior.event": "change",
             execute: "submit_1",

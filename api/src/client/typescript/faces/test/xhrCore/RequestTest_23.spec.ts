@@ -65,6 +65,7 @@ let {
 
 import STD_XML = StandardInits.STD_XML;
 import defaultMyFaces23 = StandardInits.defaultMyFaces23;
+import HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
 
 declare var jsf: any;
 declare var Implementation: any;
@@ -360,5 +361,40 @@ describe('Tests after core when it hits response', function () {
         }
 
     });
+
+    it("must handle prefixed inputs properly (prefixes must be present)", function (done) {
+        window.document.body.innerHTML = HTML_PREFIX_EMBEDDED_BODY;
+
+        //we now run the tests here
+        try {
+
+            let event = {
+                isTrusted: true,
+                type: 'change',
+                target: document.getElementById("page:input::field"),
+                currentTarget: document.getElementById("page:input::field")
+            };
+            jsf.ajax.request(document.getElementById("page:input"), event as any, {
+                render: "page:output",
+                execute: "page:input",
+                params: {
+                    "booga2.xxx": "yyy",
+                    "javax.faces.behavior.event": "change",
+                    "booga": "bla"
+                },
+            });
+        } catch (err) {
+            console.error(err);
+            expect(false).to.eq(true);
+        }
+        const requestBody = this.requests[0].requestBody;
+        //We check if the base64 encoded string matches the original
+        expect(requestBody.indexOf("javax.faces.behavior.event")).to.not.eq(-1);
+        expect(requestBody.indexOf("javax.faces.behavior.event=change")).to.not.eq(-1);
+        expect(requestBody.indexOf("page%3Ainput=input_value")).to.not.eq(-1);
+        done();
+    });
+
+
 });
 
