@@ -24,6 +24,8 @@ import {expect} from "chai";
 import protocolPage = StandardInits.protocolPage;
 import {DQ, DQ$} from "mona-dish";
 import {$nsp} from "../../impl/core/Const";
+import STD_XML = StandardInits.STD_XML;
+import HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
 
 
 declare var jsf: any;
@@ -358,7 +360,37 @@ describe('Tests of the various aspects of the response protocol functionality', 
     });
 
     
+    it("must pass named params properly (tobago testcase)", function(done) {
+            window.document.body.innerHTML = HTML_PREFIX_EMBEDDED_BODY;
+        try {
 
+            let event = {
+                isTrusted: true,
+                type: 'change',
+                target: document.getElementById("page:input::field"),
+                currentTarget: document.getElementById("page:input::field")
+            };
+            jsf.ajax.request(document.getElementById("page:input"), event as any, {
+                render: "page:output",
+                execute: "page:input",
+                params: {
+                    "booga2.xxx": "yyy",
+                    "javax.faces.behavior.event": "change",
+                    "booga": "bla"
+                }
+            });
+        } catch (err) {
+            console.error(err);
+            expect(false).to.eq(true);
+        }
+
+        const requestBody = this.requests[0].requestBody;
+        expect(requestBody.indexOf("javax.faces.behavior.event")).to.not.eq(-1);
+        expect(requestBody.indexOf("javax.faces.behavior.event=change")).to.not.eq(-1);
+        expect(requestBody.indexOf("page%3Ainput=input_value")).to.not.eq(-1);
+            done();
+
+    });
 
 
 });

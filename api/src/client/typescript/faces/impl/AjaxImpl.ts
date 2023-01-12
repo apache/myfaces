@@ -272,7 +272,14 @@ export module Implementation {
 
         // spec conform behavior, all passthrough params must be under "passthrough
         const params = remapArrayToAssocArr(options.getIf(CTX_OPTIONS_PARAMS).orElse({}).value);
-        requestCtx.getIf(CTX_PARAM_REQ_PASS_THR).shallowMerge(new Config(params), true);
+        //we turn off the remapping for the param merge, because we do not want to have
+        //any namespacing to be remapped
+
+        let ctxPassthrough = requestCtx.getIf(CTX_PARAM_REQ_PASS_THR) as ExtConfig;
+        ctxPassthrough.$nspEnabled = false;
+        ctxPassthrough.shallowMerge(new Config(params), true);
+        //now we turn it on again
+        ctxPassthrough.$nspEnabled = true;
         requestCtx.assignIf(!!event, CTX_PARAM_REQ_PASS_THR, P_EVT).value = event?.type;
 
         /**
@@ -530,7 +537,7 @@ export module Implementation {
          *
          * adds a new request to our queue for further processing
          */
-        addRequestToQueue: function (elem: DQ, form: DQ, reqCtx: Config, respPassThr: Config, delay = 0, timeout = 0) {
+        addRequestToQueue: function (elem: DQ, form: DQ, reqCtx: ExtConfig, respPassThr: Config, delay = 0, timeout = 0) {
             requestQueue = requestQueue ?? new AsynchronousQueue<XhrRequest>();
             requestQueue.enqueue(new XhrRequest(elem, form, reqCtx, respPassThr, [], timeout), delay);
         }
@@ -638,13 +645,13 @@ export module Implementation {
             const hasLeadingSep = componentIdToTransform.indexOf(SEP) === 0;
             const isAbsolutSearchExpr = hasLeadingSep || (rootNamingContainerId.length
                 && componentIdToTransform.indexOf(rootNamingContainerPrefix) == 0);
-
+            let finalIdentifier = "";
             if (isAbsolutSearchExpr) {
                 //we cut off the leading sep if there is one
                 componentIdToTransform = hasLeadingSep ? componentIdToTransform.substring(1) : componentIdToTransform;
                 componentIdToTransform = componentIdToTransform.indexOf(rootNamingContainerPrefix) == 0 ? componentIdToTransform.substring(rootNamingContainerPrefix.length) : componentIdToTransform;
                 //now we prepend either the prefix or "" from the cut-off string to get the final result
-                return  [rootNamingContainerPrefix, componentIdToTransform].join(EMPTY_STR);
+                finalIdentifier = [rootNamingContainerPrefix, componentIdToTransform].join(EMPTY_STR);
             } else { //relative search according to the javadoc
                 //we cut off the root naming container id from the form
                 if (formClientId.indexOf(rootNamingContainerPrefix) == 0) {
@@ -653,10 +660,15 @@ export module Implementation {
 
                 //If prependId = true, the outer form id must be present in the id if same form
                 let hasPrependId = componentIdToTransform.indexOf(formClientId) == 0;
-                return hasPrependId ?
+                finalIdentifier = hasPrependId ?
                     [rootNamingContainerPrefix, componentIdToTransform].join(EMPTY_STR) :
                     [nearestNamingContainerPrefix,  componentIdToTransform].join(EMPTY_STR);
             }
+            // We need to double check because we have scenarios where we have a naming container
+            // and no prepend (aka tobago testcase "must handle ':' in IDs properly", scenario 3,
+            // in this case we return the component id, and be happy
+            // we can roll a dom check here
+            return (!!document.getElementById(finalIdentifier)) ? finalIdentifier : componentIdToTransform;
         };
 
         // in this case we do not use lazy stream because it wont bring any code reduction

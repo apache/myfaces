@@ -90,6 +90,54 @@ export module StandardInits {
 </html>`;
 
 
+
+    /**
+     * a page simulating basically a simple faces form
+     */
+    const HTML_FORM_PREFIXED = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="form1">
+    <input type="text" id="form1:input_1::field" name="form1:input_1" value="form1:input_1_val"></input>
+    <input type="hidden" id="form1:jakarta.faces.ViewState" name="jakarta.faces.ViewState" value="blubbblubblubb"></input>
+    <input type="button" id="form1:input_2::field" name="form1:input_2" value="form1:input_1_val"></input>
+    <input type="text" id="form1:input_3::field" name="form1:input_23 value="form1:input_1_val"></input>
+</form>
+</body>
+</html>`;
+
+
+
+    /**
+     * a page simulating basically a simple faces form
+     */
+    export const HTML_PREFIX_EMBEDDED_BODY = `<form id="form1">
+  <tobago-in id="page:input" class="tobago-auto-spacing">
+     <input type="text" name="page:input" id="page:input::field" class="form-control" value="input_value">
+     <tobago-behavior event="change" client-id="page:input" field-id="page:input::field" execute="page:input" render="page:output"></tobago-behavior>
+  </tobago-in>
+  
+  <tobago-out id="page:output" class="tobago-auto-spacing">
+    <input type="text" name="page:output" id="page:output::field" class="form-control">
+  </tobago-out>
+</form>`;
+
+    const HTML_FORM_PREFIXED_EMBEDDED = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    ${HTML_PREFIX_EMBEDDED_BODY}
+</body>
+</html>`;
+
+
     const HTML_FORM_NAMESPACED = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -320,6 +368,11 @@ export module StandardInits {
     export function protocolPage(withJsf = true, IS_40 = true): Promise<() => void> {
         return <any>init((IS_40) ? PROTOCOL_PAGE : PROTOCOL_PAGE.replace(/jakarta/gi,"javax"), withJsf, IS_40);
     }
+
+    export function prefixEmbeddedPage(withJsf = true, IS_40 = true): Promise<() => void> {
+        return <any>init((IS_40) ? HTML_FORM_PREFIXED_EMBEDDED : HTML_FORM_PREFIXED_EMBEDDED.replace(/jakarta/gi,"javax"), withJsf, IS_40);
+    }
+
 
     export function defaultSeparatorChar(separatorChar: string, withJsf = true, IS_40 = true): Promise<() => void> {
         let template = HTML_DEFAULT_SEPARATOR_CHAR(separatorChar, IS_40);

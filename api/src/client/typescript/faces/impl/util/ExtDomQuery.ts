@@ -257,6 +257,8 @@ export const ExtDQ = ExtDomQuery;
  */
 export class ExtConfig extends  Config {
 
+    $nspEnabled = true;
+
     constructor(root: any) {
         super(root);
     }
@@ -326,7 +328,10 @@ export class ExtConfig extends  Config {
      * @param accessPath the access paths to be remapped
      * @private returns an array of access paths with version remapped namespaces
      */
-    private remap(accessPath: any[]) {
+    private remap(accessPath: string[]): string[] {
+        if(!this.$nspEnabled) {
+            return accessPath;
+        }
         return Stream.of(...accessPath).map(key => $nsp(key)).collect(new ArrayCollector());
     }
 }

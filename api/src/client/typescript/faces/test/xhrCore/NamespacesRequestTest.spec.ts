@@ -82,9 +82,10 @@ describe('Namespacing tests', function () {
     it('must send the element identifiers properly encoded', function () {
         let send = sinon.spy(XMLHttpRequest.prototype, "send");
         try {
+            global["debug3"] = true;
             faces.ajax.request(document.getElementById("jd_0:input_2"), null, {
                 execute: ":input_1",
-                render: ":blarg :input2",
+                render: ":blarg :input_2",
                 params: {
                     pass1: "pass1",
                     pass2: "pass2"
@@ -108,7 +109,7 @@ describe('Namespacing tests', function () {
             expect(P_VIEWSTATE in resultsMap).to.be.true;
             expect(resultsMap[P_PARTIAL_SOURCE]).to.eq(escape("jd_0:input_2"));
             expect(resultsMap[P_AJAX]).to.eq("true");
-            expect(resultsMap[P_RENDER]).to.eq(escape("jd_0:blarg jd_0:input2"));
+            expect(resultsMap[P_RENDER]).to.eq(escape("jd_0:blarg jd_0:input_2"));
             expect(resultsMap[P_EXECUTE]).to.eq(escape("jd_0:input_1 jd_0:input_2"));
         } finally {
             send.restore();
@@ -120,7 +121,7 @@ describe('Namespacing tests', function () {
         try {
             faces.ajax.request(document.getElementById("jd_0:input_2"), null, {
                 execute: "jd_0:input_1",
-                render: ":blarg jd_0:input2",
+                render: ":blarg jd_0:input_2",
                 params: {
                     pass1: "pass1",
                     pass2: "pass2"
@@ -144,7 +145,7 @@ describe('Namespacing tests', function () {
             expect(P_VIEWSTATE in resultsMap).to.be.true;
             expect(resultsMap[P_PARTIAL_SOURCE]).to.eq(escape("jd_0:input_2"));
             expect(resultsMap[P_AJAX]).to.eq("true");
-            expect(resultsMap[P_RENDER]).to.eq(escape("jd_0:blarg jd_0:input2"));
+            expect(resultsMap[P_RENDER]).to.eq(escape("jd_0:blarg jd_0:input_2"));
             expect(resultsMap[P_EXECUTE]).to.eq(escape("jd_0:input_1 jd_0:input_2"));
         } finally {
             send.restore();
@@ -160,7 +161,7 @@ describe('Namespacing tests', function () {
 
             faces.ajax.request(document.getElementById("jd_0:input_2"), null, {
                 execute: "jd_0:input_1",
-                render: ":blarg jd_0:input2",
+                render: ":blarg jd_0:input_2",
                 params: {
                     pass1: "pass1",
                     pass2: "pass2"
@@ -185,7 +186,7 @@ describe('Namespacing tests', function () {
             expect(resultsMap[P_VIEWSTATE]).to.eq("booga");
             expect(resultsMap[P_PARTIAL_SOURCE]).to.eq(escape("jd_0:input_2"));
             expect(resultsMap[P_AJAX]).to.eq("true");
-            expect(resultsMap[P_RENDER]).to.eq(escape("jd_0:blarg jd_0:input2"));
+            expect(resultsMap[P_RENDER]).to.eq(escape("jd_0:blarg jd_0:input_2"));
             expect(resultsMap[P_EXECUTE]).to.eq(escape("jd_0:input_1 jd_0:input_2"));
         } finally {
             send.restore();

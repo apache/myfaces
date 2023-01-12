@@ -45,6 +45,7 @@ import {
 } from "../core/Const";
 import {resolveFinalUrl, resolveHandlerFunc} from "./RequestDataResolver";
 import failSaveExecute = ExtLang.failSaveExecute;
+import {ExtConfig} from "../util/ExtDomQuery";
 
 /**
  * Faces XHR Request Wrapper
@@ -87,7 +88,7 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
     constructor(
         private source: DQ,
         private sourceForm: DQ,
-        private requestContext: Config,
+        private requestContext: ExtConfig,
         private internalContext: Config,
         private partialIdsArray = [],
         private timeout = NO_TIMEOUT,
@@ -132,13 +133,20 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
             this.contentType = formData.isMultipartRequest ? "undefined" : this.contentType;
 
             // next step the pass through parameters are merged in for post params
+            this.requestContext.$nspEnabled = false;
             let requestContext = this.requestContext;
-            let requestPassThroughParams = requestContext.getIf(CTX_PARAM_REQ_PASS_THR);
-
+            let requestPassThroughParams = requestContext.getIf(CTX_PARAM_REQ_PASS_THR) as ExtConfig;
+            requestPassThroughParams.$nspEnabled = false;
             // this is an extension where we allow pass through parameters to be sent down additionally
             // this can be used and is used in the impl to enrich the post request parameters with additional
             // information
-            formData.shallowMerge(requestPassThroughParams, true, true);
+
+            try {
+                formData.shallowMerge(requestPassThroughParams, true, true);
+            } finally {
+                this.requestContext.$nspEnabled = true;
+                requestPassThroughParams.$nspEnabled = true;
+            }
 
             this.responseContext = requestPassThroughParams.deepCopy;
 
