@@ -152,7 +152,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         {
             if (context.isProjectStage(ProjectStage.Development))
             {
-                log.warning("cannot validate component with empty value: " 
+                log.fine("cannot validate component with empty value: " 
                     + component.getClientId(context));
             }
             return;
