@@ -80,7 +80,7 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory
     {
         if (windowMode == null)
         {
-            if (FacesConfigurator.isEnableDefaultWindowMode(context))
+            if (FacesConfigurator.isEnableDefaultWindowMode(context.getExternalContext()))
             {
                 windowMode = WebConfigParamUtils.getStringInitParameter(
                         context.getExternalContext(), 
