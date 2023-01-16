@@ -1285,7 +1285,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
         //we filter out only those evalNodes which do not match
         var _RT = this._RT;
+        var _Lang = this._Lang;
         var _T = this;
+
         var doubleExistsFilter = function(item)  {
             switch((item.tagName || "").toLowerCase()) {
                 case "script":
@@ -1294,9 +1296,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                     var scripts = document.head.getElementsByTagName("script");
 
                     for(var cnt = 0; cnt < scripts.length; cnt++) {
-                        if(src && scripts[cnt].getAttribute("src") == src) {
+                        if(src && _Lang.match(scripts[cnt].getAttribute("src"), src)) {
                             return false;
-                        } else if(!src && scripts[cnt].innerText == content) {
+                        } else if(!src && _Lang.match(scripts[cnt].innerText, content)) {
                             return false;
                         }
                     }
@@ -1305,7 +1307,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                     var content = item.innerText;
                     var styles = document.head.getElementsByTagName("style");
                     for(var cnt = 0; cnt < styles.length; cnt++) {
-                        if(content && styles[cnt].innerText == content) {
+                        if(content && _Lang.match(styles[cnt].innerText, content)) {
                             return false;
                         }
                     }
@@ -1315,9 +1317,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                     var content = item.innerText;
                     var links = document.head.getElementsByTagName("link");
                     for(var cnt = 0; cnt < links.length; cnt++) {
-                        if(href && links[cnt].getAttribute("href") == href) {
+                        if(href && _Lang.match(links[cnt].getAttribute("href"), href)) {
                             return false;
-                        } else if(!href && links[cnt].innerText == content) {
+                        } else if(!href && _Lang.match(links[cnt].innerText, content)) {
                             return false;
                         }
                     }
