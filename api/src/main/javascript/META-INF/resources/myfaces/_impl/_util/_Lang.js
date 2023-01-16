@@ -214,6 +214,22 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         return str.slice(0, i + 1);
     },
+
+    /**
+     * a fuzzy match where one item is subset of the other or vice versa
+     * @param str1
+     * @param str2
+     * @returns {boolean}
+     */
+    match: function(str1, str2) {
+        //Sometimes we have to deal with paths in hrefs so
+        //one of the itmes either is an exact match or a substring
+        str1 = this.trim(str1 || "");
+        str2 = this.trim(str2 || "");
+
+        return str1.indexOf(str2) != -1 || str2.indexOf(str1) != -1;
+    },
+
     /**
      * Backported from dojo
      * a failsafe string determination method
