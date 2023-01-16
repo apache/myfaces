@@ -23,6 +23,7 @@
 
     <extension qualifier="webdriver">
         <property name="browser">chromeHeadless</property>
+        <property name="chromeDriverVersion">108.0.5359.71</property>
     </extension>
 
     <container qualifier="tomcat" default="true">
