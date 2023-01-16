@@ -32,6 +32,7 @@ import jakarta.el.ValueExpression;
 import jakarta.el.ValueReference;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -144,8 +145,11 @@ public class BeanValidator implements Validator, PartialStateHolder
         ValueExpression valueExpression = component.getValueExpression("value");
         if (valueExpression == null)
         {
-            log.warning("cannot validate component with empty value: " 
+            if (context.isProjectStage(ProjectStage.Development))
+            {
+                log.warning("cannot validate component with empty value: " 
                     + component.getClientId(context));
+            }
             return;
         }
 
