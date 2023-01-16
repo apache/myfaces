@@ -38,6 +38,7 @@ import javax.el.ValueReference;
 import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ProjectStage;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -154,8 +155,11 @@ public class BeanValidator implements Validator, PartialStateHolder
         ValueExpression valueExpression = component.getValueExpression("value");
         if (valueExpression == null)
         {
-            log.warning("cannot validate component with empty value: " 
+            if (context.isProjectStage(ProjectStage.Development))
+            {
+                log.warning("cannot validate component with empty value: " 
                     + component.getClientId(context));
+            }
             return;
         }
 
