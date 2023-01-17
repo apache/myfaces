@@ -62,38 +62,38 @@ import jakarta.faces.render.Renderer;
 public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent 
     implements FacesWrapper<UIComponent>, ClientBehaviorHolder
 {
-    private final UIComponent _composite;
-    private final UIComponent _delegate;
-    private final String _sourceEvent; //cc:clientBehavior "name"
-    private final String _targetEvent; //cc:clientBehavior "event"
+    private final UIComponent composite;
+    private final UIComponent delegate;
+    private final String sourceEvent; //cc:clientBehavior "name"
+    private final String targetEvent; //cc:clientBehavior "event"
     private final ValueExpression targets;
 
     public ClientBehaviorRedirectEventComponentWrapper(UIComponent composite, UIComponent delegate,
             String sourceEvent, String targetEvent, ValueExpression targets)
     {
         super();
-        _composite = composite;
-        _delegate = delegate;
-        _sourceEvent = sourceEvent;
-        _targetEvent = targetEvent;
+        this.composite = composite;
+        this.delegate = delegate;
+        this.sourceEvent = sourceEvent;
+        this.targetEvent = targetEvent;
         this.targets = targets;
     }
 
     @Override
     public UIComponent getWrapped()
     {
-        return _delegate;
+        return delegate;
     }
 
     @Override
     public void addClientBehavior(String eventName, ClientBehavior behavior)
     {
-        if (_sourceEvent.equals(eventName))
+        if (sourceEvent.equals(eventName))
         {
-            String targetEventName = _targetEvent == null
-                    ? ((ClientBehaviorHolder)_delegate).getDefaultEventName()
-                    : _targetEvent;
-            ((ClientBehaviorHolder)_delegate).addClientBehavior(targetEventName , behavior);
+            String targetEventName = targetEvent == null
+                    ? ((ClientBehaviorHolder)delegate).getDefaultEventName()
+                    : targetEvent;
+            ((ClientBehaviorHolder)delegate).addClientBehavior(targetEventName , behavior);
         }
     }
 
@@ -101,23 +101,23 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
     public Map<String, List<ClientBehavior>> getClientBehaviors()
     {
         Map<String, List<ClientBehavior>> clientBehaviors = new HashMap<>(1);
-        clientBehaviors.put(_sourceEvent, ((ClientBehaviorHolder)_delegate).getClientBehaviors().get(_targetEvent));
+        clientBehaviors.put(sourceEvent, ((ClientBehaviorHolder)delegate).getClientBehaviors().get(targetEvent));
         return Collections.unmodifiableMap(clientBehaviors);
     }
 
     @Override
     public String getDefaultEventName()
     {
-        if (_targetEvent == null )
+        if (targetEvent == null )
         {
             // There is no targetEvent assigned, so we need to check if there is 
             // a default event name on the delegate, if so return sourceEvent, otherwise
             // there is no default event and we can't resolve the redirection, so
             // return null. Note this usually could cause another exception later
             // (see AjaxHandler code 
-            if (((ClientBehaviorHolder)_delegate).getDefaultEventName() != null)
+            if (((ClientBehaviorHolder)delegate).getDefaultEventName() != null)
             {
-                return _sourceEvent;
+                return sourceEvent;
             }
             else
             {
@@ -128,329 +128,329 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
         {
             // We have a target event, so in this case we have to return the sourceEvent,
             // because it is expected the client behavior to be attached has this event name.
-            return _sourceEvent;
+            return sourceEvent;
         }
     }
 
     @Override
     public Collection<String> getEventNames()
     {
-        return Collections.singletonList(_sourceEvent);
+        return Collections.singletonList(sourceEvent);
     }
     
     @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException
     {
-        _delegate.broadcast(event);
+        delegate.broadcast(event);
     }
 
     @Override
     public void clearInitialState()
     {
-        _delegate.clearInitialState();
+        delegate.clearInitialState();
     }
 
     @Override
     public void decode(FacesContext context)
     {
-        _delegate.decode(context);
+        delegate.decode(context);
     }
 
     @Override
     public void encodeAll(FacesContext context) throws IOException
     {
-        _delegate.encodeAll(context);
+        delegate.encodeAll(context);
     }
 
     @Override
     public void encodeBegin(FacesContext context) throws IOException
     {
-        _delegate.encodeBegin(context);
+        delegate.encodeBegin(context);
     }
 
     @Override
     public void encodeChildren(FacesContext context) throws IOException
     {
-        _delegate.encodeChildren(context);
+        delegate.encodeChildren(context);
     }
 
     @Override
     public void encodeEnd(FacesContext context) throws IOException
     {
-        _delegate.encodeEnd(context);
+        delegate.encodeEnd(context);
     }
 
     @Override
     public UIComponent findComponent(String expr)
     {
-        return _delegate.findComponent(expr);
+        return delegate.findComponent(expr);
     }
 
     @Override
     public Map<String, Object> getAttributes()
     {
-        return _delegate.getAttributes();
+        return delegate.getAttributes();
     }
 
     @Override
     public int getChildCount()
     {
-        return _delegate.getChildCount();
+        return delegate.getChildCount();
     }
 
     @Override
     public List<UIComponent> getChildren()
     {
-        return _delegate.getChildren();
+        return delegate.getChildren();
     }
 
     @Override
     public String getClientId()
     {
-        return _delegate.getClientId();
+        return delegate.getClientId();
     }
 
     @Override
     public String getClientId(FacesContext context)
     {
-        return _delegate.getClientId(context);
+        return delegate.getClientId(context);
     }
 
     @Override
     public String getContainerClientId(FacesContext ctx)
     {
-        return _delegate.getContainerClientId(ctx);
+        return delegate.getContainerClientId(ctx);
     }
 
     @Override
     public UIComponent getFacet(String name)
     {
-        return _delegate.getFacet(name);
+        return delegate.getFacet(name);
     }
 
     @Override
     public int getFacetCount()
     {
-        return _delegate.getFacetCount();
+        return delegate.getFacetCount();
     }
 
     @Override
     public Map<String, UIComponent> getFacets()
     {
-        return _delegate.getFacets();
+        return delegate.getFacets();
     }
 
     @Override
     public Iterator<UIComponent> getFacetsAndChildren()
     {
-        return _delegate.getFacetsAndChildren();
+        return delegate.getFacetsAndChildren();
     }
     
     @Override
     public String getFamily()
     {
-        return _delegate.getFamily();
+        return delegate.getFamily();
     }
 
     @Override
     public String getId()
     {
-        return _delegate.getId();
+        return delegate.getId();
     }
 
     @Override
     public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> eventClass)
     {
-        return _delegate.getListenersForEventClass(eventClass);
+        return delegate.getListenersForEventClass(eventClass);
     }
 
     @Override
     public UIComponent getNamingContainer()
     {
-        return _delegate.getNamingContainer();
+        return delegate.getNamingContainer();
     }
 
     @Override
     public UIComponent getParent()
     {
-        return _delegate.getParent();
+        return delegate.getParent();
     }
 
     @Override
     public String getRendererType()
     {
-        return _delegate.getRendererType();
+        return delegate.getRendererType();
     }
 
     @Override
     public boolean getRendersChildren()
     {
-        return _delegate.getRendersChildren();
+        return delegate.getRendersChildren();
     }
 
     @Override
     public Map<String, String> getResourceBundleMap()
     {
-        return _delegate.getResourceBundleMap();
+        return delegate.getResourceBundleMap();
     }
 
     @Override
     public ValueExpression getValueExpression(String name)
     {
-        return _delegate.getValueExpression(name);
+        return delegate.getValueExpression(name);
     }
 
     @Override
     public boolean initialStateMarked()
     {
-        return _delegate.initialStateMarked();
+        return delegate.initialStateMarked();
     }
 
     @Override
     public boolean invokeOnComponent(FacesContext context, String clientId,
             ContextCallback callback) throws FacesException
     {
-        return _delegate.invokeOnComponent(context, clientId, callback);
+        return delegate.invokeOnComponent(context, clientId, callback);
     }
 
     @Override
     public boolean isInView()
     {
-        return _delegate.isInView();
+        return delegate.isInView();
     }
 
     @Override
     public boolean isRendered()
     {
-        return _delegate.isRendered();
+        return delegate.isRendered();
     }
 
     @Override
     public boolean isTransient()
     {
-        return _delegate.isTransient();
+        return delegate.isTransient();
     }
 
     @Override
     public void markInitialState()
     {
-        _delegate.markInitialState();
+        delegate.markInitialState();
     }
 
     @Override
     public void processDecodes(FacesContext context)
     {
-        _delegate.processDecodes(context);
+        delegate.processDecodes(context);
     }
 
     @Override
     public void processEvent(ComponentSystemEvent event) throws AbortProcessingException
     {
-        _delegate.processEvent(event);
+        delegate.processEvent(event);
     }
 
     @Override
     public void processRestoreState(FacesContext context, Object state)
     {
-        _delegate.processRestoreState(context, state);
+        delegate.processRestoreState(context, state);
     }
 
     @Override
     public Object processSaveState(FacesContext context)
     {
-        return _delegate.processSaveState(context);
+        return delegate.processSaveState(context);
     }
 
     @Override
     public void processUpdates(FacesContext context)
     {
-        _delegate.processUpdates(context);
+        delegate.processUpdates(context);
     }
 
     @Override
     public void processValidators(FacesContext context)
     {
-        _delegate.processValidators(context);
+        delegate.processValidators(context);
     }
 
     @Override
     public void queueEvent(FacesEvent event)
     {
-        _delegate.queueEvent(event);
+        delegate.queueEvent(event);
     }
 
     @Override
     public void restoreState(FacesContext context, Object state)
     {
-        _delegate.restoreState(context, state);
+        delegate.restoreState(context, state);
     }
 
     @Override
     public Object saveState(FacesContext context)
     {
-        return _delegate.saveState(context);
+        return delegate.saveState(context);
     }
 
     @Override
     public void setId(String id)
     {
-        _delegate.setId(id);
+        delegate.setId(id);
     }
 
     @Override
     public void setInView(boolean isInView)
     {
-        _delegate.setInView(isInView);
+        delegate.setInView(isInView);
     }
 
     @Override
     public void setParent(UIComponent parent)
     {
-        _delegate.setParent(parent);
+        delegate.setParent(parent);
     }
 
     @Override
     public void setRendered(boolean rendered)
     {
-        _delegate.setRendered(rendered);
+        delegate.setRendered(rendered);
     }
 
     @Override
     public void setRendererType(String rendererType)
     {
-        _delegate.setRendererType(rendererType);
+        delegate.setRendererType(rendererType);
     }
 
     @Override
     public void setTransient(boolean newTransientValue)
     {
-        _delegate.setTransient(newTransientValue);
+        delegate.setTransient(newTransientValue);
     }
 
     @Override
     public void setValueExpression(String name, ValueExpression expression)
     {
-        _delegate.setValueExpression(name, expression);
+        delegate.setValueExpression(name, expression);
     }
 
     @Override
     public void subscribeToEvent(Class<? extends SystemEvent> eventClass,
             ComponentSystemEventListener componentListener)
     {
-        _delegate.subscribeToEvent(eventClass, componentListener);
+        delegate.subscribeToEvent(eventClass, componentListener);
     }
 
     @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass,
             ComponentSystemEventListener componentListener)
     {
-        _delegate.unsubscribeFromEvent(eventClass, componentListener);
+        delegate.unsubscribeFromEvent(eventClass, componentListener);
     }
 
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback)
     {
-        return _delegate.visitTree(context, callback);
+        return delegate.visitTree(context, callback);
     }
     
     // Some methods of UIComponent are protected, but for the scope of this
@@ -492,12 +492,12 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
 
     public UIComponent getComposite()
     {
-        return _composite;
+        return composite;
     }
 
     public UIComponent getDelegate()
     {
-        return _delegate;
+        return delegate;
     }
 
     public ValueExpression getTargets()

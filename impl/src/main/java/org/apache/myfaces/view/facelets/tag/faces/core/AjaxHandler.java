@@ -377,36 +377,35 @@ public class AjaxHandler extends TagHandler implements
         if (parent instanceof ClientBehaviorRedirectEventComponentWrapper)
         {
             ValueExpression targets = ((ClientBehaviorRedirectEventComponentWrapper) parent).getTargets();
-            if (targets != null)
+            String targetsString = targets == null ? null : (String) targets.getValue(context.getELContext());
+            String[] targetsArray = targetsString == null ? null : targetsString.trim().split(" +");
+
+            if (targetsArray != null && targetsArray.length > 0)
             {
-                String targetClientIds = (String) targets.getValue(context.getELContext());
-                if (targetClientIds != null)
+                String separatorChar = String.valueOf(getSeparatorChar(context));
+
+                Collection<String> execute = ajaxBehavior.getExecute();              
+                if (execute.isEmpty() || execute.contains("@this"))
                 {
-                    String separatorChar = String.valueOf(getSeparatorChar(context));
-
-                    Collection<String> execute = ajaxBehavior.getExecute();              
-                    if (execute.isEmpty() || execute.contains("@this"))
+                    Collection<String> newExecute = new ArrayList<>(execute);
+                    newExecute.remove("@this");
+                    for (String target : targetsArray)
                     {
-                        Collection<String> newExecute = new ArrayList<>(execute);
-                        newExecute.remove("@this");
-                        for (String id : targetClientIds.trim().split(" +"))
-                        {
-                            newExecute.add("@this" + separatorChar + id);
-                        }
-                        ajaxBehavior.setExecute(newExecute);
+                        newExecute.add("@this" + separatorChar + target);
                     }
+                    ajaxBehavior.setExecute(newExecute);
+                }
 
-                    Collection<String> render = ajaxBehavior.getRender();              
-                    if (render.isEmpty() || render.contains("@this"))
+                Collection<String> render = ajaxBehavior.getRender();              
+                if (render.isEmpty() || render.contains("@this"))
+                {
+                    Collection<String> newRender = new ArrayList<>(render);
+                    newRender.remove("@this");
+                    for (String target : targetsArray)
                     {
-                        Collection<String> newRender = new ArrayList<>(render);
-                        newRender.remove("@this");
-                        for (String id : targetClientIds.trim().split(" +"))
-                        {
-                            newRender.add("@this" + separatorChar + id);
-                        }
-                        ajaxBehavior.setRender(newRender);
+                        newRender.add("@this" + separatorChar + target);
                     }
+                    ajaxBehavior.setRender(newRender);
                 }
             }
         }
