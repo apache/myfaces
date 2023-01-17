@@ -31,41 +31,41 @@ import jakarta.faces.context.FacesContext;
  */
 public class FacesELContext extends ELContext
 {
-    private ELResolver _elResolver;
-    private FunctionMapper _functionMapper;
-    private VariableMapper _variableMapper;
+    private ELResolver elResolver;
+    private FunctionMapper functionMapper;
+    private VariableMapper variableMapper;
 
     public FacesELContext(ELResolver elResolver, FacesContext facesContext)
     {
-        this._elResolver = elResolver;
+        this.elResolver = elResolver;
         putContext(FacesContext.class, facesContext);
     }
 
     @Override
     public VariableMapper getVariableMapper()
     {
-        return _variableMapper;
+        return variableMapper;
     }
 
-    public void setVariableMapper(VariableMapper varMapper)
+    public void setVariableMapper(VariableMapper variableMapper)
     {
-        _variableMapper = varMapper;
+        this.variableMapper = variableMapper;
     }
 
     @Override
     public FunctionMapper getFunctionMapper()
     {
-        return _functionMapper;
+        return functionMapper;
     }
 
     public void setFunctionMapper(FunctionMapper functionMapper)
     {
-        _functionMapper = functionMapper;
+        this.functionMapper = functionMapper;
     }
 
     @Override
     public ELResolver getELResolver()
     {
-        return _elResolver;
+        return elResolver;
     }
 }
