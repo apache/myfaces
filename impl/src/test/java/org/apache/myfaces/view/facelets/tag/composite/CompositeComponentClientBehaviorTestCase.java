@@ -26,7 +26,6 @@ import jakarta.faces.component.UIViewRoot;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
@@ -294,8 +293,8 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         Assert.assertEquals(1, button.getClientBehaviors().get("action").size());
         
         String content = render(root);
-        
-        Assert.assertTrue(content.contains("myfaces.ab(this,event,&apos;action&apos;,&apos;form:cc&apos;,&apos;form:cc&apos;"));
+        System.err.println(content);
+        Assert.assertTrue(content.contains("myfaces.ab(this,event,&apos;action&apos;,&apos;form:cc:button&apos;,&apos;form:cc:button&apos;"));
     }
  
 }
