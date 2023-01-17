@@ -293,7 +293,6 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         Assert.assertEquals(1, button.getClientBehaviors().get("action").size());
         
         String content = render(root);
-        System.err.println(content);
         Assert.assertTrue(content.contains("myfaces.ab(this,event,&apos;action&apos;,&apos;form:cc:button&apos;,&apos;form:cc:button&apos;"));
     }
  
