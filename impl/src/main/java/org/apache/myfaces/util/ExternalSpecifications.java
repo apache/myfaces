@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.context.ExternalContext;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Validation;
 import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.webapp.FacesInitializerImpl;
@@ -102,38 +101,6 @@ public final class ExternalSpecifications
         return available;
     });
 
-    private static Lazy<Boolean> el3Available = new Lazy<>(() ->
-    {
-        boolean available;
-        try
-        {
-            available = ClassUtils.classForName("jakarta.el.StaticFieldELResolver") != null ;
-        }
-        catch (Throwable t)
-        {
-            available = false;
-        }
-        log.info("MyFaces Core EL 3.0 support " + (available ? "enabled" : "disabled"));
-
-        return available;
-    });
-
-    private static Lazy<Boolean> sevlet4Available = new Lazy<>(() ->
-    {
-        boolean available;
-        try
-        {
-            available = ClassUtils.classForName("jakarta.servlet.http.PushBuilder") != null
-                    && HttpServletRequest.class.getMethod("newPushBuilder", (Class[]) null) != null;
-        }
-        catch (Throwable t)
-        {
-            available = false;
-        }
-        log.info("MyFaces Core Servlet 4.0 support " + (available ? "enabled" : "disabled"));
-
-        return available;
-    });
 
     private static Lazy<Boolean> sevlet6Available = new Lazy<>(() ->
     {
@@ -167,16 +134,6 @@ public final class ExternalSpecifications
     {
         return cdiAvailable.get() && 
                 externalContext.getApplicationMap().containsKey(FacesInitializerImpl.CDI_BEAN_MANAGER_INSTANCE);
-    }
-    
-    public static boolean isEL3Available()
-    {
-        return el3Available.get();
-    }
-
-    public static boolean isServlet4Available()
-    {
-        return sevlet4Available.get();
     }
 
     public static boolean isServlet6Available()

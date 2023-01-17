@@ -176,10 +176,8 @@ public class FacesInitializerImpl implements FacesInitializer
             initContainerIntegration(servletContext, externalContext);
 
             // log environment integrations
-            ExternalSpecifications.isBeanValidationAvailable();
             ExternalSpecifications.isCDIAvailable(externalContext);
-            ExternalSpecifications.isEL3Available();
-            ExternalSpecifications.isServlet4Available();
+            ExternalSpecifications.isBeanValidationAvailable();
 
             String useEncryption = servletContext.getInitParameter(StateUtils.USE_ENCRYPTION);
             if ("false".equals(useEncryption))
