@@ -21,7 +21,6 @@ package org.apache.myfaces.context;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExceptionHandlerFactory;
 
-
 /**
  * DOCUMENT ME!
  * 

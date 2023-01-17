@@ -35,16 +35,15 @@ import jakarta.faces.event.SystemEvent;
  */
 public class SwitchAjaxExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
 {
-    private ExceptionHandler _requestExceptionHandler;
-    private ExceptionHandler _ajaxExceptionHandler;
-    private Boolean _isAjaxRequest;
+    private ExceptionHandler requestExceptionHandler;
+    private ExceptionHandler ajaxExceptionHandler;
+    private Boolean isAjaxRequest;
     
-    public SwitchAjaxExceptionHandlerWrapperImpl(
-            ExceptionHandler requestExceptionHandler,
+    public SwitchAjaxExceptionHandlerWrapperImpl(ExceptionHandler requestExceptionHandler,
             ExceptionHandler ajaxExceptionHandler)
     {
-        _requestExceptionHandler = requestExceptionHandler;
-        _ajaxExceptionHandler = ajaxExceptionHandler;
+        this.requestExceptionHandler = requestExceptionHandler;
+        this.ajaxExceptionHandler = ajaxExceptionHandler;
     }
     
     @Override
@@ -58,7 +57,7 @@ public class SwitchAjaxExceptionHandlerWrapperImpl extends ExceptionHandlerWrapp
 
     protected boolean isAjaxRequest(SystemEvent exceptionQueuedEvent)
     {
-        if (_isAjaxRequest == null)
+        if (isAjaxRequest == null)
         {
             if (exceptionQueuedEvent instanceof ExceptionQueuedEvent)
             {
@@ -75,12 +74,12 @@ public class SwitchAjaxExceptionHandlerWrapperImpl extends ExceptionHandlerWrapp
             }
             return isAjaxRequest();
         }
-        return _isAjaxRequest;
+        return isAjaxRequest;
     }
     
     protected boolean isAjaxRequest(FacesContext facesContext)
     {
-        if (_isAjaxRequest == null)
+        if (isAjaxRequest == null)
         {
             facesContext = (facesContext == null) ? FacesContext.getCurrentInstance() : facesContext;
             PartialViewContext pvc = facesContext.getPartialViewContext();
@@ -88,14 +87,14 @@ public class SwitchAjaxExceptionHandlerWrapperImpl extends ExceptionHandlerWrapp
             {
                 return false;
             }
-            _isAjaxRequest = pvc.isAjaxRequest();
+            isAjaxRequest = pvc.isAjaxRequest();
         }
-        return _isAjaxRequest;
+        return isAjaxRequest;
     }
     
     protected boolean isAjaxRequest()
     {
-        if (_isAjaxRequest == null)
+        if (isAjaxRequest == null)
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             PartialViewContext pvc = facesContext.getPartialViewContext();
@@ -103,9 +102,9 @@ public class SwitchAjaxExceptionHandlerWrapperImpl extends ExceptionHandlerWrapp
             {
                 return false;
             }
-            _isAjaxRequest = pvc.isAjaxRequest();
+            isAjaxRequest = pvc.isAjaxRequest();
         }
-        return _isAjaxRequest;
+        return isAjaxRequest;
     }
     
     @Override
@@ -113,11 +112,11 @@ public class SwitchAjaxExceptionHandlerWrapperImpl extends ExceptionHandlerWrapp
     {
         if (isAjaxRequest())
         {
-            return _ajaxExceptionHandler;
+            return ajaxExceptionHandler;
         }
         else
         {
-            return _requestExceptionHandler;
+            return requestExceptionHandler;
         }
     }
 }

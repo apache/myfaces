@@ -22,34 +22,20 @@ import jakarta.faces.FacesException;
 
 public class FlashScopeDisabledException extends FacesException
 {
-
-    /**
-     * 
-     */
     public FlashScopeDisabledException()
     {
     }
 
-    /**
-     * @param message
-     */
     public FlashScopeDisabledException(String message)
     {
         super(message);
     }
 
-    /**
-     * @param cause
-     */
     public FlashScopeDisabledException(Throwable cause)
     {
         super(cause);
     }
 
-    /**
-     * @param message
-     * @param cause
-     */
     public FlashScopeDisabledException(String message, Throwable cause)
     {
         super(message, cause);
