@@ -23,16 +23,17 @@
 
     <extension qualifier="webdriver">
         <property name="browser">chromeHeadless</property>
-        <property name="chromeDriverVersion">108.0.5359.71</property>
+        <property name="browserVersion">100</property>
+        <property name="chromeDriverVersion">${chromeDriverVersion}</property>
     </extension>
 
     <container qualifier="tomcat" default="true">
         <configuration>
-            <property name="tomcatHome">target/tomcat-embedded-8</property>
+            <property name="tomcatHome">target/tomcat-embedded-10</property>
             <property name="workDir">work</property>
             <property name="bindHttpPort">8888</property>
             <property name="unpackArchive">true</property>
-            <property name="serverName">arquillian-tomcat-embedded-8</property>
+            <property name="serverName">arquillian-tomcat-embedded-10</property>
         </configuration>
     </container>
 </arquillian>

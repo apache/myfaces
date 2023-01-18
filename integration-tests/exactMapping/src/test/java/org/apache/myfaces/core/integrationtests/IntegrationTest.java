@@ -20,11 +20,12 @@ package org.apache.myfaces.core.integrationtests;
 
 import java.io.File;
 import java.net.URL;
+import java.time.Duration;
+
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
-import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
@@ -35,8 +36,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -112,7 +115,8 @@ public class IntegrationTest
         String url = webDriver.getCurrentUrl();
 
         // post to foo.xhtml
-        Graphene.guardHttp(webDriver.findElement(By.id("form:commandButton"))).click();
+        WebElement element = webDriver.findElement(By.id("form:commandButton"));
+        element.click();
 
         // check if method was invoked
         Assert.assertTrue(webDriver.getPageSource().contains("foo invoked"));
@@ -130,7 +134,8 @@ public class IntegrationTest
         Assert.assertTrue(webDriver.getPageSource().contains("foo-view"));
 
         // navigate to bar.xhtml
-        Graphene.guardHttp(webDriver.findElement(By.id("form:button"))).click();
+        WebElement element = webDriver.findElement(By.id("form:button"));
+        element.click();
 
         // check if we are on bar.xhtml
         Assert.assertTrue(webDriver.getPageSource().contains("bar-view"));
@@ -150,10 +155,12 @@ public class IntegrationTest
         webDriver.get(contextPath + "foo");
 
         // nagivate to non-exact-mapping (bar.xhtml)
-        Graphene.guardHttp(webDriver.findElement(By.id("form:button"))).click();
+        WebElement element = webDriver.findElement(By.id("form:button"));
+        element.click();
 
         // post to bar.xhtml
-        Graphene.guardHttp(webDriver.findElement(By.id("form:commandButton"))).click();
+        WebElement element1 = webDriver.findElement(By.id("form:commandButton"));
+        element1.click();
 
         // check if post was successful
         Assert.assertTrue(webDriver.getPageSource().contains("foo invoked"));
@@ -181,9 +188,9 @@ public class IntegrationTest
         webDriver.get(contextPath + "foo");
 
         // call ajax button
-        Graphene.guardAjax(webDriver.findElement(By.id("form:commandButtonAjax"))).click();
-
-        // check if the button was invoked
-        Assert.assertTrue(webDriver.getPageSource().contains("fooAjax invoked"));
+        WebElement element = webDriver.findElement(By.id("form:commandButtonAjax"));
+        element.click();
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofMillis(20));
+        wait.until((ExpectedCondition<Boolean>) driver -> driver.getPageSource().contains("fooAjax invoked"));
     }
 }

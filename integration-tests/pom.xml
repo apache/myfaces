@@ -118,7 +118,7 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
-            <version>10.0.27</version>
+            <version>${tomcat.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -126,7 +126,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>3.14.0</version>
+            <version>4.7.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -158,9 +158,17 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.arquillian.graphene</groupId>
-            <artifactId>graphene-webdriver</artifactId>
-            <version>2.3.2</version>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-drone-bom</artifactId>
+            <version>${arquillian-drone.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-drone-webdriver-depchain</artifactId>
+            <version>${arquillian-drone.version}</version>
             <type>pom</type>
             <scope>test</scope>
         </dependency>
@@ -190,17 +198,6 @@
         </dependency>
     </dependencies>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- we need to specify the correct version because of conflict in arquillian-drone-webdriver-depchain -->
-            <dependency>
-                <groupId>org.seleniumhq.selenium</groupId>
-                <artifactId>htmlunit-driver</artifactId>
-                <version>4.7.2</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <modules>
         <module>faceletToXhtmlMapping</module>
         <module>faceletToXhtmlMappingDisabled</module>
@@ -227,19 +224,19 @@
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-core</artifactId>
-                    <version>10.0.27</version>
+                    <version>${tomcat.version}</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-jasper</artifactId>
-                    <version>10.0.27</version>
+                    <version>${tomcat.version}</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-websocket</artifactId>
-                    <version>10.0.27</version>
+                    <version>${tomcat.version}</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
@@ -255,5 +252,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
+        <tomcat.version>10.1.5</tomcat.version>
+        <arquillian-drone.version>3.0.0-alpha.7</arquillian-drone.version>
     </properties>
 </project>
