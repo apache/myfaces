@@ -21,8 +21,6 @@ package org.apache.myfaces.core.integrationtests.ajax;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
-import org.jboss.arquillian.graphene.javascript.JavaScript;
-import org.jboss.arquillian.graphene.request.RequestGuard;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -33,17 +31,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.net.URL;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import static org.jboss.arquillian.graphene.Graphene.waitAjax;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -91,14 +90,6 @@ public class IntegrationTest
     @ArquillianResource
     protected URL contextPath;
 
-    @ArquillianResource
-    JavascriptExecutor executor;
-
-
-    @JavaScript
-    RequestGuard guard;
-
-
     @After
     public void after()
     {
@@ -112,14 +103,8 @@ public class IntegrationTest
 
     public void resetServerValues()
     {
-        waitAjax().withTimeout(10, TimeUnit.SECONDS).until(new Function<WebDriver, Object>()
-        {
-
-            public Object apply(WebDriver webDriver)
-            {
-                return webDriver.findElement(By.id("_reset_all")).isDisplayed();
-            }
-        });
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofMillis(20));
+        wait.until((ExpectedCondition<Boolean>) driver -> driver.findElement(By.id("_reset_all")).isDisplayed());
         webDriver.findElement(new By.ById("_reset_all")).click();
     }
 
@@ -131,7 +116,8 @@ public class IntegrationTest
         resetServerValues();
 
         webDriver.findElement(new ByIdOrName("mainForm:press")).click();
-        waitAjax().withTimeout(10, TimeUnit.SECONDS).until((Function<WebDriver, Object>) webDriver -> webDriver.getPageSource().contains("Action Performed"));
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofMillis(20));
+        wait.until((ExpectedCondition<Boolean>) driver -> driver.getPageSource().contains("Action Performed"));
         assertTrue(webDriver.getPageSource().contains("ViewState"));
         assertTrue(webDriver.getPageSource().contains("_ajax_found"));
         assertTrue(webDriver.getPageSource().contains("Action Performed"));
@@ -331,12 +317,11 @@ public class IntegrationTest
      * @param id        the trigger element id
      * @param condition a condition resolver which should return true if the condition is met
      */
-    void trigger(String id, Function<WebDriver, Object> condition)
+    void trigger(String id, ExpectedCondition<Boolean> condition)
     {
         webDriver.findElement(new ByIdOrName(id)).click();
-        waitAjax()
-                .withTimeout(10, TimeUnit.SECONDS)
-                .until(condition);
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofMillis(200));
+        wait.until(condition);
     }
 
 
