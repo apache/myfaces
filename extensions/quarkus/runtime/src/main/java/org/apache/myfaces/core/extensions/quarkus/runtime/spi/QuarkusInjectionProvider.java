@@ -23,7 +23,7 @@ import org.apache.myfaces.spi.InjectionProviderException;
 
 /**
  * Needs to be implemented to support injection in JSF artifacts:
- * https://github.com/quarkusio/quarkus/blob/master/extensions/arc/deployment/
+ * https://github.com/quarkusio/quarkus/blob/main/extensions/arc/deployment/
  * src/main/java/io/quarkus/arc/deployment/ArcTestResourceProvider.java#L21-L54
  * https://github.com/quarkusio/quarkus/issues/2378
  */

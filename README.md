@@ -7,7 +7,7 @@ Apache's implementation of the JavaServer Faces (JSF) and Jakarta Faces specific
 
 ## Branches
 
-### Master
+### Main
 
 Jakarta Faces 4.0 implementation  
 Based on the refactored 2.3-next codebase
@@ -28,7 +28,7 @@ Completely refactored codebase compared to 2.3, also providing a Quarkus extensi
 JavaServer Faces 2.3 implementation
 
 
-## Minimum Requirements (master / 2.3-next)
+## Minimum Requirements (main / 2.3-next)
 
 - Java 1.8
 - Servlet 3.0
@@ -100,7 +100,7 @@ mvn clean install
 
 ## Quarkus extension
 
-Since 2.3-next a Quarkus extension is available. A sample project can be found here: https://github.com/apache/myfaces/blob/master/extensions/quarkus/showcase/
+Since 2.3-next a Quarkus extension is available. A sample project can be found here: https://github.com/apache/myfaces/blob/main/extensions/quarkus/showcase/
 
 Uber-JARs are not supported by design
 
