@@ -27,18 +27,22 @@ import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
 @Named
 @RequestScoped
 @FacesConfig(version = JSF_2_3)
-public class TestBean {
+public class TestBean
+{
     private String sayHello = "hello world from bean";
 
-    public String getSayHello() {
+    public String getSayHello()
+    {
         return sayHello;
     }
 
-    public void setSayHello(String sayHello) {
+    public void setSayHello(String sayHello)
+    {
         this.sayHello = sayHello;
     }
 
-    public void doAction() {
+    public void doAction()
+    {
         sayHello = "Action Performed";
     }
 }

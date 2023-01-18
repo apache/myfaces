@@ -18,20 +18,21 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.showcase.view;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @Named
 @RequestScoped
-public class MyBacking {
-    
+public class MyBacking
+{
+
     @Inject
     CarService carService;
-    
+
     private MyCollection<Car> cars;
-    
+
     @PostConstruct
     public void init()
     {
@@ -42,13 +43,15 @@ public class MyBacking {
         }
     }
 
-    public MyCollection<Car> getCars() {
+    public MyCollection<Car> getCars()
+    {
         return cars;
     }
 
-    public void setCars(MyCollection<Car> cars) {
+    public void setCars(MyCollection<Car> cars)
+    {
         this.cars = cars;
     }
-    
-    
+
+
 }

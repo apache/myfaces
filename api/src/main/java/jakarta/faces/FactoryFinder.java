@@ -213,7 +213,7 @@ public final class FactoryFinder
                 //Obtain the FactoryFinderProvider instance for this context.
                 Object ffp = _FactoryFinderProviderFactory
                         .FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD
-                        .invoke(factoryFinderProviderFactoryInstance, null);
+                        .invoke(factoryFinderProviderFactoryInstance);
                 
                 //Call getFactory method and pass the params
                 return _FactoryFinderProviderFactory
@@ -537,7 +537,7 @@ public final class FactoryFinder
                 //Obtain the FactoryFinderProvider instance for this context.
                 Object ffp = _FactoryFinderProviderFactory
                         .FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD
-                        .invoke(factoryFinderProviderFactoryInstance, null);
+                        .invoke(factoryFinderProviderFactoryInstance);
                 
                 //Call getFactory method and pass the params
                 _FactoryFinderProviderFactory
@@ -620,7 +620,7 @@ public final class FactoryFinder
                 //Obtain the FactoryFinderProvider instance for this context.
                 Object ffp = _FactoryFinderProviderFactory
                         .FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD
-                        .invoke(factoryFinderProviderFactoryInstance, null);
+                        .invoke(factoryFinderProviderFactoryInstance);
                 
                 //Call getFactory method and pass the params
                 _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_RELEASE_FACTORIES_METHOD.invoke(ffp, null);

@@ -20,29 +20,29 @@ package org.apache.myfaces.core.extensions.quarkus.runtime.scopes;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.flow.FlowScoped;
 
-import org.apache.myfaces.flow.cdi.FlowScopedContextImpl;
+import org.apache.myfaces.flow.cdi.FlowScopeContext;
 
 import io.quarkus.arc.InjectableContext;
 import org.apache.myfaces.core.extensions.quarkus.runtime.MyFacesRecorder;
 
 public class QuarkusFlowScopedContext implements InjectableContext
 {
-    private FlowScopedContextImpl wrapped;
+    private FlowScopeContext wrapped;
 
     public QuarkusFlowScopedContext()
     {
     }
 
-    public FlowScopedContextImpl getWrapped()
+    public FlowScopeContext getWrapped()
     {
         if (wrapped == null)
         {
-            wrapped = new FlowScopedContextImpl(CDI.current().getBeanManager(), MyFacesRecorder.FLOW_REFERENCES);
+            wrapped = new FlowScopeContext(CDI.current().getBeanManager(), MyFacesRecorder.FLOW_REFERENCES);
         }
         return wrapped;
     }

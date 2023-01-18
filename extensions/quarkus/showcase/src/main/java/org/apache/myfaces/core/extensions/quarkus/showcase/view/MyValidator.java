@@ -23,21 +23,23 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @FacesValidator(value = "myVal", managed = true)
-public class MyValidator implements Validator<String>{
-    
+public class MyValidator implements Validator<String>
+{
+
     @Inject
     CarService carService;
-    
+
     public MyValidator()
     {
     }
-    
+
     @Override
-    public void validate(FacesContext context, UIComponent component, String value) throws ValidatorException {
+    public void validate(FacesContext context, UIComponent component, String value) throws ValidatorException
+    {
         System.err.println("############### validate: " + value + " (carService=" + carService + ")");
     }
-    
+
 }

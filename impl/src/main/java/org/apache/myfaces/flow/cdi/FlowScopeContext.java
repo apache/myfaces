@@ -152,24 +152,20 @@ public class FlowScopeContext implements Context
             }
         }
         
-        List<String> activeFlowMapKeys = getStorageHolder(facesContext).getActiveFlowMapKeys(facesContext);
-        for (String flowMapKey : activeFlowMapKeys)
+        ContextualStorage storage = getContextualStorage(facesContext, true,
+                getCurrentClientWindowFlowId(facesContext));
+        Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
+        ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
+        if (contextualInstanceInfo != null)
         {
-            ContextualStorage storage = getContextualStorage(facesContext, false, flowMapKey);
-            if (storage == null)
+            @SuppressWarnings("unchecked")
+            final T instance = (T) contextualInstanceInfo.getContextualInstance();
+            if (instance != null)
             {
-                continue;
+                return instance;
             }
-
-            Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
-            ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
-            if (contextualInstanceInfo == null)
-            {
-                continue;
-            }
-
-            return (T) contextualInstanceInfo.getContextualInstance();
         }
+        
         return null;
     }
 
@@ -240,24 +236,6 @@ public class FlowScopeContext implements Context
 
             return storage.createContextualInstance(bean, creationalContext);
         }
-
-        List<String> activeFlowMapKeys = getStorageHolder(facesContext).getActiveFlowMapKeys(facesContext);
-        for (String flowMapKey : activeFlowMapKeys)
-        {
-            ContextualStorage storage = getContextualStorage(facesContext, true, flowMapKey);
-
-            Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
-            ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
-            if (contextualInstanceInfo != null)
-            {
-                @SuppressWarnings("unchecked")
-                final T instance = (T) contextualInstanceInfo.getContextualInstance();
-                if (instance != null)
-                {
-                    return instance;
-                }
-            }
-        }
         
         ContextualStorage storage = getContextualStorage(facesContext, true,
                 getCurrentClientWindowFlowId(facesContext));
@@ -285,6 +263,35 @@ public class FlowScopeContext implements Context
         }
 
         return getStorageHolder(context).getContextualStorage(clientWindowFlowId, createIfNotExist);
+    }
+
+    /**
+     * Destroy the Contextual Instance of the given Bean.
+     * @param bean dictates which bean shall get cleaned up
+     * @return <code>true</code> if the bean was destroyed, <code>false</code> if there was no such bean.
+     */
+    public boolean destroy(Contextual bean)
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        List<String> activeFlowMapKeys = getStorageHolder(facesContext).getActiveFlowMapKeys(facesContext);
+        for (String flowMapKey : activeFlowMapKeys)
+        {
+            ContextualStorage storage = getContextualStorage(facesContext, false, flowMapKey);
+            if (storage == null)
+            {
+                continue;
+            }
+            ContextualInstanceInfo<?> contextualInstanceInfo = storage.getStorage().get(storage.getBeanKey(bean));
+
+            if (contextualInstanceInfo == null)
+            {
+                continue;
+            }
+
+            bean.destroy(contextualInstanceInfo.getContextualInstance(), contextualInstanceInfo.getCreationalContext());
+            return true;
+        }
+        return false;
     }
 
     public static void destroyAll(FacesContext facesContext)

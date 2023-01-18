@@ -25,15 +25,18 @@ import jakarta.faces.convert.ConverterException;
 import jakarta.faces.convert.FacesConverter;
 
 @FacesConverter(managed = false, value = "myConverter")
-public class MyConverter implements Converter<Object>{
+public class MyConverter implements Converter<Object>
+{
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
 }

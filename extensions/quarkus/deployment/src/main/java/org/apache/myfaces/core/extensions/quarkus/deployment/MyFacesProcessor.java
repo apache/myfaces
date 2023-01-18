@@ -32,29 +32,21 @@ import jakarta.faces.render.FacesBehaviorRenderer;
 import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.view.ViewScoped;
-import jakarta.faces.view.facelets.FaceletsResourceResolver;
+import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.webapp.FacesServlet;
 
 import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
 import org.apache.myfaces.cdi.FacesScoped;
-import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
-import org.apache.myfaces.cdi.JsfArtifactProducer;
+import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
+import org.apache.myfaces.cdi.FacesArtifactProducer;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
-import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory;
 import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
-import org.apache.myfaces.flow.cdi.FlowBuilderFactoryBean;
-import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
-import org.apache.myfaces.push.cdi.PushContextFactoryBean;
-import org.apache.myfaces.push.cdi.WebsocketApplicationBean;
-import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
-import org.apache.myfaces.push.cdi.WebsocketSessionBean;
-import org.apache.myfaces.push.cdi.WebsocketViewBean;
 import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.eclipse.microprofile.config.Config;
@@ -65,9 +57,8 @@ import org.jboss.jandex.DotName;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
-import io.quarkus.arc.deployment.BeanRegistrarBuildItem;
 import io.quarkus.arc.deployment.BeanRegistrationPhaseBuildItem;
-import io.quarkus.arc.deployment.ContextRegistrarBuildItem;
+import io.quarkus.arc.deployment.ContextRegistrationPhaseBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -98,8 +89,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.el.ELResolver;
-import javax.enterprise.inject.Produces;
+import jakarta.el.ELResolver;
+import jakarta.enterprise.inject.Produces;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIComponent;
@@ -116,17 +107,23 @@ import jakarta.faces.view.facelets.ConverterHandler;
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.TagHandler;
 import jakarta.faces.view.facelets.ValidatorHandler;
-import javax.inject.Named;
-import javax.servlet.MultipartConfigElement;
+import jakarta.inject.Named;
+import jakarta.servlet.MultipartConfigElement;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.el.ExpressionFactoryImpl;
 import org.apache.myfaces.application.ApplicationImplEventManager;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
+import org.apache.myfaces.cdi.view.ViewScopeContextualStorageHolder;
+import org.apache.myfaces.cdi.view.ViewScopeEventListenerBridge;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProvider;
 import org.apache.myfaces.el.DefaultELResolverBuilder;
+import org.apache.myfaces.flow.cdi.FlowScopeContextualStorageHolder;
+import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilder;
+import org.apache.myfaces.push.cdi.WebsocketScopeManager;
+import org.apache.myfaces.push.cdi.WebsocketSessionManager;
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.spi.FactoryFinderProviderFactory;
 import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
@@ -137,8 +134,7 @@ import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
 import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
 import org.apache.myfaces.view.facelets.tag.MethodRule;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
-import org.apache.myfaces.webapp.AbstractFacesInitializer;
-import org.apache.myfaces.webapp.DefaultFacesInitilializer;
+import org.apache.myfaces.webapp.FacesInitializerImpl;
 import org.apache.myfaces.webapp.MyFacesContainerInitializer;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
@@ -153,19 +149,17 @@ class MyFacesProcessor
 
     private static final Class[] BEAN_CLASSES =
     {
-            JsfApplicationArtifactHolder.class,
-            JsfArtifactProducer.class,
+            FacesApplicationArtifactHolder.class,
+            FacesArtifactProducer.class,
             FacesConfigBeanHolder.class,
             FacesDataModelManager.class,
-            ViewScopeBeanHolder.class,
+            ViewScopeContextualStorageHolder.class,
+            ViewScopeEventListenerBridge.class,
             CdiAnnotationProviderExtension.class,
-            PushContextFactoryBean.class,
-            WebsocketChannelTokenBuilderBean.class,
-            WebsocketSessionBean.class,
-            WebsocketViewBean.class,
-            WebsocketApplicationBean.class,
-            FlowBuilderFactoryBean.class,
-            FlowScopeBeanHolder.class
+            WebsocketChannelTokenBuilder.class,
+            WebsocketSessionManager.class,
+            WebsocketScopeManager.class,
+            FlowScopeContextualStorageHolder.class
     };
 
     private static final String[] BEAN_DEFINING_ANNOTATION_CLASSES =
@@ -178,7 +172,7 @@ class MyFacesProcessor
             FacesRenderer.class.getName(),
             NamedEvent.class.getName(),
             FacesBehaviorRenderer.class.getName(),
-            FaceletsResourceResolver.class.getName(),
+            FaceletHandler.class.getName(),
             FlowDefinition.class.getName()
     };
 
@@ -253,26 +247,47 @@ class MyFacesProcessor
     }
 
     @BuildStep
-    void buildCdiScopes(BuildProducer<ContextRegistrarBuildItem> contextRegistrar) throws IOException
+    ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem registerViewScopedContext(
+            ContextRegistrationPhaseBuildItem phase)
     {
-        contextRegistrar.produce(new ContextRegistrarBuildItem(registrationContext -> {
-            registrationContext.configure(ViewScoped.class)
-                    .normal()
-                    .contextClass(QuarkusViewScopeContext.class)
-                    .done();
-            registrationContext.configure(FacesScoped.class)
-                    .normal()
-                    .contextClass(QuarkusFacesScopeContext.class)
-                    .done();
-            registrationContext.configure(ViewTransientScoped.class)
-                    .normal()
-                    .contextClass(QuarkusViewTransientScopeContext.class)
-                    .done();
-            registrationContext.configure(FlowScoped.class)
-                    .normal()
-                    .contextClass(QuarkusFlowScopedContext.class)
-                    .done();
-        }, ViewScoped.class, FacesScoped.class, ViewTransientScoped.class, FlowScoped.class));
+            return new ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem(
+                    phase.getContext()
+                            .configure(ViewScoped.class)
+                            .normal()
+                            .contextClass(QuarkusViewScopeContext.class));
+    }
+
+    @BuildStep
+    ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem registerFacesScopedContext(
+            ContextRegistrationPhaseBuildItem phase)
+    {
+            return new ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem(
+                    phase.getContext()
+                            .configure(FacesScoped.class)
+                            .normal()
+                            .contextClass(QuarkusFacesScopeContext.class));
+    }
+ 
+    @BuildStep
+    ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem registerViewTransientScopedContext(
+            ContextRegistrationPhaseBuildItem phase)
+    {
+            return new ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem(
+                    phase.getContext()
+                            .configure(ViewTransientScoped.class)
+                            .normal()
+                            .contextClass(QuarkusViewTransientScopeContext.class));
+    }
+
+    @BuildStep
+    ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem registerFlowScopedContext(
+            ContextRegistrationPhaseBuildItem phase)
+    {
+            return new ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem(
+                    phase.getContext()
+                            .configure(FlowScoped.class)
+                            .normal()
+                            .contextClass(QuarkusFlowScopedContext.class));
     }
 
     @BuildStep
@@ -345,7 +360,6 @@ class MyFacesProcessor
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
     void buildFacesDataModels(MyFacesRecorder recorder,
-            BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             CombinedIndexBuildItem combinedIndex) throws IOException
     {
         for (AnnotationInstance ai : combinedIndex.getIndex()
@@ -399,7 +413,7 @@ class MyFacesProcessor
 
         classNames.addAll(collectSubclasses(combinedIndex, Renderer.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ClientBehaviorRenderer.class.getName()));
-        classNames.addAll(collectSubclasses(combinedIndex, javax.el.ValueExpression.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, jakarta.el.ValueExpression.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, SystemEvent.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, FacesContext.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, Application.class.getName()));
@@ -425,7 +439,7 @@ class MyFacesProcessor
                 MyFacesContainerInitializer.class,
                 ExceptionQueuedEventContext.class,
                 FacesConfigurator.class,
-                DefaultFacesInitilializer.class,
+                FacesInitializerImpl.class,
                 TagLibraryConfig.class,
                 String.class,
                 ViewScopeProxyMap.class,
@@ -462,12 +476,18 @@ class MyFacesProcessor
         classNames.addAll(collectImplementors(combinedIndex, Validator.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, Behavior.class.getName()));
 
+        // Register CDI produced servlet objects for EL #{session} and #{request}
+        classes.addAll(Arrays.asList(
+                io.undertow.servlet.spec.HttpServletRequestImpl.class,
+                io.undertow.servlet.spec.HttpServletResponseImpl.class,
+                io.undertow.servlet.spec.HttpSessionImpl.class));
+
         classes.addAll(Arrays.asList(ClassUtils.class,
                 FactoryFinderProviderFactory.class,
                 ComponentSupport.class,
                 QuarkusFactoryFinderProvider.class,
                 DefaultELResolverBuilder.class,
-                AbstractFacesInitializer.class,
+                FacesInitializerImpl.class,
                 ExternalContextUtils.class,
                 BeanEntry.class));
 
@@ -485,11 +505,11 @@ class MyFacesProcessor
                                CombinedIndexBuildItem combinedIndex)
     {
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, true,
-                "javax.faces.context._MyFacesExternalContextHelper"));
+                "jakarta.faces.context._MyFacesExternalContextHelper"));
 
-        // Register ViewScopeBeanHolder to be initialized at runtime, it uses a static random
+        // Register ViewScopeContextualStorageHolder to be initialized at runtime, it uses a static random
         NativeImageConfigBuildItem.Builder builder = NativeImageConfigBuildItem.builder();
-        builder.addRuntimeInitializedClass(ViewScopeBeanHolder.class.getName());
+        builder.addRuntimeInitializedClass(ViewScopeContextualStorageHolder.class.getName());
 
         return builder.build();
     }
@@ -501,9 +521,11 @@ class MyFacesProcessor
         nativeImageResourceProducer.produce(new NativeImageResourceBuildItem(
                 "META-INF/rsc/myfaces-dev-error.xml",
                 "META-INF/rsc/myfaces-dev-debug.xml",
+                "META-INF/rsc/myfaces-dev-error-include.xhtml",
                 "org/apache/myfaces/resource/default.dtd",
                 "org/apache/myfaces/resource/datatypes.dtd",
                 "META-INF/web-fragment.xml",
+                "META-INF/standard-faces-config.xml",
                 "META-INF/resources/org/apache/myfaces/windowId/windowhandler.html",
                 "org/apache/myfaces/resource/facelet-taglib_1_0.dtd",
                 "org/apache/myfaces/resource/javaee_5.xsd",
@@ -521,8 +543,7 @@ class MyFacesProcessor
                 "org/apache/myfaces/resource/web-facesconfig_3_0.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_4_0.dtd",
                 "org/apache/myfaces/resource/xml.xsd",
-                "META-INF/rsc/myfaces-dev-error-include.xml",
-                "META-INF/services/javax.servlet.ServletContainerInitializer"));
+                "META-INF/services/jakarta.servlet.ServletContainerInitializer"));
 
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_ar"));
@@ -543,9 +564,9 @@ class MyFacesProcessor
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_CN"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_HK"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_TW"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.el.PrivateMessages"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.servlet.LocalStrings"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.el.LocalStrings"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.el.PrivateMessages"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.servlet.LocalStrings"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.el.LocalStrings"));
     }
 
     public List<String> collectSubclasses(CombinedIndexBuildItem combinedIndex, String className)
@@ -753,7 +774,29 @@ class MyFacesProcessor
 
 
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_cs"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_de"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_el"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_en"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_es"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_fa"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_fr"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_hi"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_in"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_it"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ka"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ko"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_lv"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_nl"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_no"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_pl"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_pt"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ro"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ru"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_sk"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_sv"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_tr"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_zh"));
     }
 
     @BuildStep
@@ -763,10 +806,23 @@ class MyFacesProcessor
             CombinedIndexBuildItem combinedIndex)
     {
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, false,
-                "org.primefaces.util.ComponentUtils","org.primefaces.util.ComponentTraversalUtils",
-                "org.primefaces.expression.SearchExpressionUtils","org.primefaces.util.EscapeUtils",
-                "org.primefaces.util.SecurityUtils",
-                "org.primefaces.util.LangUtils"));
+                "org.primefaces.expression.SearchExpressionUtils",
+                "org.primefaces.util.AgentUtils",
+                "org.primefaces.util.BeanUtils",
+                "org.primefaces.util.CalendarUtils",
+                "org.primefaces.util.ChartUtils",
+                "org.primefaces.util.ComponentTraversalUtils",
+                "org.primefaces.util.ComponentUtils",
+                "org.primefaces.util.CompositeUtils",
+                "org.primefaces.util.ELUtils",
+                "org.primefaces.util.EscapeUtils",
+                "org.primefaces.util.FileUploadUtils",
+                "org.primefaces.util.GridLayoutUtils",
+                "org.primefaces.util.IOUtils",
+                "org.primefaces.util.LangUtils",
+                "org.primefaces.util.LocaleUtils",
+                "org.primefaces.util.ResourceUtils",
+                "org.primefaces.util.SecurityUtils"));
 
         reflectiveClass.produce(new ReflectiveClassBuildItem(false, false,
                 "org.primefaces.config.PrimeEnvironment",

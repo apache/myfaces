@@ -61,7 +61,8 @@ public class ResponseMockup22 extends ResponseMockup
             root.addElement(changes);
             out.println(root.toString());
 
-        } else
+        }
+        else
         {
             super.processRequest(request, response);
         }

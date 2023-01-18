@@ -19,28 +19,32 @@
 package org.apache.myfaces.core.extensions.quarkus.showcase.view;
 
 import java.io.Serializable;
-import javax.enterprise.context.SessionScoped;
+
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.annotation.ManagedProperty;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @Named
 @SessionScoped
-public class InputController implements Serializable{
-    
+public class InputController implements Serializable
+{
+
     @Inject
     @ManagedProperty(value = "#{carService}")
     CarService carService;
-    
+
     private String val;
 
-    public String getVal() {
+    public String getVal()
+    {
         System.err.println("carService: " + carService);
         return val;
     }
 
-    public void setVal(String val) {
+    public void setVal(String val)
+    {
         this.val = val;
     }
-    
+
 }

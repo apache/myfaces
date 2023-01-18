@@ -185,6 +185,25 @@ public class ViewScopeContext implements Context
         }
     }
 
+    public boolean destroy(Contextual bean)
+    {
+        ViewScopeContextualStorage storage = getContextualStorage(FacesContext.getCurrentInstance(), false);
+        if (storage == null)
+        {
+            return false;
+        }
+        
+        ContextualInstanceInfo<?> contextualInstanceInfo = storage.getStorage().get(storage.getBeanKey(bean));
+        if (contextualInstanceInfo == null)
+        {
+            return false;
+        }
+
+        bean.destroy(contextualInstanceInfo.getContextualInstance(), contextualInstanceInfo.getCreationalContext());
+
+        return true;
+    }
+    
     public static void destroyAll(FacesContext facesContext)
     {
         ViewScopeContextualStorageHolder storageHolder = ViewScopeContextualStorageHolder.getInstance(facesContext);

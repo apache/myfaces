@@ -19,18 +19,20 @@
 package org.apache.myfaces.core.extensions.quarkus.showcase.view;
 
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
+
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.LazyDataModel;
 
 @Named("dtLazyView")
 @ViewScoped
-public class LazyView implements Serializable {
+public class LazyView implements Serializable
+{
 
     private LazyDataModel<Car> lazyModel;
 
@@ -42,40 +44,49 @@ public class LazyView implements Serializable {
     CarService service;
 
     @PostConstruct
-    public void init() {
+    public void init()
+    {
         lazyModel = new LazyCarDataModel(service.createCars(200));
     }
 
-    public LazyDataModel<Car> getLazyModel() {
+    public LazyDataModel<Car> getLazyModel()
+    {
         return lazyModel;
     }
 
-    public Car getSelectedCar() {
+    public Car getSelectedCar()
+    {
         return selectedCar;
     }
 
-    public void setSelectedCar(Car selectedCar) {
+    public void setSelectedCar(Car selectedCar)
+    {
         this.selectedCar = selectedCar;
     }
 
-    public void setService(CarService service) {
+    public void setService(CarService service)
+    {
         this.service = service;
     }
 
-    public void onRowSelect(SelectEvent event) {
+    public void onRowSelect(SelectEvent event)
+    {
         FacesMessage msg = new FacesMessage("Car Selected", ((Car) event.getObject()).getId());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    public String getInputVal() {
+    public String getInputVal()
+    {
         return inputVal;
     }
 
-    public void setInputVal(String inputVal) {
+    public void setInputVal(String inputVal)
+    {
         this.inputVal = inputVal;
     }
 
-    public void saveInput() {
+    public void saveInput()
+    {
         System.out.println("Input val is: " + inputVal);
         System.out.println("Input val is null?" + (inputVal == null));
     }

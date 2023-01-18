@@ -20,12 +20,10 @@ package org.apache.myfaces.core.extensions.quarkus.runtime;
 
 import java.util.Map;
 
-import javax.enterprise.inject.spi.CDI;
-import jakarta.faces.annotation.FacesConfig;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.model.DataModel;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
-import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
 import org.apache.myfaces.spi.FactoryFinderProviderFactory;
 import org.apache.myfaces.webapp.FacesInitializerImpl;
@@ -38,23 +36,28 @@ import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFind
  */
 public class QuarkusFacesInitializer extends FacesInitializerImpl
 {
-
+    private static boolean initialized = false;
+    
     @Override
     public void initFaces(ServletContext servletContext)
     {
-        FacesConfigBeanHolder facesConfigBeanHolder = CDI.current().select(FacesConfigBeanHolder.class).get();
-        facesConfigBeanHolder.setFacesConfigVersion(FacesConfig.Version.JSF_2_3);
-
-        FactoryFinderProviderFactory.setInstance(new QuarkusFactoryFinderProviderFactory());
-
-        // see FacesDataModelExtension
-        FacesDataModelManager facesDataModelManager = CDI.current().select(FacesDataModelManager.class).get();
-        for (Map.Entry<Class<? extends DataModel>, Class<?>> typeInfo : MyFacesRecorder.FACES_DATA_MODELS.entrySet())
+        // DIRTY HACK as somehow quarkus initializes a second time?
+        if (!initialized)
         {
-            facesDataModelManager.addFacesDataModel(typeInfo.getValue(), typeInfo.getKey());
-        }
-        facesDataModelManager.init();
+            initialized = true;
 
-        super.initFaces(servletContext);
+            FactoryFinderProviderFactory.setInstance(new QuarkusFactoryFinderProviderFactory());
+
+            // see FacesDataModelExtension
+            FacesDataModelManager facesDataModelManager = CDI.current().select(FacesDataModelManager.class).get();
+            for (Map.Entry<Class<? extends DataModel>, Class<?>> typeInfo
+                    : MyFacesRecorder.FACES_DATA_MODELS.entrySet())
+            {
+                facesDataModelManager.addFacesDataModel(typeInfo.getValue(), typeInfo.getKey());
+            }
+            facesDataModelManager.init();
+
+            super.initFaces(servletContext);
+        }
     }
 }

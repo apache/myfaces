@@ -21,13 +21,15 @@ package org.apache.myfaces.core.extensions.quarkus.showcase.view;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
+
 import java.io.Serializable;
 
 @RequestScoped
 @Named
-public class FileView implements Serializable {
+public class FileView implements Serializable
+{
 
     private UploadedFile file;
 
@@ -35,24 +37,29 @@ public class FileView implements Serializable {
     {
         return "blub";
     }
-    
-    public void upload() {
+
+    public void upload()
+    {
         System.out.println("simple file upload start");
-        if (file != null) {
+        if (file != null)
+        {
             System.out.println(file.getFileName());
         }
     }
 
-    public void handleFileUpload(FileUploadEvent event){
+    public void handleFileUpload(FileUploadEvent event)
+    {
         System.out.println("auto file upload start");
         System.out.println(event.getFile().getFileName());
     }
 
-    public UploadedFile getFile() {
+    public UploadedFile getFile()
+    {
         return file;
     }
 
-    public void setFile(UploadedFile file) {
+    public void setFile(UploadedFile file)
+    {
         this.file = file;
     }
 }

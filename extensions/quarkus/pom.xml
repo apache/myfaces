@@ -37,13 +37,11 @@
     <modules>
         <module>deployment</module>
         <module>runtime</module>
-        <!--
         <module>showcase</module>
-        -->
     </modules>
 
     <properties>
-        <quarkus.version>2.12.2.Final</quarkus.version>
+        <quarkus.version>3.0.0.Alpha2</quarkus.version>
     </properties>
 
     <build>

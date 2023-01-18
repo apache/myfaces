@@ -20,7 +20,7 @@ package org.apache.myfaces.core.extensions.quarkus.runtime.producer;
 
 import java.util.Map;
 
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 

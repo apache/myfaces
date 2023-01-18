@@ -139,8 +139,8 @@ public abstract class FactoryFinderProviderFactory
      */
     public static void setInstance(FactoryFinderProviderFactory instance)
     {
-        
-        
+
+
         // Now we need to make sure the volatile var FactoryFinder._initialized is
         // set to false, to make sure the right factory is fetched after this method
         // exists. It is just a fail-safe, because after all if the conditions to make 

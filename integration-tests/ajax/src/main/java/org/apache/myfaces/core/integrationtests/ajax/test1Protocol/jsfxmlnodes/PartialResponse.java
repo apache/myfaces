@@ -27,21 +27,25 @@ import java.util.List;
  * @author Werner Punz(latest modification by $Author: werpu $)
  * @version $Revision: 1.2 $ $Date: 2009/04/17 10:27:53 $
  */
-public class PartialResponse {
+public class PartialResponse
+{
 
     List<Object> elements = new LinkedList<Object>();
 
-    public void addElement(Object element) {
+    public void addElement(Object element)
+    {
         elements.add(element);
     }
 
 
-    public String toString() {
+    public String toString()
+    {
         StringBuilder retVal = new StringBuilder();
         retVal.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
         retVal.append("<partial-response>");
 
-        for (Object element : elements) {
+        for (Object element : elements)
+        {
             retVal.append(element.toString());
         }
 

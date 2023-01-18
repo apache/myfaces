@@ -60,7 +60,7 @@ jobs:
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: 11
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -70,7 +70,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: |
-          if ! mvn -B -V clean verify -Dformats=XML -f pom.xml; then
+          if ! mvn -B -V clean verify checkstyle:check apache-rat:check -Dformats=XML -f pom.xml; then
             find . \( -path '*/target/surefire-reports/*.xml' -o -path '*/target/failsafe-reports/*.xml' -o -path '*/target/rat.txt' -o -path '*/target/checkstyle-result.xml' -o -path '*/target/dependency-check-report.xml' \) | zip -q reports.zip -@
             exit 1
           fi

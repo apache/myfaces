@@ -152,7 +152,7 @@ class _FactoryFinderProviderFactory
         {
             try
             {
-                return FACTORY_FINDER_PROVIDER_GET_INSTANCE_METHOD.invoke(FACTORY_FINDER_PROVIDER_FACTORY_CLASS, null);
+                return FACTORY_FINDER_PROVIDER_GET_INSTANCE_METHOD.invoke(FACTORY_FINDER_PROVIDER_FACTORY_CLASS);
             }
             catch (Exception e)
             {
