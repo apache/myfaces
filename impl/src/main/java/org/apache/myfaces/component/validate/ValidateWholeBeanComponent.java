@@ -33,10 +33,8 @@ import org.apache.myfaces.util.WebConfigParamUtils;
 @JSFComponent
 public class ValidateWholeBeanComponent extends UIInput
 {
-    static public final String COMPONENT_FAMILY =
-        "jakarta.faces.Input";
-    static public final String COMPONENT_TYPE =
-        "org.apache.myfaces.component.validate.ValidateWholeBean";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.Input";
+    static public final String COMPONENT_TYPE = "org.apache.myfaces.component.validate.ValidateWholeBean";
 
     public ValidateWholeBeanComponent()
     {

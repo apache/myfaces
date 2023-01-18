@@ -584,13 +584,15 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                     {
                         String facetName = (String) parent.getAttributes().get(
                                 org.apache.myfaces.view.facelets.tag.faces.core.FacetHandler.KEY);
+
                         // Insert children
                         List<UIComponent> children = new ArrayList<>(innerCompositeComponent.getChildCount());
                         while (innerCompositeComponent.getChildCount() > 0)
                         {
                             children.add(innerCompositeComponent.getChildren().remove(0));
                         }
-                        while (children.size() > 0)
+
+                        while (!children.isEmpty())
                         {
                             UIComponent child = children.remove(0);
                             child.getAttributes().put(InsertChildrenHandler.INSERT_CHILDREN_USED, Boolean.TRUE);
@@ -626,8 +628,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                         while (parent.getChildCount()-i > 0)
                         {
                             UIComponent child = parent.getChildren().get(i);
-                            if (Boolean.TRUE.equals(child.getAttributes().get(
-                                    InsertChildrenHandler.INSERT_CHILDREN_USED)))
+                            if (Boolean.TRUE.equals(
+                                    child.getAttributes().get(InsertChildrenHandler.INSERT_CHILDREN_USED)))
                             {
                                 children.add(parent.getChildren().remove(i));
                             }
@@ -639,7 +641,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                     }
                     else
                     {
-                        children = new ArrayList<UIComponent>();
+                        children = new ArrayList<>();
                         UIComponent child = parent.getFacet(facetName);
                         if (Boolean.TRUE.equals(child.getAttributes().get(InsertChildrenHandler.INSERT_CHILDREN_USED)))
                         {
@@ -665,7 +667,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                             }
                         }
                     }
-                    while (children.size() > 0)
+
+                    while (!children.isEmpty())
                     {
                         UIComponent child = children.remove(0);
                         if (facetName != null)

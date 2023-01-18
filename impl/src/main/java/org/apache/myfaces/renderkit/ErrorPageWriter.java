@@ -562,7 +562,7 @@ public final class ErrorPageWriter
             }
         }
 
-        if (list != null && list.size() > 0)
+        if (list != null && !list.isEmpty())
         {
             return list;
         }
@@ -731,7 +731,7 @@ public final class ErrorPageWriter
         }
         if (highlightId != null)
         {
-            if ((highlightId.size() > 0))
+            if (highlightId.isEmpty())
             {
                 String id = c.getId();
                 if (highlightId.contains(id))

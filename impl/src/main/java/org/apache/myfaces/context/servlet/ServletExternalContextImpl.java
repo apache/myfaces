@@ -913,7 +913,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         }
 
         //add/update with new params on the paramMap
-        if (parameters != null && parameters.size() > 0)
+        if (parameters != null && !parameters.isEmpty())
         {
             for (Map.Entry<String, List<String>> pair : parameters.entrySet())
             {
@@ -953,7 +953,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             }
         }
 
-        boolean hasParams = paramMap != null && paramMap.size() > 0;
+        boolean hasParams = paramMap != null && !paramMap.isEmpty();
 
         if (!hasParams && fragment == null) 
         {

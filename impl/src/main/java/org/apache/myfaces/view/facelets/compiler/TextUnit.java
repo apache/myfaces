@@ -72,11 +72,11 @@ final class TextUnit extends CompilationUnit
         this.id = id;
         this.buffer = new StringBuffer();
         this.textBuffer = new StringBuffer();
-        this.instructionBuffer = new ArrayList<Instruction>();
-        this.tags = new Stack<Tag>();
-        this.children = new ArrayList<Object>();
+        this.instructionBuffer = new ArrayList<>();
+        this.tags = new Stack<>();
+        this.children = new ArrayList<>();
         this.startTagOpen = false;
-        this.messages = new ArrayList<Object>(4);
+        this.messages = new ArrayList<>(4);
         this.escapeInlineText = escapeInlineText;
         this.compressSpaces = compressSpaces;
         this.location = location;
@@ -203,8 +203,8 @@ final class TextUnit extends CompilationUnit
                         }
                         else
                         {
-                            if (instructionBuffer.size() > 0 && 
-                                !(instructionBuffer.get(instructionBuffer.size()-1) instanceof LiteralXMLInstruction))
+                            if (!instructionBuffer.isEmpty() && 
+                                !(instructionBuffer.get(instructionBuffer.size() - 1) instanceof LiteralXMLInstruction))
                             {
                                 s = compressELText(s);
                             }
@@ -335,7 +335,7 @@ final class TextUnit extends CompilationUnit
 
     private void finishStartTag()
     {
-        if (this.tags.size() > 0 && this.startTagOpen)
+        if (!this.tags.isEmpty() && this.startTagOpen)
         {
             this.buffer.append('>');
             this.startTagOpen = false;
@@ -409,13 +409,13 @@ final class TextUnit extends CompilationUnit
             }
             catch (ELException e)
             {
-                if (this.tags.size() > 0)
+                if (this.tags.isEmpty())
                 {
-                    throw new TagException((Tag) this.tags.peek(), e.getMessage());
+                    throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
                 }
                 else
                 {
-                    throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
+                    throw new TagException((Tag) this.tags.peek(), e.getMessage());
                 }
             }
         }
@@ -444,15 +444,6 @@ final class TextUnit extends CompilationUnit
         {
             return "";
         }
-        /*
-        if (i == s.length() - 1)
-        {
-            return s;
-        }
-        else
-        {
-            return s.substring(0, i + 1);
-        }*/
     }
     
     final static String compressELText(String text)
