@@ -384,6 +384,7 @@ public class AjaxHandler extends TagHandler implements
             {
                 String separatorChar = String.valueOf(getSeparatorChar(context));
 
+                // execute is required
                 Collection<String> execute = ajaxBehavior.getExecute();              
                 if (execute.isEmpty() || execute.contains("@this"))
                 {
@@ -396,8 +397,9 @@ public class AjaxHandler extends TagHandler implements
                     ajaxBehavior.setExecute(newExecute);
                 }
 
+                // render is optional
                 Collection<String> render = ajaxBehavior.getRender();              
-                if (render.isEmpty() || render.contains("@this"))
+                if (render.contains("@this"))
                 {
                     Collection<String> newRender = new ArrayList<>(render);
                     newRender.remove("@this");
