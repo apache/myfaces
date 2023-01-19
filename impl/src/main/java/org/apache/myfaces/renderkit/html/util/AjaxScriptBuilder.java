@@ -249,7 +249,7 @@ public class AjaxScriptBuilder
                     }
                 }
 
-                if (uiParams != null && uiParams.size() > 0)
+                if (uiParams != null && !uiParams.isEmpty())
                 {
                     for (int i = 0, size = uiParams.size(); i < size; i++)
                     {

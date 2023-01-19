@@ -40,7 +40,7 @@ public class RenderKitFactoryImpl extends RenderKitFactory
 {
     private static final Logger log = Logger.getLogger(RenderKitFactoryImpl.class.getName());
 
-    private Map<String, RenderKit> _renderkits = new HashMap<>();
+    private Map<String, RenderKit> renderkits = new HashMap<>();
 
     public RenderKitFactoryImpl()
     {
@@ -48,7 +48,7 @@ public class RenderKitFactoryImpl extends RenderKitFactory
 
     public void purgeRenderKit()
     {
-        _renderkits.clear();
+        renderkits.clear();
     }
 
     @Override
@@ -59,12 +59,12 @@ public class RenderKitFactoryImpl extends RenderKitFactory
 
         if (log.isLoggable(Level.INFO))
         {
-            if (_renderkits.containsKey(renderKitId))
+            if (renderkits.containsKey(renderKitId))
             {
                 log.info("RenderKit with renderKitId '" + renderKitId + "' was replaced.");
             }
         }
-        _renderkits.put(renderKitId, renderKit);
+        renderkits.put(renderKitId, renderKit);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class RenderKitFactoryImpl extends RenderKitFactory
     {
         Assert.notNull(renderKitId, "renderKitId");
 
-        RenderKit renderkit = _renderkits.get(renderKitId);
+        RenderKit renderkit = renderkits.get(renderKitId);
         if (renderkit == null)
         {
             // throw new IllegalArgumentException("Unknown RenderKit '" + renderKitId + "'.");
@@ -88,6 +88,6 @@ public class RenderKitFactoryImpl extends RenderKitFactory
     @Override
     public Iterator<String> getRenderKitIds()
     {
-        return _renderkits.keySet().iterator();
+        return renderkits.keySet().iterator();
     }
 }

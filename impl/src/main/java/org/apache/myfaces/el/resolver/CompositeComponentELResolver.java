@@ -262,8 +262,7 @@ public final class CompositeComponentELResolver extends ELResolver
     }
 
     @Override
-    public void setValue(ELContext context, Object base, Object property,
-            Object value)
+    public void setValue(ELContext context, Object base, Object property, Object value)
     {
         // Per the spec, do nothing.
     }

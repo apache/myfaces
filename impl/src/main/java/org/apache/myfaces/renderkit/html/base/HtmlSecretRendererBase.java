@@ -68,6 +68,7 @@ public class HtmlSecretRendererBase extends HtmlRenderer
       renderInputBegin(facesContext, uiComponent);
     }
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {

@@ -113,7 +113,7 @@ public abstract class Compiler
 
     public final TagDecorator createTagDecorator()
     {
-        if (this.decorators.size() > 0)
+        if (!this.decorators.isEmpty())
         {
             return new BaseMultipleTagDecorator(new DefaultTagDecorator(), 
                 new CompositeTagDecorator(this.decorators.toArray(
@@ -176,7 +176,7 @@ public abstract class Compiler
 
     public final TagLibrary createTagLibrary()
     {
-        if (this.libraries.size() > 0)
+        if (!this.libraries.isEmpty())
         {
             return new CompositeTagLibrary(this.libraries.toArray(new TagLibrary[this.libraries.size()]));
         }

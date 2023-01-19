@@ -158,7 +158,7 @@ public class ClientBehaviorRendererUtils
             return false;
         }
 
-        boolean renderClientBehavior = clientBehaviors != null && clientBehaviors.size() > 0;
+        boolean renderClientBehavior = clientBehaviors != null && !clientBehaviors.isEmpty();
         if (!renderClientBehavior)
         {
             target.append(RendererUtils.EMPTY_STRING);

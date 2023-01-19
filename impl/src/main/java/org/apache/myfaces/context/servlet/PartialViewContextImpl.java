@@ -430,8 +430,6 @@ public class PartialViewContextImpl extends PartialViewContext
 
         try
         {
-            String currentEncoding = writer.getCharacterEncoding();
-
             writer.startDocument();
             
             writer.writeAttribute("id", viewRoot.getContainerClientId(context),"id");
@@ -486,7 +484,7 @@ public class PartialViewContextImpl extends PartialViewContext
                 }
                 
                 List<String> evalScripts = pvc.getEvalScripts();
-                if (evalScripts != null && evalScripts.size() > 0)
+                if (evalScripts != null && !evalScripts.isEmpty())
                 {
                     for (String script : evalScripts)
                     {
@@ -609,7 +607,7 @@ public class PartialViewContextImpl extends PartialViewContext
                     {
                         if (updatedComponents == null)
                         {
-                            updatedComponents = new ArrayList<UIComponent>();
+                            updatedComponents = new ArrayList<>();
                         }
                         updatedComponents.add(component);
                     }

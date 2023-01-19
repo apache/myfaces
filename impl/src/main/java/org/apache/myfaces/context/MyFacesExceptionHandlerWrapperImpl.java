@@ -58,21 +58,20 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
     private Queue<ExceptionQueuedEvent> unhandled;
     private ExceptionQueuedEvent handledAndThrown;
 
-    
-    private ExceptionHandler _delegate;
-    private boolean _isErrorPagePresent;
-    private boolean _useMyFacesErrorHandling;
-    private boolean _inited;
+    private ExceptionHandler delegate;
+    private boolean errorPagePresent;
+    private boolean useMyFacesErrorHandling;
+    private boolean initialized;
 
     public MyFacesExceptionHandlerWrapperImpl(ExceptionHandler delegate)
     {
-        this._delegate = delegate;
-        this._inited = false;
+        this.delegate = delegate;
+        this.initialized = false;
     }
     
     protected void init()
     {
-        if (!_inited)
+        if (!initialized)
         {
             init(FacesContext.getCurrentInstance());
         }
@@ -80,7 +79,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
     
     protected void init(FacesContext facesContext)
     {
-        if (!_inited)
+        if (!initialized)
         {
             if (facesContext == null)
             {
@@ -89,16 +88,16 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
             WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
                     facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
     
-            _isErrorPagePresent = webConfigProvider.isErrorPagePresent(facesContext.getExternalContext());
-            _useMyFacesErrorHandling = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
+            errorPagePresent = webConfigProvider.isErrorPagePresent(facesContext.getExternalContext());
+            useMyFacesErrorHandling = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
                     ErrorPageWriter.ERROR_HANDLING_PARAMETER, facesContext.isProjectStage(ProjectStage.Development));
-            _inited = true;
+            initialized = true;
         }
     }
     
     protected void init(SystemEvent exceptionQueuedEvent)
     {
-        if (!_inited)
+        if (!initialized)
         {
             if (exceptionQueuedEvent instanceof ExceptionQueuedEvent)
             {
@@ -120,14 +119,14 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
     
     protected boolean isUseMyFacesErrorHandling()
     {
-        return _useMyFacesErrorHandling;
+        return useMyFacesErrorHandling;
     }
     
     protected boolean isErrorPagePresent()
     {
-        return _isErrorPagePresent;
+        return errorPagePresent;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -220,13 +219,13 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
             {
                 if (handled == null)
                 {
-                    handled = new LinkedList<ExceptionQueuedEvent>();
+                    handled = new LinkedList<>();
                 }
-                
-                List<Throwable> throwableList = new ArrayList<Throwable>();
-                List<UIComponent> components = new ArrayList<UIComponent>();
+
+                List<Throwable> throwableList = new ArrayList<>();
+                List<UIComponent> components = new ArrayList<>();
                 FacesContext facesContext = null;
-                
+
                 do
                 {
                     // For each ExceptionEvent in the list
@@ -318,7 +317,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
         {
             if (unhandled == null)
             {
-                unhandled = new LinkedList<ExceptionQueuedEvent>();
+                unhandled = new LinkedList<>();
             }
             
             unhandled.add((ExceptionQueuedEvent)exceptionQueuedEvent);
@@ -355,6 +354,6 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
     @Override
     public ExceptionHandler getWrapped()
     {
-        return _delegate;
+        return delegate;
     }
 }

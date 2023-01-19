@@ -61,7 +61,6 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.context.flash.FlashImpl;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.util.lang.EnumerationIterator;
-import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.lang.StringUtils;
 
@@ -388,11 +387,6 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 
     protected void pushResource(String resourceUrl)
     {
-        if (!ExternalSpecifications.isServlet4Available())
-        {
-            return;
-        }
-        
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<Object, Object> attributes = facesContext.getAttributes();
 
@@ -919,7 +913,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         }
 
         //add/update with new params on the paramMap
-        if (parameters != null && parameters.size() > 0)
+        if (parameters != null && !parameters.isEmpty())
         {
             for (Map.Entry<String, List<String>> pair : parameters.entrySet())
             {
@@ -959,7 +953,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             }
         }
 
-        boolean hasParams = paramMap != null && paramMap.size() > 0;
+        boolean hasParams = paramMap != null && !paramMap.isEmpty();
 
         if (!hasParams && fragment == null) 
         {
