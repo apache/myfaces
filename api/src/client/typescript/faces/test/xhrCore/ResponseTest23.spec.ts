@@ -256,10 +256,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
             </partial-response>`);
 
 
-        expect(DQ$("[name='javax.faces.ViewState']").isAbsent()).to.be.false;
+        expect(DQ$("[name*='javax.faces.ViewState']").isAbsent()).to.be.false;
 
-        expect((<HTMLInputElement>document.getElementsByName("javax.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
-        expect(DQ$("[name='javax.faces.ViewState']").val == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        //expect((<HTMLInputElement>document.getElementsByName("javax.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect(DQ$("[name*='javax.faces.ViewState']").val == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
     });
 
 
@@ -293,10 +293,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
             </partial-response>`);
 
 
-        expect(DQ$("[name='javax.faces.ViewState']").isAbsent()).to.be.false;
+        expect(DQ$("[name*='javax.faces.ViewState']").isAbsent()).to.be.false;
 
-        expect((<HTMLInputElement>document.getElementsByName("javax.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
-        expect(DQ$("[name='javax.faces.ViewState']").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        //expect((<HTMLInputElement>document.getElementsByName("javax.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect(DQ$("[name*='javax.faces.ViewState']").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
     });
 
 

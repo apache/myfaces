@@ -253,9 +253,9 @@ describe('Tests of the various aspects of the response protocol functionality', 
         </partial-response>`);
 
 
-        expect(DQ$("[name='jakarta.faces.ViewState']").isPresent()).to.be.true;
+        expect(DQ$("[name*='jakarta.faces.ViewState']").isPresent()).to.be.true;
 
-        expect(DQ$("[name='jakarta.faces.ViewState']").val == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect(DQ$("[name*='jakarta.faces.ViewState']").val == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
     });
 
 
@@ -289,10 +289,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
         </partial-response>`);
 
 
-        expect(DQ$("[name='jakarta.faces.ViewState']").isAbsent()).to.be.false;
+        expect(DQ$("[name*='jakarta.faces.ViewState']").isAbsent()).to.be.false;
 
-        expect((<HTMLInputElement>document.getElementsByName("jakarta.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
-        expect(DQ$("[name='jakarta.faces.ViewState']").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        // expect((<HTMLInputElement>document.getElementsByName("jakarta.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect(DQ$("[name*='jakarta.faces.ViewState']").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
     });
 
 
@@ -523,12 +523,12 @@ describe('Tests of the various aspects of the response protocol functionality', 
             render: "viewroot_1:form1 submit_2"
         });
         this.respond(RESPONSE_1);
-        expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ViewState']").isPresent()).to.be.true;
-        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ViewState']").isPresent()).to.be.true;
-        expect(DQ$("#viewroot_2\\:form1\\:form1 [name='jakarta.faces.ViewState']").isAbsent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form2 [name*='jakarta.faces.ViewState']").isPresent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form1 [name*='jakarta.faces.ViewState']").isPresent()).to.be.true;
+        expect(DQ$("#viewroot_2\\:form1\\:form1 [name*='jakarta.faces.ViewState']").isAbsent()).to.be.true;
 
-        expect(faces.getViewState(DQ$("#viewroot_1\\:form2").getAsElem(0).value)).to.be.eq("jakarta.faces.ViewState=updatedVST");
-        expect(faces.getViewState("viewroot_1:form1")).to.be.eq("jakarta.faces.ViewState=updatedVST");
+        expect(faces.getViewState(DQ$("#viewroot_1\\:form2").getAsElem(0).value).indexOf("jakarta.faces.ViewState=updatedVST") != -1).to.be.true;
+        expect(faces.getViewState("viewroot_1:form1").indexOf("jakarta.faces.ViewState=updatedVST") != -1).to.be.true;
 
         done();
     })
@@ -552,9 +552,9 @@ describe('Tests of the various aspects of the response protocol functionality', 
             render: "viewroot_1:form1"
         });
         this.respond(RESPONSE_1);
-        expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ClientWindow']").isAbsent()).to.be.true;
-        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ClientWindow']").isPresent()).to.be.true;
-        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ClientWindow']").val).to.be.eq("updatedViewId");
+        expect(DQ$("#viewroot_1\\:form2 [name*='jakarta.faces.ClientWindow']").isAbsent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form1 [name*='jakarta.faces.ClientWindow']").isPresent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form1 [name*='jakarta.faces.ClientWindow']").val).to.be.eq("updatedViewId");
 
         done();
     })
@@ -575,11 +575,11 @@ describe('Tests of the various aspects of the response protocol functionality', 
             render: "viewroot_1:form1 :submit_2"
         });
         this.respond(RESPONSE_1);
-        expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ClientWindow']").isPresent()).to.be.true;
-        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ClientWindow']").isPresent()).to.be.true;
-        expect(DQ$("#viewroot_2\\:form1\\:form1 [name='jakarta.faces.ClientWindow']").isAbsent()).to.be.true;
-        expect(DQ$("#viewroot_1\\:form2 [name='jakarta.faces.ClientWindow']").val).to.be.eq("updatedViewId");
-        expect(DQ$("#viewroot_1\\:form1 [name='jakarta.faces.ClientWindow']").val).to.be.eq("updatedViewId");
+        expect(DQ$("#viewroot_1\\:form2 [name*='jakarta.faces.ClientWindow']").isPresent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form1 [name*='jakarta.faces.ClientWindow']").isPresent()).to.be.true;
+        expect(DQ$("#viewroot_2\\:form1\\:form1 [name*='jakarta.faces.ClientWindow']").isAbsent()).to.be.true;
+        expect(DQ$("#viewroot_1\\:form2 [name*='jakarta.faces.ClientWindow']").val).to.be.eq("updatedViewId");
+        expect(DQ$("#viewroot_1\\:form1 [name*='jakarta.faces.ClientWindow']").val).to.be.eq("updatedViewId");
 
         done();
     })
@@ -657,9 +657,9 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         this.respond(RESPONSE_1);
         // all forms in execute and render must receive the latest viewstate
-        expect(DQ$("#form1 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
-        expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
-        expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        expect(DQ$("#form1 [name*='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        expect(DQ$("#form2 [name*='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        expect(DQ$("#form2 [name*='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
         done();
     })
 
@@ -712,13 +712,13 @@ describe('Tests of the various aspects of the response protocol functionality', 
     </changes>
 </partial-response>
 `)
-        expect(DQ$("#form1 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
-        expect(DQ$("#form2 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
-        expect(DQ$("#form3 [name='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        expect(DQ$("#form1 [name*='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        expect(DQ$("#form2 [name*='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
+        expect(DQ$("#form3 [name*='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
 
-        expect(DQ$("#form1 [name='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:0") === 0).to.be.true;
-        expect(DQ$("#form2 [name='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:1") === 0).to.be.true;
-        expect(DQ$("#form3 [name='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:2") === 0).to.be.true;
+        expect(DQ$("#form1 [name*='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:0") === 0).to.be.true;
+        expect(DQ$("#form2 [name*='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:1") === 0).to.be.true;
+        expect(DQ$("#form3 [name*='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:2") === 0).to.be.true;
 
         done();
     });

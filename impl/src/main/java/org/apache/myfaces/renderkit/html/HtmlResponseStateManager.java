@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.lifecycle.ClientWindow;
@@ -93,7 +96,18 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             responseWriter.startElement(HTML.INPUT_ELEM, null);
             responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
             responseWriter.writeAttribute(HTML.ID_ATTR, generateUpdateClientWindowId(facesContext), null);
-            responseWriter.writeAttribute(HTML.NAME_ATTR, ResponseStateManager.CLIENT_WINDOW_PARAM, null);
+
+            UIViewRoot uiViewRoot = facesContext.getViewRoot();
+            if (uiViewRoot instanceof NamingContainer) // MYFACES-4533
+            {
+                String id = uiViewRoot.getContainerClientId(facesContext) +
+                        UINamingContainer.getSeparatorChar(facesContext);
+                responseWriter.writeAttribute(HTML.NAME_ATTR, id + ResponseStateManager.CLIENT_WINDOW_PARAM, null);
+            }
+            else
+            {
+                responseWriter.writeAttribute(HTML.NAME_ATTR, ResponseStateManager.CLIENT_WINDOW_PARAM, null);
+            }
             responseWriter.writeAttribute(HTML.VALUE_ATTR, clientWindow.getId(), null);
             responseWriter.endElement(HTML.INPUT_ELEM);
         }
@@ -121,7 +135,20 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         responseWriter.startElement(HTML.INPUT_ELEM, null);
         responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-        responseWriter.writeAttribute(HTML.NAME_ATTR, ResponseStateManager.VIEW_STATE_PARAM, null);
+
+        UIViewRoot uiViewRoot = facesContext.getViewRoot();
+        if (uiViewRoot instanceof NamingContainer) // MYFACES-4533
+        {
+            String id = uiViewRoot.getContainerClientId(facesContext) +
+                    UINamingContainer.getSeparatorChar(facesContext);
+            responseWriter.writeAttribute(HTML.NAME_ATTR, id + ResponseStateManager.VIEW_STATE_PARAM, null);
+        }
+        else
+        {
+            responseWriter.writeAttribute(HTML.NAME_ATTR, ResponseStateManager.VIEW_STATE_PARAM, null);
+        }
+
+
         if (myfacesConfig.isRenderViewStateId())
         {
             // responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
@@ -328,7 +355,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         }
         facesContext.getAttributes().put(VIEW_STATE_COUNTER, count);
 
-        String id = facesContext.getViewRoot().getContainerClientId(facesContext) + 
+        String id = facesContext.getViewRoot().getContainerClientId(facesContext) +
             separator + ResponseStateManager.VIEW_STATE_PARAM + separator + count;
         return id;
     }

@@ -18,7 +18,7 @@ import {describe, it} from "mocha";
 import * as sinon from "sinon";
 import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import {DomQuery, DQ$} from "mona-dish";
+import {DomQuery, DQ$, Stream} from "mona-dish";
 import {
     $nsp,
     COMPLETE,
@@ -181,9 +181,16 @@ describe('Namespacing tests', function () {
             expect(resultsMap["pass2"]).to.eq("pass2");
             expect(!!resultsMap["render"]).to.be.false;
             expect(!!resultsMap["execute"]).to.be.false;
-            expect(P_WINDOW_ID in resultsMap).to.be.false;
-            expect(P_VIEWSTATE in resultsMap).to.be.true;
-            expect(resultsMap[P_VIEWSTATE]).to.eq("booga");
+
+            let hasWindowdId = Stream.ofAssoc(resultsMap).filter(data => data[0].indexOf(P_WINDOW_ID) != -1).first().isPresent();
+            let hasViewState = Stream.ofAssoc(resultsMap).filter(data => data[0].indexOf(P_VIEWSTATE) != -1).first().isPresent();
+
+            expect(hasWindowdId).to.be.false;
+            expect(hasViewState).to.be.true;
+
+            let viewState = Stream.ofAssoc(resultsMap).filter(data => data[0].indexOf(P_VIEWSTATE) != -1).map(item => item[1]).first().value;
+
+            expect(viewState).to.eq("booga");
             expect(resultsMap[P_PARTIAL_SOURCE]).to.eq(escape("jd_0:input_2"));
             expect(resultsMap[P_AJAX]).to.eq("true");
             expect(resultsMap[P_RENDER]).to.eq(escape("jd_0:blarg jd_0:input_2"));

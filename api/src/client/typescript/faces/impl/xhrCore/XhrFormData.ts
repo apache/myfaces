@@ -109,8 +109,10 @@ export class XhrFormData extends Config {
      * @param form the form holding the view state value
      */
     private applyViewState(form: DQ) {
-        let viewState = form.querySelectorAllDeep(`[name*='${P_VIEWSTATE}'`).inputValue;
-        this.appendIf(viewState.isPresent(), P_VIEWSTATE).value = viewState.value;
+        let viewStateElement = form.querySelectorAllDeep(`[name*='${P_VIEWSTATE}'`);
+        let viewState = viewStateElement.inputValue;
+        // this.appendIf(viewState.isPresent(), P_VIEWSTATE).value = viewState.value;
+        this.appendIf(viewState.isPresent(), viewStateElement.name.value).value = viewState.value;
     }
 
     /**
