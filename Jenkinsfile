@@ -23,8 +23,10 @@ pipeline {
     }
 
     options {
+        disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '5'))
         timeout(time: 2, unit: 'HOURS')
+        retry(2)
     }
 
     triggers {
@@ -33,22 +35,37 @@ pipeline {
     }
 
     stages {
-        stage ('Build & Test') {
-            tools {
-                maven "maven_latest"
-                jdk "jdk_1.8_latest"
-            }
-            options {
-                timeout(time: 2, unit: 'HOURS')
-                retry(2)
-            }
-            steps {
-                sh 'mvn -V clean verify checkstyle:check apache-rat:check'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                    archiveArtifacts '**/target/*.jar'
+        stage('Prepare') {
+            matrix {
+                agent {
+                  label 'ubuntu'
+                }
+                axes {
+                    axis {
+                        name 'JAVA_VERSION'
+                        values 'jdk_11_latest'
+                    }
+                }
+
+                tools {
+                    maven "maven_latest"
+                    jdk "${JAVA_VERSION}"
+                }
+
+                stages {
+                    stage('BuildAndTest') {
+                        steps {
+                            sh 'find . -name "debug.log" -exec rm {} \\;'
+                            sh 'mvn -V clean verify checkstyle:check apache-rat:check'
+                        }
+                        post {
+                            always {
+                               junit(testResults: '**/surefire-reports/*.xml', allowEmptyResults: true)
+                               junit(testResults: '**/failsafe-reports/*.xml', allowEmptyResults: true)
+                               archiveArtifacts '**/target/*.jar'
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -56,7 +73,7 @@ pipeline {
         stage('Deploy') {
             tools {
                 maven "maven_latest"
-                jdk "jdk_1.8_latest"
+                jdk "jdk_11_latest"
             }
             steps {
                 sh "mvn clean deploy -Pgenerate-assembly"
@@ -69,8 +86,7 @@ pipeline {
         failure {
             mail to: "notifications@myfaces.apache.org",
             subject: "Jenkins pipeline failed: ${currentBuild.fullDisplayName}",
-            body: 
-            """
+            body: """
             Jenkins build URL: ${env.BUILD_URL}
             The build for ${env.JOB_NAME} completed successfully and is back to normal.
             Build: ${env.BUILD_URL}
@@ -83,8 +99,7 @@ pipeline {
         unstable {
             mail to: "notifications@myfaces.apache.org",
             subject: "Jenkins pipeline failed: ${currentBuild.fullDisplayName}",
-            body: 
-            """
+            body: """
             Jenkins build URL: ${env.BUILD_URL}
             The build for ${env.JOB_NAME} completed successfully and is back to normal.
             Build: ${env.BUILD_URL}
@@ -97,8 +112,7 @@ pipeline {
         fixed {
             mail to: "notifications@myfaces.apache.org",
             subject: "Jenkins pipeline is back to normal: ${currentBuild.fullDisplayName}",
-            body: 
-            """
+            body: """
             Jenkins build URL: ${env.BUILD_URL}
             The build for ${env.JOB_NAME} completed successfully and is back to normal.
             Build: ${env.BUILD_URL}
@@ -108,3 +122,4 @@ pipeline {
         }
     }
 }
+
