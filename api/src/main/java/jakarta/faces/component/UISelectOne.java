@@ -95,7 +95,8 @@ public class UISelectOne extends UIInput
                     if (target instanceof UISelectOne  && ((UISelectOne) target).getGroup().equals(group)) 
                     {
                         // check if the is empty (see ) or if it's not valid (means this path has been taken already)
-                        if(isEmpty(submittedValue) && (( (EditableValueHolder)target).isLocalValueSet() || !((EditableValueHolder)target).isValid() )){
+                        // See conditions listed under spec: uiselectone#processValidators
+                        if(isEmpty(submittedValue) && isSubmittedAlready((UIInput)target)){
                             previouslySubmittedOrValidated = true;
                             return VisitResult.COMPLETE;
                         }          
@@ -113,6 +114,18 @@ public class UISelectOne extends UIInput
         }
         
         super.processValidators(context);
+    }
+
+    private boolean isSubmittedAlready( UIComponent target){
+
+        if(((EditableValueHolder)target).isLocalValueSet() 
+            || !((EditableValueHolder)target).isValid() 
+            || !isEmpty(((UIInput)target).getSubmittedValue()))
+        {
+            return true;
+        }
+        return false;
+
     }
 
     /**
