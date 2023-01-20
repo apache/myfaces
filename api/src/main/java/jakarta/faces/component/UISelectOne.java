@@ -55,7 +55,7 @@ public class UISelectOne extends UIInput
 
     public static final String INVALID_MESSAGE_ID = "jakarta.faces.component.UISelectOne.INVALID";
 
-    private boolean selectItemValueFound = false;
+    private boolean previouslySubmittedOrValidated = false;
 
     public UISelectOne()
     {
@@ -69,9 +69,10 @@ public class UISelectOne extends UIInput
     }
 
     /**
-     * Verify that when ever there is a ValueExpression and submitted value is not empty, then
+     * Check whether a group exists and then
      * visit all the UISelectItem elements within the UISelectOne radio components to check if
-     * the submitted value exists in any of the select items.
+     * the submitted value is empty (ie. not submitted) or if a previous group item has been
+     * has failed to be validated (if no so further validation processing is needed)
      *
      * @see jakarta.faces.component.UIInput#processValidators(jakarta.faces.context.FacesContext)
      */
@@ -79,9 +80,9 @@ public class UISelectOne extends UIInput
     public void processValidators(FacesContext context) 
     {
         String group = getGroup();
-        ValueExpression ve = getValueExpression("value");
         String submittedValue = (String) getSubmittedValue();
-        if (group != null && !group.isEmpty() && ve != null && !isEmpty(submittedValue)) 
+
+        if (group != null && !group.isEmpty()) 
         {
             final UIComponent form = getRadioNestingForm(context, this);
 
@@ -90,32 +91,25 @@ public class UISelectOne extends UIInput
                 @Override
                 public VisitResult visit(VisitContext visitContext, UIComponent target) 
                 {
+                    // check they they are of the same group
                     if (target instanceof UISelectOne  && ((UISelectOne) target).getGroup().equals(group)) 
                     {
-                        UISelectOne radio = (UISelectOne) target;
-
-                        // if target is an instance of UISelectOne then get all the UISelectItem children
-                        // and verify if the submitted value exists
-                        for (Iterator<UIComponent> iter = radio.getChildren().iterator(); iter.hasNext(); ) 
-                        {
-                            UIComponent component = iter.next();
-                            if (component instanceof UISelectItem) 
-                            {
-                                UISelectItem item = (UISelectItem) component;
-                                if (item.getItemValue().equals(submittedValue)) 
-                                {
-                                    selectItemValueFound = true;
-                                    return VisitResult.COMPLETE;
-                                }
-                            }
-
-                        }
-                        return VisitResult.REJECT;
+                        // check if the is empty (see ) or if it's not valid (means this path has been taken already)
+                        if(isEmpty(submittedValue) && (( (EditableValueHolder)target).isLocalValueSet() || !((EditableValueHolder)target).isValid() )){
+                            previouslySubmittedOrValidated = true;
+                            return VisitResult.COMPLETE;
+                        }          
                     }
-
                     return VisitResult.ACCEPT;
                 }
             });
+        }
+
+        if(previouslySubmittedOrValidated){
+            // Skip further validation due to either 
+            // 1) one of the submissions are not valid (for instance, required, but none submitted (see jakarta/faces#329))
+            // 2) submitted value has been found and validated
+            return;
         }
         
         super.processValidators(context);
@@ -186,9 +180,9 @@ public class UISelectOne extends UIInput
             }
         }
 
-        // if selectItemValueFound is true, then it means that we have found the select item value
+        // if previouslySubmittedOrValidated is true, then it means that we have found the select item value
         // in the other UISelectOne radio components, and no validation error is thrown.
-        if (selectItemValueFound) 
+        if (previouslySubmittedOrValidated) 
         {
             return;
         }
