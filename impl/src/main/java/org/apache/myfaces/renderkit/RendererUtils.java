@@ -694,11 +694,12 @@ public final class RendererUtils
             FacesContext facesContext, UISelectOne output, Object submittedValue)
     {
 
-        if(submittedValue == null)
+        if(submittedValue == null || "".equals(submittedValue))
         {
             if (log.isLoggable(Level.FINE))
             {
-                log.fine("No conversion necessary for null uiselectone value: client id " + output.getClientId());
+                log.fine("No conversion necessary for null / empty string uiselectone value: client id " 
+                            + output.getClientId());
             }
             return null;
         }
@@ -708,13 +709,6 @@ public final class RendererUtils
             throw new IllegalArgumentException(
                     "Submitted value of type String for component : "
                             + ComponentUtils.getPathToComponent(output) + "expected");
-        }
-
-        //If submittedValue == "" then convert to null. <- is this necessary? 
-        if ("".equals(submittedValue))
-        {
-            //Replace "" by null value
-            submittedValue = null;
         }
 
         Converter converter;
