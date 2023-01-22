@@ -41,7 +41,7 @@
     </modules>
 
     <properties>
-        <quarkus.version>3.0.0.Alpha2</quarkus.version>
+        <quarkus.version>3.0.0.Alpha3</quarkus.version>
     </properties>
 
     <build>
