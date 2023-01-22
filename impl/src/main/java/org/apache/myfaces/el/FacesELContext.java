@@ -28,6 +28,8 @@ import javax.el.FunctionMapper;
 import javax.el.VariableMapper;
 import javax.faces.context.FacesContext;
 
+import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
+
 /**
  * ELContext used for JSF.
  * 
@@ -51,6 +53,11 @@ public class FacesELContext extends ELContext
     @Override
     public VariableMapper getVariableMapper()
     {
+        if (_variableMapper == null)
+        {
+            _variableMapper = new DefaultVariableMapper();
+        }
+
         return _variableMapper;
     }
 
