@@ -100,7 +100,7 @@ public class PropertyDescriptorUtils
             return false;
         }
         
-        // activated per default
+        // disabled per default
         String useMethodHandles = ec.getInitParameter(USE_LAMBDA_METAFACTORY);
         return useMethodHandles != null && useMethodHandles.contains("true");
     }
