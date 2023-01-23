@@ -102,7 +102,7 @@ public class PropertyDescriptorUtils
         
         // activated per default
         String useMethodHandles = ec.getInitParameter(USE_LAMBDA_METAFACTORY);
-        return useMethodHandles == null || useMethodHandles.trim().isEmpty() || useMethodHandles.contains("true");
+        return useMethodHandles != null && useMethodHandles.contains("true");
     }
 
     public static Map<String, ? extends PropertyDescriptorWrapper> getPropertyDescriptors(ExternalContext ec,
