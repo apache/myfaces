@@ -54,6 +54,7 @@ pipeline {
                 stages {
                     stage('BuildAndTest') {
                         steps {
+                            sh 'find . -name "debug.log" -exec rm {} \\;'
                             sh 'mvn -V clean verify checkstyle:check apache-rat:check'
                         }
                         post {

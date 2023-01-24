@@ -802,8 +802,9 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
             {
                 return null;
             }
-            return currentFlowStack.size() > 0 ? 
-                currentFlowStack.get(currentFlowStack.size()-1) : null;
+            return currentFlowStack.isEmpty()
+                    ? null
+                    : currentFlowStack.get(currentFlowStack.size() - 1);
         }
     }
     
@@ -891,7 +892,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
             
             Map<Object, Object> attributesMap = context.getAttributes();
             String returnFlowMapKey = CURRENT_FLOW_REQUEST_STACK + clientWindow.getId();
-            List<_FlowContextualInfo> returnFlowStack = new ArrayList<_FlowContextualInfo>(currentFlowStack);
+            List<_FlowContextualInfo> returnFlowStack = new ArrayList<>(currentFlowStack);
             attributesMap.put(returnFlowMapKey, returnFlowStack);
             context.getAttributes().put(RETURN_MODE, Boolean.TRUE);
         }
@@ -942,7 +943,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
             Flow curFlow = fh.getCurrentFlow(context);
             if (curFlow != null)
             {
-                List<Flow> activeFlows = new ArrayList<Flow>();
+                List<Flow> activeFlows = new ArrayList<>();
                 while (curFlow != null)
                 {
                     activeFlows.add(curFlow);
@@ -974,7 +975,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
 
             if (!currentFlowStack.isEmpty())
             {
-                List<Flow> activeFlows = new ArrayList<Flow>();
+                List<Flow> activeFlows = new ArrayList<>();
                 for(_FlowContextualInfo info : currentFlowStack)
                 {
                     activeFlows.add(0, getFlow(context, 
@@ -1008,9 +1009,11 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
         {
             return null;
         }
-        return currentFlowStack.size() > 0 ? currentFlowStack.remove(currentFlowStack.size()-1) : null;
+        return currentFlowStack.isEmpty()
+                ? null
+                : currentFlowStack.remove(currentFlowStack.size() - 1);
     }
-    
+
     private List<_FlowContextualInfo> getCurrentReturnModeFlowStack(FacesContext context, ClientWindow clientWindow,
             String stackKey)
     {
@@ -1044,7 +1047,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
             Flow curFlow = fh.getCurrentFlow(facesContext);
             if (curFlow != null)
             {
-                List<Flow> activeFlows = new ArrayList<Flow>();
+                List<Flow> activeFlows = new ArrayList<>();
                 while (curFlow != null)
                 {
                     activeFlows.add(curFlow);

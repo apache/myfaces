@@ -252,8 +252,7 @@ public final class MetaRulesetImpl extends MetaRuleset
             }
         }
 
-        if (_passthroughAttributes.length > 0 &&
-            _passthroughRules.size() > 0)
+        if (_passthroughAttributes.length > 0 && !_passthroughRules.isEmpty())
         {
             if (target == null)
             {

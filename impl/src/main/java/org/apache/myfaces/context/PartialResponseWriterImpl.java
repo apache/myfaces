@@ -73,15 +73,15 @@ import org.apache.myfaces.util.IllegalXmlCharacterFilterWriter;
 public class PartialResponseWriterImpl extends PartialResponseWriter
 {
 
-    class StackEntry
+    static class StackEntry
     {
-        ResponseWriter writer;
-        Writer _doubleBuffer;
+        private ResponseWriter writer;
+        private Writer doubleBuffer;
 
         StackEntry(ResponseWriter writer, Writer doubleBuffer)
         {
             this.writer = writer;
-            _doubleBuffer = doubleBuffer;
+            this.doubleBuffer = doubleBuffer;
         }
 
         public ResponseWriter getWriter()
@@ -96,18 +96,18 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
 
         public Writer getDoubleBuffer()
         {
-            return _doubleBuffer;
+            return doubleBuffer;
         }
 
         public void setDoubleBuffer(Writer doubleBuffer)
         {
-            _doubleBuffer = doubleBuffer;
+            this.doubleBuffer = doubleBuffer;
         }
     }
 
-    ResponseWriter _cdataDoubleBufferWriter = null;
-    Writer _doubleBuffer = null;
-    List<StackEntry> _nestingStack = new ArrayList<StackEntry>(4);
+    private ResponseWriter cdataDoubleBufferWriter = null;
+    private Writer doubleBuffer = null;
+    private List<StackEntry> nestingStack = new ArrayList<>(4);
 
     public PartialResponseWriterImpl(ResponseWriter writer)
     {
@@ -123,20 +123,21 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
         }
         else
         {
-            _cdataDoubleBufferWriter.write("<![CDATA[");
+            cdataDoubleBufferWriter.write("<![CDATA[");
         }
         openDoubleBuffer();
     }
 
     private void openDoubleBuffer()
     {
-        _doubleBuffer = new CDataEndEscapeFilterWriter(_cdataDoubleBufferWriter == null ? 
-                this.getWrapped() : _cdataDoubleBufferWriter );
-        _cdataDoubleBufferWriter = getWrapped().cloneWithWriter(_doubleBuffer);
+        doubleBuffer = new CDataEndEscapeFilterWriter(cdataDoubleBufferWriter == null
+                ? this.getWrapped()
+                : cdataDoubleBufferWriter);
+        cdataDoubleBufferWriter = getWrapped().cloneWithWriter(doubleBuffer);
 
-        StackEntry entry = new StackEntry(_cdataDoubleBufferWriter, _doubleBuffer);
+        StackEntry entry = new StackEntry(cdataDoubleBufferWriter, doubleBuffer);
 
-        _nestingStack.add(0, entry);
+        nestingStack.add(0, entry);
     }
 
     @Override
@@ -145,7 +146,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
         closeDoubleBuffer(false);
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.write("]]>");
+            cdataDoubleBufferWriter.write("]]>");
         }
         else
         {
@@ -179,7 +180,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
 
         if (force)
         {
-            while (!_nestingStack.isEmpty())
+            while (!nestingStack.isEmpty())
             {
                 popAndEncodeCurrentStackEntry();
 
@@ -193,17 +194,17 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
 
     private void popAndEncodeCurrentStackEntry() throws IOException
     {
-        _nestingStack.remove(0);
-        StackEntry parent = (_nestingStack.isEmpty()) ? null : _nestingStack.get(0);
+        nestingStack.remove(0);
+        StackEntry parent = (nestingStack.isEmpty()) ? null : nestingStack.get(0);
         if (parent != null)
         {
-            _cdataDoubleBufferWriter = parent.getWriter();
-            _doubleBuffer = parent.getDoubleBuffer();
+            cdataDoubleBufferWriter = parent.getWriter();
+            doubleBuffer = parent.getDoubleBuffer();
         }
         else
         {
-            _cdataDoubleBufferWriter = null;
-            _doubleBuffer = null;
+            cdataDoubleBufferWriter = null;
+            doubleBuffer = null;
         }
     }
 
@@ -271,7 +272,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.endElement(name);
+            cdataDoubleBufferWriter.endElement(name);
         }
         else
         {
@@ -284,7 +285,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.writeComment(comment);
+            cdataDoubleBufferWriter.writeComment(comment);
         }
         else
         {
@@ -294,7 +295,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
 
     private boolean isDoubleBufferEnabled()
     {
-        return !_nestingStack.isEmpty();
+        return !nestingStack.isEmpty();
     }
 
     @Override
@@ -302,7 +303,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.startElement(name, component);
+            cdataDoubleBufferWriter.startElement(name, component);
         }
         else
         {
@@ -315,7 +316,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.writeText(text, property);
+            cdataDoubleBufferWriter.writeText(text, property);
         }
         else
         {
@@ -328,7 +329,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.writeText(text, off, len);
+            cdataDoubleBufferWriter.writeText(text, off, len);
         }
         else
         {
@@ -341,7 +342,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.write(cbuf, off, len);
+            cdataDoubleBufferWriter.write(cbuf, off, len);
         }
         else
         {
@@ -360,7 +361,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.writeURIAttribute(name, value, property);
+            cdataDoubleBufferWriter.writeURIAttribute(name, value, property);
         }
         else
         {
@@ -392,7 +393,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.flush();
+            cdataDoubleBufferWriter.flush();
         }
         super.flush();
     }
@@ -402,7 +403,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.writeAttribute(name, value, property);
+            cdataDoubleBufferWriter.writeAttribute(name, value, property);
         }
         else
         {
@@ -415,7 +416,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.writeText(object, component, string);
+            cdataDoubleBufferWriter.writeText(object, component, string);
         }
         else
         {
@@ -428,7 +429,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.append(c);
+            cdataDoubleBufferWriter.append(c);
             return this;
         }
         else
@@ -442,7 +443,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.append(csq, start, end);
+            cdataDoubleBufferWriter.append(csq, start, end);
             return this;
         }
         else
@@ -456,7 +457,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.append(csq);
+            cdataDoubleBufferWriter.append(csq);
             return this;
         }
         else
@@ -470,7 +471,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.write(cbuf);
+            cdataDoubleBufferWriter.write(cbuf);
         }
         else
         {
@@ -483,7 +484,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.write(c);
+            cdataDoubleBufferWriter.write(c);
         }
         else
         {
@@ -496,7 +497,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.write(str, off, len);
+            cdataDoubleBufferWriter.write(str, off, len);
         }
         else
         {
@@ -509,7 +510,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         if (isDoubleBufferEnabled())
         {
-            _cdataDoubleBufferWriter.write(str);
+            cdataDoubleBufferWriter.write(str);
         }
         else
         {
