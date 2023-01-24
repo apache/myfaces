@@ -187,7 +187,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
         var _t = this;
         var foundNames = this._Dom.findAll(form, function(node) {
             var name = node.getAttribute("name");
-            if(!name || name.indexOf(_t.P_VIEWSTATE)) {
+            if(!name || name.indexOf("jakarta.faces.ViewState") <= 0) {
                 return false;
             }
             return node;
@@ -195,7 +195,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
         if(!foundNames.length) {
             return "";
         }
-        return foundNames[0].name.split(separatorChar, 2)[0];
+        return foundNames[0].name.split(separatorChar, 2)[0] + separatorChar;
     },
 
     /**
