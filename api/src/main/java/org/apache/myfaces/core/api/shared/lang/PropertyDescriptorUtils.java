@@ -116,13 +116,13 @@ public class PropertyDescriptorUtils
             }
             catch (IllegalAccessException e)
             {
-                LOG.log(Level.FINEST,
+                LOG.log(Level.FINEST, 
                         "Could not generate LambdaPropertyDescriptor for "
                                 + target.getName() + ". Use PropertyDescriptor...");
             }
             catch (Throwable e)
             {
-                LOG.log(Level.FINEST,
+                LOG.log(Level.INFO, 
                         "Could not generate LambdaPropertyDescriptor for "
                                 + target.getName() + ". Use PropertyDescriptor...",
                         e);
