@@ -57,10 +57,10 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
     P_EVT:"jakarta.faces.partial.event",
     P_WINDOW_ID:"jakarta.faces.ClientWindow",
     P_RESET_VALUES:"jakarta.faces.partial.resetValues",
+    P_EVENT: "jakarta.faces.behavior.event",
 
     //faces std values
-    STD_VALUES: [this.P_PARTIAL_SOURCE, this.P_VIEWSTATE, this.P_CLIENTWINDOW, this.P_AJAX,
-        this.P_EXECUTE, this.P_RENDER, this.P_EVT, this.P_WINDOW_ID, this.P_RESET_VALUES],
+    STD_VALUES: [],
 
     /* message types */
     ERROR:"error",
@@ -85,6 +85,13 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
     /*blockfilter for the passthrough filtering, the attributes given here
      * will not be transmitted from the options into the passthrough*/
     _BLOCKFILTER:{onerror:1, onevent:1, render:1, execute:1, myfaces:1, delay:1, resetValues:1, params: 1},
+
+
+    constructor_: function() {
+        this._callSuper("constructor_");
+        this.STD_VALUES = [this.P_PARTIAL_SOURCE, this.P_VIEWSTATE, this.P_CLIENTWINDOW, this.P_AJAX,
+            this.P_EXECUTE, this.P_RENDER, this.P_EVT, this.P_WINDOW_ID, this.P_RESET_VALUES, this.P_EVENT];
+    },
 
     /**
      * collect and encode data for a given form element (must be of type form)
@@ -297,6 +304,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             this._transformList(passThrgh, this.P_RENDER, options.render, form, elementId, context.viewId);
         }
 
+
         /**
          * multiple transports upcoming faces 2.x feature currently allowed
          * default (no value) xhrQueuedPost
@@ -327,10 +335,12 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
         // TCK 790 we now have to remap all passthroughs in case of a naming container
         // thing is the naming container is always prefixed on inputs, and our own
-        // passthroughs are not mapped for now (if we have to do that we we have to add a similar mapping code)
         var passthroughKeys = Object.keys(passThrgh);
-        for(var key in passthroughKeys) {
-            if(!Object.hasOwnProperty(key) || this.STD_VALUES.indexOf(key) == -1) {
+        for (var cnt = 0; cnt <  passthroughKeys.length; cnt++) {
+            var key = passthroughKeys[cnt];
+
+            // only the standard values need remapping for now
+            if((!key) || Object.hasOwnProperty(key) || this.STD_VALUES.indexOf(key) == -1) {
                 continue;
             }
             passThrgh[_Utils._$ncRemap(mfInternal, key)] = passThrgh[key];
