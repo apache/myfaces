@@ -43,6 +43,7 @@ import jakarta.faces.convert.ConverterException;
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.renderkit.html.ParamsNamingContainerResolver;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
@@ -411,7 +412,7 @@ public class HtmlTextRendererBase
             if (maxlength >= 0)
             {
                 String clientId = input.getClientId(facesContext);
-                String value = facesContext.getExternalContext().getRequestParameterMap().get(clientId);
+                String value = new ParamsNamingContainerResolver(facesContext).get(clientId);
                 if (value != null && value.length() > maxlength)
                 {
                     return false;

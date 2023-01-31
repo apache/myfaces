@@ -21,7 +21,7 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIParameter;
@@ -137,7 +137,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
             return;
         }
         
-        Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
+        ParamsNamingContainerResolver paramMap = new ParamsNamingContainerResolver(facesContext);
         String behaviorEventName = paramMap.get(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
         if (behaviorEventName != null)
         {
@@ -161,7 +161,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 boolean activateActionEvent = false;
                 if (form != null && !disabled)
                 {
-                    String reqValue = (String) facesContext.getExternalContext().getRequestParameterMap().get(
+                    String reqValue = new ParamsNamingContainerResolver(facesContext).get(
                             HtmlRendererUtils.getHiddenCommandLinkFieldName(form, facesContext));
                     activateActionEvent = reqValue != null && reqValue.equals(clientId)
                         || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId);

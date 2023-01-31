@@ -55,6 +55,7 @@ import org.apache.myfaces.application.viewstate.StateTokenProcessor;
 import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
+import org.apache.myfaces.renderkit.html.ParamsNamingContainerResolver;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
@@ -108,8 +109,8 @@ public class PartialViewContextImpl extends PartialViewContext
         {
             String requestType = context.getExternalContext().getRequestHeaderMap().get(FACES_REQUEST);
             _ajaxRequest = (requestType != null && PARTIAL_AJAX.equals(requestType));
-            String reqParmamterPartialAjax = context.getExternalContext()
-                    .getRequestParameterMap().get(PARTIAL_AJAX_REQ);
+            ParamsNamingContainerResolver paramsMapWrapper = new ParamsNamingContainerResolver(this.context);
+            String reqParmamterPartialAjax = paramsMapWrapper.get(PARTIAL_AJAX_REQ);
             //jsdoc reference in an ajax request the jakarta.faces.partial.ajax must be set as ajax parameter
             //the other one is Faces-Request == partial/ajax which is basically the same
             _ajaxRequest = _ajaxRequest || reqParmamterPartialAjax != null;
@@ -124,8 +125,8 @@ public class PartialViewContextImpl extends PartialViewContext
 
         if (isAjaxRequest())
         {
-            String executeMode = context.getExternalContext().
-                    getRequestParameterMap().get(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME);
+            String executeMode = new ParamsNamingContainerResolver(context)
+                    .get(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME);
             if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
             {
                 return true;
@@ -156,8 +157,8 @@ public class PartialViewContextImpl extends PartialViewContext
         {
             if (isAjaxRequest())
             {
-                String executeMode = context.getExternalContext().
-                        getRequestParameterMap().get(PartialViewContext.PARTIAL_RENDER_PARAM_NAME);
+                String executeMode = new ParamsNamingContainerResolver(this.context)
+                        .get(PartialViewContext.PARTIAL_RENDER_PARAM_NAME);
                 if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
                 {
                     _renderAll = true;
@@ -194,8 +195,8 @@ public class PartialViewContextImpl extends PartialViewContext
 
         if (_executeClientIds == null)
         {
-            String executeMode = context.getExternalContext().
-                    getRequestParameterMap().get(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME);
+            String executeMode = new ParamsNamingContainerResolver(context)
+                    .get(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME);
 
             if (executeMode != null && !executeMode.isEmpty()
                     && !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
@@ -217,7 +218,7 @@ public class PartialViewContextImpl extends PartialViewContext
                 // execute ids if missing (otherwise, we'd never execute an action associated
                 // with, e.g., a button).
 
-                String source = context.getExternalContext().getRequestParameterMap().get
+                String source = new ParamsNamingContainerResolver(context).get
                         (ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME);
 
                 if (source != null)
@@ -278,8 +279,7 @@ public class PartialViewContextImpl extends PartialViewContext
 
         if (_renderClientIds == null)
         {
-            String renderMode = context.getExternalContext().
-                    getRequestParameterMap().get(
+            String renderMode = new ParamsNamingContainerResolver(context).get(
                     PartialViewContext.PARTIAL_RENDER_PARAM_NAME);
 
             if (renderMode != null && !renderMode.isEmpty()
@@ -677,8 +677,7 @@ public class PartialViewContextImpl extends PartialViewContext
     {
         if (_resetValues == null)
         {
-            String value = context.getExternalContext().getRequestParameterMap().
-                get(RESET_VALUES_PARAM_NAME);
+            String value = new ParamsNamingContainerResolver(context).get(RESET_VALUES_PARAM_NAME);
             _resetValues = "true".equals(value);
         }
         return _resetValues;

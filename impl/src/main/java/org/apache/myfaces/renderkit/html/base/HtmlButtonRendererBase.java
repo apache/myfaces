@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
+import org.apache.myfaces.renderkit.html.ParamsNamingContainerResolver;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
@@ -96,13 +97,13 @@ public class HtmlButtonRendererBase extends HtmlRenderer
     private static boolean isSubmitted(FacesContext facesContext, UIComponent uiComponent)
     {
         String clientId = uiComponent.getClientId(facesContext);
-        Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
+        ParamsNamingContainerResolver paramMap = new ParamsNamingContainerResolver(facesContext);
         String hiddenLink = null;
 
         UIForm form = ComponentUtils.findClosest(UIForm.class, uiComponent);
         if (form != null)
         {
-            hiddenLink = (String) facesContext.getExternalContext().getRequestParameterMap().get(
+            hiddenLink = paramMap.get(
                 HtmlRendererUtils.getHiddenCommandLinkFieldName(form, facesContext));
         }
         return paramMap.containsKey(clientId) || paramMap.containsKey(clientId + IMAGE_BUTTON_SUFFIX_X) 

@@ -54,6 +54,7 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
+import org.apache.myfaces.renderkit.html.ParamsNamingContainerResolver;
 import org.apache.myfaces.util.ExternalContextUtils;
 
 /**
@@ -344,7 +345,7 @@ class RestoreViewExecutor extends PhaseExecutor
             // "... Obtain the value of the value of the request parameter whose 
             // name is given by the value of ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM. 
             // If there is no value, throw ProtectedViewException ..."
-            String token = (String) facesContext.getExternalContext().getRequestParameterMap().get(
+            String token = (String) new ParamsNamingContainerResolver(facesContext).get(
                 ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM);
             if (token != null && token.length() > 0)
             {

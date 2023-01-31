@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
+import org.apache.myfaces.renderkit.html.ParamsNamingContainerResolver;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
@@ -94,7 +95,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             boolean activateActionEvent = false;
             if (form != null && !disabled)
             {
-                String reqValue = (String) facesContext.getExternalContext().getRequestParameterMap().get(
+                String reqValue = new ParamsNamingContainerResolver(facesContext).get(
                         HtmlRendererUtils.getHiddenCommandLinkFieldName(form, facesContext));
                 activateActionEvent = reqValue != null && reqValue.equals(clientId)
                     || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId);

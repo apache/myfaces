@@ -34,6 +34,7 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.renderkit.html.ParamsNamingContainerResolver;
 import org.apache.myfaces.util.lang.StringUtils;
 
 public class ClientBehaviorRendererUtils
@@ -52,7 +53,7 @@ public class ClientBehaviorRendererUtils
         Map<String, List<ClientBehavior>> clientBehaviors = clientBehaviorHolder.getClientBehaviors();
         if (clientBehaviors != null && !clientBehaviors.isEmpty())
         {
-            Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
+            ParamsNamingContainerResolver paramMap = new ParamsNamingContainerResolver(facesContext);
             String behaviorEventName = paramMap.get(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
             if (behaviorEventName != null)
             {

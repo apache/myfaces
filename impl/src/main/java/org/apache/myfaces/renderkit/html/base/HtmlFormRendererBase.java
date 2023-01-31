@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
+import org.apache.myfaces.renderkit.html.ParamsNamingContainerResolver;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
@@ -243,11 +244,11 @@ public class HtmlFormRendererBase extends HtmlRenderer
 
         UIForm htmlForm = (UIForm)component;
 
-        Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
+        ParamsNamingContainerResolver paramMap = new ParamsNamingContainerResolver(facesContext);
         // Perf: initialize StringBuilder to maximal lenght used in this renderer, render_response
         // method will re-use it without capacity expanding 
         StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER, 100);
-        String submittedValue = (String) paramMap.get(
+        String submittedValue = paramMap.get(
                 sb.append(component.getClientId(facesContext)).append(HIDDEN_SUBMIT_INPUT_SUFFIX));
         if (submittedValue != null && submittedValue.equals(HIDDEN_SUBMIT_INPUT_VALUE))
         {

@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.lifecycle.clientwindow;
 
+import org.apache.myfaces.renderkit.html.ParamsNamingContainerResolver;
 import org.apache.myfaces.util.token.TokenGenerator;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -164,7 +165,7 @@ public class CODIClientSideWindow extends ClientWindow
     {
         //1. If it comes as parameter, it takes precedence over any other choice, because
         //   no browser is capable to do a POST and create a new window at the same time.
-        String windowId = context.getExternalContext().getRequestParameterMap().get(
+        String windowId = new ParamsNamingContainerResolver(context).get(
                 ResponseStateManager.CLIENT_WINDOW_PARAM);
         if (windowId != null)
         {

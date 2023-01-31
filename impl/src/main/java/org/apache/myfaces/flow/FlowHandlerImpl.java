@@ -40,6 +40,7 @@ import jakarta.faces.flow.Parameter;
 import jakarta.faces.flow.ReturnNode;
 import jakarta.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
+import org.apache.myfaces.renderkit.html.ParamsNamingContainerResolver;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
 import org.apache.myfaces.core.api.shared.lang.Assert;
@@ -497,13 +498,13 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     @Override
     public void clientWindowTransition(FacesContext context)
     {
-        String flowDocumentIdRequestParam = (String) context.getExternalContext().
-            getRequestParameterMap().get(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME);
+        String flowDocumentIdRequestParam = new ParamsNamingContainerResolver(context)
+                .get(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME);
         
         if (flowDocumentIdRequestParam != null)
         {
-            String flowIdRequestParam = (String) context.getExternalContext().
-                getRequestParameterMap().get(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME);
+            String flowIdRequestParam = new ParamsNamingContainerResolver(context)
+                    .get(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME);
             
             if (flowIdRequestParam == null)
             {
