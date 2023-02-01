@@ -1,13 +1,13 @@
 # Apache MyFaces Core
 [![Build Status](https://github.com/apache/myfaces/workflows/MyFaces%20CI/badge.svg)](https://github.com/apache/myfaces/actions/workflows/myfaces-ci.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Build Status ASF](https://ci-builds.apache.org/buildStatus/icon?subject=ASF-Build&job=MyFaces%2FMyFaces%20Core%20Master)](https://ci-builds.apache.org/job/MyFaces/job/MyFaces%20Core%20Master/)
+[![Build Status ASF](https://ci-builds.apache.org/buildStatus/icon?subject=ASF-Build&job=MyFaces%2FMyFaces+Pipeline%2Fmain)](https://ci-builds.apache.org/job/MyFaces/job/MyFaces%20Pipeline/job/main/)
 
 Apache's implementation of the JavaServer Faces (JSF) and Jakarta Faces specification
 
 ## Branches
 
-### Master
+### Main
 
 Jakarta Faces 4.0 implementation  
 Based on the refactored 2.3-next codebase
@@ -28,7 +28,7 @@ Completely refactored codebase compared to 2.3, also providing a Quarkus extensi
 JavaServer Faces 2.3 implementation
 
 
-## Minimum Requirements (master / 2.3-next)
+## Minimum Requirements (main / 2.3-next)
 
 - Java 1.8
 - Servlet 3.0
@@ -100,7 +100,7 @@ mvn clean install
 
 ## Quarkus extension
 
-Since 2.3-next a Quarkus extension is available. A sample project can be found here: https://github.com/apache/myfaces/blob/master/extensions/quarkus/showcase/
+Since 2.3-next a Quarkus extension is available. A sample project can be found here: https://github.com/apache/myfaces/blob/main/extensions/quarkus/showcase/
 
 Uber-JARs are not supported by design
 

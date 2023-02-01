@@ -48,15 +48,13 @@ public final class RequestParameterMap extends AbstractAttributeMap<String>
     @Override
     protected void setAttribute(final String key, final String value)
     {
-        throw new UnsupportedOperationException(
-            "Cannot set ServletRequest Parameter");
+        throw new UnsupportedOperationException("Cannot set ServletRequest Parameter");
     }
 
     @Override
     protected void removeAttribute(final String key)
     {
-        throw new UnsupportedOperationException(
-            "Cannot remove ServletRequest Parameter");
+        throw new UnsupportedOperationException("Cannot remove ServletRequest Parameter");
     }
 
     @Override

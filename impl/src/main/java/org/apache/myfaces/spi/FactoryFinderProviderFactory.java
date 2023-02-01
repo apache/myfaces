@@ -18,11 +18,10 @@
  */
 package org.apache.myfaces.spi;
 
+import jakarta.faces.FactoryFinder;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * <p>{@link jakarta.faces.FactoryFinder} is a class with three methods:</p>
@@ -139,16 +138,13 @@ public abstract class FactoryFinderProviderFactory
      */
     public static void setInstance(FactoryFinderProviderFactory instance)
     {
-
-
         // Now we need to make sure the volatile var FactoryFinder._initialized is
         // set to false, to make sure the right factory is fetched after this method
         // exists. It is just a fail-safe, because after all if the conditions to make 
         // this call are met, _initialized should be false.
         try
         {
-            Class clazz = ClassUtils.classForName("jakarta.faces.FactoryFinder");
-            Field field = clazz.getDeclaredField("initialized");
+            Field field = FactoryFinder.class.getDeclaredField("initialized");
             field.setAccessible(true);
             
             if (field.getBoolean(null))
@@ -177,8 +173,7 @@ public abstract class FactoryFinderProviderFactory
             Logger log = Logger.getLogger(FactoryFinderProviderFactory.class.getName());
             if (log.isLoggable(Level.FINE))
             {
-                log.log(Level.FINE, "Cannot access field _initialized"
-                        + "from FactoryFinder ", e);
+                log.log(Level.FINE, "Cannot access field _initialized from FactoryFinder ", e);
             }
         }
     }

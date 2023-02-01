@@ -49,7 +49,7 @@ public class PropertyDescriptorUtils
     /**
      * Defines if Lambda expressions (via LambdaMetafactory) are used for getter/setter instead of Reflection.
      */
-    @JSFWebConfigParam(since="2.3-next", defaultValue="true", expectedValues="true,false", tags="performance")
+    @JSFWebConfigParam(since="2.3-next", defaultValue="false", expectedValues="true,false", tags="performance")
     public static final String USE_LAMBDA_METAFACTORY = "org.apache.myfaces.USE_LAMBDA_METAFACTORY";
 
     private static final String CACHE_KEY = PropertyDescriptorUtils.class.getName() + ".CACHE";
@@ -100,9 +100,9 @@ public class PropertyDescriptorUtils
             return false;
         }
         
-        // activated per default
+        // disabled per default
         String useMethodHandles = ec.getInitParameter(USE_LAMBDA_METAFACTORY);
-        return useMethodHandles == null || useMethodHandles.trim().isEmpty() || useMethodHandles.contains("true");
+        return useMethodHandles != null && useMethodHandles.contains("true");
     }
 
     public static Map<String, ? extends PropertyDescriptorWrapper> getPropertyDescriptors(ExternalContext ec,

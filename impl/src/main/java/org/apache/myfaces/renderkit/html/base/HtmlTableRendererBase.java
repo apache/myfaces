@@ -268,7 +268,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
      */
     protected static class Styles
     {
-
         private String[] _columnStyle;
         private String[] _rowStyle;
 
@@ -286,7 +285,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
 
         public String getRowStyle(int idx)
         {
-            if(!hasRowStyle())
+            if (!hasRowStyle())
             {
                 return null;
             }
@@ -295,7 +294,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
 
         public String getColumnStyle(int idx)
         {
-            if(!hasColumnStyle())
+            if (!hasColumnStyle())
             {
                 return null;
             }

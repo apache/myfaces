@@ -198,7 +198,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler
     {
         if (unhandled == null)
         {
-            unhandled = new LinkedList<ExceptionQueuedEvent>();
+            unhandled = new LinkedList<>();
         }
         
         unhandled.add((ExceptionQueuedEvent)exceptionQueuedEvent);

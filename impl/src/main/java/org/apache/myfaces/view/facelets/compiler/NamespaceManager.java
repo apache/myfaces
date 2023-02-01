@@ -95,7 +95,7 @@ final class NamespaceManager
     public NamespaceUnit toNamespaceUnit(TagLibrary library)
     {
         NamespaceUnit unit = new NamespaceUnit(library);
-        if (this.namespaces.size() > 0)
+        if (!this.namespaces.isEmpty())
         {
             NS ns = null;
             for (int i = this.namespaces.size() - 1; i >= 0; i--)

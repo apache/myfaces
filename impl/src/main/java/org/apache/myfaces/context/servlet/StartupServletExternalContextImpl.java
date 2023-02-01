@@ -44,15 +44,14 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
 {
     public static final String EXCEPTION_TEXT = "This method is not supported during ";
     
-    private boolean _startup;
-    private ServletContext _servletContext;
-    
-    public StartupServletExternalContextImpl(final ServletContext servletContext,
-            boolean startup)
+    private boolean startup;
+    private ServletContext servletContext;
+
+    public StartupServletExternalContextImpl(ServletContext servletContext, boolean startup)
     {
         super(servletContext);
-        _servletContext = servletContext;
-        _startup = startup;
+        this.servletContext = servletContext;
+        this.startup = startup;
     }
     
     // ~ Methods which are valid to be called during startup and shutdown------
@@ -68,31 +67,31 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     @Override
     public String encodeActionURL(String url)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String encodeNamespace(String name)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String encodeResourceURL(String url)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String getAuthType()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String getRemoteUser()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
@@ -105,61 +104,61 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     @Override
     public String getRequestContextPath()
     {
-        return _servletContext.getContextPath();
+        return servletContext.getContextPath();
     }
 
     @Override
     public Map<String, Object> getRequestCookieMap()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public Map<String, String> getRequestHeaderMap()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public Map<String, String[]> getRequestHeaderValuesMap()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public Locale getRequestLocale()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public Iterator<Locale> getRequestLocales()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public Map<String, Object> getRequestMap()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public Map<String, String> getRequestParameterMap()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public Iterator<String> getRequestParameterNames()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public Map<String, String[]> getRequestParameterValuesMap()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
@@ -186,7 +185,7 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     {
         if (create)
         {
-            throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+            throw unsupportedOperation();
         }
         return null;
     }
@@ -196,7 +195,7 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     {
         if (create)
         {
-            throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+            throw unsupportedOperation();
         }
         return null;
     }
@@ -204,263 +203,258 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     @Override
     public Map<String, Object> getSessionMap()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public Principal getUserPrincipal()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public boolean isUserInRole(String role)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String encodeBookmarkableURL(String baseUrl,
             Map<String, List<String>> parameters)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String encodePartialActionURL(String url)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String encodeRedirectURL(String baseUrl,
             Map<String, List<String>> parameters)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String getRequestCharacterEncoding()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public int getRequestContentLength()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String getRequestContentType()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String getRequestScheme()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String getRequestServerName()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public int getRequestServerPort()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public int getResponseBufferSize()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String getResponseCharacterEncoding()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String getResponseContentType()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void invalidateSession()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public boolean isResponseCommitted()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void setRequest(Object request)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void setRequestCharacterEncoding(String encoding)
             throws UnsupportedEncodingException
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void setResponse(Object response)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void setResponseBufferSize(int size)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void setResponseCharacterEncoding(String encoding)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void setResponseContentLength(int length)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void setResponseContentType(String contentType)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void setResponseHeader(String name, String value)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
     
     @Override
     public void setResponseStatus(int statusCode)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
-    
+
     /**
      * Cannot dispatch because this is not a page request
      */
     @Override
     public void dispatch(String path) throws IOException
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+       throw unsupportedOperation();
     }
-    
+
     /**
      * Cannot redirect because this is not a page request
      */
     @Override
     public void redirect(String url) throws IOException
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
     
 
     @Override
     public void responseFlushBuffer() throws IOException
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void responseReset()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void responseSendError(int statusCode, String message)
             throws IOException
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
     
     @Override
     public void addResponseCookie(String name, String value,
             Map<String, Object> properties)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public void addResponseHeader(String name, String value)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public Flash getFlash()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public OutputStream getResponseOutputStream() throws IOException
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public Writer getResponseOutputWriter() throws IOException
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public boolean isSecure()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public int getSessionMaxInactiveInterval()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());    }
+        throw unsupportedOperation();
+    }
 
     @Override
     public void setSessionMaxInactiveInterval(int interval)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
     @Override
     public String encodeWebsocketURL(String url)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        throw unsupportedOperation();
     }
 
-    // ~ private Methods ------------------------------------------------------
-    
-    /**
-     * Returns startup or shutdown as String according to the field _startup.
-     * @return
-     */
-    private String _getTime()
+    private UnsupportedOperationException unsupportedOperation()
     {
-        return _startup ? "startup" : "shutdown";
+        return new UnsupportedOperationException("This method is not supported during "
+                + (startup ? "startup" : "shutdown"));
     }
-
 }
