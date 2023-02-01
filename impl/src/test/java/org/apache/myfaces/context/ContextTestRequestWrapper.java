@@ -16,6 +16,7 @@
 
 package org.apache.myfaces.context;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class ContextTestRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public Enumeration getParameterNames() {
-        throw new UnsupportedOperationException("not implemented");
+        return Collections.enumeration(_paramDelegate.keySet());
     }
 
 
