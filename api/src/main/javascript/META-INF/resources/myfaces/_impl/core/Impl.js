@@ -337,14 +337,16 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         // thing is the naming container is always prefixed on inputs, and our own
         var passthroughKeys = Object.keys(passThrgh);
         for (var cnt = 0; cnt <  passthroughKeys.length; cnt++) {
-            var key = passthroughKeys[cnt];
+            var key, oldKey = passthroughKeys[cnt];
 
             // only the standard values need remapping for now
             if((!key) || Object.hasOwnProperty(key) || this.STD_VALUES.indexOf(key) == -1) {
                 continue;
             }
             passThrgh[_Utils._$ncRemap(mfInternal, key)] = passThrgh[key];
-            delete passThrgh[key];
+            if(oldKey != key) {
+                delete passThrgh[key];
+            }
         }
 
         /* faces2.2 only: options.delay || */
