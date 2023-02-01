@@ -50,12 +50,12 @@ mvn clean install
 <dependency>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-api</artifactId>
-    <version>2.3-next-M3</version>
+    <version>2.3-next-M7</version>
 </dependency>
 <dependency>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-impl</artifactId>
-    <version>2.3-next-M3</version>
+    <version>2.3-next-M7</version>
 </dependency>
 ```
 
