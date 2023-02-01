@@ -54,7 +54,14 @@ public class LambdaBeanELResolver extends BeanELResolver
 
         context.setPropertyResolved(base, property);
 
-        return getPropertyDescriptor(base, property).getPropertyType();
+        PropertyDescriptorWrapper pdw = getPropertyDescriptor(base, property);
+        // spec change since EL 5.0; see MYFACES-4556
+        if (pdw.getWrapped().getWriteMethod() == null)
+        {
+            return null;
+        }
+
+        return pdw.getPropertyType();
     }
 
     @SuppressWarnings("unchecked")
