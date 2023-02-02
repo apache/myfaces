@@ -32,6 +32,7 @@ import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.event.ActionListener;
 import jakarta.faces.render.RenderKitFactory;
@@ -271,6 +272,11 @@ public abstract class MockApplication10 extends Application
             throw new NullPointerException("Requested component type is null");
         }
         String componentClass = (String) components.get(componentType);
+        if (componentClass == null && "jakarta.faces.ViewRoot".equals(componentType))
+        {
+            componentClass = UIViewRoot.class.getName();
+        }
+
         if (componentClass == null)
         {
             throw new FacesException(
