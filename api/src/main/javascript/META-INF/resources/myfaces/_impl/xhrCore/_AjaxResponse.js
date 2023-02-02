@@ -82,6 +82,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         mfInternal.namingModeId = null;
 
 
+        var NAME_CONT_ID = myfaces._impl.xhrCore._AjaxUtils.NAMING_CONTAINER_ID;
         try {
             var _Impl = this.attr("impl"), _Lang = this._Lang;
             // TODO:
@@ -125,7 +126,11 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
              * @type {string} ... the naming mode id is set or an empty string
              * definitely not a null value to avoid type confusions later on
              */
-            mfInternal.namingModeId = (partials.id || "");
+            mfInternal[NAME_CONT_ID] = mfInternal.namingModeId = (partials.id || "");
+            var rawNamingContainerId = mfInternal[NAME_CONT_ID];
+            if(rawNamingContainerId.length) {
+                mfInternal[NAME_CONT_ID] = rawNamingContainerId + faces.separatorchar;
+            }
 
 
             var childNodesLength = partials.childNodes.length;
@@ -177,6 +182,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             delete mfInternal.appliedViewState;
             delete mfInternal.appliedClientWindow;
             delete mfInternal.namingModeId;
+            delete mfInternal[NAME_CONT_ID];
         }
     },
 
@@ -230,7 +236,6 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         if (!theForm) return;
         var _Lang = this._Lang;
         var _Dom = this._Dom;
-        var prefix = this._getPrefix(context);
 
         //in IE7 looking up form elements with complex names (such as 'jakarta.faces.ViewState') fails in certain cases
         //iterate through the form elements to find the element, instead
@@ -258,7 +263,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
             //per faces 2.3 spec the identifier of the element must be unique in the dom tree
             //otherwise we will break the html spec here
-            element.innerHTML = ["<input type='hidden'", "id='", this._fetchUniqueId(prefix, identifier), "' name='", identifier, "' value='", value, "' />"].join("");
+            element.innerHTML = ["<input type='hidden'", "id='", this._fetchUniqueId(context, identifier), "' name='", this._fetchName(context, identifier), "' value='", value, "' />"].join("");
             //now we go to proper dom handling after having to deal with another ie screw-up
             try {
                 theForm.appendChild(element.childNodes[0]);
@@ -268,7 +273,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
     },
 
-    _fetchUniqueId: function(prefix, identifier) {
+    _fetchUniqueId: function(context, identifier) {
+        var prefix = this._getPrefix(context);
         var cnt = 0;
         var retVal = prefix + identifier + faces.separatorchar + cnt;
         while(this._Dom.byId(retVal) != null) {
@@ -276,6 +282,12 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             retVal = prefix + identifier + faces.separatorchar + cnt;
         }
         return retVal;
+    },
+
+    _fetchName: function(context, identifier) {
+        var mfInternal = context._mfInternal;
+        var prefix = myfaces._impl.xhrCore._AjaxUtils._$ncRemap(mfInternal, "");
+        return prefix + identifier;
     },
 
     /**
@@ -292,8 +304,6 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
         //elem not found for whatever reason
         //https://issues.apache.org/jira/browse/MYFACES-3544
-
-        var prefix = this._getPrefix(context);
 
         //do we still need the issuing form update? I guess it is needed.
         //faces spec 2.3 and earlier all issuing forms must update
@@ -382,7 +392,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
     _getPrefix: function (context) {
         var mfInternal = context._mfInternal;
-        var prefix = mfInternal.namingModeId;
+        var prefix = mfInternal[myfaces._impl.xhrCore._AjaxUtils.NAMING_CONTAINER_ID];
         if (prefix != "") {
             prefix = prefix + faces.separatorchar;
         }
