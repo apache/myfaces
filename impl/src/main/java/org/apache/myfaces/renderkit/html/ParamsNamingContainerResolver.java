@@ -28,9 +28,9 @@ import jakarta.faces.render.ResponseStateManager;
 import java.util.Map;
 
 /**
- * A centralized wrapper class which deals with naming container resolution
+ * A centralized wrapper class, which deals with naming container resolution
  * on params level.
- * The problem is, the naming container ajax requests introduce per spec
+ * The problem is, the naming container Ajax requests introduce per spec
  * that the parameters need to be prefixed. This works for normal components
  * but not standardized request parameters, we have to prefix them for a params
  * lookup.
@@ -42,6 +42,9 @@ import java.util.Map;
  */
 public class ParamsNamingContainerResolver
 {
+    public static final String CACHE_ATTR_NAMING_PREFIX = "myfaces.cache.namingcontainerprefix";
+    public static final String EMPTY = "";
+    public static final String CACHE_ATTR_POSTBACK = "myfaces.cache.postback";
     Map<String, String> delegate;
     FacesContext facesContext;
 
@@ -73,6 +76,76 @@ public class ParamsNamingContainerResolver
 
     public static boolean isPostBack(FacesContext context)
     {
+        //cache the isPostback
+        if(context.getAttributes().containsKey(CACHE_ATTR_POSTBACK))
+        {
+            return (boolean) context.getAttributes().get(CACHE_ATTR_POSTBACK);
+        }
+        boolean ret = resolvePostbackFromRequest(context);
+        context.getAttributes().put(CACHE_ATTR_POSTBACK, ret);
+        return ret;
+    }
+
+    public static String resolveNamingContainerPrefix(FacesContext facesContext)
+    {
+        UIViewRoot viewRoot = facesContext.getViewRoot();
+
+        // not yet present, we are in a postback phase, without a ViewRoot yet present
+        // the state that we have to determine a naming container before view root buildup
+        // can only happen during postback and before a ViewRoot buildup, not during a page get request.
+        // We always will have a ViewState being sent with the request in this case.
+        // The cases, where we trigger this from outside, are always before ViewRoot buildup
+        // we omit this code after we have a ViewRoot, because theoretically the naming container can change.
+        // Practically it won´t. But during postback before the RestoreViewRoot we always
+        // work on the postback naming container name.
+        if(viewRoot == null)
+        {
+            if(facesContext.getAttributes().containsKey(CACHE_ATTR_NAMING_PREFIX))
+            {
+                return (String) facesContext.getAttributes().get(CACHE_ATTR_NAMING_PREFIX);
+            }
+
+            Map<String, String> reqParamMap = facesContext.getExternalContext().getRequestParameterMap();
+            //no prefix, we have a blank ViewState in the request!
+            String prefix = EMPTY;
+            if(!reqParamMap.containsKey(ResponseStateManager.VIEW_STATE_PARAM))
+            {
+                // no viewstate param we have to determine it by other means
+                prefix = resolvePrefixFromRequest(facesContext, reqParamMap);
+            } // else direct viewstate param means empty prefix, which is the default
+            facesContext.getAttributes().put(CACHE_ATTR_NAMING_PREFIX, prefix);
+            return prefix;
+        }
+        // The naming container name can theoretically
+        // shift after ViewRoot buildup
+        // in the ajax navigation case, so once we have a ViewRoot
+        // we can omit the cache and go for the normal viewRoot resolution
+        if(viewRoot instanceof NamingContainer)
+        {
+            return viewRoot.getContainerClientId(facesContext) +
+                    UINamingContainer.getSeparatorChar(facesContext);
+        }
+        else
+        {
+            return EMPTY;
+        }
+    }
+
+    private static String resolvePrefixFromRequest(FacesContext facesContext, Map<String, String> reqParamMap)
+    {
+        String firstViewStateKey = reqParamMap.keySet().stream()
+                .filter(item -> item.contains(ResponseStateManager.VIEW_STATE_PARAM))
+                .findFirst().orElse(EMPTY);
+        if(firstViewStateKey.length() > 0)
+        {
+            char sep = facesContext.getNamingContainerSeparatorChar();
+            firstViewStateKey = firstViewStateKey.split(String.valueOf(sep))[0] + sep;
+        }
+        return firstViewStateKey;
+    }
+
+    private static boolean resolvePostbackFromRequest(FacesContext context)
+    {
         Map<String, String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
         boolean ret = requestParameterMap.
                 containsKey(ResponseStateManager.VIEW_STATE_PARAM) ||
@@ -81,44 +154,5 @@ public class ParamsNamingContainerResolver
                         .filter(key -> key.contains(ResponseStateManager.VIEW_STATE_PARAM))
                         .findFirst().isPresent();
         return ret;
-    }
-
-    public static String resolveNamingContainerPrefix(FacesContext facesContext)
-    {
-        UIViewRoot viewRoot = facesContext.getViewRoot();
-
-        //not yet present, we are in a postback phase, without a viewroot yet present
-        if(viewRoot == null)
-        {
-            Map<String, String> reqParamMap = facesContext.getExternalContext().getRequestParameterMap();
-
-            //no prefix, we have a blank ViewState in the request!
-            if(reqParamMap.containsKey(ResponseStateManager.VIEW_STATE_PARAM))
-            {
-                return "";
-            }
-            // TODO please optimize this code, we probably can store the data below on request level
-            // it is static per request!
-
-            //we have a prefixed viewstate
-            String firstViewStateKey = reqParamMap.keySet().stream()
-                    .filter(item -> item.contains(ResponseStateManager.VIEW_STATE_PARAM))
-                    .findFirst().orElse("");
-            if(firstViewStateKey.length() > 0)
-            {
-                char sep = facesContext.getNamingContainerSeparatorChar();
-                return firstViewStateKey.split(String.valueOf(sep))[0] + sep;
-            }
-            return firstViewStateKey;
-        }
-        if(viewRoot instanceof NamingContainer)
-        {
-            return viewRoot.getContainerClientId(facesContext) +
-                    UINamingContainer.getSeparatorChar(facesContext);
-        }
-        else
-        {
-            return "";
-        }
     }
 }
