@@ -28,6 +28,7 @@ import {$faces, $nsp, HTML_CLIENT_WINDOW, HTML_VIEWSTATE, P_CLIENT_WINDOW, P_VIE
 export class HiddenInputBuilder {
     private namingContainerId?: string;
     private parent?: DomQuery;
+    private namedViewRoot: boolean = false;
     private readonly name: string;
     private readonly template: string;
 
@@ -44,6 +45,11 @@ export class HiddenInputBuilder {
 
     withParent(parent: DomQuery): HiddenInputBuilder {
         this.parent = parent;
+        return this;
+    }
+
+    withNamedViewRoot(namedViewRoot: boolean): HiddenInputBuilder {
+        this.namedViewRoot = namedViewRoot;
         return this;
     }
 
@@ -67,6 +73,15 @@ export class HiddenInputBuilder {
         newElement.id.value = ((this.namingContainerId?.length) ?
             [this.namingContainerId,  $nsp(this.name),  cnt]:
             [$nsp(this.name),  cnt]).join(SEP);
+
+        //name must be prefixed with the naming container id as well according to the jsdocs
+        if(this.namedViewRoot) {
+            newElement.name.value = (this.namingContainerId?.length) ?
+                [this.namingContainerId,  $nsp(this.name)].join(SEP): $nsp(this.name);
+        } else {
+            newElement.name.value = $nsp(this.name);
+        }
+
 
         this?.parent?.append(newElement);
         return newElement;

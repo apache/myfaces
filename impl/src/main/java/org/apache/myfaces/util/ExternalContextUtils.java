@@ -23,7 +23,6 @@ import org.apache.myfaces.util.lang.ClassUtils;
 
 
 import jakarta.faces.context.ExternalContext;
-import jakarta.servlet.ServletRequestWrapper;
 import jakarta.servlet.ServletResponseWrapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -154,35 +153,6 @@ public final class ExternalContextUtils
                 response = ((ServletResponseWrapper) response).getResponse();
             }
             // no more possibilities to find a HttpServletResponse
-            break;
-        }
-        return null; // not found
-    }
-
-
-    /**
-     * Trys to obtain a HttpServletRequest from the Request.
-     * Note that this method also trys to unwrap any ServletRequestWrapper
-     * in order to retrieve a valid HttpServletRequest.
-     * @param request
-     * @return if found, the HttpServletRequest, null otherwise
-     */
-    public static HttpServletRequest getHttpServletRequest(Object request)
-    {
-        // unwrap the response until we find a HttpServletResponse
-        while (request != null)
-        {
-            if (request instanceof HttpServletRequest)
-            {
-                // found
-                return (HttpServletRequest) request;
-            }
-            if (request instanceof ServletRequestWrapper)
-            {
-                // unwrap
-                request = ((ServletRequestWrapper) request).getRequest();
-            }
-            // no more possibilities to find a HttpServletRequest
             break;
         }
         return null; // not found

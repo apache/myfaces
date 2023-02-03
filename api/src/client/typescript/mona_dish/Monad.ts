@@ -618,6 +618,13 @@ export class Config extends Optional<any> {
         return JSON.stringify(this.value);
     }
 
+    /**
+     * returns the first config level as streeam
+     */
+    get stream(): Stream<[string, any]> {
+        return Stream.of(... Object.keys(this.value)).map(key => [key, this.value[key]]);
+    }
+    
     protected getClass(): any {
         return Config;
     }

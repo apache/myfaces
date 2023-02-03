@@ -134,4 +134,11 @@ export interface IResponseProcessor {
      * send last event
      */
     done(): void;
+
+    /**
+     * update internal state to
+     * check whether we still are in a named view root
+     * (can change after a navigation)
+     */
+    updateNamedViewRootState();
 }

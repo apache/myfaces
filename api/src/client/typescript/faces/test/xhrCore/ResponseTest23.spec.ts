@@ -6,7 +6,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ *Ø
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +22,10 @@ import * as sinon from "sinon";
 import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
 import {expect} from "chai";
 import protocolPage = StandardInits.protocolPage;
-import {DQ} from "mona-dish";
+import {DQ, DQ$} from "mona-dish";
 import {$nsp} from "../../impl/core/Const";
+import STD_XML = StandardInits.STD_XML;
+import HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
 
 
 declare var jsf: any;
@@ -56,10 +58,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr;
-            (<any>window).XMLHttpRequest = this.xhr;
+            window.XMLHttpRequest = this.xhr;
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 Implementation.reset();
                 close();
             }
@@ -72,10 +74,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
     it("must have a simple field updated as well as the viewstate", function (done) {
         //DQ.byId("cmd_update_insert").click();
-
-
-        let issuer = DQ.byId("cmd_update_insert").click();
-
+        DQ.byId("cmd_update_insert").click();
         this.respond(XmlResponses.UPDATE_INSERT_1);
 
         expect(DQ.byId("changesArea")
@@ -106,8 +105,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
     it("must have a simple field updated  with the second before update rendering path", function (done) {
         //DQ.byId("cmd_update_insert").click();
-        let issuer = DQ.byId("cmd_update_insert").click();
-
+        DQ.byId("cmd_update_insert").click();
         this.respond(XmlResponses.UPDATE_INSERT_2);
 
         expect(DQ.byId("changesArea")
@@ -162,7 +160,6 @@ describe('Tests of the various aspects of the response protocol functionality', 
         this.respond(XmlResponses.HEAD_REPLACEMENT);
 
         //basic replacement
-        let newHead = DQ.byId(document.head);
         let newBody = DQ.byId(document.body);
         let newContent = <string>newBody.html().value;
 
@@ -223,8 +220,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
     });
 
     it("must have processed a proper eval of a script given in the eval tag", function () {
-        let issuer = DQ.byId("cmd_eval").click();
-
+        DQ.byId("cmd_eval").click();
         this.respond(XmlResponses.EVAL_1);
 
         let resultHTML: string = <string>DQ.byId(document.body).html().value;
@@ -232,10 +228,8 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
     });
 
-    it("must have updated the viewstates properly", function () {
-
-        let issuer = DQ.byId("cmd_eval").click();
-
+    it("must have updated the viewstates properly 2.3", function () {
+        DQ.byId("cmd_eval").click();
         /*js full submit form, coming from the integration tests*/
         window.document.body.innerHTML = `<form id="j_id__v_0" name="j_id__v_0" method="post" action="/IntegrationJSTest/integrationtestsjasmine/test7-eventtest.jsf"
       enctype="application/x-www-form-urlencoded"><span id="updatePanel">hello world</span><a href="#"
@@ -262,17 +256,15 @@ describe('Tests of the various aspects of the response protocol functionality', 
             </partial-response>`);
 
 
-        expect(DQ.byId("javax.faces.ViewState").isAbsent()).to.be.false;
+        expect(DQ$("[name*='javax.faces.ViewState']").isAbsent()).to.be.false;
 
-        expect((<HTMLInputElement>document.getElementsByName("javax.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
-        expect(DQ.byId("javax.faces.ViewState").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        //expect((<HTMLInputElement>document.getElementsByName("javax.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect(DQ$("[name*='javax.faces.ViewState']").val == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
     });
 
 
-    it("must have updated the viewstates properly with lenient update block", function () {
-
-        let issuer = DQ.byId("cmd_eval").click();
-
+    it("must have updated the viewstates properly with lenient update block 2.3", function () {
+        DQ.byId("cmd_eval").click();
         /*js full submit form, coming from the integration tests*/
         window.document.body.innerHTML = `<form id="j_id__v_0" name="j_id__v_0" method="post" action="/IntegrationJSTest/integrationtestsjasmine/test7-eventtest.jsf"
       enctype="application/x-www-form-urlencoded"><span id="updatePanel">hello world</span><a href="#"
@@ -301,10 +293,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
             </partial-response>`);
 
 
-        expect(DQ.byId("javax.faces.ViewState").isAbsent()).to.be.false;
+        expect(DQ$("[name*='javax.faces.ViewState']").isAbsent()).to.be.false;
 
-        expect((<HTMLInputElement>document.getElementById("javax.faces.ViewState")).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
-        expect(DQ.byId("javax.faces.ViewState").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        //expect((<HTMLInputElement>document.getElementsByName("javax.faces.ViewState")[0]).value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
+        expect(DQ$("[name*='javax.faces.ViewState']").inputValue.value == "RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD").to.be.true;
     });
 
 
@@ -367,6 +359,38 @@ describe('Tests of the various aspects of the response protocol functionality', 
         expect(DQ.byId("j_id__v_0:javax.faces.ClientWindow:1").isAbsent()).to.be.false;
     });
 
+    
+    it("must pass named params properly (tobago testcase)", function(done) {
+            window.document.body.innerHTML = HTML_PREFIX_EMBEDDED_BODY;
+        try {
 
-    //TODO update head all and redirect
+            let event = {
+                isTrusted: true,
+                type: 'change',
+                target: document.getElementById("page:input::field"),
+                currentTarget: document.getElementById("page:input::field")
+            };
+            jsf.ajax.request(document.getElementById("page:input"), event as any, {
+                render: "page:output",
+                execute: "page:input",
+                params: {
+                    "booga2.xxx": "yyy",
+                    "javax.faces.behavior.event": "change",
+                    "booga": "bla"
+                }
+            });
+        } catch (err) {
+            console.error(err);
+            expect(false).to.eq(true);
+        }
+
+        const requestBody = this.requests[0].requestBody;
+        expect(requestBody.indexOf("javax.faces.behavior.event")).to.not.eq(-1);
+        expect(requestBody.indexOf("javax.faces.behavior.event=change")).to.not.eq(-1);
+        expect(requestBody.indexOf("page%3Ainput=input_value")).to.not.eq(-1);
+            done();
+
+    });
+
+
 });
