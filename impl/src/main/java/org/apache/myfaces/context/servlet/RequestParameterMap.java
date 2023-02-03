@@ -67,7 +67,7 @@ public final class RequestParameterMap extends AbstractAttributeMap<String>
             {
                 return "";
             }
-            viewNamespace = ViewNamespaceUtils.getViewNamespace(context);
+            viewNamespace = ViewNamespaceUtils.getViewNamespace(context, servletRequest);
         }
         return viewNamespace;
     }
