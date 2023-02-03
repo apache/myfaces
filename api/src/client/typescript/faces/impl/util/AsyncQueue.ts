@@ -58,7 +58,7 @@ export class AsynchronousQueue<T extends AsyncRunnable<any>> {
         if (delay) {
             this.delayTimeout = setTimeout(() => {
                 this.appendElement(element);
-            });
+            }) as any;
         } else {
             this.appendElement(element);
         }

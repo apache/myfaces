@@ -51,10 +51,10 @@ describe('shadow dom testsuite', () => {
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr;
-            (<any>window).XMLHttpRequest = this.xhr;
+            window.XMLHttpRequest = this.xhr;
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 Implementation.reset();
                 close();
             }
@@ -84,7 +84,6 @@ describe('shadow dom testsuite', () => {
 
 
     it("shadow dom updated triggered from outside", function() {
-        const Impl = Implementation;
         //const addRequestToQueue = sinon.stub(Impl.queueHandler, "addRequestToQueue");
 
         expect(DomQuery.querySelectorAll("#shadowDomArea").length).to.eq(1);

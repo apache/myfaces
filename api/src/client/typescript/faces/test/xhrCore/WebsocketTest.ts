@@ -41,7 +41,7 @@ describe('Tests the jsf websocket client side api on high level (generic test wi
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr;
-            (<any>window).XMLHttpRequest = this.xhr;
+            window.XMLHttpRequest = this.xhr;
 
             this.jsfAjaxResponse = sinon.stub((<any>global).faces.ajax, "response");
 
@@ -53,7 +53,7 @@ describe('Tests the jsf websocket client side api on high level (generic test wi
             this.initSpy = sinon.spy(this.pushImpl, "init");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 this.socket.restore();
                 this.initSpy.restore();
@@ -126,13 +126,13 @@ describe('Tests the jsf websocket client side api on high level (generic test wi
 
         let msg = null;
         let cnl = null;
-        new Promise((resolve, reject) => {
+        new Promise((resolve) => {
             faces.push.init("blarg", "booga.ws", "mychannel", () => {
                     openCalled = true;
                     this.fakeWebsocket._respond({data: '"booga"'});
                 },
 
-                (message: string, channel: string, event: any) => {
+                (message: string, channel: string) => {
                     messageCalled = true;
                     msg = message;
                     cnl = channel;
@@ -174,13 +174,13 @@ describe('Tests the jsf websocket client side api on high level (generic test wi
 
         let msg = null;
         let cnl = null;
-        new Promise((resolve, reject) => {
+        new Promise((resolve) => {
             faces.push.init("blarg", "booga.ws", "mychannel", () => {
                     openCalled = true;
                     this.fakeWebsocket._respond({data: '"booga"'});
                 },
 
-                (message: string, channel: string, event: any) => {
+                (message: string, channel: string) => {
                     messageCalled = true;
                     msg = message;
                     cnl = channel;

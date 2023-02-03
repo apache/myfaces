@@ -27,9 +27,6 @@ import {DQ, Stream} from "mona-dish";
  *
  * we might move the code over in the future, but for now a straight 1:1 port suffices
  */
-declare const window: any;
-declare const myfaces: any;
-
 export module oam {
     /**
      * sets a hidden input field
@@ -37,7 +34,7 @@ export module oam {
      * @param name the hidden field
      * @param value the value to be rendered
      */
-    export const setHiddenInput = function (formName: string, name: string, value: string) {
+    export const setHiddenInput = function (formName: string, name: string, value: string): void {
         DQ.byId(document.forms[formName])
             .each(form => {
                 const input = form.querySelectorAll(`input[type='hidden'][name='${name}']`);
@@ -57,7 +54,7 @@ export module oam {
      * @param formName formName for the input
      * @param name the name of the input field
      */
-    export const clearHiddenInput = function (formName: string, name: string) {
+    export const clearHiddenInput = function (formName: string, name: string): void {
         let element = document.forms?.[formName]?.elements?.[name];
         if(!element) {
             return;
@@ -65,37 +62,47 @@ export module oam {
         DQ.byId(element).delete();
     };
 
-    // noinspection JSUnusedGlobalSymbols
+    // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
     /**
      * does special form submit remapping
      * re-maps the issuing command link into something,
-     * a decode of the command link on the server can understand
+     * the "decode" of the command link on the server can understand
      *
      * @param formName
      * @param linkId
      * @param target
      * @param params
      */
-    export const submitForm = function (formName: string, linkId: string, target: string, params: { [key: string]: any }) {
+    export const submitForm = function (formName: string, linkId: string | null = null, target: string |null = null, params: AssocArr<any> | Tuples<string, any> | null = {} ): boolean {
+
+
+        //handle a possible incoming null, not sure if this is used that way anywhere, but we allow it
+        params = (!params) ? {} : params;
+
         let clearFn = 'clearFormHiddenParams_' + formName.replace(/-/g, '\$:').replace(/:/g, '_');
         window?.[clearFn]?.(formName);
 
         //autoscroll code
-        if (window?.myfaces?.core?.config?.autoScroll && window?.getScrolling) {
-            myfaces.oam.setHiddenInput(formName, 'autoScroll', window?.getScrolling());
+        if (window?.myfaces?.core?.config?.autoScroll && (window as any)?.getScrolling) {
+            myfaces.oam.setHiddenInput(formName, 'autoScroll', (window as any)?.getScrolling());
         }
-        Stream.ofAssoc(params).each((param: [string, any]) => {
-            myfaces.oam.setHiddenInput(formName, param[0], param[1]);
-        });
+        let paramsStream: Stream<[string, any]> = Array.isArray(params) ? Stream.of(...params) : Stream.ofAssoc(params);
+        paramsStream.each(([key, data]) => myfaces.oam.setHiddenInput(formName, key, data));
 
         //we call the namespaced function, to allow decoration, via a direct call we would
-        myfaces.oam.setHiddenInput(formName, `${formName}:_idcl`, linkId);
+        myfaces.oam.setHiddenInput(formName, `${formName}:_idcl`, linkId ?? '');
 
-        DQ.byId(document.forms[formName]).each(form => {
+
+        DQ.byId(document.forms?.[formName] ?? document.getElementById(formName)).each(form => {
             const ATTR_TARGET = "target";
             const formElement = form.getAsElem(0).value as HTMLFormElement;
-            const oldTarget = form.attr(ATTR_TARGET).value;
-            form.attr(ATTR_TARGET).value = target;
+            const oldTarget = (form.getAsElem(0).value as HTMLFormElement).getAttribute("target");
+
+            if(target != "null" && target) {
+                (form.getAsElem(0).value as HTMLFormElement).setAttribute("target", target);
+            }
+
+
 
             const result = formElement?.onsubmit?.(null);
 
@@ -106,9 +113,15 @@ export module oam {
             } catch (e) {
                 window?.console.error(e);
             } finally {
-                form.attr(ATTR_TARGET).value = oldTarget;
-                Stream.ofAssoc(params).each((param: [string, any]) => {
-                    myfaces.oam.clearHiddenInput(formName, param[0]);
+                if(oldTarget == null || oldTarget == "null") {
+                    (form.getAsElem(0).value as HTMLFormElement).removeAttribute("target");
+                } else {
+                    (form.getAsElem(0).value as HTMLFormElement).setAttribute("target", oldTarget);
+                }
+
+                // noinspection JSUnusedLocalSymbols
+                paramsStream.each(([key, data]) => {
+                    myfaces.oam.clearHiddenInput(formName, key);
                 });
                 myfaces.oam.clearHiddenInput(formName, `${formName}:_idcl`);
             }

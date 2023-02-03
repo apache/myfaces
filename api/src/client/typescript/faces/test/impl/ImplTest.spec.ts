@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-import {Config} from "mona-dish";
+import {Config, DomQuery} from "mona-dish";
 import {describe, it} from 'mocha';
 import {expect} from 'chai';
 import * as sinon from 'sinon';
 
-import {DomQuery} from "mona-dish";
-
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
+import {CTX_PARAM_REQ_PASS_THR, P_EXECUTE, P_RENDER} from "../../impl/core/Const";
 import defaultMyFaces = StandardInits.defaultMyFaces;
-import {P_EXECUTE, P_RENDER} from "../../impl/core/Const";
+
 
 sinon.reset();
 
@@ -47,8 +46,7 @@ describe('faces.ajax.request test suite', () => {
         //we stub the addRequestToQueue, to enable the request check only
         //without any xhr and response, both will be tested separately for
         //proper behavior
-        const Impl = Implementation;
-        const addRequestToQueue = sinon.stub(Impl.queueHandler, "addRequestToQueue");
+        const addRequestToQueue = sinon.stub(Implementation.queueHandler, "addRequestToQueue");
         //now the faces.ajax.request should trigger but should not go into
         //the asynchronous event loop.
         //lets check it out
@@ -60,13 +58,11 @@ describe('faces.ajax.request test suite', () => {
 
             expect(addRequestToQueue.called).to.be.true;
             expect(addRequestToQueue.callCount).to.eq(1);
-
-            const argElement = <Config>addRequestToQueue.args[0][2];
             const context = (<Config>addRequestToQueue.args[0][2]);
 
-            expect(context.getIf("passThrgh", P_RENDER).value).eq("@all");
+            expect(context.getIf(CTX_PARAM_REQ_PASS_THR, P_RENDER).value).eq("@all");
             //Execute issuing form due to @form and always the issuing element
-            expect(context.getIf("passThrgh", P_EXECUTE).value).eq("blarg input_2");
+            expect(context.getIf(CTX_PARAM_REQ_PASS_THR, P_EXECUTE).value).eq("blarg input_2");
         } finally {
             //once done we restore the proper state
             addRequestToQueue.restore();
@@ -81,7 +77,7 @@ describe('faces.ajax.request test suite', () => {
 
     it("faces.util.chain must work", () => {
         let called = {};
-        (<any>window).called = called;
+        window.called = called;
 
         let func1 = () => {
             called["func1"] = true;

@@ -23,9 +23,10 @@
 /*IMonad definitions*/
 
 import {Lang} from "./Lang";
-import {AssocArrayCollector} from "./SourcesCollectors";
+import {ArrayCollector, AssocArrayCollector} from "./SourcesCollectors";
 import {Stream} from "./Stream";
 import objAssign = Lang.objAssign;
+
 
 /**
  * IFunctor interface,
@@ -190,6 +191,8 @@ export class Optional<T> extends Monad<T> {
      * this is some syntactic sugar however which is quite useful*/
     getIf<R>(...key: string[]): Optional<R> {
 
+        key = this.preprocessKeys(...key);
+
         let currentPos: Optional<any> = this;
         for (let cnt = 0; cnt < key.length; cnt++) {
             let currKey = this.keyVal(key[cnt]);
@@ -326,6 +329,25 @@ export class Optional<T> extends Monad<T> {
         }
     }
 
+
+    protected preprocessKeys(...keys): string[] {
+        return Stream.of(...keys)
+            .flatMap(item => {
+                return Stream.of(...item.split(/\]\s*\[/gi))
+                    .map(item => {
+                        item = item.replace(/^\s+|\s+$/g, "");
+                        if(item.indexOf("[") == -1 && item.indexOf("]") != -1) {
+                            item = "[" + item;
+                        }
+                        if(item.indexOf("]") == -1 && item.indexOf("[") != -1) {
+                            item = item + "]";
+                        }
+                        return item;
+                    })
+            })
+
+            .collect(new ArrayCollector());
+    }
 }
 
 // --------------------- From here onwards we break out the sideffects free limits ------------
@@ -436,6 +458,16 @@ class ConfigEntry<T> extends ValueEmbedder<T> {
     }
 }
 
+
+export const CONFIG_VALUE = "__END_POINT__";
+export const CONFIG_ANY = "__ANY_POINT__";
+const ALL_VALUES = "*";
+
+
+
+export type ConfigDef = {[key: string]: any};
+
+
 /**
  * Config, basically an optional wrapper for a json structure
  * (not sideeffect free, since we can alter the internal config state
@@ -443,7 +475,7 @@ class ConfigEntry<T> extends ValueEmbedder<T> {
  * since this would swallow a lot of performane and ram
  */
 export class Config extends Optional<any> {
-    constructor(root: any) {
+    constructor(root: any, private configDef ?: ConfigDef) {
         super(root);
     }
 
@@ -483,6 +515,9 @@ export class Config extends Optional<any> {
      */
     shallowMerge(other: Config, overwrite = true, withAppend = false) {
         for (let key in other.value) {
+            if('undefined' == typeof key || null == key) {
+                continue;
+            }
             if (overwrite || !(key in this.value)) {
                 if (!withAppend) {
                     this.assign(key).value = other.getIf(key).value;
@@ -514,12 +549,13 @@ export class Config extends Optional<any> {
         if (noKeys) {
             return;
         }
+        this.assertAccessPath(...accessPath);
 
         let lastKey = accessPath[accessPath.length - 1];
         let currKey, finalKey = this.keyVal(lastKey);
 
         let pathExists = this.getIf(...accessPath).isPresent();
-        this.buildPath(accessPath);
+        this.buildPath(...accessPath);
 
         let finalKeyArrPos = this.arrayIndex(lastKey);
         if (finalKeyArrPos > -1) {
@@ -562,8 +598,9 @@ export class Config extends Optional<any> {
         if (accessPath.length < 1) {
             return;
         }
+        this.assertAccessPath(...accessPath);
 
-        this.buildPath(accessPath);
+        this.buildPath(...accessPath);
 
         let currKey = this.keyVal(accessPath[accessPath.length - 1]);
         let arrPos = this.arrayIndex(accessPath[accessPath.length - 1]);
@@ -573,6 +610,7 @@ export class Config extends Optional<any> {
 
         return retVal;
     }
+
 
     /**
      * assign a value if the condition is set to true, otherwise skip it
@@ -590,6 +628,7 @@ export class Config extends Optional<any> {
      * @param accessPath the access path
      */
     getIf(...accessPath: Array<string>): Config {
+        this.assertAccessPath(...accessPath);
         return this.getClass().fromNullable(super.getIf.apply(this, accessPath).value);
     }
 
@@ -633,12 +672,75 @@ export class Config extends Optional<any> {
         this._value = val;
     }
 
+
+    /**
+     * asserts the access path for a semy typed access
+      * @param accessPath
+     * @private
+     */
+    private assertAccessPath(...accessPath: Array<string>) {
+        accessPath = this.preprocessKeys(...accessPath);
+        if(!this.configDef) {
+            //untyped
+            return;
+        }
+
+        let currAccessPos = null;
+
+        const ERR_ACCESS_PATH = "Access Path to config invalid";
+        const ABSENT = "__ABSENT__";
+        currAccessPos = this.configDef;
+
+
+
+        for (let cnt = 0; cnt < accessPath.length; cnt++) {
+            let currKey = this.keyVal(accessPath[cnt]);
+            let arrPos = this.arrayIndex(accessPath[cnt]);
+
+            //key index
+            if(this.isArray(arrPos)) {
+                if(currKey != "") {
+                    currAccessPos = (Array.isArray(currAccessPos)) ?
+                        Stream.of(...currAccessPos)
+                            .filter(item => !!(item?.[currKey] ?? false))
+                            .map(item => item?.[currKey]).first() :
+                        Optional.fromNullable(currAccessPos?.[currKey] ?? null);
+                } else {
+                    currAccessPos = (Array.isArray(currAccessPos)) ?
+                        Stream.of(...currAccessPos)
+                            .filter(item => Array.isArray(item))
+                            .flatMap(item => Stream.of(...item)).first() : Optional.absent;
+                }
+                //we noe store either the current array or the filtered look ahead to go further
+            } else {
+                //we now have an array and go further with a singular key
+                currAccessPos = (Array.isArray(currAccessPos)) ? Stream.of(...currAccessPos)
+                        .filter(item => !! (item?.[currKey] ?? false))
+                        .map(item => item?.[currKey])
+                        .first():
+                Optional.fromNullable(currAccessPos?.[currKey] ?? null);
+            }
+            if(!currAccessPos.isPresent()) {
+                throw Error(ERR_ACCESS_PATH)
+            }
+            currAccessPos = currAccessPos.value;
+
+            //no further testing needed, from this point onwards we are on our own
+            if(currAccessPos == CONFIG_ANY) {
+                return;
+            }
+        }
+
+    }
+
+
     /**
      * builds the config path
      *
      * @param accessPath a sequential array of accessPath containing either a key name or an array reference name[<index>]
      */
-    private buildPath(accessPath: Array<any>): Config {
+    private buildPath(...accessPath: string[]): Config {
+        accessPath = this.preprocessKeys(...accessPath);
         let val = this;
         let parentVal = this.getClass().fromNullable(null);
         let parentPos = -1;
@@ -654,7 +756,7 @@ export class Config extends Optional<any> {
             let currKey = this.keyVal(accessPath[cnt]);
             let arrPos = this.arrayIndex(accessPath[cnt]);
 
-            if (currKey === "" && arrPos >= 0) {
+            if (this.isArrayPos(currKey, arrPos)) {
 
                 val.setVal((val.value instanceof Array) ? val.value : []);
                 alloc(val.value, arrPos + 1);
@@ -668,7 +770,7 @@ export class Config extends Optional<any> {
             }
 
             let tempVal = <Config>val.getIf(currKey);
-            if (arrPos == -1) {
+            if (this.isNoArray(arrPos)) {
                 if (tempVal.isAbsent()) {
                     tempVal = <Config>this.getClass().fromNullable(val.value[currKey] = {});
                 } else {
@@ -687,6 +789,20 @@ export class Config extends Optional<any> {
 
         return this;
     }
+
+    private isNoArray(arrPos: number) {
+        return arrPos == -1;
+    }
+
+    private isArray(arrPos: number) {
+        return !this.isNoArray(arrPos);
+    }
+
+    private isArrayPos(currKey: string, arrPos: number) {
+            return currKey === "" && arrPos >= 0;
+    }
+
 }
+
 
 

@@ -21,15 +21,15 @@
       "es2015.collection",
       "dom"
     ],
-    "sourceMap": false,
+
     "outDir": "../../../target",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "module": "commonjs",
     "sourceMap": true,
     "typeRoots": [
-      "../../build/npm/node_modules/@types"
-    ],
-    "types": ["node"]
+      "../../build/npm/node_modules/@types",
+      "./@types/"
+    ]
   }
 }

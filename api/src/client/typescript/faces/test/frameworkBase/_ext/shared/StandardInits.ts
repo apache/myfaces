@@ -94,6 +94,70 @@ export module StandardInits {
     /**
      * a page simulating basically a simple faces form
      */
+    const HTML_FORM_PREFIXED = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="form1">
+    <input type="text" id="form1:input_1::field" name="form1:input_1" value="form1:input_1_val"></input>
+    <input type="hidden" id="form1:jakarta.faces.ViewState" name="jakarta.faces.ViewState" value="blubbblubblubb"></input>
+    <input type="button" id="form1:input_2::field" name="form1:input_2" value="form1:input_1_val"></input>
+    <input type="text" id="form1:input_3::field" name="form1:input_23 value="form1:input_1_val"></input>
+</form>
+</body>
+</html>`;
+
+
+
+    /**
+     * a page simulating basically a simple faces form
+     */
+    export const HTML_PREFIX_EMBEDDED_BODY = `<form id="form1">
+  <tobago-in id="page:input" class="tobago-auto-spacing">
+     <input type="text" name="page:input" id="page:input::field" class="form-control" value="input_value">
+     <tobago-behavior event="change" client-id="page:input" field-id="page:input::field" execute="page:input" render="page:output"></tobago-behavior>
+  </tobago-in>
+  
+  <tobago-out id="page:output" class="tobago-auto-spacing">
+    <input type="text" name="page:output" id="page:output::field" class="form-control">
+  </tobago-out>
+</form>`;
+
+    const HTML_FORM_PREFIXED_EMBEDDED = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    ${HTML_PREFIX_EMBEDDED_BODY}
+</body>
+</html>`;
+
+
+    const HTML_FORM_NAMESPACED = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="jd_0:blarg">
+    <input type="text" id="jd_0:input_1" name="jd_0:input_1" value="input_1_val"></input>
+    <input type="hidden" id="jd_0:jakarta.faces.ViewState" name="jakarta.faces.ViewState" value="blubbblubblubb"></input>
+    <input type="button" id="jd_0:input_2" name="input_2" value="input_1_val"></input>
+</form>
+</body>
+</html>`;
+
+
+
+    /**
+     * a page simulating basically a simple faces form
+     */
     const HTML_FILE_FORM_DEFAULT = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -179,8 +243,11 @@ export module StandardInits {
         
         <div id="attributeChange">attributes changes area</div>
     
-    
-    
+        <div id="resource_area_1"></div>
+        <div id="resource_area_2"></div>
+        <div id="resource_area_3"></div>
+        <div id="nonce_result"></div>
+   
     </div>
 
     <h2>Call actions via normal ppr</h2>
@@ -194,6 +261,15 @@ export module StandardInits {
                
         <input type="button" id="cmd_update_insert" value="update insert"
                onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'updateinsert1');"/>
+
+        <input type="button" id="cmd_simple_resource" value="simple resource"
+               onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'simpleresource');"/>
+
+        <input type="button" id="cmd_complex_resource" value="complex resource"
+               onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'complex_resource');"/>
+               
+        <input type="button" id="cmd_complex_resource2" value="complex resource2"
+               onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'complex_resource2');"/>       
                
         <input type="button" id="cmd_update_insert2" value="update insert second protocol path"
                onclick="emitPPR(this, ('undefined' == typeof event)? null: event, 'updateinsert2');"/>
@@ -265,6 +341,9 @@ export module StandardInits {
     export function defaultMyFaces(withJsf = true): Promise<() => void> {
         return init(HTML_FORM_DEFAULT, withJsf);
     }
+    export function defaultMyFacesNamespaces(withJsf = true): Promise<() => void> {
+        return init(HTML_FORM_NAMESPACED, withJsf);
+    }
     export function defaultMyFaces23(withJsf = true): Promise<() => void> {
         return init(HTML_FORM_DEFAULT.replace(/jakarta/gi, "javax"), withJsf, false);
     }
@@ -290,6 +369,11 @@ export module StandardInits {
         return <any>init((IS_40) ? PROTOCOL_PAGE : PROTOCOL_PAGE.replace(/jakarta/gi,"javax"), withJsf, IS_40);
     }
 
+    export function prefixEmbeddedPage(withJsf = true, IS_40 = true): Promise<() => void> {
+        return <any>init((IS_40) ? HTML_FORM_PREFIXED_EMBEDDED : HTML_FORM_PREFIXED_EMBEDDED.replace(/jakarta/gi,"javax"), withJsf, IS_40);
+    }
+
+
     export function defaultSeparatorChar(separatorChar: string, withJsf = true, IS_40 = true): Promise<() => void> {
         let template = HTML_DEFAULT_SEPARATOR_CHAR(separatorChar, IS_40);
         return init(template, withJsf);
@@ -312,7 +396,6 @@ export module StandardInits {
         (<any>global).faces = data.faces;
         (<any>global).myfaces = data.myfaces;
         (<any>global).window.faces = data.faces;
-        debugger;
         (<any>global).window.myfaces = data.myfaces;
         (<any>global).Implementation = Implementation.Implementation;
         (<any>global).PushImpl = PushImpl.PushImpl;
@@ -325,7 +408,6 @@ export module StandardInits {
         (<any>global).jsf = data.jsf;
         (<any>global).myfaces = data.myfaces;
         (<any>global).window.jsf = data.jsf;
-        debugger;
         (<any>global).window.myfaces = data.myfaces;
         (<any>global).Implementation = Implementation.Implementation;
         (<any>global).window.Implementation = Implementation.Implementation;
@@ -346,7 +428,9 @@ export module StandardInits {
         return import('jsdom-global').then((domIt) => {
             let params = {
                 contentType: "text/html",
-                runScripts: "dangerously"
+                runScripts: "dangerously",
+                resources: "usable",
+                url: `file://${__dirname}/index.html`
             };
             //we have two different apis depending whether we allow module interop with sinon or not
             return (domIt?.default ?? domIt)?.(template, params) ;
