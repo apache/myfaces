@@ -84,6 +84,7 @@ describe('XhrFormData tests', function () {
       </div>
     </form>`;
 
+    global.debugf2=true;
     const xhrFormData = new XhrFormData(DQ.byId("page::form"));
     const formData = xhrFormData.toString();
 
