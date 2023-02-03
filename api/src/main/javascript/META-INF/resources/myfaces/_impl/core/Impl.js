@@ -57,6 +57,10 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
     P_EVT:"jakarta.faces.partial.event",
     P_WINDOW_ID:"jakarta.faces.ClientWindow",
     P_RESET_VALUES:"jakarta.faces.partial.resetValues",
+    P_EVENT: "jakarta.faces.behavior.event",
+
+    //faces std values
+    STD_VALUES: [],
 
     /* message types */
     ERROR:"error",
@@ -81,6 +85,13 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
     /*blockfilter for the passthrough filtering, the attributes given here
      * will not be transmitted from the options into the passthrough*/
     _BLOCKFILTER:{onerror:1, onevent:1, render:1, execute:1, myfaces:1, delay:1, resetValues:1, params: 1},
+
+
+    constructor_: function() {
+        this._callSuper("constructor_");
+        this.STD_VALUES = [this.P_PARTIAL_SOURCE, this.P_VIEWSTATE, this.P_CLIENTWINDOW, this.P_AJAX,
+            this.P_EXECUTE, this.P_RENDER, this.P_EVT, this.P_WINDOW_ID, this.P_RESET_VALUES, this.P_EVENT];
+    },
 
     /**
      * collect and encode data for a given form element (must be of type form)
@@ -142,7 +153,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
          *all the time
          **/
         var _Lang = this._Lang,
-            _Dom = this._Dom;
+            _Dom = this._Dom,
+            _Utils = myfaces._impl.xhrCore._AjaxUtils;
         /*assert if the onerror is set and once if it is set it must be of type function*/
         _Lang.assertType(options.onerror, "function");
         /*assert if the onevent is set and once if it is set it must be of type function*/
@@ -152,7 +164,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         options = options || {};
 
         /**
-         * we cross reference statically hence the mapping here
+         * we cross - reference statically hence the mapping here
          * the entire mapping between the functions is stateless
          */
         //null definitely means no event passed down so we skip the ie specific checks
@@ -180,6 +192,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
          */
         // this is legacy behavior which is faulty, will be removed if we decide to do it
         // that way
+        // TODO not sure whether we add the naming container prefix to the user params
         var passThrgh = _Lang.mixMaps({}, options, true, this._BLOCKFILTER);
         // jsdoc spec everything under params must be passed through
         if(options.params)  {
@@ -221,6 +234,12 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         context.viewId = this.getViewId(form);
 
         /**
+         * we also now assign the container data to deal with it later
+         */
+        _Utils._assignNamingContainerData(mfInternal, form, faces.separatorchar);
+
+
+        /**
          * faces2.2 client window must be part of the issuing form so it is encoded
          * automatically in the request
          */
@@ -229,7 +248,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //in case someone decorates the getClientWindow we reset the value from
         //what we are getting
         if ('undefined' != typeof clientWindow && null != clientWindow) {
-            var formElem = _Dom.getNamedElementFromForm(form, this.P_CLIENTWINDOW);
+            var formElem = _Dom.getNamedElementFromForm(form, _Utils._$ncRemap(mfInternal,  this.P_CLIENTWINDOW));
             if (formElem) {
                 //we store the value for later processing during the ajax phase
                 //job so that we do not get double values
@@ -285,6 +304,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             this._transformList(passThrgh, this.P_RENDER, options.render, form, elementId, context.viewId);
         }
 
+
         /**
          * multiple transports upcoming faces 2.x feature currently allowed
          * default (no value) xhrQueuedPost
@@ -303,12 +323,31 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         mfInternal["_mfSourceControlId"] = elementId;
         mfInternal["_mfTransportType"] = transportType;
 
+
+
         //mojarra compatibility, mojarra is sending the form id as well
         //this is not documented behavior but can be determined by running
         //mojarra under blackbox conditions
         //i assume it does the same as our formId_submit=1 so leaving it out
         //won´t hurt but for the sake of compatibility we are going to add it
         passThrgh[form.id] = form.id;
+
+
+        // TCK 790 we now have to remap all passthroughs in case of a naming container
+        // thing is the naming container is always prefixed on inputs, and our own
+        var passthroughKeys = Object.keys(passThrgh);
+        for (var cnt = 0; cnt <  passthroughKeys.length; cnt++) {
+            var key, oldKey = passthroughKeys[cnt];
+
+            // only the standard values need remapping for now
+            if((!key) || Object.hasOwnProperty(key) || this.STD_VALUES.indexOf(key) == -1) {
+                continue;
+            }
+            passThrgh[_Utils._$ncRemap(mfInternal, key)] = passThrgh[key];
+            if(oldKey != key) {
+                delete passThrgh[key];
+            }
+        }
 
         /* faces2.2 only: options.delay || */
         var delayTimeout = options.delay || this._RT.getLocalOrGlobalConfig(context, "delay", false);
@@ -914,6 +953,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         // even without being in a naming container, the other components ignore that
         return form.id.indexOf(viewStateViewId) === 0 ? viewStateViewId : "";
     }
+
+
 });
 
 
