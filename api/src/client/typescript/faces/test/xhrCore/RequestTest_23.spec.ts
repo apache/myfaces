@@ -24,9 +24,10 @@ import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {DomQuery} from "mona-dish";
 import {
-    COMPLETE,
+    COMPLETE, EMPTY_STR,
     SUCCESS
 } from "../../impl/core/Const";
+;
 
 
 /**
@@ -56,14 +57,15 @@ function remapNamespacesFor23() {
 
 
 let {
-    P_PARTIAL_SOURCE, P_VIEWSTATE, P_VIEWROOT, P_VIEWHEAD, P_VIEWBODY,
-    P_AJAX, P_EXECUTE, P_RENDER, P_EVT, P_CLIENT_WINDOW, P_RESET_VALUES,
-    P_WINDOW_ID, ENCODED_URL
+    P_PARTIAL_SOURCE, P_VIEWSTATE,
+    P_AJAX, P_EXECUTE, P_RENDER,
+    P_WINDOW_ID
 } = remapNamespacesFor23();
 
 
 import STD_XML = StandardInits.STD_XML;
 import defaultMyFaces23 = StandardInits.defaultMyFaces23;
+import HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
 
 declare var jsf: any;
 declare var Implementation: any;
@@ -93,12 +95,12 @@ describe('Tests on the xhr core when it starts to call the request', function ()
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr;
-            (<any>window).XMLHttpRequest = this.xhr;
+            window.XMLHttpRequest = this.xhr;
 
             this.jsfAjaxResponse = sinon.spy((<any>global).jsf.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();
@@ -197,12 +199,14 @@ describe('Tests after core when it hits response', function () {
                 this.requests.push(xhr);
             };
             (<any>global).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
-            (<any>window).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
+
+            // @ts-ignore
+            window.XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest() as XMLHttpRequest;
 
             this.jsfAjaxResponse = sinon.spy((<any>global).jsf.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = (<any>window).XMLHttpRequest = this.xhr.restore();
+                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();
@@ -229,7 +233,7 @@ describe('Tests after core when it hits response', function () {
                 render: "@form",
                 pass1: "pass1",
                 pass2: "pass2",
-                onevent: (evt: any) => {
+                onevent: () => {
                     localCnt++;
                 }
             });
@@ -322,7 +326,6 @@ describe('Tests after core when it hits response', function () {
         let xhrReq = null;
 
         try {
-            let errorCnt = 0;
             let element = DomQuery.byId("input_2").getAsElem(0).value;
             jsf.ajax.request(element, null, {
                 execute: "input_1",
@@ -331,9 +334,9 @@ describe('Tests after core when it hits response', function () {
                 pass2: "pass2",
                 onerror: (error: any) => {
                     expect(error.type).to.eq("error");
-                    expect(!!error.status).to.eq(true);
+                    expect(error.status).to.eq(EMPTY_STR);
                     expect(!!error.message).to.eq(true);
-                    expect(!!error.source).to.eq(true);
+                    expect(!!error.source.id).to.eq(true);
                     expect(!!error.responseCode).to.eq(true);
                     expect(!!error.responseText).to.eq(true);
                     expect(!error.responseXML).to.eq(true);
@@ -358,5 +361,40 @@ describe('Tests after core when it hits response', function () {
         }
 
     });
+
+    it("must handle prefixed inputs properly (prefixes must be present)", function (done) {
+        window.document.body.innerHTML = HTML_PREFIX_EMBEDDED_BODY;
+
+        //we now run the tests here
+        try {
+
+            let event = {
+                isTrusted: true,
+                type: 'change',
+                target: document.getElementById("page:input::field"),
+                currentTarget: document.getElementById("page:input::field")
+            };
+            jsf.ajax.request(document.getElementById("page:input"), event as any, {
+                render: "page:output",
+                execute: "page:input",
+                params: {
+                    "booga2.xxx": "yyy",
+                    "javax.faces.behavior.event": "change",
+                    "booga": "bla"
+                },
+            });
+        } catch (err) {
+            console.error(err);
+            expect(false).to.eq(true);
+        }
+        const requestBody = this.requests[0].requestBody;
+        //We check if the base64 encoded string matches the original
+        expect(requestBody.indexOf("javax.faces.behavior.event")).to.not.eq(-1);
+        expect(requestBody.indexOf("javax.faces.behavior.event=change")).to.not.eq(-1);
+        expect(requestBody.indexOf("page%3Ainput=input_value")).to.not.eq(-1);
+        done();
+    });
+
+
 });
 

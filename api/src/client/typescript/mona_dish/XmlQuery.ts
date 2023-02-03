@@ -18,6 +18,7 @@
 import {Lang} from "./Lang";
 import {DomQuery} from "./DomQuery";
 import isString = Lang.isString;
+import {_global$} from "./Global";
 
 declare let ActiveXObject: any;
 
@@ -46,7 +47,7 @@ export class XMLQuery extends DomQuery {
                 return null;
             }
             let domParser: DOMParser = Lang.saveResolveLazy<DOMParser>(
-                () => new window.DOMParser(),
+                () => new (_global$()).DOMParser(),
                 (): DOMParser => createIe11DomQueryShim()
             ).value;
             return domParser.parseFromString(xml, <any> docType);
@@ -66,7 +67,7 @@ export class XMLQuery extends DomQuery {
     toString(): string {
         let ret = [];
         this.eachElem((node: any) => {
-            let serialized = (<any>window)?.XMLSerializer?.constructor()?.serializeToString(node) ?? node?.xml;
+            let serialized = (_global$())?.XMLSerializer?.constructor()?.serializeToString(node) ?? node?.xml;
             if (!!serialized) {
                 ret.push(serialized);
             }

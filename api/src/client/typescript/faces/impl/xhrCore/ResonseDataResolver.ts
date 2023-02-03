@@ -25,9 +25,10 @@ import {
     CTX_PARAM_SRC_FRM_ID,
     SEL_RESPONSE_XML,
     SOURCE,
-    TAG_FORM,
+    HTML_TAG_FORM,
     UPDATE_ELEMS,
-    UPDATE_FORMS
+    UPDATE_FORMS,
+    DEFERRED_HEAD_INSERTS
 } from "../core/Const";
 import {ExtConfig} from "../util/ExtDomQuery";
 
@@ -44,7 +45,7 @@ import {ExtConfig} from "../util/ExtDomQuery";
  *
  * @param request the request hosting the responseXML
  *
- * Throws an error in case of non existent or wrong xml data
+ * Throws an error in case of non-existent or wrong xml data
  *
  */
 export function resolveResponseXML(request: Config): XMLQuery {
@@ -55,8 +56,8 @@ export function resolveResponseXML(request: Config): XMLQuery {
 }
 
 /**
- * Splits the incoming passthrough context apart
- * in an internal and an external nomalized context
+ * Splits the incoming pass-through context apart
+ * in an internal and an external normalized context
  * the internal one is just for our internal processing
  *
  * @param context the root context as associative array
@@ -75,16 +76,17 @@ export function resolveContexts(context: { [p: string]: any }): any {
     /**
      * prepare storage for some deferred operations
      */
+    internalContext.assign(DEFERRED_HEAD_INSERTS).value = [];
     internalContext.assign(UPDATE_FORMS).value = [];
     internalContext.assign(UPDATE_ELEMS).value = [];
     return {externalContext, internalContext};
 }
 
 /**
- * fetches the source element out of our conexts
+ * fetches the source element out of our contexts
  *
- * @param context the external context which shpuld host the source id
- * @param internalContext internal passthrough fall back
+ * @param context the external context which should host the source id
+ * @param internalContext internal pass-through fall back
  *
  */
 export function resolveSourceElement(context: Config, internalContext: Config): DQ {
@@ -104,9 +106,9 @@ export function resolveSourceForm(internalContext: Config, elem: DQ): DQ {
     let sourceFormId = internalContext.getIf(CTX_PARAM_SRC_FRM_ID);
     let sourceForm = new DQ(sourceFormId.isPresent() ? document.forms[sourceFormId.value] : null);
 
-    sourceForm = sourceForm.orElseLazy(() => elem.parents(TAG_FORM))
-        .orElseLazy(() => elem.querySelectorAll(TAG_FORM))
-        .orElseLazy(() => DQ.querySelectorAll(TAG_FORM));
+    sourceForm = sourceForm.orElseLazy(() => elem.firstParent(HTML_TAG_FORM))
+        .orElseLazy(() => elem.querySelectorAll(HTML_TAG_FORM))
+        .orElseLazy(() => DQ.querySelectorAll(HTML_TAG_FORM));
 
     return sourceForm;
 }

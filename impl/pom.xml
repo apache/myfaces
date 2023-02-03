@@ -96,7 +96,6 @@
                         <!-- This file probably needs a license, but I don't know if it's safe to put it in there -->
                         <exclude>src/test/resources/org/apache/myfaces/context/nestedScriptCDATA.xml</exclude>
                         <exclude>src/test/resources/META-INF/openwebbeans/openwebbeans.properties</exclude>
-                        <exclude>oam-rh-cache/**/*/faces.js.tmp</exclude>
                     </excludes>
                 </configuration>
             </plugin>

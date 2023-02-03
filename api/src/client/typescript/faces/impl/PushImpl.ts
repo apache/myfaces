@@ -15,27 +15,21 @@
  */
 
 /**
- * Typescript port of the faces.push part in the myfaces implementation
+ * Typescript port of the faces\.push part in the myfaces implementation
  */
-
-//TODO still work in progress
-//this is a 1:1 port for the time being
 import {MAX_RECONNECT_ATTEMPTS, REASON_EXPIRED, RECONNECT_INTERVAL} from "./core/Const";
-
-declare const window: any;
+import {DQ} from "mona-dish";
 
 /**
  * Implementation class for the push functionality
  */
 export module PushImpl {
 
+    const URL_PROTOCOL = DQ.global().location.protocol.replace("http", "ws") + "//";
 
 
-    const URL_PROTOCOL = window.location.protocol.replace("http", "ws") + "//";
-
-
-    //we expose the member variables for testing purposes
-    //they are not directly touched outside of tests
+    // we expose the member variables for testing purposes
+    // they are not directly touched outside of tests
 
     /* socket map by token */
     export let sockets = {};
@@ -45,7 +39,7 @@ export module PushImpl {
     export let clientIdsByTokens = {};
 
 
-    //needed for testing
+    // needed for testing
     export function reset() {
         sockets = {};
         components = {}
@@ -57,58 +51,64 @@ export module PushImpl {
      */
 
     /**
-     *
-     * @param {function} onopen The function to be invoked when the web socket is opened.
-     * @param {function} onmessage The function to be invoked when a message is received.
-     * @param {function} onclose The function to be invoked when the web socket is closed.
-     * @param {boolean} autoconnect Whether or not to immediately open the socket. Defaults to <code>false</code>.
+     * @param socketClientId the sockets client identifier
+     * @param url the uri to reach the socket
+     * @param channel the channel name/id
+     * @param onopen The function to be invoked when the web socket is opened.
+     * @param onmessage The function to be invoked when a message is received.
+     * @param onerror The function to be invoked when an error occurs.
+     * @param onclose The function to be invoked when the web socket is closed.
+     * @param behaviors functions which are invoked whenever a message is received
+     * @param autoConnect Whether or not to automatically open the socket. Defaults to <code>false</code>.
      */
     export function init(socketClientId: string,
-                         uri: string,
+                         url: string,
                          channel: string,
                          onopen: Function,
                          onmessage: Function,
+                         onerror: Function,
                          onclose: Function,
-                         behaviorScripts: any,
-                         autoconnect: boolean) {
+                         behaviors: any,
+                         autoConnect: boolean) {
         onclose = resolveFunction(onclose);
 
-        if (!window.WebSocket) { // IE6-9.
+        if (!DQ.global().WebSocket) { // IE6-9.
             onclose(-1, channel);
             return;
         }
 
-        let channelToken = uri.substr(uri.indexOf('?') + 1);
+        let channelToken = url.substr(url.indexOf('?') + 1);
 
         if (!components[socketClientId]) {
             components[socketClientId] = {
                 'channelToken': channelToken,
                 'onopen': resolveFunction(onopen),
                 'onmessage' : resolveFunction(onmessage),
+                'onerror' : resolveFunction(onerror),
                 'onclose': onclose,
-                'behaviors': behaviorScripts,
-                'autoconnect': autoconnect};
+                'behaviors': behaviors,
+                'autoconnect': autoConnect};
             if (!clientIdsByTokens[channelToken]) {
                 clientIdsByTokens[channelToken] = [];
             }
             clientIdsByTokens[channelToken].push(socketClientId);
             if (!sockets[channelToken]){
                 sockets[channelToken] = new Socket(channelToken,
-                    getBaseURL(uri), channel);
+                    getBaseURL(url), channel);
             }
         }
 
-        if (autoconnect) {
-            (window?.faces ?? window?.jsf).push.open(socketClientId);
+        if (autoConnect) {
+            (DQ.global()?.faces ?? DQ.global()?.jsf).push.open(socketClientId);
         }
     }
 
     export function open(socketClientId: string) {
-        getSocket(components?.[socketClientId]?.channelToken).open();
+        getSocket(components[socketClientId]?.channelToken).open();
     }
 
     export function close(socketClientId: string) {
-        getSocket(components?.[socketClientId].channelToken).close();
+        getSocket(components[socketClientId].channelToken).close();
     }
 
     // Private helper classes
@@ -140,15 +140,37 @@ export module PushImpl {
             this.bindCallbacks();
         }
 
+        // noinspection JSUnusedLocalSymbols
         onopen(event: any) {
             if (!this.reconnectAttempts) {
                 let clientIds = clientIdsByTokens[this.channelToken];
                 for (let i = clientIds.length - 1; i >= 0; i--) {
                     let socketClientId = clientIds[i];
-                    components[socketClientId]['onopen'](this.channel);
+                    components[socketClientId]?.['onopen']?.(this.channel);
                 }
             }
             this.reconnectAttempts = 0;
+        }
+
+        onerror(event: any) {
+            let message = JSON.parse(event.data);
+            //TODO replace this with a more readable Stream code
+            for (let i = clientIdsByTokens[this.channelToken].length - 1; i >= 0; i--) {
+                let socketClientId = clientIdsByTokens[this.channelToken][i];
+                if (document.getElementById(socketClientId)) {
+                    try {
+                        components[socketClientId]?.['onerror']?.(message, this.channel, event);
+                    } catch (e) {
+                        //Ignore
+                    }
+                } else {
+                    clientIdsByTokens[this.channelToken].splice(i, 1);
+                }
+            }
+            if (clientIdsByTokens[this.channelToken].length == 0) {
+                // tag disappeared
+                this.close();
+            }
         }
 
         onmmessage(event: any) {
@@ -157,12 +179,12 @@ export module PushImpl {
                 let socketClientId = clientIdsByTokens[this.channelToken][i];
                 if (document.getElementById(socketClientId)) {
                     try {
-                        components[socketClientId]['onmessage'](message, this.channel, event);
+                        components[socketClientId]?.['onmessage']?.(message, this.channel, event);
                     } catch (e) {
                         //Ignore
                     }
-                    let behaviors = components[socketClientId]['behaviors'];
-                    let functions = behaviors[message];
+                    let behaviors = components?.[socketClientId]?.['behaviors'];
+                    let functions = behaviors?.[message];
                     if (functions && functions.length) {
                         for (let j = 0; j < functions.length; j++) {
                             try {
@@ -177,7 +199,7 @@ export module PushImpl {
                 }
             }
             if (clientIdsByTokens[this.channelToken].length == 0) {
-                //tag dissapeared
+                // tag disappeared
                 this.close();
             }
         }
@@ -191,7 +213,7 @@ export module PushImpl {
                 let clientIds = clientIdsByTokens[this.channelToken];
                 for (let i = clientIds.length - 1; i >= 0; i--) {
                     let socketClientId = clientIds[i];
-                    components[socketClientId]['onclose'](event?.code, this?.channel, event);
+                    components?.[socketClientId]?.['onclose']?.(event?.code, this?.channel, event);
                 }
             } else {
                 setTimeout(this.open, RECONNECT_INTERVAL * this.reconnectAttempts++);
@@ -213,6 +235,7 @@ export module PushImpl {
             this.socket.onopen = (event: Event) => this.onopen(event);
             this.socket.onmessage = (event: Event) => this.onmmessage(event);
             this.socket.onclose = (event: Event) => this.onclose(event);
+            this.socket.onerror = (event: Event) => this.onerror(event);
         }
     }
 
@@ -220,7 +243,7 @@ export module PushImpl {
 
     function getBaseURL(url: string) {
         if (url.indexOf("://") < 0) {
-            let base = window.location.hostname + ":" + window.location.port;
+            let base = DQ.global().location.hostname + ":" + DQ.global().location.port;
             return URL_PROTOCOL + base + url;
         } else {
             return url;
@@ -229,9 +252,9 @@ export module PushImpl {
 
     /**
      * Get socket associated with given channelToken.
-     * @param {string} channelToken The name of the web socket channelToken.
-     * @return {Socket} Socket associated with given channelToken.
-     * @throws {Error} When channelToken is unknown, you may need to initialize
+     * @param channelToken The name of the web socket channelToken.
+     * @return Socket associated with given channelToken.
+     * @throws Error, when the channelToken is unknown, you may need to initialize
      *                 it first via <code>init()</code> function.
      */
     function getSocket(channelToken: string): Socket {
@@ -245,7 +268,7 @@ export module PushImpl {
 
     function resolveFunction(fn: Function | string = () => {
     }): Function {
-        return <Function>((typeof fn !== "function") && (fn = window[fn]), fn);
+        return <Function>((typeof fn !== "function") && (fn = DQ.global()[fn]), fn);
     }
 
 }
