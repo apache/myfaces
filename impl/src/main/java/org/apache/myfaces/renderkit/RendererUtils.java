@@ -538,32 +538,7 @@ public final class RendererUtils
         }
     }
 
-    public static List getSelectItemList(UISelectOne uiSelectOne)
-    {
-        return internalGetSelectItemList(uiSelectOne, FacesContext.getCurrentInstance());
-    }
-
-    /**
-     * @param uiSelectOne
-     * @param facesContext
-     * @return List of SelectItem Objects
-     */
-    public static List<SelectItem> getSelectItemList(UISelectOne uiSelectOne, FacesContext facesContext)
-    {
-        return internalGetSelectItemList(uiSelectOne, facesContext);
-    }
-
-    /**
-     * @param uiSelectMany
-     * @param facesContext
-     * @return List of SelectItem Objects
-     */
-    public static List<SelectItem> getSelectItemList(UISelectMany uiSelectMany, FacesContext facesContext)
-    {
-        return internalGetSelectItemList(uiSelectMany, facesContext);
-    }
-
-    private static List<SelectItem> internalGetSelectItemList(UIComponent uiComponent, FacesContext facesContext)
+    public static List<SelectItem> getSelectItemList(UIComponent uiComponent, FacesContext facesContext)
     {
         List<SelectItem> list = new ArrayList<>();
 

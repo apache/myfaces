@@ -450,11 +450,11 @@ public final class HtmlRendererUtils
         if (selectMany)
         {
             writer.writeAttribute(HTML.MULTIPLE_ATTR, HTML.MULTIPLE_ATTR, null);
-            selectItemList = RendererUtils.getSelectItemList((UISelectMany) uiComponent, facesContext);
+            selectItemList = RendererUtils.getSelectItemList(uiComponent, facesContext);
         }
         else
         {
-            selectItemList = RendererUtils.getSelectItemList((UISelectOne) uiComponent, facesContext);
+            selectItemList = RendererUtils.getSelectItemList(uiComponent, facesContext);
         }
 
         if (size == Integer.MIN_VALUE)
