@@ -975,7 +975,7 @@ public final class HtmlRendererUtils
     {
         ResponseWriter writer = facesContext.getResponseWriter();
 
-        List selectItemList = null;
+        List<SelectItem> selectItemList = null;
         Converter converter = null;
         boolean isSelectOne = false;
 

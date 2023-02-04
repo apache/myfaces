@@ -122,7 +122,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
                 groupFirst.put(group, selectOne);
             }
 
-            List selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
+            List<SelectItem> selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
             if (selectItemList != null && !selectItemList.isEmpty())
             {
                 Converter converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
@@ -187,7 +187,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
                 writer.startElement(HTML.TR_ELEM, null); // selectOne);
             }
 
-            List selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
+            List<SelectItem> selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
             Converter converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
             Object currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
                         facesContext, selectOne);
