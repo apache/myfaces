@@ -18,11 +18,13 @@
  */
 package org.apache.myfaces.renderkit.html.util;
 
+import jakarta.faces.application.ProjectStage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
 import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
@@ -31,6 +33,9 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import static org.apache.myfaces.renderkit.html.util.HtmlRendererUtils.isHideNoSelectionOption;
@@ -40,6 +45,7 @@ import static org.apache.myfaces.renderkit.html.util.HtmlRendererUtils.isHideNoS
  */
 public class SelectItemsUtils
 {
+    private static final Logger LOGGER = Logger.getLogger(SelectItemsUtils.class.getName());
     private static final char TABULATOR = '\t';
 
     public static List<SelectItemInfo> getSelectItemInfoList(UISelectMany uiSelectMany, FacesContext facesContext)
@@ -67,6 +73,26 @@ public class SelectItemsUtils
             UIComponent component, Converter converter, Set lookupSet,
             List<SelectItemInfo> selectItemList) throws IOException
     {
+        AtomicBoolean anyItemSelected = null;
+        if (component instanceof UISelectOne && context.isProjectStage(ProjectStage.Development))
+        {
+            anyItemSelected = new AtomicBoolean(false);
+        }
+
+        internalRenderSelectOptions(context, component, converter, lookupSet, selectItemList, anyItemSelected);
+
+        if (anyItemSelected != null && anyItemSelected.get() == false)
+        {
+            LOGGER.log(Level.WARNING, "UISelectOne[clientId={0}, value={1}] rendered without selection. "
+                    + "The first item will be displayed as selected, which could lead to unexpected behaviors.",
+                    new Object[] { component.getClientId(context), ((UIInput) component).getValue() });
+        }
+    }
+    
+    protected static void internalRenderSelectOptions(FacesContext context,
+            UIComponent component, Converter converter, Set lookupSet,
+            List<SelectItemInfo> selectItemList, AtomicBoolean anyItemSelected) throws IOException
+    {
         ResponseWriter writer = context.getResponseWriter();
         // check for the hideNoSelectionOption attribute
         boolean hideNoSelectionOption = isHideNoSelectionOption(component);
@@ -87,8 +113,8 @@ public class SelectItemsUtils
                 {
                     selectItemsGroupList.add(new SelectItemInfo(item, null));
                 }
-                renderSelectOptions(context, component, converter, lookupSet,
-                        selectItemsGroupList);
+                internalRenderSelectOptions(context, component, converter, lookupSet,
+                        selectItemsGroupList, anyItemSelected);
                 writer.endElement(HTML.OPTGROUP_ELEM);
             }
             else
@@ -143,6 +169,10 @@ public class SelectItemsUtils
 
                 if (selected)
                 {
+                    if (anyItemSelected != null)
+                    {
+                        anyItemSelected.set(true);
+                    }
                     writer.writeAttribute(HTML.SELECTED_ATTR, HTML.SELECTED_ATTR, null);
                 }
 
