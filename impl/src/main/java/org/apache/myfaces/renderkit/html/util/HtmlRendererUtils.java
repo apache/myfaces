@@ -446,7 +446,7 @@ public final class HtmlRendererUtils
         }
         writer.writeAttribute(HTML.NAME_ATTR, uiComponent.getClientId(facesContext), null);
         
-        List selectItemList;
+        List<SelectItem> selectItemList;
         if (selectMany)
         {
             writer.writeAttribute(HTML.MULTIPLE_ATTR, HTML.MULTIPLE_ATTR, null);
@@ -497,8 +497,7 @@ public final class HtmlRendererUtils
 
         Set lookupSet = getSubmittedOrSelectedValuesAsSet(selectMany, uiComponent, facesContext, converter);
 
-        renderSelectOptions(facesContext, uiComponent, converter, lookupSet,
-                selectItemList);
+        renderSelectOptions(facesContext, uiComponent, converter, lookupSet, selectItemList);
         // bug #970747: force separate end tag
         writer.writeText(RendererUtils.EMPTY_STRING, null);
         writer.endElement(HTML.SELECT_ELEM);
@@ -541,15 +540,13 @@ public final class HtmlRendererUtils
         return lookupSet;
     }
 
-    public static Converter findUISelectManyConverterFailsafe(
-            FacesContext facesContext, UIComponent uiComponent)
+    public static Converter findUISelectManyConverterFailsafe(FacesContext facesContext, UIComponent uiComponent)
     {
         // invoke with considerValueType = false
         return findUISelectManyConverterFailsafe(facesContext, uiComponent, false);
     }
 
-    public static Converter findUISelectManyConverterFailsafe(
-            FacesContext facesContext, UIComponent uiComponent,
+    public static Converter findUISelectManyConverterFailsafe(FacesContext facesContext, UIComponent uiComponent,
             boolean considerValueType)
     {
         Converter converter;
@@ -966,8 +963,7 @@ public final class HtmlRendererUtils
         writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
     }
 
-    public static void renderDisplayValueOnlyForSelects(
-            FacesContext facesContext, UIComponent uiComponent)
+    public static void renderDisplayValueOnlyForSelects(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
         // invoke renderDisplayValueOnlyForSelects with considerValueType = false
@@ -1072,8 +1068,8 @@ public final class HtmlRendererUtils
         }
     }
 
-    public static void renderTableCaption(FacesContext context,
-            ResponseWriter writer, UIComponent component) throws IOException
+    public static void renderTableCaption(FacesContext context, ResponseWriter writer, UIComponent component)
+            throws IOException
     {
         UIComponent captionFacet = component.getFacet("caption");
         if (captionFacet == null)
@@ -1114,8 +1110,8 @@ public final class HtmlRendererUtils
         writer.endElement(HTML.CAPTION_ELEM);
     }
 
-    public static void renderDisplayValueOnly(FacesContext facesContext,
-            UIInput input) throws IOException
+    public static void renderDisplayValueOnly(FacesContext facesContext, UIInput input)
+            throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.startElement(HTML.SPAN_ELEM, input);
@@ -1139,8 +1135,8 @@ public final class HtmlRendererUtils
         HtmlJavaScriptUtils.renderFormSubmitScript(facesContext);
     }
 
-    public static void renderHiddenCommandFormParams(ResponseWriter writer,
-            Set dummyFormParams) throws IOException
+    public static void renderHiddenCommandFormParams(ResponseWriter writer, Set dummyFormParams)
+            throws IOException
     {
         for (Iterator it = dummyFormParams.iterator(); it.hasNext();)
         {
@@ -1149,8 +1145,8 @@ public final class HtmlRendererUtils
         }
     }
 
-    public static void renderHiddenInputField(ResponseWriter writer,
-            Object name, Object value) throws IOException
+    public static void renderHiddenInputField(ResponseWriter writer, Object name, Object value)
+            throws IOException
     {
         writer.startElement(HTML.INPUT_ELEM, null);
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
@@ -1280,8 +1276,7 @@ public final class HtmlRendererUtils
         return form.getClientId(facesContext) + ':' + HIDDEN_COMMANDLINK_FIELD_NAME;
     }
 
-    public static boolean isPartialOrBehaviorSubmit(FacesContext facesContext,
-            String clientId)
+    public static boolean isPartialOrBehaviorSubmit(FacesContext facesContext, String clientId)
     {
         Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
         String sourceId = params.get(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME);
@@ -1307,8 +1302,8 @@ public final class HtmlRendererUtils
         return partialOrBehaviorSubmit;
     }
 
-    public static String getOutcomeTargetHref(FacesContext facesContext,
-            UIOutcomeTarget component) throws IOException
+    public static String getOutcomeTargetHref(FacesContext facesContext, UIOutcomeTarget component)
+            throws IOException
     {
         return OutcomeTargetUtils.getOutcomeTargetHref(facesContext, component);
     }
