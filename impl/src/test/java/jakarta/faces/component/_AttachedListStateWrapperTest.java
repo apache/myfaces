@@ -19,7 +19,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component._AttachedListStateWrapper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -27,37 +26,15 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
-public class _AttachedListStateWrapperTest extends TestCase
+public class _AttachedListStateWrapperTest
 {
-
-    public static void main(String[] args)
-    {
-        junit.textui.TestRunner.run(_AttachedListStateWrapperTest.class);
-    }
-
-    public _AttachedListStateWrapperTest(String name)
-    {
-        super(name);
-    }
-
-    @Override
-    public void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
-
     /*
      * Test method for 'jakarta.faces.component._AttachedListStateWrapper._AttachedListStateWrapper(List)'
      */
+    @Test
     public void test_AttachedListStateWrapper()
     {
         List<Object> foo = new ArrayList<Object>();
@@ -66,6 +43,7 @@ public class _AttachedListStateWrapperTest extends TestCase
         Assert.assertTrue(subject.getWrappedStateList() == foo);
     }
 
+    @Test
     public void testSerialize() throws Exception
     {
         String foo = "foo";

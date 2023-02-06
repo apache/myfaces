@@ -15,8 +15,8 @@
 */
 package org.apache.myfaces.context;
 
-import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Regular Expression tests used within the faces context submodules
@@ -24,7 +24,7 @@ import org.junit.Assert;
  * @author Werner Punz(latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ContextRegexpTest extends TestCase {
+public class ContextRegexpTest {
 
     static final String RE_SPLITTER = "[\\s\\t\\r\\n]*\\,[\\s\\t\\r\\n]*";
 
@@ -35,6 +35,7 @@ public class ContextRegexpTest extends TestCase {
     /**
      * condition valid string
      */
+    @Test
     public void testCondition1() {
         String[] splitted = " hello ,world          \n ,bla ".split(RE_SPLITTER);
         splitted[0] = splitted[0].trim();
@@ -52,6 +53,7 @@ public class ContextRegexpTest extends TestCase {
      * test the condition 2
      * empty string
      */
+    @Test
     public void testCondition2() {
         String[] splitted = " ".split(RE_SPLITTER);
         Assert.assertTrue(splitted.length == 1);
@@ -62,6 +64,7 @@ public class ContextRegexpTest extends TestCase {
      * test the condition 3
      * empty string no blanks
      */
+    @Test
     public void testCondition3() {
         String[] splitted = "".split(RE_SPLITTER);
         Assert.assertTrue(splitted.length == 1);

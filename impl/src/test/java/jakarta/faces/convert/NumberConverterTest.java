@@ -233,7 +233,7 @@ public class NumberConverterTest extends AbstractJsfTestCase
         try
         {
             Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "1,234.56");
-            assertEquals(number.intValue(), 1234);
+            Assert.assertEquals(number.intValue(), 1234);
         }
         catch (ConverterException e)
         {

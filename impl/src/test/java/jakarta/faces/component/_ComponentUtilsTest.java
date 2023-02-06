@@ -18,8 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.UIComponent;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.test.mock.MockRenderedValueExpression;

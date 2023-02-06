@@ -28,20 +28,24 @@ import org.apache.myfaces.config.element.LocaleConfig;
 import org.apache.myfaces.config.element.OrderSlot;
 import org.apache.myfaces.config.impl.element.ConfigOthersSlotImpl;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class FacesConfigUnmarshallerImplTest extends TestCase
+public class FacesConfigUnmarshallerImplTest
 {
     private FacesConfigUnmarshallerImpl _impl;
 
+    @Before
     public void setUp() throws Exception
     {
         _impl = new FacesConfigUnmarshallerImpl(null);
     }
 
+    @Test
     public void testEmptyConfig() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -57,6 +61,7 @@ public class FacesConfigUnmarshallerImplTest extends TestCase
         Assert.assertTrue(cfg.getValidators().isEmpty());
     }
 
+    @Test
     public void testApplicationConfig() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -108,6 +113,7 @@ public class FacesConfigUnmarshallerImplTest extends TestCase
         Assert.assertEquals("bb", cfg.getSupportedLocales().get(1));
     }
     
+    @Test
     public void testAbsoluteOrderingConfig() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -133,6 +139,7 @@ public class FacesConfigUnmarshallerImplTest extends TestCase
         Assert.assertTrue(cfg.getValidators().isEmpty());
     }
     
+    @Test
     public void testOrderingConfig() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -158,6 +165,7 @@ public class FacesConfigUnmarshallerImplTest extends TestCase
         Assert.assertTrue(cfg.getValidators().isEmpty());
     }
     
+    @Test
     public void testFacesFlowConfig() throws Exception
     {/*
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -227,6 +235,7 @@ public class FacesConfigUnmarshallerImplTest extends TestCase
         Assert.assertEquals("value1", facesFlowParameter.getValue());*/
     }
     
+    @Test
     public void testCsrf() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -240,6 +249,7 @@ public class FacesConfigUnmarshallerImplTest extends TestCase
         
     }
     
+    @Test
     public void testContracts() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -256,6 +266,7 @@ public class FacesConfigUnmarshallerImplTest extends TestCase
         Assert.assertEquals("contractA contractB", mapping.getContractList().get(0));
     }
     
+    @Test
     public void testContracts2() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(

@@ -19,43 +19,20 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component._AttachedStateWrapper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
-public class _AttachedStateWrapperTest extends TestCase
+public class _AttachedStateWrapperTest
 {
-
-    public static void main(String[] args)
-    {
-        junit.textui.TestRunner.run(_AttachedStateWrapperTest.class);
-    }
-
-    public _AttachedStateWrapperTest(String name)
-    {
-        super(name);
-    }
-
-    @Override
-    public void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
-
     /*
      * Test method for 'jakarta.faces.component._AttachedStateWrapper._AttachedStateWrapper(Class, Object)'
      */
+    @Test
     public void test_AttachedStateWrapper()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(null, null);
@@ -66,6 +43,7 @@ public class _AttachedStateWrapperTest extends TestCase
     /*
      * Test method for 'jakarta.faces.component._AttachedStateWrapper.getClazz()'
      */
+    @Test
     public void testGetClazz()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(String.class, "foo");
@@ -75,12 +53,14 @@ public class _AttachedStateWrapperTest extends TestCase
     /*
      * Test method for 'jakarta.faces.component._AttachedStateWrapper.getWrappedStateObject()'
      */
+    @Test
     public void testGetWrappedStateObject()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(String.class, "foo");
         Assert.assertEquals(subject.getClazz(), String.class);
     }
 
+    @Test
     public void testSerialize() throws Exception
     {
         String foo = "foo";

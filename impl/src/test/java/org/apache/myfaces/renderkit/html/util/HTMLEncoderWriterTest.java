@@ -16,13 +16,13 @@
 
 package org.apache.myfaces.renderkit.html.util;
 
-import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * <code>HTMLEncoderTest</code> tests <code>org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder</code>.
@@ -60,41 +60,49 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
    * Test method for
    * {@link org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder#encode(String)}.
    */
+    @Test
   public void testEncodeStringNoSpecialChars() throws Exception {
     HTMLEncoder.encode(sw, stringNoSpecialChars);
     Assert.assertEquals(stringNoSpecialCharsEncoded, sw.toString());
   }
 
+  @Test
   public void testEncodeStringSpecialChars1() throws Exception {
     HTMLEncoder.encode(sw, stringSpecialChars1);
       Assert.assertEquals(stringSpecialChars1Encoded, sw.toString());
   }
 
+  @Test
   public void testEncodeStringSpecialChars2() throws Exception {
     HTMLEncoder.encode(sw, stringSpecialChars2);
     Assert.assertEquals(stringSpecialChars2Encoded, sw.toString());
   }
 
+  @Test
   public void testEncodeStringLineBreak1() throws Exception {
     HTMLEncoder.encode(sw, stringLineBreak, true);
     Assert.assertEquals(stringLineBreakEncoded1, sw.toString());
   }
 
+  @Test
   public void testEncodeStringLineBreak2() throws Exception {
     HTMLEncoder.encode(sw, stringLineBreak, false);
     Assert.assertEquals(stringLineBreakEncoded2, sw.toString());
   }
 
+  @Test
   public void testEncodeStringEmpty() throws Exception {
     HTMLEncoder.encode(sw, "");
     Assert.assertEquals("", sw.toString());
   }
 
+  @Test
   public void testEncodeStringNull() throws Exception {
     HTMLEncoder.encode(sw, null);
     Assert.assertEquals("", sw.toString());
   }
 
+  @Test
   public void testEncodeArrayNoSpecialChars() throws Exception {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -106,6 +114,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArrayNoSpecialCharsPartial() throws Exception {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -117,6 +126,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArraySpecialChars1() throws Exception {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -128,6 +138,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArraySpecialChars2() throws Exception {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -139,6 +150,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArrayEmpty() throws Exception {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -149,6 +161,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArrayNull() throws Exception {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -159,6 +172,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArrayWrongIndex1() throws Exception {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -170,6 +184,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArrayWrongIndex2() throws Exception {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -181,6 +196,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArrayWrongIndex3() throws Exception {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -192,6 +208,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArrayLineBreak1() throws Exception {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -203,6 +220,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArrayLineBreak2() throws Exception  {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -214,6 +232,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArrayLineBreak2WrongIndex() throws Exception  {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -225,6 +244,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testEncodeArrayLineBreakPartial() throws Exception  {
     try {
       CharArrayWriter writer = new CharArrayWriter();
@@ -237,6 +257,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     }
   }
 
+  @Test
   public void testSimpleWriteURIAttribute() throws Exception
   {
       String cad1 = "http://myfaces.apache.org/hello.jsf?key1=val&key2=val2#id";
@@ -246,6 +267,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       Assert.assertEquals(cad2, cad3);      
   }
   
+  @Test
   public void testUsAsciiEscapedCharactersBeforeQuery() throws Exception
   {
       // Escape
@@ -271,6 +293,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       
   }
   
+  @Test
   public void testWriteNonUsAsciiOnURIAttribute() throws Exception
   {
       // Character ü in ISO-8859-1 is %FC but on UTF-8 is %C3%BC. In this case,
@@ -284,6 +307,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
 
   }
   
+  @Test
   public void testReservedCharactersOnURIAttribute() throws Exception
   {
       //Reserved
@@ -306,6 +330,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       Assert.assertEquals(cad7, cad8);
   }
 
+  @Test
   public void testNonEncodedCharactersOnURIAttribute() throws Exception
   {
       // "... for consistency, percent-encoded octets in the ranges of ALPHA
@@ -330,6 +355,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       Assert.assertEquals(cad5, cad6);
   }
 
+  @Test
   public void testWriteURIAttribute() throws Exception
   {
       //Note char 256 or 0x100 should not be passed or percent encoded, because it is not
@@ -366,7 +392,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       Assert.fail();
     }
     for (int i = 0; i < expected.length; i++) {
-      assertEquals(expected[i], actual[i]);
+      Assert.assertEquals(expected[i], actual[i]);
     }
   } 
 }

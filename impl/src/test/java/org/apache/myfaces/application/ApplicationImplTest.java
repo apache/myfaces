@@ -39,20 +39,20 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.convert.EnumConverter;
 
-import junit.framework.TestCase;
 import org.apache.myfaces.test.MyFacesAsserts;
 import org.apache.myfaces.test.TestRunner;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.mock.MockFacesContext;
-import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ApplicationImplTest extends TestCase
+public class ApplicationImplTest
 {
     //TODO: need mock objects for VDL/VDLFactory
     //remove from excludes list in pom.xml after complete
@@ -60,6 +60,7 @@ public class ApplicationImplTest extends TestCase
     protected ApplicationImpl application;
     protected MockFacesContext facesContext;
 
+    @Before
     public void setUp() throws Exception
     {
         application = new ApplicationImpl(new RuntimeConfig());
@@ -70,6 +71,7 @@ public class ApplicationImplTest extends TestCase
      * Test method for
      * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
+    @Test
     public void testGetResourceBundleNPE()
     {
         MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
@@ -95,6 +97,7 @@ public class ApplicationImplTest extends TestCase
      * Test method for
      * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
+    @Test
     public void testGetResourceBundleFacesException()
     {
         final ApplicationImpl myApp = new ApplicationImpl(new RuntimeConfig())
@@ -118,6 +121,7 @@ public class ApplicationImplTest extends TestCase
      * Test method for
      * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
+    @Test
     public void testGetResourceBundleWithDefaultLocale()
     {
         assertGetResourceBundleWithLocale(Locale.getDefault());
@@ -127,6 +131,7 @@ public class ApplicationImplTest extends TestCase
      * Test method for
      * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
+    @Test
     public void testGetResourceBundleWithUIViewRootLocale()
     {
         Locale locale = new Locale("xx");
@@ -136,6 +141,7 @@ public class ApplicationImplTest extends TestCase
         assertGetResourceBundleWithLocale(locale);
     }
 
+    @Test
     public void testCreateComponentCallSetValueOnExpressionIfValueNull() throws Exception
     {
         ValueExpression expr = createMock(ValueExpression.class);
@@ -150,6 +156,7 @@ public class ApplicationImplTest extends TestCase
         Assert.assertTrue(UIOutput.class.isAssignableFrom(application.createComponent(expr, context, "testComponent").getClass()));
     }
 
+    @Test
     public void testCreateComponentExpressionFacesExceptionTest() throws Exception
     {
         ValueExpression expr = createMock(ValueExpression.class);
@@ -203,7 +210,7 @@ public class ApplicationImplTest extends TestCase
                 return bundle;
             }
         };
-        assertSame(bundle, myapp.getResourceBundle(facesContext, var));
+        Assert.assertSame(bundle, myapp.getResourceBundle(facesContext, var));
     }
 
     private enum MyEnum {VALUE1, VALUE2}; 
@@ -212,6 +219,7 @@ public class ApplicationImplTest extends TestCase
      * Test method for
      * {@link jakarta.faces.application.Application#createConverter(java.lang.Class)}.
      */
+    @Test
     public void testCreateEnumConverter() throws Exception
     {
         application.addConverter(Enum.class, EnumConverter.class.getName());
@@ -257,13 +265,14 @@ public class ApplicationImplTest extends TestCase
      * The interface should take precedence over the fact that our object is also
      * an enum.
      */
+    @Test
     public void testCreateConverterForInterface() throws Exception 
     {
         application.addConverter(Enum.class, EnumConverter.class.getName());
     	application.addConverter(EnumCoded.class, EnumCodedTestConverter.class.getName());
     	
     	Converter converter = application.createConverter(AnotherEnum.class);
-    	assertNotNull(converter);
+    	Assert.assertNotNull(converter);
         Assert.assertEquals(converter.getClass(), EnumCodedTestConverter.class);
     }
 }

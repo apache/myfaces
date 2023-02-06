@@ -18,10 +18,10 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component._DeltaStateHelper;
 import java.util.List;
 import java.util.Map;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * A generic framework less testcase for our _DeltaStateHelper class!
@@ -103,6 +103,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of isInitalStateMarked method, of class _DeltaStateHelper.
      */
+    @Test
     public void testIsInitalStateMarked()
     {
         Assert.assertTrue("Initial state must be marked", _instance
@@ -115,6 +116,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of add method, of class _DeltaStateHelper.
      */
+    @Test
     public void testAdd()
     {
         _instance.add(KEY1, VAL1);
@@ -156,6 +158,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of get method, of class _DeltaStateHelper.
      */
+    @Test
     public void testGet()
     {
         _setupGetTests();
@@ -165,6 +168,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of put method, of class _DeltaStateHelper.
      */
+    @Test
     public void testPut_Serializable_Object()
     {
         _setupGetTests();
@@ -179,6 +183,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
                 && entry.get(KEY_2_2).equals(VAL3));
     }
 
+    @Test
     public void testPut_null()
     {
         _instance.put(KEY1, null);
@@ -204,6 +209,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of put method, of class _DeltaStateHelper.
      */
+    @Test
     public void testPut_3args()
     {
         //covered already by testPut_Serializable_Object()
@@ -212,6 +218,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of remove method, of class _DeltaStateHelper.
      */
+    @Test
     public void testRemove_Serializable()
     {
         _setupGetTests();
@@ -224,6 +231,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of remove method, of class _DeltaStateHelper.
      */
+    @Test
     public void testRemove_Serializable_Object()
     {
         _setupGetTests();
@@ -240,6 +248,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of saveState method, of class _DeltaStateHelper.
      */
+    @Test
     public void testSaveState()
     {
 
@@ -269,6 +278,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of restoreState method, of class _DeltaStateHelper.
      */
+    @Test
     public void testRestoreState()
     {
         _setupGetTests();
@@ -293,6 +303,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of isTransient method, of class _DeltaStateHelper.
      */
+    @Test
     public void testIsTransient()
     {
         _instance.setTransient(true);
