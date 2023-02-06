@@ -51,7 +51,7 @@ public class MockVariableMapper extends VariableMapper
 
     // -------------------------------------------------- FunctionMapper Methods
 
-    /** {@inheritDoc} */
+    @Override
     public ValueExpression resolveVariable(String variable)
     {
 
@@ -59,7 +59,7 @@ public class MockVariableMapper extends VariableMapper
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ValueExpression setVariable(String variable,
             ValueExpression expression)
     {

@@ -119,7 +119,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     // ---------------------------------------------------- FacesContext Methods
 
-    /** {@inheritDoc} */
+    @Override
     public Application getApplication()
     {
 
@@ -127,7 +127,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getClientIdsWithMessages()
     {
 
@@ -135,7 +135,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ExternalContext getExternalContext()
     {
 
@@ -143,7 +143,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Severity getMaximumSeverity()
     {
 
@@ -165,7 +165,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getMessages()
     {
 
@@ -180,7 +180,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getMessages(String clientId)
     {
 
@@ -193,7 +193,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public RenderKit getRenderKit()
     {
 
@@ -213,7 +213,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean getRenderResponse()
     {
 
@@ -221,7 +221,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean getResponseComplete()
     {
 
@@ -229,7 +229,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ResponseStream getResponseStream()
     {
 
@@ -237,7 +237,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setResponseStream(ResponseStream responseStream)
     {
 
@@ -245,7 +245,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ResponseWriter getResponseWriter()
     {
 
@@ -253,7 +253,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setResponseWriter(ResponseWriter responseWriter)
     {
 
@@ -261,7 +261,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public UIViewRoot getViewRoot()
     {
 
@@ -269,7 +269,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setViewRoot(UIViewRoot viewRoot)
     {
 
@@ -277,7 +277,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void addMessage(String clientId, FacesMessage message)
     {
 
@@ -295,7 +295,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void release()
     {
 
@@ -311,7 +311,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void renderResponse()
     {
 
@@ -319,7 +319,7 @@ public abstract class MockFacesContext10 extends FacesContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void responseComplete()
     {
 

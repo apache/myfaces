@@ -1075,37 +1075,4 @@ public class FlashImplTest extends AbstractJsfTestCase
             }
         }
     }
-
-    /**
-     * Adds isSecure() implementation to MockExternalContext20.
-     *
-     * TODO remove this one as soon as MyFaces-Test provides MockExternalContext21.
-     */
-    private static class MockExternalContext21 extends MockExternalContext20
-    {
-
-        private boolean secure = false;
-
-        private MockExternalContext21(ServletContext context, HttpServletRequest request, HttpServletResponse response)
-        {
-            super(context, request, response);
-        }
-
-        @Override
-        public boolean isSecure()
-        {
-            return secure;
-        }
-
-        public void setSecure(boolean secure)
-        {
-            this.secure = secure;
-        }
-
-        @Override
-        public void release() {
-            
-        }
-    }
-
 }

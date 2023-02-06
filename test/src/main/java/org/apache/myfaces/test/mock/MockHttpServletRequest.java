@@ -351,7 +351,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     // ---------------------------------------------- HttpServletRequest Methods
 
-    /** {@inheritDoc} */
+    @Override
     public String getAuthType()
     {
 
@@ -359,7 +359,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getContextPath()
     {
 
@@ -367,7 +367,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Cookie[] getCookies()
     {
 
@@ -379,7 +379,7 @@ public class MockHttpServletRequest implements HttpServletRequest
         return array;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public long getDateHeader(String name)
     {
 
@@ -397,7 +397,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getHeader(String name)
     {
 
@@ -415,7 +415,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getHeaderNames()
     {
 
@@ -438,7 +438,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getHeaders(String name)
     {
 
@@ -457,7 +457,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getIntHeader(String name)
     {
 
@@ -476,7 +476,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getMethod()
     {
 
@@ -484,7 +484,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getPathInfo()
     {
 
@@ -492,7 +492,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getPathTranslated()
     {
 
@@ -500,7 +500,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getQueryString()
     {
 
@@ -508,7 +508,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRemoteUser()
     {
 
@@ -523,7 +523,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRequestedSessionId()
     {
 
@@ -531,7 +531,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRequestURI()
     {
 
@@ -556,7 +556,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public StringBuffer getRequestURL()
     {
 
@@ -564,7 +564,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getServletPath()
     {
 
@@ -572,7 +572,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public HttpSession getSession()
     {
 
@@ -580,7 +580,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public HttpSession getSession(boolean create)
     {
 
@@ -598,7 +598,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Principal getUserPrincipal()
     {
 
@@ -606,7 +606,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isRequestedSessionIdFromCookie()
     {
 
@@ -614,31 +614,24 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
     public boolean isRequestedSessionIdFromUrl()
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isRequestedSessionIdFromURL()
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isRequestedSessionIdValid()
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isUserInRole(String role)
     {
         return (this.roles != null) ? this.roles.contains(role) : false;
@@ -646,7 +639,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     // ------------------------------------------------- ServletRequest Methods
 
-    /** {@inheritDoc} */
+    @Override
     public Object getAttribute(String name)
     {
 
@@ -654,7 +647,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getAttributeNames()
     {
 
@@ -662,7 +655,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getCharacterEncoding()
     {
 
@@ -670,7 +663,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getContentLength()
     {
 
@@ -678,7 +671,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getContentType()
     {
 
@@ -686,7 +679,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ServletInputStream getInputStream()
     {
         return this.inputStream;
@@ -697,15 +690,13 @@ public class MockHttpServletRequest implements HttpServletRequest
         this.inputStream = stream;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Locale getLocale()
     {
-
         return locale;
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getLocales()
     {
         if (this.locales == null)
@@ -715,34 +706,27 @@ public class MockHttpServletRequest implements HttpServletRequest
         return this.locales.elements();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getLocalAddr()
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getLocalName()
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getLocalPort()
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getParameter(String name)
     {
-
         String[] values = (String[]) parameters.get(name);
         if (values != null)
         {
@@ -752,42 +736,33 @@ public class MockHttpServletRequest implements HttpServletRequest
         {
             return null;
         }
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Map getParameterMap()
     {
-
         return parameters;
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getParameterNames()
     {
-
         return new MockEnumeration(parameters.keySet().iterator());
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String[] getParameterValues(String name)
     {
-
         return (String[]) parameters.get(name);
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getProtocol()
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public BufferedReader getReader()
     {
         if (this.inputStream != null)
@@ -810,15 +785,12 @@ public class MockHttpServletRequest implements HttpServletRequest
         }
     }
 
-    /** {@inheritDoc} */
     public String getRealPath(String path)
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRemoteAddr()
     {
 
@@ -827,7 +799,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRemoteHost()
     {
 
@@ -836,7 +808,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getRemotePort()
     {
 
@@ -845,13 +817,13 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public RequestDispatcher getRequestDispatcher(String path)
     {
         return servletContext.getRequestDispatcher(path);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getScheme()
     {
 
@@ -859,7 +831,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getServerName()
     {
 
@@ -867,7 +839,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getServerPort()
     {
 
@@ -875,7 +847,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isSecure()
     {
 
@@ -883,7 +855,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void removeAttribute(String name)
     {
 
@@ -895,7 +867,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setAttribute(String name, Object value)
     {
 
@@ -922,7 +894,7 @@ public class MockHttpServletRequest implements HttpServletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setCharacterEncoding(String characterEncoding)
     {
 

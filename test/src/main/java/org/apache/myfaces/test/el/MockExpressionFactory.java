@@ -52,7 +52,7 @@ public class MockExpressionFactory extends ExpressionFactory
 
     // ----------------------------------------------- ExpressionFactory Methods
 
-    /** {@inheritDoc} */
+    @Override
     public Object coerceToType(Object object, Class targetType)
     {
 
@@ -201,7 +201,7 @@ public class MockExpressionFactory extends ExpressionFactory
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public MethodExpression createMethodExpression(ELContext context,
             String expression, Class expectedType, Class[] signature)
     {
@@ -210,7 +210,7 @@ public class MockExpressionFactory extends ExpressionFactory
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ValueExpression createValueExpression(ELContext context,
             String expression, Class expectedType)
     {
@@ -219,7 +219,7 @@ public class MockExpressionFactory extends ExpressionFactory
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ValueExpression createValueExpression(Object instance,
             Class expectedType)
     {

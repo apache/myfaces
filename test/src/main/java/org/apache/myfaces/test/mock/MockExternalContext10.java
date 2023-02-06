@@ -185,7 +185,7 @@ public abstract class MockExternalContext10 extends ExternalContext
 
     // ------------------------------------------------- ExternalContext Methods
 
-    /** {@inheritDoc} */
+    @Override
     public void dispatch(String requestURI) throws IOException, FacesException
     {
         RequestDispatcher requestDispatcher = request
@@ -211,25 +211,25 @@ public abstract class MockExternalContext10 extends ExternalContext
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String encodeActionURL(String sb)
     {
         return sb;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String encodeNamespace(String aValue)
     {
         return aValue;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String encodeResourceURL(String sb)
     {
         return sb;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Map getApplicationMap()
     {
         if (applicationMap == null)
@@ -239,25 +239,25 @@ public abstract class MockExternalContext10 extends ExternalContext
         return applicationMap;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getAuthType()
     {
         return request.getAuthType();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Object getContext()
     {
         return context;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getInitParameter(String name)
     {
         return context.getInitParameter(name);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Map getInitParameterMap()
     {
         if (initParameterMap == null)
@@ -267,25 +267,25 @@ public abstract class MockExternalContext10 extends ExternalContext
         return initParameterMap;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRemoteUser()
     {
         return request.getRemoteUser();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Object getRequest()
     {
         return request;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRequestContextPath()
     {
         return request.getContextPath();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Map getRequestCookieMap()
     {
         if (requestCookieMap == null)
@@ -295,7 +295,7 @@ public abstract class MockExternalContext10 extends ExternalContext
         return requestCookieMap;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Map getRequestHeaderMap()
     {
         if (requestHeaderMap == null)
@@ -305,7 +305,7 @@ public abstract class MockExternalContext10 extends ExternalContext
         return requestHeaderMap;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Map getRequestHeaderValuesMap()
     {
         if (requestHeaderValuesMap == null)
@@ -315,19 +315,19 @@ public abstract class MockExternalContext10 extends ExternalContext
         return requestHeaderValuesMap;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Locale getRequestLocale()
     {
         return request.getLocale();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getRequestLocales()
     {
         return new LocalesIterator(request.getLocales());
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Map getRequestMap()
     {
         if (requestMap == null)
@@ -337,7 +337,7 @@ public abstract class MockExternalContext10 extends ExternalContext
         return requestMap;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Map getRequestParameterMap()
     {
         if (requestParameterMap == null)
@@ -347,33 +347,35 @@ public abstract class MockExternalContext10 extends ExternalContext
         return requestParameterMap;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getRequestParameterNames()
     {
         final Enumeration enumer = request.getParameterNames();
         Iterator it = new Iterator()
         {
+            @Override
             public boolean hasNext()
             {
                 return enumer.hasMoreElements();
             }
 
+            @Override
             public Object next()
             {
                 return enumer.nextElement();
             }
 
+            @Override
             public void remove()
             {
-                throw new UnsupportedOperationException(this.getClass()
-                        .getName()
+                throw new UnsupportedOperationException(this.getClass().getName()
                         + " UnsupportedOperationException");
             }
         };
         return it;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Map getRequestParameterValuesMap()
     {
         if (requestParameterValuesMap == null)
@@ -383,49 +385,49 @@ public abstract class MockExternalContext10 extends ExternalContext
         return requestParameterValuesMap;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRequestPathInfo()
     {
         return request.getPathInfo();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRequestServletPath()
     {
         return request.getServletPath();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public URL getResource(String path) throws MalformedURLException
     {
         return context.getResource(path);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public InputStream getResourceAsStream(String path)
     {
         return context.getResourceAsStream(path);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Set getResourcePaths(String path)
     {
         return context.getResourcePaths(path);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Object getResponse()
     {
         return response;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Object getSession(boolean create)
     {
         return request.getSession(create);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Map getSessionMap()
     {
         if (sessionMap == null)
@@ -435,65 +437,37 @@ public abstract class MockExternalContext10 extends ExternalContext
         return sessionMap;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public java.security.Principal getUserPrincipal()
     {
         return request.getUserPrincipal();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isUserInRole(String role)
     {
         return request.isUserInRole(role);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void log(String message)
     {
         context.log(message);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void log(String message, Throwable throwable)
     {
         context.log(message, throwable);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void redirect(String requestURI) throws IOException
     {
         response.sendRedirect(requestURI);
         FacesContext.getCurrentInstance().responseComplete();
     }
-    
-    public String encodeWebsocketURL(String baseUrl)
-    {
-        Integer port = 8080;
-        port = (port == 0) ? null : port;
-        if (port != null && 
-            !port.equals(request.getServerPort()))
-        {
-            String scheme = "http";
-            String serverName = request.getServerName();
-            String url;
-            try
-            {
-                url = new URL(scheme, serverName, port, baseUrl).toExternalForm();
-                url = url.replaceFirst("http", "ws");
-                return url;
-            }
-            catch (MalformedURLException ex)
-            {
-                //If cannot build the url, return the base one unchanged
-                return baseUrl;
-            }
-        }
-        else
-        {
-            return baseUrl;
-        }
-    }
-
+ 
     /**
      * <p>Iterator implementation that wraps an enumeration
      * of Locales for the current request.</p>
@@ -517,19 +491,19 @@ public abstract class MockExternalContext10 extends ExternalContext
          */
         private Enumeration locales;
 
-        /** {@inheritDoc} */
+        @Override
         public boolean hasNext()
         {
             return locales.hasMoreElements();
         }
 
-        /** {@inheritDoc} */
+        @Override
         public Object next()
         {
             return locales.nextElement();
         }
 
-        /** {@inheritDoc} */
+        @Override
         public void remove()
         {
             throw new UnsupportedOperationException();

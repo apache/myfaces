@@ -75,20 +75,20 @@ public class MockResponseWriter extends ResponseWriter
 
     // -------------------------------------------------- ResponseWriter Methods
 
-    /** {@inheritDoc} */
+    @Override
     public ResponseWriter cloneWithWriter(Writer writer)
     {
         return new MockResponseWriter(writer, contentType, characterEncoding);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void endDocument() throws IOException
     {
         finish();
         writer.flush();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void endElement(String name) throws IOException
     {
         if (open)
@@ -105,31 +105,31 @@ public class MockResponseWriter extends ResponseWriter
         component = null;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getCharacterEncoding()
     {
         return this.characterEncoding;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getContentType()
     {
         return this.contentType;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void flush() throws IOException
     {
         finish();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void startDocument() throws IOException
     {
         // Do nothing
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void startElement(String name, UIComponent component)
             throws IOException
     {
@@ -144,7 +144,7 @@ public class MockResponseWriter extends ResponseWriter
         this.component = component;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void writeAttribute(String name, Object value, String property)
             throws IOException
     {
@@ -168,7 +168,7 @@ public class MockResponseWriter extends ResponseWriter
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void writeComment(Object comment) throws IOException
     {
         if (comment == null)
@@ -188,7 +188,7 @@ public class MockResponseWriter extends ResponseWriter
         writer.write(" -->");
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void writeText(Object text, String property) throws IOException
     {
         if (text == null)
@@ -204,7 +204,7 @@ public class MockResponseWriter extends ResponseWriter
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void writeText(char[] text, int off, int len) throws IOException
     {
         if (text == null)
@@ -220,7 +220,7 @@ public class MockResponseWriter extends ResponseWriter
         string(text, off, len);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void writeURIAttribute(String name, Object value, String property)
             throws IOException
     {
@@ -246,14 +246,14 @@ public class MockResponseWriter extends ResponseWriter
 
     // ---------------------------------------------------------- Writer Methods
 
-    /** {@inheritDoc} */
+    @Override
     public void close() throws IOException
     {
         finish();
         writer.close();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void write(char[] cbuf, int off, int len) throws IOException
     {
         finish();

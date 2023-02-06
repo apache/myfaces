@@ -131,7 +131,7 @@ public class MockPortletRequest implements PortletRequest
 
     // -------------------------------------------------- PortletRequest Methods
 
-    /** {@inheritDoc} */
+    @Override
     public String getAuthType()
     {
 
@@ -139,7 +139,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getContextPath()
     {
 
@@ -147,7 +147,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Object getAttribute(String name)
     {
 
@@ -155,7 +155,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getAttributeNames()
     {
 
@@ -163,14 +163,14 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Locale getLocale()
     {
 
         return locale;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getLocales()
     {
 
@@ -178,7 +178,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getParameter(String name)
     {
 
@@ -194,7 +194,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Map getParameterMap()
     {
 
@@ -202,7 +202,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getParameterNames()
     {
 
@@ -210,7 +210,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String[] getParameterValues(String name)
     {
 
@@ -218,7 +218,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public PortalContext getPortalContext()
     {
 
@@ -226,7 +226,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public PortletMode getPortletMode()
     {
 
@@ -234,7 +234,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public PortletSession getPortletSession()
     {
 
@@ -242,7 +242,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public PortletSession getPortletSession(boolean create)
     {
 
@@ -254,7 +254,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public PortletPreferences getPreferences()
     {
 
@@ -262,7 +262,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getProperties(String arg0)
     {
 
@@ -270,7 +270,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getProperty(String arg0)
     {
 
@@ -278,7 +278,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getPropertyNames()
     {
 
@@ -286,7 +286,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRemoteUser()
     {
 
@@ -301,7 +301,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRequestedSessionId()
     {
 
@@ -309,7 +309,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getResponseContentType()
     {
 
@@ -317,7 +317,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getResponseContentTypes()
     {
 
@@ -325,7 +325,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getScheme()
     {
 
@@ -333,7 +333,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getServerName()
     {
 
@@ -341,7 +341,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getServerPort()
     {
 
@@ -349,7 +349,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Principal getUserPrincipal()
     {
 
@@ -357,7 +357,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public WindowState getWindowState()
     {
 
@@ -365,7 +365,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isPortletModeAllowed(PortletMode arg0)
     {
 
@@ -373,7 +373,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isRequestedSessionIdValid()
     {
 
@@ -381,7 +381,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isSecure()
     {
 
@@ -389,7 +389,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isUserInRole(String arg0)
     {
 
@@ -397,7 +397,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isWindowStateAllowed(WindowState arg0)
     {
 
@@ -405,7 +405,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void removeAttribute(String name)
     {
 
@@ -416,7 +416,7 @@ public class MockPortletRequest implements PortletRequest
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setAttribute(String name, Object value)
     {
 

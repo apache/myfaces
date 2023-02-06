@@ -93,7 +93,7 @@ public class MockPortletContext implements PortletContext
 
     // -------------------------------------------------- PortletContext Methods
 
-    /** {@inheritDoc} */
+    @Override
     public Object getAttribute(String name)
     {
 
@@ -101,7 +101,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getAttributeNames()
     {
 
@@ -109,7 +109,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getInitParameter(String name)
     {
 
@@ -117,7 +117,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getInitParameterNames()
     {
 
@@ -125,7 +125,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getMajorVersion()
     {
 
@@ -133,7 +133,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getMimeType(String path)
     {
 
@@ -161,7 +161,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getPortletContextName()
     {
 
@@ -169,7 +169,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRealPath(String path)
     {
 
@@ -197,7 +197,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public PortletRequestDispatcher getRequestDispatcher(String arg0)
     {
 
@@ -205,7 +205,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public URL getResource(String path) throws MalformedURLException
     {
 
@@ -233,7 +233,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public InputStream getResourceAsStream(String path)
     {
 
@@ -252,7 +252,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Set getResourcePaths(String path)
     {
 
@@ -303,14 +303,14 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getServerInfo()
     {
 
         return "MockPortletContext";
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void log(String message)
     {
 
@@ -318,7 +318,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void log(String message, Throwable exception)
     {
 
@@ -327,7 +327,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void removeAttribute(String name)
     {
 
@@ -338,7 +338,7 @@ public class MockPortletContext implements PortletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setAttribute(String name, Object value)
     {
 

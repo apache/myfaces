@@ -67,7 +67,7 @@ public class MockRenderKit extends RenderKit
 
     // ------------------------------------------------------- RenderKit Methods
 
-    /** {@inheritDoc} */
+    @Override
     public void addRenderer(String family, String rendererType,
             Renderer renderer)
     {
@@ -80,7 +80,7 @@ public class MockRenderKit extends RenderKit
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Renderer getRenderer(String family, String rendererType)
     {
 
@@ -92,7 +92,7 @@ public class MockRenderKit extends RenderKit
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ResponseWriter createResponseWriter(Writer writer,
             String contentTypeList, String characterEncoding)
     {
@@ -102,7 +102,7 @@ public class MockRenderKit extends RenderKit
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ResponseStream createResponseStream(OutputStream out)
     {
 
@@ -137,7 +137,7 @@ public class MockRenderKit extends RenderKit
         };
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ResponseStateManager getResponseStateManager()
     {
         return rsm;

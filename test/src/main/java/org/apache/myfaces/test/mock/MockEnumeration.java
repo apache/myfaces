@@ -58,7 +58,7 @@ class MockEnumeration implements Enumeration
 
     // ----------------------------------------------------- Enumeration Methods
 
-    /** {@inheritDoc} */
+    @Override
     public boolean hasMoreElements()
     {
 
@@ -66,7 +66,7 @@ class MockEnumeration implements Enumeration
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Object nextElement()
     {
 

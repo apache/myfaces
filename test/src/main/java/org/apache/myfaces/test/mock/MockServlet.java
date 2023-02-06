@@ -78,12 +78,12 @@ public class MockServlet implements Servlet
 
     // --------------------------------------------------------- Servlet Methods
 
-    /** {@inheritDoc} */
+    @Override
     public void destroy()
     {
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ServletConfig getServletConfig()
     {
 
@@ -91,7 +91,7 @@ public class MockServlet implements Servlet
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getServletInfo()
     {
 
@@ -99,7 +99,7 @@ public class MockServlet implements Servlet
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void init(ServletConfig config) throws ServletException
     {
 
@@ -107,7 +107,7 @@ public class MockServlet implements Servlet
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void service(ServletRequest request, ServletResponse response)
             throws IOException, ServletException
     {

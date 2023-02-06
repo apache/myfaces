@@ -48,9 +48,7 @@ public class MockHttpSession implements HttpSession
      */
     public MockHttpSession()
     {
-
         super();
-
     }
 
     /**
@@ -132,7 +130,7 @@ public class MockHttpSession implements HttpSession
 
     // ----------------------------------------------------- HttpSession Methods
 
-    /** {@inheritDoc} */
+    @Override
     public Object getAttribute(String name)
     {
 
@@ -142,7 +140,7 @@ public class MockHttpSession implements HttpSession
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getAttributeNames()
     {
 
@@ -152,7 +150,7 @@ public class MockHttpSession implements HttpSession
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public long getCreationTime()
     {
 
@@ -160,7 +158,7 @@ public class MockHttpSession implements HttpSession
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getId()
     {
 
@@ -168,7 +166,7 @@ public class MockHttpSession implements HttpSession
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public long getLastAccessedTime()
     {
 
@@ -176,7 +174,7 @@ public class MockHttpSession implements HttpSession
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getMaxInactiveInterval()
     {
 
@@ -184,31 +182,23 @@ public class MockHttpSession implements HttpSession
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ServletContext getServletContext()
     {
-
         return this.servletContext;
-
     }
 
-    /** {@inheritDoc} */
     public Object getValue(String name)
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
     public String[] getValueNames()
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void invalidate()
     {
 
@@ -225,26 +215,20 @@ public class MockHttpSession implements HttpSession
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isNew()
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
     public void putValue(String name, Object value)
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void removeAttribute(String name)
     {
-
         assertValidity();
 
         if (attributes.containsKey(name))
@@ -252,18 +236,14 @@ public class MockHttpSession implements HttpSession
             Object value = attributes.remove(name);
             fireAttributeRemoved(name, value);
         }
-
     }
 
-    /** {@inheritDoc} */
     public void removeValue(String name)
     {
-
         throw new UnsupportedOperationException();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setAttribute(String name, Object value)
     {
 
@@ -292,12 +272,10 @@ public class MockHttpSession implements HttpSession
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setMaxInactiveInterval(int interval)
     {
-
         throw new UnsupportedOperationException();
-
     }
 
     // --------------------------------------------------------- Support Methods

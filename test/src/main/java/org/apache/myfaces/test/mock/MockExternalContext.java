@@ -19,97 +19,28 @@
 
 package org.apache.myfaces.test.mock;
 
-import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
- * <p>Mock implementation of <code>ExternalContext</code> that includes the semantics
- * added by JavaServer Faces 2.2.</p>
+ * <p>Mock implementation of <code>ExternalContext</code></p>
  * 
  * @author Leonardo Uribe
  * @since 1.0.0
  *
  */
-public class MockExternalContext extends MockExternalContext20
+public class MockExternalContext extends MockExternalContext23
 {
-
-    // ------------------------------------------------------------ Constructors
-
     public MockExternalContext(ServletContext context,
             HttpServletRequest request, HttpServletResponse response)
     {
         super(context, request, response);
-        _clientWindow = null;
-    }
-
-    // ------------------------------------------------------ Instance Variables
-
-    private ClientWindow _clientWindow;
-    
-    // ----------------------------------------------------- Mock Object Methods
-
-
-    @Override
-    public boolean isSecure()
-    {
-        return request.isSecure();
-    }
-
-    @Override
-    public int getSessionMaxInactiveInterval()
-    {
-        HttpSession session = request.getSession();
-        return session.getMaxInactiveInterval();
-    }
-
-    @Override
-    public void setSessionMaxInactiveInterval(int interval)
-    {
-        HttpSession session = request.getSession();
-        session.setMaxInactiveInterval(interval);
-    }
-
-    @Override
-    public ClientWindow getClientWindow()
-    {
-        return _clientWindow;
     }
     
-    @Override
-    public void setClientWindow(ClientWindow window)
-    {
-        _clientWindow = window;
-    }
-
-    @Override
-    public String getSessionId(boolean create)
-    {
-        HttpSession session = ((HttpServletRequest) request).getSession(create);
-        if (session != null)
-        {
-            return session.getId();
-        }
-        else
-        {
-            return "";
-        }
-    }
-
-    @Override
-    public String getApplicationContextPath()
-    {
-        return context.getContextPath();
-    }
-
-    // ------------------------------------------------- ExternalContext Methods
-
     @Override
     public void release()
     {
         
     }
-    
 }
