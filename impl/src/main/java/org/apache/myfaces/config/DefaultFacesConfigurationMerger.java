@@ -268,7 +268,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         for (int i = 0; i < vertexList.size(); i++)
         {
             Vertex<FacesConfig> v = vertexList.get(i);
-            FacesConfig f = (FacesConfig) v.getNode();
+            FacesConfig f = v.getNode();
 
             if (f.getOrdering() != null)
             {
@@ -315,7 +315,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
             if (!referencedVertex[i])
             {
                 Vertex<FacesConfig> v = vertexList.get(i);
-                FacesConfig f = (FacesConfig) v.getNode();
+                FacesConfig f = v.getNode();
                 boolean added = false;
                 if (f.getOrdering() != null)
                 {
@@ -355,19 +355,19 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         List<FacesConfig> sortedList = new ArrayList<>();
         for (Vertex<FacesConfig> v : referencedList)
         {
-            sortedList.add((FacesConfig)v.getNode());
+            sortedList.add(v.getNode());
         }
 
         //5. add nodes without instructions at the end
         for (Vertex<FacesConfig> v : othersList)
         {
-            sortedList.add((FacesConfig)v.getNode());
+            sortedList.add(v.getNode());
         }
 
         //6. add before/after nodes
         for (Vertex<FacesConfig> v : beforeAfterOthersList)
         {
-            FacesConfig f = (FacesConfig) v.getNode();
+            FacesConfig f = v.getNode();
             boolean added = false;
             if (f.getOrdering() != null && !f.getOrdering().getBeforeList().isEmpty())
             {

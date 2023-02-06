@@ -212,7 +212,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
         }
 
         //If the specified componentFamily is not known to this RenderKit implementation, return an empty Iterator
-        return Collections.<String>emptySet().iterator();
+        return Collections.emptyIterator();
     }
 
     @Override

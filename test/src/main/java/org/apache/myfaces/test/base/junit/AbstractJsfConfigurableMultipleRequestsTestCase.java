@@ -44,7 +44,6 @@ import org.apache.myfaces.test.mock.MockHttpSession;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
-import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
 import  org.junit.jupiter.api.AfterEach;
 import  org.junit.jupiter.api.BeforeEach;
@@ -245,7 +244,7 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase
     {
         lifecycleFactory = (MockLifecycleFactory) FactoryFinder
                 .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        lifecycle = (MockLifecycle) lifecycleFactory
+        lifecycle = lifecycleFactory
                 .getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
     }
 
@@ -262,11 +261,11 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase
     {
         facesContextFactory = (MockFacesContextFactory) FactoryFinder
                 .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = (MockFacesContext) facesContextFactory.getFacesContext(
+        facesContext = facesContextFactory.getFacesContext(
                 servletContext, request, response, lifecycle);
         if (facesContext.getExternalContext() != null)
         {
-            externalContext = (MockExternalContext) facesContext
+            externalContext = facesContext
                     .getExternalContext();
         }
         if (facesContext instanceof MockFacesContext)

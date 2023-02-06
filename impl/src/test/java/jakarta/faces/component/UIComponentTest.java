@@ -18,8 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIInput;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.same;
 
@@ -72,7 +70,7 @@ public class UIComponentTest extends UIComponentTestBase
     {
         Collection<Method> mockedMethods = new ArrayList<Method>();
         Class<UIComponent> clazz = UIComponent.class;
-        mockedMethods.add(clazz.getDeclaredMethod("getClientId", new Class[] { FacesContext.class }));
+        mockedMethods.add(clazz.getDeclaredMethod("getClientId", FacesContext.class));
         final UIComponent testimpl = _mocksControl.createMock(clazz, mockedMethods.toArray(new Method[mockedMethods
                 .size()]));
         _mocksControl.checkOrder(true);

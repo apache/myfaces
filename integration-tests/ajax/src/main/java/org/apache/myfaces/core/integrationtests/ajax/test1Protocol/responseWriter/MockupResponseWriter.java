@@ -148,7 +148,7 @@ public class MockupResponseWriter extends ResponseWriter
            target.append(">");
        }
 
-       target.append(arg1.toString());
+       target.append(arg1);
      
     }
 

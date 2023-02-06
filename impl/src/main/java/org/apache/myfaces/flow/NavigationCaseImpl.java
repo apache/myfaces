@@ -249,8 +249,8 @@ public class NavigationCaseImpl extends NavigationCase implements Freezable
 
         ValueExpression expression = _getToViewIdExpression(context);
 
-        return (String) ((expression.isLiteralText())
-                ? expression.getExpressionString() : expression.getValue(context.getELContext()));
+        return (expression.isLiteralText())
+                ? expression.getExpressionString() : expression.getValue(context.getELContext());
     }
 
     private ValueExpression _getToViewIdExpression(FacesContext context)

@@ -209,7 +209,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         String id = ctx.generateUniqueId(_delegate.getTagId());
 
         // Cast to use UniqueIdVendor stuff
-        FaceletCompositionContext mctx = (FaceletCompositionContext) FaceletCompositionContext.getCurrentInstance(ctx);
+        FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
                 
         // grab our component
         UIComponent c = null;
@@ -247,7 +247,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 c.getAttributes().containsKey(
                     FaceletDynamicComponentRefreshTransientBuildEvent.DYNAMIC_COMPONENT_BINDING_NEEDS_REFRESH))
             {
-                VisitContext visitContext = (VisitContext) mctx.getVisitContextFactory().
+                VisitContext visitContext = mctx.getVisitContextFactory().
                     getVisitContext(facesContext, null, MyFacesVisitHints.SET_SKIP_ITERATION);
                 c.visitTree(visitContext, PublishFaceletDynamicComponentRefreshTransientBuildCallback.INSTANCE);
             }
@@ -802,7 +802,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 boolean validatorIdAvailable = entry.getKey() != null && !entry.getKey().isEmpty();
                 if (validatorIdAvailable && entry.getKey().equals(validatorId))
                 {
-                    if (((ValidatorHandler) ((FacesWrapper<ValidatorHandler>) entry.getValue()).getWrapped())
+                    if (((FacesWrapper<ValidatorHandler>) entry.getValue()).getWrapped()
                             .isDisabled(ctx))
                     {
                         return false;

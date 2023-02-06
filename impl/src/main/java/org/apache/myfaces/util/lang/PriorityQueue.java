@@ -299,6 +299,6 @@ public abstract class PriorityQueue<T>
      */
     protected final Object[] getHeapArray()
     {
-        return (Object[]) heap;
+        return heap;
     }
 }

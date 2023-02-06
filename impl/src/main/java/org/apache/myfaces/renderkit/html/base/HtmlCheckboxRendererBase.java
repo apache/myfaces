@@ -187,7 +187,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
         for (int i = 0; i < selectItemList.size(); i++)
         {
-            SelectItem selectItem = (SelectItem) selectItemList.get(i);
+            SelectItem selectItem = selectItemList.get(i);
             
             itemNum = renderGroupOrItemCheckbox(facesContext, selectMany, 
                                                 selectItem, useSubmittedValues, lookupSet, 
@@ -568,7 +568,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
     {
         if (component instanceof UISelectMany)
         {
-            return HtmlRendererUtils.findUISelectManyConverterFailsafe(facesContext, (UISelectMany) component);
+            return HtmlRendererUtils.findUISelectManyConverterFailsafe(facesContext, component);
         }
         else if (component instanceof UISelectOne)
         {

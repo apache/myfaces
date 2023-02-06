@@ -233,7 +233,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         {
             String encodedState = 
                 context.getExternalContext().getRequestParameterMap().get(ResponseStateManager.VIEW_STATE_PARAM);
-            if (encodedState == null || ((String) encodedState).length() == 0)
+            if (encodedState == null || encodedState.length() == 0)
             {
                 return false;
             }

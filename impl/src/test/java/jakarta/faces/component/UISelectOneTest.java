@@ -18,8 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UISelectOne;
 import java.util.List;
 import java.util.Locale;
 

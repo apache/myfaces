@@ -35,7 +35,7 @@ public class StateTokenProcessorClientSide extends StateTokenProcessor
             // catch it first
             return null;
         }
-        Object savedStateObject = StateUtils.reconstruct((String)token, facesContext.getExternalContext());
+        Object savedStateObject = StateUtils.reconstruct(token, facesContext.getExternalContext());
         return savedStateObject;
     }
 

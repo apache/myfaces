@@ -83,7 +83,7 @@ public final class ActionListenerHandler extends TagHandler
             }
             if (this.binding != null)
             {
-                instance = (ActionListener) binding.getValue(facesContext.getELContext());
+                instance = binding.getValue(facesContext.getELContext());
             }
             if (instance == null && this.type != null)
             {

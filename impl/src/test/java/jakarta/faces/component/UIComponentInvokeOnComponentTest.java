@@ -18,10 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.ContextCallback;
-import jakarta.faces.component.UIPanel;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,7 +51,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
         _mocksControl = EasyMock.createNiceControl();
         Collection<Method> mockedMethods = new ArrayList<Method>();
         Class<UIComponent> clazz = UIComponent.class;
-        mockedMethods.add(clazz.getDeclaredMethod("getClientId", new Class[] { FacesContext.class }));
+        mockedMethods.add(clazz.getDeclaredMethod("getClientId", FacesContext.class));
         mockedMethods.add(clazz.getDeclaredMethod("getFacetsAndChildren", (Class<?>[])null));
 
         _testimpl = _mocksControl.createMock(clazz, mockedMethods.toArray(new Method[mockedMethods.size()]));

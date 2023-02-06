@@ -17,7 +17,6 @@
 
 package org.apache.myfaces.application.viewstate;
 
-import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
 import javax.crypto.SecretKey;

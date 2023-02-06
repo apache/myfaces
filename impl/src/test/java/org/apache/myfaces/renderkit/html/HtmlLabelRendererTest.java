@@ -137,7 +137,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
      */
     protected String getPageContents()
     {
-        return ((StringWriter) writer.getWriter()).toString();
+        return writer.getWriter().toString();
     }
     
     @Test

@@ -368,7 +368,7 @@ public class UISelectMany extends UIInput
     {
         if (convertedValue == null)
         {
-            return Collections.emptyList().iterator();
+            return Collections.emptyIterator();
         }
         else
         {

@@ -497,12 +497,12 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     @Override
     public void clientWindowTransition(FacesContext context)
     {
-        String flowDocumentIdRequestParam = (String) context.getExternalContext().
+        String flowDocumentIdRequestParam = context.getExternalContext().
             getRequestParameterMap().get(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME);
         
         if (flowDocumentIdRequestParam != null)
         {
-            String flowIdRequestParam = (String) context.getExternalContext().
+            String flowIdRequestParam = context.getExternalContext().
                 getRequestParameterMap().get(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME);
             
             if (flowIdRequestParam == null)

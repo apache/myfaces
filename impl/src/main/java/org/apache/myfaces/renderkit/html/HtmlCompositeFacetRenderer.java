@@ -66,7 +66,7 @@ public class HtmlCompositeFacetRenderer extends HtmlRenderer
                     component.getClientId(context));
         }
         
-        UIComponent compositeFacet = (UIComponent) compositeComponent.getFacet(facetName);
+        UIComponent compositeFacet = compositeComponent.getFacet(facetName);
         if (compositeFacet != null)
         {
             compositeFacet.encodeAll(context);

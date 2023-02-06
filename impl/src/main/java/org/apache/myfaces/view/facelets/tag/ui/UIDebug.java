@@ -187,7 +187,7 @@ public final class UIDebug extends UIComponentBase
 
     public static boolean debugRequest(FacesContext faces)
     {
-        String id = (String) faces.getExternalContext().getRequestParameterMap().get(KEY);
+        String id = faces.getExternalContext().getRequestParameterMap().get(KEY);
         if (id != null)
         {
             Object resp = faces.getExternalContext().getResponse();

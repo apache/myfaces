@@ -203,7 +203,7 @@ public final class StateUtils
     
     public static Cipher createCipher(ExternalContext externalContext, int mode) throws Exception
     {
-        SecretKey secretKey = (SecretKey) getSecret(externalContext);
+        SecretKey secretKey = getSecret(externalContext);
         String algorithm = findAlgorithm(externalContext);
         String algorithmParams = findAlgorithmParams(externalContext);
         byte[] iv = findInitializationVector(externalContext);
@@ -229,7 +229,7 @@ public final class StateUtils
     
     public static Mac createMac(ExternalContext externalContext) throws Exception
     {
-        SecretKey macSecretKey = (SecretKey) getMacSecret(externalContext);
+        SecretKey macSecretKey = getMacSecret(externalContext);
         String macAlgorithm = findMacAlgorithm(externalContext);
         
         Mac mac = Mac.getInstance(macAlgorithm);
@@ -611,7 +611,7 @@ public final class StateUtils
     
     private static SecretKey getSecret(ExternalContext ctx)
     {
-        Object secretKey = (SecretKey) ctx.getApplicationMap().get(INIT_SECRET_KEY_CACHE);
+        Object secretKey = ctx.getApplicationMap().get(INIT_SECRET_KEY_CACHE);
         
         if (secretKey == null)
         {
@@ -727,7 +727,7 @@ public final class StateUtils
     
     private static SecretKey getMacSecret(ExternalContext ctx)
     {
-        Object secretKey = (SecretKey) ctx.getApplicationMap().get(INIT_MAC_SECRET_KEY_CACHE);
+        Object secretKey = ctx.getApplicationMap().get(INIT_MAC_SECRET_KEY_CACHE);
         
         if (secretKey == null)
         {

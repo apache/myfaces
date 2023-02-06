@@ -15,11 +15,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.UIColumn;
-import jakarta.faces.component.UIData;
-import jakarta.faces.component.UIInput;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.faces.component.html.HtmlColumn;

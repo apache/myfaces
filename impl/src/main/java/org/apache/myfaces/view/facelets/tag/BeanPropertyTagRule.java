@@ -172,7 +172,7 @@ public final class BeanPropertyTagRule extends MetaRule
             {
                 if (method != null)
                 {
-                    method.invoke(instance, new Object[] { attribute.getObject(ctx, propertyType) });
+                    method.invoke(instance, attribute.getObject(ctx, propertyType));
                 }
                 else if (function != null)
                 {

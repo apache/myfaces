@@ -170,7 +170,7 @@ public abstract class MockApplication12 extends MockApplication10
         UIComponent component = null;
         try
         {
-            component = (UIComponent) expression.getValue(context
+            component = expression.getValue(context
                     .getELContext());
             if (component == null)
             {

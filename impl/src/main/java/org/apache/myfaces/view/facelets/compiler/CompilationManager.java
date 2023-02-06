@@ -436,14 +436,14 @@ final class CompilationManager
 
     public FaceletHandler createFaceletHandler()
     {
-        return ((CompilationUnit) this.units.get(0)).createFaceletHandler();
+        return this.units.get(0).createFaceletHandler();
     }
 
     private CompilationUnit currentUnit()
     {
         if (!this.units.isEmpty())
         {
-            return (CompilationUnit) this.units.peek();
+            return this.units.peek();
         }
         return null;
     }

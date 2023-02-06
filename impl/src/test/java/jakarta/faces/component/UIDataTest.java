@@ -18,14 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UICommand;
-import jakarta.faces.component.UIColumn;
-import jakarta.faces.component.UIData;
-import jakarta.faces.component.ContextCallback;
-import jakarta.faces.component.UIInput;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -519,7 +511,7 @@ public class UIDataTest extends AbstractJsfTestCase
         IMocksControl control = EasyMock.createControl();
         VisitContext visitContextMock = control.createMock(VisitContext.class);
         EasyMock.expect(visitContextMock.getFacesContext()).andReturn(facesContext).anyTimes();
-        EasyMock.expect(visitContextMock.getHints()).andReturn(Collections.<VisitHint>emptySet()).anyTimes();
+        EasyMock.expect(visitContextMock.getHints()).andReturn(Collections.emptySet()).anyTimes();
         Collection<String> subtreeIdsToVisit = new ArrayList<String>();
         subtreeIdsToVisit.add("1");
         EasyMock.expect(visitContextMock.getSubtreeIdsToVisit(uidata)).andReturn(subtreeIdsToVisit);
@@ -936,7 +928,7 @@ public class UIDataTest extends AbstractJsfTestCase
         baos.flush();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
-        Object restoredState = (Object) ois.readObject();
+        Object restoredState = ois.readObject();
         oos.close();
         ois.close();
         
@@ -1060,7 +1052,7 @@ public class UIDataTest extends AbstractJsfTestCase
         baos.flush();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
-        Object restoredState = (Object) ois.readObject();
+        Object restoredState = ois.readObject();
         oos.close();
         ois.close();
         
@@ -1161,7 +1153,7 @@ public class UIDataTest extends AbstractJsfTestCase
         baos.flush();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
-        Object restoredState = (Object) ois.readObject();
+        Object restoredState = ois.readObject();
         oos.close();
         ois.close();
         

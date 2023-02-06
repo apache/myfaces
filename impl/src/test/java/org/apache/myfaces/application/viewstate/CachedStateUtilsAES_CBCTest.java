@@ -20,7 +20,6 @@
 
 package org.apache.myfaces.application.viewstate;
 
-import org.apache.myfaces.application.viewstate.StateUtils;
 import org.junit.jupiter.api.BeforeEach;
 
 /**

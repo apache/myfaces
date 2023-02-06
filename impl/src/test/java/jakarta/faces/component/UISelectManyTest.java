@@ -18,8 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UISelectMany;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -173,8 +171,7 @@ public class UISelectManyTest extends AbstractJsfTestCase
         three.setItemValue("3");
         children.add(three);
 
-        selectMany.validateValue(facesContext, Arrays.asList(new String[] {
-                "2", "3" }));
+        selectMany.validateValue(facesContext, Arrays.asList("2", "3"));
 
         Assertions.assertTrue(selectMany.isValid());
     }

@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.resource;
 
-import org.apache.myfaces.resource.ResourceLoaderUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

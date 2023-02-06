@@ -315,7 +315,7 @@ public class ExceptionTestCase extends FaceletTestCase
             {
                 Object submittedValue = "Hello!";
                 ExceptionBean bean = EasyMock.createStrictMock(ExceptionBean.class);
-                bean.validateMe(facesContext,(UIComponent)target, submittedValue);
+                bean.validateMe(facesContext, target, submittedValue);
                 EasyMock.expectLastCall().andThrow(new ValidatorException(new FacesMessage(target.getClientId(facesContext),"not valid!")));
                 // Setup is finished need to activate the mock
                 EasyMock.replay(bean);

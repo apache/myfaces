@@ -114,7 +114,7 @@ public class LambdaBeanELResolver extends BeanELResolver
         PropertyDescriptorWrapper pd = getPropertyDescriptor(base, property);
         if (pd.getWrapped().getWriteMethod()== null)
         {
-            throw new PropertyNotWritableException("Property \"" + (String) property
+            throw new PropertyNotWritableException("Property \"" + property
                     + "\" in \"" + base.getClass().getName() + "\" is not writable!");
         }
 

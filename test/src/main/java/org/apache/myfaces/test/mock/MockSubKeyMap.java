@@ -126,7 +126,7 @@ final class MockSubKeyMap<V> extends AbstractMap<String, V>
             throw new NullPointerException();
         }
         // Yes, I want a ClassCastException if it's not a String
-        return _prefix + ((String) key);
+        return _prefix + key;
     }
 
     private List<String> _gatherKeys()

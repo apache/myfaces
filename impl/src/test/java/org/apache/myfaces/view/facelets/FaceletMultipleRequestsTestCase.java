@@ -215,11 +215,11 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
             "org.apache.myfaces.test.mock.MockFacesContextFactory");
         facesContextFactory = (MockFacesContextFactory) FactoryFinder
             .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = (MockFacesContext) facesContextFactory.getFacesContext(
+        facesContext = facesContextFactory.getFacesContext(
                 servletContext, request, response, lifecycle);
         if (facesContext.getExternalContext() != null)
         {
-            externalContext = (MockExternalContext) facesContext.getExternalContext();
+            externalContext = facesContext.getExternalContext();
         }
 
         super.setUpApplication();

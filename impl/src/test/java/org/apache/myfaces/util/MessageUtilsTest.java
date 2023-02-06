@@ -20,7 +20,6 @@ import java.util.ResourceBundle;
 
 import jakarta.faces.application.FacesMessage;
 
-import org.apache.myfaces.util.MessageUtils;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

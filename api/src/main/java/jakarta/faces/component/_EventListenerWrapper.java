@@ -287,7 +287,7 @@ class _EventListenerWrapper implements SystemEventListener, PartialStateHolder
                     state[1] = null;
                 }
             }
-            state[2] = (Integer) listenerCapability;
+            state[2] = listenerCapability;
             return state;
         }
         else

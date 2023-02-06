@@ -210,7 +210,7 @@ public class FacesContextImpl extends FacesContextImplBase
         
         if (_messages == null)
         {
-            return Collections.unmodifiableList(Collections.<FacesMessage>emptyList());
+            return Collections.unmodifiableList(Collections.emptyList());
         }
         
         return Collections.unmodifiableList(_orderedMessages);
@@ -223,7 +223,7 @@ public class FacesContextImpl extends FacesContextImplBase
         
         if (_messages == null || !_messages.containsKey(clientId))
         {
-            return Collections.unmodifiableList(Collections.<FacesMessage>emptyList());
+            return Collections.unmodifiableList(Collections.emptyList());
         }
         
         return _messages.get(clientId);

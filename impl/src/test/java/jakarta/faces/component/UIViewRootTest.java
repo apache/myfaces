@@ -18,9 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.UICommand;
 import static org.easymock.EasyMock.aryEq;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
@@ -89,7 +86,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
         _mocksControl = EasyMock.createControl();
         _externalContext = _mocksControl.createMock(ExternalContext.class);
-        _facesContext = (MockFacesContext12) facesContext;
+        _facesContext = facesContext;
         _application = _mocksControl.createMock(Application.class);
         _lifecycleFactory = _mocksControl.createMock(LifecycleFactory.class);
         _testimpl = new UIViewRoot();
@@ -442,8 +439,8 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
         if (expectSuperCall)
         {
-            _testimpl = _mocksControl.createMock(UIViewRoot.class, new Method[]{UIViewRoot.class.getMethod(
-                    "isRendered", new Class[0])});
+            _testimpl = _mocksControl.createMock(UIViewRoot.class, UIViewRoot.class.getMethod(
+                    "isRendered"));
         }
 
         MethodExpression beforeListener = _mocksControl.createMock(MethodExpression.class);
@@ -453,8 +450,8 @@ public class UIViewRootTest extends AbstractJsfTestCase
         _testimpl.setAfterPhaseListener(afterListener);
 
         Method[] mockedMethods = new Method[] {
-                PhaseListener.class.getMethod("beforePhase", new Class[] { PhaseEvent.class }),
-                PhaseListener.class.getMethod("afterPhase", new Class[] { PhaseEvent.class }) };
+                PhaseListener.class.getMethod("beforePhase", PhaseEvent.class),
+                PhaseListener.class.getMethod("afterPhase", PhaseEvent.class) };
         PhaseListener phaseListener = _mocksControl.createMock(phaseListenerClasses.get(phaseId), mockedMethods);
         _testimpl.addPhaseListener(phaseListener);
 

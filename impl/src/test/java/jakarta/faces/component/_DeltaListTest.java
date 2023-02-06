@@ -18,11 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.StateHolder;
-import jakarta.faces.component.PartialStateHolder;
-import jakarta.faces.component._AttachedDeltaWrapper;
-import jakarta.faces.component._DeltaList;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -163,7 +158,7 @@ public class _DeltaListTest extends AbstractComponentTest
         
         private Object saveFacesListenersList(FacesContext facesContext)
         {
-            PartialStateHolder holder = (PartialStateHolder) _facesListeners;
+            PartialStateHolder holder = _facesListeners;
             if (initialStateMarked() && _facesListeners != null && holder.initialStateMarked())
             {                
                 Object attachedState = holder.saveState(facesContext);

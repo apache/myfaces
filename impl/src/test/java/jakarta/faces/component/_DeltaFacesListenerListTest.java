@@ -18,9 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.StateHolder;
-import jakarta.faces.component.PartialStateHolder;
 import java.util.Arrays;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.FacesListener;

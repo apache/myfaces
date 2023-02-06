@@ -727,7 +727,7 @@ class MyFacesProcessor
             return;
         }
 
-        ClassInfo ci = (ClassInfo) type;
+        ClassInfo ci = type;
         for (MethodInfo mi : ci.methods())
         {
             if (Modifier.isPublic(mi.flags()) && mi.name().startsWith("get"))

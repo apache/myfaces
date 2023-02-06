@@ -331,10 +331,7 @@ public class MockPortletContext implements PortletContext
     public void removeAttribute(String name)
     {
 
-        if (attributes.containsKey(name))
-        {
-            attributes.remove(name);
-        }
+        attributes.remove(name);
 
     }
 

@@ -58,7 +58,7 @@ public class MockExceptionHandler extends ExceptionHandler
     @Override
     public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents()
     {
-        return handled == null ? Collections.<ExceptionQueuedEvent> emptyList()
+        return handled == null ? Collections.emptyList()
                 : handled;
     }
 
@@ -95,7 +95,7 @@ public class MockExceptionHandler extends ExceptionHandler
     public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents()
     {
         return unhandled == null ? Collections
-                .<ExceptionQueuedEvent> emptyList() : unhandled;
+                .emptyList() : unhandled;
     }
 
     /**

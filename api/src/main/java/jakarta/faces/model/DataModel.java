@@ -194,7 +194,7 @@ public abstract class DataModel<E> implements Iterable<E>
                 throw new NoSuchElementException("Couldn't find any element in DataModel at index " + nextRowIndex);
             }
 
-            E data = (E) getRowData();
+            E data = getRowData();
             nextRowIndex++;
             setRowIndex(nextRowIndex);
             return data; 

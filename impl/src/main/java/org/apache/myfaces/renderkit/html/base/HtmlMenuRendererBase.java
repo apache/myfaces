@@ -164,7 +164,7 @@ public class HtmlMenuRendererBase
     {
         if (component instanceof UISelectMany)
         {
-            return HtmlRendererUtils.findUISelectManyConverterFailsafe(facesContext, (UISelectMany) component);
+            return HtmlRendererUtils.findUISelectManyConverterFailsafe(facesContext, component);
         }
         else if (component instanceof UISelectOne)
         {

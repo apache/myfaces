@@ -185,7 +185,7 @@ public abstract class MockExternalContext20 extends MockExternalContext12
     @Override
     public String encodePartialActionURL(String url)
     {
-        return ((HttpServletResponse) response).encodeURL(url);
+        return response.encodeURL(url);
     }
 
     @Override

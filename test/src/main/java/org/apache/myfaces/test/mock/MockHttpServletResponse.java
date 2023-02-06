@@ -81,7 +81,7 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     public Cookie getCookie(String name)
     {
-        return (Cookie) cookies.get(name);
+        return cookies.get(name);
     }
     
     public Map<String, Cookie> getCookies()

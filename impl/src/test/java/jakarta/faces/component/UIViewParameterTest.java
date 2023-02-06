@@ -18,7 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIViewParameter;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

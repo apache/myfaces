@@ -801,7 +801,7 @@ public class FacesInitializerImpl implements FacesInitializer
         ServiceLoader<StartupListener> loader = ServiceLoader.load(StartupListener.class,
                 ClassUtils.getContextClassLoader());
 
-        Iterator<StartupListener> it = (Iterator<StartupListener>) loader.iterator();
+        Iterator<StartupListener> it = loader.iterator();
         if (!it.hasNext())
         {
             return false;
@@ -823,7 +823,7 @@ public class FacesInitializerImpl implements FacesInitializer
      */
     private void loadFacesInitViaContextParam(ServletContext servletContext)
     {
-        String plugins = (String) servletContext.getInitParameter(MyfacesConfig.FACES_INIT_PLUGINS);
+        String plugins = servletContext.getInitParameter(MyfacesConfig.FACES_INIT_PLUGINS);
         if (plugins == null)
         {
             return;

@@ -82,7 +82,7 @@ public final class ValueChangeListenerHandler extends TagHandler
             ValueChangeListener instance = null;
             if (this.binding != null)
             {
-                instance = (ValueChangeListener) binding.getValue(facesContext.getELContext());
+                instance = binding.getValue(facesContext.getELContext());
             }
             if (instance == null && this.type != null)
             {

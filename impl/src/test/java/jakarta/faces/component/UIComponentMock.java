@@ -18,8 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponentBase;
-
 public class UIComponentMock extends UIComponentBase
 {
     @Override

@@ -103,7 +103,7 @@ public class AnnotationConfigurator
         {
             for (Class<?> clazz : classes)
             {
-                FacesComponent comp = (FacesComponent) clazz.getAnnotation(FacesComponent.class);
+                FacesComponent comp = clazz.getAnnotation(FacesComponent.class);
                 if (comp != null)
                 {
                     if (log.isLoggable(Level.FINEST))
@@ -142,7 +142,7 @@ public class AnnotationConfigurator
         {
             for (Class<?> clazz : classes)
             {
-                FacesConverter conv = (FacesConverter) clazz.getAnnotation(FacesConverter.class);
+                FacesConverter conv = clazz.getAnnotation(FacesConverter.class);
                 if (conv != null)
                 {
                     if (log.isLoggable(Level.FINEST))
@@ -182,7 +182,7 @@ public class AnnotationConfigurator
         {
             for (Class<?> clazz : classes)
             {
-                FacesValidator val = (FacesValidator) clazz.getAnnotation(FacesValidator.class);
+                FacesValidator val = clazz.getAnnotation(FacesValidator.class);
                 if (val != null)
                 {
                     if (log.isLoggable(Level.FINEST))
@@ -219,7 +219,7 @@ public class AnnotationConfigurator
         {
             for (Class<?> clazz : classes)
             {
-                FacesRenderer rend = (FacesRenderer) clazz.getAnnotation(FacesRenderer.class);
+                FacesRenderer rend = clazz.getAnnotation(FacesRenderer.class);
                 if (rend != null)
                 {
                     String renderKitId = rend.renderKitId();
@@ -279,7 +279,7 @@ public class AnnotationConfigurator
     {
         for (Class<?> clazz : classes)
         {
-            NamedEvent namedEvent = (NamedEvent) clazz.getAnnotation(NamedEvent.class);
+            NamedEvent namedEvent = clazz.getAnnotation(NamedEvent.class);
 
             if (namedEvent != null)
             {
@@ -309,7 +309,7 @@ public class AnnotationConfigurator
     {
         for (Class<?> clazz : classes)
         {
-            FacesBehavior facesBehavior = (FacesBehavior) clazz.getAnnotation(FacesBehavior.class);
+            FacesBehavior facesBehavior = clazz.getAnnotation(FacesBehavior.class);
 
             if (facesBehavior != null)
             {
@@ -344,7 +344,7 @@ public class AnnotationConfigurator
         for (Class<?> clazz : classes)
         {
             FacesBehaviorRenderer facesBehaviorRenderer
-                    = (FacesBehaviorRenderer) clazz.getAnnotation(FacesBehaviorRenderer.class);
+                    = clazz.getAnnotation(FacesBehaviorRenderer.class);
 
             if (facesBehaviorRenderer != null)
             {

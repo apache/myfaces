@@ -80,13 +80,13 @@ class CompilationUnit
         }
         if (this.children.size() == 1)
         {
-            CompilationUnit u = (CompilationUnit) this.children.get(0);
+            CompilationUnit u = this.children.get(0);
             return u.createFaceletHandler();
         }
         FaceletHandler[] fh = new FaceletHandler[this.children.size()];
         for (int i = 0; i < fh.length; i++)
         {
-            fh[i] = ((CompilationUnit) this.children.get(i)).createFaceletHandler();
+            fh[i] = this.children.get(i).createFaceletHandler();
         }
         return new jakarta.faces.view.facelets.CompositeFaceletHandler(fh);
     }

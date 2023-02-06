@@ -52,7 +52,7 @@ public class HtmlCompositeComponentRenderer extends HtmlRenderer
     @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException
     {
-        UIComponent compositeFacet = (UIComponent) component.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        UIComponent compositeFacet = component.getFacet(UIComponent.COMPOSITE_FACET_NAME);
         
         if (compositeFacet == null)
         {

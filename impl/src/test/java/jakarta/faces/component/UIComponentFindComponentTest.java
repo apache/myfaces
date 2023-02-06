@@ -18,15 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UICommand;
-import jakarta.faces.component.UIColumn;
-import jakarta.faces.component.UIData;
-import jakarta.faces.component.UINamingContainer;
-import jakarta.faces.component.UIPanel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

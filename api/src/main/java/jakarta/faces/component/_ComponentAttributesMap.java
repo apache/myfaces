@@ -173,7 +173,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             if (MARK_CREATED.length() == keyLength &&
                 MARK_CREATED.equals(key))
             {
-                return ((UIComponentBase) _component).getOamVfMarkCreated() != null;
+                return _component.getOamVfMarkCreated() != null;
             }
             else if (FACET_NAME_KEY.length() == keyLength &&
                 FACET_NAME_KEY.equals(key))
@@ -366,7 +366,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                                         // Check if the value expression holds a method signature
                                         // Note that it could be null, so in that case we don't have to 
                                         // do anything
-                                        methodSignature = (String) methodSignatureExpression.getValue(
+                                        methodSignature = methodSignatureExpression.getValue(
                                                                     _component.getFacesContext().getELContext());
                                     }
 
@@ -406,7 +406,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                                             // Check if the value expression holds a method signature
                                             // Note that it could be null, so in that case we don't have to 
                                             // do anything
-                                            methodSignature = (String) methodSignatureExpression.getValue(
+                                            methodSignature = methodSignatureExpression.getValue(
                                                                         _component.getFacesContext().getELContext());
                                         }
 
@@ -535,7 +535,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     {
         Assert.notNull(key, "key");
 
-        int keyLength = ((String)key).length();
+        int keyLength = key.length();
         if (keyLength >= MIN_LENGHT_CHECK)
         {
             if (MARK_CREATED.length() == keyLength &&
@@ -698,7 +698,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             }
             else
             {
-                writeMethod.invoke(_component, new Object[]{value});
+                writeMethod.invoke(_component, value);
             }
         }
         catch (Exception e)

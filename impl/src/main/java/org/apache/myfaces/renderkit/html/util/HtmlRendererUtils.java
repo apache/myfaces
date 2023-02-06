@@ -223,14 +223,11 @@ public final class HtmlRendererUtils
                 {
                     String result = SharedRendererUtils.getConvertedStringValue(
                         facesContext,component,((ValueHolder) component).getConverter(), itemInfo.getItem().getValue());
-                    if(reqValues.contains(result))
-                    {
-                        reqValues.remove(result);
-                    }
+                    reqValues.remove(result);
                 }
             }
             // submitted value needs to be of type String[]
-            String[] submittedValue = (String[]) reqValues.toArray(new String[reqValues.size()]);
+            String[] submittedValue = reqValues.toArray(new String[reqValues.size()]);
             ((EditableValueHolder) component).setSubmittedValue(submittedValue);
         }
         else
@@ -779,13 +776,13 @@ public final class HtmlRendererUtils
             if (uiComponent instanceof UISelectMany)
             {
                 isSelectOne = false;
-                selectItemList = RendererUtils.getSelectItemList((UISelectMany) uiComponent, facesContext);
+                selectItemList = RendererUtils.getSelectItemList(uiComponent, facesContext);
                 converter = findUISelectManyConverterFailsafe(facesContext, uiComponent, considerValueType);
             }
             else if (uiComponent instanceof UISelectOne)
             {
                 isSelectOne = true;
-                selectItemList = RendererUtils.getSelectItemList((UISelectOne) uiComponent, facesContext);
+                selectItemList = RendererUtils.getSelectItemList(uiComponent, facesContext);
                 converter = findUIOutputConverterFailSafe(facesContext, uiComponent);
             }
 

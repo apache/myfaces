@@ -136,7 +136,7 @@ public class UIRepeatTest extends AbstractJsfTestCase
         baos.flush();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
-        Object restoredState = (Object) ois.readObject();
+        Object restoredState = ois.readObject();
         oos.close();
         ois.close();
         

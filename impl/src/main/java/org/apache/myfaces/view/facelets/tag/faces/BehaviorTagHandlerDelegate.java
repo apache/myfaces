@@ -128,7 +128,7 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
         if (_delegate.getBinding() != null)
         {
             ve = _delegate.getBinding().getValueExpression(faceletContext, Behavior.class);
-            behavior = (Behavior) ve.getValue(faceletContext);
+            behavior = ve.getValue(faceletContext);
         }
         if (behavior == null)
         {

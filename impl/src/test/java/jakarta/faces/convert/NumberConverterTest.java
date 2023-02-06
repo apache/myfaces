@@ -19,8 +19,6 @@
 
 package jakarta.faces.convert;
 
-import jakarta.faces.convert.NumberConverter;
-import jakarta.faces.convert.ConverterException;
 import java.math.BigInteger;
 import java.util.Locale;
 import jakarta.el.ValueExpression;

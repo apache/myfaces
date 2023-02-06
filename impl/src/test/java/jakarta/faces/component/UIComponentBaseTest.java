@@ -19,9 +19,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component._ComponentAttributesMap;
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIComponent;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.same;
@@ -83,7 +80,7 @@ public class UIComponentBaseTest
         try
         {
             Collection<Method> methods = new ArrayList<Method>();
-            methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", new Class[] { FacesContext.class }));
+            methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", FacesContext.class));
             methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", (Class<?>[])null));
             methods.add(UIComponentBase.class.getDeclaredMethod("getParent", (Class<?>[])null));
 

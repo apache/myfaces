@@ -18,8 +18,6 @@
  */
 package jakarta.faces.event;
 
-import jakarta.faces.event.ValueChangeEvent;
-import jakarta.faces.event.MethodExpressionValueChangeListener;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 

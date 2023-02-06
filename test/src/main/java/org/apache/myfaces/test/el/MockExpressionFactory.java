@@ -71,7 +71,7 @@ public class MockExpressionFactory extends ExpressionFactory
             }
             else if (object instanceof String)
             {
-                return (String) object;
+                return object;
             }
             else
             {
@@ -116,7 +116,7 @@ public class MockExpressionFactory extends ExpressionFactory
             else if ((object instanceof Boolean)
                     || (object.getClass() == Boolean.TYPE))
             {
-                return (Boolean) object;
+                return object;
             }
             else if (object instanceof String)
             {
@@ -149,7 +149,7 @@ public class MockExpressionFactory extends ExpressionFactory
             else if ((object instanceof Character)
                     || (object.getClass() == Character.TYPE))
             {
-                return (Character) object;
+                return object;
             }
             throw new IllegalArgumentException("Cannot convert " + object
                     + " to Character");
@@ -163,7 +163,7 @@ public class MockExpressionFactory extends ExpressionFactory
             }
             if (targetType.isAssignableFrom(object.getClass()))
             {
-                return (Enum) object;
+                return object;
             }
             
             if (!(object instanceof String))
@@ -267,7 +267,7 @@ public class MockExpressionFactory extends ExpressionFactory
         {
             if (value instanceof BigDecimal)
             {
-                return (BigDecimal) value;
+                return value;
             }
             else if (value instanceof BigInteger)
             {
@@ -275,14 +275,14 @@ public class MockExpressionFactory extends ExpressionFactory
             }
             else
             {
-                return new BigDecimal(((Number) value).doubleValue());
+                return new BigDecimal(value.doubleValue());
             }
         }
         else if (type == BigInteger.class)
         {
             if (value instanceof BigInteger)
             {
-                return (BigInteger) value;
+                return value;
             }
             else if (value instanceof BigDecimal)
             {
@@ -290,7 +290,7 @@ public class MockExpressionFactory extends ExpressionFactory
             }
             else
             {
-                return BigInteger.valueOf(((Number) value).longValue());
+                return BigInteger.valueOf(value.longValue());
             }
         }
         throw new IllegalArgumentException("Cannot convert " + value + " to "

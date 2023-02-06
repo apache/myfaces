@@ -211,10 +211,7 @@ public class MockPortletSession implements PortletSession
             throw new IllegalArgumentException("Scope constant " + scope
                     + " not recognized");
         }
-        if (attributes.containsKey(name))
-        {
-            attributes.remove(name);
-        }
+        attributes.remove(name);
 
     }
 

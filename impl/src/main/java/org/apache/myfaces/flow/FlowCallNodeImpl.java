@@ -68,7 +68,7 @@ public class FlowCallNodeImpl extends FlowCallNode implements Freezable
     {
         if (_calledFlowDocumentIdEL != null)
         {
-            return (String) _calledFlowDocumentIdEL.getValue(context.getELContext());
+            return _calledFlowDocumentIdEL.getValue(context.getELContext());
         }
         return _calledFlowDocumentId;
     }
@@ -78,7 +78,7 @@ public class FlowCallNodeImpl extends FlowCallNode implements Freezable
     {
         if (_calledFlowIdEL != null)
         {
-            return (String) _calledFlowIdEL.getValue(context.getELContext());
+            return _calledFlowIdEL.getValue(context.getELContext());
         }
         return _calledFlowId;
     }

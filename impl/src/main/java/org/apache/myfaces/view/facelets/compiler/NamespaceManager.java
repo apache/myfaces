@@ -69,7 +69,7 @@ final class NamespaceManager
         NS ns = null;
         for (int i = 0; i < this.namespaces.size(); i++)
         {
-            ns = (NS) this.namespaces.get(i);
+            ns = this.namespaces.get(i);
             if (ns.prefix.equals(prefix))
             {
                 return ns.namespace;
@@ -83,7 +83,7 @@ final class NamespaceManager
         NS ns = null;
         for (int i = 0; i < this.namespaces.size(); i++)
         {
-            ns = (NS) this.namespaces.get(i);
+            ns = this.namespaces.get(i);
             if (ns.prefix.equals(prefix))
             {
                 this.namespaces.remove(i);

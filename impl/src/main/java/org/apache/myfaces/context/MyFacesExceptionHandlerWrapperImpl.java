@@ -157,7 +157,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
         }
         else
         {
-            return handled == null ? Collections.<ExceptionQueuedEvent>emptyList() : handled;
+            return handled == null ? Collections.emptyList() : handled;
         }
     }
 
@@ -174,7 +174,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
         }
         else
         {
-            return unhandled == null ? Collections.<ExceptionQueuedEvent>emptyList() : unhandled;
+            return unhandled == null ? Collections.emptyList() : unhandled;
         }
     }
 

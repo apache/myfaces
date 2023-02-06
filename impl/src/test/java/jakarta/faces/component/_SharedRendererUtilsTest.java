@@ -18,8 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UISelectMany;
 import org.apache.myfaces.core.api.shared.SharedRendererUtils;
 import java.util.Arrays;
 import java.util.Collection;

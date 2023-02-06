@@ -255,7 +255,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
             try
             {
                 ComponentConfig ccfg = new ComponentConfigWrapper(cfg, componentType, renderType);
-                return constructor.newInstance(new Object[] { ccfg });
+                return constructor.newInstance(ccfg);
             }
             catch (InvocationTargetException e)
             {

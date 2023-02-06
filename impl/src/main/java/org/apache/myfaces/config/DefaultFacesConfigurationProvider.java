@@ -370,7 +370,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     }
                     out.flush();
 
-                    String content = new String(out.toByteArray());
+                    String content = out.toString();
                     if (content.trim().isEmpty())
                     {
                         return new FacesConfigImpl();

@@ -433,7 +433,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 //context.setProcessingEvents(true);
                 if (FaceletViewDeclarationLanguageBase.isDynamicComponentRefreshTransientBuildActive(context))
                 {
-                    VisitContext visitContext = (VisitContext) getVisitContextFactory().
+                    VisitContext visitContext = getVisitContextFactory().
                         getVisitContext(context, null, MyFacesVisitHints.SET_SKIP_ITERATION);
                     view.visitTree(visitContext, PublishDynamicComponentRefreshTransientBuildCallback.INSTANCE);
                 }
@@ -965,7 +965,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             {
                 // Check if the value expression holds a method signature
                 // Note that it could be null, so in that case we don't have to do anything
-                methodSignature = (String) methodSignatureExpression.getValue(elContext);
+                methodSignature = methodSignatureExpression.getValue(elContext);
             }
 
             String targetAttributeName = null;
@@ -973,7 +973,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     = (ValueExpression) propertyDescriptor.getValue("targetAttributeName");
             if (targetAttributeNameVE != null)
             {
-                targetAttributeName = (String) targetAttributeNameVE.getValue(context.getELContext());
+                targetAttributeName = targetAttributeNameVE.getValue(context.getELContext());
                 if (targetAttributeName == null)
                 {
                     targetAttributeName = attributeName;
@@ -999,7 +999,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 // ValueExpression that must evaluate to String
                 if (targetsExpression != null)
                 {
-                    targets = (String) targetsExpression.getValue(elContext);
+                    targets = targetsExpression.getValue(elContext);
                 }
 
                 if (targets == null)
@@ -1592,7 +1592,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     {
                         // Check if the value expression holds a method signature
                         // Note that it could be null, so in that case we don't have to do anything
-                        methodSignature = (String) methodSignatureExpression.getValue(elContext);
+                        methodSignature = methodSignatureExpression.getValue(elContext);
                     }
 
                     String targetAttributeName = null;
@@ -1600,7 +1600,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                             propertyDescriptor.getValue("targetAttributeName");
                     if (targetAttributeNameVE != null)
                     {
-                        targetAttributeName = (String) targetAttributeNameVE.getValue(context.getELContext());
+                        targetAttributeName = targetAttributeNameVE.getValue(context.getELContext());
                         if (targetAttributeName == null)
                         {
                             targetAttributeName = attributeName;

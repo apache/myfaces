@@ -18,7 +18,6 @@
  */
 package jakarta.faces.application;
 
-import jakarta.faces.application.ViewHandler;
 import static org.easymock.EasyMock.*;
 
 import java.io.IOException;
@@ -141,10 +140,10 @@ public class ViewHandlerTest
         ViewHandler handler = _mocksControl
                                            .createMock(
                                                        ViewHandler.class,
-                                                       new Method[] { ViewHandler.class
-                                                                                       .getMethod(
-                                                                                                  "calculateCharacterEncoding",
-                                                                                                  new Class[] { FacesContext.class }) });
+                                                   ViewHandler.class
+                                                                                   .getMethod(
+                                                                                              "calculateCharacterEncoding",
+                                                           FacesContext.class));
         expect(handler.calculateCharacterEncoding(_facesContext)).andReturn("xxx");
         _externalContext.setRequestCharacterEncoding(eq("xxx"));
         _mocksControl.replay();
@@ -163,10 +162,10 @@ public class ViewHandlerTest
         final ViewHandler handler = _mocksControl
                                                  .createMock(
                                                              ViewHandler.class,
-                                                             new Method[] { ViewHandler.class
-                                                                                             .getMethod(
-                                                                                                        "calculateCharacterEncoding",
-                                                                                                        new Class[] { FacesContext.class }) });
+                                                         ViewHandler.class
+                                                                                         .getMethod(
+                                                                                                    "calculateCharacterEncoding",
+                                                                 FacesContext.class));
         expect(handler.calculateCharacterEncoding(_facesContext)).andReturn("xxx");
         _externalContext.setRequestCharacterEncoding(eq("xxx"));
         expectLastCall().andThrow(new UnsupportedEncodingException());

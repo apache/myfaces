@@ -18,7 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponentBase;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public abstract class AbstractUIComponentBaseTest
     protected Collection<Method> getMockedMethods() throws Exception
     {
         Collection<Method> methods = new ArrayList<Method>();
-        methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", new Class[]{FacesContext.class}));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", FacesContext.class));
         methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", (Class<?>[])null));
         methods.add(UIComponentBase.class.getDeclaredMethod("getParent", (Class<?>[])null));
 

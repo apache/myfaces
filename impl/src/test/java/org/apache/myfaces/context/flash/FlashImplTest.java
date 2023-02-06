@@ -126,7 +126,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         // initial request ----------------------------------------------------
         
         // this request is a normal GET request, and thus not a postback
-        ((MockFacesContext20) facesContext).setPostback(false);
+        facesContext.setPostback(false);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -142,7 +142,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -165,7 +165,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -210,7 +210,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         // initial request ----------------------------------------------------
         
         // this request is a normal GET request, and thus not a postback
-        ((MockFacesContext20) facesContext).setPostback(false);
+        facesContext.setPostback(false);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -226,7 +226,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -254,7 +254,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request is not a postback
-        ((MockFacesContext20) facesContext).setPostback(false);
+        facesContext.setPostback(false);
         
         // simulate Faces lifecycle
         // Note that doPrePhaseActions() is called on RESTORE_VIEW even
@@ -287,7 +287,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -333,7 +333,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         // initial request ----------------------------------------------------
         
         // this request is a normal GET request, and thus not a postback
-        ((MockFacesContext20) facesContext).setPostback(false);
+        facesContext.setPostback(false);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -349,7 +349,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -383,7 +383,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // now the FacesContext must contain 0 messages (new request, new FacesContext)
         Assertions.assertEquals(0, facesContext.getMessageList().size());
@@ -410,7 +410,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // now the FacesContext must contain 0 messages (new request, new FacesContext)
         Assertions.assertEquals(0, facesContext.getMessageList().size());
@@ -444,7 +444,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         // initial request ----------------------------------------------------
         
         // this request is a normal GET request, and thus not a postback
-        ((MockFacesContext20) facesContext).setPostback(false);
+        facesContext.setPostback(false);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -460,7 +460,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -498,7 +498,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request is not a postback
-        ((MockFacesContext20) facesContext).setPostback(false);
+        facesContext.setPostback(false);
         
         // now the FacesContext must contain 0 messages (new request, new FacesContext)
         Assertions.assertEquals(0, facesContext.getMessageList().size());
@@ -528,7 +528,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // now the FacesContext must contain 0 messages (new request, new FacesContext)
         Assertions.assertEquals(0, facesContext.getMessageList().size());
@@ -565,7 +565,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         // initial request ----------------------------------------------------
         
         // this request is a normal GET request, and thus not a postback
-        ((MockFacesContext20) facesContext).setPostback(false);
+        facesContext.setPostback(false);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -581,7 +581,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -619,7 +619,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request is not a postback
-        ((MockFacesContext20) facesContext).setPostback(false);
+        facesContext.setPostback(false);
         
         // now the FacesContext must contain 0 messages (new request, new FacesContext)
         Assertions.assertEquals(0, facesContext.getMessageList().size());
@@ -657,7 +657,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // now the FacesContext must contain 0 messages (new request, new FacesContext)
         Assertions.assertEquals(0, facesContext.getMessageList().size());
@@ -684,7 +684,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // now the FacesContext must contain 0 messages (new request, new FacesContext)
         Assertions.assertEquals(0, facesContext.getMessageList().size());
@@ -769,7 +769,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         // initial request ----------------------------------------------------
         
         // this request is a normal GET request, and thus not a postback
-        ((MockFacesContext20) facesContext).setPostback(false);
+        facesContext.setPostback(false);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -785,7 +785,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -812,7 +812,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -845,7 +845,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         // initial request ----------------------------------------------------
         
         // this request is a normal GET request, and thus not a postback
-        ((MockFacesContext20) facesContext).setPostback(false);
+        facesContext.setPostback(false);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -861,7 +861,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -886,7 +886,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -919,7 +919,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         // initial request ----------------------------------------------------
         
         // this request is a normal GET request, and thus not a postback
-        ((MockFacesContext20) facesContext).setPostback(false);
+        facesContext.setPostback(false);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -935,7 +935,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         _simulateNewRequest();
         
         // this request should be a postback
-        ((MockFacesContext20) facesContext).setPostback(true);
+        facesContext.setPostback(true);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
@@ -1031,7 +1031,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         Assertions.assertTrue(_flash.containsValue("flashvalue"));
         Assertions.assertEquals(new HashSet<String>(Arrays.asList("flashkey")), _flash.keySet());
         Assertions.assertEquals("flashvalue", _flash.get("flashkey"));
-        Assertions.assertTrue(_flash.values().contains("flashvalue"));
+        Assertions.assertTrue(_flash.containsValue("flashvalue"));
     }
     
     /**

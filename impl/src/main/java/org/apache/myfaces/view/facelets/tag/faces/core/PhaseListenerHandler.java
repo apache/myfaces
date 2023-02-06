@@ -72,7 +72,7 @@ public class PhaseListenerHandler extends TagHandler
             
             if (this.binding != null)
             {
-                instance = (PhaseListener) binding.getValue(facesContext.getELContext());
+                instance = binding.getValue(facesContext.getELContext());
             }
             
             if (instance == null && type != null)

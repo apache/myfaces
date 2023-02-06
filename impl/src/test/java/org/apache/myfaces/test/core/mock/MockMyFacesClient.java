@@ -278,7 +278,7 @@ public class MockMyFacesClient
     
     protected void applyCookiesFromPreviousRequest()
     {
-        MockHttpServletResponse response = (MockHttpServletResponse) testCase.getResponse();
+        MockHttpServletResponse response = testCase.getResponse();
         if (response.getCookies() != null && !response.getCookies().isEmpty())
         {
             for (Map.Entry<String, Cookie> entry : response.getCookies().entrySet())

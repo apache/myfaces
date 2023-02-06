@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.util.lang;
 
-import org.apache.myfaces.util.lang.AbstractAttributeMap;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -57,7 +56,7 @@ public class AbstractAttributeMapTest
     public void testValues() throws Exception
     {
         _testimpl.put("myKey", "myValue");
-        Assertions.assertTrue(_testimpl.values().contains("myValue"));
+        Assertions.assertTrue(_testimpl.containsValue("myValue"));
     }
 
     private static final class TestAttributeMap extends AbstractAttributeMap<Object>

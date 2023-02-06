@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.renderkit;
 
-import org.apache.myfaces.renderkit.ContentTypeUtils;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

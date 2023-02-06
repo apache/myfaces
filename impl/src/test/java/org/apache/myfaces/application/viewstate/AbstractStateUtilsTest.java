@@ -20,7 +20,6 @@ package org.apache.myfaces.application.viewstate;
  * Running this TestCase directly will blow up.
  */
 
-import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.spi.impl.DefaultSerialFactory;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
@@ -132,7 +131,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
     public void testConstructionNegative()
     {
         String constructed = StateUtils.construct(TEST_DATA, externalContext);
-        constructed = constructed.substring(1, constructed.length());
+        constructed = constructed.substring(1);
         try
         {
             Object object = StateUtils.reconstruct(constructed, externalContext);

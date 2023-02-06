@@ -118,7 +118,7 @@ public class MockExternalContext23 extends MockExternalContext20
     @Override
     public String getSessionId(boolean create)
     {
-        HttpSession session = ((HttpServletRequest) request).getSession(create);
+        HttpSession session = request.getSession(create);
         if (session != null)
         {
             return session.getId();

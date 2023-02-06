@@ -132,7 +132,7 @@ public abstract class HtmlMessageRendererBase
         }
         
         // get first message
-        FacesMessage facesMessage = (FacesMessage) messageIterator.next();
+        FacesMessage facesMessage = messageIterator.next();
         
         // check for the redisplay attribute and for the messages which have already been rendered
         if(!isRedisplay(message)) 
@@ -142,7 +142,7 @@ public abstract class HtmlMessageRendererBase
                 if(messageIterator.hasNext()) 
                 {
                     // get the next message
-                    facesMessage = (FacesMessage) messageIterator.next();
+                    facesMessage = messageIterator.next();
                 }
                 else 
                 {

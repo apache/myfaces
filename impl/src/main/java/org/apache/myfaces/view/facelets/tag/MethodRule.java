@@ -107,7 +107,7 @@ public final class MethodRule extends MetaRule
             {
                 if (method != null)
                 {
-                    method.invoke(instance, new Object[] { expr });
+                    method.invoke(instance, expr);
                 }
                 else if (function != null)
                 {

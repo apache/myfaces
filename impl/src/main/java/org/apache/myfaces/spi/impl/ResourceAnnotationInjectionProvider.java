@@ -61,7 +61,7 @@ public class ResourceAnnotationInjectionProvider extends NoInjectionAnnotationIn
             // per classloader to hold metadata.
             synchronized (declaredFieldBeans)
             {
-                metadata = (Map<Class,Field[]>) declaredFieldBeans.get(cl);
+                metadata = declaredFieldBeans.get(cl);
                 if (metadata == null)
                 {
                     metadata = new HashMap<>();

@@ -107,7 +107,7 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
         }
         else
         {
-            _params = (ParamHandler[]) params.toArray(new ParamHandler[params.size()]);
+            _params = params.toArray(new ParamHandler[params.size()]);
         }
     }
 

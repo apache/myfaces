@@ -143,7 +143,7 @@ public abstract class MockFacesContext20 extends MockFacesContext12
         if (messages == null)
         {
             return Collections.unmodifiableList(Collections
-                    .<FacesMessage> emptyList());
+                    .emptyList());
         }
 
         List<FacesMessage> lst = new ArrayList<FacesMessage>();
@@ -162,7 +162,7 @@ public abstract class MockFacesContext20 extends MockFacesContext12
         if (messages == null || !messages.containsKey(clientId))
         {
             return Collections.unmodifiableList(Collections
-                    .<FacesMessage> emptyList());
+                    .emptyList());
         }
 
         return ((Map<String, List<FacesMessage>>) messages).get(clientId);

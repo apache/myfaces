@@ -191,8 +191,8 @@ public class NavigationCase
 
         ValueExpression expression = _getToViewIdExpression(context);
         
-        return (String)( (expression.isLiteralText()) ? 
-                expression.getExpressionString() : expression.getValue(context.getELContext()) );
+        return (expression.isLiteralText()) ?
+                expression.getExpressionString() : expression.getValue(context.getELContext());
     }
 
     public boolean hasCondition()

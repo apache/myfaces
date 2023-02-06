@@ -242,7 +242,7 @@ public abstract class AbstractJsfConfigurableMockTestCase
     {
         facesContextFactory = (FacesContextFactory) FactoryFinder
                 .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = (FacesContext) facesContextFactory.getFacesContext(
+        facesContext = facesContextFactory.getFacesContext(
                 servletContext, request, response, lifecycle);
         if (facesContext.getExternalContext() != null)
         {

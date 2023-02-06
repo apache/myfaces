@@ -898,7 +898,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             }
             else if (methodCallNode.getOutcome() != null)
             {
-                vdlViewIdentifier = (String) methodCallNode.getOutcome().getValue(
+                vdlViewIdentifier = methodCallNode.getOutcome().getValue(
                     facesContext.getELContext());
             }
         }

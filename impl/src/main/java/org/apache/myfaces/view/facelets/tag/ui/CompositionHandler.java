@@ -99,7 +99,7 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
             }
             else
             {
-                _params = (ParamHandler[]) params.toArray(new ParamHandler[params.size()]);
+                _params = params.toArray(new ParamHandler[params.size()]);
             }
         }
         else

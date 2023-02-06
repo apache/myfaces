@@ -188,7 +188,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             }
         }
 
-        URL url = (URL) _relativeLocations.get(uri);
+        URL url = _relativeLocations.get(uri);
         if (url == null)
         {
             url = resolveURL(facesContext, getBaseUrl(), uri);
@@ -453,7 +453,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             }
         }
         
-        URL url = (URL) _relativeLocations.get(uri);
+        URL url = _relativeLocations.get(uri);
         if (url == null)
         {
             url = resolveURL(facesContext, getBaseUrl(), uri);
@@ -507,7 +507,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
     public Facelet getCompositeComponentMetadataFacelet(FacesContext facesContext, String uri)
         throws IOException
     {
-        URL url = (URL) _relativeLocations.get(uri);
+        URL url = _relativeLocations.get(uri);
         if (url == null)
         {
             url = resolveURL(facesContext, getBaseUrl(), uri);

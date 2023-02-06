@@ -238,7 +238,7 @@ public class ELText
             Object v = this.ve.getValue(ctx);
             if (v != null)
             {
-                out.writeText((String) v, null);
+                out.writeText(v, null);
             }
         }
     }
@@ -384,7 +384,7 @@ public class ELText
             Object v = this.ve.getValue(ctx);
             if (v != null)
             {
-                out.writeText((String) v, null);
+                out.writeText(v, null);
             }
         }
     }
@@ -632,11 +632,11 @@ public class ELText
         }
         else if (text.size() == 1)
         {
-            return (ELText) text.get(0);
+            return text.get(0);
         }
         else
         {
-            ELText[] ta = (ELText[]) text.toArray(new ELText[text.size()]);
+            ELText[] ta = text.toArray(new ELText[text.size()]);
             return new ELTextComposite(ta);
         }
     }
@@ -748,7 +748,7 @@ public class ELText
         }
         else
         {
-            ELText[] ta = (ELText[]) text.toArray(new ELText[text.size()]);
+            ELText[] ta = text.toArray(new ELText[text.size()]);
             return ta;
         }
     }

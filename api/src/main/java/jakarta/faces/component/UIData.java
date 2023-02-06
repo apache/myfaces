@@ -143,7 +143,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             if (dataModelBuilderClass != null)
             {
                 createDataModelMethod = dataModelBuilderClass.getMethod("createDataModel",
-                        new Class[]{FacesContext.class, Class.class, Object.class});
+                        FacesContext.class, Class.class, Object.class);
             }
         }
         catch(Exception e)

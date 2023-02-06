@@ -77,7 +77,7 @@ public class FacesClientBehaviorCDIWrapper implements PartialStateHolder, Client
     {
         if (delegate == null)
         {
-            delegate = (ClientBehavior) CDIUtils.get(CDIUtils.getBeanManager(FacesContext.getCurrentInstance()), 
+            delegate = CDIUtils.get(CDIUtils.getBeanManager(FacesContext.getCurrentInstance()),
                     ClientBehavior.class, true, FacesBehavior.Literal.of(behaviorId, true));
         }
         return delegate;

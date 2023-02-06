@@ -18,9 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.StateHelper;
 import java.util.List;
 import java.util.Map;
 
@@ -127,7 +124,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
         
-        Object state1 = (Object) a.saveState(facesContext);
+        Object state1 = a.saveState(facesContext);
 
         b.restoreState(facesContext, state1);
 
@@ -145,7 +142,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         a.setTestProperty1("testProperty1");
         a.setTestProperty2(null);
-        Object state1 = (Object) a.saveState(facesContext);
+        Object state1 = a.saveState(facesContext);
 
         b.restoreState(facesContext, state1);
 
@@ -174,7 +171,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         a.setTestProperty2("testProperty2");
         a.setTestProperty1(null);
         
-        Object state1 = (Object) a.saveState(facesContext);
+        Object state1 = a.saveState(facesContext);
 
         b.restoreState(facesContext, state1);
 

@@ -177,7 +177,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
             {
                 return false;
             }
-            DefineHandler handler = (DefineHandler) this._handlers.get(name);
+            DefineHandler handler = this._handlers.get(name);
             if (handler != null)
             {
                 AbstractFaceletContext actx = (AbstractFaceletContext) ctx;

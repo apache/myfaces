@@ -18,7 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,15 +49,15 @@ public class UIComponentEncodeAllTest extends AbstractJsfTestCase
         //_facesContext = _mocksControl.createMock(FacesContext.class);
         Collection<Method> mockedMethods = new ArrayList<Method>();
         Class<UIComponent> clazz = UIComponent.class;
-        mockedMethods.add(clazz.getDeclaredMethod("pushComponentToEL", new Class[] { FacesContext.class, UIComponent.class }));
+        mockedMethods.add(clazz.getDeclaredMethod("pushComponentToEL", FacesContext.class, UIComponent.class));
         mockedMethods.add(clazz.getDeclaredMethod("isRendered", (Class<?>[])null));
-        mockedMethods.add(clazz.getDeclaredMethod("popComponentFromEL", new Class[] { FacesContext.class }));
-        mockedMethods.add(clazz.getDeclaredMethod("encodeBegin", new Class[] { FacesContext.class }));
+        mockedMethods.add(clazz.getDeclaredMethod("popComponentFromEL", FacesContext.class));
+        mockedMethods.add(clazz.getDeclaredMethod("encodeBegin", FacesContext.class));
         mockedMethods.add(clazz.getDeclaredMethod("getRendersChildren", (Class<?>[])null));
-        mockedMethods.add(clazz.getDeclaredMethod("encodeChildren", new Class[] { FacesContext.class }));
+        mockedMethods.add(clazz.getDeclaredMethod("encodeChildren", FacesContext.class));
         mockedMethods.add(clazz.getDeclaredMethod("getChildren", (Class<?>[])null));
         mockedMethods.add(clazz.getDeclaredMethod("getChildCount", (Class<?>[])null));
-        mockedMethods.add(clazz.getDeclaredMethod("encodeEnd", new Class[] { FacesContext.class }));
+        mockedMethods.add(clazz.getDeclaredMethod("encodeEnd", FacesContext.class));
 
         _testimpl = _mocksControl.createMock(clazz, mockedMethods.toArray(new Method[mockedMethods.size()]));
         _mocksControl.checkOrder(true);

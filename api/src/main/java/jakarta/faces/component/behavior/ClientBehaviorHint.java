@@ -23,5 +23,5 @@ package jakarta.faces.component.behavior;
  */
 public enum ClientBehaviorHint
 {
-    SUBMITTING;
+    SUBMITTING
 }

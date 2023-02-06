@@ -19,9 +19,6 @@
 
 package jakarta.faces.convert;
 
-import jakarta.faces.convert.Converter;
-import jakarta.faces.convert.ConverterException;
-import jakarta.faces.convert.EnumConverter;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 
@@ -48,7 +45,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
             return "enum value";
         }
         
-    };
+    }
 
     private EnumConverter converter;
 

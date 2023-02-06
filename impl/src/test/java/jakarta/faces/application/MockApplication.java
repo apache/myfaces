@@ -18,10 +18,6 @@
  */
 package jakarta.faces.application;
 
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.application.Application;
-import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.application.StateManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.convert.Converter;

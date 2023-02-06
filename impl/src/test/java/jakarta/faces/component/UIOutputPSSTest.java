@@ -15,9 +15,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.StateHolder;
-import jakarta.faces.component.PartialStateHolder;
-import jakarta.faces.component.UIOutput;
 import java.io.Serializable;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;

@@ -420,7 +420,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         @Override
         public boolean contains(Object o)
         {
-            return _map.keySet().contains(o);
+            return _map.containsKey(o);
         }
 
         @Override
@@ -459,7 +459,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             {
                 if (previousValue != null)
                 {
-                    ((UIComponent) previousValue).setParent(null);
+                    previousValue.setParent(null);
                 }
                 return true;
             }
@@ -557,7 +557,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         @Override
         public boolean contains(Object o)
         {
-            return _map.values().contains(o);
+            return _map.containsValue(o);
         }
 
         @Override

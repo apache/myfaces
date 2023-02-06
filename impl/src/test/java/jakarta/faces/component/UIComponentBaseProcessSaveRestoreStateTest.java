@@ -18,8 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIComponent;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,9 +75,9 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
         methods.add(UIComponentBase.class.getDeclaredMethod("getChildren", (Class<?>[])null));
         methods.add(UIComponentBase.class.getDeclaredMethod("getFacetCount", (Class<?>[])null));
         methods.add(UIComponentBase.class.getDeclaredMethod("getChildCount", (Class<?>[])null));
-        methods.add(UIComponentBase.class.getDeclaredMethod("saveState", new Class[]{FacesContext.class}));
-        methods.add(UIComponentBase.class.getDeclaredMethod("restoreState", new Class[]{FacesContext.class,
-                Object.class}));
+        methods.add(UIComponentBase.class.getDeclaredMethod("saveState", FacesContext.class));
+        methods.add(UIComponentBase.class.getDeclaredMethod("restoreState", FacesContext.class,
+                Object.class));
         return methods;
     }
 

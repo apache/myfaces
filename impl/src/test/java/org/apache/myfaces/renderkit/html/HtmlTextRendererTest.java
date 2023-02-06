@@ -287,7 +287,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
     @Test
     public void testClientBehaviorUserCodeJavaScriptDoubleEscaping()
     {
-        inputText.getAttributes().put("onchange", "var test = \'a\\\'b\'; alert(test);");
+        inputText.getAttributes().put("onchange", "var test = 'a\\'b'; alert(test);");
         inputText.addClientBehavior("change", new AjaxBehavior());
         try 
         {

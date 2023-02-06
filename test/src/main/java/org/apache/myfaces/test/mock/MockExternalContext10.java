@@ -193,7 +193,7 @@ public abstract class MockExternalContext10 extends ExternalContext
         // If there is no dispatcher, send NOT_FOUND
         if (requestDispatcher == null)
         {
-            ((HttpServletResponse) response)
+            response
                     .sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }

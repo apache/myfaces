@@ -130,10 +130,10 @@ public class ValueExpressionFilterInputStream extends InputStream
                                     "#{" + convertToExpression(expressionList) + '}',
                                     String.class);
 
-                        String value = (String) ve.getValue(elContext);
+                        String value = ve.getValue(elContext);
                         for (int i = value.length()-1; i >= 0 ; i--)
                         {
-                            delegate.unread((int) value.charAt(i));
+                            delegate.unread(value.charAt(i));
                         }
                     }
                     catch(ELException e)

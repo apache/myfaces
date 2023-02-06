@@ -333,7 +333,7 @@ public class AjaxBehavior extends ClientBehaviorBase
         Object value = getStateHelper().eval(attributeName);
         if (value == null)
         {
-            return Collections.<String>emptyList();
+            return Collections.emptyList();
         }
         else if (value instanceof Collection)
         {

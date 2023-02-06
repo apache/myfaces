@@ -161,7 +161,7 @@ final class DefaultFacelet extends AbstractFacelet
             if (parent instanceof UIViewRoot)
             {
                 myFaceletContext.setViewRoot((UIViewRoot) parent);
-                ComponentSupport.setCachedFacesContext((UIViewRoot) parent, facesContext);
+                ComponentSupport.setCachedFacesContext(parent, facesContext);
             }
         }
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this, myFaceletContext);
@@ -227,7 +227,7 @@ final class DefaultFacelet extends AbstractFacelet
             {
                 if (parent instanceof UIViewRoot)
                 {
-                    ComponentSupport.setCachedFacesContext((UIViewRoot) parent, null);
+                    ComponentSupport.setCachedFacesContext(parent, null);
                 }
                 myFaceletContext.release(facesContext);
                 List<String> uniqueIdList = ((EncodingHandler)_root).getUniqueIdList();
@@ -466,7 +466,7 @@ final class DefaultFacelet extends AbstractFacelet
      */
     private URL getRelativePath(FacesContext facesContext, String path) throws IOException
     {
-        URL url = (URL) _relativePaths.get(path);
+        URL url = _relativePaths.get(path);
         if (url == null)
         {
             url = _factory.resolveURL(facesContext, _src, path);

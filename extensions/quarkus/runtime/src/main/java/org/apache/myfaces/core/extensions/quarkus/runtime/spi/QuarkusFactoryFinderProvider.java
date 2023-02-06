@@ -59,7 +59,7 @@ public class QuarkusFactoryFinderProvider implements FactoryFinderProvider
                     {
                         if (constructor.getParameterTypes().length == 1)
                         {
-                            instance = constructor.newInstance(new Object[] { instance });
+                            instance = constructor.newInstance(instance);
                         }
                     }
 

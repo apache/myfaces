@@ -95,7 +95,7 @@ public final class LegacyCompositionHandler extends TagHandler implements Templa
             }
             else
             {
-                _params = (LegacyParamHandler[]) params.toArray(new LegacyParamHandler[params.size()]);
+                _params = params.toArray(new LegacyParamHandler[params.size()]);
             }
         }
         else

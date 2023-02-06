@@ -1172,7 +1172,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     
     private Object saveValidatorList(FacesContext facesContext)
     {
-        PartialStateHolder holder = (PartialStateHolder) _validatorList;
+        PartialStateHolder holder = _validatorList;
         if (initialStateMarked() && _validatorList != null && holder.initialStateMarked())
         {                
             Object attachedState = holder.saveState(facesContext);

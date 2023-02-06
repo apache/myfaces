@@ -50,7 +50,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void printFacesConfigList(String label, List<FacesConfig> appConfigResources)
     {
-        System.out.println("");
+        System.out.println();
         System.out.print(""+label+": [");
         for (int i = 0; i < appConfigResources.size();i++)
         {
@@ -536,7 +536,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     {    
         DefaultFacesConfigurationMerger merger = new DefaultFacesConfigurationMerger();
         
-        System.out.println("");
+        System.out.println();
         System.out.print("Start List: [");
         for (int i = 0; i < appConfigResources.size();i++)
         {
@@ -816,7 +816,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     {
         DefaultFacesConfigurationMerger merger = new DefaultFacesConfigurationMerger();
         
-        System.out.println("");
+        System.out.println();
         System.out.print("Start List: [");
         for (int i = 0; i < appConfigResources.size();i++)
         {

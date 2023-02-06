@@ -45,7 +45,7 @@ public class ReturnNodeImpl extends ReturnNode implements Freezable
     {
         if (_fromOutcomeEL != null)
         {
-            return (String) _fromOutcomeEL.getValue(context.getELContext());
+            return _fromOutcomeEL.getValue(context.getELContext());
         }
         return _fromOutcome;
     }

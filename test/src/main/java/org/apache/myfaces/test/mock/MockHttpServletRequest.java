@@ -393,7 +393,7 @@ public class MockHttpServletRequest implements HttpServletRequest
                 return parseDate(header.substring(match.length() + 1).trim());
             }
         }
-        return (long) -1;
+        return -1;
 
     }
 

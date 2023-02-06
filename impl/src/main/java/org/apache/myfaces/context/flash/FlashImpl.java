@@ -692,7 +692,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
             Iterator<String> iterClientIds = facesContext.getClientIdsWithMessages();
             while (iterClientIds.hasNext())
             {
-                String clientId = (String) iterClientIds.next();
+                String clientId = iterClientIds.next();
                 Iterator<FacesMessage> iterMessages = facesContext.getMessages(clientId);
                 
                 while (iterMessages.hasNext())
@@ -814,7 +814,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
                 FlashClientWindowTokenCollection lruMap = getFlashClientWindowTokenCollection(externalContext, false);
                 if (lruMap != null)
                 {
-                    tokenValue = (String) lruMap.get(clientWindow.getId());
+                    tokenValue = lruMap.get(clientWindow.getId());
                 }
             }
         }

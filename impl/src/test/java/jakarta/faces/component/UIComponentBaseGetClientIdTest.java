@@ -18,13 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIPanel;
-import jakarta.faces.component.UINamingContainer;
-import jakarta.faces.component.NamingContainer;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.Renderer;

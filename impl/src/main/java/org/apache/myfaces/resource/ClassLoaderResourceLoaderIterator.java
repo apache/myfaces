@@ -165,7 +165,7 @@ public class ClassLoaderResourceLoaderIterator implements Iterator<String>
                                     continue;
                                 }
                                 
-                                path = entryName.substring(basePath.length(), entryName.length());
+                                path = entryName.substring(basePath.length());
     
                                 if (path.endsWith("/"))
                                 {

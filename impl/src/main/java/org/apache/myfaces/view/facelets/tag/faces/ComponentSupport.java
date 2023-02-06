@@ -377,7 +377,7 @@ public final class ComponentSupport
 
             if (s.length() >= 7)
             {
-                return new Locale(s.substring(0, 2), s.substring(3, 5).toUpperCase(), s.substring(6, s.length()));
+                return new Locale(s.substring(0, 2), s.substring(3, 5).toUpperCase(), s.substring(6));
             }
 
             throw new TagAttributeException(attr, "Invalid Locale Specified: " + s);

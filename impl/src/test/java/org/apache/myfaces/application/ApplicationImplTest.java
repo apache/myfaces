@@ -213,7 +213,7 @@ public class ApplicationImplTest
         Assertions.assertSame(bundle, myapp.getResourceBundle(facesContext, var));
     }
 
-    private enum MyEnum {VALUE1, VALUE2}; 
+    private enum MyEnum {VALUE1, VALUE2}
 
     /**
      * Test method for
@@ -234,9 +234,9 @@ public class ApplicationImplTest
     private enum AnotherEnum implements EnumCoded { 
     	VALUE1, VALUE2;
 		public int getCode() {return 0;}
-	};
-	
-	public static class EnumCodedTestConverter implements Converter
+	}
+
+    public static class EnumCodedTestConverter implements Converter
 	{
 
         public EnumCodedTestConverter()

@@ -63,7 +63,7 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
         {
             throw new TagException(this.tag, "Choose Tag must have one or more When Tags");
         }
-        this.when = (ChooseWhenHandler[]) whenList.toArray(new ChooseWhenHandler[whenList.size()]);
+        this.when = whenList.toArray(new ChooseWhenHandler[whenList.size()]);
 
         ArrayList<ChooseOtherwiseHandler> otherwiseList = 
             TagHandlerUtils.findNextByType(nextHandler, ChooseOtherwiseHandler.class);

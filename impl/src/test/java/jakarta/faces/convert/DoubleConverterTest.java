@@ -18,8 +18,6 @@
  */
 package jakarta.faces.convert;
 
-import jakarta.faces.convert.ConverterException;
-import jakarta.faces.convert.DoubleConverter;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.jupiter.api.Test;
 

@@ -52,7 +52,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
     {
         _children = selectItemsParent.getChildCount() > 0
                         ? selectItemsParent.getChildren().iterator()
-                        : Collections.<UIComponent>emptyIterator();
+                        : Collections.emptyIterator();
         _facesContext = facesContext;
     }
 

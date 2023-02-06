@@ -18,7 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UISelectOne;
 import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import java.util.ArrayList;
 import java.util.List;

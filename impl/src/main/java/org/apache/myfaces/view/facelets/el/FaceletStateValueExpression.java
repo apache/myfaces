@@ -136,8 +136,8 @@ public class FaceletStateValueExpression extends ValueExpression
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
-        uniqueId = (String) in.readUTF();
-        key = (String) in.readUTF();
+        uniqueId = in.readUTF();
+        key = in.readUTF();
     }
 
     @Override

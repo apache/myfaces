@@ -109,7 +109,7 @@ class SerializedViewCollection implements Serializable
             {
                 if (!_serializedViews.isEmpty())
                 {
-                    _precedence.put((SerializedViewKey) key, previousRestoredKey);
+                    _precedence.put(key, previousRestoredKey);
                 }
                 else
                 {
@@ -149,7 +149,7 @@ class SerializedViewCollection implements Serializable
         if (previousRestoredKey != null && maxCount != null && maxCount > 0)
         {
             int count = 0;
-            SerializedViewKey previousKey = (SerializedViewKey) key;
+            SerializedViewKey previousKey = key;
             do
             {
                 previousKey = _precedence.get(previousKey);
@@ -159,7 +159,7 @@ class SerializedViewCollection implements Serializable
 
             if (previousKey != null)
             {
-                SerializedViewKey keyToRemove = (SerializedViewKey) previousKey;
+                SerializedViewKey keyToRemove = previousKey;
                 // In theory it should be only one key but just to be sure
                 // do it in a loop, but in this case if cache old views is on,
                 // put on that map.
@@ -202,7 +202,7 @@ class SerializedViewCollection implements Serializable
             key = _keys.remove(0);
             if (maxCount != null && maxCount > 0)
             {
-                SerializedViewKey keyToRemove = (SerializedViewKey) key;
+                SerializedViewKey keyToRemove = key;
                 // Note in this case the key to delete is the oldest one,
                 // so it could be at least one precedence, but to be safe
                 // do it with a loop.

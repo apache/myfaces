@@ -18,12 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.UIData;
-import jakarta.faces.component.UIColumn;
-import jakarta.faces.component.ContextCallback;
-import jakarta.faces.component.UIForm;
-import jakarta.faces.component.UIInput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

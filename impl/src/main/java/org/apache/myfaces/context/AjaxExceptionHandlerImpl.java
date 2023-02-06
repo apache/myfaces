@@ -92,7 +92,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
     @Override
     public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents()
     {
-        return handled == null ? Collections.<ExceptionQueuedEvent>emptyList() : handled;
+        return handled == null ? Collections.emptyList() : handled;
     }
 
     /**
@@ -123,7 +123,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
     @Override
     public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents()
     {
-        return unhandled == null ? Collections.<ExceptionQueuedEvent>emptyList() : unhandled;
+        return unhandled == null ? Collections.emptyList() : unhandled;
     }
 
     /**

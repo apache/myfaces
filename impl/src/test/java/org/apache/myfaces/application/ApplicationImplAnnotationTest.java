@@ -64,7 +64,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
     @Override
     protected void setFactories() throws Exception
     {
-        ((MockServletContext)servletContext).addInitParameter(
+        servletContext.addInitParameter(
                 "jakarta.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE", "true");
         super.setFactories();
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,

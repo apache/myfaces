@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.resource;
 
-import org.apache.myfaces.resource.ResourceValidationUtils;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

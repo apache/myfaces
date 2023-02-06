@@ -65,7 +65,7 @@ public class DefaultFacesFlowProviderFactory extends FacesFlowProviderFactory
                 }
                 else
                 {
-                    returnValue = (FacesFlowProvider) new DefaultFacesFlowProvider();
+                    returnValue = new DefaultFacesFlowProvider();
                 }
             }
 

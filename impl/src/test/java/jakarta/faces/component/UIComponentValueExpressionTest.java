@@ -17,7 +17,6 @@
  * under the License.
  */
 package jakarta.faces.component;
-import jakarta.faces.component.UIComponent;
 import static org.easymock.EasyMock.expect;
 
 import java.lang.reflect.Method;

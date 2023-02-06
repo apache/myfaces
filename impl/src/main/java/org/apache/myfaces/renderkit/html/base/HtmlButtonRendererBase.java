@@ -85,12 +85,12 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
     private static boolean isReset(UIComponent uiComponent)
     {
-        return "reset".equals((String) uiComponent.getAttributes().get(HTML.TYPE_ATTR));
+        return "reset".equals(uiComponent.getAttributes().get(HTML.TYPE_ATTR));
     }
     
     private static boolean isButton(UIComponent uiComponent)
     {
-        return "button".equals((String) uiComponent.getAttributes().get(HTML.TYPE_ATTR));
+        return "button".equals(uiComponent.getAttributes().get(HTML.TYPE_ATTR));
     }
 
     private static boolean isSubmitted(FacesContext facesContext, UIComponent uiComponent)
@@ -102,7 +102,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
         UIForm form = ComponentUtils.findClosest(UIForm.class, uiComponent);
         if (form != null)
         {
-            hiddenLink = (String) facesContext.getExternalContext().getRequestParameterMap().get(
+            hiddenLink = facesContext.getExternalContext().getRequestParameterMap().get(
                 HtmlRendererUtils.getHiddenCommandLinkFieldName(form, facesContext));
         }
         return paramMap.containsKey(clientId) || paramMap.containsKey(clientId + IMAGE_BUTTON_SUFFIX_X) 
@@ -377,7 +377,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
                         if (buff == null)
                         {
                             buff = new StringBuilder();
-                            buff.append(strParamValue.substring(0,j));
+                            buff.append(strParamValue, 0, j);
                         }
                         buff.append('\\');
                         buff.append(c);

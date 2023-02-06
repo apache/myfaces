@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.renderkit;
 
-import org.apache.myfaces.renderkit.RendererUtils;
 import java.io.IOException;
 import java.io.StringWriter;
 

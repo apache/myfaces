@@ -114,7 +114,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
             }
         }
         
-        String group = selectOne instanceof HtmlSelectOneRadio ? ((HtmlSelectOneRadio) selectOne).getGroup() : null;
+        String group = selectOne instanceof HtmlSelectOneRadio ? selectOne.getGroup() : null;
         if (group != null && !group.isEmpty())
         {
             if (!groupFirst.containsKey(group)) 
@@ -142,7 +142,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
                     currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
                                 facesContext, groupFirst.get(group));
                 }
-                SelectItem selectItem = (SelectItem) selectItemList.get(0);
+                SelectItem selectItem = selectItemList.get(0);
                 renderGroupOrItemRadio(facesContext, selectOne,
                                                      selectItem, currentValue,
                                                      converter, usingTable, group, 0);
@@ -196,7 +196,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
 
             for (int i = 0; i < selectItemList.size(); i++)
             {
-                SelectItem selectItem = (SelectItem) selectItemList.get(i);
+                SelectItem selectItem = selectItemList.get(i);
 
                 itemNum = renderGroupOrItemRadio(facesContext, selectOne,
                                                  selectItem, currentValue,
