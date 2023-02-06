@@ -25,8 +25,8 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DecorateTestCase extends FaceletTestCase {
 
@@ -49,11 +49,11 @@ public class DecorateTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertTrue(response.contains("fragmentNumber1"));
-        Assert.assertTrue(response.contains("decorateContent"));
-        Assert.assertFalse(response.contains("This fragment will not be inserted"));
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        Assertions.assertTrue(response.contains("fragmentNumber1"));
+        Assertions.assertTrue(response.contains("decorateContent"));
+        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
     }
     
     @Test
@@ -68,9 +68,9 @@ public class DecorateTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertFalse(response.contains("This fragment will not be inserted"));
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
     }
     
     @Test
@@ -85,9 +85,9 @@ public class DecorateTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertFalse(response.contains("This fragment will not be inserted"));
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
     }
     
     @Test
@@ -102,10 +102,10 @@ public class DecorateTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertTrue(response.contains("fragmentNumber1"));
-        Assert.assertFalse(response.contains("This fragment will not be inserted"));
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        Assertions.assertTrue(response.contains("fragmentNumber1"));
+        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
     }
     
     /**
@@ -173,8 +173,8 @@ public class DecorateTestCase extends FaceletTestCase {
         
         String response = sw.toString();
 
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
         
         response = checkStringInOrder(response, "start first decoration");
         response = checkStringInOrder(response, "start second decoration");
@@ -188,7 +188,7 @@ public class DecorateTestCase extends FaceletTestCase {
     private String checkStringInOrder(String response, String token)
     {
         int pos = response.indexOf(token);
-        Assert.assertTrue(pos > -1);
+        Assertions.assertTrue(pos > -1);
         return response.substring(pos+token.length());
     }
 
@@ -246,12 +246,12 @@ public class DecorateTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertTrue(response.contains("fragmentNumber3"));
-        Assert.assertTrue(response.contains("fragmentNumber2"));
-        Assert.assertFalse(response.contains("fragmentNumber1"));
-        Assert.assertFalse(response.contains("This fragment will not be inserted"));
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        Assertions.assertTrue(response.contains("fragmentNumber3"));
+        Assertions.assertTrue(response.contains("fragmentNumber2"));
+        Assertions.assertFalse(response.contains("fragmentNumber1"));
+        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
     }
     
     

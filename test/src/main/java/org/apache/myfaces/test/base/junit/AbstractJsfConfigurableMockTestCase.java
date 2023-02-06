@@ -43,8 +43,8 @@ import org.apache.myfaces.test.mock.MockHttpSession;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
-import org.junit.After;
-import org.junit.Before;
+import  org.junit.jupiter.api.AfterEach;
+import  org.junit.jupiter.api.BeforeEach;
 
 /**
  * <p>Abstract JUnit 4.5 test case base class, which sets up the JavaServer Faces
@@ -95,7 +95,7 @@ public abstract class AbstractJsfConfigurableMockTestCase
     /**
      * <p>Set up instance variables required by this test case.</p>
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         // Set up a new thread context class loader
@@ -298,7 +298,7 @@ public abstract class AbstractJsfConfigurableMockTestCase
     /**
      * <p>Tear down instance variables required by this test case.</p>
      */
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
 

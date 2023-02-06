@@ -27,8 +27,8 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class HtmlOutputLabelTestCase extends FaceletTestCase
 {
@@ -40,11 +40,11 @@ public class HtmlOutputLabelTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testOutputLabelEscape.xhtml");
 
         UIComponent panelGroup = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup);
+        Assertions.assertNotNull(panelGroup);
         UIOutput label = (UIOutput) panelGroup.findComponent("testLabel");
-        Assert.assertNotNull(label);
+        Assertions.assertNotNull(label);
         UIOutput text = (UIOutput) panelGroup.findComponent("testOut");
-        Assert.assertNotNull(text);
+        Assertions.assertNotNull(text);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);

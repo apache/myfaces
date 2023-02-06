@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets;
 import jakarta.el.ExpressionFactory;
 
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for issue MYFACES-4175.
@@ -58,7 +58,7 @@ public class TemplateInResourcesDirTestCase extends AbstractMyFacesRequestTestCa
         processLifecycleExecuteAndRender();
         
         String text = getRenderedContent(facesContext);
-        Assert.assertTrue(text.contains("This template is working as expected!"));
+        Assertions.assertTrue(text.contains("This template is working as expected!"));
         
         endRequest();
     }

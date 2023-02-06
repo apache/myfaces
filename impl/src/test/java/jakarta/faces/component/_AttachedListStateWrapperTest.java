@@ -26,8 +26,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class _AttachedListStateWrapperTest
 {
@@ -39,8 +39,8 @@ public class _AttachedListStateWrapperTest
     {
         List<Object> foo = new ArrayList<Object>();
         _AttachedListStateWrapper subject = new _AttachedListStateWrapper(foo);
-        Assert.assertNotNull(subject.getWrappedStateList());
-        Assert.assertTrue(subject.getWrappedStateList() == foo);
+        Assertions.assertNotNull(subject.getWrappedStateList());
+        Assertions.assertTrue(subject.getWrappedStateList() == foo);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class _AttachedListStateWrapperTest
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         _AttachedListStateWrapper blorg = (_AttachedListStateWrapper) ois.readObject();
-        Assert.assertEquals(blorg.getWrappedStateList(), subject.getWrappedStateList());
+        Assertions.assertEquals(blorg.getWrappedStateList(), subject.getWrappedStateList());
         oos.close();
         ois.close();
     }

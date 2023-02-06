@@ -19,8 +19,8 @@
 package org.apache.myfaces.view.facelets;
 
 import java.util.Locale;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
@@ -63,12 +63,12 @@ public class FaceletViewDeclarationLanguageTest extends FaceletTestCase
     {
         // the metadata facet MUST be there
         UIComponent metadataFacet = root.getFacet(UIViewRoot.METADATA_FACET_NAME);
-        Assert.assertNotNull(metadataFacet);
-        Assert.assertTrue(metadataFacet instanceof UIPanel); // the metadata-facet must be a UIPanel
+        Assertions.assertNotNull(metadataFacet);
+        Assertions.assertTrue(metadataFacet instanceof UIPanel); // the metadata-facet must be a UIPanel
 
         // get the UIViewParameter
         UIComponent viewParameter = metadataFacet.getChildren().get(0);
-        Assert.assertTrue(viewParameter instanceof UIViewParameter);
+        Assertions.assertTrue(viewParameter instanceof UIViewParameter);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class FaceletViewDeclarationLanguageTest extends FaceletTestCase
         // UIViewParameter must be there
         checkUIViewParameter(root);
         
-        Assert.assertEquals(Locale.FRANCE, root.getLocale());
+        Assertions.assertEquals(Locale.FRANCE, root.getLocale());
 
         // build and render view (must not remove UIViewParameter)
         vdl.buildView(facesContext, root, "viewparameter2.xhtml");

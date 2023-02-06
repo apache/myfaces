@@ -42,8 +42,8 @@ import org.apache.myfaces.view.facelets.bean.Company;
 import org.apache.myfaces.view.facelets.bean.Example;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for UIRepeat.
@@ -71,22 +71,22 @@ public class RepeatTestCase extends FaceletTestCase
         String content = fw.toString();
         
         int hrIndex = content.indexOf("<dt>HR</dt>");
-        Assert.assertNotSame(-1, hrIndex);
+        Assertions.assertNotSame(-1, hrIndex);
         int rdIndex = content.indexOf("<dt>RD</dt>", hrIndex);
-        Assert.assertNotSame(-1, rdIndex);
+        Assertions.assertNotSame(-1, rdIndex);
 
         int empIndex1 = content.indexOf(
             "<dd class=\"3\">Ellen, Sue</dd><dd class=\"4\">Scooner, Mary</dd>", hrIndex);
-        Assert.assertNotSame(-1, empIndex1);
+        Assertions.assertNotSame(-1, empIndex1);
         int empIndex2 = content.indexOf(
             "<dd class=\"6\">Burns, Ed</dd><dd class=\"7\">Lubke, Ryan</dd><dd class=\"8\">Kitain, Roger</dd>",
             rdIndex);
-        Assert.assertNotSame(-1, empIndex2);
+        Assertions.assertNotSame(-1, empIndex2);
         
         int hrIndex2 = content.indexOf("<li class=\"HR\">HR</li>");
-        Assert.assertNotSame(-1, hrIndex2);
+        Assertions.assertNotSame(-1, hrIndex2);
         int rdIndex2 = content.indexOf("<li class=\"RD\">RD</li>", hrIndex2);
-        Assert.assertNotSame(-1, rdIndex2);
+        Assertions.assertNotSame(-1, rdIndex2);
     }
     
     /**
@@ -123,49 +123,49 @@ public class RepeatTestCase extends FaceletTestCase
         
         // invokeOnComponent on UIRepeat itself
         String invokeId = "form:repeat";
-        Assert.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
-        Assert.assertEquals(repeat, callback._lastTarget);
-        Assert.assertEquals(varValue, callback._rowValue); // previous set varValue
-        Assert.assertEquals(statusValue, callback._repeatStatus); // previous set statusValue
+        Assertions.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
+        Assertions.assertEquals(repeat, callback._lastTarget);
+        Assertions.assertEquals(varValue, callback._rowValue); // previous set varValue
+        Assertions.assertEquals(statusValue, callback._repeatStatus); // previous set statusValue
         
         // invokeOnComponent on a child of UIRepeat in the first row
         invokeId = "form:repeat:0:outputText";
-        Assert.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
-        Assert.assertEquals(outputText, callback._lastTarget);
-        Assert.assertEquals(repeatValues[0], callback._rowValue);
-        Assert.assertEquals(0, callback._index);
-        Assert.assertEquals(true, callback._first);
-        Assert.assertEquals(false, callback._last);
-        Assert.assertEquals(true, callback._even);
+        Assertions.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
+        Assertions.assertEquals(outputText, callback._lastTarget);
+        Assertions.assertEquals(repeatValues[0], callback._rowValue);
+        Assertions.assertEquals(0, callback._index);
+        Assertions.assertEquals(true, callback._first);
+        Assertions.assertEquals(false, callback._last);
+        Assertions.assertEquals(true, callback._even);
         
         // invokeOnComponent on a child of UIRepeat in the second row
         invokeId = "form:repeat:1:outputText";
-        Assert.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
-        Assert.assertEquals(outputText, callback._lastTarget);
-        Assert.assertEquals(repeatValues[1], callback._rowValue);
-        Assert.assertEquals(1, callback._index);
-        Assert.assertEquals(false, callback._first);
-        Assert.assertEquals(false, callback._last);
-        Assert.assertEquals(false, callback._even);
+        Assertions.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
+        Assertions.assertEquals(outputText, callback._lastTarget);
+        Assertions.assertEquals(repeatValues[1], callback._rowValue);
+        Assertions.assertEquals(1, callback._index);
+        Assertions.assertEquals(false, callback._first);
+        Assertions.assertEquals(false, callback._last);
+        Assertions.assertEquals(false, callback._even);
         
         // invokeOnComponent on a child of UIRepeat in the third row
         invokeId = "form:repeat:2:outputText";
-        Assert.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
-        Assert.assertEquals(outputText, callback._lastTarget);
-        Assert.assertEquals(repeatValues[2], callback._rowValue);
-        Assert.assertEquals(2, callback._index);
-        Assert.assertEquals(false, callback._first);
-        Assert.assertEquals(true, callback._last);
-        Assert.assertEquals(true, callback._even);
+        Assertions.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
+        Assertions.assertEquals(outputText, callback._lastTarget);
+        Assertions.assertEquals(repeatValues[2], callback._rowValue);
+        Assertions.assertEquals(2, callback._index);
+        Assertions.assertEquals(false, callback._first);
+        Assertions.assertEquals(true, callback._last);
+        Assertions.assertEquals(true, callback._even);
         
         // invokeOnComponent on a child of UIRepeat with invalid row (-1)
         invokeId = "form:repeat:outputText";
-        Assert.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
+        Assertions.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
         
         // after all these calls to invokeOnComponent, row and status still
         // have to be the same like before
-        Assert.assertEquals(varValue, externalContext.getRequestMap().get(var));
-        Assert.assertEquals(statusValue, externalContext.getRequestMap().get(varStatus));
+        Assertions.assertEquals(varValue, externalContext.getRequestMap().get(var));
+        Assertions.assertEquals(statusValue, externalContext.getRequestMap().get(varStatus));
         
         // remove the values from the request map
         externalContext.getRequestMap().remove("repeatValues");
@@ -274,12 +274,12 @@ public class RepeatTestCase extends FaceletTestCase
         expectedClientIds.add("form:repeat:2:outputText");
         
         // see if we got the expected result
-        Assert.assertEquals(expectedClientIds, testVisitCallback._visitedClientIds);
+        Assertions.assertEquals(expectedClientIds, testVisitCallback._visitedClientIds);
         
         // after the tree visit, row and status still
         // have to be the same like before
-        Assert.assertEquals(varValue, externalContext.getRequestMap().get(var));
-        Assert.assertEquals(statusValue, externalContext.getRequestMap().get(varStatus));
+        Assertions.assertEquals(varValue, externalContext.getRequestMap().get(var));
+        Assertions.assertEquals(statusValue, externalContext.getRequestMap().get(varStatus));
         
         // remove the values from the request map
         externalContext.getRequestMap().remove("repeatValues");
@@ -314,7 +314,7 @@ public class RepeatTestCase extends FaceletTestCase
             final String clientId = target.getClientId(context.getFacesContext());
             if (_visitedClientIds.contains(clientId))
             {
-                Assert.fail("Component with clientId " + clientId + " visited twice!");
+                Assertions.fail("Component with clientId " + clientId + " visited twice!");
             }
             else
             {
@@ -327,15 +327,15 @@ public class RepeatTestCase extends FaceletTestCase
                     
                     Object indexObject = _indexValueExpression.getValue(elCtx);
                     // indexObject has to be an Integer
-                    Assert.assertTrue(indexObject instanceof Integer);
+                    Assertions.assertTrue(indexObject instanceof Integer);
                     Integer index = (Integer) indexObject;
                     
                     // the index has to be part of the clientId
-                    Assert.assertTrue(clientId.contains("" + index));
+                    Assertions.assertTrue(clientId.contains("" + index));
                     
                     Object rowValue = _rowValueExpression.getValue(elCtx);
                     // #{row} has to be the repeatValue for the current index
-                    Assert.assertEquals(_repeatValues[index], rowValue);
+                    Assertions.assertEquals(_repeatValues[index], rowValue);
                 }
             }
             
@@ -354,7 +354,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -366,16 +366,16 @@ public class RepeatTestCase extends FaceletTestCase
         
         // offset="2" size="1" should render only 1 row
         int itemIndex1 = content.indexOf("B1");
-        Assert.assertEquals(-1, itemIndex1);
+        Assertions.assertEquals(-1, itemIndex1);
         int itemIndex2 = content.indexOf("B2");
-        Assert.assertEquals(-1, itemIndex2);
+        Assertions.assertEquals(-1, itemIndex2);
         
         String item1 = "B3";
         int itemIndex3 = content.indexOf(item1);
-        Assert.assertNotSame(-1, itemIndex3);
+        Assertions.assertNotSame(-1, itemIndex3);
         String item2 = "B4";
         // the second item should not be there
-        Assert.assertEquals(-1, content.indexOf(item2, itemIndex1+2));
+        Assertions.assertEquals(-1, content.indexOf(item2, itemIndex1+2));
     }
     
     @Test
@@ -388,7 +388,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat0");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -400,11 +400,11 @@ public class RepeatTestCase extends FaceletTestCase
         String content = fw.toString();
 
         int itemIndex1 = content.indexOf("B1");
-        Assert.assertNotSame(-1, itemIndex1);
+        Assertions.assertNotSame(-1, itemIndex1);
         int itemIndex2 = content.indexOf("B2");
-        Assert.assertNotSame(-1, itemIndex2);
+        Assertions.assertNotSame(-1, itemIndex2);
         int itemIndex3 = content.indexOf("B3");
-        Assert.assertEquals(-1, itemIndex3);
+        Assertions.assertEquals(-1, itemIndex3);
     }
     
     @Test
@@ -417,7 +417,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeatbegin0");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -429,11 +429,11 @@ public class RepeatTestCase extends FaceletTestCase
         String content = fw.toString();
 
         int itemIndex1 = content.indexOf("B1");
-        Assert.assertNotSame(-1, itemIndex1);
+        Assertions.assertNotSame(-1, itemIndex1);
         int itemIndex2 = content.indexOf("B2");
-        Assert.assertNotSame(-1, itemIndex2);
+        Assertions.assertNotSame(-1, itemIndex2);
         int itemIndex3 = content.indexOf("B3");
-        Assert.assertNotSame(-1, itemIndex3);
+        Assertions.assertNotSame(-1, itemIndex3);
     }
 
     
@@ -447,7 +447,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat0_7");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -459,19 +459,19 @@ public class RepeatTestCase extends FaceletTestCase
         String content = fw.toString();
 
         int itemIndex1 = content.indexOf("B1");
-        Assert.assertNotSame(-1, itemIndex1);
+        Assertions.assertNotSame(-1, itemIndex1);
         int itemIndex2 = content.indexOf("B2", itemIndex1);
-        Assert.assertNotSame(-1, itemIndex2);
+        Assertions.assertNotSame(-1, itemIndex2);
         int itemIndex3 = content.indexOf("B3", itemIndex2);
-        Assert.assertNotSame(-1, itemIndex3);
+        Assertions.assertNotSame(-1, itemIndex3);
         int itemIndex4 = content.indexOf("B4", itemIndex3);
-        Assert.assertNotSame(-1, itemIndex4);
+        Assertions.assertNotSame(-1, itemIndex4);
         int itemIndex5 = content.indexOf("B5", itemIndex4);
-        Assert.assertNotSame(-1, itemIndex5);
+        Assertions.assertNotSame(-1, itemIndex5);
         int itemIndex6 = content.indexOf("B6", itemIndex5);
-        Assert.assertNotSame(-1, itemIndex6);
+        Assertions.assertNotSame(-1, itemIndex6);
         int itemIndex7 = content.indexOf("B7", itemIndex6);
-        Assert.assertNotSame(-1, itemIndex7);
+        Assertions.assertNotSame(-1, itemIndex7);
     }
     
     @Test
@@ -484,7 +484,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeatbegin0_7");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -496,19 +496,19 @@ public class RepeatTestCase extends FaceletTestCase
         String content = fw.toString();
 
         int itemIndex1 = content.indexOf("B1");
-        Assert.assertNotSame(-1, itemIndex1);
+        Assertions.assertNotSame(-1, itemIndex1);
         int itemIndex2 = content.indexOf("B2", itemIndex1);
-        Assert.assertNotSame(-1, itemIndex2);
+        Assertions.assertNotSame(-1, itemIndex2);
         int itemIndex3 = content.indexOf("B3", itemIndex2);
-        Assert.assertNotSame(-1, itemIndex3);
+        Assertions.assertNotSame(-1, itemIndex3);
         int itemIndex4 = content.indexOf("B4", itemIndex3);
-        Assert.assertNotSame(-1, itemIndex4);
+        Assertions.assertNotSame(-1, itemIndex4);
         int itemIndex5 = content.indexOf("B5", itemIndex4);
-        Assert.assertNotSame(-1, itemIndex5);
+        Assertions.assertNotSame(-1, itemIndex5);
         int itemIndex6 = content.indexOf("B6", itemIndex5);
-        Assert.assertNotSame(-1, itemIndex6);
+        Assertions.assertNotSame(-1, itemIndex6);
         int itemIndex7 = content.indexOf("B7", itemIndex6);
-        Assert.assertNotSame(-1, itemIndex7);
+        Assertions.assertNotSame(-1, itemIndex7);
     }
     
     @Test
@@ -521,7 +521,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat0_8");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -531,7 +531,7 @@ public class RepeatTestCase extends FaceletTestCase
         try
         {
             repeat.encodeAll(facesContext);
-            Assert.fail();
+            Assertions.fail();
         }
         catch(FacesException e)
         {
@@ -549,7 +549,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeatbegin0_8");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -559,7 +559,7 @@ public class RepeatTestCase extends FaceletTestCase
         try
         {
             repeat.encodeAll(facesContext);
-            Assert.fail();
+            Assertions.fail();
         }
         catch(FacesException e)
         {
@@ -577,7 +577,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat1");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -589,15 +589,15 @@ public class RepeatTestCase extends FaceletTestCase
         String content = fw.toString();
 
         int itemIndex1 = content.indexOf("B1");
-        Assert.assertEquals(-1, itemIndex1);
+        Assertions.assertEquals(-1, itemIndex1);
         int itemIndex2 = content.indexOf("B2");
-        Assert.assertNotSame(-1, itemIndex2);
+        Assertions.assertNotSame(-1, itemIndex2);
         int itemIndex3 = content.indexOf("B3", itemIndex2);
-        Assert.assertNotSame(-1, itemIndex3);
+        Assertions.assertNotSame(-1, itemIndex3);
         int itemIndex4 = content.indexOf("B4", itemIndex3);
-        Assert.assertNotSame(-1, itemIndex4);
+        Assertions.assertNotSame(-1, itemIndex4);
         int itemIndex5 = content.indexOf("B5", itemIndex4);
-        Assert.assertEquals(-1, itemIndex5);
+        Assertions.assertEquals(-1, itemIndex5);
     }
     
     @Test
@@ -610,7 +610,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeatbegin1");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -622,15 +622,15 @@ public class RepeatTestCase extends FaceletTestCase
         String content = fw.toString();
 
         int itemIndex1 = content.indexOf("B1");
-        Assert.assertEquals(-1, itemIndex1);
+        Assertions.assertEquals(-1, itemIndex1);
         int itemIndex2 = content.indexOf("B2");
-        Assert.assertNotSame(-1, itemIndex2);
+        Assertions.assertNotSame(-1, itemIndex2);
         int itemIndex3 = content.indexOf("B3", itemIndex2);
-        Assert.assertNotSame(-1, itemIndex3);
+        Assertions.assertNotSame(-1, itemIndex3);
         int itemIndex4 = content.indexOf("B4", itemIndex3);
-        Assert.assertNotSame(-1, itemIndex4);
+        Assertions.assertNotSame(-1, itemIndex4);
         int itemIndex5 = content.indexOf("B5", itemIndex4);
-        Assert.assertEquals(-1, itemIndex5);
+        Assertions.assertEquals(-1, itemIndex5);
     }
     
     @Test
@@ -643,7 +643,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat1_7");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -655,19 +655,19 @@ public class RepeatTestCase extends FaceletTestCase
         String content = fw.toString();
 
         int itemIndex1 = content.indexOf("B1");
-        Assert.assertEquals(-1, itemIndex1);
+        Assertions.assertEquals(-1, itemIndex1);
         int itemIndex2 = content.indexOf("B2");
-        Assert.assertNotSame(-1, itemIndex2);
+        Assertions.assertNotSame(-1, itemIndex2);
         int itemIndex3 = content.indexOf("B3", itemIndex2);
-        Assert.assertNotSame(-1, itemIndex3);
+        Assertions.assertNotSame(-1, itemIndex3);
         int itemIndex4 = content.indexOf("B4", itemIndex3);
-        Assert.assertNotSame(-1, itemIndex4);
+        Assertions.assertNotSame(-1, itemIndex4);
         int itemIndex5 = content.indexOf("B5", itemIndex4);
-        Assert.assertNotSame(-1, itemIndex5);
+        Assertions.assertNotSame(-1, itemIndex5);
         int itemIndex6 = content.indexOf("B6", itemIndex5);
-        Assert.assertNotSame(-1, itemIndex6);
+        Assertions.assertNotSame(-1, itemIndex6);
         int itemIndex7 = content.indexOf("B7", itemIndex6);
-        Assert.assertNotSame(-1, itemIndex7);
+        Assertions.assertNotSame(-1, itemIndex7);
     }
     
     @Test
@@ -680,7 +680,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeatbegin1_7");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -692,19 +692,19 @@ public class RepeatTestCase extends FaceletTestCase
         String content = fw.toString();
 
         int itemIndex1 = content.indexOf("B1");
-        Assert.assertEquals(-1, itemIndex1);
+        Assertions.assertEquals(-1, itemIndex1);
         int itemIndex2 = content.indexOf("B2");
-        Assert.assertNotSame(-1, itemIndex2);
+        Assertions.assertNotSame(-1, itemIndex2);
         int itemIndex3 = content.indexOf("B3", itemIndex2);
-        Assert.assertNotSame(-1, itemIndex3);
+        Assertions.assertNotSame(-1, itemIndex3);
         int itemIndex4 = content.indexOf("B4", itemIndex3);
-        Assert.assertNotSame(-1, itemIndex4);
+        Assertions.assertNotSame(-1, itemIndex4);
         int itemIndex5 = content.indexOf("B5", itemIndex4);
-        Assert.assertNotSame(-1, itemIndex5);
+        Assertions.assertNotSame(-1, itemIndex5);
         int itemIndex6 = content.indexOf("B6", itemIndex5);
-        Assert.assertNotSame(-1, itemIndex6);
+        Assertions.assertNotSame(-1, itemIndex6);
         int itemIndex7 = content.indexOf("B7", itemIndex6);
-        Assert.assertNotSame(-1, itemIndex7);
+        Assertions.assertNotSame(-1, itemIndex7);
     }
     
     @Test
@@ -717,7 +717,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat1_8");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -727,7 +727,7 @@ public class RepeatTestCase extends FaceletTestCase
         try
         {
             repeat.encodeAll(facesContext);
-            Assert.fail();
+            Assertions.fail();
         }
         catch(FacesException e)
         {
@@ -745,7 +745,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeatbegin1_8");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -755,7 +755,7 @@ public class RepeatTestCase extends FaceletTestCase
         try
         {
             repeat.encodeAll(facesContext);
-            Assert.fail();
+            Assertions.fail();
         }
         catch(FacesException e)
         {
@@ -773,7 +773,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_offset2.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -785,19 +785,19 @@ public class RepeatTestCase extends FaceletTestCase
         String content = fw.toString();
 
         int itemIndex1 = content.indexOf("B1");
-        Assert.assertEquals(-1, itemIndex1);
+        Assertions.assertEquals(-1, itemIndex1);
         int itemIndex2 = content.indexOf("B2");
-        Assert.assertEquals(-1, itemIndex2);
+        Assertions.assertEquals(-1, itemIndex2);
         int itemIndex3 = content.indexOf("B3");
-        Assert.assertNotSame(-1, itemIndex3);
+        Assertions.assertNotSame(-1, itemIndex3);
         int itemIndex4 = content.indexOf("B4", itemIndex3);
-        Assert.assertNotSame(-1, itemIndex4);
+        Assertions.assertNotSame(-1, itemIndex4);
         int itemIndex5 = content.indexOf("B5", itemIndex4);
-        Assert.assertNotSame(-1, itemIndex5);
+        Assertions.assertNotSame(-1, itemIndex5);
         int itemIndex6 = content.indexOf("B6", itemIndex5);
-        Assert.assertNotSame(-1, itemIndex6);
+        Assertions.assertNotSame(-1, itemIndex6);
         int itemIndex7 = content.indexOf("B7", itemIndex6);
-        Assert.assertNotSame(-1, itemIndex7);
+        Assertions.assertNotSame(-1, itemIndex7);
         
         //System.out.println(fw);
     }
@@ -812,7 +812,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testUIRepeatBeginEnd.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -823,12 +823,12 @@ public class RepeatTestCase extends FaceletTestCase
         
         String content = fw.toString();
 
-        Assert.assertTrue(content.contains("Hello 1"));
-        Assert.assertTrue(content.contains("Hello 2"));
-        Assert.assertTrue(content.contains("Hello 3"));
+        Assertions.assertTrue(content.contains("Hello 1"));
+        Assertions.assertTrue(content.contains("Hello 2"));
+        Assertions.assertTrue(content.contains("Hello 3"));
         
-        Assert.assertFalse(content.contains("Hello 0"));
-        Assert.assertFalse(content.contains("Hello 4"));
+        Assertions.assertFalse(content.contains("Hello 0"));
+        Assertions.assertFalse(content.contains("Hello 4"));
     }
 
     @Test
@@ -843,7 +843,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testUIRepeatEmpty.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -854,7 +854,7 @@ public class RepeatTestCase extends FaceletTestCase
         
         String content = fw.toString();
 
-        Assert.assertFalse(content.contains("Hello "));
+        Assertions.assertFalse(content.contains("Hello "));
     }
 
     @Test
@@ -869,7 +869,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testUIRepeatEmpty.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -880,7 +880,7 @@ public class RepeatTestCase extends FaceletTestCase
         
         String content = fw.toString();
 
-        Assert.assertFalse(content.contains("Hello "));
+        Assertions.assertFalse(content.contains("Hello "));
     }
 
     @Test
@@ -894,7 +894,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_model_step.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -905,17 +905,17 @@ public class RepeatTestCase extends FaceletTestCase
         
         String content = fw.toString();
 
-        Assert.assertTrue(content.contains("User #1"));
-        Assert.assertTrue(content.contains("User #2"));
-        Assert.assertTrue(content.contains("User #3"));
-        Assert.assertTrue(content.contains("User #4"));
-        Assert.assertTrue(content.contains("User #5"));
-        Assert.assertTrue(content.contains("User #6"));
-        Assert.assertTrue(content.contains("User #7"));
-        Assert.assertFalse(content.contains("User #0"));
-        Assert.assertFalse(content.contains("User #8"));
-        Assert.assertFalse(content.contains("User #9"));
-        Assert.assertFalse(content.contains("User #10"));
+        Assertions.assertTrue(content.contains("User #1"));
+        Assertions.assertTrue(content.contains("User #2"));
+        Assertions.assertTrue(content.contains("User #3"));
+        Assertions.assertTrue(content.contains("User #4"));
+        Assertions.assertTrue(content.contains("User #5"));
+        Assertions.assertTrue(content.contains("User #6"));
+        Assertions.assertTrue(content.contains("User #7"));
+        Assertions.assertFalse(content.contains("User #0"));
+        Assertions.assertFalse(content.contains("User #8"));
+        Assertions.assertFalse(content.contains("User #9"));
+        Assertions.assertFalse(content.contains("User #10"));
     }
     
     @Test
@@ -929,7 +929,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_model_step.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -940,17 +940,17 @@ public class RepeatTestCase extends FaceletTestCase
         
         String content = fw.toString();
 
-        Assert.assertTrue(content.contains("User #1"));
-        Assert.assertTrue(content.contains("User #3"));
-        Assert.assertTrue(content.contains("User #5"));
-        Assert.assertTrue(content.contains("User #7"));
-        Assert.assertFalse(content.contains("User #0"));
-        Assert.assertFalse(content.contains("User #2"));
-        Assert.assertFalse(content.contains("User #4"));
-        Assert.assertFalse(content.contains("User #6"));
-        Assert.assertFalse(content.contains("User #8"));
-        Assert.assertFalse(content.contains("User #9"));
-        Assert.assertFalse(content.contains("User #10"));
+        Assertions.assertTrue(content.contains("User #1"));
+        Assertions.assertTrue(content.contains("User #3"));
+        Assertions.assertTrue(content.contains("User #5"));
+        Assertions.assertTrue(content.contains("User #7"));
+        Assertions.assertFalse(content.contains("User #0"));
+        Assertions.assertFalse(content.contains("User #2"));
+        Assertions.assertFalse(content.contains("User #4"));
+        Assertions.assertFalse(content.contains("User #6"));
+        Assertions.assertFalse(content.contains("User #8"));
+        Assertions.assertFalse(content.contains("User #9"));
+        Assertions.assertFalse(content.contains("User #10"));
     }
     
     @Test
@@ -964,7 +964,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_model_step.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -975,17 +975,17 @@ public class RepeatTestCase extends FaceletTestCase
         
         String content = fw.toString();
 
-        Assert.assertTrue(content.contains("User #2"));
-        Assert.assertTrue(content.contains("User #5"));
-        Assert.assertFalse(content.contains("User #0"));
-        Assert.assertFalse(content.contains("User #1"));
-        Assert.assertFalse(content.contains("User #3"));
-        Assert.assertFalse(content.contains("User #4"));
-        Assert.assertFalse(content.contains("User #6"));
-        Assert.assertFalse(content.contains("User #7"));
-        Assert.assertFalse(content.contains("User #8"));
-        Assert.assertFalse(content.contains("User #9"));
-        Assert.assertFalse(content.contains("User #10"));
+        Assertions.assertTrue(content.contains("User #2"));
+        Assertions.assertTrue(content.contains("User #5"));
+        Assertions.assertFalse(content.contains("User #0"));
+        Assertions.assertFalse(content.contains("User #1"));
+        Assertions.assertFalse(content.contains("User #3"));
+        Assertions.assertFalse(content.contains("User #4"));
+        Assertions.assertFalse(content.contains("User #6"));
+        Assertions.assertFalse(content.contains("User #7"));
+        Assertions.assertFalse(content.contains("User #8"));
+        Assertions.assertFalse(content.contains("User #9"));
+        Assertions.assertFalse(content.contains("User #10"));
     }
 
     @Test
@@ -999,7 +999,7 @@ public class RepeatTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "ui_repeat_model_step.xhtml");
         
         UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
-        Assert.assertNotNull(repeat);
+        Assertions.assertNotNull(repeat);
         
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -1010,18 +1010,18 @@ public class RepeatTestCase extends FaceletTestCase
         
         String content = fw.toString();
 
-        Assert.assertTrue(content.contains("User #2"));
-        Assert.assertTrue(content.contains("User #5"));
+        Assertions.assertTrue(content.contains("User #2"));
+        Assertions.assertTrue(content.contains("User #5"));
 
-        Assert.assertFalse(content.contains("User #0"));
-        Assert.assertFalse(content.contains("User #1"));
-        Assert.assertFalse(content.contains("User #3"));
-        Assert.assertFalse(content.contains("User #4"));
-        Assert.assertFalse(content.contains("User #6"));
-        Assert.assertFalse(content.contains("User #7"));
-        Assert.assertFalse(content.contains("User #8"));
-        Assert.assertFalse(content.contains("User #9"));
-        Assert.assertFalse(content.contains("User #10"));
+        Assertions.assertFalse(content.contains("User #0"));
+        Assertions.assertFalse(content.contains("User #1"));
+        Assertions.assertFalse(content.contains("User #3"));
+        Assertions.assertFalse(content.contains("User #4"));
+        Assertions.assertFalse(content.contains("User #6"));
+        Assertions.assertFalse(content.contains("User #7"));
+        Assertions.assertFalse(content.contains("User #8"));
+        Assertions.assertFalse(content.contains("User #9"));
+        Assertions.assertFalse(content.contains("User #10"));
         
         iterationBean.setStep(2);
         fw = new FastWriter();
@@ -1032,18 +1032,18 @@ public class RepeatTestCase extends FaceletTestCase
         repeat.encodeAll(facesContext);
         content = fw.toString();
         
-        Assert.assertTrue(content.contains("User #2"));
-        Assert.assertTrue(content.contains("User #4"));
-        Assert.assertTrue(content.contains("User #6"));
+        Assertions.assertTrue(content.contains("User #2"));
+        Assertions.assertTrue(content.contains("User #4"));
+        Assertions.assertTrue(content.contains("User #6"));
         
-        Assert.assertFalse(content.contains("User #0"));
-        Assert.assertFalse(content.contains("User #1"));
-        Assert.assertFalse(content.contains("User #3"));
-        Assert.assertFalse(content.contains("User #5"));
-        Assert.assertFalse(content.contains("User #7"));
-        Assert.assertFalse(content.contains("User #8"));
-        Assert.assertFalse(content.contains("User #9"));
-        Assert.assertFalse(content.contains("User #10"));
+        Assertions.assertFalse(content.contains("User #0"));
+        Assertions.assertFalse(content.contains("User #1"));
+        Assertions.assertFalse(content.contains("User #3"));
+        Assertions.assertFalse(content.contains("User #5"));
+        Assertions.assertFalse(content.contains("User #7"));
+        Assertions.assertFalse(content.contains("User #8"));
+        Assertions.assertFalse(content.contains("User #9"));
+        Assertions.assertFalse(content.contains("User #10"));
     }
     
     public class IterationBean {

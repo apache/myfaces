@@ -38,8 +38,9 @@ import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class WhitespaceTestCase extends FaceletTestCase {
 
@@ -88,8 +89,8 @@ public class WhitespaceTestCase extends FaceletTestCase {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "selectOne.xml");
         
-        Assert.assertNotNull("target binding", target);
-        Assert.assertEquals("children", 2, this.target.getChildCount());
+        Assertions.assertNotNull(target);
+        Assertions.assertEquals(2, this.target.getChildCount());
 
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -106,8 +107,8 @@ public class WhitespaceTestCase extends FaceletTestCase {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "panelGrid.xml");
         
-        Assert.assertNotNull("target binding", target);
-        Assert.assertEquals("children", 3, this.target.getChildCount());
+        Assertions.assertNotNull( target);
+        Assertions.assertEquals(3, this.target.getChildCount());
 
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -117,6 +118,8 @@ public class WhitespaceTestCase extends FaceletTestCase {
         //System.out.println(fw);
     }
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         this.target = null;

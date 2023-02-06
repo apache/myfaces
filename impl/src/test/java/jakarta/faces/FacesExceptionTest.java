@@ -20,10 +20,10 @@
 package jakarta.faces;
 
 import jakarta.faces.FacesException;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import  org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FacesExceptionTest
 {
@@ -32,12 +32,12 @@ public class FacesExceptionTest
     {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
     }
@@ -49,8 +49,8 @@ public class FacesExceptionTest
     public void testFacesException()
     {
         FacesException e = new FacesException();
-        Assert.assertNull(e.getCause());
-        Assert.assertNull(e.getMessage());
+        Assertions.assertNull(e.getCause());
+        Assertions.assertNull(e.getMessage());
     }
 
     /*
@@ -61,7 +61,7 @@ public class FacesExceptionTest
     {
         Throwable t = new Throwable();
         FacesException fe = new FacesException(t);
-        Assert.assertEquals(t, fe.getCause());
+        Assertions.assertEquals(t, fe.getCause());
     }
 
     /*
@@ -72,7 +72,7 @@ public class FacesExceptionTest
     {
         String m = "Message";
         FacesException e = new FacesException(m);
-        Assert.assertEquals(e.getMessage(), m);
+        Assertions.assertEquals(e.getMessage(), m);
     }
 
     /*
@@ -84,8 +84,8 @@ public class FacesExceptionTest
         String m = "Message";
         Throwable t = new Throwable();
         FacesException fe = new FacesException(m, t);
-        Assert.assertEquals(t, fe.getCause());
-        Assert.assertEquals(fe.getMessage(), m);
+        Assertions.assertEquals(t, fe.getCause());
+        Assertions.assertEquals(fe.getMessage(), m);
     }
 
     /*

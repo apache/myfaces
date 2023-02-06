@@ -21,8 +21,8 @@ package jakarta.faces.component;
 import jakarta.el.ValueExpression;
 
 import org.easymock.classextension.EasyMock;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("deprecation")
 public class UIGraphicTest
@@ -33,9 +33,9 @@ public class UIGraphicTest
     {
         UIGraphic graphic = new UIGraphic();
         graphic.setValue("xxx");
-        Assert.assertEquals(graphic.getUrl(), "xxx");
+        Assertions.assertEquals(graphic.getUrl(), "xxx");
         graphic.setUrl("xyz");
-        Assert.assertEquals(graphic.getValue(), "xyz");
+        Assertions.assertEquals(graphic.getValue(), "xyz");
     }
 
     @Test
@@ -44,11 +44,11 @@ public class UIGraphicTest
         UIGraphic graphic = new UIGraphic();
         ValueExpression expression = EasyMock.createMock(ValueExpression.class);
         graphic.setValueExpression("url", expression);
-        Assert.assertSame(graphic.getValueExpression("value"), expression);
+        Assertions.assertSame(graphic.getValueExpression("value"), expression);
 
         expression = EasyMock.createMock(ValueExpression.class);
         graphic.setValueExpression("value", expression);
-        Assert.assertSame(graphic.getValueExpression("url"), expression);
+        Assertions.assertSame(graphic.getValueExpression("url"), expression);
     }
 
 }

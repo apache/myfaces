@@ -24,11 +24,12 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.RenderKitFactory;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -50,6 +51,7 @@ public class ViewPoolFaceletsTestCase extends FaceletTestCase
     }
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -98,17 +100,17 @@ public class ViewPoolFaceletsTestCase extends FaceletTestCase
         UIComponent headerFacet = root.getFacet("head");
         int oldCount = headerFacet.getChildCount();
         // the resource should still be there
-        //Assert.assertEquals(1, oldCount);
+        //Assertions.assertEquals(1, oldCount);
         // The code in MYFACES-3659 reset the component after refresh
-        Assert.assertEquals(0, oldCount);
+        Assertions.assertEquals(0, oldCount);
 
         // Clear the view and synchronize resources
         ViewStructureMetadata metadata = processor.retrieveViewStructureMetadata(facesContext, root);
-        Assert.assertNotNull(metadata);
+        Assertions.assertNotNull(metadata);
         processor.clearTransientAndNonFaceletComponentsForDynamicView(facesContext, root, metadata);
         
         // the resource added by state checkA=true should not be there
-        Assert.assertEquals(0, headerFacet.getChildCount());
+        Assertions.assertEquals(0, headerFacet.getChildCount());
     }
     
     /**
@@ -146,15 +148,15 @@ public class ViewPoolFaceletsTestCase extends FaceletTestCase
         // the resource should still be there
         UIComponent headerFacet = root.getFacet("head");
         int oldCount = headerFacet.getChildCount();
-        Assert.assertEquals(1, oldCount);
+        Assertions.assertEquals(1, oldCount);
 
         // Clear the view and synchronize resources
         ViewStructureMetadata metadata = processor.retrieveViewStructureMetadata(facesContext, root);
-        Assert.assertNotNull(metadata);
+        Assertions.assertNotNull(metadata);
         processor.clearTransientAndNonFaceletComponentsForDynamicView(facesContext, root, metadata);
         
         // the resource added by state checkA=true should not be there
-        Assert.assertEquals(0, headerFacet.getChildCount());
+        Assertions.assertEquals(0, headerFacet.getChildCount());
     }
     
 }

@@ -35,7 +35,7 @@ import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
 import org.apache.myfaces.renderkit.html.HtmlMessagesRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SelectTestCase extends FaceletTestCase
 {

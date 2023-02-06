@@ -26,8 +26,8 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class UITestCase extends FaceletTestCase
 {
@@ -63,7 +63,7 @@ public class UITestCase extends FaceletTestCase
         root.encodeAll(facesContext);
         sw.flush();
         
-        Assert.assertTrue(sw.toString().equals("Hello World!"));
+        Assertions.assertTrue(sw.toString().equals("Hello World!"));
         
         //System.out.println("************************");
         //System.out.println(sw.toString());
@@ -84,8 +84,8 @@ public class UITestCase extends FaceletTestCase
 
         String response = sw.toString();
         
-        Assert.assertTrue(response.contains("New Title"));
-        Assert.assertTrue(response.contains("New Body"));
+        Assertions.assertTrue(response.contains("New Title"));
+        Assertions.assertTrue(response.contains("New Body"));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class UITestCase extends FaceletTestCase
 
         String response = sw.toString();
         
-        Assert.assertTrue(response.contains("New Body"));
+        Assertions.assertTrue(response.contains("New Body"));
     }
 
     @Test
@@ -114,8 +114,8 @@ public class UITestCase extends FaceletTestCase
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "component.xml");
 
-        Assert.assertEquals("only one child, the component", 1, root.getChildCount());
-        Assert.assertNotNull("bound to map", map.get("c"));
+        Assertions.assertEquals(1, root.getChildCount());
+        Assertions.assertNotNull(map.get("c"));
     }
 
     /*
@@ -130,8 +130,8 @@ public class UITestCase extends FaceletTestCase
         UIViewRoot root = faces.getViewRoot();
         at.apply(faces, root);
         
-        Assert.assertEquals("4 children, the component", 4, root.getChildCount());
-        Assert.assertNotNull("bound to map", map.get("c"));
+        Assertions.assertEquals("4 children, the component", 4, root.getChildCount());
+        Assertions.assertNotNull("bound to map", map.get("c"));
     }*/
 
 }

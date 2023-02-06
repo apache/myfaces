@@ -26,12 +26,10 @@ import jakarta.el.ELResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.el.resolver.CompositeELResolver;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
@@ -46,7 +44,7 @@ public class ResolverBuilderBaseTest extends AbstractJsfTestCase
     private List<ELResolver> resolvers;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -64,7 +62,7 @@ public class ResolverBuilderBaseTest extends AbstractJsfTestCase
 
         resolverBuilder.addFromRuntimeConfig(resolvers);
 
-        Assert.assertEquals(Arrays.asList(resolver), resolvers);
+        Assertions.assertEquals(Arrays.asList(resolver), resolvers);
     }
     
     @Test
@@ -75,7 +73,7 @@ public class ResolverBuilderBaseTest extends AbstractJsfTestCase
  
         resolverBuilder.addFromRuntimeConfig(resolvers);
 
-        Assert.assertEquals(Arrays.asList(resolver), resolvers);
+        Assertions.assertEquals(Arrays.asList(resolver), resolvers);
     }
 }
 

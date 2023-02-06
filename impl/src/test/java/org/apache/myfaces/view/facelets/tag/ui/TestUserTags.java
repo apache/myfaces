@@ -29,8 +29,8 @@ import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestUserTags extends FaceletTestCase {
 
@@ -104,9 +104,9 @@ public class TestUserTags extends FaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertTrue("Output should contain 'value1'", result.contains("value1"));
-        Assert.assertFalse("Output should not contain 'value2'", result.contains("value2"));
-        Assert.assertFalse("Output should not contain 'value3'", result.contains("value3"));
+        Assertions.assertTrue(result.contains("value1"));
+        Assertions.assertFalse(result.contains("value2"));
+        Assertions.assertFalse(result.contains("value3"));
     }
     
     /**
@@ -128,8 +128,8 @@ public class TestUserTags extends FaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertTrue("Output should contain 'value2'", result.contains("value2"));
-        Assert.assertFalse("Output should not contain 'value3'", result.contains("value3"));
-        Assert.assertFalse("Output should not contain 'value1'", result.contains("value1"));
+        Assertions.assertTrue(result.contains("value2"));
+        Assertions.assertFalse(result.contains("value3"));
+        Assertions.assertFalse(result.contains("value1"));
     } 
 }

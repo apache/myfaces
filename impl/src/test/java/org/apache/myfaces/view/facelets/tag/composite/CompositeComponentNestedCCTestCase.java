@@ -29,8 +29,8 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CompositeComponentNestedCCTestCase extends FaceletTestCase
 {
@@ -54,7 +54,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC1.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -62,9 +62,9 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
     }
     
     /**
@@ -82,7 +82,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC1.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -90,9 +90,9 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
     }
     
     /**
@@ -107,7 +107,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC2.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -115,10 +115,10 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
 
     /**
@@ -135,7 +135,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC2.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -143,10 +143,10 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
     
     /**
@@ -163,7 +163,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC3.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -171,10 +171,10 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
     
     /**
@@ -194,7 +194,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC3.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -202,10 +202,10 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
     
     /**
@@ -220,7 +220,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC4.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -228,10 +228,10 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
     
     /**
@@ -249,7 +249,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC4.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -257,10 +257,10 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
 
     @Test
@@ -270,7 +270,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC5.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -278,9 +278,9 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
     }
     
     /**
@@ -298,7 +298,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC5.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -306,9 +306,9 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
     }
     
     /**
@@ -323,7 +323,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC6.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -331,10 +331,10 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
 
     /**
@@ -351,7 +351,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC6.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -359,10 +359,10 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
     
     /**
@@ -379,7 +379,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC7.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -387,10 +387,10 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
     
     /**
@@ -410,7 +410,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC7.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -418,10 +418,10 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
     
     /**
@@ -436,7 +436,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC8.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -444,10 +444,10 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
     
     /**
@@ -465,7 +465,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeNestedCC8.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -473,9 +473,9 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("ALFA"));
-        Assert.assertTrue(sw.toString().contains("BETA"));
-        Assert.assertTrue(sw.toString().contains("GAMMA"));
-        Assert.assertTrue(sw.toString().contains("OMEGA"));
+        Assertions.assertTrue(sw.toString().contains("ALFA"));
+        Assertions.assertTrue(sw.toString().contains("BETA"));
+        Assertions.assertTrue(sw.toString().contains("GAMMA"));
+        Assertions.assertTrue(sw.toString().contains("OMEGA"));
     }
 }

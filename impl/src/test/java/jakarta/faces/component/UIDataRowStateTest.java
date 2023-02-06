@@ -28,9 +28,9 @@ import jakarta.faces.component.html.HtmlInputText;
 import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.model.ListDataModel;
 import jakarta.faces.render.Renderer;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UIDataRowStateTest extends AbstractJsfTestCase
 {
@@ -135,10 +135,10 @@ public class UIDataRowStateTest extends AbstractJsfTestCase
         for (int i = 0; i < rowCount ; i++)
         {
             data.setRowIndex(i);
-            Assert.assertEquals(data.getId()+":"+i+":"+text.getId(), text.getClientId());
+            Assertions.assertEquals(data.getId()+":"+i+":"+text.getId(), text.getClientId());
         }
         data.setRowIndex(-1);
-        Assert.assertEquals(data.getId()+":"+text.getId(), text.getClientId());
+        Assertions.assertEquals(data.getId()+":"+text.getId(), text.getClientId());
     }
     
     @Test
@@ -181,12 +181,12 @@ public class UIDataRowStateTest extends AbstractJsfTestCase
         for (int i = 0; i < rowCount ; i++)
         {
             data.setRowIndex(i);
-            Assert.assertEquals(data.getId()+":"+i+":"+text.getId(), text.getClientId());
-            Assert.assertEquals(data.getId()+":"+i+":"+inputText.getId(), inputText.getClientId());
+            Assertions.assertEquals(data.getId()+":"+i+":"+text.getId(), text.getClientId());
+            Assertions.assertEquals(data.getId()+":"+i+":"+inputText.getId(), inputText.getClientId());
         }
         data.setRowIndex(-1);
-        Assert.assertEquals(data.getId()+":"+text.getId(), text.getClientId());
-        Assert.assertEquals(data.getId()+":"+inputText.getId(), inputText.getClientId());
+        Assertions.assertEquals(data.getId()+":"+text.getId(), text.getClientId());
+        Assertions.assertEquals(data.getId()+":"+inputText.getId(), inputText.getClientId());
     }
     
     @Test
@@ -277,7 +277,7 @@ public class UIDataRowStateTest extends AbstractJsfTestCase
         for (int i = 0; i < rowCount ; i++)
         {
             data.setRowIndex(i);
-            Assert.assertEquals("someString"+i, inputText.getSubmittedValue());
+            Assertions.assertEquals("someString"+i, inputText.getSubmittedValue());
         }
     }
 }

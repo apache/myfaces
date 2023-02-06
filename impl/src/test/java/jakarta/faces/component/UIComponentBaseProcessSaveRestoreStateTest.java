@@ -31,7 +31,10 @@ import jakarta.faces.context.FacesContext;
 
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.*;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,6 +52,7 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
     private UIComponent _child;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -57,6 +61,7 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
     }
     
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -78,16 +83,20 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
         return methods;
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSaveStateExpections() throws Exception
     {
-        _testImpl.processSaveState(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            _testImpl.processSaveState(null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testRestoreStateExpections() throws Exception
     {
-        _testImpl.processRestoreState(null, null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            _testImpl.processRestoreState(null, null);
+        });
     }
 
 // FIXME: Need to add some expectation for FacesContext.getAttributes. I'll have to read a bit more about 
@@ -96,13 +105,13 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
 //    public void testSaveRestoreStateWithTransientChilds() throws Exception
 //    {
 //        _testImpl.setTransient(true);
-//        Assert.assertNull(_testImpl.processSaveState(_facesContext));
+//        Assertions.assertNull(_testImpl.processSaveState(_facesContext));
 //
 //        _testImpl.setTransient(false);
 //        setUpChilds(true, true, true);
 //        _mocksControl.replay();
 //        Object state = _testImpl.processSaveState(_facesContext);
-//        Assert.assertNotNull(state);
+//        Assertions.assertNotNull(state);
 //        _mocksControl.verify();
 //
 //        _mocksControl.reset();
@@ -116,13 +125,13 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
 //    public void testSaveRestoreState() throws Exception
 //    {
 //        _testImpl.setTransient(true);
-//        Assert.assertNull(_testImpl.processSaveState(_facesContext));
+//        Assertions.assertNull(_testImpl.processSaveState(_facesContext));
 //
 //        _testImpl.setTransient(false);
 //        setUpChilds(true, false, false);
 //        _mocksControl.replay();
 //        Object state = _testImpl.processSaveState(_facesContext);
-//        Assert.assertNotNull(state);
+//        Assertions.assertNotNull(state);
 //        _mocksControl.verify();
 //
 //        _mocksControl.reset();

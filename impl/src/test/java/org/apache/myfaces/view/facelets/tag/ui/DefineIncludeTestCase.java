@@ -25,8 +25,8 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DefineIncludeTestCase extends FaceletTestCase {
 
@@ -61,9 +61,9 @@ public class DefineIncludeTestCase extends FaceletTestCase {
         String response = sw.toString();
         //Two Hello World, the first one by a ui:include on defineInclude.xml,
         //the second one injected on subdir/template.xml
-        Assert.assertEquals("Hello World!Hello World!", response);
+        Assertions.assertEquals("Hello World!Hello World!", response);
         //the content of subdir/template.xml ui:insert is ignored
-        Assert.assertFalse(response.contains("Not Found"));
+        Assertions.assertFalse(response.contains("Not Found"));
         
         //System.out.println("************************");
         //System.out.println(sw.toString());

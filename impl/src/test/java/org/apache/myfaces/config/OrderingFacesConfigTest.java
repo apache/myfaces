@@ -30,8 +30,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class OrderingFacesConfigTest extends AbstractJsfTestCase
 {
@@ -39,7 +40,8 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     private FacesConfigUnmarshallerImpl _impl;
 
-    
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -449,7 +451,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
             Collections.shuffle(appConfigResources);
             List<FacesConfig> sortedList = applyFullAlgorithm(appConfigResources);
             
-            Assert.assertEquals(cfgC, sortedList.get(0));
+            Assertions.assertEquals(cfgC, sortedList.get(0));
         }
     }
 
@@ -480,7 +482,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
             Collections.shuffle(appConfigResources);
             List<FacesConfig> sortedList = applyFullAlgorithm(appConfigResources);
             
-            Assert.assertEquals(cfgC, sortedList.get(sortedList.size()-1));
+            Assertions.assertEquals(cfgC, sortedList.get(sortedList.size()-1));
         }
     }
     
@@ -524,9 +526,9 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
             Collections.shuffle(appConfigResources);
             List<FacesConfig> sortedList = applyFullAlgorithm(appConfigResources);
             
-            Assert.assertEquals(cfg3, sortedList.get(0));
+            Assertions.assertEquals(cfg3, sortedList.get(0));
             
-            Assert.assertEquals(cfg6, sortedList.get(sortedList.size()-1));
+            Assertions.assertEquals(cfg6, sortedList.get(sortedList.size()-1));
         }
     }
     
@@ -889,7 +891,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         
         //printFacesConfigList("Sorted-List: [", sortedResources);
         
-        Assert.assertTrue(sortedResources.containsAll(appConfigResources));
+        Assertions.assertTrue(sortedResources.containsAll(appConfigResources));
 
         appConfigResources = new ArrayList<FacesConfig>();
         appConfigResources.add(cfgOWB);
@@ -901,7 +903,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         
         //printFacesConfigList("Sorted-List: [", sortedResources);
         
-        Assert.assertTrue(sortedResources.containsAll(appConfigResources));
+        Assertions.assertTrue(sortedResources.containsAll(appConfigResources));
 
     }
     

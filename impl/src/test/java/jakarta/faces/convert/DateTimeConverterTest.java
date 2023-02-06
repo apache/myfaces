@@ -30,15 +30,17 @@ import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DateTimeConverterTest extends AbstractJsfTestCase
 {
     private DateTimeConverter mock;
 
-
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -50,6 +52,7 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -73,7 +76,7 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
         {
             mock.getAsObject(FacesContext.getCurrentInstance(), input, "15/15/15");
 
-            Assert.assertTrue("this date should not be parsable - and it is, so this is wrong.", false);
+            Assertions.assertTrue(false, "this date should not be parsable - and it is, so this is wrong.");
         }
         catch (ConverterException e)
         {
@@ -90,18 +93,18 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
 
             String str = format.format(date);
 
-            Assert.assertEquals("12/01/01", str);
+            Assertions.assertEquals("12/01/01", str);
 
             format = new SimpleDateFormat("MM/dd/yyyy");
             format.setTimeZone(TimeZone.getDefault());
 
             str = format.format(date);
 
-            Assert.assertEquals("12/01/0001", str);
+            Assertions.assertEquals("12/01/0001", str);
         }
         catch (ConverterException e)
         {
-            Assert.assertTrue("this date should not be parsable - and it is, so this is wrong.", false);
+            Assertions.assertTrue(false, "this date should not be parsable - and it is, so this is wrong.");
         }
     }
 }

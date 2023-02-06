@@ -24,8 +24,8 @@ import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * See https://issues.apache.org/jira/browse/MYFACES-4267
@@ -60,7 +60,7 @@ public class StatelessTest extends AbstractMyFacesRequestTestCase
         startViewRequest("/stateless.xhtml");
         processLifecycleExecuteAndRender();
 
-        Assert.assertTrue(facesContext.getViewRoot().isTransient());
+        Assertions.assertTrue(facesContext.getViewRoot().isTransient());
 
         // set the view state param so this context is treated as a postback
         client.getParameters().put(ResponseStateManager.VIEW_STATE_PARAM, "stateless");
@@ -71,18 +71,18 @@ public class StatelessTest extends AbstractMyFacesRequestTestCase
             // this will cause an exception without the fix in MYFACES-4267
             restoreView();
         } catch (Exception e) {
-            Assert.fail("caught an exception trying to restore a stateless view: " + e.getMessage());
+            Assertions.fail("caught an exception trying to restore a stateless view: " + e.getMessage());
             endRequest();
             return;
         }
 
-        Assert.assertNotNull(facesContext.getViewRoot());
+        Assertions.assertNotNull(facesContext.getViewRoot());
 
         // render the response and make sure the view contains the expected text
         renderResponse();
         String text = getRenderedContent(facesContext);
 
-        Assert.assertTrue(text.contains("success"));
+        Assertions.assertTrue(text.contains("success"));
 
         endRequest();
     }

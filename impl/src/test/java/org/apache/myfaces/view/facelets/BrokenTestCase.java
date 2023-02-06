@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets;
 
 import jakarta.faces.component.UIViewRoot;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BrokenTestCase extends FaceletTestCase {
 

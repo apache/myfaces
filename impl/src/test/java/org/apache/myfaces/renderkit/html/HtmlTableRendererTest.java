@@ -33,8 +33,10 @@ import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -45,6 +47,8 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
     private MockResponseWriter writer ;
     private HtmlDataTable dataTable;
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -69,6 +73,8 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
+    @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -84,7 +90,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 dataTable, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -96,7 +102,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 dataTable, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -111,12 +117,12 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         {
             dataTable.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assert.assertTrue(output.matches("(?s).+id=\".+\".+"));
-            Assert.assertTrue(output.matches("(?s).+name=\".+\".+"));
+            Assertions.assertTrue(output.matches("(?s).+id=\".+\".+"));
+            Assertions.assertTrue(output.matches("(?s).+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         
     }
@@ -164,7 +170,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         
         dataTable.setValue(new ListDataModel<Person>(list));
@@ -178,20 +184,20 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         
-        Assert.assertTrue(output2.contains("John"));
-        Assert.assertTrue(output2.contains("Smith"));
-        Assert.assertTrue(output2.contains("class1"));
-        Assert.assertTrue(output2.contains("class2"));
+        Assertions.assertTrue(output2.contains("John"));
+        Assertions.assertTrue(output2.contains("Smith"));
+        Assertions.assertTrue(output2.contains("class1"));
+        Assertions.assertTrue(output2.contains("class2"));
         
-        Assert.assertTrue(output1.contains("John"));
-        Assert.assertTrue(output1.contains("Smith"));
-        Assert.assertTrue(output1.contains("class1"));
-        Assert.assertTrue(output1.contains("class2"));
+        Assertions.assertTrue(output1.contains("John"));
+        Assertions.assertTrue(output1.contains("Smith"));
+        Assertions.assertTrue(output1.contains("class1"));
+        Assertions.assertTrue(output1.contains("class2"));
         
-        Assert.assertEquals(output2, output1);
+        Assertions.assertEquals(output2, output1);
     }
 
     public class Person

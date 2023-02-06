@@ -27,8 +27,8 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMultipleRequestsTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleRequestsTestCase
 {
@@ -68,7 +68,7 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
             
             Object value = stateCache.restoreSerializedView(facesContext, "view1.xhtml", savedToken);
             
-            Assert.assertEquals(1, value);
+            Assertions.assertEquals(1, value);
             
             facesContext.getViewRoot().setViewId("view2.xhtml");
             savedToken = stateCache.saveSerializedView(facesContext, 2);
@@ -84,7 +84,7 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
             
             Object value = stateCache.restoreSerializedView(facesContext, "view2.xhtml", savedToken);
             
-            Assert.assertEquals(2, value);
+            Assertions.assertEquals(2, value);
             
             facesContext.getViewRoot().setViewId("view2.xhtml");
             savedToken = stateCache.saveSerializedView(facesContext, 3);
@@ -101,7 +101,7 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
             Object value = stateCache.restoreSerializedView(facesContext, "view1.xhtml", firstSavedToken);
             
             // Since org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION is 2, the first one was already discarded
-            Assert.assertNull(value);
+            Assertions.assertNull(value);
         }
         finally
         {
@@ -145,7 +145,7 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
             // the state, along with a counter.
             Object value = stateCache.restoreSerializedView(facesContext, "/view2.xhtml", firstSavedToken);
             
-            Assert.assertNull(value);
+            Assertions.assertNull(value);
         }
         finally
         {
@@ -159,7 +159,7 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
             // It should restore this:
             Object value = stateCache.restoreSerializedView(facesContext, "/view1.xhtml", firstSavedToken);
             
-            Assert.assertEquals(1, value);
+            Assertions.assertEquals(1, value);
         }
         finally
         {

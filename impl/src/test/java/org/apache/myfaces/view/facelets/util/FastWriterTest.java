@@ -19,8 +19,8 @@
 package org.apache.myfaces.view.facelets.util;
 
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class FastWriterTest 
 {
@@ -34,7 +34,7 @@ public class FastWriterTest
         fw.write(sampleStringToWrite, 0, sampleStringToWrite.length());
 
         // fw.toString() should be: Test String to write
-        Assert.assertEquals(fw.toString(), sampleStringToWrite);
+        Assertions.assertEquals(fw.toString(), sampleStringToWrite);
     }
     
     @Test
@@ -47,7 +47,7 @@ public class FastWriterTest
         fw.write(sampleStringToWrite, offSet, sampleStringToWrite.length() - offSet);
 
         // fw.toString() should be: String to write
-        Assert.assertEquals(fw.toString(), sampleStringToWrite.substring(offSet));
+        Assertions.assertEquals(fw.toString(), sampleStringToWrite.substring(offSet));
     }
     
     @Test
@@ -60,6 +60,6 @@ public class FastWriterTest
        fw.write(sampleStringToWrite, 0, length);
 
        // fw.toString() should be: Test
-       Assert.assertEquals(fw.toString(), sampleStringToWrite.substring(0,length));
+       Assertions.assertEquals(fw.toString(), sampleStringToWrite.substring(0,length));
     }
 }

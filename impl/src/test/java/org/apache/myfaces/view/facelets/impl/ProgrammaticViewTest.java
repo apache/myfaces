@@ -19,21 +19,10 @@
 package org.apache.myfaces.view.facelets.impl;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.util.List;
-import jakarta.faces.application.StateManager;
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.view.ViewDeclarationLanguage;
-import jakarta.faces.view.ViewMetadata;
 
-import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
-import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /*
     Basic test that verifies programmmatic facelets work. See spec issue: https://github.com/jakartaee/faces/issues/1581
@@ -51,13 +40,13 @@ public class ProgrammaticViewTest extends org.apache.myfaces.test.core.AbstractM
         UIOutput out = (UIOutput) facesContext.getViewRoot().findComponent("messageId");
         String result1 = out.getValue().toString();
 
-        Assert.assertTrue("Programmatic View Failed", result1.contains("Success!"));
+        Assertions.assertTrue(result1.contains("Success!"));
 
         //Grab by ID
         UIOutput cdiOut = (UIOutput) facesContext.getViewRoot().findComponent("cdiId");
         String result2 = cdiOut.getValue().toString();
 
-        Assert.assertTrue("Programmatic View Failed", result2.contains("CDI Bean Name: Test1581Bean"));
+        Assertions.assertTrue(result2.contains("CDI Bean Name: Test1581Bean"));
     }
 
 

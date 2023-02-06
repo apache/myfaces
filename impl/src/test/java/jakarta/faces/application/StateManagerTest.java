@@ -22,13 +22,11 @@ package jakarta.faces.application;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
-import junit.framework.TestCase;
-
 import org.apache.myfaces.test.mock.MockStateManager;
 import org.easymock.MockControl;
 import org.easymock.classextension.MockClassControl;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class StateManagerTest
 {
@@ -42,7 +40,7 @@ public class StateManagerTest
         try
         {
             subject.isSavingStateInClient(null);
-            Assert.fail("should have thrown an exception");
+            Assertions.fail("should have thrown an exception");
         }
         catch (RuntimeException e)
         {
@@ -67,7 +65,7 @@ public class StateManagerTest
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        Assert.assertEquals(true, subject.isSavingStateInClient(context));
+        Assertions.assertEquals(true, subject.isSavingStateInClient(context));
     }
 
     /*
@@ -88,9 +86,9 @@ public class StateManagerTest
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        Assert.assertEquals(false, subject.isSavingStateInClient(context));
+        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
         // calling a second time asserts that the code is caching the value correctly
-        Assert.assertEquals(false, subject.isSavingStateInClient(context));
+        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
     }
 
     /*
@@ -115,7 +113,7 @@ public class StateManagerTest
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        Assert.assertEquals(false, subject.isSavingStateInClient(context));
+        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
     }
 
     /*
@@ -140,7 +138,7 @@ public class StateManagerTest
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        Assert.assertEquals(false, subject.isSavingStateInClient(context));
+        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
     }
 
 }

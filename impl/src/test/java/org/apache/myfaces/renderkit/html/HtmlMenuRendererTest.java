@@ -34,8 +34,10 @@ import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -47,6 +49,8 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
     private HtmlSelectOneMenu selectOneMenu;
     private HtmlSelectManyMenu selectManyMenu;
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -69,6 +73,8 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
+    @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -93,7 +99,7 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 selectOneMenu, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -113,7 +119,7 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 selectManyMenu, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -138,12 +144,12 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
             selectOneMenu.getChildren().add(item2);
             selectOneMenu.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assert.assertTrue(output.matches(".+id=\".+\".+"));
-            Assert.assertTrue(output.matches(".+name=\".+\".+"));
+            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
+            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         
     }
@@ -169,12 +175,12 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
             selectManyMenu.getChildren().add(item2);
             selectManyMenu.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assert.assertTrue(output.matches(".+id=\".+\".+"));
-            Assert.assertTrue(output.matches(".+name=\".+\".+"));
+            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
+            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         
     }

@@ -58,8 +58,9 @@ import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.visit.MockVisitContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UIDataTest extends AbstractJsfTestCase
 {
@@ -67,6 +68,7 @@ public class UIDataTest extends AbstractJsfTestCase
     private UIData _testImpl;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -105,11 +107,11 @@ public class UIDataTest extends AbstractJsfTestCase
         _testImpl.setId("xxx");
         Renderer renderer = _mocksControl.createMock(Renderer.class);
         renderKit.addRenderer(UIData.COMPONENT_FAMILY, UIData.COMPONENT_TYPE, renderer);
-        Assert.assertEquals("xxx", _testImpl.getClientId(facesContext));
+        Assertions.assertEquals("xxx", _testImpl.getClientId(facesContext));
         _testImpl.setRowIndex(99);
         //MYFACES-2744 UIData.getClientId() should not append rowIndex, instead use UIData.getContainerClientId()
-        Assert.assertEquals("xxx", _testImpl.getClientId(facesContext)); 
-        Assert.assertEquals("xxx:99", _testImpl.getContainerClientId(facesContext));
+        Assertions.assertEquals("xxx", _testImpl.getClientId(facesContext)); 
+        Assertions.assertEquals("xxx:99", _testImpl.getContainerClientId(facesContext));
     }
 
     /**
@@ -148,7 +150,7 @@ public class UIDataTest extends AbstractJsfTestCase
         MyContextCallback callback = new MyContextCallback();
         _testImpl.invokeOnComponent(facesContext, facet.getClientId(facesContext), callback);
         // the callback should have been invoked
-        Assert.assertTrue(callback.invoked);
+        Assertions.assertTrue(callback.invoked);
     }
 
     /**
@@ -169,13 +171,13 @@ public class UIDataTest extends AbstractJsfTestCase
                     throws AbortProcessingException
             {
                 // the event must be the originalEvent
-                Assert.assertEquals(originalEvent, event);
+                Assertions.assertEquals(originalEvent, event);
                 
                 // the current row index must be the row index from the time the event was queued
-                Assert.assertEquals(5, _testImpl.getRowIndex());
+                Assertions.assertEquals(5, _testImpl.getRowIndex());
                 
                 // the current component must be this (pushComponentToEL() must have happened)
-                Assert.assertEquals(this, UIComponent.getCurrentComponent(facesContext));
+                Assertions.assertEquals(this, UIComponent.getCurrentComponent(facesContext));
                 
                 // to be able to verify that broadcast() really has been called
                 getAttributes().put("broadcastCalled", Boolean.TRUE);
@@ -205,16 +207,16 @@ public class UIDataTest extends AbstractJsfTestCase
         // -= Assertions =-
         
         // the current component must be null (popComponentFromEL() must have happened)
-        Assert.assertNull(UIComponent.getCurrentComponent(facesContext));
+        Assertions.assertNull(UIComponent.getCurrentComponent(facesContext));
         
         // the row index must now be 0 (at broadcast() it must be 5)
-        Assert.assertEquals(0, _testImpl.getRowIndex());
+        Assertions.assertEquals(0, _testImpl.getRowIndex());
         
         // verify mock behavior
         _mocksControl.verify();
         
         // verify that broadcast() really has been called
-        Assert.assertEquals(Boolean.TRUE, eventComponent.getAttributes().get("broadcastCalled"));
+        Assertions.assertEquals(Boolean.TRUE, eventComponent.getAttributes().get("broadcastCalled"));
     }
 
     /**
@@ -652,7 +654,7 @@ public class UIDataTest extends AbstractJsfTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assert.assertEquals(rowData.getText(), text.getValue());
+            Assertions.assertEquals(rowData.getText(), text.getValue());
             text.getAttributes().put("style", rowData.getStyle());
         }
         
@@ -663,7 +665,7 @@ public class UIDataTest extends AbstractJsfTestCase
         for (int i = 0; i < model.size(); i++)
         {
             table.setRowIndex(i);
-            Assert.assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
+            Assertions.assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
         }
         
     }
@@ -711,7 +713,7 @@ public class UIDataTest extends AbstractJsfTestCase
         {
             RowData rowData = it.next(); 
             table.setRowIndex(i);
-            Assert.assertEquals(rowData.getText(), text.getValue());
+            Assertions.assertEquals(rowData.getText(), text.getValue());
             i++;
         }
         
@@ -768,9 +770,9 @@ public class UIDataTest extends AbstractJsfTestCase
         }
         
         public void verify() {
-                Assert.assertEquals("header facet must be visited only ones", 1, headerFacetVisits);
-                Assert.assertEquals("footer facet must be visited only ones", 1, footerFacetVisits);
-                Assert.assertEquals("Expected row visit does not match", expectedVisits, rowVisits);
+                Assertions.assertEquals(1, headerFacetVisits);
+                Assertions.assertEquals(1, footerFacetVisits);
+                Assertions.assertEquals(expectedVisits, rowVisits);
         }
     }
     
@@ -781,7 +783,7 @@ public class UIDataTest extends AbstractJsfTestCase
         
         uiData.processDecodes(facesContext);
         
-        Assert.assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processDecodes must not change currentComponent");
     }
     
     @Test
@@ -792,7 +794,7 @@ public class UIDataTest extends AbstractJsfTestCase
         
         _testImpl.processDecodes(facesContext);
         
-        Assert.assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processDecodes must not change currentComponent");
     }
     
     @Test
@@ -802,7 +804,7 @@ public class UIDataTest extends AbstractJsfTestCase
         
         uiData.processValidators(facesContext);
         
-        Assert.assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processDecodes must not change currentComponent");
         
     }
     
@@ -814,7 +816,7 @@ public class UIDataTest extends AbstractJsfTestCase
         
         _testImpl.processValidators(facesContext);
         
-        Assert.assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processValidators must not change currentComponent");
     }
     
     @Test
@@ -824,7 +826,7 @@ public class UIDataTest extends AbstractJsfTestCase
         
         uiData.processUpdates(facesContext);
         
-        Assert.assertEquals("processUpdates must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processUpdates must not change currentComponent");
         
     }
     
@@ -836,7 +838,7 @@ public class UIDataTest extends AbstractJsfTestCase
         
         _testImpl.processUpdates(facesContext);
         
-        Assert.assertEquals("processUpdates must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processUpdates must not change currentComponent");
     }
 
     private void _addColumn() {
@@ -853,29 +855,29 @@ public class UIDataTest extends AbstractJsfTestCase
     {
         @Override
         public void setRowIndex(int rowIndex) {
-            Assert.fail();
+            Assertions.fail();
         }
         @Override
         public void decode(FacesContext context) {
-            Assert.fail();
+            Assertions.fail();
         }
         public void validate(FacesContext context) {
-            Assert.fail();
+            Assertions.fail();
         }
         public void updateModel(FacesContext context) {
-            Assert.fail();
+            Assertions.fail();
         }
         @Override
         public void encodeBegin(FacesContext context) throws IOException {
-            Assert.fail();
+            Assertions.fail();
         }
         @Override
         public void encodeChildren(FacesContext context) throws IOException {
-            Assert.fail();
+            Assertions.fail();
         }
         @Override
         public void encodeEnd(FacesContext context) throws IOException {
-            Assert.fail();
+            Assertions.fail();
         }
     }   
     
@@ -915,7 +917,7 @@ public class UIDataTest extends AbstractJsfTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assert.assertEquals(rowData.getText(), text.getValue());
+            Assertions.assertEquals(rowData.getText(), text.getValue());
             text.setSubmittedValue("value"+(i+1));
             //text.getAttributes().put("style", rowData.getStyle());
         }
@@ -954,7 +956,7 @@ public class UIDataTest extends AbstractJsfTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assert.assertEquals("value"+(i+1), text.getSubmittedValue());
+            Assertions.assertEquals("value"+(i+1), text.getSubmittedValue());
             //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
         }
     }
@@ -1039,7 +1041,7 @@ public class UIDataTest extends AbstractJsfTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assert.assertEquals(rowData.getText(), text.getValue());
+            Assertions.assertEquals(rowData.getText(), text.getValue());
             text.setSubmittedValue("value"+(i+1));
             //text.getAttributes().put("style", rowData.getStyle());
         }
@@ -1088,7 +1090,7 @@ public class UIDataTest extends AbstractJsfTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assert.assertEquals("value"+(i+1), text.getSubmittedValue());
+            Assertions.assertEquals("value"+(i+1), text.getSubmittedValue());
             //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
         }
         
@@ -1139,7 +1141,7 @@ public class UIDataTest extends AbstractJsfTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assert.assertEquals(rowData.getText(), text.getValue());
+            Assertions.assertEquals(rowData.getText(), text.getValue());
             text.setSubmittedValue("value"+(i+1));
             text.getTransientStateHelper().putTransient("key", "value"+(i+1));
             //text.getAttributes().put("style", rowData.getStyle());
@@ -1189,8 +1191,8 @@ public class UIDataTest extends AbstractJsfTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assert.assertEquals("value"+(i+1), text.getSubmittedValue());
-            Assert.assertEquals("value"+(i+1), text.getTransientStateHelper().getTransient("key"));
+            Assertions.assertEquals("value"+(i+1), text.getSubmittedValue());
+            Assertions.assertEquals("value"+(i+1), text.getTransientStateHelper().getTransient("key"));
             //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
         }
         

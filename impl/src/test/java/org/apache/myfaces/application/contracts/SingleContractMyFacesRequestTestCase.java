@@ -32,8 +32,8 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.test.mock.MockPrintWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
 {
@@ -66,19 +66,19 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         Set<String> externalContextContracts = runtimeConfig.getExternalContextResourceLibraryContracts();
         Set<String> classloaderContracts = runtimeConfig.getClassLoaderResourceLibraryContracts();
 
-        Assert.assertTrue(allContracts.contains("yellow"));
-        Assert.assertTrue(allContracts.contains("blue"));
-        Assert.assertTrue(allContracts.contains("red"));
+        Assertions.assertTrue(allContracts.contains("yellow"));
+        Assertions.assertTrue(allContracts.contains("blue"));
+        Assertions.assertTrue(allContracts.contains("red"));
 
-        Assert.assertTrue(classloaderContracts.contains("yellow"));
-        Assert.assertTrue(classloaderContracts.contains("blue"));
-        Assert.assertTrue(externalContextContracts.contains("red"));
+        Assertions.assertTrue(classloaderContracts.contains("yellow"));
+        Assertions.assertTrue(classloaderContracts.contains("blue"));
+        Assertions.assertTrue(externalContextContracts.contains("red"));
         
         processLifecycleExecute();
         executeBuildViewCycle(facesContext);
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assert.assertTrue(contractsList == null || contractsList.isEmpty());
+        Assertions.assertTrue(contractsList == null || contractsList.isEmpty());
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -95,7 +95,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         executeBuildViewCycle(facesContext);
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assert.assertTrue(contractsList.contains("yellow"));
+        Assertions.assertTrue(contractsList.contains("yellow"));
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -106,7 +106,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         processLifecycleExecute();
         
         List<String> contractsList2 = facesContext.getResourceLibraryContracts();
-        Assert.assertTrue(contractsList2.contains("yellow"));
+        Assertions.assertTrue(contractsList2.contains("yellow"));
     }
     
     @Test
@@ -117,7 +117,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         executeBuildViewCycle(facesContext);
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assert.assertTrue(contractsList.contains("blue"));
+        Assertions.assertTrue(contractsList.contains("blue"));
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -128,7 +128,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         processLifecycleExecute();
         
         List<String> contractsList2 = facesContext.getResourceLibraryContracts();
-        Assert.assertTrue(contractsList2.contains("blue"));
+        Assertions.assertTrue(contractsList2.contains("blue"));
     }
 
     @Test
@@ -139,7 +139,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         executeBuildViewCycle(facesContext);
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assert.assertTrue(contractsList.contains("red"));
+        Assertions.assertTrue(contractsList.contains("red"));
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -150,7 +150,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         processLifecycleExecute();
         
         List<String> contractsList2 = facesContext.getResourceLibraryContracts();
-        Assert.assertTrue(contractsList2.contains("red"));
+        Assertions.assertTrue(contractsList2.contains("red"));
     }
     
     @Test
@@ -161,14 +161,14 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         executeBuildViewCycle(facesContext);
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assert.assertTrue(contractsList.contains("yellow"));
+        Assertions.assertTrue(contractsList.contains("yellow"));
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();        
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("header_yellow"));
+        Assertions.assertTrue(content1.contains("header_yellow"));
         
         endRequest();
         
@@ -177,13 +177,13 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         executeBuildViewCycle(facesContext);
         
         contractsList = facesContext.getResourceLibraryContracts();
-        Assert.assertTrue(contractsList.contains("red"));
+        Assertions.assertTrue(contractsList.contains("red"));
         
         executeViewHandlerRender(facesContext);
 
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("header_red"));
+        Assertions.assertTrue(content2.contains("header_red"));
         
         executeAfterRender(facesContext);
         
@@ -217,9 +217,9 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
                 hasRedPage = true;
             }
         }
-        Assert.assertTrue(hasYellowPage);
-        Assert.assertFalse(hasBluePage);
-        Assert.assertFalse(hasRedPage);
+        Assertions.assertTrue(hasYellowPage);
+        Assertions.assertFalse(hasBluePage);
+        Assertions.assertFalse(hasRedPage);
     }
 
     
@@ -250,9 +250,9 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
                 hasRedPage = true;
             }
         }
-        Assert.assertFalse(hasYellowPage);
-        Assert.assertTrue(hasBluePage);
-        Assert.assertFalse(hasRedPage);
+        Assertions.assertFalse(hasYellowPage);
+        Assertions.assertTrue(hasBluePage);
+        Assertions.assertFalse(hasRedPage);
     }
 
     @Test
@@ -281,11 +281,11 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
             {
                 hasRedPage = true;
             }
-            System.out.println(s);
+            //System.out.println(s);
         }
-        Assert.assertFalse(hasYellowPage);
-        Assert.assertTrue(hasBluePage);
-        Assert.assertFalse(hasRedPage);
+        Assertions.assertFalse(hasYellowPage);
+        Assertions.assertTrue(hasBluePage);
+        Assertions.assertFalse(hasRedPage);
     }
 
 }

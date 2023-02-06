@@ -28,8 +28,9 @@ import jakarta.faces.component.NamingContainer;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.Renderer;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,16 +44,11 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
     protected UIComponentBase _testImpl;
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
         _testImpl = new UIOutput();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
     }
 
     @Test
@@ -61,7 +57,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         try
         {
             _testImpl.getClientId(null);
-            Assert.fail();
+            Assertions.fail();
         }
         catch(NullPointerException e)
         {
@@ -69,7 +65,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         }
         catch(Exception e)
         {
-            Assert.fail();
+            Assertions.fail();
         }
     }
 
@@ -79,8 +75,8 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         String expectedClientId = "testId";
         _testImpl.setId(expectedClientId);
         
-        Assert.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
-        Assert.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+        Assertions.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+        Assertions.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
     }
 
     @Test
@@ -102,8 +98,8 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
             }
         };
         _testImpl.setId(id);
-        Assert.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
-        Assert.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+        Assertions.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+        Assertions.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
     }
 
     @Test
@@ -122,8 +118,8 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         parent.getChildren().add(_testImpl);
         _testImpl.setId(id);
 
-        Assert.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
-        Assert.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+        Assertions.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+        Assertions.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
     }
 
     @Test
@@ -153,8 +149,8 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
             parent.setId("parent");
             parent.getChildren().add(_testImpl);
 
-            Assert.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
-            Assert.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+            Assertions.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
+            Assertions.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
             parent.getChildren().remove(_testImpl);
         }
     }
@@ -163,9 +159,9 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
     public void testWithoutId() throws Exception
     {
         UIViewRoot viewRoot = facesContext.getViewRoot();
-        Assert.assertNotNull(viewRoot.createUniqueId());
-        Assert.assertNotNull(_testImpl.getClientId());
-        Assert.assertNotNull(_testImpl.getId());
+        Assertions.assertNotNull(viewRoot.createUniqueId());
+        Assertions.assertNotNull(_testImpl.getClientId());
+        Assertions.assertNotNull(_testImpl.getId());
     }
 
     @Test
@@ -175,7 +171,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         try
         {
             _testImpl.getClientId(facesContext);
-            Assert.fail();
+            Assertions.fail();
         }
         catch(FacesException e)
         {
@@ -183,7 +179,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         }
         catch(Exception e)
         {
-            Assert.fail();
+            Assertions.fail();
         }
     }
 }

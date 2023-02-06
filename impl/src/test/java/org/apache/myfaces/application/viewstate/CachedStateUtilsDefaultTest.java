@@ -21,10 +21,12 @@
 package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.application.viewstate.StateUtils;
+import org.junit.jupiter.api.BeforeEach;
 
 public class CachedStateUtilsDefaultTest extends AbstractStateUtilsTest
 {
-
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();

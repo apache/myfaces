@@ -16,7 +16,7 @@
 package org.apache.myfaces.application;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

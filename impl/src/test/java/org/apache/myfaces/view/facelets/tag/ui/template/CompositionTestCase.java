@@ -25,8 +25,8 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CompositionTestCase extends FaceletTestCase {
 
@@ -54,8 +54,8 @@ public class CompositionTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assert.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
 
     /**
@@ -79,10 +79,10 @@ public class CompositionTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertTrue(response.contains("fragmentNumber1"));
-        Assert.assertTrue(response.contains("compositionContent"));
-        Assert.assertFalse(response.contains("This fragment will not be inserted"));
-        Assert.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        Assertions.assertTrue(response.contains("fragmentNumber1"));
+        Assertions.assertTrue(response.contains("compositionContent"));
+        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
+        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
 
     /**
@@ -103,8 +103,8 @@ public class CompositionTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertFalse(response.contains("This fragment will not be inserted"));
-        Assert.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
+        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
     
     /**
@@ -125,8 +125,8 @@ public class CompositionTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertFalse(response.contains("This fragment will not be inserted"));
-        Assert.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
+        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
     
     /**
@@ -146,9 +146,9 @@ public class CompositionTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertTrue(response.contains("fragmentNumber1"));
-        Assert.assertFalse(response.contains("This fragment will not be inserted"));
-        Assert.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        Assertions.assertTrue(response.contains("fragmentNumber1"));
+        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
+        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
     
     /**
@@ -201,7 +201,7 @@ public class CompositionTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
         
         response = checkStringInOrder(response, "start second composition");
         response = checkStringInOrder(response, "composition5Content");
@@ -211,7 +211,7 @@ public class CompositionTestCase extends FaceletTestCase {
     private String checkStringInOrder(String response, String token)
     {
         int pos = response.indexOf(token);
-        Assert.assertTrue(pos > -1);
+        Assertions.assertTrue(pos > -1);
         return response.substring(pos+token.length());
     }
     
@@ -269,10 +269,10 @@ public class CompositionTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertTrue(response.contains("fragmentNumber2"));
-        Assert.assertFalse(response.contains("fragmentNumber1"));
-        Assert.assertFalse(response.contains("This fragment will not be inserted"));
-        Assert.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        Assertions.assertTrue(response.contains("fragmentNumber2"));
+        Assertions.assertFalse(response.contains("fragmentNumber1"));
+        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
+        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
     
     @Test
@@ -331,7 +331,7 @@ public class CompositionTestCase extends FaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assert.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
         
         response = checkStringInOrder(response, "start first decoration");
         response = checkStringInOrder(response, "start second composition");

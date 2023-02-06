@@ -19,12 +19,10 @@
 package org.apache.myfaces.context.servlet;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -33,13 +31,12 @@ import org.junit.runners.JUnit4;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@RunWith(JUnit4.class)
 public class ServletExternalContextImplTest extends AbstractJsfTestCase
 {
 
     private ServletExternalContextImpl _testExternalContext;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception
     {
@@ -48,7 +45,7 @@ public class ServletExternalContextImplTest extends AbstractJsfTestCase
         _testExternalContext = new ServletExternalContextImpl(servletContext, request, response);
     }
 
-    @After
+    @AfterEach
     @Override
     public void tearDown() throws Exception
     {
@@ -83,14 +80,14 @@ public class ServletExternalContextImplTest extends AbstractJsfTestCase
         final String bookmarkableUrl = _testExternalContext.encodeBookmarkableURL("someUrl.jsf", parameters);
         
         // asserts for redirectUrl
-        Assert.assertTrue(redirectUrl.contains("param1=literalvalue"));
-        Assert.assertTrue(redirectUrl.contains("param1=myvalue1"));
-        Assert.assertTrue(redirectUrl.contains("param2=myvalue2"));
+        Assertions.assertTrue(redirectUrl.contains("param1=literalvalue"));
+        Assertions.assertTrue(redirectUrl.contains("param1=myvalue1"));
+        Assertions.assertTrue(redirectUrl.contains("param2=myvalue2"));
         
         // asserts for bookmarkableUrl
-        Assert.assertTrue(bookmarkableUrl.contains("param1=literalvalue"));
-        Assert.assertTrue(bookmarkableUrl.contains("param1=myvalue1"));
-        Assert.assertTrue(bookmarkableUrl.contains("param2=myvalue2"));
+        Assertions.assertTrue(bookmarkableUrl.contains("param1=literalvalue"));
+        Assertions.assertTrue(bookmarkableUrl.contains("param1=myvalue1"));
+        Assertions.assertTrue(bookmarkableUrl.contains("param2=myvalue2"));
     }*/
 
     @Test
@@ -103,8 +100,8 @@ public class ServletExternalContextImplTest extends AbstractJsfTestCase
         final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
         
         // the URL should not change
-        Assert.assertTrue(redirectUrl.contains("p1="));
-        Assert.assertTrue(redirectUrl.contains("p2=test"));
+        Assertions.assertTrue(redirectUrl.contains("p1="));
+        Assertions.assertTrue(redirectUrl.contains("p2=test"));
 
     }
 
@@ -118,7 +115,7 @@ public class ServletExternalContextImplTest extends AbstractJsfTestCase
         final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
         
         // the URL should not change
-        Assert.assertEquals(baseUrl, redirectUrl);
+        Assertions.assertEquals(baseUrl, redirectUrl);
 
     }
     
@@ -132,7 +129,7 @@ public class ServletExternalContextImplTest extends AbstractJsfTestCase
         final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
         
         // the URL should not change
-        Assert.assertEquals(baseUrl, redirectUrl);
+        Assertions.assertEquals(baseUrl, redirectUrl);
         
     }
 
@@ -145,8 +142,8 @@ public class ServletExternalContextImplTest extends AbstractJsfTestCase
         final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
 
         // the URL should not change
-        Assert.assertTrue(redirectUrl.contains("par=test1"));
-        Assert.assertTrue(redirectUrl.contains("par=test2"));
+        Assertions.assertTrue(redirectUrl.contains("par=test1"));
+        Assertions.assertTrue(redirectUrl.contains("par=test2"));
 
     }
 }

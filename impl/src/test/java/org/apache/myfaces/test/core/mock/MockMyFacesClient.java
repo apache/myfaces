@@ -42,7 +42,7 @@ import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Client that keep track and "translate" the commands done in a Faces component.
@@ -95,7 +95,7 @@ public class MockMyFacesClient
         }
         else
         {
-            Assert.fail("Expected redirect not found");
+            Assertions.fail("Expected redirect not found");
         }
     }
     

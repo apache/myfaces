@@ -28,8 +28,8 @@ import jakarta.faces.component.UIViewRoot;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CompositeComponentCCRefTestCase extends FaceletTestCase
 {
@@ -58,7 +58,7 @@ public class CompositeComponentCCRefTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCCRefOnStylesheet.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -66,7 +66,7 @@ public class CompositeComponentCCRefTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains(".myCustomStyle { background:red }"));
+        Assertions.assertTrue(sw.toString().contains(".myCustomStyle { background:red }"));
     }
     
     @Test
@@ -81,7 +81,7 @@ public class CompositeComponentCCRefTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCCRefOnScript.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -89,7 +89,7 @@ public class CompositeComponentCCRefTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains(".myCustomStyle { background:red }"));
-        Assert.assertTrue(sw.toString().contains(".myCustomScript = 'myvalue'"));
+        Assertions.assertTrue(sw.toString().contains(".myCustomStyle { background:red }"));
+        Assertions.assertTrue(sw.toString().contains(".myCustomScript = 'myvalue'"));
     }
 }

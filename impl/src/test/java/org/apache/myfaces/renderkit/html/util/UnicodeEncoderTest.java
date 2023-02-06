@@ -16,9 +16,9 @@
 package org.apache.myfaces.renderkit.html.util;
 
 import java.io.StringWriter;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UnicodeEncoderTest extends AbstractJsfTestCase
 {
@@ -28,7 +28,7 @@ public class UnicodeEncoderTest extends AbstractJsfTestCase
     {
         StringWriter sw = new StringWriter(40);
         UnicodeEncoder.encode(sw, ""+(char)0xE1);
-        Assert.assertEquals(UnicodeEncoder.encode(""+(char)0xE1), sw.toString());
+        Assertions.assertEquals(UnicodeEncoder.encode(""+(char)0xE1), sw.toString());
     }
     
     @Test
@@ -36,7 +36,7 @@ public class UnicodeEncoderTest extends AbstractJsfTestCase
     {
         StringWriter sw = new StringWriter(40);
         UnicodeEncoder.encode(sw, "h"+(char)0xE1);
-        Assert.assertEquals(UnicodeEncoder.encode("h"+(char)0xE1), sw.toString());
+        Assertions.assertEquals(UnicodeEncoder.encode("h"+(char)0xE1), sw.toString());
     }
     
     @Test
@@ -44,7 +44,7 @@ public class UnicodeEncoderTest extends AbstractJsfTestCase
     {
         StringWriter sw = new StringWriter(40);
         UnicodeEncoder.encode(sw, ""+(char)0xE1+"a");
-        Assert.assertEquals(UnicodeEncoder.encode(""+(char)0xE1)+"a", sw.toString());
+        Assertions.assertEquals(UnicodeEncoder.encode(""+(char)0xE1)+"a", sw.toString());
     }
     
     @Test
@@ -52,7 +52,7 @@ public class UnicodeEncoderTest extends AbstractJsfTestCase
     {
         StringWriter sw = new StringWriter(40);
         UnicodeEncoder.encode(sw, "hello h"+(char)0xE1+"aaa <p></p>");
-        Assert.assertEquals("hello h&#225;aaa <p></p>", sw.toString());
+        Assertions.assertEquals("hello h&#225;aaa <p></p>", sw.toString());
     }
 
 }

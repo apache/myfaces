@@ -26,17 +26,19 @@ import org.apache.myfaces.config.impl.FacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.impl.element.FacesConfigImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
 {
     private FacesConfigDispenser dispenser;
     private FacesConfigUnmarshaller<FacesConfigImpl> unmarshaller;
-
+    
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
-
         super.setUp();
         
         dispenser = new FacesConfigDispenserImpl();
@@ -60,9 +62,7 @@ public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
         
         List<String> list = FacesConfigValidator.validate(navRules, externalContext);
         
-        int expected = 2;
-        
-        Assert.assertTrue(list.size() + " should equal " + expected, list.size() == expected);
+        Assertions.assertSame(2, list.size());
         
     }
     

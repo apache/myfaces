@@ -25,8 +25,8 @@ import jakarta.faces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DoctypeTestCase extends FaceletTestCase
 {
@@ -55,10 +55,10 @@ public class DoctypeTestCase extends FaceletTestCase
         FaceletFactory ff = vdl.getFaceletFactory();
         Facelet f = ff.getFacelet(this.getClass().getResource("/org/apache/myfaces/view/facelets/compiler/doctype/html5.xhtml"));
         
-        Assert.assertNotNull(((AbstractFacelet) f).getDoctype());
-        Assert.assertEquals("html", ((AbstractFacelet) f).getDoctype().getRootElement());
-        Assert.assertEquals(null, ((AbstractFacelet) f).getDoctype().getPublic());
-        Assert.assertEquals(null, ((AbstractFacelet) f).getDoctype().getSystem());
+        Assertions.assertNotNull(((AbstractFacelet) f).getDoctype());
+        Assertions.assertEquals("html", ((AbstractFacelet) f).getDoctype().getRootElement());
+        Assertions.assertEquals(null, ((AbstractFacelet) f).getDoctype().getPublic());
+        Assertions.assertEquals(null, ((AbstractFacelet) f).getDoctype().getSystem());
     }
     
     @Test
@@ -66,10 +66,10 @@ public class DoctypeTestCase extends FaceletTestCase
         FaceletFactory ff = vdl.getFaceletFactory();
         Facelet f = ff.getFacelet(this.getClass().getResource("/org/apache/myfaces/view/facelets/compiler/doctype/xhtml.xhtml"));
         
-        Assert.assertNotNull(((AbstractFacelet) f).getDoctype());
-        Assert.assertEquals("html", ((AbstractFacelet) f).getDoctype().getRootElement());
-        Assert.assertEquals("-//W3C//DTD XHTML 1.0 Transitional//EN", ((AbstractFacelet) f).getDoctype().getPublic());
-        Assert.assertEquals("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", ((AbstractFacelet) f).getDoctype().getSystem());
+        Assertions.assertNotNull(((AbstractFacelet) f).getDoctype());
+        Assertions.assertEquals("html", ((AbstractFacelet) f).getDoctype().getRootElement());
+        Assertions.assertEquals("-//W3C//DTD XHTML 1.0 Transitional//EN", ((AbstractFacelet) f).getDoctype().getPublic());
+        Assertions.assertEquals("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", ((AbstractFacelet) f).getDoctype().getSystem());
     }
     
     @Test
@@ -78,10 +78,10 @@ public class DoctypeTestCase extends FaceletTestCase
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "html5.xhtml");
 
-        Assert.assertNotNull(root.getDoctype());
-        Assert.assertEquals("html", root.getDoctype().getRootElement());
-        Assert.assertEquals(null, root.getDoctype().getPublic());
-        Assert.assertEquals(null, root.getDoctype().getSystem());
+        Assertions.assertNotNull(root.getDoctype());
+        Assertions.assertEquals("html", root.getDoctype().getRootElement());
+        Assertions.assertEquals(null, root.getDoctype().getPublic());
+        Assertions.assertEquals(null, root.getDoctype().getSystem());
     }
     
     @Test
@@ -90,9 +90,9 @@ public class DoctypeTestCase extends FaceletTestCase
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "xhtml.xhtml");
 
-        Assert.assertNotNull(root.getDoctype());
-        Assert.assertEquals("html", root.getDoctype().getRootElement());
-        Assert.assertEquals("-//W3C//DTD XHTML 1.0 Transitional//EN", root.getDoctype().getPublic());
-        Assert.assertEquals("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", root.getDoctype().getSystem());
+        Assertions.assertNotNull(root.getDoctype());
+        Assertions.assertEquals("html", root.getDoctype().getRootElement());
+        Assertions.assertEquals("-//W3C//DTD XHTML 1.0 Transitional//EN", root.getDoctype().getPublic());
+        Assertions.assertEquals("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", root.getDoctype().getSystem());
     }
 }

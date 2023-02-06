@@ -30,7 +30,8 @@ import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
      * Tests for {@link UIComponent#encodeAll(jakarta.faces.context.FacesContext)}.
@@ -40,8 +41,8 @@ public class UIComponentEncodeAllTest extends AbstractJsfTestCase
     protected IMocksControl _mocksControl;
     private UIComponent _testimpl;
 
-    //@Override
-    //@BeforeMethod(alwaysRun = true)
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();

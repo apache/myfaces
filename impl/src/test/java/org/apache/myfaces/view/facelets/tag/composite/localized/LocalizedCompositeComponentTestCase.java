@@ -20,8 +20,8 @@ package org.apache.myfaces.view.facelets.tag.composite.localized;
 
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.test.core.annotation.DeclareFacesConfig;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Check if a composite component can be localized following the rules
@@ -46,7 +46,7 @@ public class LocalizedCompositeComponentTestCase extends AbstractMyFacesRequestT
     {
         startViewRequest("/testNoLocalizedComposite.xhtml");
         processLifecycleExecuteAndRender();
-        Assert.assertTrue(getRenderedContent().contains(
+        Assertions.assertTrue(getRenderedContent().contains(
                 "English page fragment"));
         endRequest();
     }
@@ -56,7 +56,7 @@ public class LocalizedCompositeComponentTestCase extends AbstractMyFacesRequestT
     {
         startViewRequest("/testSpanishLocalizedComposite.xhtml");
         processLifecycleExecuteAndRender();
-        Assert.assertTrue(getRenderedContent().contains(
+        Assertions.assertTrue(getRenderedContent().contains(
                 "Fragmento de pagina Espanol"));
         endRequest();
     }
@@ -66,7 +66,7 @@ public class LocalizedCompositeComponentTestCase extends AbstractMyFacesRequestT
     {
         startViewRequest("/testGermanLocalizedComposite.xhtml");
         processLifecycleExecuteAndRender();
-        Assert.assertTrue(getRenderedContent().contains(
+        Assertions.assertTrue(getRenderedContent().contains(
                 "Deutsches Seitenfragment"));
         endRequest();
     }

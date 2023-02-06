@@ -20,12 +20,14 @@ package org.apache.myfaces.application.viewstate;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
 import jakarta.faces.FacesException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class InitVector_CBCTestCase extends AbstractJsfTestCase
 {
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -49,7 +51,7 @@ public class InitVector_CBCTestCase extends AbstractJsfTestCase
             
             StateUtils.decrypt(sensitiveBytes, externalContext);
             
-            Assert.fail("MyFaces should throw a meaningful " +
+            Assertions.fail("MyFaces should throw a meaningful " +
                     "exception when users opt for CBC mode " +
                     "encryption w/out an initialization vector.");
             
@@ -67,7 +69,7 @@ public class InitVector_CBCTestCase extends AbstractJsfTestCase
             
             StateUtils.encrypt(sensitiveBytes, externalContext);
             
-            Assert.fail("MyFaces should throw a meaningful " +
+            Assertions.fail("MyFaces should throw a meaningful " +
                     "exception when users opt for CBC mode " +
                     "encryption w/out an initialization vector.");
             

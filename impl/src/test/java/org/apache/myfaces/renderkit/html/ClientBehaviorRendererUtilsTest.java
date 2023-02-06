@@ -23,7 +23,7 @@ import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorBase;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
@@ -35,12 +35,14 @@ import java.util.*;
 
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.test.mock.MockFacesContext;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 {
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -57,12 +59,12 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
         Collection<ClientBehaviorContext.Parameter> params = new ArrayList<ClientBehaviorContext.Parameter>();
         
         UIComponent component = new HtmlInputText();
-        Assert.assertEquals("", ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, component, 
+        Assertions.assertEquals("", ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, component, 
                 component.getClientId(facesContext),
                 ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, null,
                 null));
 
-        Assert.assertEquals("return faces.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'suppe');",
+        Assertions.assertEquals("return faces.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'suppe');",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, component.getClientId(facesContext), ClientBehaviorEvents.CLICK, 
                         params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
@@ -85,7 +87,7 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 
         behaviors.put(ClientBehaviorEvents.CLICK, Arrays.asList(submittingBehavior));
 
-        Assert.assertEquals("faces.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'script()', 'suppe'); return false;",
+        Assertions.assertEquals("faces.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'script()', 'suppe'); return false;",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, component.getClientId(facesContext),
                         ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
@@ -102,11 +104,11 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
         Collection<ClientBehaviorContext.Parameter> params = new ArrayList<ClientBehaviorContext.Parameter>();
         
         UIComponent component = new HtmlInputText();
-        Assert.assertEquals("", ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, component, 
+        Assertions.assertEquals("", ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, component, 
                 ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, null,
                 null));
 
-        Assert.assertEquals("return faces.util.chain(this, event,'huhn', 'suppe');",
+        Assertions.assertEquals("return faces.util.chain(this, event,'huhn', 'suppe');",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
@@ -128,7 +130,7 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 
         behaviors.put(ClientBehaviorEvents.CLICK, Arrays.asList(submittingBehavior));
 
-        Assert.assertEquals("faces.util.chain(this, event,'huhn', 'script()', 'suppe'); return false;",
+        Assertions.assertEquals("faces.util.chain(this, event,'huhn', 'script()', 'suppe'); return false;",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, 
                         ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
@@ -141,13 +143,13 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
     {
         MockFacesContext facesContext = new MockFacesContext();
         
-        Assert.assertEquals("var foo = &quot; \\\\&quot; test &quot;; alert(foo);",
+        Assertions.assertEquals("var foo = &quot; \\\\&quot; test &quot;; alert(foo);",
                 ClientBehaviorRendererUtils.escapeJavaScriptForChain(facesContext, "var foo = &quot; \\&quot; test &quot;; alert(foo);"));
         
-        Assert.assertEquals("var foo = \\'bar \\'",
+        Assertions.assertEquals("var foo = \\'bar \\'",
                 ClientBehaviorRendererUtils.escapeJavaScriptForChain(facesContext, "var foo = 'bar '"));
         
-        Assert.assertEquals("var foo = \\'bar \\\\\\' \\'",
+        Assertions.assertEquals("var foo = \\'bar \\\\\\' \\'",
                 ClientBehaviorRendererUtils.escapeJavaScriptForChain(facesContext, "var foo = 'bar \\' '"));
     }
 }

@@ -36,8 +36,10 @@ import jakarta.faces.view.ViewMetadata;
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ViewMetadataTestCase extends FaceletTestCase
 {
@@ -90,6 +92,7 @@ public class ViewMetadataTestCase extends FaceletTestCase
     }
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();        
@@ -98,6 +101,7 @@ public class ViewMetadataTestCase extends FaceletTestCase
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -124,7 +128,7 @@ public class ViewMetadataTestCase extends FaceletTestCase
         
         Collection<UIViewParameter> viewParameters = metadata.getViewParameters(root);
         
-        Assert.assertEquals(1, viewParameters.size());
+        Assertions.assertEquals(1, viewParameters.size());
         
         //root.setViewId("viewMetadata.xhtml");
         vdl.buildView(facesContext, root, "viewMetadata.xhtml");
@@ -136,6 +140,6 @@ public class ViewMetadataTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        System.out.print(sw.toString());
+        //System.out.print(sw.toString());
     }
 }

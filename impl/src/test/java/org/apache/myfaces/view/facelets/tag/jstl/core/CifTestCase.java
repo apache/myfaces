@@ -28,8 +28,8 @@ import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CifTestCase extends FaceletTestCase
 {
@@ -58,11 +58,11 @@ public class CifTestCase extends FaceletTestCase
         e.setManagement(true);
         vdl.buildView(facesContext, root,"if2.xhtml");
         UIComponent c = root.findComponent("form");
-        Assert.assertNotNull("form is null", c);
+        Assertions.assertNotNull(c);
         c = root.findComponent("start");
-        Assert.assertNotNull("start is null", c);
+        Assertions.assertNotNull( c);
         c = root.findComponent("end");
-        Assert.assertNotNull("end is null", c);
+        Assertions.assertNotNull(c);
                
         
         // now make sure it isn't
@@ -73,12 +73,12 @@ public class CifTestCase extends FaceletTestCase
         root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"if2.xhtml");
         c = root.findComponent("form");
-        Assert.assertNull("form is not null", c);
+        Assertions.assertNull(c);
         // start and end are from if2.xhtml, so they shouldn't be here!
         c = root.findComponent("start");
-        Assert.assertNotNull("start is null", c);
+        Assertions.assertNotNull(c);
         c = root.findComponent("end");
-        Assert.assertNotNull("end is null", c);
+        Assertions.assertNotNull(c);
         facesContext.getAttributes().remove(root);
 
     }
@@ -98,11 +98,11 @@ public class CifTestCase extends FaceletTestCase
         e.setManagement(false);
         vdl.buildView(facesContext, root,"if2.xhtml");
         UIComponent c = root.findComponent("form");
-        Assert.assertNull("form is not null", c);
+        Assertions.assertNull(c);
         c = root.findComponent("start");
-        Assert.assertNotNull("start is null", c);
+        Assertions.assertNotNull(c);
         c = root.findComponent("end");
-        Assert.assertNotNull("end is null", c);
+        Assertions.assertNotNull(c);
         //facesContext.getAttributes().remove(root);
         
         //rebuild if.xml but with form present now
@@ -110,12 +110,12 @@ public class CifTestCase extends FaceletTestCase
         root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"if2.xhtml");
         c = root.findComponent("form");
-        Assert.assertNotNull("form is null", c);
+        Assertions.assertNotNull(c);
         // start and end shouldn't be in the component tree
         c = root.findComponent("start");
-        Assert.assertNotNull("start is null", c);
+        Assertions.assertNotNull(c);
         c = root.findComponent("end");
-        Assert.assertNotNull("start is null", c);
+        Assertions.assertNotNull(c);
     }    
     
     @Test
@@ -133,12 +133,12 @@ public class CifTestCase extends FaceletTestCase
         e.setManagement(true);
         vdl.buildView(facesContext, root,"if3.xhtml");
         UIComponent c = root.findComponent("form");
-        Assert.assertNotNull("form is null", c);
-        Assert.assertNotNull(c.getFacet("header"));
+        Assertions.assertNotNull(c);
+        Assertions.assertNotNull(c.getFacet("header"));
         c = root.findComponent("start");
-        Assert.assertNotNull("start is null", c);
+        Assertions.assertNotNull(c);
         c = root.findComponent("end");
-        Assert.assertNotNull("end is null", c);
+        Assertions.assertNotNull(c);
         //facesContext.getAttributes().remove(root);
         
         //rebuild if.xml but with form present now
@@ -146,12 +146,12 @@ public class CifTestCase extends FaceletTestCase
         root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"if3.xhtml");
         c = root.findComponent("form");
-        Assert.assertNotNull("form is null", c);
-        Assert.assertNull(c.getFacet("header"));
+        Assertions.assertNotNull(c);
+        Assertions.assertNull(c.getFacet("header"));
         // start and end shouldn't be in the component tree
         c = root.findComponent("start");
-        Assert.assertNotNull("start is null", c);
+        Assertions.assertNotNull(c);
         c = root.findComponent("end");
-        Assert.assertNotNull("start is null", c);
+        Assertions.assertNotNull(c);
     }
 }

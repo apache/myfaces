@@ -24,9 +24,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -36,7 +36,7 @@ public class AbstractAttributeMapTest
 {
     private TestAttributeMap _testimpl;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -50,14 +50,14 @@ public class AbstractAttributeMapTest
     @Test
     public void testHashCodeEquals()
     {
-        Assert.assertEquals(_testimpl.hashCode(), _testimpl.hashCode());
+        Assertions.assertEquals(_testimpl.hashCode(), _testimpl.hashCode());
     }
 
     @Test
     public void testValues() throws Exception
     {
         _testimpl.put("myKey", "myValue");
-        Assert.assertTrue(_testimpl.values().contains("myValue"));
+        Assertions.assertTrue(_testimpl.values().contains("myValue"));
     }
 
     private static final class TestAttributeMap extends AbstractAttributeMap<Object>

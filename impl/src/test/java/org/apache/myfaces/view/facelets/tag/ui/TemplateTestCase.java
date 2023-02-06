@@ -23,8 +23,10 @@ import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases related to the Faceletes templating mechanism.
@@ -34,9 +36,10 @@ import org.junit.Test;
  */
 public class TemplateTestCase extends FaceletTestCase
 {
-
     private FastWriter _writer;
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -49,6 +52,7 @@ public class TemplateTestCase extends FaceletTestCase
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         _writer = null;
@@ -88,8 +92,8 @@ public class TemplateTestCase extends FaceletTestCase
         final String output = _writer.toString();
 
         // assertions
-        Assert.assertTrue(output.contains("<span id=\"body\">BODY</span>"));
-        Assert.assertTrue(output.contains("<span id=\"popupSpan\"><p>[POPUPCONTENT]</p></span>"));
+        Assertions.assertTrue(output.contains("<span id=\"body\">BODY</span>"));
+        Assertions.assertTrue(output.contains("<span id=\"popupSpan\"><p>[POPUPCONTENT]</p></span>"));
     }
 
     /**
@@ -124,7 +128,7 @@ public class TemplateTestCase extends FaceletTestCase
         final String output = _writer.toString();
 
         // assertions
-        Assert.assertTrue(output.contains("<span>defined content</span>"));
+        Assertions.assertTrue(output.contains("<span>defined content</span>"));
     }
 
     /**
@@ -161,7 +165,7 @@ public class TemplateTestCase extends FaceletTestCase
         final String output = _writer.toString();
 
         // assertions
-        Assert.assertTrue(output
+        Assertions.assertTrue(output
                 .contains("<span>default ui:insert content</span>"));
     }
 
@@ -185,7 +189,7 @@ public class TemplateTestCase extends FaceletTestCase
         output = output.replaceAll("(?s)<!--.*?-->", ""); // remove license headers for clarity
 
         // assertions
-        Assert.assertTrue(output.contains("<body>inner content</body>"));
+        Assertions.assertTrue(output.contains("<body>inner content</body>"));
     }
 
     /**
@@ -209,7 +213,7 @@ public class TemplateTestCase extends FaceletTestCase
         output = output.replaceAll("(?s)<!--.*?-->", ""); // remove license headers for clarity
 
         // assertions
-        Assert.assertTrue(output
+        Assertions.assertTrue(output
                 .contains("<body>inner fallback content</body>"));
     }
 

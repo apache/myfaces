@@ -48,8 +48,9 @@ import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockServletContext;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTestCase
 {
@@ -106,6 +107,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         RuntimeConfig.getCurrentInstance(externalContext).purge();
@@ -230,10 +232,10 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
                 UITestComponentA.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(1,componentResources.size());
+        Assertions.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assert.assertEquals("testResource.js",attrMap.get("name"));
-        Assert.assertEquals("testLib",attrMap.get("library"));
+        Assertions.assertEquals("testResource.js",attrMap.get("name"));
+        Assertions.assertEquals("testLib",attrMap.get("library"));
     }
     
     /**
@@ -260,16 +262,16 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
                 UITestComponentA.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(1,componentResources.size());
+        Assertions.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assert.assertEquals("testResource.js",attrMap.get("name"));
-        Assert.assertEquals("testLib",attrMap.get("library"));
+        Assertions.assertEquals("testResource.js",attrMap.get("name"));
+        Assertions.assertEquals("testLib",attrMap.get("library"));
         
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp);
         
-        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
         
         facesContext.getAttributes().remove("oam.test.TestRendererWrapper");
         facesContext.getAttributes().remove("oam.test.TestRendererA");
@@ -293,8 +295,8 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp2);
         
-        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
     }
     
     /**
@@ -320,15 +322,15 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
                 UITestComponentA.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(1,componentResources.size());
+        Assertions.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assert.assertEquals("testResource.js",attrMap.get("name"));
-        Assert.assertEquals("testLib",attrMap.get("library"));
+        Assertions.assertEquals("testResource.js",attrMap.get("name"));
+        Assertions.assertEquals("testLib",attrMap.get("library"));
         
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp);
         
-        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
         
         facesContext.getAttributes().remove("oam.test.TestRendererA");
         
@@ -351,7 +353,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp2);
         
-        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
     }
     
     /**
@@ -376,16 +378,16 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
                 UITestComponentA.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(1,componentResources.size());
+        Assertions.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assert.assertEquals("testResource.js",attrMap.get("name"));
-        Assert.assertEquals("testLib",attrMap.get("library"));
+        Assertions.assertEquals("testResource.js",attrMap.get("name"));
+        Assertions.assertEquals("testLib",attrMap.get("library"));
         
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp);
         
-        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
         
         facesContext.getAttributes().remove("oam.test.TestRendererWrapper");
         facesContext.getAttributes().remove("oam.test.TestRendererA");
@@ -409,8 +411,8 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp2);
         
-        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
     }
     
     /**
@@ -436,17 +438,17 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
                 UITestComponentA.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(1,componentResources.size());
+        Assertions.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assert.assertEquals("testResource.js",attrMap.get("name"));
-        Assert.assertEquals("testLib",attrMap.get("library"));
+        Assertions.assertEquals("testResource.js",attrMap.get("name"));
+        Assertions.assertEquals("testLib",attrMap.get("library"));
         
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp);
         
-        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererWrapper"));
-        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererWrapper"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
         
         facesContext.getAttributes().remove("oam.test.TestRendererWrapper");
         facesContext.getAttributes().remove("oam.test.TestRendererA");
@@ -470,9 +472,9 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
         // Invoke PostAddToViewEvent
         facesContext.getViewRoot().getChildren().add(comp2);
         
-        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
-        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererWrapper"));
-        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        Assertions.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererWrapper"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
     }
 
     @ResourceDependency(name = "testResource.js")
@@ -503,9 +505,9 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
         UITestComponentB comp = (UITestComponentB) application.createComponent(UITestComponentB.COMPONENT_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(1,componentResources.size());
+        Assertions.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assert.assertEquals("testResource.js",attrMap.get("name"));
+        Assertions.assertEquals("testResource.js",attrMap.get("name"));
     }
     
     @Test
@@ -525,7 +527,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
                 UITestComponentB.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(2,componentResources.size());
+        Assertions.assertEquals(2,componentResources.size());
         for (UIComponent component : componentResources)
         {
             if ("testResource.js".equals(component.getAttributes().get("name")))
@@ -534,7 +536,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
             }
             else
             {
-                Assert.fail("Not expected resource found"+component.getAttributes().get("name"));
+                Assertions.fail("Not expected resource found"+component.getAttributes().get("name"));
             }
         }
     }
@@ -554,9 +556,9 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
         
         List<UIComponent> componentResources = 
             facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(1,componentResources.size());
+        Assertions.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assert.assertEquals("testResource.js",attrMap.get("name"));
+        Assertions.assertEquals("testResource.js",attrMap.get("name"));
     }
     
     @Test
@@ -575,9 +577,9 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
         
         List<UIComponent> componentResources = 
             facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(1,componentResources.size());
+        Assertions.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        Assert.assertEquals("testResource.js",attrMap.get("name"));
+        Assertions.assertEquals("testResource.js",attrMap.get("name"));
     }
 
     @Test
@@ -601,7 +603,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
                 UITestComponentB.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(2,componentResources.size());
+        Assertions.assertEquals(2,componentResources.size());
         for (UIComponent component : componentResources)
         {
             if ("testResource.js".equals(component.getAttributes().get("name")))
@@ -610,7 +612,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
             }
             else
             {
-                Assert.fail("Not expected resource found"+component.getAttributes().get("name"));
+                Assertions.fail("Not expected resource found"+component.getAttributes().get("name"));
             }
         }
     }
@@ -638,7 +640,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
                 UITestComponentB.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(2,componentResources.size());
+        Assertions.assertEquals(2,componentResources.size());
         for (UIComponent component : componentResources)
         {
             if ("testResource.js".equals(component.getAttributes().get("name")))
@@ -647,7 +649,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
             }
             else
             {
-                Assert.fail("Not expected resource found"+component.getAttributes().get("name"));
+                Assertions.fail("Not expected resource found"+component.getAttributes().get("name"));
             }
         }
     }
@@ -657,7 +659,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
     {
         application.addConverter(java.util.Date.class, "jakarta.faces.convert.DateTimeConverter");
         Converter converter = application.createConverter(java.util.Date.class);
-        Assert.assertEquals(((DateTimeConverter) converter).getTimeZone(), TimeZone.getDefault());
+        Assertions.assertEquals(((DateTimeConverter) converter).getTimeZone(), TimeZone.getDefault());
     }
 
 }

@@ -25,8 +25,9 @@ import jakarta.faces.context.PartialViewContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -35,8 +36,9 @@ import org.junit.Test;
  */
 public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
 
-     @Override
-     public void setUp() throws Exception {
+    @Override
+    @BeforeEach
+    public void setUp() throws Exception {
          super.setUp();
          FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
          "org.apache.myfaces.context.PartialViewContextFactoryImpl");    
@@ -59,7 +61,7 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assert.assertTrue(pprContext.getExecuteIds().isEmpty());
+        Assertions.assertTrue(pprContext.getExecuteIds().isEmpty());
     }
 
     /**
@@ -74,7 +76,7 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assert.assertTrue(pprContext.getExecuteIds().isEmpty());
+        Assertions.assertTrue(pprContext.getExecuteIds().isEmpty());
     }
 
     /**
@@ -91,7 +93,7 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assert.assertTrue(pprContext.getExecuteIds().isEmpty());
+        Assertions.assertTrue(pprContext.getExecuteIds().isEmpty());
     }*/
 
     /**
@@ -108,8 +110,8 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assert.assertTrue("Length must be one",pprContext.getExecuteIds().size() == 1);
-        Assert.assertTrue("Value match", pprContext.getExecuteIds().iterator().next().equals("view1:panel1:_component1"));
+        Assertions.assertTrue(pprContext.getExecuteIds().size() == 1);
+        Assertions.assertTrue(pprContext.getExecuteIds().iterator().next().equals("view1:panel1:_component1"));
     }
 
     /**
@@ -127,13 +129,13 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
         
-        Assert.assertTrue("Length must be four", pprContext.getExecuteIds().size() == 4);
+        Assertions.assertTrue(pprContext.getExecuteIds().size() == 4);
 
         // FIXME: Latest spec uses a Collection so order is not garanteed
-//        Assert.assertTrue("Value match", pprContext.getExecuteIds().get(0).equals("view1:panel1:_component1"));
-//        Assert.assertTrue("Value match", pprContext.getExecuteIds().get(2).equals("component3"));
+//        Assertions.assertTrue("Value match", pprContext.getExecuteIds().get(0).equals("view1:panel1:_component1"));
+//        Assertions.assertTrue("Value match", pprContext.getExecuteIds().get(2).equals("component3"));
 //
 //
-//        Assert.assertTrue("Value match", pprContext.getExecuteIds().get(3).equals("component4"));
+//        Assertions.assertTrue("Value match", pprContext.getExecuteIds().get(3).equals("component4"));
     }
 }

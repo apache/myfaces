@@ -26,8 +26,8 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.validator.ValidatorException;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests to ensure that Generics work with CDI Converters and Validators
@@ -50,8 +50,8 @@ public class CDIGenericConverterValidatorTest extends AbstractMyFacesCDIRequestT
 
         result = converter.getAsString(facesContext, out, bean);
 
-        Assert.assertTrue("The value output should have matched: " + expectedValue + " but was : " + result,
-                result.equals(expectedValue));
+        Assertions.assertTrue(result.equals(expectedValue),
+                "The value output should have matched: " + expectedValue + " but was : " + result);
 
     }
 
@@ -68,7 +68,7 @@ public class CDIGenericConverterValidatorTest extends AbstractMyFacesCDIRequestT
         //Expects a ValidatorException 
         try {
             out.getValidators()[0].validate(facesContext, out, r);
-            Assert.fail("ValidatorException was not thrown. Custom Generic validator failed.");
+            Assertions.fail("ValidatorException was not thrown. Custom Generic validator failed.");
         } catch (ValidatorException e) {
             //Ignored
         }

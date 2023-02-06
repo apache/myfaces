@@ -29,8 +29,10 @@ import jakarta.faces.component.UICommand;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link MethodExpressionValueChangeListener}
@@ -46,6 +48,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
     private Object[] paramsWithValueChangeEvent;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception 
     {
         super.setUp();
@@ -61,6 +64,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception 
     {
         uiComponent = null;
@@ -142,8 +146,8 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
     {
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg);
         Object[] expectedState = new Object [] {methodExpressionOneArg, methodExpressionZeroArg};
-        Assert.assertTrue("Both MethodExpression instances described in the constructor must be saved.", 
-                Arrays.deepEquals(expectedState, (Object[]) methodExpressionValueChangeListener.saveState(facesContext)));
+        Assertions.assertTrue(Arrays.deepEquals(expectedState, (Object[]) methodExpressionValueChangeListener.saveState(facesContext)), 
+                "Both MethodExpression instances described in the constructor must be saved.");
     }
 
     @Test
@@ -158,11 +162,11 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
         // Test if the instance variables are set to the right values via reflection
         Field oneArgField = MethodExpressionValueChangeListener.class.getDeclaredField("methodExpressionOneArg");
         oneArgField.setAccessible(true);
-        Assert.assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionValueChangeListener));
+        Assertions.assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionValueChangeListener));
         
         Field zeroArgField = MethodExpressionValueChangeListener.class.getDeclaredField("methodExpressionZeroArg");
         zeroArgField.setAccessible(true);
-        Assert.assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionValueChangeListener));
+        Assertions.assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionValueChangeListener));
     }
 
 }

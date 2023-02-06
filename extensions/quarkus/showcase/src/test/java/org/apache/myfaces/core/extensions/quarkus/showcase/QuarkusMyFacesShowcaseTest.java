@@ -46,7 +46,7 @@ public class QuarkusMyFacesShowcaseTest
 
     private static WebClient webClient;
 
-    @BeforeAll
+    @BeforeEachAll
     public static void initWebClient()
     {
         webClient = new WebClient(BrowserVersion.CHROME);
@@ -58,7 +58,7 @@ public class QuarkusMyFacesShowcaseTest
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
     }
 
-    @AfterAll
+    @AfterEachAll
     public static void closeWebClient()
     {
         if (webClient != null)

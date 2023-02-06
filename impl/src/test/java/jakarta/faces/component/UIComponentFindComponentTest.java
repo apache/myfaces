@@ -27,8 +27,9 @@ import jakarta.faces.component.UIColumn;
 import jakarta.faces.component.UIData;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIPanel;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -43,16 +44,11 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
     protected UIComponentBase _testImpl;
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
         _testImpl = new UIOutput();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
     }
 
     @Test
@@ -61,8 +57,8 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         try
         {
             _testImpl.findComponent(null);
-            Assert.assertNull(_testImpl.findComponent(""));
-            Assert.fail();
+            Assertions.assertNull(_testImpl.findComponent(""));
+            Assertions.fail();
         }
         catch(NullPointerException e)
         {
@@ -70,14 +66,14 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         }
         catch(Exception e)
         {
-            Assert.fail();
+            Assertions.fail();
         }
     }
 
     @Test
     public void testWithEmptyExperession() throws Exception
     {
-        Assert.assertNull(_testImpl.findComponent(""));
+        Assertions.assertNull(_testImpl.findComponent(""));
     }
 
     @Test
@@ -93,7 +89,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         parent.getChildren().add(_testImpl);        
         _testImpl.setId("testimpl");
 
-        Assert.assertEquals(parent, _testImpl.findComponent(expression));
+        Assertions.assertEquals(parent, _testImpl.findComponent(expression));
     }
 
     @Test
@@ -110,7 +106,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         parent.getChildren().add(_testImpl);
         _testImpl.setId("testimpl");
         
-        Assert.assertEquals(_testImpl, _testImpl.findComponent(expression));
+        Assertions.assertEquals(_testImpl, _testImpl.findComponent(expression));
     }
 
     @Test
@@ -127,7 +123,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         child1_1.getChildren().add(_testImpl);
         _testImpl.setId("testimpl");
 
-        Assert.assertEquals(_testImpl, namingContainer.findComponent(expression));
+        Assertions.assertEquals(_testImpl, namingContainer.findComponent(expression));
     }
 
     @Test
@@ -170,12 +166,12 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         uiData.getChildren().add(column);
         column.getChildren().add(command);
 
-        Assert.assertNull(viewRoot.findComponent(":xx"));
-        Assert.assertEquals(uiData, viewRoot.findComponent(":data"));
-        Assert.assertEquals(column, viewRoot.findComponent(":data:column"));
-        Assert.assertEquals(command, viewRoot.findComponent(":data:command"));
-        Assert.assertEquals(command, viewRoot.findComponent("data:1:command"));
-        Assert.assertEquals(command, viewRoot.findComponent(":data:1:command"));
+        Assertions.assertNull(viewRoot.findComponent(":xx"));
+        Assertions.assertEquals(uiData, viewRoot.findComponent(":data"));
+        Assertions.assertEquals(column, viewRoot.findComponent(":data:column"));
+        Assertions.assertEquals(command, viewRoot.findComponent(":data:command"));
+        Assertions.assertEquals(command, viewRoot.findComponent("data:1:command"));
+        Assertions.assertEquals(command, viewRoot.findComponent(":data:1:command"));
     }
 
     @Test
@@ -191,10 +187,10 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         uiData.getChildren().add(column);
         column.getChildren().add(command);
 
-        Assert.assertNull(viewRoot.findComponent(":xx"));
-        Assert.assertNotNull(viewRoot.findComponent(":x"));
-        Assert.assertNotNull(viewRoot.findComponent(":x:column"));
-        Assert.assertNotNull(viewRoot.findComponent(":x:x"));
+        Assertions.assertNull(viewRoot.findComponent(":xx"));
+        Assertions.assertNotNull(viewRoot.findComponent(":x"));
+        Assertions.assertNotNull(viewRoot.findComponent(":x:column"));
+        Assertions.assertNotNull(viewRoot.findComponent(":x:x"));
     }
 
     @Test
@@ -211,7 +207,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         parent.getChildren().add(_testImpl);
         _testImpl.setId("testimpl");
 
-        Assert.assertEquals(_testImpl, namingContainer.findComponent(expression));
+        Assertions.assertEquals(_testImpl, namingContainer.findComponent(expression));
     }
 
 }

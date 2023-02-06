@@ -33,9 +33,9 @@ import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
      * Tests for
@@ -48,7 +48,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
     private ContextCallback _contextCallback;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -72,7 +72,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
         //EasyMock.expect(_testimpl.getClientId(EasyMock.same(facesContext))).andReturn("xxxId");
         _contextCallback.invokeContextCallback(EasyMock.same(facesContext), EasyMock.same(testimpl));
         _mocksControl.replay();
-        Assert.assertTrue(testimpl.invokeOnComponent(facesContext, "xxxId", _contextCallback));
+        Assertions.assertTrue(testimpl.invokeOnComponent(facesContext, "xxxId", _contextCallback));
         _mocksControl.verify();
     }
 
@@ -92,7 +92,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
             @Override
             public void run() throws Throwable
             {
-                Assert.assertTrue(testimpl.invokeOnComponent(facesContext, "xxxId", _contextCallback));
+                Assertions.assertTrue(testimpl.invokeOnComponent(facesContext, "xxxId", _contextCallback));
             }
         });
     }
@@ -107,7 +107,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
         //EasyMock.expect(_testimpl.getClientId(EasyMock.same(facesContext))).andReturn("xxxId");
         //EasyMock.expect(_testimpl.getFacetsAndChildren()).andReturn(emptyList.iterator());
         //_mocksControl.replay();
-        Assert.assertFalse(testimpl.invokeOnComponent(facesContext, "xxId", _contextCallback));
+        Assertions.assertFalse(testimpl.invokeOnComponent(facesContext, "xxId", _contextCallback));
         //_mocksControl.verify();
     }
 
@@ -125,7 +125,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
         //EasyMock.expect(child.invokeOnComponent(EasyMock.same(facesContext), EasyMock.eq(childId), EasyMock.same(_contextCallback))).andReturn(true);
         _contextCallback.invokeContextCallback(EasyMock.same(facesContext), EasyMock.same(child));
         _mocksControl.replay();
-        Assert.assertTrue(testimpl.invokeOnComponent(facesContext, "childId", _contextCallback));
+        Assertions.assertTrue(testimpl.invokeOnComponent(facesContext, "childId", _contextCallback));
         _mocksControl.verify();
     }
 

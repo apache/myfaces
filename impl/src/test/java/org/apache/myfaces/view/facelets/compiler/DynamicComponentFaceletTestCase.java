@@ -23,7 +23,7 @@ import java.util.Map;
 import jakarta.faces.component.UIComponent;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.faces.html.HtmlLibrary;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

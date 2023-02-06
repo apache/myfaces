@@ -24,8 +24,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class _AttachedStateWrapperTest
 {
@@ -36,8 +36,8 @@ public class _AttachedStateWrapperTest
     public void test_AttachedStateWrapper()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(null, null);
-        Assert.assertNull(subject.getWrappedStateObject());
-        Assert.assertNull(subject.getClazz());
+        Assertions.assertNull(subject.getWrappedStateObject());
+        Assertions.assertNull(subject.getClazz());
     }
 
     /*
@@ -47,7 +47,7 @@ public class _AttachedStateWrapperTest
     public void testGetClazz()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(String.class, "foo");
-        Assert.assertEquals(subject.getClazz(), String.class);
+        Assertions.assertEquals(subject.getClazz(), String.class);
     }
 
     /*
@@ -57,7 +57,7 @@ public class _AttachedStateWrapperTest
     public void testGetWrappedStateObject()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(String.class, "foo");
-        Assert.assertEquals(subject.getClazz(), String.class);
+        Assertions.assertEquals(subject.getClazz(), String.class);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class _AttachedStateWrapperTest
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         _AttachedStateWrapper blorg = (_AttachedStateWrapper) ois.readObject();
-        Assert.assertEquals(blorg.getWrappedStateObject(), subject.getWrappedStateObject());
+        Assertions.assertEquals(blorg.getWrappedStateObject(), subject.getWrappedStateObject());
         oos.close();
         ois.close();
     }

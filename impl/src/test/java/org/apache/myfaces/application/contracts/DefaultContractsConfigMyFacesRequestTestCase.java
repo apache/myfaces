@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Set;
 import jakarta.faces.application.StateManager;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
 {
@@ -57,27 +57,27 @@ public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFace
         Set<String> externalContextContracts = runtimeConfig.getExternalContextResourceLibraryContracts();
         Set<String> classloaderContracts = runtimeConfig.getClassLoaderResourceLibraryContracts();
 
-        Assert.assertTrue(allContracts.contains("yellow"));
-        Assert.assertTrue(allContracts.contains("blue"));
-        Assert.assertTrue(allContracts.contains("red"));
+        Assertions.assertTrue(allContracts.contains("yellow"));
+        Assertions.assertTrue(allContracts.contains("blue"));
+        Assertions.assertTrue(allContracts.contains("red"));
 
-        Assert.assertTrue(classloaderContracts.contains("yellow"));
-        Assert.assertTrue(classloaderContracts.contains("blue"));
-        Assert.assertTrue(externalContextContracts.contains("red"));
+        Assertions.assertTrue(classloaderContracts.contains("yellow"));
+        Assertions.assertTrue(classloaderContracts.contains("blue"));
+        Assertions.assertTrue(externalContextContracts.contains("red"));
         
         List<String> defaultContracts = runtimeConfig.getContractMappings().get("*");
         
-        Assert.assertTrue(defaultContracts.contains("yellow"));
-        Assert.assertTrue(defaultContracts.contains("blue"));
-        Assert.assertTrue(defaultContracts.contains("red"));
+        Assertions.assertTrue(defaultContracts.contains("yellow"));
+        Assertions.assertTrue(defaultContracts.contains("blue"));
+        Assertions.assertTrue(defaultContracts.contains("red"));
         
         processLifecycleExecute();
         executeBuildViewCycle(facesContext);
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assert.assertTrue(contractsList.contains("yellow"));
-        Assert.assertTrue(contractsList.contains("blue"));
-        Assert.assertTrue(contractsList.contains("red"));
+        Assertions.assertTrue(contractsList.contains("yellow"));
+        Assertions.assertTrue(contractsList.contains("blue"));
+        Assertions.assertTrue(contractsList.contains("red"));
         
         endRequest();
     }

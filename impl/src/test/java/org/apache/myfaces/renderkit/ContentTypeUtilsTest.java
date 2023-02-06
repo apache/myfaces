@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit;
 
 import org.apache.myfaces.renderkit.ContentTypeUtils;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ContentTypeUtilsTest extends AbstractJsfTestCase
 {
@@ -29,18 +29,18 @@ public class ContentTypeUtilsTest extends AbstractJsfTestCase
     @Test
     public void testContainsContentType() throws Exception
     {
-        Assert.assertTrue(ContentTypeUtils.containsContentType(
+        Assertions.assertTrue(ContentTypeUtils.containsContentType(
                 ContentTypeUtils.HTML_CONTENT_TYPE, ContentTypeUtils.HTML_ALLOWED_CONTENT_TYPES));
-        Assert.assertTrue(ContentTypeUtils.containsContentType(
+        Assertions.assertTrue(ContentTypeUtils.containsContentType(
                 ContentTypeUtils.ANY_CONTENT_TYPE, ContentTypeUtils.HTML_ALLOWED_CONTENT_TYPES));
-        Assert.assertTrue(ContentTypeUtils.containsContentType(
+        Assertions.assertTrue(ContentTypeUtils.containsContentType(
                 ContentTypeUtils.TEXT_ANY_CONTENT_TYPE, ContentTypeUtils.HTML_ALLOWED_CONTENT_TYPES));
         
-        Assert.assertTrue(ContentTypeUtils.containsContentType(
+        Assertions.assertTrue(ContentTypeUtils.containsContentType(
                 ContentTypeUtils.XHTML_CONTENT_TYPE, ContentTypeUtils.XHTML_ALLOWED_CONTENT_TYPES));
-        Assert.assertTrue(ContentTypeUtils.containsContentType(
+        Assertions.assertTrue(ContentTypeUtils.containsContentType(
                 ContentTypeUtils.APPLICATION_XML_CONTENT_TYPE, ContentTypeUtils.XHTML_ALLOWED_CONTENT_TYPES));
-        Assert.assertTrue(ContentTypeUtils.containsContentType(
+        Assertions.assertTrue(ContentTypeUtils.containsContentType(
                 ContentTypeUtils.TEXT_XML_CONTENT_TYPE, ContentTypeUtils.XHTML_ALLOWED_CONTENT_TYPES));
     }
     
@@ -49,34 +49,34 @@ public class ContentTypeUtilsTest extends AbstractJsfTestCase
     {
         String [] splittedArray = ContentTypeUtils.splitContentTypeListString("text/*, text/html ");
         
-        Assert.assertTrue(ContentTypeUtils.containsContentType(
+        Assertions.assertTrue(ContentTypeUtils.containsContentType(
                 ContentTypeUtils.HTML_CONTENT_TYPE, splittedArray));
-        Assert.assertTrue(ContentTypeUtils.containsContentType(
+        Assertions.assertTrue(ContentTypeUtils.containsContentType(
                 ContentTypeUtils.TEXT_ANY_CONTENT_TYPE, splittedArray));
         
         splittedArray = ContentTypeUtils.splitContentTypeListString(" text/x-dvi; q=.8; mxb=100000; mxt=5.0, text/x-c");
-        Assert.assertTrue(ContentTypeUtils.containsContentType(
+        Assertions.assertTrue(ContentTypeUtils.containsContentType(
                 "text/x-dvi", splittedArray));
-        Assert.assertTrue(ContentTypeUtils.containsContentType(
+        Assertions.assertTrue(ContentTypeUtils.containsContentType(
                 "text/x-c", splittedArray));
     }
     
     public void testChooseWriterContentType() throws Exception
     {
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, 
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, 
                 ContentTypeUtils.chooseWriterContentType(
                         "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", 
                         ContentTypeUtils.HTML_ALLOWED_CONTENT_TYPES,
                         ContentTypeUtils.XHTML_ALLOWED_CONTENT_TYPES));
 
-        Assert.assertEquals(ContentTypeUtils.XHTML_CONTENT_TYPE, 
+        Assertions.assertEquals(ContentTypeUtils.XHTML_CONTENT_TYPE, 
                 ContentTypeUtils.chooseWriterContentType(
                         "application/xml, text/xml , */*; q=0.01", 
                         ContentTypeUtils.HTML_ALLOWED_CONTENT_TYPES,
                         ContentTypeUtils.XHTML_ALLOWED_CONTENT_TYPES));
 
         //In ajax request application/xml and text/xml does not match.
-        Assert.assertNull(ContentTypeUtils.chooseWriterContentType(
+        Assertions.assertNull(ContentTypeUtils.chooseWriterContentType(
                         "application/xml, text/xml, */*; q=0.01", 
                         ContentTypeUtils.HTML_ALLOWED_CONTENT_TYPES,
                         ContentTypeUtils.AJAX_XHTML_ALLOWED_CONTENT_TYPES));

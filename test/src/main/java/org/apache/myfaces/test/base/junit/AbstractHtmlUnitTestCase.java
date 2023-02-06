@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
 
-import org.junit.After;
-import org.junit.Before;
+import  org.junit.jupiter.api.AfterEach;
+import  org.junit.jupiter.api.BeforeEach;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -82,7 +82,7 @@ public abstract class AbstractHtmlUnitTestCase
      *
      * @exception Exception if an error occurs
      */
-    @Before
+    @BeforeEach
     protected void setUp() throws Exception
     {
 
@@ -98,7 +98,7 @@ public abstract class AbstractHtmlUnitTestCase
     /**
      * <p>Tear down instance variables required by this test case.</p>
      */
-    @After
+    @AfterEach
     protected void tearDown() throws Exception
     {
 

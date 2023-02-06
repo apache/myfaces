@@ -25,7 +25,7 @@ import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.resource.ClassLoaderResourceLoader;
 import org.apache.myfaces.resource.ExternalContextResourceLoader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -63,7 +63,7 @@ public class FlowResourceHandlerMyFacesRequestTestCase extends AbstractMyFacesRe
         for (Iterator<String> it = loader.iterator(facesContext, "", 1); it.hasNext();)
         {
             String path = it.next();
-            System.out.println(path);
+            //System.out.println(path);
         }
     }
     
@@ -78,7 +78,7 @@ public class FlowResourceHandlerMyFacesRequestTestCase extends AbstractMyFacesRe
         for (Iterator<String> it = loader.iterator(facesContext, "", 1); it.hasNext();)
         {
             String path = it.next();
-            System.out.println(path);
+            //System.out.println(path);
         }
     }
     
@@ -91,7 +91,7 @@ public class FlowResourceHandlerMyFacesRequestTestCase extends AbstractMyFacesRe
         Stream<String> stream = facesContext.getApplication().getResourceHandler().getViewResources(
                 facesContext, "/", 2);
         stream.forEach(s -> {
-            System.out.println(s);
+            //System.out.println(s);
         });
         
     }

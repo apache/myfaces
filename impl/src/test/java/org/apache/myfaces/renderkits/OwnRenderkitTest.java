@@ -30,8 +30,10 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author martin.haimberger
@@ -46,6 +48,8 @@ public class OwnRenderkitTest extends AbstractJsfTestCase {
         isOwnRenderKit = true;
     }
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         addRenderKit();
@@ -63,6 +67,8 @@ public class OwnRenderkitTest extends AbstractJsfTestCase {
 
     }
 
+    @Override
+    @AfterEach
     public void tearDown() throws Exception {
         super.tearDown();
         inputText = null;
@@ -76,7 +82,7 @@ public class OwnRenderkitTest extends AbstractJsfTestCase {
         inputText.encodeEnd(facesContext);
         facesContext.renderResponse();
 
-        Assert.assertTrue(isOwnRenderKit);
+        Assertions.assertTrue(isOwnRenderKit);
     }
 
 

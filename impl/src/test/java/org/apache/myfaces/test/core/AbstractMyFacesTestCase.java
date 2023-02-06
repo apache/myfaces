@@ -84,9 +84,9 @@ import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockWebContainer;
 import org.apache.myfaces.webapp.FacesInitializerImpl;
 import org.apache.myfaces.webapp.StartupServletContextListener;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
+import  org.junit.jupiter.api.AfterEach;
+import  org.junit.jupiter.api.BeforeEach;
 import org.xml.sax.SAXException;
 
 /**
@@ -146,7 +146,7 @@ public abstract class AbstractMyFacesTestCase
     /**
      * <p>Set up instance variables required by this test case.</p>
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         // Set up a new thread context class loader
@@ -390,7 +390,7 @@ public abstract class AbstractMyFacesTestCase
         tearDownMyFaces();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
         tearDownServlets();
@@ -424,7 +424,7 @@ public abstract class AbstractMyFacesTestCase
         }
     }    
     
-    @AfterClass
+    @AfterAll
     public static void tearDownClass()
     {
         standardFacesConfig = null;

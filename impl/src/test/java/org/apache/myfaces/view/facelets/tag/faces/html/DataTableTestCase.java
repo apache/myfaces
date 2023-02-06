@@ -34,7 +34,7 @@ import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Example;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DataTableTestCase extends FaceletTestCase
 {

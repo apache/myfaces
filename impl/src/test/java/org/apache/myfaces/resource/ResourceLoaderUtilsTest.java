@@ -19,29 +19,29 @@
 package org.apache.myfaces.resource;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ResourceLoaderUtilsTest {
     
     @Test
     public void testFormatDateHeader()
     {
-        Assert.assertEquals("Tue, 16 Jul 2019 08:10:19 GMT",
+        Assertions.assertEquals("Tue, 16 Jul 2019 08:10:19 GMT",
                 ResourceLoaderUtils.formatDateHeader(1563264619000L));
         
-        Assert.assertEquals("Tue, 16 Jul 2019 08:29:38 GMT",
+        Assertions.assertEquals("Tue, 16 Jul 2019 08:29:38 GMT",
                 ResourceLoaderUtils.formatDateHeader(1563265778653L));
     }
     
     @Test
     public void testParseDateHeader()
     {
-        Assert.assertEquals(1563264619000L,
+        Assertions.assertEquals(1563264619000L,
                 ResourceLoaderUtils.parseDateHeader("Tue, 16 Jul 2019 08:10:19 GMT"),
                 2000);
         
-        Assert.assertEquals(1563265778653L,
+        Assertions.assertEquals(1563265778653L,
                 ResourceLoaderUtils.parseDateHeader("Tue, 16 Jul 2019 08:29:38 GMT"),
                 2000);
     }

@@ -23,11 +23,9 @@ import jakarta.faces.application.Application;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
-import junit.framework.TestCase;
-
 import org.apache.myfaces.test.mock.MockFacesContext12;
-import org.junit.After;
-import org.junit.Before;
+import  org.junit.jupiter.api.AfterEach;
+import  org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
 /**
@@ -41,7 +39,7 @@ public abstract class FacesTestCase
     protected Application _application;
     protected ELContext _elContext;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         _externalContext = Mockito.mock(ExternalContext.class);
@@ -51,7 +49,7 @@ public abstract class FacesTestCase
         _elContext = Mockito.mock(ELContext.class);        
     }
     
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
         MockFacesContext12.setCurrentInstance(null);

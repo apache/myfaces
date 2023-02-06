@@ -38,9 +38,9 @@ import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ViewHandlerTest
 {
@@ -49,7 +49,7 @@ public class ViewHandlerTest
     private ExternalContext _externalContext;
     private TestViewHandler _testimpl;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();
@@ -70,7 +70,7 @@ public class ViewHandlerTest
         expect(_externalContext.getRequestHeaderMap()).andReturn(map);
         expect(map.get(eq("Content-Type"))).andReturn("text/html;charset=UTF-8");
         _mocksControl.replay();
-        Assert.assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
+        Assertions.assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 
@@ -86,7 +86,7 @@ public class ViewHandlerTest
         expect(_externalContext.getRequestHeaderMap()).andReturn(emptyMap);
         expect(_externalContext.getSession(eq(false))).andReturn(null);
         _mocksControl.replay();
-        Assert.assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
+        Assertions.assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 
@@ -106,7 +106,7 @@ public class ViewHandlerTest
         expect(_externalContext.getSessionMap()).andReturn(map);
         expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn(null);
         _mocksControl.replay();
-        Assert.assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
+        Assertions.assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 
@@ -126,7 +126,7 @@ public class ViewHandlerTest
         expect(_externalContext.getSessionMap()).andReturn(map);
         expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn("UTF-8");
         _mocksControl.replay();
-        Assert.assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
+        Assertions.assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 

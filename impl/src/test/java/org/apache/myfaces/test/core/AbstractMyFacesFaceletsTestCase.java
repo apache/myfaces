@@ -23,6 +23,8 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.view.ViewDeclarationLanguageFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * <p>Abstract JUnit test case base class, which provide a var called vdl, that
@@ -37,6 +39,7 @@ import jakarta.faces.view.ViewDeclarationLanguageFactory;
 public abstract class AbstractMyFacesFaceletsTestCase extends AbstractMyFacesRequestTestCase
 {
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -71,6 +74,7 @@ public abstract class AbstractMyFacesFaceletsTestCase extends AbstractMyFacesReq
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         endRequest();

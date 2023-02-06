@@ -26,10 +26,10 @@ import java.util.Map;
 
 import org.apache.myfaces.test.mock.api.Mock2ApplicationFactory;
 import org.apache.myfaces.test.mock.api.MockApplicationFactory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import  org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FactoryFinderTest
 {
@@ -38,7 +38,7 @@ public class FactoryFinderTest
     {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         // this needs to be called *before* the first Test test is run,
@@ -47,7 +47,7 @@ public class FactoryFinderTest
         FactoryFinder.releaseFactories();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
         // call this again so there is no possibility of messing up tests that will
@@ -113,12 +113,12 @@ public class FactoryFinderTest
         try
         {
             Object factory = FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            Assert.assertNotNull(factory);
-            Assert.assertTrue(factory.getClass().equals(MockApplicationFactory.class));
+            Assertions.assertNotNull(factory);
+            Assertions.assertTrue(factory.getClass().equals(MockApplicationFactory.class));
         }
         catch (IllegalStateException e)
         {
-            Assert.fail("Should not throw an illegal state exception");
+            Assertions.fail("Should not throw an illegal state exception");
         }
     }
 
@@ -134,16 +134,16 @@ public class FactoryFinderTest
         try
         {
             Object factory1 = FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            Assert.assertNotNull(factory1);
-            Assert.assertTrue(factory1.getClass().equals(MockApplicationFactory.class));
+            Assertions.assertNotNull(factory1);
+            Assertions.assertTrue(factory1.getClass().equals(MockApplicationFactory.class));
             Object factory2 = FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            Assert.assertNotNull(factory2);
-            Assert.assertTrue(factory2.getClass().equals(MockApplicationFactory.class));
-            Assert.assertEquals(factory1, factory2);
+            Assertions.assertNotNull(factory2);
+            Assertions.assertTrue(factory2.getClass().equals(MockApplicationFactory.class));
+            Assertions.assertEquals(factory1, factory2);
         }
         catch (IllegalStateException e)
         {
-            Assert.fail("Should not throw an illegal state exception");
+            Assertions.fail("Should not throw an illegal state exception");
         }
     }
 
@@ -159,11 +159,11 @@ public class FactoryFinderTest
         try
         {
             FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-            Assert.fail("Should have thrown an illegal state exception");
+            Assertions.fail("Should have thrown an illegal state exception");
         }
         catch (IllegalArgumentException e)
         {
-            Assert.assertNotNull(e.getMessage());
+            Assertions.assertNotNull(e.getMessage());
         }
     }
 
@@ -177,12 +177,12 @@ public class FactoryFinderTest
         try
         {
             FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            Assert.fail("Should have thrown an illegal state exception");
+            Assertions.fail("Should have thrown an illegal state exception");
         }
         catch (IllegalStateException e)
         {
-            Assert.assertNotNull(e.getMessage());
-            Assert.assertTrue(e.getMessage().startsWith("No Factories configured for this Application"));
+            Assertions.assertNotNull(e.getMessage());
+            Assertions.assertTrue(e.getMessage().startsWith("No Factories configured for this Application"));
         }
     }
 
@@ -195,11 +195,11 @@ public class FactoryFinderTest
         try
         {
             FactoryFinder.setFactory("BogusFactoryName", MockApplicationFactory.class.getName());
-            Assert.fail("Should have thrown an illegal argument exception");
+            Assertions.fail("Should have thrown an illegal argument exception");
         }
         catch (IllegalArgumentException e)
         {
-            Assert.assertNotNull(e.getMessage());
+            Assertions.assertNotNull(e.getMessage());
         }
     }
 
@@ -212,12 +212,12 @@ public class FactoryFinderTest
         try
         {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
         }
         catch (IllegalArgumentException e)
         {
-            Assert.fail("Should not throw an illegal argument exception");
+            Assertions.fail("Should not throw an illegal argument exception");
         }
     }
 
@@ -231,23 +231,23 @@ public class FactoryFinderTest
         try
         {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
-            Assert.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assertions.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 Mock2ApplicationFactory.class.getName()));
             // getFactory should cause setFactory to stop changing the
             // registered classes
             FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
             // this should essentially be a no-op
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, Mock2ApplicationFactory.class.getName());
-            Assert.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assertions.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 Mock2ApplicationFactory.class.getName()));
-            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
         }
         catch (IllegalArgumentException e)
         {
-            Assert.fail("Should not throw an illegal argument exception");
+            Assertions.fail("Should not throw an illegal argument exception");
         }
     }
 
@@ -261,19 +261,19 @@ public class FactoryFinderTest
         try
         {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
-            Assert.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assertions.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 Mock2ApplicationFactory.class.getName()));
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, Mock2ApplicationFactory.class.getName());
-            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 Mock2ApplicationFactory.class.getName()));
-            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
         }
         catch (IllegalArgumentException e)
         {
-            Assert.fail("Should not throw an illegal argument exception");
+            Assertions.fail("Should not throw an illegal argument exception");
         }
     }
 

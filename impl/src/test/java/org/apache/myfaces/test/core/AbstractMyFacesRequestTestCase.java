@@ -31,6 +31,8 @@ import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.apache.myfaces.test.mock.MockHttpSession;
 import org.apache.myfaces.test.mock.MockHttpSessionProxy;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * <p>Abstract JUnit test case base class, with method to setup/teardown a request.
@@ -46,6 +48,7 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
 {
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -53,6 +56,7 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         endRequest();

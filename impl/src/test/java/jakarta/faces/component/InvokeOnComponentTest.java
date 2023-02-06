@@ -33,8 +33,10 @@ import jakarta.faces.model.DataModel;
 import jakarta.faces.model.ListDataModel;
 
 import org.apache.myfaces.dummy.data.Data;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class InvokeOnComponentTest extends AbstractComponentTest
@@ -43,6 +45,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
     ContextCallback cc = null;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -50,6 +53,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         // mock.verify();
@@ -71,7 +75,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        Assert.assertTrue(val.get());
+        Assertions.assertTrue(val.get());
     }
     
     @Test
@@ -88,7 +92,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        Assert.assertTrue(val.get());
+        Assertions.assertTrue(val.get());
     }
     
     @Test
@@ -110,7 +114,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        Assert.assertTrue(val.get());
+        Assertions.assertTrue(val.get());
     }
     
     @Test
@@ -132,7 +136,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        Assert.assertTrue(val.get());
+        Assertions.assertTrue(val.get());
     }
     
     @Test

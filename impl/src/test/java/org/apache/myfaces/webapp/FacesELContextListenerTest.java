@@ -28,7 +28,7 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.easymock.IMocksControl;
 import org.easymock.classextension.EasyMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)

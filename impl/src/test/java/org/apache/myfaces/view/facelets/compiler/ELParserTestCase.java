@@ -28,7 +28,8 @@ import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ELParserTestCase extends FaceletTestCase {
 
@@ -70,6 +71,8 @@ public class ELParserTestCase extends FaceletTestCase {
         //System.out.println(fw);
     }
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         this.target = null;

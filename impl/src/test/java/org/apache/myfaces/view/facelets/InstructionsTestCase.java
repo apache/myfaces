@@ -23,7 +23,7 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InstructionsTestCase extends FaceletTestCase
 {

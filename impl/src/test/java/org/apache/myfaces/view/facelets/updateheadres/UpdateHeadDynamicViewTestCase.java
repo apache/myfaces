@@ -24,8 +24,8 @@ import jakarta.faces.component.UIComponent;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTestCase
 {
@@ -60,7 +60,7 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecuteAndRender();
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assert.assertFalse(text.contains("update id=\"jakarta.faces.ViewHead\""));
+        Assertions.assertFalse(text.contains("update id=\"jakarta.faces.ViewHead\""));
         //System.out.println(text);
         endRequest();
     }
@@ -80,8 +80,8 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assert.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
-        Assert.assertTrue(text.contains("alert(\"script2\");"));
+        Assertions.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
+        Assertions.assertTrue(text.contains("alert(\"script2\");"));
         //System.out.println(text);
         endRequest();
     }
@@ -101,9 +101,9 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assert.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
-        Assert.assertTrue(text.contains("alert(\"script3\");"));
-        Assert.assertTrue(text.contains("link rel=\"stylesheet\" type=\"text/css\" href=\"/test/faces/jakarta.faces.resource/style3.css\""));
+        Assertions.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
+        Assertions.assertTrue(text.contains("alert(\"script3\");"));
+        Assertions.assertTrue(text.contains("link rel=\"stylesheet\" type=\"text/css\" href=\"/test/faces/jakarta.faces.resource/style3.css\""));
         //System.out.println(text);
         endRequest();
     }

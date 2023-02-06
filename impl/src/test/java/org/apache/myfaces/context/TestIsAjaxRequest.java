@@ -22,8 +22,9 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the facesContext isAjaxRequest
@@ -37,6 +38,7 @@ public class TestIsAjaxRequest extends AbstractJsfTestCase {
     FacesContext context = null;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
@@ -52,13 +54,13 @@ public class TestIsAjaxRequest extends AbstractJsfTestCase {
     @Test
     public void testNoEntry() {
 
-        Assert.assertFalse("no ajax request found", context.getPartialViewContext().isAjaxRequest());
+        Assertions.assertFalse(context.getPartialViewContext().isAjaxRequest());
     }
 
     public void testEntry() {
         request.addHeader("Faces-Request", "partial/ajax");
         request.addParameter("jakarta.faces.partial.ajax","true");
-        Assert.assertTrue("no ajax request found", context.getPartialViewContext().isAjaxRequest());
+        Assertions.assertTrue(context.getPartialViewContext().isAjaxRequest());
     }
 
 }

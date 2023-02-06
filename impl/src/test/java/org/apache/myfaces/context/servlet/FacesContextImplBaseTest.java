@@ -18,26 +18,14 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
@@ -48,20 +36,7 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
  * @author Bill Lucy (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@RunWith(JUnit4.class)
 public class FacesContextImplBaseTest extends FaceletTestCase {
-
-    @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @After
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     /**
      * Verify that the Map returned by UIViewRoot.getViewMap() is cleared when a new view root is set,
@@ -80,7 +55,7 @@ public class FacesContextImplBaseTest extends FaceletTestCase {
 
         // set a new view root, which will cause the old view root's ViewMap to be cleared if BUILDING_VIEW_METADATA is not set
         fci.setViewRoot(secondRoot);
-        Assert.assertEquals("The ViewMap was not cleared as expected", 0, viewMap.size());
+        Assertions.assertEquals(0, viewMap.size(), "The ViewMap was not cleared as expected");
     }
 
     /**
@@ -100,6 +75,6 @@ public class FacesContextImplBaseTest extends FaceletTestCase {
 
         // set a new view root - the old view root's ViewMap should NOT be cleared
         fci.setViewRoot(secondRoot);
-        Assert.assertEquals("The ViewMap was incorrectly cleared while the BUILDING_VIEW_METADATA attribute was set", 1, viewMap.size());
+        Assertions.assertEquals(1, viewMap.size(), "The ViewMap was incorrectly cleared while the BUILDING_VIEW_METADATA attribute was set");
     }
 }

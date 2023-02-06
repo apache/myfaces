@@ -22,22 +22,22 @@ import jakarta.faces.context.FacesContext;
 
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.After;
-import org.junit.Before;
+import  org.junit.jupiter.api.AfterEach;
+import  org.junit.jupiter.api.BeforeEach;
 
 public abstract class UIComponentTestBase
 {
     protected IMocksControl _mocksControl;
     protected FacesContext _facesContext;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         _mocksControl = EasyMock.createNiceControl();
         _facesContext = _mocksControl.createMock(FacesContext.class);
     }
     
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
         _mocksControl = null;

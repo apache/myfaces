@@ -30,8 +30,10 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -45,6 +47,7 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
     private HtmlPanelGroup panelGroup;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -76,6 +79,7 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
     }
 
     @Override
+    @AfterEach
     public void tearDown()throws Exception
     {
         super.tearDown();
@@ -106,7 +110,7 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 panelGroup, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -118,7 +122,7 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 panelGroup, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -130,13 +134,13 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
         {
             panelGroup.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assert.assertTrue(output.matches(".+id=\".+\".+"));
-            Assert.assertTrue(output.contains("myfaces.ab"));
+            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
+            Assertions.assertTrue(output.contains("myfaces.ab"));
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 }

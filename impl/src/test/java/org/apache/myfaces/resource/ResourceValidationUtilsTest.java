@@ -20,80 +20,80 @@ package org.apache.myfaces.resource;
 
 import org.apache.myfaces.resource.ResourceValidationUtils;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ResourceValidationUtilsTest extends AbstractJsfTestCase
 {
     @Test
     public void testLocaleNames() throws Exception
     {
-        Assert.assertTrue(ResourceValidationUtils.isValidLocalePrefix("es_CO"));
-        Assert.assertTrue(ResourceValidationUtils.isValidLocalePrefix("de"));
-        Assert.assertTrue(ResourceValidationUtils.isValidLocalePrefix("de_AT"));
-        Assert.assertTrue(ResourceValidationUtils.isValidLocalePrefix("zh_CN_id"));
-        Assert.assertTrue(ResourceValidationUtils.isValidLocalePrefix("zh_CN_23"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidLocalePrefix("es_CO"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidLocalePrefix("de"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidLocalePrefix("de_AT"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidLocalePrefix("zh_CN_id"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidLocalePrefix("zh_CN_23"));
         
-        Assert.assertFalse(ResourceValidationUtils.isValidLocalePrefix("de-AT"));
-        Assert.assertFalse(ResourceValidationUtils.isValidLocalePrefix("."));
-        Assert.assertFalse(ResourceValidationUtils.isValidLocalePrefix(".."));
-        Assert.assertFalse(ResourceValidationUtils.isValidLocalePrefix("zh_"+'\t'+"CN"));
-        Assert.assertFalse(ResourceValidationUtils.isValidLocalePrefix("\\.."));
-        Assert.assertFalse(ResourceValidationUtils.isValidLocalePrefix("/.."));
-        Assert.assertFalse(ResourceValidationUtils.isValidLocalePrefix("../"));
-        Assert.assertFalse(ResourceValidationUtils.isValidLocalePrefix("..\\"));
-        Assert.assertFalse(ResourceValidationUtils.isValidLocalePrefix(".."));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLocalePrefix("de-AT"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLocalePrefix("."));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLocalePrefix(".."));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLocalePrefix("zh_"+'\t'+"CN"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLocalePrefix("\\.."));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLocalePrefix("/.."));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLocalePrefix("../"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLocalePrefix("..\\"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLocalePrefix(".."));
     }
     
     @Test
     public void testLibraryNames() throws Exception
     {
-        Assert.assertTrue(ResourceValidationUtils.isValidLibraryName("mylib"));
-        Assert.assertTrue(ResourceValidationUtils.isValidLibraryName("org.apache.myfaces"));
-        Assert.assertTrue(ResourceValidationUtils.isValidLibraryName("some-js-lib"));
-        Assert.assertTrue(ResourceValidationUtils.isValidLibraryName("some_js_lib"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidLibraryName("mylib"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidLibraryName("org.apache.myfaces"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidLibraryName("some-js-lib"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidLibraryName("some_js_lib"));
         
-        Assert.assertTrue(ResourceValidationUtils.isValidLibraryName("components/panels", true));
-        Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("components/panels", false));
+        Assertions.assertTrue(ResourceValidationUtils.isValidLibraryName("components/panels", true));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLibraryName("components/panels", false));
 
-        Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("/mylib"));
-        Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("mylib"+'\t'+"22"));
-        Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("\\mylib"));
-        Assert.assertFalse(ResourceValidationUtils.isValidLibraryName(".."));
-        Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("..", true));
-        Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("some:js"));
-        Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("some?js"));
-        Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("some&js"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLibraryName("/mylib"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLibraryName("mylib"+'\t'+"22"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLibraryName("\\mylib"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLibraryName(".."));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLibraryName("..", true));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLibraryName("some:js"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLibraryName("some?js"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidLibraryName("some&js"));
     }
 
     @Test
     public void testResourceNames() throws Exception
     {
-        Assert.assertTrue(ResourceValidationUtils.isValidResourceName("myres"));
-        Assert.assertTrue(ResourceValidationUtils.isValidResourceName("myres.css"));
-        Assert.assertTrue(ResourceValidationUtils.isValidResourceName("/myres"));
-        Assert.assertTrue(ResourceValidationUtils.isValidResourceName("/mydir/./myres.css"));
-        Assert.assertTrue(ResourceValidationUtils.isValidResourceName("org.apache.myfaces"));
-        Assert.assertTrue(ResourceValidationUtils.isValidResourceName("my_res_file.css"));
-        Assert.assertTrue(ResourceValidationUtils.isValidResourceName("my-res-file.css"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidResourceName("myres"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidResourceName("myres.css"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidResourceName("/myres"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidResourceName("/mydir/./myres.css"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidResourceName("org.apache.myfaces"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidResourceName("my_res_file.css"));
+        Assertions.assertTrue(ResourceValidationUtils.isValidResourceName("my-res-file.css"));
         
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("myres"+'\t'+"22"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("\\myres"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName(".."));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("../"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("/.."));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("\\.."));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("..\\"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("myres.css/.."));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("myres.css\\.."));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("../myres.css"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("..\\myres.css"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("my/../res.css"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("my\\../res.css"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("my/..\\res.css"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("/mydir/../myres.css"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("my_res:file.css"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("my_res?file.css"));
-        Assert.assertFalse(ResourceValidationUtils.isValidResourceName("my_res&file.css"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("myres"+'\t'+"22"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("\\myres"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName(".."));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("../"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("/.."));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("\\.."));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("..\\"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("myres.css/.."));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("myres.css\\.."));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("../myres.css"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("..\\myres.css"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("my/../res.css"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("my\\../res.css"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("my/..\\res.css"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("/mydir/../myres.css"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("my_res:file.css"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("my_res?file.css"));
+        Assertions.assertFalse(ResourceValidationUtils.isValidResourceName("my_res&file.css"));
     }
 }

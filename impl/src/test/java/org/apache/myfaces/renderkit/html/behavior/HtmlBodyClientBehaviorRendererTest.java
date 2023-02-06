@@ -25,8 +25,10 @@ import jakarta.faces.component.html.HtmlBody;
 
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -37,6 +39,7 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
     private HtmlRenderedClientEventAttr[] attrs = null;
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -50,6 +53,7 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -86,12 +90,12 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
             {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
-                Assert.assertTrue(output.contains("id=\"j_id__"));
+                Assertions.assertTrue(output.contains("id=\"j_id__"));
                 outputWriter.reset();
             }
             catch (Exception e)
             {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
         }
     }

@@ -24,23 +24,12 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MessageUtilsTest extends AbstractJsfTestCase
 {
-
-    @Override
-    public void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
 
     @Test
     public void testGetLabelFromAttributesMap()
@@ -48,7 +37,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         HtmlInputText inputText = new HtmlInputText();
         inputText.getAttributes().put("label", "testLabel");
         Object label = MessageUtils.getLabel(facesContext, inputText);
-        Assert.assertEquals("testLabel", label);
+        Assertions.assertEquals("testLabel", label);
     }
 
     @Test
@@ -60,7 +49,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         inputText.setValueExpression("label", expression);
 
         Object label = MessageUtils.getLabel(facesContext, inputText);
-        Assert.assertEquals("testLabel", label);
+        Assertions.assertEquals("testLabel", label);
     }
 
     @Test
@@ -69,6 +58,6 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         HtmlInputText inputText = new HtmlInputText();
         inputText.setId("testId");
         Object label = MessageUtils.getLabel(facesContext, inputText);
-        Assert.assertEquals("testId", label);
+        Assertions.assertEquals("testId", label);
     }
 }

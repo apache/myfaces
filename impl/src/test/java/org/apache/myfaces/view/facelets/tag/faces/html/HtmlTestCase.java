@@ -38,8 +38,8 @@ import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class HtmlTestCase extends FaceletTestCase {
     
@@ -85,14 +85,14 @@ public class HtmlTestCase extends FaceletTestCase {
         vdl.buildView(facesContext, root, "componentOwner.xml");
         
         UIComponent c = root.findComponent("cmd");
-        Assert.assertNotNull("cmd", c);
+        Assertions.assertNotNull(c);
         
         Object v = c.getAttributes().get("id");
-        Assert.assertEquals("id", "cmd", v);
+        Assertions.assertEquals("cmd", v);
         
         ActionSource2 as2 = (ActionSource2) c;
         MethodExpression me = as2.getActionExpression();
-        Assert.assertNotNull("method", me);
+        Assertions.assertNotNull(me);
         
         String result = (String) me.invoke(facesContext.getELContext(), null);
         //System.out.println(result);
@@ -104,10 +104,10 @@ public class HtmlTestCase extends FaceletTestCase {
         vdl.buildView(facesContext, root, "commandButton.xml");
         
         UIComponent c = root.findComponent("form:button");
-        Assert.assertNotNull("button", c);
+        Assertions.assertNotNull(c);
         
         Object v = c.getAttributes().get("id");
-        Assert.assertEquals("id", "button", v);
+        Assertions.assertEquals("button", v);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class HtmlTestCase extends FaceletTestCase {
         root.encodeAll(facesContext);
         sw.flush();
 
-        Assert.assertTrue(sw.toString().contains("alt=\"\""));
+        Assertions.assertTrue(sw.toString().contains("alt=\"\""));
     }
             
 

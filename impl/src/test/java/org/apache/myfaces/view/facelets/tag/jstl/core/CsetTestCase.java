@@ -25,8 +25,8 @@ import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CsetTestCase extends FaceletTestCase {
 
@@ -66,7 +66,7 @@ public class CsetTestCase extends FaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
     
     /**
@@ -88,7 +88,7 @@ public class CsetTestCase extends FaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
 
     /**
@@ -112,7 +112,7 @@ public class CsetTestCase extends FaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
 
     /**
@@ -134,7 +134,7 @@ public class CsetTestCase extends FaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
     
     /**
@@ -156,7 +156,7 @@ public class CsetTestCase extends FaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
 
     /**
@@ -179,8 +179,8 @@ public class CsetTestCase extends FaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertTrue(result.contains("rightValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
     
     /**
@@ -202,7 +202,7 @@ public class CsetTestCase extends FaceletTestCase {
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertTrue(result.contains("rightValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
 }

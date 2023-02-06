@@ -20,8 +20,8 @@ package org.apache.myfaces.view.facelets.tag;
 
 import java.util.Arrays;
 import jakarta.faces.view.facelets.TagAttribute;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TagAttributesImplTest
 {
@@ -33,27 +33,27 @@ public class TagAttributesImplTest
         TagAttributeImpl testTest1 = new TagAttributeImpl(null, "test", "test1", null, "");
         
         TagAttributesImpl impl = new TagAttributesImpl(new TagAttribute[] { test1, test2, testTest1 });
-        Assert.assertEquals(test1, impl.get("test1"));
-        Assert.assertEquals(test2, impl.get("test2"));
+        Assertions.assertEquals(test1, impl.get("test1"));
+        Assertions.assertEquals(test2, impl.get("test2"));
         
-        Assert.assertEquals(testTest1, impl.get("test", "test1"));
+        Assertions.assertEquals(testTest1, impl.get("test", "test1"));
 
         
-        Assert.assertEquals(3, Arrays.asList(impl.getAll()).size());
-        Assert.assertTrue(Arrays.asList(impl.getAll()).contains(test1));
-        Assert.assertTrue(Arrays.asList(impl.getAll()).contains(test2));
-        Assert.assertTrue(Arrays.asList(impl.getAll()).contains(testTest1));
+        Assertions.assertEquals(3, Arrays.asList(impl.getAll()).size());
+        Assertions.assertTrue(Arrays.asList(impl.getAll()).contains(test1));
+        Assertions.assertTrue(Arrays.asList(impl.getAll()).contains(test2));
+        Assertions.assertTrue(Arrays.asList(impl.getAll()).contains(testTest1));
         
-        Assert.assertEquals(2, Arrays.asList(impl.getAll("")).size());
-        Assert.assertTrue(Arrays.asList(impl.getAll()).contains(test1));
-        Assert.assertTrue(Arrays.asList(impl.getAll()).contains(test2));
+        Assertions.assertEquals(2, Arrays.asList(impl.getAll("")).size());
+        Assertions.assertTrue(Arrays.asList(impl.getAll()).contains(test1));
+        Assertions.assertTrue(Arrays.asList(impl.getAll()).contains(test2));
     }
     
     @Test
     public void testNotAvailable()
     {
         TagAttributesImpl impl = new TagAttributesImpl(new TagAttribute[] { });
-        Assert.assertEquals(null, impl.get("test1"));
-        Assert.assertEquals(null, impl.get("test", "test2"));
+        Assertions.assertEquals(null, impl.get("test1"));
+        Assertions.assertEquals(null, impl.get("test", "test2"));
     }
 }

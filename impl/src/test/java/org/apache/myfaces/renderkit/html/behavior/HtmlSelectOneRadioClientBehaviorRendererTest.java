@@ -23,9 +23,11 @@ import jakarta.faces.component.UISelectItem;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.component.html.HtmlSelectOneRadio;
+import org.junit.jupiter.api.AfterEach;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -36,6 +38,7 @@ public class HtmlSelectOneRadioClientBehaviorRendererTest extends AbstractClient
     private HtmlRenderedClientEventAttr[] attrs = null;
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -43,6 +46,7 @@ public class HtmlSelectOneRadioClientBehaviorRendererTest extends AbstractClient
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -80,13 +84,13 @@ public class HtmlSelectOneRadioClientBehaviorRendererTest extends AbstractClient
             {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
-                Assert.assertTrue(output.contains("id=\"j_id__"));
-                Assert.assertTrue(output.contains("name=\"j_id__"));
+                Assertions.assertTrue(output.contains("id=\"j_id__"));
+                Assertions.assertTrue(output.contains("name=\"j_id__"));
                 outputWriter.reset();
             }
             catch (Exception e)
             {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
         }
     }

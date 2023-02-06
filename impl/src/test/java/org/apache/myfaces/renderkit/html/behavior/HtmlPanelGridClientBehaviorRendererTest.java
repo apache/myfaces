@@ -20,6 +20,8 @@ package org.apache.myfaces.renderkit.html.behavior;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.html.HtmlPanelGrid;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -30,6 +32,7 @@ public class HtmlPanelGridClientBehaviorRendererTest extends AbstractClientBehav
     private HtmlRenderedClientEventAttr[] attrs = null;
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -37,6 +40,7 @@ public class HtmlPanelGridClientBehaviorRendererTest extends AbstractClientBehav
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();

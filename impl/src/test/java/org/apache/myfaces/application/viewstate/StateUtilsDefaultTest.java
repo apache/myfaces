@@ -16,6 +16,7 @@
 package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.application.viewstate.StateUtils;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * This TestCase uses the the default algorithm/mode/padding of
@@ -24,6 +25,8 @@ import org.apache.myfaces.application.viewstate.StateUtils;
 
 public class StateUtilsDefaultTest extends AbstractStateUtilsTest
 {
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
