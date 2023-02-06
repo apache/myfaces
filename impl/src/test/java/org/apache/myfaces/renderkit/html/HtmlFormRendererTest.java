@@ -24,9 +24,6 @@ import java.io.StringWriter;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.html.HtmlForm;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
@@ -34,12 +31,14 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class HtmlFormRendererTest extends AbstractJsfTestCase
 {
     private MockResponseWriter writer ;
     private HtmlForm form;
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -59,6 +58,7 @@ public class HtmlFormRendererTest extends AbstractJsfTestCase
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
+    @Override
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -66,6 +66,7 @@ public class HtmlFormRendererTest extends AbstractJsfTestCase
         writer = null;
     }
 
+    @Test
     public void testHtmlPropertyPassTru() throws Exception 
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
@@ -83,6 +84,7 @@ public class HtmlFormRendererTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testHtmlPropertyPassTruNotRendered() throws Exception 
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
@@ -114,6 +116,7 @@ public class HtmlFormRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndName() 
     {
         form.addClientBehavior("focus", new AjaxBehavior());

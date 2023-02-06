@@ -15,7 +15,6 @@
  */
 package org.apache.myfaces.renderkit.html.util;
 
-import org.apache.myfaces.renderkit.html.util.UnicodeEncoder;
 import java.io.StringWriter;
 import org.junit.Assert;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;

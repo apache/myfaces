@@ -29,6 +29,7 @@ import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 import org.junit.Assert;
+import org.junit.Test;
 
 
 public class _Delta2StateHelperTest extends AbstractComponentTest
@@ -109,18 +110,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         }
     }
 
-    @Override
-    public void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
-    
+    @Test
     public void testSimpleGetterSetter() throws Exception
     {
         UITestComponent a = new UITestComponent();
@@ -131,6 +121,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertNull(a.getTestProperty1());
     }
     
+    @Test
     public void testEmptySaveRestore() throws Exception
     {
         UITestComponent a = new UITestComponent();
@@ -146,6 +137,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertEquals(a.getTestProperty2(), b.getTestProperty2());        
     }
     
+    @Test
     public void testSimpleSaveRestore() throws Exception
     {
         UITestComponent a = new UITestComponent();
@@ -163,6 +155,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertEquals(a.getTestProperty2(), b.getTestProperty2());
     }
     
+    @Test
     public void testDeltaStateSaveRestore()
     {
         UITestComponent a = new UITestComponent();
@@ -193,6 +186,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertEquals("testProperty2", b.getTestProperty2());
     }
     
+    @Test
     public void testPutPropertyStateHelper1()
     {
         UITestComponent a = new UITestComponent();
@@ -220,6 +214,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertEquals("someOtherOtherValue",retValue);
     }
     
+    @Test
     public void testPutPropertyStateHelper2()
     {
         UITestComponent a = new UITestComponent();
@@ -247,6 +242,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertEquals("someOtherOtherValue",retValue);
     }
     
+    @Test
     public void testRemovePropertyStateHelper1()
     {
         UITestComponent a = new UITestComponent();
@@ -274,7 +270,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertEquals("someOtherOtherValue",retValue);
     }
     
-    
+    @Test
     public void testAddItemOnList1()
     {
         UITestComponent a = new UITestComponent();
@@ -306,6 +302,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertEquals("someValue3",listB.get(2));
     }
     
+    @Test
     public void testAddItemOnList2()
     {
         UITestComponent a = new UITestComponent();
@@ -344,6 +341,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         }
     }
     
+    @Test
     public void testAddItemOnList3()
     {
         UITestComponent a = new UITestComponent();
@@ -378,6 +376,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertFalse("The list should not contain [someValue1]", listB.contains("someValue1"));
     }    
     
+    @Test
     public void testPutItemOnMap1()
     {
         UITestComponent a = new UITestComponent();
@@ -409,6 +408,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertEquals("someValue3",mapB.get("key3"));        
     }
     
+    @Test
     public void testPutRemoveItemOnMap2()
     {
         UITestComponent a = new UITestComponent();
@@ -446,6 +446,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         }
     }
     
+    @Test
     public void testPutRemoveItemOnMap3()
     {
         UITestComponent a = new UITestComponent();
@@ -488,10 +489,13 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
     {
         public TestPhaseListener1(){}
         
+        @Override
         public void afterPhase(PhaseEvent event){}
 
+        @Override
         public void beforePhase(PhaseEvent event){}
 
+        @Override
         public PhaseId getPhaseId()
         {
             return PhaseId.ANY_PHASE;
@@ -512,10 +516,13 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
     {
         public TestPhaseListener2(){}
         
+        @Override
         public void afterPhase(PhaseEvent event){}
 
+        @Override
         public void beforePhase(PhaseEvent event){}
 
+        @Override
         public PhaseId getPhaseId()
         {
             return PhaseId.ANY_PHASE;
@@ -532,6 +539,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         }
     }    
         
+    @Test
     public void testUIViewRootPhaseListener1() throws Exception
     {
         UIViewRoot a = new UIViewRoot();
@@ -547,6 +555,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertTrue(b.getPhaseListeners().contains(phaseListener1));
     }
     
+    @Test
     public void testUIViewRootPhaseListener2() throws Exception
     {
         UIViewRoot a = new UIViewRoot();
@@ -565,6 +574,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assert.assertTrue(b.getPhaseListeners().contains(phaseListener1));
     }
     
+    @Test
     public void testUIViewRootPhaseListener3() throws Exception
     {
         UIViewRoot a = new UIViewRoot();

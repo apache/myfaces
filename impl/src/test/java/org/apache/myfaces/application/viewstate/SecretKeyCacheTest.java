@@ -22,10 +22,12 @@ import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
 import javax.crypto.SecretKey;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class SecretKeyCacheTest extends AbstractJsfTestCase
 {
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -35,6 +37,7 @@ public class SecretKeyCacheTest extends AbstractJsfTestCase
         servletContext.addInitParameter(StateUtils.INIT_MAC_SECRET, AbstractStateUtilsTest.BASE64_KEY_SIZE_8);
     }
 
+    @Test
     public void testDefaultAlgorithmUse(){
         
         StateUtils.initSecret(servletContext);
@@ -47,6 +50,7 @@ public class SecretKeyCacheTest extends AbstractJsfTestCase
         
     }
     
+    @Test
     public void testInitFacesWithoutCache(){
 
         servletContext.addInitParameter(StateUtils.INIT_SECRET_KEY_CACHE, "false");
@@ -59,6 +63,7 @@ public class SecretKeyCacheTest extends AbstractJsfTestCase
         
     }
     
+    @Test
     public void testInitFacesWithCache(){
         
         StateUtils.initSecret(servletContext);

@@ -36,6 +36,7 @@ import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Test class for ApplicationImpl that extends AbstractJsfTestCase
@@ -141,6 +142,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
      * Tests the creation of a composite component via 
      * Application.createComponent(FacesContext context, Resource componentResource)
      */
+    @Test
     public void testCreateComponentFromResource()
     {
         /* TODO: Make it work again

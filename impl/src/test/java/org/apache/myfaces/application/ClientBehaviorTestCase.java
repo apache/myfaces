@@ -117,6 +117,7 @@ public class ClientBehaviorTestCase extends AbstractJsfConfigurableMockTestCase
             return COMPONENT_FAMILY;
         }
 
+        @Override
         public java.util.Collection<String> getEventNames()
         {
             return CLIENT_EVENTS_LIST;

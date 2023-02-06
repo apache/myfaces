@@ -25,6 +25,7 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class MessageUtilsTest extends AbstractJsfTestCase
 {
@@ -41,6 +42,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         super.tearDown();
     }
 
+    @Test
     public void testGetLabelFromAttributesMap()
     {
         HtmlInputText inputText = new HtmlInputText();
@@ -49,6 +51,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         Assert.assertEquals("testLabel", label);
     }
 
+    @Test
     public void testGetLabelFromValueExpression()
     {
         facesContext.getExternalContext().getRequestMap().put("lbl", "testLabel");
@@ -60,6 +63,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         Assert.assertEquals("testLabel", label);
     }
 
+    @Test
     public void testGetLabelReturnsClientIdWhenLabelIsNotSpecified()
     {
         HtmlInputText inputText = new HtmlInputText();

@@ -23,6 +23,7 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Tests the facesContext isAjaxRequest
@@ -35,6 +36,7 @@ public class TestIsAjaxRequest extends AbstractJsfTestCase {
     Map<String, String> requestParameterMap = null;
     FacesContext context = null;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
 
@@ -47,11 +49,7 @@ public class TestIsAjaxRequest extends AbstractJsfTestCase {
         context = new FacesContextImpl(servletContext, request, response);
     }
 
-    public void tearDown() throws Exception {
-        super.tearDown();
-        //requestParameterMap.clear();
-    }
-
+    @Test
     public void testNoEntry() {
 
         Assert.assertFalse("no ajax request found", context.getPartialViewContext().isAjaxRequest());

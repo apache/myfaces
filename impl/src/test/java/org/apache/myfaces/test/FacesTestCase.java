@@ -26,19 +26,22 @@ import jakarta.faces.context.FacesContext;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.test.mock.MockFacesContext12;
+import org.junit.After;
+import org.junit.Before;
 import org.mockito.Mockito;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class FacesTestCase extends TestCase
+public abstract class FacesTestCase
 {
     protected FacesContext _facesContext;
     protected ExternalContext _externalContext;
     protected Application _application;
     protected ELContext _elContext;
 
+    @Before
     public void setUp() throws Exception
     {
         _externalContext = Mockito.mock(ExternalContext.class);
@@ -48,7 +51,7 @@ public abstract class FacesTestCase extends TestCase
         _elContext = Mockito.mock(ELContext.class);        
     }
     
-    @Override
+    @After
     public void tearDown() throws Exception
     {
         MockFacesContext12.setCurrentInstance(null);

@@ -30,6 +30,7 @@ import jakarta.faces.component.UICommand;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Tests for {@link MethodExpressionValueChangeListener}
@@ -44,6 +45,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
     private ValueChangeEvent valueChangeEvent;
     private Object[] paramsWithValueChangeEvent;
 
+    @Override
     public void setUp() throws Exception 
     {
         super.setUp();
@@ -58,6 +60,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
         methodExpressionZeroArg = EasyMock.createNiceMock(MethodExpression.class);
     }
 
+    @Override
     public void tearDown() throws Exception 
     {
         uiComponent = null;
@@ -68,17 +71,20 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
         super.tearDown();
     }
 
+    @Test
     public void testMethodExpressionValueChangeListener() 
     {
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener();
     }
 
+    @Test
     public void testMethodExpressionValueChangeListenerMethodExpression() 
     {
         EasyMock.replay(methodExpressionOneArg);
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener(methodExpressionOneArg);
     }
 
+    @Test
     public void testMethodExpressionValueChangeListenerMethodExpressionMethodExpression() 
     {
         EasyMock.replay(methodExpressionOneArg);
@@ -90,6 +96,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
     /**
      * Test for case: method with ValueChangeEvent param exists (pre-Faces 2.0 case)
      */
+    @Test
     public void testProcessValueChange() 
     {
         // First, try to invoke the MethodExpression passed to the constructor of this instance,
@@ -107,6 +114,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
     /**
      * Test for case: method exists but has no ValueChangeEvent param (new possibility in Faces 2.0)
      */
+    @Test
     public void testProcessValueChange2() throws Exception 
     {
         // First, try to invoke the MethodExpression passed to the constructor of this instance,
@@ -129,6 +137,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
         EasyMock.verify(methodExpressionZeroArg);
     }
 
+    @Test
     public void testSaveState() 
     {
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg);
@@ -137,6 +146,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
                 Arrays.deepEquals(expectedState, (Object[]) methodExpressionValueChangeListener.saveState(facesContext)));
     }
 
+    @Test
     public void testRestoreState() throws IllegalAccessException, NoSuchFieldException
     {
         // State saving always call JavaBean constructor:

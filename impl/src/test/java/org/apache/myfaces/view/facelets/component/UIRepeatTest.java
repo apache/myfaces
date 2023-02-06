@@ -62,6 +62,7 @@ public class UIRepeatTest extends AbstractJsfTestCase
      * Test method for
      * {@link jakarta.faces.component.UIData#setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
      */
+    @Test
     public void testValueExpression()
     {
         assertSetValueExpressionException(IllegalArgumentException.class, "rowIndex");

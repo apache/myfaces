@@ -25,15 +25,13 @@ import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.component.html.HtmlPanelGrid;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -48,6 +46,7 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
     private HtmlPanelGrid panelGrid;
     private HtmlOutputText colText;
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -71,6 +70,7 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
+    @Override
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -78,6 +78,7 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
         writer = null;
     }
 
+    @Test
     public void testRenderTable() throws Exception
     {
         UIColumn col1 = new UIColumn();
@@ -105,6 +106,7 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
                 "</tbody>"+"</table>", output);
     }
 
+    @Test
     public void testHtmlPropertyPassTru() throws Exception 
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
@@ -116,6 +118,7 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testHtmlPropertyPassTruNotRendered() throws Exception 
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
@@ -130,6 +133,7 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndName() 
     {
         panelGrid.addClientBehavior("click", new AjaxBehavior());

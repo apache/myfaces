@@ -25,15 +25,13 @@ import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.html.HtmlSelectBooleanCheckbox;
 import jakarta.faces.component.html.HtmlSelectManyCheckbox;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -45,6 +43,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
     private HtmlSelectManyCheckbox selectManyCheckbox;
     private HtmlSelectBooleanCheckbox selectBooleanCheckbox;
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -68,6 +67,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
+    @Override
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -76,6 +76,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
         writer = null;
     }
 
+    @Test
     public void testSelectManyHtmlPropertyPassTru() throws Exception 
     {
         HtmlRenderedAttr[] attrs = {
@@ -122,6 +123,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testSelectBooleanHtmlPropertyPasstru() throws Exception 
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
@@ -139,6 +141,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndNameSelectBooleanCheckbox() 
     {
         selectBooleanCheckbox.addClientBehavior("focus", new AjaxBehavior());
@@ -159,6 +162,7 @@ public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndNameSelectManyCheckbox() 
     {
         UISelectItem item1 = new UISelectItem();

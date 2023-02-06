@@ -34,6 +34,7 @@ import jakarta.faces.convert.ConverterException;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class _SharedRendererUtilsTest extends AbstractJsfTestCase
 {
@@ -197,6 +198,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
      * Test case for the case that UISelectMany has neither a Converter nor a ValueExpression for value.
      * In this scenario it stores the values of submittedValue in a new object array.
      */
+    @Test
     public void testGetConvertedUISelectManyValueNoConverterNoValueExpression()
     {
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
@@ -209,6 +211,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
      * integer array and uses a standard jsf converter.
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testGetConvertedUISelectManyValuePrimitiveIntArray()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
@@ -227,6 +230,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
      * Float array and uses a standard jsf converter.
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testGetConvertedUISelectManyValueNonPrimitiveFloatArray()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
@@ -244,6 +248,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
      * POJO array and uses a provided converter.
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testGetConvertedUISelectManyValuePOJOArray()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
@@ -264,6 +269,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
      * retrieves #{bean.pojoCollectionValue} and clones that Collection.
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testGetConvertedUISelectManyValuePOJOCollectionWithoutCollectionType()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
@@ -285,6 +291,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
      * create the right Collection.
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testGetConvertedUISelectManyValuePOJOCollectionWithCollectionType()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
@@ -304,6 +311,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
      * obtain a converter. So it throws a ConverterException.
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testGetConvertedUISelectManyValueNoConverter()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
@@ -325,6 +333,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
      * (java.util.Collection can not be instantiated). So it throws a FacesException.
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testGetConvertedUISelectManyValueWrongCollectionType()
     {
         externalContext.getApplicationMap().put("bean", new Bean());

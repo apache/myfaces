@@ -120,6 +120,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
                 + "/";
     }
     
+    @Test
     public void testNestedScriptCDATA() throws Exception {
         _writer = createTestProbe();
         try {
@@ -140,6 +141,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
     
+    @Test
     public void testBasicWriteTest() {
         _writer = createTestProbe();
         try {
@@ -156,6 +158,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
+    @Test
     public void teststandardNestingTest() {
         _writer = createTestProbe();
         try {
@@ -172,6 +175,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
+    @Test
     public void testIllegalNestingResolvementTest() {
         _writer = createTestProbe();
         try {
@@ -188,6 +192,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
+    @Test
     public void testIllegalNestingResolvementTest2() {
         _writer = createTestProbe();
         try {
@@ -203,7 +208,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
     }
 
 
-
+    @Test
     public void testStandardUpdate() {
         _writer = createTestProbe();
         try {
@@ -216,6 +221,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
+    @Test
     public void testStandardUpdateNestedCDATA() {
         _writer = createTestProbe();
         try {
@@ -230,7 +236,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
-
+    @Test
     public void testComponentAuthorNestingFailureTest() {
         _writer = createTestProbe();
         try {
@@ -245,6 +251,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
+    @Test
     public void testStandardInsertAfter() {
         _writer = createTestProbe();
         try {
@@ -257,6 +264,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
+    @Test
     public void testStandardInsertBefore() {
         _writer = createTestProbe();
         try {
@@ -269,6 +277,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
+    @Test
     public void testBrokenUserInput() {
         _writer = createTestProbe();
         try {
@@ -285,7 +294,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
     }
 
 
-
+    @Test
     public void testDelete() {
         _writer = createTestProbe();
         try {
@@ -296,6 +305,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
+    @Test
     public void testWriteIllegalXmlUnicodeCharacters() {
         _writer = createTestProbe();
         try {
@@ -309,6 +319,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
+    @Test
     public void testWriteTextIllegalXmlUnicodeCharacters() {
         _writer = createTestProbe();
         try {
@@ -322,6 +333,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
+    @Test
     public void testWriteAttributeIllegalXmlUnicodeCharacters() {
         _writer = createTestProbe();
         try {
@@ -338,6 +350,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
     
+    @Test
     public void testWriteSkipEmoji() {
         _writer = createTestProbe();
         try {
@@ -353,6 +366,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
     
+    @Test
     public void testWriteSkipPictographs() {
         _writer = createTestProbe();
         try {

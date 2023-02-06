@@ -27,6 +27,7 @@ import org.apache.myfaces.util.CommentUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Test class for HtmlResponseWriterImpl.
@@ -69,6 +70,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
      * @throws IllegalAccessException 
      * @throws IllegalArgumentException 
      */
+    @Test
     public void testHtmlElementsInsideScript() throws IOException, SecurityException, 
             NoSuchFieldException, IllegalArgumentException, IllegalAccessException
     {
@@ -139,6 +141,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         return b == null ? defaultValue : b;
     }
 
+    @Test
     public void testScriptOnHtmlIsoEncodingAndScriptXhmlComments() throws IOException
     {
         _writer = new HtmlResponseWriterImpl(_stringWriter, "text/html", "ISO-8859-1", true);
@@ -156,6 +159,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         Assert.assertTrue("script does not have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
     }
     
+    @Test
     public void testScriptOnHtmlIsoEncodingAndNoScriptXhmlComments() throws IOException
     {
         _writer = new HtmlResponseWriterImpl(_stringWriter, "text/html", "ISO-8859-1", false);
@@ -173,6 +177,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         Assert.assertFalse("script have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
     }
 
+    @Test
     public void testScriptOnHtmlUTF8AndScriptXhmlComments() throws IOException
     {
         _writer = new HtmlResponseWriterImpl(_stringWriter, "text/html", "UTF-8", true);
@@ -190,6 +195,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         Assert.assertTrue("script does not have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
     }
     
+    @Test
     public void testScriptOnHtmlUTF8AndNoScriptXhmlComments() throws IOException
     {
         _writer = new HtmlResponseWriterImpl(_stringWriter, "text/html", "UTF-8", false);
@@ -207,6 +213,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         Assert.assertFalse("script have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
     }
 
+    @Test
     public void testScriptOnXhtmlIsoEncoding() throws IOException
     {
         _writer = new HtmlResponseWriterImpl(_stringWriter, "application/xhtml+xml", "ISO-8859-1", true);
@@ -224,6 +231,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         Assert.assertTrue("script does not have end ]]> ", output.contains(CommentUtils.INLINE_SCRIPT_COMMENT+CommentUtils.CDATA_SIMPLE_END));
     }
 
+    @Test
     public void testScriptOnXhtmlUTF8Encoding() throws IOException
     {
         _writer = new HtmlResponseWriterImpl(_stringWriter, "application/xhtml+xml", "UTF-8", false);
@@ -241,6 +249,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         Assert.assertTrue("script does not have end ]]> ", output.contains(CommentUtils.INLINE_SCRIPT_COMMENT+CommentUtils.CDATA_SIMPLE_END));
     }
     
+    @Test
     public void testStyleOnXhtmlIsoEncoding() throws IOException
     {
         _writer = new HtmlResponseWriterImpl(_stringWriter, "application/xhtml+xml", "ISO-8859-1", true);
@@ -258,6 +267,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         Assert.assertTrue("script does not have end ]]> ", output.contains(CommentUtils.CDATA_SIMPLE_END));
     }
 
+    @Test
     public void testStyleOnXhtmlUTF8Encoding() throws IOException
     {
         _writer = new HtmlResponseWriterImpl(_stringWriter, "application/xhtml+xml", "UTF-8", false);
@@ -280,6 +290,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
      * 
      * @throws IOException
      */
+    @Test
     public void testEmptyTagNotRenderEnd() throws IOException
     {
         _writer.startDocument();
@@ -302,6 +313,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
      * 
      * @throws IOException
      */
+    @Test
     public void testEmptyTagNotRenderEndOnXml() throws IOException
     {
         _writer = new HtmlResponseWriterImpl(_stringWriter, "application/xml", "UTF-8", false);
@@ -326,6 +338,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
      * 
      * @throws IOException
      */
+    @Test
     public void testEmptyTagNotRenderEndUppercase() throws IOException
     {
         _writer.startDocument();
@@ -348,6 +361,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
      * 
      * @throws IOException
      */
+    @Test
     public void testEmptyTagNotRenderEndOnXhtmlUppercase() throws IOException
     {
         _writer = new HtmlResponseWriterImpl(_stringWriter, "application/xml", "UTF-8", false);

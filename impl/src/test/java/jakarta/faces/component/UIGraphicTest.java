@@ -18,7 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIGraphic;
 import jakarta.el.ValueExpression;
 
 import org.easymock.classextension.EasyMock;

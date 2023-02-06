@@ -25,9 +25,6 @@ import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.html.HtmlForm;
 import jakarta.faces.component.html.HtmlOutcomeTargetButton;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
@@ -35,6 +32,7 @@ import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Assert;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
+import org.junit.Test;
 
 /**
  * Tests for HtmlOutcomeTargetButtonRenderer.
@@ -83,6 +81,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndName() 
     {
         outcomeTargetButton.addClientBehavior("keypress", new AjaxBehavior());
@@ -106,6 +105,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testOutcomeTargetRendersNavigationCaseParameters() throws Exception
     {
         // configure the button
@@ -126,6 +126,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
      * Tests if the fragment attribute is correctly rendered.
      * @throws Exception
      */
+    @Test
     public void testFragment() throws Exception
     {
         // configure the button
@@ -146,6 +147,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
      * Tests if the h:button correctly includes an UIParameter
      * with a non-null-name when creating the URL.
      */
+    @Test
     public void testIncludesUIParameterInURL()
     {
         // create the UIParameter and attach it
@@ -170,6 +172,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
      * Tests if the h:button correctly skips an UIParameter
      * with a null-name when creating the URL.
      */
+    @Test
     public void testSkipsNullValueOfUIParameterInURL()
     {
         // create the UIParameter with value = null and attach it
@@ -193,6 +196,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
     /**
      * Tests if the h:button is rendered accordingly if disabled is true.
      */
+    @Test
     public void testDisabledAttribute() 
     {
         outcomeTargetButton.getAttributes().put(ComponentAttrs.DISABLED_ATTR, Boolean.TRUE);

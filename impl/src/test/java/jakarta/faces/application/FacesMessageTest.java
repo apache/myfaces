@@ -19,7 +19,6 @@
 
 package jakarta.faces.application;
 
-import jakarta.faces.application.FacesMessage;
 import junit.framework.TestCase;
 
 import jakarta.faces.application.FacesMessage.Severity;
@@ -29,24 +28,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 import org.junit.Assert;
+import org.junit.Test;
 
-public class FacesMessageTest extends TestCase
+public class FacesMessageTest
 {
-    @Override
-    public void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
 
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage()'
      */
+    @Test
     public void testFacesMessage()
     {
         FacesMessage msg = new FacesMessage();
@@ -58,6 +48,7 @@ public class FacesMessageTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(String)'
      */
+    @Test
     public void testFacesMessageString()
     {
         String summary = "summary";
@@ -70,6 +61,7 @@ public class FacesMessageTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(String, String)'
      */
+    @Test
     public void testFacesMessageStringString()
     {
         String summary = "summary";
@@ -83,6 +75,7 @@ public class FacesMessageTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(Severity, String, String)'
      */
+    @Test
     public void testFacesMessageSeverityStringString()
     {
         String summary = "summary";
@@ -96,6 +89,7 @@ public class FacesMessageTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(Severity, String, String)'
      */
+    @Test
     public void testFacesMessageNullSeverityStringString()
     {
         String summary = "summary";
@@ -113,6 +107,7 @@ public class FacesMessageTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.setSeverity(Severity)'
      */
+    @Test
     public void testSetSeverity()
     {
         FacesMessage msg = new FacesMessage();
@@ -124,6 +119,7 @@ public class FacesMessageTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.setSeverity(Severity)'
      */
+    @Test
     public void testSetNullSeverity()
     {
         FacesMessage msg = new FacesMessage();
@@ -140,6 +136,7 @@ public class FacesMessageTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.setSummary(String)'
      */
+    @Test
     public void testSetSummary()
     {
         FacesMessage msg = new FacesMessage();
@@ -152,6 +149,7 @@ public class FacesMessageTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.setDetail(String)'
      */
+    @Test
     public void testSetDetail()
     {
         FacesMessage msg = new FacesMessage();
@@ -161,6 +159,7 @@ public class FacesMessageTest extends TestCase
         Assert.assertEquals(msg.getDetail(), detail);
     }
 
+    @Test
     public void testSeverityOrdering()
     {
         // make sure they are ordered correctly from least to worst
@@ -173,6 +172,7 @@ public class FacesMessageTest extends TestCase
         Assert.assertTrue(0 < FacesMessage.SEVERITY_WARN.compareTo(FacesMessage.SEVERITY_INFO));
     }
 
+    @Test
     public void testSeverityEquality()
     {
         // make sure they all respond as equals when they should
@@ -182,6 +182,7 @@ public class FacesMessageTest extends TestCase
         Assert.assertEquals(0, FacesMessage.SEVERITY_FATAL.compareTo(FacesMessage.SEVERITY_FATAL));
     }
 
+    @Test
     public void testSeverityValues()
     {
         // Faces spec requires this list to be sorted by ordinal
@@ -193,6 +194,7 @@ public class FacesMessageTest extends TestCase
     }
 
     @SuppressWarnings("unchecked")
+    @Test
     public void testSeverityValuesMap()
     {
         Map<String, FacesMessage.Severity> severityMap = (Map<String, FacesMessage.Severity>) FacesMessage.VALUES_MAP;
@@ -203,6 +205,7 @@ public class FacesMessageTest extends TestCase
         }
     }
 
+    @Test
     public void testSerialization() throws Exception
     {
         String summary = "summary";
@@ -226,7 +229,7 @@ public class FacesMessageTest extends TestCase
         FacesMessage deserialized = (FacesMessage) in.readObject();
 
         // FacesMessage properties must equal!
-        assertSame(msg.getSeverity(), deserialized.getSeverity());
+        Assert.assertSame(msg.getSeverity(), deserialized.getSeverity());
         Assert.assertEquals(msg.getSummary(), deserialized.getSummary());
         Assert.assertEquals(msg.getDetail(), deserialized.getDetail());
         Assert.assertEquals(msg.isRendered(), deserialized.isRendered());

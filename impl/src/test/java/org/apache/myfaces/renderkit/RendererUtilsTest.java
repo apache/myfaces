@@ -107,6 +107,7 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
 	/**
 	 * 
 	 */
+        @Test
 	public void testGetIconSrc() {
 
 		// Training a mock:
@@ -127,6 +128,7 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
 
 	}
 
+        @Test
 	public void testGetIconSrcResourceNotFound() throws Exception {
 		// Training a mock:
 		EasyMock.reset(resourceHandlerMock);
@@ -144,6 +146,7 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
 
 	}
 
+    @Test
     public void testGetStringValue()
     {
         // Test for situation where submittedValue IS NOT String: 
@@ -156,6 +159,7 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
         Assert.assertEquals("If submittedvalue is not String, toString() must be used", submittedValue.toString(), stringValue);
     }
 
+    @Test
     public void testGetConvertedUIOutputValue()
     {
         UIInput uiInput = new UIInput();

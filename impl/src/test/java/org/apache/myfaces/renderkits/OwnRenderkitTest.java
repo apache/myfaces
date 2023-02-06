@@ -31,6 +31,7 @@ import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author martin.haimberger
@@ -69,6 +70,7 @@ public class OwnRenderkitTest extends AbstractJsfTestCase {
         isOwnRenderKit = false;
     }
 
+    @Test
     public void testOwnRenderKit() throws Exception {
 
         inputText.encodeEnd(facesContext);

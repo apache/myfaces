@@ -29,6 +29,7 @@ import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.Renderer;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,6 +55,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         super.tearDown();
     }
 
+    @Test
     public void testNullFacesContext() throws Exception
     {
         try
@@ -71,6 +73,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         }
     }
 
+    @Test
     public void testWithoutParentAndNoRenderer() throws Exception
     {
         String expectedClientId = "testId";
@@ -80,6 +83,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         Assert.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
     }
 
+    @Test
     public void testWithRenderer() throws Exception
     {
         String id = "testId";
@@ -102,6 +106,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         Assert.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
     }
 
+    @Test
     public void testWithParentNamingContainer() throws Exception
     {
         String id = "testId";
@@ -121,6 +126,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         Assert.assertEquals(expectedClientId, _testImpl.getClientId(facesContext));
     }
 
+    @Test
     public void testWithParentNamingContainerChanging() throws Exception
     {
         String id = "testId";
@@ -153,6 +159,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         }
     }
 
+    @Test
     public void testWithoutId() throws Exception
     {
         UIViewRoot viewRoot = facesContext.getViewRoot();
@@ -161,6 +168,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
         Assert.assertNotNull(_testImpl.getId());
     }
 
+    @Test
     public void testWithoutIdAndNoUIViewRoot() throws Exception
     {
         facesContext.setViewRoot(null);

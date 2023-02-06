@@ -28,15 +28,13 @@ import jakarta.faces.component.html.HtmlDataTable;
 import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.model.ListDataModel;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -78,6 +76,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         writer = null;
     }
 
+    @Test
     public void testHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
@@ -89,6 +88,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testHtmlPropertyPassTruNotRendered() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
@@ -103,6 +103,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndName() 
     {
         dataTable.addClientBehavior("keypress", new AjaxBehavior());
@@ -125,6 +126,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
      * render the same as if that value is provided. Note t:dataTable newspaper mode requires
      * row count to calculate newspaperRows and newspaperColumns. 
      */
+    @Test
     public void testNoRowCountRender()
     {
         List<Person> list = new ArrayList<Person>();

@@ -21,6 +21,7 @@ package jakarta.faces.component;
 import jakarta.faces.component.UIViewParameter;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Test class for UIViewParameter.
@@ -54,6 +55,7 @@ public class UIViewParameterTest extends AbstractJsfTestCase
      * if the submitted value is null, but required is set to true.
      * This is a special validation case only for UIViewParameter, so this has to be tested here.
      */
+    @Test
     public void testValidationErrorTriggersFacesContextValidationFailed()
     {
         viewParameter.setRequired(true);
@@ -67,6 +69,7 @@ public class UIViewParameterTest extends AbstractJsfTestCase
     /**
      * Tests if UIViewParameter.decode() sets the submitted value only if it is not null.
      */
+    @Test
     public void testDecodeSetOnlyNonNullSubmittedValue()
     {
         String notNull = "not null";

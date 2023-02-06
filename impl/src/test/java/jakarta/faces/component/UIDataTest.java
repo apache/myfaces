@@ -59,6 +59,7 @@ import org.apache.myfaces.test.mock.visit.MockVisitContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class UIDataTest extends AbstractJsfTestCase
 {
@@ -77,6 +78,7 @@ public class UIDataTest extends AbstractJsfTestCase
      * Test method for
      * {@link jakarta.faces.component.UIData#setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
      */
+    @Test
     public void testValueExpression()
     {
         assertSetValueExpressionException(IllegalArgumentException.class, "rowIndex");
@@ -97,6 +99,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getClientId(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testGetClientId()
     {
         _testImpl.setId("xxx");
@@ -115,6 +118,7 @@ public class UIDataTest extends AbstractJsfTestCase
      * .
      * Tests, if invokeOnComponent also checks the facets of the h:column children (MYFACES-2370)
      */
+    @Test
     public void testInvokeOnComponentFacesContextStringContextCallback()
     {
         /**
@@ -150,6 +154,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#broadcast(jakarta.faces.event.FacesEvent)}.
      */
+    @Test
     public void testBroadcastFacesEvent()
     {
         // create event mock
@@ -215,6 +220,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#encodeBegin(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testEncodeBeginFacesContext()
     {
         // TODO
@@ -223,6 +229,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#encodeEnd(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testEncodeEndFacesContext()
     {
         // TODO
@@ -231,6 +238,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#queueEvent(jakarta.faces.event.FacesEvent)}.
      */
+    @Test
     public void testQueueEventFacesEvent()
     {
         // TODO
@@ -239,6 +247,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#processDecodes(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testProcessDecodesFacesContext()
     {
         // TODO
@@ -247,6 +256,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#processValidators(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testProcessValidatorsFacesContext()
     {
         // TODO
@@ -255,6 +265,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#processUpdates(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testProcessUpdatesFacesContext()
     {
         // TODO
@@ -263,6 +274,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#saveState(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testSaveState()
     {
         // TODO
@@ -272,6 +284,7 @@ public class UIDataTest extends AbstractJsfTestCase
      * Test method for
      * {@link jakarta.faces.component.UIData#restoreState(jakarta.faces.context.FacesContext, java.lang.Object)}.
      */
+    @Test
     public void testRestoreState()
     {
         // TODO
@@ -280,6 +293,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#UIData()}.
      */
+    @Test
     public void testUIData()
     {
         // TODO
@@ -288,6 +302,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#setFooter(jakarta.faces.component.UIComponent)}.
      */
+    @Test
     public void testSetFooter()
     {
         // TODO
@@ -296,6 +311,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getFooter()}.
      */
+    @Test
     public void testGetFooter()
     {
         // TODO
@@ -304,6 +320,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#setHeader(jakarta.faces.component.UIComponent)}.
      */
+    @Test
     public void testSetHeader()
     {
         // TODO
@@ -312,6 +329,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getHeader()}.
      */
+    @Test
     public void testGetHeader()
     {
         // TODO
@@ -320,6 +338,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#isRowAvailable()}.
      */
+    @Test
     public void testIsRowAvailable()
     {
         // TODO
@@ -328,6 +347,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getRowCount()}.
      */
+    @Test
     public void testGetRowCount()
     {
         // TODO
@@ -336,6 +356,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getRowData()}.
      */
+    @Test
     public void testGetRowData()
     {
         // TODO
@@ -344,6 +365,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getRowIndex()}.
      */
+    @Test
     public void testGetRowIndex()
     {
         // TODO
@@ -352,6 +374,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#setRowIndex(int)}.
      */
+    @Test
     public void testSetRowIndex()
     {
         // TODO
@@ -360,6 +383,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getDataModel()}.
      */
+    @Test
     public void testGetDataModel()
     {
         // TODO
@@ -368,6 +392,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#setDataModel(jakarta.faces.model.DataModel)}.
      */
+    @Test
     public void testSetDataModel()
     {
         // TODO
@@ -376,6 +401,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#setValue(java.lang.Object)}.
      */
+    @Test
     public void testSetValue()
     {
         // TODO
@@ -384,6 +410,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#setRows(int)}.
      */
+    @Test
     public void testSetRows()
     {
         // TODO
@@ -392,6 +419,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#setFirst(int)}.
      */
+    @Test
     public void testSetFirst()
     {
         // TODO
@@ -400,6 +428,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getValue()}.
      */
+    @Test
     public void testGetValue()
     {
         // TODO
@@ -408,6 +437,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getVar()}.
      */
+    @Test
     public void testGetVar()
     {
         // TODO
@@ -416,6 +446,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#setVar(java.lang.String)}.
      */
+    @Test
     public void testSetVar()
     {
         // TODO
@@ -424,6 +455,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getRows()}.
      */
+    @Test
     public void testGetRows()
     {
         // TODO
@@ -432,6 +464,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getFirst()}.
      */
+    @Test
     public void testGetFirst()
     {
         // TODO
@@ -440,6 +473,7 @@ public class UIDataTest extends AbstractJsfTestCase
     /**
      * Test method for {@link jakarta.faces.component.UIData#getFamily()}.
      */
+    @Test
     public void testGetFamily()
     {
         // TODO
@@ -449,6 +483,7 @@ public class UIDataTest extends AbstractJsfTestCase
      * Test method for 
      * {@link jakarta.faces.component.UIData#visitTree(jakarta.faces.component.visit.VisitContext, jakarta.faces.component.visit.VisitCallback)}.
      */
+    @Test
     public void testVisitTree() {
         UIData uidata = new UIData();
         // value
@@ -567,6 +602,7 @@ public class UIDataTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testPreserveRowComponentState1() throws Exception
     {
         List<RowData> model = new ArrayList<RowData>();
@@ -632,6 +668,7 @@ public class UIDataTest extends AbstractJsfTestCase
         
     }
         
+    @Test
     public void testCollectionDataModel() throws Exception
     {
         SimpleCollection<RowData> model = new SimpleCollection<RowData>();
@@ -737,6 +774,7 @@ public class UIDataTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testProcessDecodesRenderedFalse() throws Exception {
         UIData uiData = new VerifyNoLifecycleMethodComponent();
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,  uiData, false);
@@ -744,9 +782,9 @@ public class UIDataTest extends AbstractJsfTestCase
         uiData.processDecodes(facesContext);
         
         Assert.assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
-        
     }
     
+    @Test
     public void testProcessDecodesRenderedTrue() throws Exception {
         
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, _testImpl, true);
@@ -757,7 +795,7 @@ public class UIDataTest extends AbstractJsfTestCase
         Assert.assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
     }
     
-    
+    @Test
     public void testProcessValidatorsRenderedFalse() throws Exception {
         UIData uiData = new VerifyNoLifecycleMethodComponent();
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,  uiData, false);
@@ -768,6 +806,7 @@ public class UIDataTest extends AbstractJsfTestCase
         
     }
     
+    @Test
     public void testProcessValidatorsRenderedTrue() throws Exception {
         
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, _testImpl, true);
@@ -778,6 +817,7 @@ public class UIDataTest extends AbstractJsfTestCase
         Assert.assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
     }
     
+    @Test
     public void testProcessUpdatesRenderedFalse() throws Exception {
         UIData uiData = new VerifyNoLifecycleMethodComponent();
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,  uiData, false);
@@ -788,6 +828,7 @@ public class UIDataTest extends AbstractJsfTestCase
         
     }
     
+    @Test
     public void testProcessUpdatesRenderedTrue() throws Exception {
         
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, _testImpl, true);
@@ -810,9 +851,11 @@ public class UIDataTest extends AbstractJsfTestCase
     /** Verifies no call to encode* and process* methods */
     public class VerifyNoLifecycleMethodComponent extends UIData
     {
+        @Override
         public void setRowIndex(int rowIndex) {
             Assert.fail();
         }
+        @Override
         public void decode(FacesContext context) {
             Assert.fail();
         }
@@ -822,12 +865,15 @@ public class UIDataTest extends AbstractJsfTestCase
         public void updateModel(FacesContext context) {
             Assert.fail();
         }
+        @Override
         public void encodeBegin(FacesContext context) throws IOException {
             Assert.fail();
         }
+        @Override
         public void encodeChildren(FacesContext context) throws IOException {
             Assert.fail();
         }
+        @Override
         public void encodeEnd(FacesContext context) throws IOException {
             Assert.fail();
         }
@@ -844,6 +890,7 @@ public class UIDataTest extends AbstractJsfTestCase
      * 
      * @throws Exception 
      */
+    @Test
     public void testSaveAndRestorePortletLifecycleWithoutPss1() throws Exception
     {
         List<RowData> model = new ArrayList<RowData>();
@@ -957,6 +1004,7 @@ public class UIDataTest extends AbstractJsfTestCase
      * 
      * @throws Exception 
      */
+    @Test
     public void testSaveAndRestorePortletLifecycleWithPss1() throws Exception
     {
         facesContext.getRenderKit().addRenderer("jakarta.faces.Data", "jakarta.faces.Table",new Renderer(){});
@@ -1056,6 +1104,7 @@ public class UIDataTest extends AbstractJsfTestCase
      * 
      * @throws Exception 
      */
+    @Test
     public void testSaveAndRestorePortletLifecycleWithPss2() throws Exception
     {
         facesContext.getRenderKit().addRenderer("jakarta.faces.Data", "jakarta.faces.Table",new Renderer(){});

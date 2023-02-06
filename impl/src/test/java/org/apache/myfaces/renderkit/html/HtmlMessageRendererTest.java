@@ -66,6 +66,7 @@ public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCas
                 "org.apache.myfaces.application.ApplicationFactoryImpl");
     }
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -101,11 +102,6 @@ public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCas
         
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
-
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }    
 
     @Test
     public void testHtmlPropertyPassTru() throws Exception

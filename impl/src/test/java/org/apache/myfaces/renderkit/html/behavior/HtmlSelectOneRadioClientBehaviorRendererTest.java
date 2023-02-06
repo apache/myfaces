@@ -25,6 +25,7 @@ import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.component.html.HtmlSelectOneRadio;
 
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -65,6 +66,7 @@ public class HtmlSelectOneRadioClientBehaviorRendererTest extends AbstractClient
         return attrs;
     }
     
+    @Test
     public void testClientBehaviorHolderRendersIdAndName() 
     {
         HtmlRenderedClientEventAttr[] attrs = getClientBehaviorHtmlRenderedAttributes();

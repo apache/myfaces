@@ -26,6 +26,7 @@ import jakarta.faces.component.html.HtmlBody;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -71,6 +72,7 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
      * Components that render client behaviors should always render "id" and "name" attribute
      * <body> does not have "name", so we just need to check "id"
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndName() 
     {
         HtmlRenderedClientEventAttr[] attrs = getClientBehaviorHtmlRenderedAttributes();

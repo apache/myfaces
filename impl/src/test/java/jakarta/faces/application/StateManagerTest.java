@@ -19,7 +19,6 @@
 
 package jakarta.faces.application;
 
-import jakarta.faces.application.StateManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -29,24 +28,14 @@ import org.apache.myfaces.test.mock.MockStateManager;
 import org.easymock.MockControl;
 import org.easymock.classextension.MockClassControl;
 import org.junit.Assert;
+import org.junit.Test;
 
-public class StateManagerTest extends TestCase
+public class StateManagerTest
 {
-    @Override
-    public void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
-
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
+    @Test
     public void testNullThrowsIsSavingStateInClient()
     {
         MockStateManager subject = new MockStateManager();
@@ -63,6 +52,7 @@ public class StateManagerTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
+    @Test
     public void testIsSavingStateInClientTrue()
     {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);
@@ -83,6 +73,7 @@ public class StateManagerTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
+    @Test
     public void testIsSavingStateInClientFalse()
     {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);
@@ -105,6 +96,7 @@ public class StateManagerTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
+    @Test
     public void testIsSavingStateInClientBogus()
     {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);
@@ -129,6 +121,7 @@ public class StateManagerTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
+    @Test
     public void testIsSavingStateInClientNull()
     {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);

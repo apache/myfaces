@@ -27,9 +27,6 @@ import jakarta.faces.component.html.HtmlCommandLink;
 import jakarta.faces.component.html.HtmlOutcomeTargetLink;
 import jakarta.faces.component.html.HtmlOutputLink;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
@@ -37,6 +34,7 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -95,7 +93,8 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         super.tearDown();
         writer = null;
     }
-     
+    
+    @Test
     public void testHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = {
@@ -134,6 +133,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testOutputLink() throws Exception 
     {
         HtmlRenderedAttr[] attrs = {
@@ -174,6 +174,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndNameOutputLink() 
     {
         outputLink.addClientBehavior("keypress", new AjaxBehavior());
@@ -194,6 +195,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndNameCommandLink() 
     {
         commandLink.addClientBehavior("keypress", new AjaxBehavior());
@@ -215,6 +217,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndNameOutcomeTargetLink() 
     {
         outcomeTargetLink.addClientBehavior("keypress", new AjaxBehavior());
@@ -238,6 +241,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testOutcomeTargetRendersNavigationCaseParameters() throws Exception
     {
         // configure the link
@@ -258,6 +262,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
      * Tests if the fragment attribute is correctly rendered.
      * @throws Exception
      */
+    @Test
     public void testOutcomeTargetLinkFragment() throws Exception
     {
         // configure the link
@@ -279,6 +284,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
      * The value of the fragment attribute is appended to the end of target URL following a hash (#) mark.
      * @throws Exception
      */
+    @Test
     public void testOutputLinkFragment() throws Exception
     {
         outputLink.setFragment("fragment");
@@ -293,6 +299,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
      * he should be ignored.
      * @throws Exception
      */
+    @Test
     public void testDisabledUIParameterNotRenderedCommandLink() throws Exception
     {
         UIParameter param1 = new UIParameter();
@@ -318,6 +325,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
      * he should be ignored.
      * @throws Exception
      */
+    @Test
     public void testDisabledUIParameterNotRenderedOutputLink() throws Exception
     {
         UIParameter param1 = new UIParameter();
@@ -342,6 +350,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
      * Tests if the h:link correctly includes an UIParameter
      * with a non-null-name when creating the URL.
      */
+    @Test
     public void testOutcomeTargetLinkIncludesUIParameterInURL()
     {
         // create the UIParameter and attach it
@@ -366,6 +375,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
      * Tests if the h:link correctly skips an UIParameter
      * with a null-name when creating the URL.
      */
+    @Test
     public void testOutcomeTargetLinkSkipsNullValueOfUIParameterInURL()
     {
         // create the UIParameter with value = null and attach it

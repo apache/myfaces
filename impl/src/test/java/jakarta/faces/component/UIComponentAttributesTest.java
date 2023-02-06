@@ -21,6 +21,7 @@ package jakarta.faces.component;
 import jakarta.faces.component.html.HtmlInputText;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.junit.Test;
 
 public class UIComponentAttributesTest extends AbstractJsfTestCase
 {
@@ -41,6 +42,7 @@ public class UIComponentAttributesTest extends AbstractJsfTestCase
         input = null;
     }
 
+    @Test
     public void testSetNullAttributeOnValidProperty()
     {
         input.getAttributes().put("style", null);

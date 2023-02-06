@@ -18,19 +18,16 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.StateHolder;
-import jakarta.faces.component.PartialStateHolder;
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component._EventListenerWrapper;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.faces.event.ComponentSystemEventListener;
 import jakarta.faces.render.Renderer;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
 {
+    @Test
     public void testUIComponentListenerNormalState()
     {
         UIComponent component = new UIOutput();
@@ -52,6 +49,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testUIComponentListenerWithPSS()
     {
         UIComponent component = new UIOutput();
@@ -75,6 +73,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testUIComponentListenerWithPSSFull()
     {
         UIComponent component = new UIOutput();
@@ -108,6 +107,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         }
     }
     
+    @Test
     public void testRendererListenerNormalState()
     {
         UIComponent component = new UIOutput();
@@ -132,6 +132,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testRendererListenerWithPSS()
     {
         UIComponent component = new UIOutput();
@@ -158,6 +159,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testRendererListenerWithPSSFull()
     {
         UIComponent component = new UIOutput();
@@ -202,6 +204,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         
     }
     
+    @Test
     public void testNonSerializableListenerNormalState()
     {
         UIComponent component = new UIOutput();
@@ -224,6 +227,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testNonSerializableListenerWithPSS()
     {
         UIComponent component = new UIOutput();
@@ -248,6 +252,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testNonSerializableListenerWithPSSFull()
     {
         UIComponent component = new UIOutput();
@@ -290,6 +295,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         
     }
     
+    @Test
     public void testSerializableListenerNormalState()
     {
         UIComponent component = new UIOutput();
@@ -312,6 +318,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testSerializableListenerWithPSS()
     {
         UIComponent component = new UIOutput();
@@ -336,6 +343,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testSerializableListenerWithPSSFull()
     {
         UIComponent component = new UIOutput();
@@ -371,6 +379,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
             i = value;
         }
         
+        @Override
         public void processEvent(ComponentSystemEvent event)
         {
             // TODO Auto-generated method stub
@@ -387,27 +396,32 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
             return false;
         }
 
+        @Override
         public Object saveState(FacesContext context)
         {
             return i;
         }
 
+        @Override
         public void restoreState(FacesContext context, Object state)
         {
             i = (Integer) state;
         }
 
+        @Override
         public boolean isTransient()
         {
             return false;
         }
 
+        @Override
         public void setTransient(boolean newTransientValue)
         {
         }
         
     }
     
+    @Test
     public void testStateHolderListenerNormalState()
     {
         UIComponent component = new UIOutput();
@@ -431,6 +445,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testStateHolderListenerWithPSS()
     {
         UIComponent component = new UIOutput();
@@ -457,6 +472,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testStateHolderListenerWithPSSFull()
     {
         UIComponent component = new UIOutput();
@@ -498,6 +514,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
             i = value;
         }
         
+        @Override
         public void processEvent(ComponentSystemEvent event)
         {
             // TODO Auto-generated method stub
@@ -514,6 +531,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
             return false;
         }
 
+        @Override
         public Object saveState(FacesContext context)
         {
             if (!initialStateMarked())
@@ -526,6 +544,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
             }
         }
 
+        @Override
         public void restoreState(FacesContext context, Object state)
         {
             if (state == null)
@@ -535,25 +554,30 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
             i = (Integer) state;
         }
 
+        @Override
         public boolean isTransient()
         {
             return false;
         }
 
+        @Override
         public void setTransient(boolean newTransientValue)
         {
         }
 
+        @Override
         public void clearInitialState()
         {
             markInitialState = false;
         }
 
+        @Override
         public boolean initialStateMarked()
         {
             return markInitialState;
         }
 
+        @Override
         public void markInitialState()
         {
             markInitialState = true;
@@ -561,6 +585,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         
     }
     
+    @Test
     public void testPartialStateHolderListenerNormalState()
     {
         UIComponent component = new UIOutput();
@@ -583,6 +608,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testPartialStateHolderListenerWithPSS()
     {
         UIComponent component = new UIOutput();
@@ -607,6 +633,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
 
+    @Test
     public void testPartialStateHolderListenerWithPSS2()
     {
         UIComponent component = new UIOutput();
@@ -633,6 +660,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
+    @Test
     public void testPartialStateHolderListenerWithPSSFull()
     {
         UIComponent component = new UIOutput();

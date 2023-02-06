@@ -27,6 +27,7 @@ import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.impl.element.FacesConfigImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
 {
@@ -52,6 +53,7 @@ public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
         
     }
     
+    @Test
     public void testVerifyExistence(){
         
         Collection<NavigationRule> navRules = dispenser.getNavigationRules();

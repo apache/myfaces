@@ -27,6 +27,7 @@ import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import java.io.Serializable;
 import java.util.Arrays;
 import org.junit.Assert;
+import org.junit.Test;
 
 public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase implements Serializable
 {
@@ -40,6 +41,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
     public static final String BASE64_KEY_SIZE_24 = "MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIz";
 
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -47,6 +49,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         externalContext.getApplicationMap().put(StateUtils.SERIAL_FACTORY, new DefaultSerialFactory());
     }
 
+    @Override
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -56,7 +59,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
     /**
      * Test for Restore View phase.
      */
-
+    @Test
     public void testConstructionString()
     {
         String constructed = StateUtils.construct(sensitiveString, externalContext);
@@ -70,7 +73,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
      * Test for Restore View phase.  This method actually runs an instance of
      * StateUtilsTestCase through the construct/reconstruct process.
      */
-
+    @Test
     public void testConstruction()
     {
         String constructed = StateUtils.construct(TEST_DATA, externalContext);
@@ -78,6 +81,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         Assert.assertTrue(TEST_DATA.equals(object));
     }
 
+    @Test
     public void testSerialization()
     {
         byte[] bytes = StateUtils.getAsByteArray(TEST_DATA, externalContext);
@@ -85,6 +89,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         Assert.assertTrue(TEST_DATA.equals(object));
     }
 
+    @Test
     public void testCryptography()
     {
         byte[] sensitiveBytes = sensitiveString.getBytes();
@@ -95,6 +100,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         Assert.assertTrue(Arrays.equals(insecure, sensitiveBytes));
     }
 
+    @Test
     public void testCompression()
     {
         int size = 2049;
@@ -106,6 +112,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         Assert.assertTrue(Arrays.equals(moreBytes, orginalBytes));
     }
 
+    @Test
     public void testEncoding()
     {
         byte[] orginalBytes = sensitiveString.getBytes();
@@ -117,7 +124,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
     /**
      * Simulates testConstruction w/ corrupt data.
      */
-
+    @Test
     public void testConstructionNegative()
     {
         String constructed = StateUtils.construct(TEST_DATA, externalContext);
@@ -136,7 +143,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
     /**
      * Simulates testSerialization w/ corrput data.
      */
-
+    @Test
     public void testSerializationNegative()
     {
         byte[] bytes = StateUtils.getAsByteArray(TEST_DATA, externalContext);
@@ -156,7 +163,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
     /**
      * Simulates testCryptography w/ corrupt data.
      */
-
+    @Test
     public void testCryptographyNegative()
     {
         byte[] sensitiveBytes = sensitiveString.getBytes();
@@ -177,7 +184,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
     /**
      * Simulates testCompression w/ corrupt data.
      */
-
+    @Test
     public void testCompressionNegative()
     {
         int size = 2049;
@@ -198,7 +205,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
     /**
      * Simulates testEncoding w/ corrupt data.
      */
-
+    @Test
     public void testEncodingNegative()
     {
         byte[] orginalBytes = sensitiveString.getBytes();

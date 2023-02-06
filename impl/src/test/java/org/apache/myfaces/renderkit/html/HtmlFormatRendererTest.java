@@ -23,21 +23,20 @@ import java.io.StringWriter;
 import jakarta.faces.component.UIParameter;
 import jakarta.faces.component.html.HtmlOutputFormat;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class HtmlFormatRendererTest extends AbstractJsfTestCase
 {
     private MockResponseWriter writer;
     private HtmlOutputFormat outputFormat;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         outputFormat = new HtmlOutputFormat();
@@ -52,11 +51,8 @@ public class HtmlFormatRendererTest extends AbstractJsfTestCase
         
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
-    
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-    
+
+    @org.junit.Test
     public void testHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = {
@@ -78,6 +74,7 @@ public class HtmlFormatRendererTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testHtmlPropertyPassTruNotRendered() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
@@ -95,6 +92,7 @@ public class HtmlFormatRendererTest extends AbstractJsfTestCase
      * he should be ignored.
      * @throws Exception
      */
+    @Test
     public void testDisabledUIParameterNotRendered() throws Exception
     {
         UIParameter param1 = new UIParameter();

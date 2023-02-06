@@ -35,10 +35,12 @@ import java.util.*;
 
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.test.mock.MockFacesContext;
+import org.junit.Test;
 
 public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 {
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -46,6 +48,7 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
         servletContext.addInitParameter(MyfacesConfig.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING, "true");
     }
 
+    @Test
     public void testBuildBehaviorChain()
     {
         Map<String, List<ClientBehavior>> behaviors = new HashMap<String, List<ClientBehavior>>();
@@ -90,6 +93,7 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 
     }
     
+    @Test
     public void testBuildBehaviorChain2()
     {
         Map<String, List<ClientBehavior>> behaviors = new HashMap<String, List<ClientBehavior>>();
@@ -132,6 +136,7 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 
     }    
     
+    @Test
     public void testEscapeJavaScriptForChain()
     {
         MockFacesContext facesContext = new MockFacesContext();

@@ -30,6 +30,7 @@ import jakarta.faces.component.UICommand;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Tests for {@link MethodExpressionActionListener}
@@ -70,17 +71,20 @@ public class MethodExpressionActionListenerTest extends AbstractJsfTestCase
         super.tearDown();
     }
 
+    @Test
     public void testMethodExpressionActionListener() 
     {
         methodExpressionActionListener = new MethodExpressionActionListener();
     }
 
+    @Test
     public void testMethodExpressionActionListenerMethodExpression() 
     {
         EasyMock.replay(methodExpressionOneArg);
         methodExpressionActionListener = new MethodExpressionActionListener(methodExpressionOneArg);
     }
 
+    @Test
     public void testMethodExpressionActionListenerMethodExpressionMethodExpression() 
     {
         EasyMock.replay(methodExpressionOneArg);
@@ -92,6 +96,7 @@ public class MethodExpressionActionListenerTest extends AbstractJsfTestCase
     /**
      * Test for case: method with ActionEvent param exists (pre-Faces 2.0 case)
      */
+    @Test
     public void testProcessAction() 
     {
         // First, try to invoke the MethodExpression passed to the constructor of this instance,
@@ -109,6 +114,7 @@ public class MethodExpressionActionListenerTest extends AbstractJsfTestCase
     /**
      * Test for case: method exists but has no ActionEvent param (new possibility in Faces 2.0)
      */
+    @Test
     public void testProcessAction2() throws Exception 
     {
         // First, try to invoke the MethodExpression passed to the constructor of this instance,
@@ -131,6 +137,7 @@ public class MethodExpressionActionListenerTest extends AbstractJsfTestCase
         EasyMock.verify(methodExpressionZeroArg);
     }
 
+    @Test
     public void testSaveState() 
     {
         methodExpressionActionListener = new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg);
@@ -139,6 +146,7 @@ public class MethodExpressionActionListenerTest extends AbstractJsfTestCase
                 Arrays.deepEquals(expectedState, (Object[]) methodExpressionActionListener.saveState(facesContext)));
     }
 
+    @Test
     public void testRestoreState() throws IllegalAccessException, NoSuchFieldException
     {
         // State saving always call JavaBean constructor:

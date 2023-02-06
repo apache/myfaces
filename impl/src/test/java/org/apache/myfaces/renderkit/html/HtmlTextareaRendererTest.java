@@ -23,15 +23,13 @@ import java.io.StringWriter;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.html.HtmlInputTextarea;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -66,6 +64,7 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
         writer = null;
     }
 
+    @Test
     public void testRenderDefault() throws Exception
     {
         inputTextarea.encodeBegin(facesContext);
@@ -76,6 +75,7 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
         Assert.assertEquals("<textarea name=\"j_id__v_0\"></textarea>", output);
     }
 
+    @Test
     public void testRenderColsRows() throws Exception
     {
         inputTextarea.setCols(5);
@@ -88,6 +88,7 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
         Assert.assertEquals("<textarea name=\"j_id__v_0\" cols=\"5\" rows=\"10\"></textarea>", output);
     }
     
+    @Test
     public void testHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
@@ -102,6 +103,7 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndName() 
     {
         inputTextarea.addClientBehavior("keypress", new AjaxBehavior());

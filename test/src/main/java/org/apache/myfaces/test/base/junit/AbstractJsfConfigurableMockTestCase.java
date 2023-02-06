@@ -33,7 +33,6 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
-import junit.framework.TestCase;
 
 import org.apache.myfaces.test.config.ResourceBundleVarNames;
 import org.apache.myfaces.test.mock.MockExternalContext;
@@ -79,7 +78,7 @@ import org.junit.Before;
  * @since 1.0.0
  */
 
-public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
+public abstract class AbstractJsfConfigurableMockTestCase
 {
 
     // ------------------------------------------------------------ Constructors

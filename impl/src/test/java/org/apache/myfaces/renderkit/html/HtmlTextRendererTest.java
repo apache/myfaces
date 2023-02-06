@@ -32,9 +32,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
@@ -43,6 +40,7 @@ import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -88,6 +86,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         writer = null;
     }
 
+    @Test
     public void testStyleClassAttr() throws IOException
     {
         outputText.setValue("Output");
@@ -103,6 +102,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         Assert.assertNotSame("Output", output);
     }
 
+    @Test
     public void testInputDefaultTypeAttr() throws IOException
     {
         inputText.encodeBegin(facesContext);
@@ -114,6 +114,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         Assert.assertNotSame("Output", output);
     }
 
+    @Test
     public void testInputTypeAttr() throws IOException
     {
         inputText.setType("tel");
@@ -132,6 +133,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
      * Don't add span over escape
      * @throws IOException
      */
+    @Test
     public void testEscapeNoSpan() throws IOException
     {
         outputText.setValue("Output");
@@ -146,6 +148,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         Assert.assertEquals("Output", output);
     }
 
+    @Test
     public void testHtmlPropertyPassThru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
@@ -158,6 +161,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testWhenSubmittedValueIsNullDefaultShouldDissapearFromRendering() {
         //See MYFACES-2161 and MYFACES-1549 for details
         UIViewRoot root = new UIViewRoot();
@@ -229,6 +233,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndName() 
     {
         inputText.addClientBehavior("keypress", new AjaxBehavior());
@@ -250,6 +255,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
      * Tests if a JavaScript user code is correctly escaped.
      * e.g. alert('test') has to become alert(\'test\')
      */
+    @Test
     public void testClientBehaviorUserCodeJavaScriptEscaping()
     {
         inputText.getAttributes().put("onchange", "alert('test')");
@@ -272,6 +278,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
      * Tests if a JavaScript user code that already contains ' is correctly escaped.
      * e.g. test = 'a\'b'; has to become test = \'a\\\'b\';
      */
+    @Test
     public void testClientBehaviorUserCodeJavaScriptDoubleEscaping()
     {
         inputText.getAttributes().put("onchange", "var test = \'a\\\'b\'; alert(test);");

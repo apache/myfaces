@@ -31,6 +31,7 @@ import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class DateTimeConverterTest extends AbstractJsfTestCase
 {
@@ -59,6 +60,7 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
     /*
      * Test method for 'jakarta.faces.component.UIComponentBase.getAsObject()'
      */
+    @Test
     public void testGetAsObject()
     {
 

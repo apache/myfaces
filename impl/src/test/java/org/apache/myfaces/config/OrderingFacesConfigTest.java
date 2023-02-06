@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class OrderingFacesConfigTest extends AbstractJsfTestCase
 {
@@ -75,6 +76,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testSimpleOrdering() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -118,6 +120,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testMiddleOrdering() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -194,6 +197,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testMaxConditionsOrdering() throws Exception
     {
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -243,6 +247,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testEx1()
     {      
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
@@ -294,6 +299,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testEx2()
     {
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfg = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
@@ -340,6 +346,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testEx3()
     {
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
@@ -375,6 +382,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testEx4() throws Exception
     {
         FacesConfig cfgA = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -414,6 +422,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         //printFacesConfigList("Sorted List", sortedList);
     }
 
+    @Test
     public void testBeforeOthers1() throws Exception
     {
         FacesConfig cfgA = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -444,6 +453,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         }
     }
 
+    @Test
     public void testAfterOthers1() throws Exception
     {
         FacesConfig cfgA = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -474,6 +484,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testBeforeOthers2() throws Exception
     {
         FacesConfig cfg1 = _impl.getFacesConfig(getClass().getResourceAsStream(
@@ -851,6 +862,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         System.out.println("]");
     }
     
+    @Test
     public void testAbsoluteOrdering1() throws Exception
     {
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfgAbs = new org.apache.myfaces.config.impl.element.FacesConfigImpl();

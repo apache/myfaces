@@ -22,6 +22,7 @@ import jakarta.faces.context.PartialViewContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Various tests for the faces context is rendered
@@ -46,6 +47,7 @@ public class IsRenderedTest extends AbstractJsfTestCase {
      * no render all due to defaults
      * or a renderAll which
      */
+    @Test
     public void testRenderAll1() {
         FacesContext context = new FacesContextImpl(servletContext, request, response);
         

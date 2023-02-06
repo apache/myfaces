@@ -34,6 +34,7 @@ import jakarta.faces.model.ListDataModel;
 
 import org.apache.myfaces.dummy.data.Data;
 import org.junit.Assert;
+import org.junit.Test;
 import org.mockito.Mockito;
 
 public class InvokeOnComponentTest extends AbstractComponentTest
@@ -56,6 +57,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         super.tearDown();
     }
 
+    @Test
     public void testInvokeOnFormPrependId() throws Exception
     {
         UIForm form = new UIForm();
@@ -72,6 +74,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         Assert.assertTrue(val.get());
     }
     
+    @Test
     public void testInvokeOnFormPrependIdFalse() throws Exception
     {
         UIForm form = new UIForm();
@@ -88,6 +91,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         Assert.assertTrue(val.get());
     }
     
+    @Test
     public void testInvokeOnFormPrependIdChild() throws Exception
     {
         UIForm form = new UIForm();
@@ -109,6 +113,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         Assert.assertTrue(val.get());
     }
     
+    @Test
     public void testInvokeOnFormPrependIdFalseChild() throws Exception
     {
         UIForm form = new UIForm();
@@ -130,6 +135,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         Assert.assertTrue(val.get());
     }
     
+    @Test
     public void atestInvokeOnComp() throws Exception
     {
         UIForm form = new UIForm();
@@ -155,6 +161,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, i4);
     }
 
+    @Test
     public void btestInvokeOnCompOnUIData() throws Exception
     {
         // column1
@@ -204,6 +211,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, name);
     }
 
+    @Test
     public void testInvokeOnCompOnUIDataChildren() throws Exception
     {
         // column1

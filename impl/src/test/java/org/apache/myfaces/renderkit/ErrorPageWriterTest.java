@@ -45,6 +45,7 @@ public class ErrorPageWriterTest extends AbstractJsfTestCase
     private MockResponseWriter writer ;
     private HtmlOutputText outputText;
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -64,6 +65,7 @@ public class ErrorPageWriterTest extends AbstractJsfTestCase
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
+    @Override
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -71,6 +73,7 @@ public class ErrorPageWriterTest extends AbstractJsfTestCase
         writer = null;
     }
 
+    @org.junit.Test
     public void testValueExpressionGetExpressionStringReturnsNull() throws IOException
     {
         //See MYFACES-3413 for details

@@ -25,6 +25,7 @@ import jakarta.faces.context.PartialViewContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Testcases for the request parameter handling
@@ -49,6 +50,7 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
      * Empty String as request param
      * has to result in an empty list
      */
+    @Test
     public void testRequestParams1() {
         String empty = "    \n \t  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
@@ -65,6 +67,7 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
     /**
      * no request param, has to result in an empty list
      */
+    @Test
     public void testRequestParams2() {
         Map<String, String> requestParamMap = new HashMap<String, String>();
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
@@ -96,6 +99,7 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
     /**
      * list with one element has to result in a list with one element
      */
+    @Test
     public void testRequestParams5() {
         String params = " view1:panel1:_component1  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
@@ -114,6 +118,7 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
      * test on a full blown list containing various
      * blank chars
      */
+    @Test
     public void testRequestParams6() {
         String params = " view1:panel1:_component1 view1:panel1:_component2 \n  component3 component4  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();

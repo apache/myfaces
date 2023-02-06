@@ -41,6 +41,7 @@ public class HtmlBodyRendererTest extends AbstractJsfTestCase
     private MockResponseWriter writer ;
     private HtmlBody body;
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -59,12 +60,14 @@ public class HtmlBodyRendererTest extends AbstractJsfTestCase
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
+    @Override
     public void tearDown()throws Exception
     {
         super.tearDown();
         writer = null;
     }
     
+    @org.junit.Test
     public void testHtmlPropertyPassTru2() throws Exception
     { 
         HtmlRenderedAttr[] attrs = {
@@ -78,6 +81,7 @@ public class HtmlBodyRendererTest extends AbstractJsfTestCase
         }
     }
     
+    @org.junit.Test
     public void testHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();

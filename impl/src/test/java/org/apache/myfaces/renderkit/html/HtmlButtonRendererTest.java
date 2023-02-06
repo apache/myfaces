@@ -25,9 +25,6 @@ import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.html.HtmlCommandButton;
 import jakarta.faces.component.html.HtmlForm;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockExternalContext;
@@ -39,6 +36,7 @@ import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class HtmlButtonRendererTest extends AbstractJsfTestCase {
 
@@ -46,6 +44,7 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
     private HtmlCommandButton commandButton;
     private HtmlForm form;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         writer = new MockResponseWriter(new StringWriter(), null, null);
@@ -71,11 +70,13 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
     
+    @Override
     public void tearDown() throws Exception {
         super.tearDown();
         writer = null;
     }
 
+    @Test
     public void testJSNotAllowedHtmlPropertyPassTru() throws Exception {
         HtmlRenderedAttr[] attrs = {
             //_AccesskeyProperty
@@ -126,6 +127,7 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
         }
     }
     
+    @Test
     public void testAllowedHtmlPropertyPassTru() throws Exception {
            HtmlRenderedAttr[] attrs = {
                //_AccesskeyProperty
@@ -177,6 +179,7 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndName() 
     {
         commandButton.addClientBehavior("focus", new AjaxBehavior());
@@ -202,6 +205,7 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
      * he should be ignored.
      * @throws Exception
      */
+    @Test
     public void testCommandButtonRendersNotDisabledUIParameters() throws Exception
     {
         UIParameter param1 = new UIParameter();

@@ -23,15 +23,13 @@ import java.io.StringWriter;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.html.HtmlInputSecret;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -67,6 +65,7 @@ public class HtmlSecretRendererTest extends AbstractJsfTestCase
         writer = null;
     }
 
+    @Test
     public void testInputTextDefault() throws Exception
     {
         inputText.encodeBegin(facesContext);
@@ -77,6 +76,7 @@ public class HtmlSecretRendererTest extends AbstractJsfTestCase
         Assert.assertEquals("<input type=\"password\" name=\"j_id__v_0\"/>", output);
     }
 
+    @Test
     public void testHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
@@ -91,6 +91,7 @@ public class HtmlSecretRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndName() 
     {
         inputText.addClientBehavior("keypress", new AjaxBehavior());

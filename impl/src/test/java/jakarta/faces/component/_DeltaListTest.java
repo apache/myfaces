@@ -31,6 +31,7 @@ import java.util.List;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.FacesListener;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class _DeltaListTest extends AbstractComponentTest
 {
@@ -371,34 +372,26 @@ public class _DeltaListTest extends AbstractComponentTest
             return null;
         }
 
+        @Override
         public void clearInitialState()
         {
             initialStateMarked = false;
         }
 
+        @Override
         public boolean initialStateMarked()
         {
             return initialStateMarked;
         }
 
+        @Override
         public void markInitialState()
         {
             initialStateMarked = true;
         }        
     }
 
-    @Override
-    public void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
-
+    @Test
     public void testSimpleAddRemove()
     {
         UITestComponent a = new UITestComponent();
@@ -409,6 +402,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(a._facesListeners.contains(listener1));        
     }
     
+    @Test
     public void testSimpleSaveRestore1()
     {
         UITestComponent a = new UITestComponent();
@@ -425,6 +419,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(b._facesListeners.contains(listener1));        
     }
     
+    @Test
     public void testSimpleSaveRestore2()
     {
         UITestComponent a = new UITestComponent();
@@ -443,6 +438,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(b._facesListeners.contains(listener1));        
     }
     
+    @Test
     public void testSimpleSaveRestore3()
     {
         UITestComponent a = new UITestComponent();
@@ -463,6 +459,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(b._facesListeners.contains(listener1));        
     }
     
+    @Test
     public void testSimpleSaveRestore4()
     {
         UITestComponent a = new UITestComponent();
@@ -489,6 +486,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(b._facesListeners.contains(listener2));
     }
     
+    @Test
     public void testSimpleSaveRestore5()
     {
         UITestComponent a = new UITestComponent();
@@ -523,6 +521,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(c._facesListeners.contains(listener2));
     }
     
+    @Test
     public void testSimpleSaveRestore6()
     {
         UITestComponent a = new UITestComponent();
@@ -548,6 +547,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(b._facesListeners.contains(listener1));        
     }
     
+    @Test
     public void testSimpleSaveRestore7()
     {
         UITestComponent a = new UITestComponent();
@@ -584,6 +584,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(c._facesListeners.contains(listener2));
     }
     
+    @Test
     public void testSimpleSaveRestore8()
     {
         UITestComponent a = new UITestComponent();
@@ -606,6 +607,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(b._facesListeners.contains(listener1));        
     }
     
+    @Test
     public void testSimpleSaveRestore9()
     {
         UITestComponent a = new UITestComponent();
@@ -636,6 +638,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertTrue(b._facesListeners.contains(listener2));
     }    
     
+    @Test
     public void testSimpleSaveRestoreTransient1()
     {
         UITestComponent a = new UITestComponent();
@@ -650,6 +653,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertTrue(b._facesListeners.isEmpty());
     }
     
+    @Test
     public void testSimpleSaveRestoreTransient2()
     {
         UITestComponent a = new UITestComponent();
@@ -665,6 +669,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(b._facesListeners.contains(listener1));
     }
     
+    @Test
     public void testSimpleSaveRestoreTransient3()
     {
         UITestComponent a = new UITestComponent();
@@ -683,6 +688,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(b._facesListeners.contains(listener1));
     }
     
+    @Test
     public void testSimpleSaveRestoreTransient4()
     {
         UITestComponent a = new UITestComponent();
@@ -701,6 +707,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(b._facesListeners.contains(listener1));
     }
     
+    @Test
     public void testSimpleSaveRestoreTransient5()
     {
         UITestComponent a = new UITestComponent();
@@ -727,6 +734,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertEquals("value2", ((StateFacesListener)b._facesListeners.get(b._facesListeners.indexOf(listener2))).getValue());
     }
     
+    @Test
     public void testSimpleSaveRestoreTransient6()
     {
         UITestComponent a = new UITestComponent();
@@ -744,6 +752,7 @@ public class _DeltaListTest extends AbstractComponentTest
         Assert.assertFalse(b._facesListeners.contains(listener1));
     }
 
+    @Test
     public void testSimpleSaveRestoreTransient7()
     {
         UITestComponent a = new UITestComponent();

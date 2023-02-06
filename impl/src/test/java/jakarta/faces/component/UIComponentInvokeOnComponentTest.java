@@ -89,6 +89,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
         
         org.apache.myfaces.test.MyFacesAsserts.assertException(FacesException.class, new TestRunner()
         {
+            @Override
             public void run() throws Throwable
             {
                 Assert.assertTrue(testimpl.invokeOnComponent(facesContext, "xxxId", _contextCallback));
@@ -133,6 +134,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
     {
         org.apache.myfaces.test.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
+            @Override
             public void run() throws Throwable
             {
                 _testimpl.invokeOnComponent(null, "xxx", _contextCallback);
@@ -140,6 +142,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
         });
         org.apache.myfaces.test.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
+            @Override
             public void run() throws Throwable
             {
                 _testimpl.invokeOnComponent(facesContext, null, _contextCallback);

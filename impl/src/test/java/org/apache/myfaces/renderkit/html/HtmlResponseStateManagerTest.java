@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import jakarta.faces.render.ResponseStateManager;
-import static junit.framework.TestCase.assertEquals;
 import org.apache.myfaces.test.FacesTestCase;
 import org.junit.Assert;
 import org.junit.Test;

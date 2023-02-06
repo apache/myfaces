@@ -61,6 +61,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
                 "org.apache.myfaces.application.ApplicationFactoryImpl");
     }
     
+    @Override
     public void setUp() throws Exception {
         
         super.setUp();
@@ -81,6 +82,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         //facesContext.getApplication().setSearchExpressionHandler(new SearchExpressionHandlerImpl());
     }
     
+    @Override
     public void tearDown() throws Exception {
         super.tearDown();
         writer = null;

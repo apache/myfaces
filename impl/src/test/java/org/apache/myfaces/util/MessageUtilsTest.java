@@ -23,6 +23,7 @@ import jakarta.faces.application.FacesMessage;
 import org.apache.myfaces.util.MessageUtils;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * TestCase for MessageUtils
@@ -34,6 +35,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     /**
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(Severity, String, Object)'
      */
+    @Test
     public void testGetMessageSeverityStringObject()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
@@ -53,6 +55,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     /**
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(Severity, String, Object[])'
      */
+    @Test
     public void testGetMessageSeverityStringObjectArray()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
@@ -71,6 +74,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     /**
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(Severity, String, Object[], FacesContext)'
      */
+    @Test
     public void testGetMessageSeverityStringObjectArrayFacesContext()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
@@ -90,6 +94,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     /**
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(Locale, String, Object[])'
      */
+    @Test
     public void testGetMessageLocaleStringObjectArray()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
@@ -107,6 +112,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     /**
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(FacesContext, String)'
      */
+    @Test
     public void testGetMessageFacesContextString()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
@@ -125,6 +131,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     /**
      * Test method for 'org.apache.myfaces.shared.util.MessageUtils.getMessage(FacesContext, String, Object[])'
      */
+    @Test
     public void testGetMessageFacesContextStringObjectArray()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
@@ -143,6 +150,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     /**
      * testGetMessageWithBundle
      */
+    @Test
     public void testGetMessageWithBundle()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
@@ -158,6 +166,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     /**
      * testGetMessageWithBundleName
      */
+    @Test
     public void testGetMessageWithBundleName()
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
@@ -171,6 +180,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     /**
      * testGetMessageWithBundleNameLocale
      */
+    @Test
     public void testGetMessageWithBundleNameLocale()
     {
         FacesMessage msg = MessageUtils.getMessage(DEFAULT_BUNDLE,
@@ -182,6 +192,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     /**
      * testSubstituteParamsWithDELocale(
      */
+    @Test
     public void testSubstituteParamsWithDELocale() {
         String paramString = MessageUtils.substituteParams(Locale.GERMANY, "currency {0,number,currency}", new Object[]{100});
 
@@ -191,6 +202,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     /**
      * testSubstituteParamsWithGBLocale(
      */
+    @Test
     public void testSubstituteParamsWithGBLocale() {
         String paramString = MessageUtils.substituteParams(Locale.UK, "currency {0,number,currency}", new Object[]{100});
 

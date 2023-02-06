@@ -28,6 +28,7 @@ import jakarta.el.ValueExpression;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Tests for UISelectItems.
@@ -35,6 +36,7 @@ import org.junit.Assert;
 public class UISelectItemsTest extends AbstractJsfTestCase
 {
 
+    @Test
     public void testStringListAsValue() 
     {
         List<String> value = new ArrayList<String>();
@@ -61,6 +63,7 @@ public class UISelectItemsTest extends AbstractJsfTestCase
         Assert.assertEquals(value, options);
     }
     
+    @Test
     public void testPrimitiveArrayAsValue()
     {
         int[] value = new int[3];

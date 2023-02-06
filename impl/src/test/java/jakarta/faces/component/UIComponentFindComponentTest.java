@@ -28,6 +28,7 @@ import jakarta.faces.component.UIData;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIPanel;
 import org.junit.Assert;
+import org.junit.Test;
 
 
 /**
@@ -54,6 +55,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         super.tearDown();
     }
 
+    @Test
     public void testWithNullExperession() throws Exception
     {
         try
@@ -72,11 +74,13 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         }
     }
 
+    @Test
     public void testWithEmptyExperession() throws Exception
     {
         Assert.assertNull(_testImpl.findComponent(""));
     }
 
+    @Test
     public void testRootExpression() throws Exception
     {
         String expression = ":parent";
@@ -92,6 +96,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         Assert.assertEquals(parent, _testImpl.findComponent(expression));
     }
 
+    @Test
     public void testRelativeExpression() throws Exception
     {
         String expression = "testimpl";
@@ -108,6 +113,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         Assert.assertEquals(_testImpl, _testImpl.findComponent(expression));
     }
 
+    @Test
     public void testComplexRelativeExpression() throws Exception
     {
         String expression = "child1_1:testimpl";
@@ -124,10 +130,12 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         Assert.assertEquals(_testImpl, namingContainer.findComponent(expression));
     }
 
+    @Test
     public void testOverriddenFindComponent() {
         UIViewRoot viewRoot = new UIViewRoot();
         UIData uiData = new UIData()
         {
+            @Override
             public UIComponent findComponent(String expr)
             {
                 return super.findComponent(stripRowIndex(expr));
@@ -170,6 +178,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         Assert.assertEquals(command, viewRoot.findComponent(":data:1:command"));
     }
 
+    @Test
     public void testXXFindComponent() {
         UIViewRoot viewRoot = new UIViewRoot();
         UIData uiData = new UIData();
@@ -188,7 +197,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         Assert.assertNotNull(viewRoot.findComponent(":x:x"));
     }
 
-
+    @Test
     public void testWithRelativeExpressionNamingContainer() throws Exception
     {
         String expression = "testimpl";

@@ -29,15 +29,13 @@ import jakarta.faces.component.html.HtmlSelectManyMenu;
 import jakarta.faces.component.html.HtmlSelectOneMenu;
 import jakarta.faces.model.SelectItem;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -79,6 +77,7 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
         writer = null;
     }
 
+    @Test
     public void testSelectOneHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs(false);
@@ -98,6 +97,7 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testSelectManyHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs(false);
@@ -120,6 +120,7 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndNameSelectOneMenu() 
     {
         UISelectItem item1 = new UISelectItem();
@@ -150,6 +151,7 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndNameSelectManyMenu() 
     {
         UISelectItem item1 = new UISelectItem();

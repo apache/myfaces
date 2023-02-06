@@ -32,6 +32,7 @@ import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Testcase for the response switching
@@ -149,6 +150,7 @@ public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
      * testing the off switch for the
      * response
      */
+    @Test
     public void testSwitchOnWriter() {
 
         ByteArrayOutputStream ostr = new ByteArrayOutputStream();

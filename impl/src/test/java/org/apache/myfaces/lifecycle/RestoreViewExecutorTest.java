@@ -27,6 +27,7 @@ import org.apache.myfaces.application.ViewIdSupport;
 
 import org.apache.myfaces.test.FacesTestCase;
 import org.junit.Assert;
+import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
@@ -56,6 +57,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
      * Test method for
      * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testExecuteWithExistingViewRoot()
     {
         Mockito.when(_facesContext.getApplication()).thenReturn(_application);

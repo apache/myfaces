@@ -33,23 +33,23 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
-import junit.framework.TestCase;
-
 import org.apache.myfaces.test.MyFacesAsserts;
 import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
-public class ViewHandlerTest extends TestCase
+public class ViewHandlerTest
 {
     private MockFacesContext _facesContext;
     private IMocksControl _mocksControl;
     private ExternalContext _externalContext;
     private TestViewHandler _testimpl;
 
-    @Override
+    @Before
     public void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();
@@ -63,6 +63,7 @@ public class ViewHandlerTest extends TestCase
      * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testCalculateCharacterEncodingWithRequestHeaderContentType()
     {
         Map<String, String> map = _mocksControl.createMock(Map.class);
@@ -77,6 +78,7 @@ public class ViewHandlerTest extends TestCase
      * Test method for
      * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndNoSession()
     {
         Map<String, String> emptyMap = Collections.emptyMap();
@@ -92,6 +94,7 @@ public class ViewHandlerTest extends TestCase
      * Test method for
      * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     @SuppressWarnings("unchecked")
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionButNoSessionValue()
     {
@@ -111,6 +114,7 @@ public class ViewHandlerTest extends TestCase
      * Test method for
      * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     @SuppressWarnings("unchecked")
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionAndNoSessionValue()
     {
@@ -131,6 +135,7 @@ public class ViewHandlerTest extends TestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testInitView() throws Exception
     {
         ViewHandler handler = _mocksControl
@@ -152,6 +157,7 @@ public class ViewHandlerTest extends TestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testInitViewWithUnsupportedEncodingException() throws Exception
     {
         final ViewHandler handler = _mocksControl
@@ -167,6 +173,7 @@ public class ViewHandlerTest extends TestCase
         _mocksControl.replay();
         MyFacesAsserts.assertException(FacesException.class, new TestRunner()
         {
+            @Override
             public void run() throws Throwable
             {
                 handler.initView(_facesContext);

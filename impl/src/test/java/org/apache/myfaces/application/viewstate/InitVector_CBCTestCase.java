@@ -21,9 +21,11 @@ import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
 import jakarta.faces.FacesException;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class InitVector_CBCTestCase extends AbstractJsfTestCase
 {
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -38,6 +40,7 @@ public class InitVector_CBCTestCase extends AbstractJsfTestCase
         
     }
 
+    @Test
     public void testDecryption()
     {
         byte[] sensitiveBytes = "bound to fail".getBytes();
@@ -55,6 +58,7 @@ public class InitVector_CBCTestCase extends AbstractJsfTestCase
         
     }
     
+    @Test
     public void testEncryption() {
         
         byte[] sensitiveBytes = "bound to fail".getBytes();

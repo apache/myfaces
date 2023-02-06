@@ -58,6 +58,7 @@ public class ViewIdSupportMockTest extends FacesTestCase
         Assert.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
 
+    @Test
     public void testCalculateViewIdFromRequestPathInfo()
     {
         Mockito.when(_externalContext.getRequestMap()).thenReturn(Collections.emptyMap());
@@ -67,7 +68,8 @@ public class ViewIdSupportMockTest extends FacesTestCase
 
         Assert.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
-
+    
+    @Test
     public void testCalculateViewIdFromRequestAttributeIncludeServletPath()
     {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -80,6 +82,7 @@ public class ViewIdSupportMockTest extends FacesTestCase
         Assert.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
 
+    @Test
     public void testCalculateViewIdFromRequestServletPath()
     {
         Mockito.when(_externalContext.getRequestMap()).thenReturn(Collections.emptyMap());
@@ -90,6 +93,7 @@ public class ViewIdSupportMockTest extends FacesTestCase
         Assert.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
 
+    @Test
     public void testCalculateViewIdFacesException()
     {
         Mockito.when(_externalContext.getRequestMap()).thenReturn(Collections.emptyMap());
@@ -98,6 +102,7 @@ public class ViewIdSupportMockTest extends FacesTestCase
 
         MyFacesAsserts.assertException(FacesException.class, new TestRunner()
         {
+            @Override
             public void run() throws Throwable
             {
                 viewIdSupport.calculateViewId(_facesContext);

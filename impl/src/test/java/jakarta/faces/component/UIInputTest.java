@@ -51,6 +51,7 @@ import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.test.mock.visit.MockVisitCallback;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class UIInputTest extends AbstractJsfTestCase
 {
@@ -95,6 +96,7 @@ public class UIInputTest extends AbstractJsfTestCase
         }
     }
 
+    @Test
     public void testWhenSpecifiedConverterMessageIsUsedInCaseConverterExceptionOccurs()
     {
         input.setConverterMessage("Cannot convert");
@@ -116,6 +118,7 @@ public class UIInputTest extends AbstractJsfTestCase
         Assert.assertEquals(message.getSummary(), "Cannot convert");
     }
 
+    @Test
     public void testWhenSpecifiedValidatorMessageIsUsedInCaseValidatorExceptionOccurs()
     {
         input.setValidatorMessage("Cannot validate");
@@ -136,6 +139,7 @@ public class UIInputTest extends AbstractJsfTestCase
         Assert.assertEquals(message.getSummary(), "Cannot validate");
     }
 
+    @Test
     public void testUpdateModelSetsTheLocalValueToModelValue()
     {
         input.setValue("testValue");
@@ -149,6 +153,7 @@ public class UIInputTest extends AbstractJsfTestCase
         Assert.assertEquals("testValue", updatedValue);
     }
 
+    @Test
     public void testValidateWithEmptyStringWithEmptyStringAsNullEnabled()
     {
         try
@@ -184,6 +189,7 @@ public class UIInputTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testValidateWithNonStringWithEmptyStringAsNullEnabled()
     {
         try
@@ -239,6 +245,7 @@ public class UIInputTest extends AbstractJsfTestCase
         }
     }
 
+    @Test
     public void testValidateWithNonEmptyStringWithEmptyStringAsNullEnabled()
     {
         try
@@ -260,6 +267,7 @@ public class UIInputTest extends AbstractJsfTestCase
         }
     }
 
+    @Test
     public void testValidateWithEmptyStringWithEmptyStringAsNullDisabled()
     {
         try
@@ -280,6 +288,7 @@ public class UIInputTest extends AbstractJsfTestCase
         }
     }
 
+    @Test
     public void testValidateWithEmptyStringWithEmptyStringAsNullNotSpecified()
     {
         try
@@ -304,6 +313,7 @@ public class UIInputTest extends AbstractJsfTestCase
      * Tests if UIInput.processValidators() correctly calls FacesContext.validationFailed()
      * if a validation error occurs.
      */
+    @Test
     public void testValidationErrorTriggersFacesContextValidationFailed()
     {
         LengthValidator validator = new LengthValidator();
@@ -325,19 +335,23 @@ public class UIInputTest extends AbstractJsfTestCase
             super(context, request, response);
         }
 
+        @Override
         public String encodePartialActionURL(String url) {
             return null;
         }
 
+        @Override
         public String getInitParameter(String name) {
             return (String) initParameters.get(name);
         }
 
+        @Override
         public Map getInitParameterMap() {
             return initParameters;
         }
     }
     
+    @Test
     public void testProcessDecodesRenderedFalse() throws Exception {
         input = new VerifyNoLifecycleMethodComponent();
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, false);
@@ -348,6 +362,7 @@ public class UIInputTest extends AbstractJsfTestCase
         
     }
     
+    @Test
     public void testProcessDecodesRenderedTrue() throws Exception {
         
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
@@ -358,6 +373,7 @@ public class UIInputTest extends AbstractJsfTestCase
         Assert.assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
     }
     
+    @Test
     public void testProcessValidatorsRenderedFalse() throws Exception {
         input = new VerifyNoLifecycleMethodComponent();
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, false);
@@ -368,6 +384,7 @@ public class UIInputTest extends AbstractJsfTestCase
         
     }
     
+    @Test
     public void testProcessValidatorsRenderedTrue() throws Exception {
         
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
@@ -378,7 +395,7 @@ public class UIInputTest extends AbstractJsfTestCase
         Assert.assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
     }
     
-    
+    @Test
     public void testProcessUpdatesRenderedFalse() throws Exception {
         input = new VerifyNoLifecycleMethodComponent();    
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,input, false);
@@ -389,6 +406,7 @@ public class UIInputTest extends AbstractJsfTestCase
         
     }
     
+    @Test
     public void testProcessUpdatesRenderedTrue() throws Exception {
         
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
@@ -399,6 +417,7 @@ public class UIInputTest extends AbstractJsfTestCase
         Assert.assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
     }
     
+    @Test
     public void testVisitTree() throws Exception {
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
         
@@ -412,21 +431,27 @@ public class UIInputTest extends AbstractJsfTestCase
     /** Verifies no call to encode* and process* methods */
     public class VerifyNoLifecycleMethodComponent extends UIInput
     {
+        @Override
         public void decode(FacesContext context) {
             Assert.fail();
         }
+        @Override
         public void validate(FacesContext context) {
             Assert.fail();
         }
+        @Override
         public void updateModel(FacesContext context) {
             Assert.fail();
         }
+        @Override
         public void encodeBegin(FacesContext context) throws IOException {
             Assert.fail();
         }
+        @Override
         public void encodeChildren(FacesContext context) throws IOException {
             Assert.fail();
         }
+        @Override
         public void encodeEnd(FacesContext context) throws IOException {
             Assert.fail();
         }
