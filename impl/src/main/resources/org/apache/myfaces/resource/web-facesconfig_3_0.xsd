@@ -842,6 +842,7 @@
             <xsd:enumeration value="2.1"/>
             <xsd:enumeration value="2.2"/>
             <xsd:enumeration value="2.3"/>
+            <xsd:enumeration value="3.0"/>
         </xsd:restriction>
     </xsd:simpleType>
 
