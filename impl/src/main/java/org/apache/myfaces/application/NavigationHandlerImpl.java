@@ -705,6 +705,12 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                                 }
                                 continue;
                             }
+                            if(!complete && flowHandler.getCurrentFlow() == null) // See  MYFACES-4553 for details
+                            {
+                                flowHandler.transition(facesContext, null, targetFlow, null, outcomeToGo);
+                                facesContext.getAttributes().put(STARTED_FLOW_TRANSITION, true);
+                                continue;
+                            }
                             if (!complete && flowNode instanceof FlowCallNode)
                             {
                                 // "... If the node is a FlowCallNode, save it aside as facesFlowCallNode. ..."
@@ -723,12 +729,6 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                                     // reference to the start node and execute this algorithm again, on that start node.
                                     complete = true;
                                 }
-                            }
-                            if(!complete && flowHandler.getCurrentFlow() == null) // See  MYFACES-4553 for details
-                            {
-                                flowHandler.transition(facesContext, null, targetFlow, null, outcomeToGo);
-                                facesContext.getAttributes().put(STARTED_FLOW_TRANSITION, true);
-                                continue;
                             }
                             if (!complete && flowNode instanceof SwitchNode)
                             {
