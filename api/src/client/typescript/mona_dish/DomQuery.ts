@@ -1068,7 +1068,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     get asNodeArray(): Array<DomQuery> {
-        return [].concat(Stream.of(this.rootNode).filter(item => item != null).collect(new ArrayCollector()));
+        return [].concat(Stream.of(...this.rootNode).filter(item => item != null).collect(new ArrayCollector()));
     }
 
 
@@ -2007,7 +2007,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             let scriptElements = new DomQuery(this.filterSelector("script"), this.querySelectorAll("script"));
             // script execution order by relative pos in their dom tree
             scriptElements.stream
-                .flatMap(item => Stream.of(item.values))
+                .flatMap(item => Stream.of(...item.values))
                 .sort((node1, node2) => node1.compareDocumentPosition(node2) - 3) // preceding 2, following == 4)
                 .each(item => execScript(item));
 
@@ -2065,7 +2065,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         const scriptElements: DomQuery = new DomQuery(this.filterSelector("link, style"), this.querySelectorAll("link, style"));
 
         scriptElements.stream
-            .flatMap(item => Stream.of(item.values))
+            .flatMap(item => Stream.of(...item.values))
             .sort((node1, node2) => node1.compareDocumentPosition(node2) - 3)
             .each(item => execCss(item));
 

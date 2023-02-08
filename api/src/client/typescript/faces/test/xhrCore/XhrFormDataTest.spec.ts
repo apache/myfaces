@@ -19,58 +19,75 @@ import {DQ} from "mona-dish";
 import * as sinon from 'sinon';
 import {XhrFormData} from "../../impl/xhrCore/XhrFormData";
 import {expect} from "chai";
+import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
+import defaultMyFaces = StandardInits.defaultMyFaces;
+import {Implementation} from "../../impl/AjaxImpl";
 
 const jsdom = require("jsdom");
 const {JSDOM} = jsdom;
 
 describe('XhrFormData tests', function () {
 
-  beforeEach(function () {
+    beforeEach(async function () {
 
-    let dom = new JSDOM(`
-            <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Title</title>
-            </head>
-            <body>
-                <div id="id_1"></div>
-                <div id="id_2"  booga="blarg"></div>
-                <div id="id_3"></div>
-                <div id="id_4"></div>
-            </body>
-            </html>
-    
-    `, {
-      contentType: "text/html",
-      runScripts: "dangerously"
+        let waitForResult = defaultMyFaces();
+
+        return waitForResult.then((close) => {
+
+            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.requests = [];
+            this.xhr.onCreate = (xhr) => {
+                this.requests.push(xhr);
+            };
+            (<any>global).XMLHttpRequest = this.xhr;
+            window.XMLHttpRequest = this.xhr;
+
+            this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
+
+            this.closeIt = () => {
+                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                this.jsfAjaxResponse.restore();
+                Implementation.reset();
+                close();
+            }
+        });
     });
 
-    let window = dom.window;
+    beforeEach(function () {
 
-    (<any>global).window = window;
-    (<any>global).body = window.document.body;
-    (<any>global).document = window.document;
-    (<any>global).navigator = {
-      language: "en-En"
-    };
+        let waitForResult = defaultMyFaces();
 
-    this.xhr = sinon.useFakeXMLHttpRequest();
-    this.requests = [];
-    this.xhr.onCreate = (xhr) => {
-      this.requests.push(xhr);
-    };
-    (<any>global).XMLHttpRequest = this.xhr;
-    window.XMLHttpRequest = this.xhr;
-  });
+        return waitForResult.then((close) => {
+            (<any>global).window = window;
+            (<any>global).body = window.document.body;
+            (<any>global).document = window.document;
+            global.body.innerHTML = `
+      <div id="id_1"></div>
+      <div id="id_2" booga="blarg"></div>
+      <div id="id_3"></div>
+      <div id="id_4"></div>
+    `;
+            (<any>global).navigator = {
+                language: "en-En"
+            };
 
-  this.afterEach(function () {
-    (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
-  });
+            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.requests = [];
+            this.xhr.onCreate = (xhr) => {
+                this.requests.push(xhr);
+            };
+            (<any>global).XMLHttpRequest = this.xhr;
+            window.XMLHttpRequest = this.xhr;
 
-  it("must have multiple values for a name", function () {
-    window.document.body.innerHTML = `<form id="page::form">
+        });
+
+        this.afterEach(function () {
+            (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+        });
+    });
+
+    it("must have multiple values for a name", function () {
+        window.document.body.innerHTML = `<form id="page::form">
       <tobago-select-many-checkbox id="page:animals">
         <label for="page:animals">Checkbox Group</label>
         <label><input type="checkbox" name="page:animals" id="page:animals::0" value="Cat" checked="checked">Cat</label>
@@ -84,11 +101,11 @@ describe('XhrFormData tests', function () {
       </div>
     </form>`;
 
-    global.debugf2=true;
-    const xhrFormData = new XhrFormData(DQ.byId("page::form"));
-    const formData = xhrFormData.toString();
+        global.debugf2 = true;
+        const xhrFormData = new XhrFormData(DQ.byId("page::form"));
+        const formData = xhrFormData.toString();
 
-    expect(formData).to.contain("animals=Cat");
-    expect(formData).to.contain("animals=Fox");
-  });
+        expect(formData).to.contain("animals=Cat");
+        expect(formData).to.contain("animals=Fox");
+    });
 });

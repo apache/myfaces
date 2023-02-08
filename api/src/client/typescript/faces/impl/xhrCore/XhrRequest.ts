@@ -23,7 +23,7 @@ import {ErrorData} from "./ErrorData";
 import {EventData} from "./EventData";
 import {ExtLang} from "../util/Lang";
 import {
-    $faces, $nsp,
+    $faces,
     BEGIN,
     COMPLETE,
     CONTENT_TYPE,
@@ -31,27 +31,25 @@ import {
     CTX_PARAM_REQ_PASS_THR,
     ERROR,
     HEAD_FACES_REQ,
-    MALFORMEDXML, NAMED_VIEWROOT,
+    MALFORMEDXML,
     NO_TIMEOUT,
     ON_ERROR,
-    ON_EVENT, P_EXECUTE, P_PARTIAL_SOURCE, P_VIEWSTATE, NAMING_CONTAINER_ID,
+    ON_EVENT, P_EXECUTE,
     REQ_ACCEPT,
     REQ_TYPE_GET,
     REQ_TYPE_POST, SOURCE,
     STATE_EVT_TIMEOUT,
     STD_ACCEPT,
     URL_ENCODED,
-    VAL_AJAX
+    VAL_AJAX, IDENT_NONE
 } from "../core/Const";
 import {
     resolveFinalUrl,
     resolveHandlerFunc,
-    resolveViewRootId,
     resoveNamingContainerMapper
 } from "./RequestDataResolver";
 import failSaveExecute = ExtLang.failSaveExecute;
 import {ExtConfig} from "../util/ExtDomQuery";
-import {ResponseProcessor} from "./ResponseProcessor";
 
 /**
  * Faces XHR Request Wrapper
@@ -60,6 +58,7 @@ import {ResponseProcessor} from "./ResponseProcessor";
  * The idea is that we basically just enqueue
  * a single ajax request into our queue
  * and let the queue do the processing.
+ *
  *
  */
 
@@ -119,13 +118,10 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
         let xhrObject = this.xhrObject;
 
         let executesArr = () => {
-            return this.requestContext.getIf(CTX_PARAM_REQ_PASS_THR, P_EXECUTE).get("none").value.split(/\s+/gi);
+            return this.requestContext.getIf(CTX_PARAM_REQ_PASS_THR, P_EXECUTE).get(IDENT_NONE).value.split(/\s+/gi);
         };
 
         try {
-            let formElement = this.sourceForm.getAsElem(0).value;
-            let viewState = $faces().getViewState(formElement);
-
             // encoded we need to decode
             // We generated a base representation of the current form
             // in case someone has overloaded the viewState with additional decorators we merge
@@ -134,8 +130,8 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
             // whatever the formData object delivers
             // the partialIdsArray arr is almost deprecated legacy code where we allowed to send a separate list of partial
             // ids for reduced load and server processing, this will be removed soon, we can handle the same via execute
-            // anyway TODO remove the partial ids array
-            let formData: XhrFormData = new XhrFormData(this.sourceForm, resoveNamingContainerMapper(this.internalContext), viewState, executesArr(), this.partialIdsArray);
+            // anyway TODO reimplement the partial ids array, we still do not have it in jsf the way we need it
+            let formData: XhrFormData = new XhrFormData(this.sourceForm, resoveNamingContainerMapper(this.internalContext), executesArr(), this.partialIdsArray);
 
             this.contentType = formData.isMultipartRequest ? "undefined" : this.contentType;
 
@@ -143,11 +139,13 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
             this.requestContext.$nspEnabled = false;
             let requestContext = this.requestContext;
             let requestPassThroughParams = requestContext.getIf(CTX_PARAM_REQ_PASS_THR) as ExtConfig;
+
+            // we are turning off here the jsf, faces remapping because we are now dealing with
+            // pass-through parameters
             requestPassThroughParams.$nspEnabled = false;
             // this is an extension where we allow pass through parameters to be sent down additionally
             // this can be used and is used in the impl to enrich the post request parameters with additional
             // information
-
             try {
                 formData.shallowMerge(requestPassThroughParams, true, true);
             } finally {
@@ -185,11 +183,8 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
             // setting, they accept headers automatically
             ignoreErr(() => xhrObject.setRequestHeader(REQ_ACCEPT, STD_ACCEPT));
 
-
-
             this.sendEvent(BEGIN);
             this.sendRequest(formData);
-
         } catch (e) {
             // _onError
             this.handleError(e);
@@ -381,6 +376,4 @@ export class XhrRequest implements AsyncRunnable<XMLHttpRequest> {
         let eventHandler = resolveHandlerFunc(this.requestContext, this.responseContext, ON_ERROR);
         Implementation.sendError(errorData, eventHandler);
     }
-
-
 }

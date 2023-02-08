@@ -108,7 +108,7 @@ export function resolveViewRootId(form: DQ): string {
 export function resoveNamingContainerMapper(internalContext: Config): (key: string, value: any) => [string, any] {
     const isNamedViewRoot = internalContext.getIf(NAMED_VIEWROOT).isPresent();
     if(!isNamedViewRoot) {
-        return;
+        return (key, value) => [key, value];
     }
     const partialId = internalContext.getIf(NAMING_CONTAINER_ID).value;
     const SEP = $faces().separatorchar;

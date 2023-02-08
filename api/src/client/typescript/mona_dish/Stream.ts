@@ -27,7 +27,7 @@ import {
     ICollector,
     IStreamDataSource,
     ITERATION_STATUS,
-    MappedStreamDataSource
+    MappedStreamDataSource, MultiStreamDatasource
 } from "./SourcesCollectors";
 //import {from, Observable} from "rxjs";
 
@@ -167,6 +167,11 @@ export interface IStream<T> {
     value: Array<T>;
 
     /**
+     * returns the currently element selected in the stream
+     */
+    current(): T | ITERATION_STATUS
+
+    /**
      * returns an observable of the given stream
      */
     [Symbol.iterator](): Iterator<T>;
@@ -183,7 +188,7 @@ export interface IStream<T> {
  * to provide infinite data sources and generic data providers, the downside
  * is, it might be a tad slower in some situations
  */
-export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>, IStream<T> {
+export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>, IStream<T>, IStreamDataSource<T> {
 
     value: Array<T>;
     _limits = -1;
@@ -211,6 +216,16 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
         return new Stream(...value);
     }
 
+    current(): T | ITERATION_STATUS {
+        if(this.pos == -1) {
+            return ITERATION_STATUS.BEF_STRM;
+        }
+        if(this.pos >= this.value.length) {
+            return ITERATION_STATUS.EO_STRM;
+        }
+        return this.value[this.pos];
+    }
+
     limits(end: number): Stream<T> {
         this._limits = end;
         return this;
@@ -221,10 +236,8 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
      * @param toAppend
      */
     concat(...toAppend: Array<IStream<T>>): Stream<T> {
-        //let dataSource = new MultiStreamDatasource<T>(this, ...toAppend);
-        //return Stream.ofDataSource<T>(dataSource);
-
-        return Stream.of(<IStream<T>>this, ...toAppend).flatMap(item => item);
+        let toConcat = [this].concat(toAppend as any);
+        return Stream.of(...toConcat).flatMap(item => item);
     }
 
 
@@ -264,7 +277,7 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
         let ret = [];
         this.each(item => {
             let strmR: any = fn(item);
-            ret = Array.isArray(strmR) ? ret.concat(strmR) : ret.concat(...strmR.value);
+            ret = Array.isArray(strmR) ? ret.concat(strmR) : ret.concat(strmR.value);
         });
         return <Stream<any>>Stream.of(...ret);
     }
@@ -489,7 +502,8 @@ export class LazyStream<T> implements IStreamDataSource<T>, IStream<T>, IMonad<T
     concat(...toAppend: Array<IStream<T>>): LazyStream<T> {
         //this.dataSource =  new MultiStreamDatasource<T>(this, ... toAppend);
         //return this;
-        return LazyStream.of(<IStream<T>>this, ...toAppend).flatMap(item => item);
+        return LazyStream.ofStreamDataSource(new MultiStreamDatasource(this, toAppend as any) as any)
+        //return LazyStream.of(<IStream<T>>this, ...toAppend).flatMap(item => item);
     }
 
     nextFilter(fn: Matchable<T>): T {

@@ -166,7 +166,7 @@ export module StandardInits {
 </head>
 <body>
 <form id="blarg" enctype="multipart/form-data">
-    <input type="file" id="fíleupload"></input>
+    <input type="file" id="fíleupload" name="fíleupload"></input>
     <input type="text" id="input_1" name="input_1" value="input_1_val"></input>
     <input type="hidden" id="jakarta.faces.ViewState" name="jakarta.faces.ViewState" value="blubbblubblubb"></input>
     <input type="button" id="input_2" name="input_2" value="input_1_val"></input>

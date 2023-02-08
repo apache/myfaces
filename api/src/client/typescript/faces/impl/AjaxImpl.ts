@@ -63,6 +63,7 @@ import {
     resolveForm,
     resolveTimeout, resolveViewId, resolveViewRootId, resoveNamingContainerMapper
 } from "./xhrCore/RequestDataResolver";
+import {encodeFormData} from "./util/FileUtils";
 
 /*
  * allowed project stages
@@ -530,11 +531,14 @@ export module Implementation {
             throw new Error(getMessage("ERR_VIEWSTATE"));
         }
 
+        // determine the naming container scenario
         const dummyContext = new Config({});
         assignNamingContainerData(dummyContext, DQ.byId(form))
+        // fetch all non file input form elements
+        let formElements = element.deepElements.encodeFormElement()
 
-        let formData = new XhrFormData(element, resoveNamingContainerMapper(dummyContext));
-        return formData.toString();
+        // encode them! (file inputs are handled differently and are not part of the viewstate)
+        return encodeFormData(formElements, resoveNamingContainerMapper(dummyContext));
     }
 
     /**

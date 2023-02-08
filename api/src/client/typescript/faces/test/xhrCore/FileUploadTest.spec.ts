@@ -17,7 +17,7 @@ import {describe, it} from "mocha";
 import * as sinon from "sinon";
 import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import {DomQuery} from "mona-dish";
+import {DomQuery, DQ} from "mona-dish";
 import defaultFileForm = StandardInits.defaultFileForm;
 import {Implementation} from "../../impl/AjaxImpl";
 
@@ -130,11 +130,12 @@ describe('Tests on the xhr core when it starts to call the request', function ()
         const MULTIPART_FORM = "multipart/form-data";
         const POST = "POST";
 
+
         try {
             let button = DomQuery.byId("input_1");
 
             button.addEventListener("click", (event: Event) => {
-                faces.ajax.request(event.target, event, {render: '@all', execute: 'input_1 fileupload'});
+                faces.ajax.request(event.target, event, {render: '@all', execute: '@none'});
             }).click();
 
             expect(this.requests.length).to.eq(1);
