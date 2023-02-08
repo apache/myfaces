@@ -25,8 +25,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import jakarta.faces.component.UINamingContainer;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class SerializableAttributesTestCase
 {
@@ -46,9 +46,9 @@ public class SerializableAttributesTestCase
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         CompositeResouceWrapper blorg = (CompositeResouceWrapper) ois.readObject();
-        Assert.assertEquals(blorg.getResourceName(), subject.getResourceName());
-        Assert.assertEquals(blorg.getLibraryName(), subject.getLibraryName());
-        Assert.assertEquals(blorg.getContentType(), subject.getContentType());
+        Assertions.assertEquals(blorg.getResourceName(), subject.getResourceName());
+        Assertions.assertEquals(blorg.getLibraryName(), subject.getLibraryName());
+        Assertions.assertEquals(blorg.getContentType(), subject.getContentType());
         oos.close();
         ois.close();
     }
@@ -70,8 +70,8 @@ public class SerializableAttributesTestCase
         ObjectInputStream ois = new ObjectInputStream(bais);
         CompositeComponentBeanInfo blorg = (CompositeComponentBeanInfo) ois.readObject();
         
-        Assert.assertEquals(UINamingContainer.class, blorg.getBeanDescriptor().getBeanClass());
-        Assert.assertEquals(pd.getName(), blorg.getPropertyDescriptorsList().get(0).getName());
+        Assertions.assertEquals(UINamingContainer.class, blorg.getBeanDescriptor().getBeanClass());
+        Assertions.assertEquals(pd.getName(), blorg.getPropertyDescriptorsList().get(0).getName());
         oos.close();
         ois.close();
     }

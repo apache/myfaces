@@ -18,10 +18,12 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component._DeltaStateHelper;
 import java.util.List;
 import java.util.Map;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * A generic framework less testcase for our _DeltaStateHelper class!
@@ -43,16 +45,13 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
 
     private void assertStructure()
     {
-        Assert.assertTrue("check for key1", _instance.get(KEY1).equals(VAL1));
-        Assert.assertTrue("check for key2", _instance.get(KEY2) instanceof Map);
-        Assert.assertTrue("check for key3", _instance.get(KEY3) instanceof List);
+        Assertions.assertTrue( _instance.get(KEY1).equals(VAL1));
+        Assertions.assertTrue( _instance.get(KEY2) instanceof Map);
+        Assertions.assertTrue( _instance.get(KEY3) instanceof List);
 
-        Assert.assertTrue("check for list size",
-                ((List) _instance.get(KEY3)).size() >= 1);
-        Assert.assertTrue("check for map entries", ((Map) _instance.get(KEY2)).get(
-                KEY_2_2).equals(VAL3));
-        Assert.assertTrue("check for map entries", ((Map) _instance.get(KEY2)).get(
-                KEY_2_1).equals(VAL2));
+        Assertions.assertTrue(((List) _instance.get(KEY3)).size() >= 1);
+        Assertions.assertTrue(((Map) _instance.get(KEY2)).get(KEY_2_2).equals(VAL3));
+        Assertions.assertTrue(((Map) _instance.get(KEY2)).get(KEY_2_1).equals(VAL2));
 
     }
 
@@ -83,9 +82,9 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     }
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
-
         super.setUp();
 
         _instance = new ProbeDeltaStateHelper();
@@ -93,6 +92,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -103,41 +103,39 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of isInitalStateMarked method, of class _DeltaStateHelper.
      */
+    @Test
     public void testIsInitalStateMarked()
     {
-        Assert.assertTrue("Initial state must be marked", _instance
-                .isInitialStateMarked());
+        Assertions.assertTrue(_instance.isInitialStateMarked());
         _instance.setInitialStateMarked(false);
-        Assert.assertFalse("Initial state must be false", _instance
-                .isInitialStateMarked());
+        Assertions.assertFalse(_instance.isInitialStateMarked());
     }
 
     /**
      * Test of add method, of class _DeltaStateHelper.
      */
+    @Test
     public void testAdd()
     {
         _instance.add(KEY1, VAL1);
         Object val = _instance.get(KEY1);
-        Assert.assertTrue("Value must be list", val instanceof List);
-        Assert.assertTrue("Value size must be one", ((List) val).size() == 1);
+        Assertions.assertTrue(val instanceof List);
+        Assertions.assertTrue(((List) val).size() == 1);
 
         _instance.add(KEY1, new Integer(2));
         _instance.add(KEY2, new Integer(2));
 
         val = _instance.get(KEY1);
-        Assert.assertTrue("Value must be list", val instanceof List);
-        Assert.assertTrue("Value size must be one", ((List) val).size() == 2);
+        Assertions.assertTrue(val instanceof List);
+        Assertions.assertTrue(((List) val).size() == 2);
 
-        Assert.assertTrue("Value msut be of type string and must equal val1",
-                ((List) val).get(0).equals(VAL1));
+        Assertions.assertTrue(((List) val).get(0).equals(VAL1));
 
-        Assert.assertTrue("Value msut be of type int and must equal 2", ((List) val)
-                .get(1).equals(new Integer(2)));
+        Assertions.assertTrue(((List) val).get(1).equals(new Integer(2)));
 
         val = _instance.get(KEY2);
-        Assert.assertTrue("Value must be list", val instanceof List);
-        Assert.assertTrue("Value size must be one", ((List) val).size() == 1);
+        Assertions.assertTrue(val instanceof List);
+        Assertions.assertTrue(((List) val).size() == 1);
     }
 
     /**
@@ -156,6 +154,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of get method, of class _DeltaStateHelper.
      */
+    @Test
     public void testGet()
     {
         _setupGetTests();
@@ -165,45 +164,48 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of put method, of class _DeltaStateHelper.
      */
+    @Test
     public void testPut_Serializable_Object()
     {
         _setupGetTests();
 
-        Assert.assertTrue("check for key1", _instance.get(KEY1).equals(VAL1));
+        Assertions.assertTrue(_instance.get(KEY1).equals(VAL1));
 
         Map entry = (Map) _instance.get(KEY2);
-        Assert.assertTrue("check for key2", _instance.get(KEY2) instanceof Map);
+        Assertions.assertTrue(_instance.get(KEY2) instanceof Map);
 
-        Assert.assertTrue("check for key2 structure", entry.size() == 2
+        Assertions.assertTrue(entry.size() == 2
                 && entry.get(KEY_2_1).equals(VAL2)
                 && entry.get(KEY_2_2).equals(VAL3));
     }
 
+    @Test
     public void testPut_null()
     {
         _instance.put(KEY1, null);
         _instance.put(KEY2, null);
 
-        Assert.assertNull("key1 is not null", _instance.get(KEY1));
-        Assert.assertNull("key2 is not null", _instance.get(KEY2));
+        Assertions.assertNull(_instance.get(KEY1));
+        Assertions.assertNull(_instance.get(KEY2));
 
         _setupGetTests();
-        Assert.assertTrue("check for key1", _instance.get(KEY1).equals(VAL1));
+        Assertions.assertTrue(_instance.get(KEY1).equals(VAL1));
 
         Map entry = (Map) _instance.get(KEY2);
-        Assert.assertTrue("check for key2", _instance.get(KEY2) instanceof Map);
+        Assertions.assertTrue(_instance.get(KEY2) instanceof Map);
 
-        Assert.assertTrue("check for key2 structure", entry.size() == 2
+        Assertions.assertTrue(entry.size() == 2
                 && entry.get(KEY_2_1).equals(VAL2)
                 && entry.get(KEY_2_2).equals(VAL3));
 
         _instance.put(KEY1, null);
-        Assert.assertNull("key1 is not null", _instance.get(KEY1));
+        Assertions.assertNull(_instance.get(KEY1));
     }
 
     /**
      * Test of put method, of class _DeltaStateHelper.
      */
+    @Test
     public void testPut_3args()
     {
         //covered already by testPut_Serializable_Object()
@@ -212,18 +214,19 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of remove method, of class _DeltaStateHelper.
      */
+    @Test
     public void testRemove_Serializable()
     {
         _setupGetTests();
         _instance.remove(KEY1);
-        Assert.assertTrue("key 1 should not exist anymore",
-                _instance.get(KEY1) == null);
+        Assertions.assertTrue(_instance.get(KEY1) == null);
         //TODO check the deleted data structure for further internal structural tests
     }
 
     /**
      * Test of remove method, of class _DeltaStateHelper.
      */
+    @Test
     public void testRemove_Serializable_Object()
     {
         _setupGetTests();
@@ -232,14 +235,14 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
 
         _instance.remove(KEY3, VAL3);
 
-        Assert.assertTrue("no key2 should exist anymore", _instance.get(KEY2) == null);
-        Assert.assertTrue("key3 also should not exist anymore",
-                _instance.get(KEY3) == null);
+        Assertions.assertTrue(_instance.get(KEY2) == null);
+        Assertions.assertTrue(_instance.get(KEY3) == null);
     }
 
     /**
      * Test of saveState method, of class _DeltaStateHelper.
      */
+    @Test
     public void testSaveState()
     {
 
@@ -249,8 +252,8 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
         //save stating does not need a facesContext for now!
         Object retVal = _instance.saveState(facesContext);
 
-        Assert.assertTrue("retVal must be an array", retVal instanceof Object[]);
-        Assert.assertTrue("arraylength must be given", ((Object[]) retVal).length > 0);
+        Assertions.assertTrue(retVal instanceof Object[]);
+        Assertions.assertTrue(((Object[]) retVal).length > 0);
         //only basic structural tests are done here
         //the more important ones are the ones in restorestate
 
@@ -260,7 +263,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
         _instance.put(KEY5, VAL5);
         Object[] deltaSaveState = (Object[]) _instance.saveState(facesContext);
         //only the new value should be saved as delta
-        Assert.assertTrue("Delta Savestate structure", deltaSaveState.length == 2
+        Assertions.assertTrue(deltaSaveState.length == 2
                 && deltaSaveState[0].equals(KEY5)
                 && deltaSaveState[1].equals(VAL5));
 
@@ -269,6 +272,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of restoreState method, of class _DeltaStateHelper.
      */
+    @Test
     public void testRestoreState()
     {
         _setupGetTests();
@@ -293,9 +297,10 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     /**
      * Test of isTransient method, of class _DeltaStateHelper.
      */
+    @Test
     public void testIsTransient()
     {
         _instance.setTransient(true);
-        Assert.assertTrue(_instance.isTransient());
+        Assertions.assertTrue(_instance.isTransient());
     }
 }

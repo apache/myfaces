@@ -17,7 +17,6 @@
  * under the License.
  */
 package jakarta.faces.component;
-import jakarta.faces.component.UIComponent;
 import static org.easymock.EasyMock.expect;
 
 import java.lang.reflect.Method;
@@ -32,9 +31,9 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 
 import org.easymock.EasyMock;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link UIComponent#getValueExpression(String)}. and
@@ -46,7 +45,8 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
     private ValueExpression _expression;
     private ELContext _elContext;
 
-    @Before
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -61,22 +61,28 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
         _mocksControl.checkOrder(true);
     }
 
-    @Test(expected =  NullPointerException.class )
+    @Test
     public void testValueExpressionArgumentNPE() throws Exception
     {
-        _testimpl.setValueExpression(null, _expression);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            _testimpl.setValueExpression(null, _expression);
+        });
     }
 
-    @Test(expected =  IllegalArgumentException.class )
+    @Test
     public void testValueExpressionArgumentId() throws Exception
     {
-        _testimpl.setValueExpression("id", _expression);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            _testimpl.setValueExpression("id", _expression);
+        });
     }
 
-    @Test(expected =  IllegalArgumentException.class )
+    @Test
     public void testValueExpressionArgumentsParent() throws Exception
     {
-        _testimpl.setValueExpression("parent", _expression);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            _testimpl.setValueExpression("parent", _expression);
+        });
     }
 
     @Test
@@ -86,24 +92,26 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
         _mocksControl.replay();
         _testimpl.setValueExpression("xxx", _expression);
         _mocksControl.verify();
-        Assert.assertEquals(_expression, _testimpl.getValueExpression("xxx"));
+        Assertions.assertEquals(_expression, _testimpl.getValueExpression("xxx"));
         _testimpl.setValueExpression("xxx", null);
         _mocksControl.verify();
 
-        Assert.assertNull(_testimpl.getValueExpression("xxx"));
+        Assertions.assertNull(_testimpl.getValueExpression("xxx"));
     }
 
-    @Test(expected =  FacesException.class )
+    @Test
     public void testValueExpressionWithExceptionOnGetValue() throws Exception
     {
-        expect(_expression.isLiteralText()).andReturn(true);
-        expect(_testimpl.getFacesContext()).andReturn(_facesContext);
-        expect(_facesContext.getELContext()).andReturn(_elContext);
-        expect(_expression.getValue(EasyMock.eq(_elContext))).andThrow(new ELException());
-        Map<String, Object> map = new HashMap<String, Object>();
-        expect(_testimpl.getAttributes()).andReturn(map);
-        _mocksControl.replay();
-        _testimpl.setValueExpression("xxx", _expression);
+        Assertions.assertThrows(FacesException.class, () -> {
+            expect(_expression.isLiteralText()).andReturn(true);
+            expect(_testimpl.getFacesContext()).andReturn(_facesContext);
+            expect(_facesContext.getELContext()).andReturn(_elContext);
+            expect(_expression.getValue(EasyMock.eq(_elContext))).andThrow(new ELException());
+            Map<String, Object> map = new HashMap<String, Object>();
+            expect(_testimpl.getAttributes()).andReturn(map);
+            _mocksControl.replay();
+            _testimpl.setValueExpression("xxx", _expression);
+        });
     }
 
     @Test
@@ -117,9 +125,9 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
         expect(_testimpl.getAttributes()).andReturn(map);
         _mocksControl.replay();
         _testimpl.setValueExpression("xxx", _expression);
-        Assert.assertEquals("abc", map.get("xxx"));
+        Assertions.assertEquals("abc", map.get("xxx"));
         _mocksControl.verify();
-        Assert.assertNull(_testimpl.getValueExpression("xxx"));
+        Assertions.assertNull(_testimpl.getValueExpression("xxx"));
     }
 
 }

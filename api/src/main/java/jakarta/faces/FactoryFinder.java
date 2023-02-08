@@ -489,12 +489,12 @@ public final class FactoryFinder
                     // let's check if class supports the decorator pattern
                     try
                     {
-                        Constructor<?> delegationConstructor = implClass.getConstructor(new Class[] { interfaceClass });
+                        Constructor<?> delegationConstructor = implClass.getConstructor(interfaceClass);
                         // impl class supports decorator pattern,
                         try
                         {
                             // create new decorator wrapping current
-                            current = delegationConstructor.newInstance(new Object[] { current });
+                            current = delegationConstructor.newInstance(current);
                             injectAndPostConstruct(injectionProvider, current, injectedBeanStorage);
                         }
                         catch (InstantiationException | IllegalAccessException | InvocationTargetException e)

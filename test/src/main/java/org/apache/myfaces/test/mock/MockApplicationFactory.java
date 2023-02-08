@@ -56,7 +56,7 @@ public class MockApplicationFactory extends ApplicationFactory
 
     // --------------------------------------------- AppolicationFactory Methods
 
-    /** {@inheritDoc} */
+    @Override
     public Application getApplication()
     {
 
@@ -76,7 +76,7 @@ public class MockApplicationFactory extends ApplicationFactory
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setApplication(Application application)
     {
         this.application = application;

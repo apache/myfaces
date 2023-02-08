@@ -32,7 +32,7 @@ import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.component.html.HtmlPanelGrid;
 import jakarta.faces.component.html.HtmlSelectOneMenu;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.element.FaceletsProcessingImpl;
 
@@ -42,7 +42,7 @@ import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class XHTMLFaceletsProcessingTestCase extends FaceletTestCase {
 
@@ -109,15 +109,15 @@ public class XHTMLFaceletsProcessingTestCase extends FaceletTestCase {
         
         String resp = sw.toString();
         
-        Assert.assertTrue("Response contains DOCTYPE declaration", resp.contains("<!DOCTYPE"));
-        Assert.assertFalse("Response not contains DOCTYPE html declaration", resp.contains("<!DOCTYPE html>"));
-        Assert.assertTrue("Response contains xml declaration", resp.contains("<?xml"));
-        Assert.assertTrue("Response contains xml processing instructions", resp.contains("<?name"));
-        Assert.assertTrue("Response contains cdata section", resp.contains("<![CDATA["));
-        Assert.assertTrue("Response contains cdata section", resp.contains("cdata not consumed"));
-        Assert.assertTrue("Response does not escape characters", resp.contains("In this mode, if you put a double quote, it will be replaced by &quot; : &quot"));
-        Assert.assertTrue("Response contains comments", resp.contains("<!--"));
-        Assert.assertTrue("Response should escape EL and markup", resp.contains("Check EL Escaping &quot; : &quot;"));
+        Assertions.assertTrue(resp.contains("<!DOCTYPE"));
+        Assertions.assertFalse(resp.contains("<!DOCTYPE html>"));
+        Assertions.assertTrue(resp.contains("<?xml"));
+        Assertions.assertTrue(resp.contains("<?name"));
+        Assertions.assertTrue(resp.contains("<![CDATA["));
+        Assertions.assertTrue(resp.contains("cdata not consumed"));
+        Assertions.assertTrue(resp.contains("In this mode, if you put a double quote, it will be replaced by &quot; : &quot"));
+        Assertions.assertTrue(resp.contains("<!--"));
+        Assertions.assertTrue(resp.contains("Check EL Escaping &quot; : &quot;"));
         
     }
 }

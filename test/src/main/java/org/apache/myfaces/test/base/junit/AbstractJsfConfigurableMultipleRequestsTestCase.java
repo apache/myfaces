@@ -33,7 +33,6 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
-import junit.framework.TestCase;
 
 import org.apache.myfaces.test.config.ResourceBundleVarNames;
 import org.apache.myfaces.test.mock.MockExternalContext;
@@ -45,10 +44,9 @@ import org.apache.myfaces.test.mock.MockHttpSession;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
-import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
-import org.junit.After;
-import org.junit.Before;
+import  org.junit.jupiter.api.AfterEach;
+import  org.junit.jupiter.api.BeforeEach;
 
 /**
  * <p>Abstract JUnit 4.5 test case base class, which sets up the JavaServer Faces
@@ -83,7 +81,7 @@ import org.junit.Before;
  * @since 1.0.3
  */
 
-public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends TestCase
+public abstract class AbstractJsfConfigurableMultipleRequestsTestCase
 {
 
     // ------------------------------------------------------------ Constructors
@@ -100,7 +98,7 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
     /**
      * <p>Set up instance variables required by this test case.</p>
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         // Set up a new thread context class loader
@@ -246,7 +244,7 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
     {
         lifecycleFactory = (MockLifecycleFactory) FactoryFinder
                 .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        lifecycle = (MockLifecycle) lifecycleFactory
+        lifecycle = lifecycleFactory
                 .getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
     }
 
@@ -263,11 +261,11 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
     {
         facesContextFactory = (MockFacesContextFactory) FactoryFinder
                 .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = (MockFacesContext) facesContextFactory.getFacesContext(
+        facesContext = facesContextFactory.getFacesContext(
                 servletContext, request, response, lifecycle);
         if (facesContext.getExternalContext() != null)
         {
-            externalContext = (MockExternalContext) facesContext
+            externalContext = facesContext
                     .getExternalContext();
         }
         if (facesContext instanceof MockFacesContext)
@@ -323,7 +321,7 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
     /**
      * <p>Tear down instance variables required by this test case.</p>
      */
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
 

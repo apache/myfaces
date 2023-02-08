@@ -15,16 +15,13 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.StateHolder;
-import jakarta.faces.component.PartialStateHolder;
-import jakarta.faces.component.UIOutput;
 import java.io.Serializable;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.LongConverter;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UIOutputPSSTest extends AbstractJsfTestCase
 {
@@ -45,7 +42,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object state1 = output.saveState(facesContext);
         
         // null delta expected
-        Assert.assertNull(state1);
+        Assertions.assertNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -56,7 +53,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assert.assertEquals(converter2, output2.getConverter());
+        Assertions.assertEquals(converter2, output2.getConverter());
     }
     
     @Test
@@ -70,7 +67,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object state1 = output.saveState(facesContext);
         
         // null delta expected
-        Assert.assertNull(state1);
+        Assertions.assertNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -81,7 +78,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assert.assertEquals(converter2, output2.getConverter());
+        Assertions.assertEquals(converter2, output2.getConverter());
     }
     
     @Test
@@ -95,7 +92,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object state1 = output.saveState(facesContext);
         
         // StateHolder only force always to save the state
-        Assert.assertNotNull(state1);
+        Assertions.assertNotNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -106,7 +103,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter IS replaced, because it should be always stored into the state
-        Assert.assertNotSame(converter2, output2.getConverter());
+        Assertions.assertNotSame(converter2, output2.getConverter());
     }
     
     @Test
@@ -120,7 +117,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object state1 = output.saveState(facesContext);
         
         // PartialStateHolder only save state if delta is null
-        Assert.assertNull(state1);
+        Assertions.assertNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -131,7 +128,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assert.assertEquals(converter2, output2.getConverter());
+        Assertions.assertEquals(converter2, output2.getConverter());
     }
     
     @Test
@@ -145,7 +142,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object state1 = output.saveState(facesContext);
         
         // PartialStateHolder only save state if delta is null
-        Assert.assertNotNull(state1);
+        Assertions.assertNotNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -156,7 +153,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary (delta change)
-        Assert.assertEquals(converter2, output2.getConverter());
+        Assertions.assertEquals(converter2, output2.getConverter());
     }
     
     @Test
@@ -173,8 +170,8 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object[] state1 = (Object[])output.saveState(facesContext);
         
         // null delta expected
-        Assert.assertNotNull(state1);
-        Assert.assertEquals(state1.length, 1);
+        Assertions.assertNotNull(state1);
+        Assertions.assertEquals(state1.length, 1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -185,10 +182,10 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assert.assertEquals(converter2, output2.getConverter());
+        Assertions.assertEquals(converter2, output2.getConverter());
         
         // Check parentDelta works
-        Assert.assertEquals("style1", output2.getAttributes().get("style"));
+        Assertions.assertEquals("style1", output2.getAttributes().get("style"));
     }
 
     @Test
@@ -205,8 +202,8 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object[] state1 = (Object[])output.saveState(facesContext);
         
         // null delta expected
-        Assert.assertNotNull(state1);
-        Assert.assertEquals(state1.length, 1);
+        Assertions.assertNotNull(state1);
+        Assertions.assertEquals(state1.length, 1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -217,10 +214,10 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assert.assertEquals(converter2, output2.getConverter());
+        Assertions.assertEquals(converter2, output2.getConverter());
         
         // Check parentDelta works
-        Assert.assertEquals("style1", output2.getAttributes().get("style"));
+        Assertions.assertEquals("style1", output2.getAttributes().get("style"));
     }
     
     @Test
@@ -237,10 +234,10 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object[] state1 = (Object[])output.saveState(facesContext);
         
         // StateHolder force state
-        Assert.assertNotNull(state1);
-        Assert.assertEquals(state1.length, 2);
-        Assert.assertNotNull(state1[1]);
-        Assert.assertNotNull(state1[0]);
+        Assertions.assertNotNull(state1);
+        Assertions.assertEquals(state1.length, 2);
+        Assertions.assertNotNull(state1[1]);
+        Assertions.assertNotNull(state1[0]);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -251,10 +248,10 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter IS replaced, because it should be always stored into the state
-        Assert.assertNotSame(converter2, output2.getConverter());
+        Assertions.assertNotSame(converter2, output2.getConverter());
         
         // Check parentDelta works
-        Assert.assertEquals("style1", output2.getAttributes().get("style"));
+        Assertions.assertEquals("style1", output2.getAttributes().get("style"));
     }
 
     @Test
@@ -271,8 +268,8 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object[] state1 = (Object[])output.saveState(facesContext);
         
         // null delta expected
-        Assert.assertNotNull(state1);
-        Assert.assertEquals(state1.length, 1);
+        Assertions.assertNotNull(state1);
+        Assertions.assertEquals(state1.length, 1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -283,10 +280,10 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assert.assertEquals(converter2, output2.getConverter());
+        Assertions.assertEquals(converter2, output2.getConverter());
         
         // Check parentDelta works
-        Assert.assertEquals("style1", output2.getAttributes().get("style"));
+        Assertions.assertEquals("style1", output2.getAttributes().get("style"));
     }
     
     @Test
@@ -303,10 +300,10 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         Object[] state1 = (Object[])output.saveState(facesContext);
         
         // PartialStateHolder force state only when there is delta
-        Assert.assertNotNull(state1);
-        Assert.assertEquals(state1.length, 2);
-        Assert.assertNotNull(state1[1]);
-        Assert.assertNotNull(state1[0]);
+        Assertions.assertNotNull(state1);
+        Assertions.assertEquals(state1.length, 2);
+        Assertions.assertNotNull(state1[1]);
+        Assertions.assertNotNull(state1[0]);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -317,10 +314,10 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary (delta change)
-        Assert.assertEquals(converter2, output2.getConverter());
+        Assertions.assertEquals(converter2, output2.getConverter());
         
         // Check parentDelta works
-        Assert.assertEquals("style1", output2.getAttributes().get("style"));
+        Assertions.assertEquals("style1", output2.getAttributes().get("style"));
     }
     
     /**
@@ -357,10 +354,10 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
             Object[] state1 = (Object[])output.saveState(facesContext);
 
             // The null spot force state to be set.
-            Assert.assertNotNull(state1);
-            Assert.assertEquals(state1.length, 2);
-            Assert.assertNull(state1[1]); // null spot in state means null Converter
-            Assert.assertNotNull(state1[0]); //because _isConverterSet()
+            Assertions.assertNotNull(state1);
+            Assertions.assertEquals(state1.length, 2);
+            Assertions.assertNull(state1[1]); // null spot in state means null Converter
+            Assertions.assertNotNull(state1[0]); //because _isConverterSet()
 
             UIOutput output2 = new UIOutput();
             output2.setId("output1");
@@ -371,7 +368,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
             output2.restoreState(facesContext, state1);
 
             // Check converter is set to null
-            Assert.assertNull(output2.getConverter());
+            Assertions.assertNull(output2.getConverter());
         }
     }
 
@@ -387,7 +384,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         
         // Transient means no state, but the effect is the converter dissapear
         // (because is transient, and in Faces 1.2/1.1 that was the effect).
-        Assert.assertNotNull(state1);
+        Assertions.assertNotNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -398,7 +395,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check no converter should be found
-        Assert.assertNull(output2.getConverter());
+        Assertions.assertNull(output2.getConverter());
     }
     
     @Test
@@ -413,7 +410,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         
         // Transient means no state, but the effect is the converter dissapear
         // (because is transient, and in Faces 1.2/1.1 that was the effect).
-        Assert.assertNotNull(state1);
+        Assertions.assertNotNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -424,7 +421,7 @@ public class UIOutputPSSTest extends AbstractJsfTestCase
         output2.restoreState(facesContext, state1);
         
         // Check no converter should be found
-        Assert.assertNull(output2.getConverter());
+        Assertions.assertNull(output2.getConverter());
     }
 
     public static class LongSerializableConverter extends LongConverter implements Serializable

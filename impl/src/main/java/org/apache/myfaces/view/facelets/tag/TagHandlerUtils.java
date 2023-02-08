@@ -110,7 +110,7 @@ public final class TagHandlerUtils
         }
         if (isAssignable)
         {
-            found.add((FaceletHandler) nextHandler);
+            found.add(nextHandler);
         }
         else if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler)
         {
@@ -124,7 +124,7 @@ public final class TagHandlerUtils
                 }
                 if (isAssignable)
                 {
-                    found.add((FaceletHandler)handler);
+                    found.add(handler);
                 }
             }
         }
@@ -137,7 +137,7 @@ public final class TagHandlerUtils
         ArrayList<FaceletHandler> found = new ArrayList<>();
         if (type1.isAssignableFrom(nextHandler.getClass()) || type2.isAssignableFrom(nextHandler.getClass()))
         {
-            found.add((FaceletHandler) nextHandler);
+            found.add(nextHandler);
         }
         else if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler)
         {
@@ -146,7 +146,7 @@ public final class TagHandlerUtils
             {
                 if (type1.isAssignableFrom(handler.getClass()) || type2.isAssignableFrom(handler.getClass()))
                 {
-                    found.add((FaceletHandler) handler);
+                    found.add(handler);
                 }
             }
         }

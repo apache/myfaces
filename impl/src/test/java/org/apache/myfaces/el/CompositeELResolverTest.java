@@ -34,9 +34,9 @@ import jakarta.el.ELResolver;
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -48,7 +48,7 @@ public class CompositeELResolverTest
     private ELContext _elContext;
     private CompositeELResolver _testImpl;
 
-    @Before
+    @BeforeEach
     public void setup()
     {
         _mocksControl = EasyMock.createControl();
@@ -88,16 +88,16 @@ public class CompositeELResolverTest
 
         Iterator<FeatureDescriptor> descriptors = _testImpl.getFeatureDescriptors(_elContext, base);
 
-        Assert.assertNotNull(descriptors);
-        Assert.assertEquals(true, descriptors.hasNext());
-        Assert.assertEquals(fds.get(0), descriptors.next());
-        Assert.assertEquals(true, descriptors.hasNext());
-        Assert.assertEquals(fds.get(2), descriptors.next());
-        Assert.assertEquals(true, descriptors.hasNext());
-        Assert.assertEquals(fds.get(0), descriptors.next());
-        Assert.assertEquals(true, descriptors.hasNext());
-        Assert.assertEquals(fds.get(2), descriptors.next());
-        Assert.assertEquals(false, descriptors.hasNext());
+        Assertions.assertNotNull(descriptors);
+        Assertions.assertEquals(true, descriptors.hasNext());
+        Assertions.assertEquals(fds.get(0), descriptors.next());
+        Assertions.assertEquals(true, descriptors.hasNext());
+        Assertions.assertEquals(fds.get(2), descriptors.next());
+        Assertions.assertEquals(true, descriptors.hasNext());
+        Assertions.assertEquals(fds.get(0), descriptors.next());
+        Assertions.assertEquals(true, descriptors.hasNext());
+        Assertions.assertEquals(fds.get(2), descriptors.next());
+        Assertions.assertEquals(false, descriptors.hasNext());
 
     }
 }

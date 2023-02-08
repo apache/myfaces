@@ -18,7 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -31,10 +30,10 @@ import jakarta.el.ValueExpression;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import  org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractUIComponentPropertyTest<T>
 {
@@ -55,7 +54,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
         _testValues = testValues;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();
@@ -66,7 +65,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
         _component = createComponent();
     }
     
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
         _mocksControl = null;
@@ -100,7 +99,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
     {
         Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
                 .invoke(_component);
-        Assert.assertEquals(_defaultValue, val);
+        Assertions.assertEquals(_defaultValue, val);
     }
 
     @Test
@@ -113,7 +112,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
             
             Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
                     .invoke(_component);
-            Assert.assertEquals(testValue, val);
+            Assertions.assertEquals(testValue, val);
         }
     }
 
@@ -129,7 +128,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
             
             Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
                     .invoke(_component);
-            Assert.assertEquals(testValue, val);
+            Assertions.assertEquals(testValue, val);
             _mocksControl.reset();
         }
     }
@@ -148,7 +147,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
             
             Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
                     .invoke(_component);
-            Assert.assertEquals(testValue, val);
+            Assertions.assertEquals(testValue, val);
             _mocksControl.reset();
         }
     }

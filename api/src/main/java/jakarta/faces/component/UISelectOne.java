@@ -29,7 +29,6 @@ import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.model.SelectItem;
-import jakarta.faces.component.UISelectItem;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.core.api.shared.MessageUtils;
@@ -96,7 +95,7 @@ public class UISelectOne extends UIInput
                     {
                         // check if the is empty (see ) or if it's not valid (means this path has been taken already)
                         // See conditions listed under spec: uiselectone#processValidators
-                        if(isEmpty(submittedValue) && isSubmittedAlready((UIInput)target)){
+                        if(isEmpty(submittedValue) && isSubmittedAlready(target)){
                             previouslySubmittedOrValidated = true;
                             return VisitResult.COMPLETE;
                         }          

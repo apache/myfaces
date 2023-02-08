@@ -144,7 +144,7 @@ public final class ErrorPageWriter
                 try
                 {
                     int endIndex = head.indexOf("</style>", startIndex) + "</style>".length();
-                    builder.append(head.substring(head.indexOf("<style", startIndex), endIndex));
+                    builder.append(head, head.indexOf("<style", startIndex), endIndex);
                     startIndex = endIndex;
                 }
                 catch (Exception e)
@@ -160,7 +160,7 @@ public final class ErrorPageWriter
                 try
                 {
                     int endIndex = head.indexOf("</script>", startIndex) + "</script>".length();
-                    builder.append(head.substring(head.indexOf("<script", startIndex), endIndex));
+                    builder.append(head, head.indexOf("<script", startIndex), endIndex);
                     startIndex = endIndex;
                 }
                 catch (Exception e)
@@ -1327,8 +1327,8 @@ public final class ErrorPageWriter
 
         try
         {
-            Method m = Throwable.class.getMethod("initCause", new Class[] { Throwable.class });
-            m.invoke(th, new Object[] { cause });
+            Method m = Throwable.class.getMethod("initCause", Throwable.class);
+            m.invoke(th, cause);
             return true;
         }
         catch (Exception e)

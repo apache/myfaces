@@ -18,9 +18,11 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIViewParameter;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class for UIViewParameter.
@@ -33,6 +35,7 @@ public class UIViewParameterTest extends AbstractJsfTestCase
     private UIViewParameter viewParameter = null;
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -42,6 +45,7 @@ public class UIViewParameterTest extends AbstractJsfTestCase
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         viewParameter = null;
@@ -54,19 +58,21 @@ public class UIViewParameterTest extends AbstractJsfTestCase
      * if the submitted value is null, but required is set to true.
      * This is a special validation case only for UIViewParameter, so this has to be tested here.
      */
+    @Test
     public void testValidationErrorTriggersFacesContextValidationFailed()
     {
         viewParameter.setRequired(true);
         viewParameter.setSubmittedValue(null);
         
-        Assert.assertFalse(facesContext.isValidationFailed());
+        Assertions.assertFalse(facesContext.isValidationFailed());
         viewParameter.processValidators(facesContext);
-        Assert.assertTrue(facesContext.isValidationFailed());
+        Assertions.assertTrue(facesContext.isValidationFailed());
     }
     
     /**
      * Tests if UIViewParameter.decode() sets the submitted value only if it is not null.
      */
+    @Test
     public void testDecodeSetOnlyNonNullSubmittedValue()
     {
         String notNull = "not null";
@@ -77,7 +83,7 @@ public class UIViewParameterTest extends AbstractJsfTestCase
         
         viewParameter.decode(facesContext);
         
-        Assert.assertEquals(viewParameter.getSubmittedValue(), notNull);
+        Assertions.assertEquals(viewParameter.getSubmittedValue(), notNull);
     }
 
 }

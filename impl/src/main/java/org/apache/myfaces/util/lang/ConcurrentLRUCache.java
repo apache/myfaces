@@ -394,7 +394,7 @@ public class ConcurrentLRUCache<K, V>
                         while (queue.size() > queue.myMaxSize
                                 && queue.size() > 0)
                         {
-                            CacheEntry otherEntry = (CacheEntry) queue.pop();
+                            CacheEntry otherEntry = queue.pop();
                             newOldestEntry = Math
                                     .min(otherEntry.lastAccessedCopy,
                                             newOldestEntry);

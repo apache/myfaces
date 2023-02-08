@@ -1763,7 +1763,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         @Override
         protected boolean match(String value)
         {
-            String viewId = (String) value;
+            String viewId = value;
             ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler()
                     .getViewDeclarationLanguage(facesContext, viewId);
             if (vdl != null && vdl.viewExists(facesContext, viewId))

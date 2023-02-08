@@ -32,12 +32,12 @@ import jakarta.faces.component.html.HtmlSelectOneMenu;
 import jakarta.faces.component.html.HtmlSelectOneRadio;
 import jakarta.faces.model.SelectItem;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class HtmlEscapeRendererTest extends AbstractJsfTestCase
 {
@@ -64,6 +64,8 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
     private HtmlSelectManyListbox selectManyListbox;
     private HtmlSelectManyMenu selectManyMenu;
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -115,12 +117,15 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
+    @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
         outputText = null;
     }
 
+    @Test
     public void testOutputTextEscapeValue() throws Exception
     {
         for (String contentType: CONTENT_TYPES)
@@ -138,11 +143,12 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
                 outputText.encodeEnd(facesContext);
                 facesContext.renderResponse();
                 String output = swriter.toString();
-                Assert.assertTrue(output.contains(TEST_STRING_ESCAPED));
+                Assertions.assertTrue(output.contains(TEST_STRING_ESCAPED));
             }
         }
     }
 
+    @Test
     public void testOutputTextNoEscapeValue() throws Exception
     {
 
@@ -158,11 +164,12 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
                 outputText.encodeEnd(facesContext);
                 facesContext.renderResponse();
                 String output = swriter.toString();
-                Assert.assertTrue(output.contains(TEST_STRING));
+                Assertions.assertTrue(output.contains(TEST_STRING));
             }
         }
     }
     
+    @Test
     public void testOutputLabelEscapeValue() throws Exception
     {
         for (String contentType: CONTENT_TYPES)
@@ -180,11 +187,12 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
                 outputLabel.encodeAll(facesContext);
                 facesContext.renderResponse();
                 String output = swriter.toString();
-                Assert.assertTrue(output.contains(TEST_STRING_ESCAPED));
+                Assertions.assertTrue(output.contains(TEST_STRING_ESCAPED));
             }
         }
     }
     
+    @Test
     public void testOutputLabelNoEscapeValue() throws Exception
     {
 
@@ -200,11 +208,12 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
                 outputLabel.encodeAll(facesContext);
                 facesContext.renderResponse();
                 String output = swriter.toString();
-                Assert.assertTrue(output.contains(TEST_STRING));
+                Assertions.assertTrue(output.contains(TEST_STRING));
             }
         }
     }
     
+    @Test
     public void testUISelectOneEscapeValue() throws Exception
     {
         for (String contentType: CONTENT_TYPES)
@@ -233,9 +242,10 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
         component.encodeAll(facesContext);
         facesContext.renderResponse();
         String output = swriter.toString();
-        Assert.assertTrue(output.contains(TEST_STRING_ESCAPED));
+        Assertions.assertTrue(output.contains(TEST_STRING_ESCAPED));
     }
     
+    @Test
     public void testUISelectNoEscapeValue() throws Exception
     {
         for (String contentType: CONTENT_TYPES)
@@ -264,6 +274,6 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
         component.encodeAll(facesContext);
         facesContext.renderResponse();
         String output = swriter.toString();
-        Assert.assertTrue(output.contains(TEST_STRING));
+        Assertions.assertTrue(output.contains(TEST_STRING));
     }
 }

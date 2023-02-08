@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.renderkit;
 
-import org.apache.myfaces.renderkit.RendererUtils;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -35,155 +34,151 @@ import jakarta.faces.component.html.HtmlGraphicImage;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.easymock.classextension.EasyMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public class RendererUtilsTest extends AbstractJsfTestCase {
 
-	private MockResponseWriter writer;
+    private MockResponseWriter writer;
 
-	/**
-	 * ResourceHandler nice easy mock
-	 */
-	ResourceHandler resourceHandlerMock;
+    /**
+     * ResourceHandler nice easy mock
+     */
+    ResourceHandler resourceHandlerMock;
 
-	/**
-	 * {@link Application} nice easy mock
-	 */
-	Application applicationMock;
+    /**
+     * {@link Application} nice easy mock
+     */
+    Application applicationMock;
 
-	/**
-	 * A {@link Resource} nice easy mock
-	 */
-	private Resource resourceMock;
+    /**
+     * A {@link Resource} nice easy mock
+     */
+    private Resource resourceMock;
 
-	String libraryName = "images";
+    String libraryName = "images";
 
-	String resourceName = "picture.gif";
+    String resourceName = "picture.gif";
 
-	String requestPath = "/somePrefix/faces/jakarta.faces.resource/picture.gif?ln=\"images\"";
+    String requestPath = "/somePrefix/faces/jakarta.faces.resource/picture.gif?ln=\"images\"";
 
-	// a Component instance:
-	HtmlGraphicImage graphicImage = new HtmlGraphicImage();
+    // a Component instance:
+    HtmlGraphicImage graphicImage = new HtmlGraphicImage();
 
     private UIPanel parent;
 
-	public void setUp() throws Exception {
-		super.setUp();
+    @Override
+    @BeforeEach
+    public void setUp() throws Exception {
+        super.setUp();
 
-		writer = new MockResponseWriter(new StringWriter(), null, null);
-		facesContext.setResponseWriter(writer);
+        writer = new MockResponseWriter(new StringWriter(), null, null);
+        facesContext.setResponseWriter(writer);
 
-		applicationMock = EasyMock.createNiceMock(Application.class);
-		facesContext.setApplication(applicationMock);
+        applicationMock = EasyMock.createNiceMock(Application.class);
+        facesContext.setApplication(applicationMock);
 
-		resourceHandlerMock = EasyMock.createNiceMock(ResourceHandler.class);
-		applicationMock.getResourceHandler();
-		EasyMock.expectLastCall().andReturn(resourceHandlerMock);
-		
-		applicationMock.getProjectStage();
-		EasyMock.expectLastCall().andReturn(ProjectStage.Development);
+        resourceHandlerMock = EasyMock.createNiceMock(ResourceHandler.class);
+        applicationMock.getResourceHandler();
+        EasyMock.expectLastCall().andReturn(resourceHandlerMock);
 
-		resourceMock = EasyMock.createNiceMock(Resource.class);
+        applicationMock.getProjectStage();
+        EasyMock.expectLastCall().andReturn(ProjectStage.Development);
 
-		EasyMock.replay(applicationMock);
+        resourceMock = EasyMock.createNiceMock(Resource.class);
 
-		graphicImage.getAttributes().put(ComponentAttrs.LIBRARY_ATTR, libraryName);
-		graphicImage.getAttributes().put(ComponentAttrs.NAME_ATTR, resourceName);
-		graphicImage.setId("graphicImageId");
-		
-		parent = new UIPanel();
-	}
+        EasyMock.replay(applicationMock);
 
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
+        graphicImage.getAttributes().put(ComponentAttrs.LIBRARY_ATTR, libraryName);
+        graphicImage.getAttributes().put(ComponentAttrs.NAME_ATTR, resourceName);
+        graphicImage.setId("graphicImageId");
 
-	/**
-	 * 
-	 */
-	public void testGetIconSrc() {
+        parent = new UIPanel();
+    }
 
-		// Training a mock:
-		resourceHandlerMock.createResource(resourceName, libraryName);
-		EasyMock.expectLastCall().andReturn(resourceMock);
-		resourceMock.getRequestPath();
-		EasyMock.expectLastCall().andReturn(requestPath);
-		EasyMock.replay(resourceHandlerMock);
-		EasyMock.replay(resourceMock);
+    @Test
+    public void testGetIconSrc() {
 
-		// Tested method :
-		String iconSrc = RendererUtils.getIconSrc(facesContext, graphicImage,
-				HTML.IMG_ELEM);
+        // Training a mock:
+        resourceHandlerMock.createResource(resourceName, libraryName);
+        EasyMock.expectLastCall().andReturn(resourceMock);
+        resourceMock.getRequestPath();
+        EasyMock.expectLastCall().andReturn(requestPath);
+        EasyMock.replay(resourceHandlerMock);
+        EasyMock.replay(resourceMock);
 
-		Assert.assertEquals(
-				"If name or name/library present, source must be obtained from ResourceHandler",
-				requestPath, iconSrc);
+        // Tested method :
+        String iconSrc = RendererUtils.getIconSrc(facesContext, graphicImage,
+                HTML.IMG_ELEM);
 
-	}
+        Assertions.assertEquals(requestPath, iconSrc,
+                "If name or name/library present, source must be obtained from ResourceHandler");
 
-	public void testGetIconSrcResourceNotFound() throws Exception {
-		// Training a mock:
-		EasyMock.reset(resourceHandlerMock);
-		resourceHandlerMock.createResource(resourceName, libraryName);
-		EasyMock.expectLastCall().andReturn(null);
-		EasyMock.replay(resourceHandlerMock);
+    }
 
-		// Tested method :
-		String iconSrc = RendererUtils.getIconSrc(facesContext, graphicImage,
-				                    HTML.IMG_ELEM);
+    @Test
+    public void testGetIconSrcResourceNotFound() throws Exception {
+        // Training a mock:
+        EasyMock.reset(resourceHandlerMock);
+        resourceHandlerMock.createResource(resourceName, libraryName);
+        EasyMock.expectLastCall().andReturn(null);
+        EasyMock.replay(resourceHandlerMock);
 
-		Assert.assertEquals("RES_NOT_FOUND", iconSrc);
-		Assert.assertTrue("If resource is not found, a Message must be added",
-				facesContext.getMessages(graphicImage.getClientId(facesContext)).hasNext());
+        // Tested method :
+        String iconSrc = RendererUtils.getIconSrc(facesContext, graphicImage,
+                HTML.IMG_ELEM);
 
-	}
+        Assertions.assertEquals("RES_NOT_FOUND", iconSrc);
+        Assertions.assertTrue(facesContext.getMessages(graphicImage.getClientId(facesContext)).hasNext());
 
-    public void testGetStringValue()
-    {
+    }
+
+    @Test
+    public void testGetStringValue() {
         // Test for situation where submittedValue IS NOT String: 
         UIInput uiInput = new UIInput();
         Object submittedValue = new Object();
         uiInput.setSubmittedValue(submittedValue);
-        
+
         String stringValue = RendererUtils.getStringValue(facesContext, uiInput);
-        Assert.assertNotNull(stringValue);
-        Assert.assertEquals("If submittedvalue is not String, toString() must be used", submittedValue.toString(), stringValue);
+        Assertions.assertNotNull(stringValue);
+        Assertions.assertEquals(submittedValue.toString(), stringValue,
+                "If submittedvalue is not String, toString() must be used");
     }
 
-    public void testGetConvertedUIOutputValue()
-    {
+    @Test
+    public void testGetConvertedUIOutputValue() {
         UIInput uiInput = new UIInput();
         StringBuilder submittedValue = new StringBuilder("submittedValue");
         uiInput.setSubmittedValue(submittedValue);
-        
-        
+
         Object convertedUIOutputValue = RendererUtils.getConvertedUIOutputValue(facesContext, uiInput, submittedValue);
-        Assert.assertEquals("If submittedvalue is not String, toString() must be used", submittedValue.toString(), convertedUIOutputValue);
+        Assertions.assertEquals(submittedValue.toString(), convertedUIOutputValue);
     }
-    
+
     @Test
-    public void testIsRendered()
-    {
+    public void testIsRendered() {
         UIComponent uiComponent = new UIOutput();
         boolean rendered = ComponentUtils.isRendered(facesContext, uiComponent);
-        Assert.assertTrue(rendered);
-        
+        Assertions.assertTrue(rendered);
+
         uiComponent.setRendered(false);
         rendered = ComponentUtils.isRendered(facesContext, uiComponent);
-        Assert.assertFalse(rendered);
-        
+        Assertions.assertFalse(rendered);
+
         uiComponent = _setUpComponentStack();
         rendered = ComponentUtils.isRendered(facesContext, uiComponent);
-        Assert.assertFalse(rendered);
-        Assert.assertEquals("isRendered must not change current component", parent, UIComponent.getCurrentComponent(facesContext));
+        Assertions.assertFalse(rendered);
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext));
     }
-    
+
     /**
      * Verifies the current component on stack
      */
@@ -195,47 +190,51 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
             super(expression, expectedType);
             this.toVerify = toVerify;
         }
-        
+
         @Override
         public Object getValue(ELContext elContext) {
-          UIComponent currentComponent = UIComponent.getCurrentComponent(facesContext);
-          Assert.assertEquals("If this VE is called, component on stack must be actual" , currentComponent , toVerify);
-          return false;
+            UIComponent currentComponent = UIComponent.getCurrentComponent(facesContext);
+            Assertions.assertEquals(currentComponent, toVerify);
+            return false;
         }
     }
-    
-    /** Verifies no call to encode* methods */
-    private class MockComponent extends UIOutput
-    {
+
+    /**
+     * Verifies no call to encode* methods
+     */
+    private class MockComponent extends UIOutput {
+
         @Override
         public boolean isRendered() {
             return false;
         }
+
         @Override
         public void encodeBegin(FacesContext context) throws IOException {
-            Assert.fail();
+            Assertions.fail();
         }
+
         @Override
         public void encodeChildren(FacesContext context) throws IOException {
-            Assert.fail();
+            Assertions.fail();
         }
+
         @Override
         public void encodeEnd(FacesContext context) throws IOException {
-            Assert.fail();
+            Assertions.fail();
         }
     }
-    
+
     private UIInput _setUpComponentStack() {
         UIInput uiInput = new UIInput();
         parent.getChildren().add(uiInput);
         uiInput.setId("testId");
-        
-        
+
         MockRenderedValueExpression ve = new MockRenderedValueExpression("#{component.id eq 'testId'}", Boolean.class, uiInput);
         uiInput.setValueExpression("rendered", ve);
-        
-       // simlulate that parent panel encodes children and is on the stack:
-       parent.pushComponentToEL(facesContext, null);
+
+        // simlulate that parent panel encodes children and is on the stack:
+        parent.pushComponentToEL(facesContext, null);
         return uiInput;
     }
 

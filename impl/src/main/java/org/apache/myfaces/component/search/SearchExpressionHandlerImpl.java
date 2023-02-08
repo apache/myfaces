@@ -47,10 +47,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     protected void addHint(SearchExpressionContext searchExpressionContext, SearchExpressionHint hint)
     {
         // already available
-        if (!searchExpressionContext.getExpressionHints().contains(hint))
-        {
-            searchExpressionContext.getExpressionHints().add(hint);
-        }
+        searchExpressionContext.getExpressionHints().add(hint);
     }
     
     protected boolean isHintSet(SearchExpressionContext searchExpressionContext, SearchExpressionHint hint)

@@ -18,16 +18,14 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UISelectMany;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class UISelectManyTest extends AbstractJsfTestCase
 {
@@ -62,7 +60,7 @@ public class UISelectManyTest extends AbstractJsfTestCase
 
         selectMany.validateValue(facesContext, null);
 
-        Assert.assertFalse(selectMany.isValid());
+        Assertions.assertFalse(selectMany.isValid());
     }
 
     @Test
@@ -91,7 +89,7 @@ public class UISelectManyTest extends AbstractJsfTestCase
 
         selectMany.validateValue(facesContext, Collections.EMPTY_LIST);
 
-        Assert.assertFalse(selectMany.isValid());
+        Assertions.assertFalse(selectMany.isValid());
     }
 
     @Test
@@ -119,7 +117,7 @@ public class UISelectManyTest extends AbstractJsfTestCase
 
         selectMany.validateValue(facesContext, new int[] { 2, 3 });
 
-        Assert.assertTrue(selectMany.isValid());
+        Assertions.assertTrue(selectMany.isValid());
     }
 
     @Test
@@ -147,7 +145,7 @@ public class UISelectManyTest extends AbstractJsfTestCase
 
         selectMany.validateValue(facesContext, new String[] { "2", "3" });
 
-        Assert.assertTrue(selectMany.isValid());
+        Assertions.assertTrue(selectMany.isValid());
     }
 
     @Test
@@ -173,10 +171,9 @@ public class UISelectManyTest extends AbstractJsfTestCase
         three.setItemValue("3");
         children.add(three);
 
-        selectMany.validateValue(facesContext, Arrays.asList(new String[] {
-                "2", "3" }));
+        selectMany.validateValue(facesContext, Arrays.asList("2", "3"));
 
-        Assert.assertTrue(selectMany.isValid());
+        Assertions.assertTrue(selectMany.isValid());
     }
 
     static private final Locale _TEST_LOCALE = new Locale("xx", "TEST");

@@ -18,13 +18,11 @@
  */
 package org.apache.myfaces.util.lang;
 
-import org.apache.myfaces.util.lang.ThreadsafeXorShiftRandom;
-import org.apache.myfaces.util.lang.XorShiftRandom;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 public class XorShiftRandomTest
 {
@@ -43,7 +41,7 @@ public class XorShiftRandomTest
         }
 
         // if the random generator is good then we had no collisions.
-        Assert.assertEquals(randomVals.size(), 100);
+        Assertions.assertEquals(randomVals.size(), 100);
     }
 
 
@@ -61,6 +59,6 @@ public class XorShiftRandomTest
         }
 
         // if the random generator is good then we had no collisions.
-        Assert.assertEquals(randomVals.size(), 100);
+        Assertions.assertEquals(randomVals.size(), 100);
     }
 }

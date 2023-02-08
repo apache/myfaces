@@ -25,8 +25,8 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class HtmlOutputScriptTestCase extends FaceletTestCase
 {
@@ -37,9 +37,9 @@ public class HtmlOutputScriptTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleOutputScript.xhtml");
         
         UIComponent head = root.findComponent("head");
-        Assert.assertNotNull(head);
+        Assertions.assertNotNull(head);
         UIComponent body = root.findComponent("body");
-        Assert.assertNotNull(body);
+        Assertions.assertNotNull(body);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -57,9 +57,9 @@ public class HtmlOutputScriptTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleTargetHeadOutputScript.xhtml");
         
         UIComponent head = root.findComponent("head");
-        Assert.assertNotNull(head);
+        Assertions.assertNotNull(head);
         UIComponent body = root.findComponent("body");
-        Assert.assertNotNull(body);
+        Assertions.assertNotNull(body);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -77,9 +77,9 @@ public class HtmlOutputScriptTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testMultipleTargetHeadOutputScript.xhtml");
         
         UIComponent head = root.findComponent("head");
-        Assert.assertNotNull(head);
+        Assertions.assertNotNull(head);
         UIComponent body = root.findComponent("body");
-        Assert.assertNotNull(body);
+        Assertions.assertNotNull(body);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);

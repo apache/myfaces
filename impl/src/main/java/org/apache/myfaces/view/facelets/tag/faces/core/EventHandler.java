@@ -116,7 +116,7 @@ public final class EventHandler extends TagHandler
                 return;
             }
             else if (!FaceletViewDeclarationLanguage.isBuildingViewMetadata(ctx.getFacesContext()) &&
-                    UIViewRoot.METADATA_FACET_NAME.equals((String) parent.getAttributes().get(FacetHandler.KEY)))
+                    UIViewRoot.METADATA_FACET_NAME.equals(parent.getAttributes().get(FacetHandler.KEY)))
             {
                 // Already processed when the view metadata was created
                 return;
@@ -189,7 +189,7 @@ public final class EventHandler extends TagHandler
         }
         else
         {
-            value = (String) type.getValueExpression(context, String.class)
+            value = type.getValueExpression(context, String.class)
                     .getValue(context.getFacesContext().getELContext());
         }
         
@@ -465,9 +465,9 @@ public final class EventHandler extends TagHandler
             if (!initialStateMarked())
             {
                 Object[] values = new Object[4];
-                values[0] = (String) ( (_targetComponent != null && _targetFindComponentExpression == null) ? 
-                                            ComponentSupport.getFindComponentExpression(context, _targetComponent) : 
-                                            _targetFindComponentExpression );
+                values[0] = (_targetComponent != null && _targetFindComponentExpression == null) ?
+                                            ComponentSupport.getFindComponentExpression(context, _targetComponent) :
+                                            _targetFindComponentExpression;
                 values[1] = eventClass;
                 values[2] = methodExpZeroArg;
                 values[3] = methodExpOneArg;

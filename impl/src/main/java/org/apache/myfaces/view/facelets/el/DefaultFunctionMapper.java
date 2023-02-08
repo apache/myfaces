@@ -56,7 +56,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
     {
         if (_functions != null)
         {
-            Function f = (Function) _functions.get(prefix + ':' + localName);
+            Function f = _functions.get(prefix + ':' + localName);
             return f.getMethod();
         }
         

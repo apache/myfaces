@@ -89,7 +89,7 @@ public class MockServletConfig implements ServletConfig
 
     // --------------------------------------------------- ServletConfig Methods
 
-    /** {@inheritDoc} */
+    @Override
     public String getInitParameter(String name)
     {
 
@@ -97,7 +97,7 @@ public class MockServletConfig implements ServletConfig
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getInitParameterNames()
     {
 
@@ -105,7 +105,7 @@ public class MockServletConfig implements ServletConfig
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ServletContext getServletContext()
     {
 
@@ -113,7 +113,7 @@ public class MockServletConfig implements ServletConfig
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getServletName()
     {
 

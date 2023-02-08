@@ -18,7 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UISelectOne;
 import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,8 @@ import jakarta.el.ValueExpression;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for UISelectItems.
@@ -35,6 +35,7 @@ import org.junit.Assert;
 public class UISelectItemsTest extends AbstractJsfTestCase
 {
 
+    @Test
     public void testStringListAsValue() 
     {
         List<String> value = new ArrayList<String>();
@@ -58,9 +59,10 @@ public class UISelectItemsTest extends AbstractJsfTestCase
             options.add((String) iter.next().getValue());
         }
         
-        Assert.assertEquals(value, options);
+        Assertions.assertEquals(value, options);
     }
     
+    @Test
     public void testPrimitiveArrayAsValue()
     {
         int[] value = new int[3];
@@ -84,7 +86,7 @@ public class UISelectItemsTest extends AbstractJsfTestCase
             options[i] = (Integer) iter.next().getValue();
             
             // test equality
-            Assert.assertEquals(value[i], options[i]);
+            Assertions.assertEquals(value[i], options[i]);
         }
     }
 }

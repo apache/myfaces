@@ -65,7 +65,7 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
     @Override
     public Set<ClientBehaviorHint> getHints()
     {
-        return Collections.<ClientBehaviorHint>emptySet();
+        return Collections.emptySet();
     }
 
     public String getRendererType()

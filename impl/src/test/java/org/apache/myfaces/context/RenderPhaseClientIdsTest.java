@@ -24,7 +24,9 @@ import jakarta.faces.context.PartialViewContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testcases for the request parameter handling
@@ -37,6 +39,7 @@ import org.junit.Assert;
 public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
@@ -49,6 +52,7 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
      * Empty String as request param
      * has to result in an empty list
      */
+    @Test
     public void testRequestParams1() {
         String empty = "    \n \t  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
@@ -59,12 +63,13 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assert.assertTrue(pprContext.getRenderIds().isEmpty());
+        Assertions.assertTrue(pprContext.getRenderIds().isEmpty());
     }
 
     /**
      * no request param, has to result in an empty list
      */
+    @Test
     public void testRequestParams2() {
         Map<String, String> requestParamMap = new HashMap<String, String>();
         ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
@@ -73,7 +78,7 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assert.assertTrue(pprContext.getRenderIds().isEmpty());
+        Assertions.assertTrue(pprContext.getRenderIds().isEmpty());
     }
 
     /**
@@ -90,12 +95,13 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assert.assertTrue(pprContext.getRenderIds().isEmpty());
+        Assertions.assertTrue(pprContext.getRenderIds().isEmpty());
     }*/
 
     /**
      * list with one element has to result in a list with one element
      */
+    @Test
     public void testRequestParams5() {
         String params = " view1:panel1:_component1  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
@@ -106,14 +112,15 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assert.assertTrue("Length must be one",pprContext.getRenderIds().size() == 1);
-        Assert.assertTrue("Value match",pprContext.getRenderIds().iterator().next().equals("view1:panel1:_component1"));
+        Assertions.assertTrue(pprContext.getRenderIds().size() == 1);
+        Assertions.assertTrue(pprContext.getRenderIds().iterator().next().equals("view1:panel1:_component1"));
     }
 
     /**
      * test on a full blown list containing various
      * blank chars
      */
+    @Test
     public void testRequestParams6() {
         String params = " view1:panel1:_component1 view1:panel1:_component2 \n  component3 component4  ";
         Map<String, String> requestParamMap = new HashMap<String, String>();
@@ -124,13 +131,13 @@ public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
         
         PartialViewContext pprContext = context.getPartialViewContext();
 
-        Assert.assertTrue("Length must be four",pprContext.getRenderIds().size() == 4);
+        Assertions.assertTrue(pprContext.getRenderIds().size() == 4);
 
         // FIXME: Latest spec uses a Collection so order is not garanteed
-//        Assert.assertTrue("Value match",pprContext.getRenderIds().get(0).equals("view1:panel1:_component1"));
-//        Assert.assertTrue("Value match",pprContext.getRenderIds().get(2).equals("component3"));
+//        Assertions.assertTrue("Value match",pprContext.getRenderIds().get(0).equals("view1:panel1:_component1"));
+//        Assertions.assertTrue("Value match",pprContext.getRenderIds().get(2).equals("component3"));
 //
 //
-//        Assert.assertTrue("Value match",pprContext.getRenderIds().get(3).equals("component4"));
+//        Assertions.assertTrue("Value match",pprContext.getRenderIds().get(3).equals("component4"));
     }
 }

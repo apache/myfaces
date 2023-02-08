@@ -937,7 +937,7 @@ public abstract class MockApplication20 extends MockApplication12
         boolean annotationsApplied = false;
         if (componentType != null)
         {
-            component = application.createComponent((String) componentType.getValue(context.getELContext()));
+            component = application.createComponent(componentType.getValue(context.getELContext()));
             annotationsApplied = true;
         }
         else

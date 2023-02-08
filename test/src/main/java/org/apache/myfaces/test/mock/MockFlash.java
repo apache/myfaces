@@ -409,7 +409,7 @@ public class MockFlash extends Flash
                 .getClientIdsWithMessages();
         while (iterClientIds.hasNext())
         {
-            String clientId = (String) iterClientIds.next();
+            String clientId = iterClientIds.next();
             Iterator<FacesMessage> iterMessages = facesContext
                     .getMessages(clientId);
 

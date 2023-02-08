@@ -43,8 +43,8 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public final class JstlCoreTestCase extends FaceletTestCase {
 
@@ -100,7 +100,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         e.setManagement(true);
         vdl.buildView(facesContext, root,"if.xml");
         UIComponent c = root.findComponent("form");
-        Assert.assertNotNull("form is null", c);
+        Assertions.assertNotNull(c);
         
         // now make sure it isn't
         e.setManagement(false);
@@ -110,7 +110,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"if.xml");
         c = root.findComponent("form");
-        Assert.assertNull("form is not null", c);
+        Assertions.assertNull(c);
     }
     
     @Test
@@ -158,16 +158,16 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         root.encodeAll(facesContext);
         sw.flush();
         
-        Assert.assertTrue(sw.toString().contains("A = true/false"));
-        Assert.assertTrue(sw.toString().contains("B = false/false"));
-        Assert.assertTrue(sw.toString().contains("C = false/false"));
-        Assert.assertTrue(sw.toString().contains("D = false/false"));
-        Assert.assertTrue(sw.toString().contains("E = false/false"));
-        Assert.assertTrue(sw.toString().contains("F = false/false"));
-        Assert.assertTrue(sw.toString().contains("G = false/false"));
-        Assert.assertTrue(sw.toString().contains("H = false/false"));
-        Assert.assertTrue(sw.toString().contains("I = false/false"));
-        Assert.assertTrue(sw.toString().contains("J = false/true"));
+        Assertions.assertTrue(sw.toString().contains("A = true/false"));
+        Assertions.assertTrue(sw.toString().contains("B = false/false"));
+        Assertions.assertTrue(sw.toString().contains("C = false/false"));
+        Assertions.assertTrue(sw.toString().contains("D = false/false"));
+        Assertions.assertTrue(sw.toString().contains("E = false/false"));
+        Assertions.assertTrue(sw.toString().contains("F = false/false"));
+        Assertions.assertTrue(sw.toString().contains("G = false/false"));
+        Assertions.assertTrue(sw.toString().contains("H = false/false"));
+        Assertions.assertTrue(sw.toString().contains("I = false/false"));
+        Assertions.assertTrue(sw.toString().contains("J = false/true"));
     }
 
     /**
@@ -196,7 +196,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         root.encodeAll(facesContext);
         sw.flush();
         
-        Assert.assertTrue(sw.toString().contains("value1 = /"));
+        Assertions.assertTrue(sw.toString().contains("value1 = /"));
     }
     
     @Test
@@ -233,17 +233,17 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         root.encodeAll(facesContext);
         sw.flush();
         
-        Assert.assertTrue(sw.toString().contains("A = true/false"));
-        Assert.assertTrue(sw.toString().contains("B = false/false"));
-        Assert.assertTrue(sw.toString().contains("C = false/false"));
-        Assert.assertTrue(sw.toString().contains("D = false/false"));
-        Assert.assertTrue(sw.toString().contains("E = false/false"));
-        Assert.assertTrue(sw.toString().contains("F = false/false"));
-        Assert.assertTrue(sw.toString().contains("G = false/false"));
-        Assert.assertTrue(sw.toString().contains("H = false/false"));
-        Assert.assertTrue(sw.toString().contains("I = false/false"));
-        Assert.assertTrue(sw.toString().contains("J = false/true"));
-        Assert.assertFalse(sw.toString().contains("value1 ="));
+        Assertions.assertTrue(sw.toString().contains("A = true/false"));
+        Assertions.assertTrue(sw.toString().contains("B = false/false"));
+        Assertions.assertTrue(sw.toString().contains("C = false/false"));
+        Assertions.assertTrue(sw.toString().contains("D = false/false"));
+        Assertions.assertTrue(sw.toString().contains("E = false/false"));
+        Assertions.assertTrue(sw.toString().contains("F = false/false"));
+        Assertions.assertTrue(sw.toString().contains("G = false/false"));
+        Assertions.assertTrue(sw.toString().contains("H = false/false"));
+        Assertions.assertTrue(sw.toString().contains("I = false/false"));
+        Assertions.assertTrue(sw.toString().contains("J = false/true"));
+        Assertions.assertFalse(sw.toString().contains("value1 ="));
     }
     
     @Test
@@ -280,18 +280,18 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         root.encodeAll(facesContext);
         sw.flush();
         
-        Assert.assertTrue(sw.toString().contains("value = A"));
-        Assert.assertTrue(sw.toString().contains("value = B"));
-        Assert.assertTrue(sw.toString().contains("value = C"));
-        Assert.assertTrue(sw.toString().contains("value = D"));
-        Assert.assertTrue(sw.toString().contains("value = E"));
-        Assert.assertTrue(sw.toString().contains("value = F"));
-        Assert.assertTrue(sw.toString().contains("value = G"));
-        Assert.assertTrue(sw.toString().contains("value = H"));
-        Assert.assertTrue(sw.toString().contains("value = I"));
-        Assert.assertTrue(sw.toString().contains("value = J"));
-        Assert.assertTrue(!sw.toString().contains("value = value"));
-        Assert.assertTrue(!sw.toString().contains("A = A"));
+        Assertions.assertTrue(sw.toString().contains("value = A"));
+        Assertions.assertTrue(sw.toString().contains("value = B"));
+        Assertions.assertTrue(sw.toString().contains("value = C"));
+        Assertions.assertTrue(sw.toString().contains("value = D"));
+        Assertions.assertTrue(sw.toString().contains("value = E"));
+        Assertions.assertTrue(sw.toString().contains("value = F"));
+        Assertions.assertTrue(sw.toString().contains("value = G"));
+        Assertions.assertTrue(sw.toString().contains("value = H"));
+        Assertions.assertTrue(sw.toString().contains("value = I"));
+        Assertions.assertTrue(sw.toString().contains("value = J"));
+        Assertions.assertTrue(!sw.toString().contains("value = value"));
+        Assertions.assertTrue(!sw.toString().contains("A = A"));
     }
 
     @Test

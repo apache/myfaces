@@ -24,8 +24,8 @@ import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ResourceMarkDeleteTest  extends FaceletTestCase
 {
@@ -47,8 +47,8 @@ public class ResourceMarkDeleteTest  extends FaceletTestCase
 
         List<UIComponent> resources = root.getComponentResources(facesContext, "head");
 
-        Assert.assertTrue("Only one script is included.", resources.size() == 1);
-        Assert.assertTrue("a.js is included.", resources.get(0).getAttributes().get("name").equals("a.js"));
+        Assertions.assertTrue(resources.size() == 1);
+        Assertions.assertTrue(resources.get(0).getAttributes().get("name").equals("a.js"));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ResourceMarkDeleteTest  extends FaceletTestCase
 
         List<UIComponent> resources = root.getComponentResources(facesContext, "head");
 
-        Assert.assertTrue("Two scripts are included.", resources.size() == 2);
+        Assertions.assertTrue(resources.size() == 2);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class ResourceMarkDeleteTest  extends FaceletTestCase
         {
             List<UIComponent> resources = view.getComponentResources(facesContext, "head");
 
-            Assert.assertTrue("Only one script is included.", resources.size() == 1);
+            Assertions.assertTrue(resources.size() == 1);
         }
 
         // reset 'isFilledView'
@@ -92,7 +92,7 @@ public class ResourceMarkDeleteTest  extends FaceletTestCase
         {
             List<UIComponent> resources = view.getComponentResources(facesContext, "head");
 
-            Assert.assertTrue("Two scripts are included.", resources.size() == 2);
+            Assertions.assertTrue(resources.size() == 2);
         }
 
         // reset 'isFilledView'
@@ -106,7 +106,7 @@ public class ResourceMarkDeleteTest  extends FaceletTestCase
         {
             List<UIComponent> resources = view.getComponentResources(facesContext, "head");
 
-            Assert.assertTrue("Only one script is included.", resources.size() == 1);
+            Assertions.assertTrue(resources.size() == 1);
         }
     }
 }

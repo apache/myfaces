@@ -215,8 +215,7 @@ public class RuntimeConfig
     
     public org.apache.myfaces.config.element.Converter getConverterConfiguration(String converterClassName)
     {
-        return (org.apache.myfaces.config.element.Converter)
-                _converterClassNameToConfigurationMap.get(converterClassName);
+        return _converterClassNameToConfigurationMap.get(converterClassName);
     }
 
     /**

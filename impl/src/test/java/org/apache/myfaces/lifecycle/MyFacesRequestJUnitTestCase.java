@@ -19,8 +19,8 @@
 package org.apache.myfaces.lifecycle;
 
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class test 
@@ -38,6 +38,6 @@ public class MyFacesRequestJUnitTestCase extends AbstractMyFacesRequestTestCase
         client.processRedirect();
         processLifecycleExecuteAndRender();
         String redirectedContent = getRenderedContent();
-        Assert.assertTrue(redirectedContent.contains("Redirected Page"));
+        Assertions.assertTrue(redirectedContent.contains("Redirected Page"));
     }
 }

@@ -24,8 +24,8 @@ import jakarta.faces.component.UIComponent;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTestCase
 {
@@ -55,12 +55,12 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         UIComponent content = facesContext.getViewRoot().findComponent("content");
         UIComponent page1Button = facesContext.getViewRoot().findComponent("mainForm:page1");
         
-        client.ajax((UICommand)page1Button, "action", page1Button.getClientId(facesContext), content.getClientId(facesContext), true);
+        client.ajax(page1Button, "action", page1Button.getClientId(facesContext), content.getClientId(facesContext), true);
         
         processLifecycleExecuteAndRender();
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assert.assertFalse(text.contains("update id=\"jakarta.faces.ViewHead\""));
+        Assertions.assertFalse(text.contains("update id=\"jakarta.faces.ViewHead\""));
         //System.out.println(text);
         endRequest();
     }
@@ -74,14 +74,14 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         UIComponent content = facesContext.getViewRoot().findComponent("content");
         UIComponent page2Button = facesContext.getViewRoot().findComponent("mainForm:page2");
         
-        client.ajax((UICommand)page2Button, "action", page2Button.getClientId(facesContext), content.getClientId(facesContext), true);
+        client.ajax(page2Button, "action", page2Button.getClientId(facesContext), content.getClientId(facesContext), true);
         
         processLifecycleExecuteAndRender();
         
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assert.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
-        Assert.assertTrue(text.contains("alert(\"script2\");"));
+        Assertions.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
+        Assertions.assertTrue(text.contains("alert(\"script2\");"));
         //System.out.println(text);
         endRequest();
     }
@@ -95,15 +95,15 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         UIComponent content = facesContext.getViewRoot().findComponent("content");
         UIComponent page3Button = facesContext.getViewRoot().findComponent("mainForm:page3");
         
-        client.ajax((UICommand)page3Button, "action", page3Button.getClientId(facesContext), content.getClientId(facesContext), true);
+        client.ajax(page3Button, "action", page3Button.getClientId(facesContext), content.getClientId(facesContext), true);
         
         processLifecycleExecuteAndRender();
         
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assert.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
-        Assert.assertTrue(text.contains("alert(\"script3\");"));
-        Assert.assertTrue(text.contains("link rel=\"stylesheet\" type=\"text/css\" href=\"/test/faces/jakarta.faces.resource/style3.css\""));
+        Assertions.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
+        Assertions.assertTrue(text.contains("alert(\"script3\");"));
+        Assertions.assertTrue(text.contains("link rel=\"stylesheet\" type=\"text/css\" href=\"/test/faces/jakarta.faces.resource/style3.css\""));
         //System.out.println(text);
         endRequest();
     }

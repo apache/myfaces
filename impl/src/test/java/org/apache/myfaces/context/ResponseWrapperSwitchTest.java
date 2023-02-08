@@ -31,7 +31,10 @@ import jakarta.servlet.WriteListener;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testcase for the response switching
@@ -42,13 +45,15 @@ import org.junit.Assert;
 public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         FactoryFinder.setFactory (FactoryFinder.EXCEPTION_HANDLER_FACTORY,
-        "org.apache.myfaces.context.ExceptionHandlerFactoryImpl");
+            "org.apache.myfaces.context.ExceptionHandlerFactoryImpl");
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -149,6 +154,7 @@ public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
      * testing the off switch for the
      * response
      */
+    @Test
     public void testSwitchOnWriter() {
 
         ByteArrayOutputStream ostr = new ByteArrayOutputStream();
@@ -165,14 +171,14 @@ public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
             try {
                 responseWriter = new MockResponseWriter(((ServletResponse) context.getExternalContext().getResponse()).getWriter(), null, null);
             } catch (IOException ex) {
-                Assert.fail(ex.getMessage());
+                Assertions.fail(ex.getMessage());
             }
             context.setResponseWriter(responseWriter);
         }
 
 
 
-        Assert.assertTrue("responsewriter not null", responseWriter != null);
+        Assertions.assertTrue(responseWriter != null);
 
         try {
             responseWriter.append("hello world");
@@ -180,10 +186,10 @@ public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
             responseWriter.close();
 
         } catch (IOException ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
-        Assert.assertTrue(ostrWriter.toString().trim().equals("hello world"));
+        Assertions.assertTrue(ostrWriter.toString().trim().equals("hello world"));
 
     }
 
@@ -214,7 +220,7 @@ public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
 
 
 
-        Assert.assertTrue("responsewriter not null", responseWriter != null);
+        Assertions.assertTrue("responsewriter not null", responseWriter != null);
         context.getPartialViewContext().enableResponseWriting(false);
 
         try {
@@ -227,7 +233,7 @@ public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
         }
 
 
-        Assert.assertTrue(ostrWriter.toString().trim().equals(""));
+        Assertions.assertTrue(ostrWriter.toString().trim().equals(""));
 
 
     }*/
@@ -264,7 +270,7 @@ public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
         }
 
 
-        Assert.assertTrue(ostr.toString().trim().equals(""));
+        Assertions.assertTrue(ostr.toString().trim().equals(""));
 
 
     }*/

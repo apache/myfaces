@@ -18,14 +18,12 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UISelectOne;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class UISelectOneTest extends AbstractJsfTestCase
 {
@@ -56,8 +54,8 @@ public class UISelectOneTest extends AbstractJsfTestCase
 
         selectOne.validateValue(facesContext, null);
 
-        Assert.assertFalse(selectOne.isValid());
-        Assert.assertEquals(1, facesContext.getMessageList().size());
+        Assertions.assertFalse(selectOne.isValid());
+        Assertions.assertEquals(1, facesContext.getMessageList().size());
     }
     
     @Test
@@ -86,8 +84,8 @@ public class UISelectOneTest extends AbstractJsfTestCase
 
         selectOne.validateValue(facesContext, 1);
 
-        Assert.assertTrue(selectOne.isValid());
-        Assert.assertEquals(0, facesContext.getMessageList().size());
+        Assertions.assertTrue(selectOne.isValid());
+        Assertions.assertEquals(0, facesContext.getMessageList().size());
     }
     
     @Test
@@ -116,8 +114,8 @@ public class UISelectOneTest extends AbstractJsfTestCase
 
         selectOne.validateValue(facesContext, 4);
 
-        Assert.assertFalse(selectOne.isValid());
-        Assert.assertEquals(1, facesContext.getMessageList().size());
+        Assertions.assertFalse(selectOne.isValid());
+        Assertions.assertEquals(1, facesContext.getMessageList().size());
     }
     
     @Test
@@ -147,8 +145,8 @@ public class UISelectOneTest extends AbstractJsfTestCase
 
         selectOne.validateValue(facesContext, 3);
 
-        Assert.assertFalse(selectOne.isValid());
-        Assert.assertEquals(1, facesContext.getMessageList().size());
+        Assertions.assertFalse(selectOne.isValid());
+        Assertions.assertEquals(1, facesContext.getMessageList().size());
     }
     
     @Test
@@ -178,8 +176,8 @@ public class UISelectOneTest extends AbstractJsfTestCase
 
         selectOne.validateValue(facesContext, 3);
 
-        Assert.assertTrue(selectOne.isValid());
-        Assert.assertEquals(0, facesContext.getMessageList().size());
+        Assertions.assertTrue(selectOne.isValid());
+        Assertions.assertEquals(0, facesContext.getMessageList().size());
     }
     
     static private final Locale _TEST_LOCALE = new Locale("xx", "TEST");

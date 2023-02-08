@@ -27,7 +27,6 @@ import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.render.RenderKitFactory;
-import junit.framework.TestCase;
 
 import org.apache.myfaces.test.config.ResourceBundleVarNames;
 import org.apache.myfaces.test.mock.MockApplication;
@@ -42,8 +41,8 @@ import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
-import org.junit.After;
-import org.junit.Before;
+import  org.junit.jupiter.api.AfterEach;
+import  org.junit.jupiter.api.BeforeEach;
 
 /**
  * <p>Abstract JUnit 4.5 test case base class, which sets up the JavaServer Faces
@@ -77,7 +76,7 @@ import org.junit.Before;
  * @since 1.0.0
  */
 
-public abstract class AbstractJsfTestCase extends TestCase
+public abstract class AbstractJsfTestCase
 {
 
     // ------------------------------------------------------------ Constructors
@@ -95,7 +94,7 @@ public abstract class AbstractJsfTestCase extends TestCase
      * <p>Set up instance variables required by this test case.</p>
      * 
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
 
@@ -300,7 +299,7 @@ public abstract class AbstractJsfTestCase extends TestCase
     /**
      * <p>Tear down instance variables required by this test case.</p>
      */
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
 

@@ -41,8 +41,8 @@ import jakarta.faces.validator.ValidatorException;
 
 import org.apache.myfaces.context.ExceptionHandlerImpl;
 import org.easymock.classextension.EasyMock;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ExceptionTestCase extends FaceletTestCase
 {
@@ -69,7 +69,7 @@ public class ExceptionTestCase extends FaceletTestCase
         request.addParameter("mainForm:button1", "Submit");
 
         UICommand button = (UICommand) root.findComponent("mainForm:button1");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         
         ExceptionBean bean = EasyMock.createMock(ExceptionBean.class);
         EasyMock.expect(bean.doSomeAction()).andThrow(new AbortProcessingException());
@@ -86,7 +86,7 @@ public class ExceptionTestCase extends FaceletTestCase
         }
         catch(FacesException e)
         {
-            Assert.fail("No exception should be thrown at this point.");
+            Assertions.fail("No exception should be thrown at this point.");
         }
         
         int i = 0;
@@ -101,10 +101,10 @@ public class ExceptionTestCase extends FaceletTestCase
             }
             else
             {
-                Assert.fail("Unexpected exception queued");
+                Assertions.fail("Unexpected exception queued");
             }
         }
-        Assert.assertEquals(1, i);
+        Assertions.assertEquals(1, i);
     }
 
     /**
@@ -121,7 +121,7 @@ public class ExceptionTestCase extends FaceletTestCase
         request.addParameter("mainForm:button1", "Submit");
 
         UICommand button = (UICommand) root.findComponent("mainForm:button1");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         
         ExceptionBean bean = EasyMock.createMock(ExceptionBean.class);
         EasyMock.expect(bean.doSomeAction()).andThrow(new RuntimeException());
@@ -143,7 +143,7 @@ public class ExceptionTestCase extends FaceletTestCase
         Iterable<ExceptionQueuedEvent> unhandledExceptionQueuedEvents = facesContext.getExceptionHandler().getUnhandledExceptionQueuedEvents();
         ExceptionQueuedEvent exceptionQueuedEvent = unhandledExceptionQueuedEvents.iterator().next();
          
-        Assert.assertNotNull(exceptionQueuedEvent.getContext().getException());
+        Assertions.assertNotNull(exceptionQueuedEvent.getContext().getException());
     }
     
     /**
@@ -160,7 +160,7 @@ public class ExceptionTestCase extends FaceletTestCase
         request.addParameter("mainForm:button1", "Submit");
 
         UICommand button = (UICommand) root.findComponent("mainForm:button1");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         
         ExceptionBean bean = EasyMock.createMock(ExceptionBean.class);
         EasyMock.expect(bean.doSomeAction()).andThrow(new IOException());
@@ -182,7 +182,7 @@ public class ExceptionTestCase extends FaceletTestCase
         Iterable<ExceptionQueuedEvent> unhandledExceptionQueuedEvents = facesContext.getExceptionHandler().getUnhandledExceptionQueuedEvents();
         ExceptionQueuedEvent exceptionQueuedEvent = unhandledExceptionQueuedEvents.iterator().next();
          
-        Assert.assertNotNull(exceptionQueuedEvent.getContext().getException());
+        Assertions.assertNotNull(exceptionQueuedEvent.getContext().getException());
     }
 
     @Test
@@ -194,7 +194,7 @@ public class ExceptionTestCase extends FaceletTestCase
         request.addParameter("mainForm:button1", "Submit");
 
         UICommand button = (UICommand) root.findComponent("mainForm:button1");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         
         //ActionEvent event = new ActionEvent(button);
         ExceptionBean bean = EasyMock.createMock(ExceptionBean.class);
@@ -213,7 +213,7 @@ public class ExceptionTestCase extends FaceletTestCase
         }
         catch(FacesException e)
         {
-            Assert.fail("No exception should be thrown at this point.");
+            Assertions.fail("No exception should be thrown at this point.");
         }
         
         int i = 0;
@@ -228,10 +228,10 @@ public class ExceptionTestCase extends FaceletTestCase
             }
             else
             {
-                Assert.fail("Unexpected exception queued");
+                Assertions.fail("Unexpected exception queued");
             }
         }
-        Assert.assertEquals(1, i);
+        Assertions.assertEquals(1, i);
 
     }
 
@@ -249,7 +249,7 @@ public class ExceptionTestCase extends FaceletTestCase
         request.addParameter("mainForm:button1", "Submit");
 
         UICommand button = (UICommand) root.findComponent("mainForm:button1");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         
         //ActionEvent event = new ActionEvent(button);
         ExceptionBean bean = EasyMock.createMock(ExceptionBean.class);
@@ -274,7 +274,7 @@ public class ExceptionTestCase extends FaceletTestCase
         }
         //catch(FacesException e)
         //{
-        //    Assert.fail("No exception should be thrown at this point.");
+        //    Assertions.fail("No exception should be thrown at this point.");
         //}
         
         int i = 0;
@@ -284,7 +284,7 @@ public class ExceptionTestCase extends FaceletTestCase
             Throwable e = eqe.getContext().getException();
             if (e instanceof AbortProcessingException)
             {
-                Assert.fail("Unexpected exception queued");
+                Assertions.fail("Unexpected exception queued");
             }
             else
             {
@@ -292,7 +292,7 @@ public class ExceptionTestCase extends FaceletTestCase
                 i++;
             }
         }
-        Assert.assertEquals(1, i);
+        Assertions.assertEquals(1, i);
 
     }
     
@@ -315,7 +315,7 @@ public class ExceptionTestCase extends FaceletTestCase
             {
                 Object submittedValue = "Hello!";
                 ExceptionBean bean = EasyMock.createStrictMock(ExceptionBean.class);
-                bean.validateMe(facesContext,(UIComponent)target, submittedValue);
+                bean.validateMe(facesContext, target, submittedValue);
                 EasyMock.expectLastCall().andThrow(new ValidatorException(new FacesMessage(target.getClientId(facesContext),"not valid!")));
                 // Setup is finished need to activate the mock
                 EasyMock.replay(bean);
@@ -327,11 +327,11 @@ public class ExceptionTestCase extends FaceletTestCase
                 try
                 {
                     input.processValidators(facesContext);
-                    Assert.assertTrue(facesContext.isValidationFailed());
+                    Assertions.assertTrue(facesContext.isValidationFailed());
                 }
                 catch(FacesException e)
                 {
-                    Assert.fail("No exception expected");
+                    Assertions.fail("No exception expected");
                 }
             }
         });
@@ -355,16 +355,16 @@ public class ExceptionTestCase extends FaceletTestCase
                 try
                 {
                     input.processValidators(facesContext);
-                    Assert.assertTrue(facesContext.isValidationFailed());
+                    Assertions.assertTrue(facesContext.isValidationFailed());
                 }
                 catch(FacesException e)
                 {
-                    Assert.fail("No exception expected");
+                    Assertions.fail("No exception expected");
                 }
             }
         });
         
-        Assert.assertEquals("not valid!", facesContext.getMessageList().get(0).getSummary());
+        Assertions.assertEquals("not valid!", facesContext.getMessageList().get(0).getSummary());
     }
     
     @Test
@@ -394,7 +394,7 @@ public class ExceptionTestCase extends FaceletTestCase
                 }
                 catch(FacesException e)
                 {
-                    Assert.fail("No exception expected");
+                    Assertions.fail("No exception expected");
                 }
             }
         });
@@ -421,10 +421,10 @@ public class ExceptionTestCase extends FaceletTestCase
             }
             else
             {
-                Assert.fail("Unexpected exception queued");
+                Assertions.fail("Unexpected exception queued");
             }
         }
-        Assert.assertEquals(1, i);
+        Assertions.assertEquals(1, i);
     }
     
     @Test
@@ -452,7 +452,7 @@ public class ExceptionTestCase extends FaceletTestCase
                 }
                 catch(FacesException e)
                 {
-                    Assert.fail("No exception expected");
+                    Assertions.fail("No exception expected");
                 }
                 
                 request.setAttribute("bean", bean);                
@@ -476,7 +476,7 @@ public class ExceptionTestCase extends FaceletTestCase
             Throwable e = eqe.getContext().getException();
             if (e instanceof AbortProcessingException)
             {
-                Assert.fail("Unexpected exception queued");
+                Assertions.fail("Unexpected exception queued");
             }
             else
             {
@@ -484,7 +484,7 @@ public class ExceptionTestCase extends FaceletTestCase
                 i++;
             }
         }
-        Assert.assertEquals(1, i);
+        Assertions.assertEquals(1, i);
     }
     
     public static class CustomValidator implements Validator

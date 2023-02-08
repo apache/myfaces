@@ -63,7 +63,7 @@ public class MockFunctionMapper extends FunctionMapper
 
     // -------------------------------------------------- FunctionMapper Methods
 
-    /** {@inheritDoc} */
+    @Override
     public Method resolveFunction(String prefix, String localName)
     {
 

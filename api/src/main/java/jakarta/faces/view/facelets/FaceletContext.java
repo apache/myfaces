@@ -37,6 +37,7 @@ import jakarta.faces.context.FacesContext;
  */
 public abstract class FaceletContext extends ELContext
 {
+    // see MYFACES-4234
     public static final String FACELET_CONTEXT_KEY = "jakarta.faces.FACELET_CONTEXT".intern();
     
     /**

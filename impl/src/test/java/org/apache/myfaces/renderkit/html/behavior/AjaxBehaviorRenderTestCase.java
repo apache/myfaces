@@ -25,7 +25,8 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
 
@@ -48,8 +49,8 @@ public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        assertFalse(response.contains("faces.util.chain"));
-        assertFalse(response.contains("myfaces.ab"));
+        Assertions.assertFalse(response.contains("faces.util.chain"));
+        Assertions.assertFalse(response.contains("myfaces.ab"));
     }
  
     @Test
@@ -64,8 +65,8 @@ public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        assertTrue(response.contains("myfaces.ab"));
-        assertEquals(countMatches(response, "myfaces.ab"), 1);
+        Assertions.assertTrue(response.contains("myfaces.ab"));
+        Assertions.assertEquals(countMatches(response, "myfaces.ab"), 1);
     }
     
     @Test
@@ -80,8 +81,8 @@ public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        assertTrue(response.contains("myfaces.ab"));
-        assertEquals(countMatches(response, "myfaces.ab"), 1);
+        Assertions.assertTrue(response.contains("myfaces.ab"));
+        Assertions.assertEquals(countMatches(response, "myfaces.ab"), 1);
     }
     
     @Test
@@ -96,9 +97,9 @@ public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        assertTrue(response.contains("myfaces.ab"));
-        assertEquals(countMatches(response, "faces.util.chain"), 1);
-        assertEquals(countMatches(response, "myfaces.ab"), 2);
+        Assertions.assertTrue(response.contains("myfaces.ab"));
+        Assertions.assertEquals(countMatches(response, "faces.util.chain"), 1);
+        Assertions.assertEquals(countMatches(response, "myfaces.ab"), 2);
     }
     
     @Test
@@ -113,8 +114,8 @@ public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        assertFalse(response.contains("myfaces.ab"));
-        assertFalse(response.contains("faces.util.chain"));
+        Assertions.assertFalse(response.contains("myfaces.ab"));
+        Assertions.assertFalse(response.contains("faces.util.chain"));
     }
     
     @Test
@@ -129,7 +130,7 @@ public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        assertTrue(response.contains("myfaces.ab"));
+        Assertions.assertTrue(response.contains("myfaces.ab"));
     }
     
     @Test
@@ -144,10 +145,10 @@ public class AjaxBehaviorRenderTestCase extends FaceletTestCase {
         sw.flush();
 
         String response = sw.toString();
-        assertTrue(response.contains("myfaces.ab"));
-        assertTrue(response.contains("faces.util.chain"));
-        assertEquals(countMatches(response, "faces.util.chain"), 1);
-        assertEquals(countMatches(response, "myfaces.ab"), 2);
+        Assertions.assertTrue(response.contains("myfaces.ab"));
+        Assertions.assertTrue(response.contains("faces.util.chain"));
+        Assertions.assertEquals(countMatches(response, "faces.util.chain"), 1);
+        Assertions.assertEquals(countMatches(response, "myfaces.ab"), 2);
     }
     
     public int countMatches(String all, String search)

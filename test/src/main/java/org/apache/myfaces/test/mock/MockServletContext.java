@@ -159,7 +159,7 @@ public class MockServletContext implements ServletContext
 
     // -------------------------------------------------- ServletContext Methods
 
-    /** {@inheritDoc} */
+    @Override
     public Object getAttribute(String name)
     {
 
@@ -167,7 +167,7 @@ public class MockServletContext implements ServletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getAttributeNames()
     {
 
@@ -175,7 +175,7 @@ public class MockServletContext implements ServletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getInitParameter(String name)
     {
 
@@ -183,7 +183,7 @@ public class MockServletContext implements ServletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Enumeration getInitParameterNames()
     {
 
@@ -191,7 +191,7 @@ public class MockServletContext implements ServletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getMajorVersion()
     {
 
@@ -199,7 +199,7 @@ public class MockServletContext implements ServletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getMimeType(String path)
     {
 
@@ -213,7 +213,7 @@ public class MockServletContext implements ServletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getMinorVersion()
     {
 
@@ -221,7 +221,7 @@ public class MockServletContext implements ServletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRealPath(String path)
     {
 
@@ -249,7 +249,7 @@ public class MockServletContext implements ServletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public URL getResource(String path) throws MalformedURLException
     {
 
@@ -277,7 +277,7 @@ public class MockServletContext implements ServletContext
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public InputStream getResourceAsStream(String path)
     {
         try
@@ -295,7 +295,7 @@ public class MockServletContext implements ServletContext
         return null;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Set getResourcePaths(String path)
     {
 
@@ -344,27 +344,26 @@ public class MockServletContext implements ServletContext
         return set;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void log(String message)
     {
         System.out.println(message);
     }
 
-    /** {@inheritDoc} */
     public void log(Exception exception, String message)
     {
         System.out.println(message);
         exception.printStackTrace();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void log(String message, Throwable exception)
     {
         System.out.println(message);
         exception.printStackTrace();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void removeAttribute(String name)
     {
         if (attributes.containsKey(name))
@@ -374,7 +373,7 @@ public class MockServletContext implements ServletContext
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setAttribute(String name, Object value)
     {
         if (name == null)
@@ -399,55 +398,52 @@ public class MockServletContext implements ServletContext
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ServletContext getContext(String uripath)
     {
         throw new UnsupportedOperationException();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getContextPath()
     {
         throw new UnsupportedOperationException();
     }
 
-    /** {@inheritDoc} */
     public Servlet getServlet(String name) throws ServletException
     {
         throw new UnsupportedOperationException();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getServletContextName()
     {
         return "MockServletContext";
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getServerInfo()
     {
         return "MockServletContext";
     }
 
-    /** {@inheritDoc} */
     public Enumeration getServlets()
     {
         throw new UnsupportedOperationException();
     }
 
-    /** {@inheritDoc} */
     public Enumeration getServletNames()
     {
         throw new UnsupportedOperationException();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public RequestDispatcher getNamedDispatcher(String name)
     {
         throw new UnsupportedOperationException();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public RequestDispatcher getRequestDispatcher(String path)
     {
         URI uri = this.resolve(path);

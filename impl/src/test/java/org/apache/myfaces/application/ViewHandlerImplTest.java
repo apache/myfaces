@@ -33,18 +33,16 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewMetadata;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class for ViewHandlerImpl
@@ -52,13 +50,12 @@ import org.junit.runners.JUnit4;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@RunWith(JUnit4.class)
 public class ViewHandlerImplTest extends AbstractJsfTestCase
 {
     
     private ViewHandlerImpl _viewHandler;
     
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception
     {
@@ -80,7 +77,7 @@ public class ViewHandlerImplTest extends AbstractJsfTestCase
                 UIViewRoot.class.getName());
     }
 
-    @After
+    @AfterEach
     @Override
     public void tearDown() throws Exception
     {
@@ -121,16 +118,16 @@ public class ViewHandlerImplTest extends AbstractJsfTestCase
         {
             // an UnsupportedOperationException occured, which means getBookmarkableURL()
             // wanted to change the Map or any of the Lists and this is not allowed!
-            Assert.fail("ViewHandler.getBookmarkableURL() must not change the parameter Map!");
+            Assertions.fail("ViewHandler.getBookmarkableURL() must not change the parameter Map!");
         }
         
         // additional checks:
         // the URL must contain all params from the parameters map
         // and from the <f:viewParam> components of the target view
-        Assert.assertTrue(url.contains("key1=value11"));
-        Assert.assertTrue(url.contains("key1=value12"));
-        Assert.assertTrue(url.contains("key2=value2"));
-        Assert.assertTrue(url.contains("myparam=paramvalue"));
+        Assertions.assertTrue(url.contains("key1=value11"));
+        Assertions.assertTrue(url.contains("key1=value12"));
+        Assertions.assertTrue(url.contains("key2=value2"));
+        Assertions.assertTrue(url.contains("myparam=paramvalue"));
     }
     
     /**
@@ -165,16 +162,16 @@ public class ViewHandlerImplTest extends AbstractJsfTestCase
         {
             // an UnsupportedOperationException occured, which means getRedirectURL()
             // wanted to change the Map or any of the Lists and this is not allowed!
-            Assert.fail("ViewHandler.getRedirectURL() must not change the parameter Map!");
+            Assertions.fail("ViewHandler.getRedirectURL() must not change the parameter Map!");
         }
         
         // additional checks:
         // the URL must contain all params from the parameters map
         // and from the <f:viewParam> components of the target view
-        Assert.assertTrue(url.contains("key1=value11"));
-        Assert.assertTrue(url.contains("key1=value12"));
-        Assert.assertTrue(url.contains("key2=value2"));
-        Assert.assertTrue(url.contains("myparam=paramvalue"));
+        Assertions.assertTrue(url.contains("key1=value11"));
+        Assertions.assertTrue(url.contains("key1=value12"));
+        Assertions.assertTrue(url.contains("key2=value2"));
+        Assertions.assertTrue(url.contains("myparam=paramvalue"));
     }
     
     /**

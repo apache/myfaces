@@ -55,6 +55,7 @@ public abstract class MockExternalContext20 extends MockExternalContext12
         super(context, request, response);
     }
 
+    @Override
     public String getMimeType(String file)
     {
         return context.getMimeType(file);
@@ -71,6 +72,7 @@ public abstract class MockExternalContext20 extends MockExternalContext12
 
     // ------------------------------------------------- ExternalContext Methods
 
+    @Override
     public String encodeBookmarkableURL(String baseUrl,
             Map<String, List<String>> parameters)
     {
@@ -82,7 +84,7 @@ public abstract class MockExternalContext20 extends MockExternalContext12
     {
         String fragment = null;
         String queryString = null;
-        Map<String, List<String>> paramMap = new HashMap<String, List<String>>();
+        Map<String, List<String>> paramMap = new HashMap<>();
 
         //extract any URL fragment
         int index = baseUrl.indexOf(URL_FRAGMENT_SEPERATOR);
@@ -105,7 +107,7 @@ public abstract class MockExternalContext20 extends MockExternalContext12
                         .split(URL_NAME_VALUE_PAIR_SEPERATOR);
                 if (currentPair[1] != null)
                 {
-                    ArrayList<String> value = new ArrayList<String>(1);
+                    ArrayList<String> value = new ArrayList<>(1);
                     value.add(currentPair[1]);
                     paramMap.put(currentPair[0], value);
                 }
@@ -113,7 +115,7 @@ public abstract class MockExternalContext20 extends MockExternalContext12
         }
 
         //add/update with new params on the paramMap
-        if (parameters != null && parameters.size() > 0)
+        if (parameters != null && !parameters.isEmpty())
         {
             for (Map.Entry<String, List<String>> pair : parameters.entrySet())
             {
@@ -128,7 +130,7 @@ public abstract class MockExternalContext20 extends MockExternalContext12
         StringBuilder newUrl = new StringBuilder(baseUrl);
 
         //now add the updated param list onto the url
-        if (paramMap.size() > 0)
+        if (!paramMap.isEmpty())
         {
             boolean isFirstPair = true;
             for (Map.Entry<String, List<String>> pair : paramMap.entrySet())
@@ -167,12 +169,13 @@ public abstract class MockExternalContext20 extends MockExternalContext12
         //add the fragment back on (if any)
         if (fragment != null)
         {
-            newUrl.append(URL_FRAGMENT_SEPERATOR + fragment);
+            newUrl.append(URL_FRAGMENT_SEPERATOR).append(fragment);
         }
 
         return newUrl.toString();
     }
 
+    @Override
     public String encodeRedirectURL(String baseUrl,
             Map<String, List<String>> parameters)
     {
@@ -182,19 +185,22 @@ public abstract class MockExternalContext20 extends MockExternalContext12
     @Override
     public String encodePartialActionURL(String url)
     {
-        return ((HttpServletResponse) response).encodeURL(url);
+        return response.encodeURL(url);
     }
 
+    @Override
     public String getContextName()
     {
         return context.getServletContextName();
     }
 
+    @Override
     public String getRealPath(String path)
     {
         return context.getRealPath(path);
     }
 
+    @Override
     public void responseSendError(int statusCode, String message)
             throws IOException
     {
@@ -208,31 +214,37 @@ public abstract class MockExternalContext20 extends MockExternalContext12
         }
     }
 
+    @Override
     public void setResponseHeader(String name, String value)
     {
         response.setHeader(name, value);
     }
 
+    @Override
     public String getRequestScheme()
     {
         return request.getScheme();
     }
 
+    @Override
     public String getRequestServerName()
     {
         return request.getServerName();
     }
 
+    @Override
     public int getRequestServerPort()
     {
         return request.getServerPort();
     }
 
+    @Override
     public OutputStream getResponseOutputStream() throws IOException
     {
         return response.getOutputStream();
     }
 
+    @Override
     public Writer getResponseOutputWriter() throws IOException
     {
         return response.getWriter();
@@ -244,6 +256,7 @@ public abstract class MockExternalContext20 extends MockExternalContext12
         response.setContentType(contentType);
     }
 
+    @Override
     public Flash getFlash()
     {
         return MockFlash.getCurrentInstance(this);

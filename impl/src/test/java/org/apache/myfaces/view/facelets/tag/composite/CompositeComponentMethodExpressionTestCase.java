@@ -26,8 +26,8 @@ import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 {
@@ -66,13 +66,13 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         SimpleComponent testComponent = (SimpleComponent) compositeComponent.findComponent("testComponent");
-        Assert.assertNotNull(testComponent);
-        Assert.assertNotNull(testComponent.getCustomMethod());
-        Assert.assertEquals("somethingFunny"+"x", testComponent.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
+        Assertions.assertNotNull(testComponent);
+        Assertions.assertNotNull(testComponent.getCustomMethod());
+        Assertions.assertEquals("somethingFunny"+"x", testComponent.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
     }
 
     @Test
@@ -88,16 +88,16 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeMethodExpressionTarget");
-        Assert.assertNotNull(compositeComponent2);
+        Assertions.assertNotNull(compositeComponent2);
         SimpleComponent testComponent = (SimpleComponent) compositeComponent2.findComponent("testComponent");
-        Assert.assertNotNull(testComponent);
-        Assert.assertNotNull(testComponent.getCustomMethod());
-        Assert.assertEquals("somethingFunny"+"x", testComponent.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
+        Assertions.assertNotNull(testComponent);
+        Assertions.assertNotNull(testComponent.getCustomMethod());
+        Assertions.assertEquals("somethingFunny"+"x", testComponent.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
     }
     
     @Test
@@ -113,16 +113,16 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         
         SimpleComponent testComponentNoTarget = (SimpleComponent) compositeComponent.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget);
-        Assert.assertNotNull(testComponentNoTarget.getCustomMethod());
+        Assertions.assertNotNull(testComponentNoTarget);
+        Assertions.assertNotNull(testComponentNoTarget.getCustomMethod());
         
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
-        Assert.assertEquals("somethingFunny"+"x", testComponentNoTarget.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
+        Assertions.assertEquals("somethingFunny"+"x", testComponentNoTarget.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
         compositeComponent.popComponentFromEL(facesContext);
     }
 
@@ -139,18 +139,18 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         
         UINamingContainer compositeComponent3 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeMethodExpressionNoTarget");
-        Assert.assertNotNull(compositeComponent3);
+        Assertions.assertNotNull(compositeComponent3);
         SimpleComponent testComponentNoTarget3 = (SimpleComponent) compositeComponent3.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget3);
-        Assert.assertNotNull(testComponentNoTarget3.getCustomMethod());
+        Assertions.assertNotNull(testComponentNoTarget3);
+        Assertions.assertNotNull(testComponentNoTarget3.getCustomMethod());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         compositeComponent.pushComponentToEL(facesContext, compositeComponent3);
-        Assert.assertEquals("somethingFunny"+"x", testComponentNoTarget3.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
+        Assertions.assertEquals("somethingFunny"+"x", testComponentNoTarget3.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
         compositeComponent3.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
     }
@@ -168,20 +168,20 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("compositeAttributeMethodExpressionNoTarget");
-        Assert.assertNotNull(compositeComponent2);
+        Assertions.assertNotNull(compositeComponent2);
         UINamingContainer compositeComponent3 = (UINamingContainer) compositeComponent2.findComponent("simpleAttributeMethodExpressionNoTarget");
-        Assert.assertNotNull(compositeComponent3);
+        Assertions.assertNotNull(compositeComponent3);
         SimpleComponent testComponentNoTarget3 = (SimpleComponent) compositeComponent3.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget3);
-        Assert.assertNotNull(testComponentNoTarget3.getCustomMethod());
+        Assertions.assertNotNull(testComponentNoTarget3);
+        Assertions.assertNotNull(testComponentNoTarget3.getCustomMethod());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         compositeComponent.pushComponentToEL(facesContext, compositeComponent3);
-        Assert.assertEquals("somethingFunny"+"x", testComponentNoTarget3.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
+        Assertions.assertEquals("somethingFunny"+"x", testComponentNoTarget3.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
         compositeComponent3.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
     }
@@ -200,19 +200,19 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         SimpleComponent testComponent = (SimpleComponent) compositeComponent.findComponent("testComponent");
-        Assert.assertNotNull(testComponent);
-        Assert.assertNotNull(testComponent.getCustomMethod());
-        Assert.assertEquals("somethingFunny"+"x", testComponent.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
+        Assertions.assertNotNull(testComponent);
+        Assertions.assertNotNull(testComponent.getCustomMethod());
+        Assertions.assertEquals("somethingFunny"+"x", testComponent.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
         
         SimpleComponent testComponentNoTarget = (SimpleComponent) compositeComponent.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget);
-        Assert.assertNotNull(testComponentNoTarget.getCustomMethod());
+        Assertions.assertNotNull(testComponentNoTarget);
+        Assertions.assertNotNull(testComponentNoTarget.getCustomMethod());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
-        Assert.assertEquals("somethingFunny"+"x", testComponentNoTarget.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
+        Assertions.assertEquals("somethingFunny"+"x", testComponentNoTarget.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
         compositeComponent.popComponentFromEL(facesContext);
     }
 
@@ -229,41 +229,41 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeMethodExpressionTarget");
-        Assert.assertNotNull(compositeComponent2);
+        Assertions.assertNotNull(compositeComponent2);
         SimpleComponent testComponent = (SimpleComponent) compositeComponent2.findComponent("testComponent");
-        Assert.assertNotNull(testComponent);
-        Assert.assertNotNull(testComponent.getCustomMethod());
-        Assert.assertEquals("somethingFunny"+"x", testComponent.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
+        Assertions.assertNotNull(testComponent);
+        Assertions.assertNotNull(testComponent.getCustomMethod());
+        Assertions.assertEquals("somethingFunny"+"x", testComponent.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
 
         SimpleComponent testComponentNoTarget = (SimpleComponent) compositeComponent2.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget);
-        Assert.assertNotNull(testComponentNoTarget.getCustomMethod());
+        Assertions.assertNotNull(testComponentNoTarget);
+        Assertions.assertNotNull(testComponentNoTarget.getCustomMethod());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
-        Assert.assertEquals("somethingFunny"+"x", testComponentNoTarget.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
+        Assertions.assertEquals("somethingFunny"+"x", testComponentNoTarget.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
         compositeComponent.popComponentFromEL(facesContext);
         
         UINamingContainer compositeComponent3 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeMethodExpressionNoTarget");
-        Assert.assertNotNull(compositeComponent3);
+        Assertions.assertNotNull(compositeComponent3);
         SimpleComponent testComponent3 = (SimpleComponent) compositeComponent3.findComponent("testComponent");
-        Assert.assertNotNull(testComponent3);
-        Assert.assertNotNull(testComponent3.getCustomMethod());
+        Assertions.assertNotNull(testComponent3);
+        Assertions.assertNotNull(testComponent3.getCustomMethod());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         compositeComponent3.pushComponentToEL(facesContext, compositeComponent3);
-        Assert.assertEquals("somethingFunny"+"x", testComponent3.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
+        Assertions.assertEquals("somethingFunny"+"x", testComponent3.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
         compositeComponent3.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
         
         SimpleComponent testComponentNoTarget3 = (SimpleComponent) compositeComponent3.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget3);
-        Assert.assertNotNull(testComponentNoTarget3.getCustomMethod());
+        Assertions.assertNotNull(testComponentNoTarget3);
+        Assertions.assertNotNull(testComponentNoTarget3.getCustomMethod());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         compositeComponent3.pushComponentToEL(facesContext, compositeComponent3);
-        Assert.assertEquals("somethingFunny"+"x", testComponentNoTarget3.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
+        Assertions.assertEquals("somethingFunny"+"x", testComponentNoTarget3.getCustomMethod().invoke(facesContext.getELContext(), new Object[]{"x"}));
         compositeComponent3.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
     }
@@ -281,13 +281,13 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         UICommand testComponent = (UICommand) compositeComponent.findComponent("testComponent");
-        Assert.assertNotNull(testComponent);
-        Assert.assertNotNull(testComponent.getActionExpression());
-        Assert.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertNotNull(testComponent);
+        Assertions.assertNotNull(testComponent.getActionExpression());
+        Assertions.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
     }
 
     @Test
@@ -303,16 +303,16 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeMethodExpressionTarget");
-        Assert.assertNotNull(compositeComponent2);
+        Assertions.assertNotNull(compositeComponent2);
         UICommand testComponent = (UICommand) compositeComponent2.findComponent("testComponent");
-        Assert.assertNotNull(testComponent);
-        Assert.assertNotNull(testComponent.getActionExpression());
-        Assert.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertNotNull(testComponent);
+        Assertions.assertNotNull(testComponent.getActionExpression());
+        Assertions.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
     }
 
     @Test
@@ -328,16 +328,16 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         UICommand button = (UICommand) compositeComponent.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         button.pushComponentToEL(facesContext,  button);
         MethodExpression method = button.getActionExpression();
-        Assert.assertEquals(bean.doSomeAction(), method.invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals(bean.doSomeAction(), method.invoke(facesContext.getELContext(), null));
         button.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
 
@@ -355,18 +355,18 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeAttributeActionMethodExpressionNoTarget.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         
         UINamingContainer compositeComponent3 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeActionMethodExpressionNoTarget");
-        Assert.assertNotNull(compositeComponent3);
+        Assertions.assertNotNull(compositeComponent3);
         UICommand testComponentNoTarget3 = (UICommand) compositeComponent3.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget3);
-        Assert.assertNotNull(testComponentNoTarget3.getActionExpression());
+        Assertions.assertNotNull(testComponentNoTarget3);
+        Assertions.assertNotNull(testComponentNoTarget3.getActionExpression());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         compositeComponent.pushComponentToEL(facesContext, compositeComponent3);
-        Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget3.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals(bean.doSomeAction(), testComponentNoTarget3.getActionExpression().invoke(facesContext.getELContext(), null));
         compositeComponent3.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
     }
@@ -384,19 +384,19 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         UICommand testComponent = (UICommand) compositeComponent.findComponent("testComponent");
-        Assert.assertNotNull(testComponent);
-        Assert.assertNotNull(testComponent.getActionExpression());
-        Assert.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertNotNull(testComponent);
+        Assertions.assertNotNull(testComponent.getActionExpression());
+        Assertions.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
         
         UICommand testComponentNoTarget = (UICommand) compositeComponent.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget);
-        Assert.assertNotNull(testComponentNoTarget.getActionExpression());
+        Assertions.assertNotNull(testComponentNoTarget);
+        Assertions.assertNotNull(testComponentNoTarget.getActionExpression());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
-        Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals(bean.doSomeAction(), testComponentNoTarget.getActionExpression().invoke(facesContext.getELContext(), null));
         compositeComponent.popComponentFromEL(facesContext);
     }
     
@@ -413,19 +413,19 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         UICommand testComponent = (UICommand) compositeComponent.findComponent("testComponent");
-        Assert.assertNotNull(testComponent);
-        Assert.assertNotNull(testComponent.getActionExpression());
-        Assert.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertNotNull(testComponent);
+        Assertions.assertNotNull(testComponent.getActionExpression());
+        Assertions.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
         
         UICommand testComponentNoTarget = (UICommand) compositeComponent.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget);
-        Assert.assertNotNull(testComponentNoTarget.getActionExpression());
+        Assertions.assertNotNull(testComponentNoTarget);
+        Assertions.assertNotNull(testComponentNoTarget.getActionExpression());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
-        Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals(bean.doSomeAction(), testComponentNoTarget.getActionExpression().invoke(facesContext.getELContext(), null));
         compositeComponent.popComponentFromEL(facesContext);
     }
 
@@ -442,41 +442,41 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeMethodExpressionTarget");
-        Assert.assertNotNull(compositeComponent2);
+        Assertions.assertNotNull(compositeComponent2);
         UICommand testComponent = (UICommand) compositeComponent2.findComponent("testComponent");
-        Assert.assertNotNull(testComponent);
-        Assert.assertNotNull(testComponent.getActionExpression());
-        Assert.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertNotNull(testComponent);
+        Assertions.assertNotNull(testComponent.getActionExpression());
+        Assertions.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
 
         UICommand testComponentNoTarget = (UICommand) compositeComponent2.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget);
-        Assert.assertNotNull(testComponentNoTarget.getActionExpression());
+        Assertions.assertNotNull(testComponentNoTarget);
+        Assertions.assertNotNull(testComponentNoTarget.getActionExpression());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
-        Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals(bean.doSomeAction(), testComponentNoTarget.getActionExpression().invoke(facesContext.getELContext(), null));
         compositeComponent.popComponentFromEL(facesContext);
         
         UINamingContainer compositeComponent3 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeMethodExpressionNoTarget");
-        Assert.assertNotNull(compositeComponent3);
+        Assertions.assertNotNull(compositeComponent3);
         UICommand testComponent3 = (UICommand) compositeComponent3.findComponent("testComponent");
-        Assert.assertNotNull(testComponent3);
-        Assert.assertNotNull(testComponent3.getActionExpression());
+        Assertions.assertNotNull(testComponent3);
+        Assertions.assertNotNull(testComponent3.getActionExpression());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         compositeComponent3.pushComponentToEL(facesContext, compositeComponent3);
-        Assert.assertEquals(bean.doSomeAction(), testComponent3.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals(bean.doSomeAction(), testComponent3.getActionExpression().invoke(facesContext.getELContext(), null));
         compositeComponent3.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
         
         UICommand testComponentNoTarget3 = (UICommand) compositeComponent3.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget3);
-        Assert.assertNotNull(testComponentNoTarget3.getActionExpression());
+        Assertions.assertNotNull(testComponentNoTarget3);
+        Assertions.assertNotNull(testComponentNoTarget3.getActionExpression());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         compositeComponent3.pushComponentToEL(facesContext, compositeComponent3);
-        Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget3.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals(bean.doSomeAction(), testComponentNoTarget3.getActionExpression().invoke(facesContext.getELContext(), null));
         compositeComponent3.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
     }
@@ -493,20 +493,20 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeAttributeActionMethodExpressionNoTarget2.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("compositeAttributeMethodExpressionNoTarget");
-        Assert.assertNotNull(compositeComponent2);
+        Assertions.assertNotNull(compositeComponent2);
         UINamingContainer compositeComponent3 = (UINamingContainer) compositeComponent2.findComponent("simpleAttributeMethodExpressionNoTarget");
-        Assert.assertNotNull(compositeComponent3);
+        Assertions.assertNotNull(compositeComponent3);
         UICommand testComponentNoTarget3 = (UICommand) compositeComponent3.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget3);
-        Assert.assertNotNull(testComponentNoTarget3.getActionExpression());
+        Assertions.assertNotNull(testComponentNoTarget3);
+        Assertions.assertNotNull(testComponentNoTarget3.getActionExpression());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         compositeComponent.pushComponentToEL(facesContext, compositeComponent3);
-        Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget3.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals(bean.doSomeAction(), testComponentNoTarget3.getActionExpression().invoke(facesContext.getELContext(), null));
         compositeComponent3.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
     }
@@ -524,43 +524,43 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
 
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assert.assertNotNull(panelGroup1);
+        Assertions.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
-        Assert.assertNotNull(compositeComponent);
+        Assertions.assertNotNull(compositeComponent);
         
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeMethodExpressionTarget");
-        Assert.assertNotNull(compositeComponent2);
+        Assertions.assertNotNull(compositeComponent2);
         UICommand testComponent = (UICommand) compositeComponent2.findComponent("testComponent");
-        Assert.assertNotNull(testComponent);
-        Assert.assertNotNull(testComponent.getActionExpression());
-        Assert.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertNotNull(testComponent);
+        Assertions.assertNotNull(testComponent.getActionExpression());
+        Assertions.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
 
         UICommand testComponentNoTarget = (UICommand) compositeComponent2.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget);
-        Assert.assertNotNull(testComponentNoTarget.getActionExpression());
+        Assertions.assertNotNull(testComponentNoTarget);
+        Assertions.assertNotNull(testComponentNoTarget.getActionExpression());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         compositeComponent2.pushComponentToEL(facesContext, compositeComponent2);
-        Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals(bean.doSomeAction(), testComponentNoTarget.getActionExpression().invoke(facesContext.getELContext(), null));
         compositeComponent2.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
         
         UINamingContainer compositeComponent3 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeMethodExpressionNoTarget");
-        Assert.assertNotNull(compositeComponent3);
+        Assertions.assertNotNull(compositeComponent3);
         UICommand testComponent3 = (UICommand) compositeComponent3.findComponent("testComponent");
-        Assert.assertNotNull(testComponent3);
-        Assert.assertNotNull(testComponent3.getActionExpression());
+        Assertions.assertNotNull(testComponent3);
+        Assertions.assertNotNull(testComponent3.getActionExpression());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         compositeComponent3.pushComponentToEL(facesContext, compositeComponent3);
-        Assert.assertEquals(bean.doSomeAction(), testComponent3.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals(bean.doSomeAction(), testComponent3.getActionExpression().invoke(facesContext.getELContext(), null));
         compositeComponent3.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
         
         UICommand testComponentNoTarget3 = (UICommand) compositeComponent3.findComponent("testComponentNoTarget");
-        Assert.assertNotNull(testComponentNoTarget3);
-        Assert.assertNotNull(testComponentNoTarget3.getActionExpression());
+        Assertions.assertNotNull(testComponentNoTarget3);
+        Assertions.assertNotNull(testComponentNoTarget3.getActionExpression());
         compositeComponent.pushComponentToEL(facesContext, compositeComponent);
         compositeComponent3.pushComponentToEL(facesContext, compositeComponent3);
-        Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget3.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals(bean.doSomeAction(), testComponentNoTarget3.getActionExpression().invoke(facesContext.getELContext(), null));
         compositeComponent3.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
     }

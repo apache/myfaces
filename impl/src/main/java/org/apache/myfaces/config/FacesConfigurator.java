@@ -740,7 +740,7 @@ public class FacesConfigurator
         String beanValidatorDisabled = _externalContext.getInitParameter(
                 BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME);
         final boolean defaultBeanValidatorDisabled = (beanValidatorDisabled != null
-                && beanValidatorDisabled.toLowerCase().equals("true"));
+                && beanValidatorDisabled.equalsIgnoreCase("true"));
         boolean beanValidatorInstalledProgrammatically = false;
         if (!defaultBeanValidatorDisabled
                 && ExternalSpecifications.isBeanValidationAvailable())
@@ -1093,7 +1093,7 @@ public class FacesConfigurator
                 renderKitClass.add(DEFAULT_RENDER_KIT_CLASS);
             }
 
-            RenderKit renderKit = (RenderKit) ClassUtils.buildApplicationObject(RenderKit.class, renderKitClass, null);
+            RenderKit renderKit = ClassUtils.buildApplicationObject(RenderKit.class, renderKitClass, null);
             // If the default html RenderKit instance is wrapped, the top level object will not implement
             // LazyRenderKit and all renderers will be added using the standard form.
             boolean lazyRenderKit = renderKit instanceof LazyRenderKit;

@@ -20,8 +20,8 @@ package org.apache.myfaces.view.facelets.el;
 
 import jakarta.el.ExpressionFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -39,31 +39,31 @@ public class CompositeComponentELUtilsTestCase extends FaceletTestCase
     @Test
     public void test_cc_attrs_method_expression1() throws Exception
     {
-        Assert.assertTrue(
+        Assertions.assertTrue(
             CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(
             "#{cc.attrs.someProp}"));
-        Assert.assertTrue(
+        Assertions.assertTrue(
             CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(
             "#{ cc.attrs.someProp}"));
-        Assert.assertFalse(
+        Assertions.assertFalse(
             CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(
             "#{cc.attrs.someProp.someKey}"));
-        Assert.assertFalse(
+        Assertions.assertFalse(
             CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(
             "#{xy:call(cc.attrs.someProp)}"));
-        Assert.assertFalse(
+        Assertions.assertFalse(
             CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(
             "#{xy:call( cc.attrs.someProp)}"));
-        Assert.assertFalse(
+        Assertions.assertFalse(
             CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(
             "#{xy:call(zz, cc.attrs.someProp)}"));        
-        Assert.assertFalse(
+        Assertions.assertFalse(
             CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(
             "#{xy:call(zz,cc.attrs.someProp)}"));
-        Assert.assertTrue(
+        Assertions.assertTrue(
             CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(
             "#{cc.attrs.method(someProp)}"));
-        Assert.assertTrue(
+        Assertions.assertTrue(
             CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(
             "#{cc.attrs.method( someProp, someAttr )}"));
     }

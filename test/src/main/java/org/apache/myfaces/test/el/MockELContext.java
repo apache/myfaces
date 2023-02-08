@@ -56,7 +56,7 @@ public class MockELContext extends ELContext
 
     // ------------------------------------------------------- ELContext Methods
 
-    /** {@inheritDoc} */
+    @Override
     public Object getContext(Class key)
     {
         if (key == null)
@@ -66,32 +66,32 @@ public class MockELContext extends ELContext
         return contexts.get(key);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ELResolver getELResolver()
     {
         FacesContext context = FacesContext.getCurrentInstance();
         return context.getApplication().getELResolver();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public FunctionMapper getFunctionMapper()
     {
         return this.functionMapper;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Locale getLocale()
     {
         return this.locale;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isPropertyResolved()
     {
         return this.propertyResolved;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void putContext(Class key, Object value)
     {
         if ((key == null) || (value == null))
@@ -101,19 +101,19 @@ public class MockELContext extends ELContext
         contexts.put(key, value);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setPropertyResolved(boolean propertyResolved)
     {
         this.propertyResolved = propertyResolved;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public VariableMapper getVariableMapper()
     {
         return this.variableMapper;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setLocale(Locale locale)
     {
         this.locale = locale;

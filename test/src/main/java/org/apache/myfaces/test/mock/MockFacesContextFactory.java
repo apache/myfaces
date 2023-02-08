@@ -85,7 +85,7 @@ public class MockFacesContextFactory extends FacesContextFactory
 
     // --------------------------------------------- FacesContextFactory Methods
 
-    /** {@inheritDoc} */
+    @Override
     public FacesContext getFacesContext(Object context, Object request,
             Object response, Lifecycle lifecycle) throws FacesException
     {

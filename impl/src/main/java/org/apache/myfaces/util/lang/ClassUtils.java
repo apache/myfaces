@@ -88,7 +88,7 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
             if (current == null)
             {
                 // nothing to decorate
-                current = (T) ClassUtils.newInstance(implClass);
+                current = ClassUtils.newInstance(implClass);
             }
             else
             {
@@ -106,7 +106,7 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
                         try
                         {
                             delegationConstructor = 
-                                    implClass.getConstructor(new Class[] {extendedInterfaceClass});
+                                    implClass.getConstructor(extendedInterfaceClass);
                         }
                         catch (NoSuchMethodException mnfe)
                         {
@@ -117,13 +117,13 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
                     {
                         // try to find the constructor with the "normal" interfaceClass
                         delegationConstructor = 
-                                implClass.getConstructor(new Class[] {interfaceClass});
+                                implClass.getConstructor(interfaceClass);
                     }
                     // impl class supports decorator pattern at this point
                     try
                     {
                         // create new decorator wrapping current
-                        newCurrent = delegationConstructor.newInstance(new Object[] { current });
+                        newCurrent = delegationConstructor.newInstance(current);
                     }
                     catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
                     {
@@ -134,7 +134,7 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
                 catch (NoSuchMethodException e)
                 {
                     // no decorator pattern support
-                    newCurrent = (T) ClassUtils.newInstance(implClass);
+                    newCurrent = ClassUtils.newInstance(implClass);
                 }
                 
                 current = wrapBackwardCompatible(interfaceClass, extendedInterfaceClass, 
@@ -175,8 +175,8 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
             {
                 Constructor<? extends T> wrapperConstructor
                         = extendedInterfaceWrapperClass.getConstructor(
-                                new Class[] {interfaceClass, extendedInterfaceClass});
-                current = wrapperConstructor.newInstance(new Object[] {newCurrent, defaultObject});
+                        interfaceClass, extendedInterfaceClass);
+                current = wrapperConstructor.newInstance(newCurrent, defaultObject);
             }
             catch (NoSuchMethodException | InstantiationException | IllegalAccessException
                     | InvocationTargetException e)

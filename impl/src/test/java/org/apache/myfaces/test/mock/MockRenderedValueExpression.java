@@ -23,7 +23,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.context.FacesContext;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Verifies the current component on stack in method getValue. Created for MYFACES-3157
@@ -48,7 +48,8 @@ public class MockRenderedValueExpression extends org.apache.myfaces.test.el.Mock
     public Object getValue(ELContext elContext) {
       FacesContext facesContext = (FacesContext) elContext.getContext(FacesContext.class);
       UIComponent currentComponent = UIComponent.getCurrentComponent(facesContext);
-      Assert.assertEquals("If this ValueExpression is evaluated, component on stack must be actual" , currentComponent , toVerify);
+      Assertions.assertEquals(currentComponent , toVerify,
+              "If this ValueExpression is evaluated, component on stack must be actual");
       return value;
     }
 

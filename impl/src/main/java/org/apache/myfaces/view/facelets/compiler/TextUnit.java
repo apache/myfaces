@@ -344,7 +344,7 @@ final class TextUnit extends CompilationUnit
 
     public void endTag()
     {
-        Tag tag = (Tag) this.tags.pop();
+        Tag tag = this.tags.pop();
 
         if (HTML.BODY_ELEM.equalsIgnoreCase(tag.getQName()))
         {
@@ -400,7 +400,7 @@ final class TextUnit extends CompilationUnit
                         // spaces.
                         size = compressSpaces(instructionBuffer, size);
                     }
-                    Instruction[] instructions = (Instruction[]) this.instructionBuffer
+                    Instruction[] instructions = this.instructionBuffer
                             .toArray(new Instruction[size]);
                     this.children.add(new UIInstructionHandler(this.alias, this.id, instructions, txt));
                     this.instructionBuffer.clear();
@@ -415,7 +415,7 @@ final class TextUnit extends CompilationUnit
                 }
                 else
                 {
-                    throw new TagException((Tag) this.tags.peek(), e.getMessage());
+                    throw new TagException(this.tags.peek(), e.getMessage());
                 }
             }
         }

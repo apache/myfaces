@@ -21,6 +21,8 @@ package org.apache.myfaces.renderkit.html.behavior;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectItem;
 import jakarta.faces.component.html.HtmlSelectManyListbox;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -31,6 +33,7 @@ public class HtmlSelectManyListboxClientBehaviorRendererTest extends AbstractCli
     private HtmlRenderedClientEventAttr[] attrs = null;
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -38,6 +41,7 @@ public class HtmlSelectManyListboxClientBehaviorRendererTest extends AbstractCli
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();

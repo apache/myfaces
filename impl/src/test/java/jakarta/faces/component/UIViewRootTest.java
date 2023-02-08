@@ -18,15 +18,9 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.UICommand;
 import static org.easymock.EasyMock.aryEq;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -58,10 +52,10 @@ import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import  org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UIViewRootTest extends AbstractJsfTestCase
 {
@@ -78,7 +72,8 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
     private static ThreadLocal<LifecycleFactory> LIFECYCLEFACTORY = new ThreadLocal<LifecycleFactory>();
 
-    @Before
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -91,7 +86,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
         _mocksControl = EasyMock.createControl();
         _externalContext = _mocksControl.createMock(ExternalContext.class);
-        _facesContext = (MockFacesContext12) facesContext;
+        _facesContext = facesContext;
         _application = _mocksControl.createMock(Application.class);
         _lifecycleFactory = _mocksControl.createMock(LifecycleFactory.class);
         _testimpl = new UIViewRoot();
@@ -106,7 +101,8 @@ public class UIViewRootTest extends AbstractJsfTestCase
         
     }
 
-    @After
+    @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -116,13 +112,13 @@ public class UIViewRootTest extends AbstractJsfTestCase
     @Test
     public void testSuperClass() throws Exception
     {
-        Assert.assertEquals(UIComponentBase.class, UIViewRoot.class.getSuperclass());
+        Assertions.assertEquals(UIComponentBase.class, UIViewRoot.class.getSuperclass());
     }
 
     @Test
     public void testComponentType() throws Exception
     {
-        Assert.assertEquals("jakarta.faces.ViewRoot", UIViewRoot.COMPONENT_TYPE);
+        Assertions.assertEquals("jakarta.faces.ViewRoot", UIViewRoot.COMPONENT_TYPE);
     }
 
     @Test
@@ -133,9 +129,9 @@ public class UIViewRootTest extends AbstractJsfTestCase
         _mocksControl.replay();
 
         _facesContext.setApplication(_application);
-        Assert.assertNull(_testimpl.getLocale());
+        Assertions.assertNull(_testimpl.getLocale());
         _testimpl.setLocale(Locale.JAPANESE);
-        Assert.assertEquals(Locale.JAPANESE, _testimpl.getLocale());
+        Assertions.assertEquals(Locale.JAPANESE, _testimpl.getLocale());
         _mocksControl.verify();
     }
 
@@ -159,7 +155,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
         {
             if (!createdIds.add(_testimpl.createUniqueId()))
             {
-                Assert.fail("duplicate id created");
+                Assertions.fail("duplicate id created");
             }
         }
         _mocksControl.verify();
@@ -315,7 +311,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSaveState()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -324,7 +320,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testRestoreState()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -332,7 +328,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testUIViewRoot()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     //
@@ -341,7 +337,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSetLocale()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -349,7 +345,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testGetRenderKitId()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -357,7 +353,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSetRenderKitId()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -365,7 +361,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testGetViewId()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -373,7 +369,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSetViewId()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -381,7 +377,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testAddPhaseListener()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -389,7 +385,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testRemovePhaseListener()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -397,7 +393,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testGetBeforePhaseListener()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -405,7 +401,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSetBeforePhaseListener()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -413,7 +409,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testGetAfterPhaseListener()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -421,7 +417,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSetAfterPhaseListener()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -429,7 +425,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testGetFamily()
     // {
-    // Assert.fail("Not yet implemented"); // TODO
+    // Assertions.fail("Not yet implemented"); // TODO
     // }
     //
 
@@ -443,8 +439,8 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
         if (expectSuperCall)
         {
-            _testimpl = _mocksControl.createMock(UIViewRoot.class, new Method[]{UIViewRoot.class.getMethod(
-                    "isRendered", new Class[0])});
+            _testimpl = _mocksControl.createMock(UIViewRoot.class, UIViewRoot.class.getMethod(
+                    "isRendered"));
         }
 
         MethodExpression beforeListener = _mocksControl.createMock(MethodExpression.class);
@@ -454,8 +450,8 @@ public class UIViewRootTest extends AbstractJsfTestCase
         _testimpl.setAfterPhaseListener(afterListener);
 
         Method[] mockedMethods = new Method[] {
-                PhaseListener.class.getMethod("beforePhase", new Class[] { PhaseEvent.class }),
-                PhaseListener.class.getMethod("afterPhase", new Class[] { PhaseEvent.class }) };
+                PhaseListener.class.getMethod("beforePhase", PhaseEvent.class),
+                PhaseListener.class.getMethod("afterPhase", PhaseEvent.class) };
         PhaseListener phaseListener = _mocksControl.createMock(phaseListenerClasses.get(phaseId), mockedMethods);
         _testimpl.addPhaseListener(phaseListener);
 
@@ -631,7 +627,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
         // listener itself queues new event
         facesContext.getViewRoot().broadcastEvents(facesContext, PhaseId.INVOKE_APPLICATION);
         
-        Assert.assertEquals(15, actionListener.invocationCount);
+        Assertions.assertEquals(15, actionListener.invocationCount);
         org.easymock.EasyMock.verify(differentActionListener);
     }
 

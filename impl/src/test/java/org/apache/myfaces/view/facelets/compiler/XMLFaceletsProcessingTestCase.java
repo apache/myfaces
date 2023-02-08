@@ -32,7 +32,7 @@ import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.component.html.HtmlPanelGrid;
 import jakarta.faces.component.html.HtmlSelectOneMenu;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.element.FaceletsProcessingImpl;
@@ -42,7 +42,7 @@ import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class XMLFaceletsProcessingTestCase extends FaceletTestCase {
 
@@ -106,13 +106,13 @@ public class XMLFaceletsProcessingTestCase extends FaceletTestCase {
         
         String resp = sw.toString();
         
-        Assert.assertFalse("Response contains DOCTYPE declaration", resp.contains("<!DOCTYPE"));
-        Assert.assertFalse("Response contains xml declaration", resp.contains("<?xml"));
-        Assert.assertFalse("Response contains xml processing instructions", resp.contains("<?name"));
-        Assert.assertFalse("Response contains cdata section", resp.contains("<![CDATA["));
-        Assert.assertFalse("Response contains cdata section", resp.contains("cdata not consumed"));
-        Assert.assertTrue("Response does not escape characters", resp.contains("In this mode, if you put a double quote, it will be replaced by &quot; : &quot"));
-        Assert.assertFalse("Response contains comments", resp.contains("<!--"));
+        Assertions.assertFalse(resp.contains("<!DOCTYPE"));
+        Assertions.assertFalse(resp.contains("<?xml"));
+        Assertions.assertFalse(resp.contains("<?name"));
+        Assertions.assertFalse(resp.contains("<![CDATA["));
+        Assertions.assertFalse(resp.contains("cdata not consumed"));
+        Assertions.assertTrue(resp.contains("In this mode, if you put a double quote, it will be replaced by &quot; : &quot"));
+        Assertions.assertFalse(resp.contains("<!--"));
         
     }
 }

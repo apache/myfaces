@@ -49,69 +49,53 @@ public abstract class MockExternalContext12 extends MockExternalContext10
 
     // ------------------------------------------------- ExternalContext Methods
 
-    /** {@inheritDoc} */
+    @Override
     public String getRequestCharacterEncoding()
     {
-
         return this.request.getCharacterEncoding();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getRequestContentType()
     {
-
         return this.request.getContentType();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getResponseCharacterEncoding()
     {
-
         return this.response.getCharacterEncoding();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getResponseContentType()
     {
-
         return this.response.getContentType();
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setRequest(Object request)
     {
-
         this.request = (HttpServletRequest) request;
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setRequestCharacterEncoding(String encoding)
             throws UnsupportedEncodingException
     {
-
         this.request.setCharacterEncoding(encoding);
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setResponse(Object response)
     {
-
         this.response = (HttpServletResponse) response;
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setResponseCharacterEncoding(String encoding)
     {
-
         this.response.setCharacterEncoding(encoding);
-
     }
 
 }

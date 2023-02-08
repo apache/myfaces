@@ -18,8 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIInput;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.same;
 
@@ -32,7 +30,8 @@ import java.util.Map;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.MyFacesAsserts;
 import org.apache.myfaces.test.TestRunner;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class UIComponentTest extends UIComponentTestBase
 {
@@ -50,13 +49,13 @@ public class UIComponentTest extends UIComponentTestBase
         map.put("xxx3", new UIInput());
         expect(component.getFacets()).andReturn(map);
         _mocksControl.replay();
-        org.junit.Assert.assertEquals(3, component.getFacetCount());
+        Assertions.assertEquals(3, component.getFacetCount());
         _mocksControl.verify();
 
         _mocksControl.reset();
         expect(component.getFacets()).andReturn(null);
         _mocksControl.replay();
-        org.junit.Assert.assertEquals(0, component.getFacetCount());
+        Assertions.assertEquals(0, component.getFacetCount());
         _mocksControl.verify();
     }
 
@@ -71,7 +70,7 @@ public class UIComponentTest extends UIComponentTestBase
     {
         Collection<Method> mockedMethods = new ArrayList<Method>();
         Class<UIComponent> clazz = UIComponent.class;
-        mockedMethods.add(clazz.getDeclaredMethod("getClientId", new Class[] { FacesContext.class }));
+        mockedMethods.add(clazz.getDeclaredMethod("getClientId", FacesContext.class));
         final UIComponent testimpl = _mocksControl.createMock(clazz, mockedMethods.toArray(new Method[mockedMethods
                 .size()]));
         _mocksControl.checkOrder(true);
@@ -86,7 +85,7 @@ public class UIComponentTest extends UIComponentTestBase
 
         expect(testimpl.getClientId(same(_facesContext))).andReturn("xyz");
         _mocksControl.replay();
-        org.junit.Assert.assertEquals("xyz", testimpl.getContainerClientId(_facesContext));
+        Assertions.assertEquals("xyz", testimpl.getContainerClientId(_facesContext));
         _mocksControl.verify();
     }
 }

@@ -36,8 +36,9 @@ import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UIRepeatTest extends AbstractJsfTestCase
 {
@@ -51,6 +52,7 @@ public class UIRepeatTest extends AbstractJsfTestCase
     private UIData _testImpl;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -62,6 +64,7 @@ public class UIRepeatTest extends AbstractJsfTestCase
      * Test method for
      * {@link jakarta.faces.component.UIData#setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
      */
+    @Test
     public void testValueExpression()
     {
         assertSetValueExpressionException(IllegalArgumentException.class, "rowIndex");
@@ -114,7 +117,7 @@ public class UIRepeatTest extends AbstractJsfTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assert.assertEquals(rowData.getText(), text.getValue());
+            Assertions.assertEquals(rowData.getText(), text.getValue());
             text.setSubmittedValue("value"+(i+1));
             //text.getAttributes().put("style", rowData.getStyle());
         }
@@ -133,7 +136,7 @@ public class UIRepeatTest extends AbstractJsfTestCase
         baos.flush();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
-        Object restoredState = (Object) ois.readObject();
+        Object restoredState = ois.readObject();
         oos.close();
         ois.close();
         
@@ -153,7 +156,7 @@ public class UIRepeatTest extends AbstractJsfTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assert.assertEquals("value"+(i+1), text.getSubmittedValue());
+            Assertions.assertEquals("value"+(i+1), text.getSubmittedValue());
             //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
         }
     }

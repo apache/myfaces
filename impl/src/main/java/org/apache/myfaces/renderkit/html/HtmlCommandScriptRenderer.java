@@ -161,7 +161,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 boolean activateActionEvent = false;
                 if (form != null && !disabled)
                 {
-                    String reqValue = (String) facesContext.getExternalContext().getRequestParameterMap().get(
+                    String reqValue = facesContext.getExternalContext().getRequestParameterMap().get(
                             HtmlRendererUtils.getHiddenCommandLinkFieldName(form, facesContext));
                     activateActionEvent = reqValue != null && reqValue.equals(clientId)
                         || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId);

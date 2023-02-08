@@ -21,10 +21,10 @@ package org.apache.myfaces.view.facelets.test.component;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
 {
@@ -57,8 +57,8 @@ public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFa
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel1");
-        Assert.assertNotNull(comp);
-        Assert.assertTrue(comp instanceof MyUIPanel1);
+        Assertions.assertNotNull(comp);
+        Assertions.assertTrue(comp instanceof MyUIPanel1);
         
         endRequest();
     }    
@@ -70,8 +70,8 @@ public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFa
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel1");
-        Assert.assertNotNull(comp);
-        Assert.assertTrue(comp instanceof MyUIPanel2);
+        Assertions.assertNotNull(comp);
+        Assertions.assertTrue(comp instanceof MyUIPanel2);
         
         endRequest();
     }
@@ -83,13 +83,13 @@ public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFa
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel3");
-        Assert.assertNotNull(comp);
-        Assert.assertTrue(comp instanceof MyUIPanel3);
+        Assertions.assertNotNull(comp);
+        Assertions.assertTrue(comp instanceof MyUIPanel3);
 
         // Check component type
         MyUIPanel3 comp2 = (MyUIPanel3) 
             facesContext.getApplication().createComponent("myUIPanel3");
-        Assert.assertNotNull(comp2);
+        Assertions.assertNotNull(comp2);
         
         endRequest();
     }
@@ -102,13 +102,13 @@ public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFa
         processLifecycleExecuteAndRender();
         
         UIComponent jsfInputText = facesContext.getViewRoot().findComponent("form:JSF_inputText");
-        Assert.assertNotNull(jsfInputText);
-        Assert.assertEquals("TEST", jsfInputText.getAttributes().get("styleClass"));
+        Assertions.assertNotNull(jsfInputText);
+        Assertions.assertEquals("TEST", jsfInputText.getAttributes().get("styleClass"));
         
         // The "class" attribute should have been mapped to a "styleClass" attribute
         UIComponent testInputText = facesContext.getViewRoot().findComponent("form:test_inputText");
-        Assert.assertNotNull(testInputText);
-        Assert.assertEquals("TEST", testInputText.getAttributes().get("styleClass"));
+        Assertions.assertNotNull(testInputText);
+        Assertions.assertEquals("TEST", testInputText.getAttributes().get("styleClass"));
         
         endRequest();
     }    

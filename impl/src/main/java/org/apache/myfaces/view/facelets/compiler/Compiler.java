@@ -159,7 +159,7 @@ public abstract class Compiler
 
     private Object featureInstance(String name)
     {
-        String type = (String) this.features.get(name);
+        String type = this.features.get(name);
         if (type != null)
         {
             try
@@ -199,7 +199,7 @@ public abstract class Compiler
 
     public final String getFeature(String name)
     {
-        return (String) this.features.get(name);
+        return this.features.get(name);
     }
 
     public final boolean isTrimmingComments()

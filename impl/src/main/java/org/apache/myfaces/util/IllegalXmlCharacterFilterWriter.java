@@ -43,7 +43,7 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
     {
         if (isInvalidChar(c))
         {
-            super.write((int) BLANK_CHAR);
+            super.write(BLANK_CHAR);
         }
         else
         {

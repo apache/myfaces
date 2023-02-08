@@ -21,8 +21,8 @@ package org.apache.myfaces.config;
 
 import java.net.URL;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 /**
@@ -56,7 +56,7 @@ public class ConfigFilesXmlValidationUtilsTestCase extends AbstractJsfTestCase
             URL url = getClass().getResource("invalid-config_1.xml");
             ConfigFilesXmlValidationUtils.validateFacesConfigFile(
                 url , externalContext, ConfigFilesXmlValidationUtils.getFacesConfigVersion(url));
-            Assert.fail();
+            Assertions.fail();
         }
         catch (SAXException e)
         {

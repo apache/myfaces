@@ -347,7 +347,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
                     _startedChangedElements.add(elementName);
                     _startedElementsCount.add(0);
                 }
-                _currentWriter.write((String) elementName);
+                _currentWriter.write(elementName);
             }
             else
             {

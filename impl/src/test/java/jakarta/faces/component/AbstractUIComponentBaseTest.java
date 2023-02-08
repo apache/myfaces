@@ -18,7 +18,6 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponentBase;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -28,8 +27,8 @@ import jakarta.faces.render.Renderer;
 
 import org.easymock.classextension.IMocksControl;
 import org.easymock.classextension.EasyMock;
-import org.junit.After;
-import org.junit.Before;
+import  org.junit.jupiter.api.AfterEach;
+import  org.junit.jupiter.api.BeforeEach;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +44,7 @@ public abstract class AbstractUIComponentBaseTest
     protected FacesContext _facesContext;
     protected Renderer _renderer;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();
@@ -54,7 +53,7 @@ public abstract class AbstractUIComponentBaseTest
         _renderer = _mocksControl.createMock(Renderer.class);
     }
     
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
         _mocksControl = null;
@@ -72,7 +71,7 @@ public abstract class AbstractUIComponentBaseTest
     protected Collection<Method> getMockedMethods() throws Exception
     {
         Collection<Method> methods = new ArrayList<Method>();
-        methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", new Class[]{FacesContext.class}));
+        methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", FacesContext.class));
         methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", (Class<?>[])null));
         methods.add(UIComponentBase.class.getDeclaredMethod("getParent", (Class<?>[])null));
 

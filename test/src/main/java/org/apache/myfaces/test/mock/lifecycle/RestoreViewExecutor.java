@@ -21,11 +21,9 @@ package org.apache.myfaces.test.mock.lifecycle;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.test.util.JsfVersion;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
-import jakarta.faces.application.ViewExpiredException;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -56,15 +54,6 @@ class RestoreViewExecutor implements PhaseExecutor
         // init the View
         Application application = facesContext.getApplication();
         ViewHandler viewHandler = application.getViewHandler();
-        if (JsfVersion.supports12())
-        {
-            viewHandler.initView(facesContext);
-        }
-        else
-        {
-          // nothing to do
-        }
-
         UIViewRoot viewRoot = facesContext.getViewRoot();
 
         RestoreViewSupport restoreViewSupport = getRestoreViewSupport();
@@ -94,16 +83,8 @@ class RestoreViewExecutor implements PhaseExecutor
             viewRoot = viewHandler.restoreView(facesContext, viewId);
             if (viewRoot == null)
             {
-                if (JsfVersion.supports12())
-                {
-                    throw new ViewExpiredException(
-                        "The expected view was not returned for the view identifier: " + viewId, viewId);
-                }
-                else
-                {
-                    throw new RuntimeException(
-                            "The expected view was not returned for the view identifier: " + viewId);
-                }
+                throw new RuntimeException(
+                        "The expected view was not returned for the view identifier: " + viewId);
             }
             restoreViewSupport.processComponentBinding(facesContext, viewRoot);
         }

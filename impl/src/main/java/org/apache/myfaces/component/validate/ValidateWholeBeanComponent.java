@@ -22,7 +22,7 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
-import jakarta.faces.component.UIInput; 
+import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.validator.BeanValidator;
@@ -86,7 +86,7 @@ public class ValidateWholeBeanComponent extends UIInput
      * As required by https://github.com/jakartaee/faces/issues/1
      * Also ensures all inputs are available for f:wholeBeanValidate processing
      * (otherwise they'd be empty during the validation)
-     * Similar to a Recursive Non-Binary Search, but checks if f:wholeBeanValidate 
+     * Similar to a Recursive Non-Binary Tree Search, but checks if f:wholeBeanValidate 
      * is before any EditableValueHolders (i.e inputs)
      */
     private void validateTagPlacement(UIComponent component, String clientId) throws IllegalStateException

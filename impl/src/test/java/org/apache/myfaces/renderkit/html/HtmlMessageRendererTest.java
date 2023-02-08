@@ -31,9 +31,9 @@ import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.junit.Assert;
-import static org.junit.Assert.fail;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCase
 {
@@ -66,6 +66,8 @@ public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCas
                 "org.apache.myfaces.application.ApplicationFactoryImpl");
     }
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -101,11 +103,6 @@ public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCas
         
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
-
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }    
 
     @Test
     public void testHtmlPropertyPassTru() throws Exception
@@ -145,7 +142,7 @@ public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCas
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 message, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -157,7 +154,7 @@ public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCas
         message.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
-        System.out.println(output);
+        //System.out.println(output);
     }
     
     @Test
@@ -178,7 +175,7 @@ public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCas
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 message, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
 }

@@ -136,32 +136,32 @@ public class ResponseMockup extends HttpServlet
             {
                 resetInternalState(request, origin, out);
             }
-            else if (op.trim().toLowerCase().equals(EVAL_1))
+            else if (op.trim().equalsIgnoreCase(EVAL_1))
             {
                 embeddedJavascript1(out, root);
             }
-            else if (op.trim().toLowerCase().equals(UPDATEINSERT_1))
+            else if (op.trim().equalsIgnoreCase(UPDATEINSERT_1))
             {
                 updateInsert1(viewData, out, root);
             }
-            else if (op.trim().toLowerCase().equals(UPDATEINSERT_2))
+            else if (op.trim().equalsIgnoreCase(UPDATEINSERT_2))
             {
                 updateInsert2(out, root);
 
             }
-            else if (op.trim().toLowerCase().equals(DELETE_1))
+            else if (op.trim().equalsIgnoreCase(DELETE_1))
             {
                 delete1(out, root);
             }
-            else if (op.trim().toLowerCase().equals(VIEWSTATE))
+            else if (op.trim().equalsIgnoreCase(VIEWSTATE))
             {
                 viewstateHandling(out, root);
             }
-            else if (op.trim().toLowerCase().equals(ATTRIBUTES))
+            else if (op.trim().equalsIgnoreCase(ATTRIBUTES))
             {
                 attributeHandling(viewData, out, root);
             }
-            else if (op.trim().toLowerCase().equals(ERRORS_TAG))
+            else if (op.trim().equalsIgnoreCase(ERRORS_TAG))
             {
                 errors(out, root);
             }
@@ -169,23 +169,23 @@ public class ResponseMockup extends HttpServlet
             {
                 illegalResponse(out);
             }
-            else if (op.trim().toLowerCase().equals(VIEW_BODY_REPLACE))
+            else if (op.trim().equalsIgnoreCase(VIEW_BODY_REPLACE))
             {
                 //we omit our xml builder for now
                 viewBodyWithFullHTMLResponse(out, root);
             }
-            else if (op.trim().toLowerCase().equals(VIEW_BODY_REPLACE_2))
+            else if (op.trim().equalsIgnoreCase(VIEW_BODY_REPLACE_2))
             {
                 viewBodyWithOnlyBodyData(viewData, out, root);
 
             }
-            else if (op.trim().toLowerCase().equals(VIEW_ROOT_REPLACEMENT_1))
+            else if (op.trim().equalsIgnoreCase(VIEW_ROOT_REPLACEMENT_1))
             {
                 viewRootReplacement1(out, root);
 
                 //TODO check if still used?
             }
-            else if (op.trim().toLowerCase().equals("serversideresponsewriter"))
+            else if (op.trim().equalsIgnoreCase("serversideresponsewriter"))
             {
                 DeferredScriptMockup scriptMockup = new DeferredScriptMockup();
                 Changes changes = new Changes(root);
@@ -198,40 +198,40 @@ public class ResponseMockup extends HttpServlet
             {
                 illegalResponse2(out);
             }
-            else if (op.trim().toLowerCase().equals(TABLE_REPLACE_HEAD))
+            else if (op.trim().equalsIgnoreCase(TABLE_REPLACE_HEAD))
             {
                 TableResponseMockups.tableReplaceHead(viewData, out, root);
 
             }
-            else if (op.trim().toLowerCase().equals(TABLE_REPLACE_BODY))
+            else if (op.trim().equalsIgnoreCase(TABLE_REPLACE_BODY))
             {
                 TableResponseMockups.tableReplaceBody(viewData, out, root);
             }
-            else if (op.trim().toLowerCase().equals(TABLE_INSERT_ROW_HEAD))
+            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_ROW_HEAD))
             {
                 TableResponseMockups.tableInsertRowHead(viewData, out, root);
             }
-            else if (op.trim().toLowerCase().equals(TABLE_INSERT_ROW_BODY))
+            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_ROW_BODY))
             {
                 TableResponseMockups.tableInsertRowBody(viewData, out, root);
             }
-            else if (op.trim().toLowerCase().equals(TABLE_INSERT_COLUMN_HEAD))
+            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_COLUMN_HEAD))
             {
                 TableResponseMockups.tableInsetColumnHead(viewData, out, root);
             }
-            else if (op.trim().toLowerCase().equals(TABLE_INSERT_COLUMN_BODY))
+            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_COLUMN_BODY))
             {
                 TableResponseMockups.tableInsertColumnBody(viewData, out, root);
             }
-            else if (op.trim().toLowerCase().equals(TABLE_INSERT_FOOTER))
+            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_FOOTER))
             {
                 TableResponseMockups.tableInsertFooter(out, root);
             }
-            else if (op.trim().toLowerCase().equals(TABLE_INSERT_BODY))
+            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_BODY))
             {
                 TableResponseMockups.tableInsertBody(out, root);
             }
-            else if (op.trim().toLowerCase().equals(EXECUTE_NONE))
+            else if (op.trim().equalsIgnoreCase(EXECUTE_NONE))
             {
                 TableResponseMockups.execteNone(request, out, root);
             }

@@ -106,7 +106,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
         ValueExpression expression = getValueExpression("converter");
         if (expression != null)
         {
-            return (Converter) expression.getValue(getFacesContext().getELContext());
+            return expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }

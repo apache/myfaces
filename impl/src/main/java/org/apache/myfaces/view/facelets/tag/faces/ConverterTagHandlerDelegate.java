@@ -141,7 +141,7 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
         if (_delegate.getBinding() != null)
         {
             ve = _delegate.getBinding().getValueExpression(faceletContext, Converter.class);
-            c = (Converter) ve.getValue(faceletContext);
+            c = ve.getValue(faceletContext);
         }
         if (c == null)
         {

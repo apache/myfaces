@@ -81,7 +81,7 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     public Cookie getCookie(String name)
     {
-        return (Cookie) cookies.get(name);
+        return cookies.get(name);
     }
     
     public Map<String, Cookie> getCookies()
@@ -151,13 +151,13 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     // -------------------------------------------- HttpServletResponse Methods
 
-    /** {@inheritDoc} */
+    @Override
     public void addCookie(Cookie cookie)
     {
         cookies.put(cookie.getName(), cookie);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void addDateHeader(String name, long value)
     {
 
@@ -165,7 +165,7 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void addHeader(String name, String value)
     {
 
@@ -173,7 +173,7 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void addIntHeader(String name, int value)
     {
 
@@ -181,47 +181,35 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean containsHeader(String name)
     {
-
         return getHeader(name) != null;
-
     }
 
-    /** {@inheritDoc} */
     public String encodeRedirectUrl(String url)
     {
-
         return encodeRedirectURL(url);
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String encodeRedirectURL(String url)
     {
-
         return url;
-
     }
 
-    /** {@inheritDoc} */
     public String encodeUrl(String url)
     {
-
         return encodeURL(url);
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String encodeURL(String url)
     {
-
         return url;
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void sendError(int status)
     {
         if (this.committed)
@@ -232,7 +220,7 @@ public class MockHttpServletResponse implements HttpServletResponse
         this.committed = true;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void sendError(int status, String message)
     {
         if (this.committed)
@@ -244,7 +232,7 @@ public class MockHttpServletResponse implements HttpServletResponse
         this.committed = true;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void sendRedirect(String location)
     {
         if (this.committed)
@@ -257,7 +245,7 @@ public class MockHttpServletResponse implements HttpServletResponse
         this.committed = true;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setDateHeader(String name, long value)
     {
 
@@ -266,7 +254,7 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setHeader(String name, String value)
     {
 
@@ -275,22 +263,19 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setIntHeader(String name, int value)
     {
-
         removeHeader(name);
         addIntHeader(name, value);
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setStatus(int status)
     {
         this.status = status;
     }
 
-    /** {@inheritDoc} */
     public void setStatus(int status, String message)
     {
         this.status = status;
@@ -299,19 +284,19 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     // ------------------------------------------------ ServletResponse Methods
 
-    /** {@inheritDoc} */
+    @Override
     public void flushBuffer()
     {
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getBufferSize()
     {
         return bufferSize;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getCharacterEncoding()
     {
 
@@ -319,21 +304,19 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getContentType()
     {
-
         return this.contentType;
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Locale getLocale()
     {
         return this.locale;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ServletOutputStream getOutputStream() throws IOException
     {
 
@@ -350,7 +333,7 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public PrintWriter getWriter() throws IOException
     {
 
@@ -367,29 +350,29 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean isCommitted()
     {
         return committed;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void reset()
     {
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void resetBuffer()
     {
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setBufferSize(int size)
     {
         this.bufferSize = size;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setCharacterEncoding(String charset)
     {
 
@@ -397,13 +380,13 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setContentLength(int length)
     {
         this.contentLength = length;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setContentType(String type)
     {
 
@@ -411,7 +394,7 @@ public class MockHttpServletResponse implements HttpServletResponse
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setLocale(Locale locale)
     {
         this.locale = locale;

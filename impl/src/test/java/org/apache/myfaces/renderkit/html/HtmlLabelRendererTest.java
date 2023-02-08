@@ -31,11 +31,10 @@ import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
 {
@@ -61,6 +60,8 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
                 "org.apache.myfaces.application.ApplicationFactoryImpl");
     }
     
+    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         
         super.setUp();
@@ -81,6 +82,8 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         //facesContext.getApplication().setSearchExpressionHandler(new SearchExpressionHandlerImpl());
     }
     
+    @Override
+    @AfterEach
     public void tearDown() throws Exception {
         super.tearDown();
         writer = null;
@@ -124,7 +127,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 label, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -134,7 +137,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
      */
     protected String getPageContents()
     {
-        return ((StringWriter) writer.getWriter()).toString();
+        return writer.getWriter().toString();
     }
     
     @Test
@@ -147,7 +150,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         label.encodeAll(facesContext);
 
         String page = getPageContents();
-        Assert.assertEquals("<label id=\"labelId\">&lt;span class=&quot;required&quot;&gt;field label&lt;/span&gt;</label>", page);
+        Assertions.assertEquals("<label id=\"labelId\">&lt;span class=&quot;required&quot;&gt;field label&lt;/span&gt;</label>", page);
     }
 
     @Test
@@ -161,7 +164,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         label.encodeAll(facesContext);
 
         String page = getPageContents();
-        Assert.assertEquals("<label id=\"labelId\"><span class=\"required\">field label</span></label>", page);
+        Assertions.assertEquals("<label id=\"labelId\"><span class=\"required\">field label</span></label>", page);
     }
     
     /**
@@ -175,12 +178,12 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         {
             label.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assert.assertTrue(output.contains("id=\"j_id__"));
-            Assert.assertTrue(output.contains("name=\"j_id__"));
+            Assertions.assertTrue(output.contains("id=\"j_id__"));
+            Assertions.assertTrue(output.contains("name=\"j_id__"));
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         
     }

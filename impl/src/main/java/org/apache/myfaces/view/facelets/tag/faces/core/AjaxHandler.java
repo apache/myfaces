@@ -287,7 +287,7 @@ public class AjaxHandler extends TagHandler implements
             {
                 FaceletContext faceletContext = (FaceletContext) FacesContext.getCurrentInstance().
                         getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-                return (String) event.getValueExpression(faceletContext, String.class).getValue(faceletContext);
+                return event.getValueExpression(faceletContext, String.class).getValue(faceletContext);
             }
         }
     }
@@ -316,7 +316,7 @@ public class AjaxHandler extends TagHandler implements
             }
             else
             {
-                eventName = (String) event.getValueExpression(faceletContext, String.class).getValue(faceletContext);
+                eventName = event.getValueExpression(faceletContext, String.class).getValue(faceletContext);
             }
         }
         if (eventName == null)

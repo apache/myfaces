@@ -22,25 +22,29 @@ import java.io.StringWriter;
 
 import jakarta.faces.component.html.HtmlDoctype;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+
+
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Leonardo Uribe
  */
 public class HtmlDoctypeRendererTest extends AbstractJsfTestCase
 {
-
     private MockResponseWriter writer ;
     private HtmlDoctype doctype;
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -59,12 +63,15 @@ public class HtmlDoctypeRendererTest extends AbstractJsfTestCase
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
-    public void tearDown()throws Exception
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception
     {
         super.tearDown();
         writer = null;
     }
     
+    @Test
     public void testHtmlPropertyPassTru() throws Exception
     { 
         HtmlRenderedAttr[] attrs = {
@@ -76,10 +83,10 @@ public class HtmlDoctypeRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 doctype, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
         
-        Assert.assertTrue("Does not match with: <!DOCTYPE rootElement PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",
+        Assertions.assertTrue(
                 writer.getWriter().toString().contains("<!DOCTYPE rootElement PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"));
     }
     
@@ -90,8 +97,7 @@ public class HtmlDoctypeRendererTest extends AbstractJsfTestCase
         doctype.encodeAll(facesContext);
         facesContext.renderResponse();
         
-        Assert.assertTrue("Does not match with: <!DOCTYPE html>",
-                writer.getWriter().toString().contains("<!DOCTYPE html>"));
+        Assertions.assertTrue(writer.getWriter().toString().contains("<!DOCTYPE html>"));
     }
 
 }

@@ -24,9 +24,9 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ViewIdSupportTest extends AbstractJsfTestCase
 {
@@ -44,6 +44,7 @@ public class ViewIdSupportTest extends AbstractJsfTestCase
     }
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -86,7 +87,7 @@ public class ViewIdSupportTest extends AbstractJsfTestCase
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view1.jsp");
         
-        Assert.assertNotNull(derivedViewId);
+        Assertions.assertNotNull(derivedViewId);
     }
     
     @Test
@@ -96,7 +97,7 @@ public class ViewIdSupportTest extends AbstractJsfTestCase
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/faces/view1.jsp");
         
-        Assert.assertNotNull(derivedViewId);
+        Assertions.assertNotNull(derivedViewId);
     }    
     
     @Test
@@ -106,7 +107,7 @@ public class ViewIdSupportTest extends AbstractJsfTestCase
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view2.jsf");
         
-        Assert.assertNotNull(derivedViewId);
+        Assertions.assertNotNull(derivedViewId);
     }
     
     @Test
@@ -116,7 +117,7 @@ public class ViewIdSupportTest extends AbstractJsfTestCase
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view2.xhtml");
         
-        Assert.assertNotNull(derivedViewId);
+        Assertions.assertNotNull(derivedViewId);
     }
 
 
@@ -127,7 +128,7 @@ public class ViewIdSupportTest extends AbstractJsfTestCase
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/noview1.jsf");
         
-        Assert.assertNull(derivedViewId);
+        Assertions.assertNull(derivedViewId);
     }
     
     /**
@@ -141,7 +142,7 @@ public class ViewIdSupportTest extends AbstractJsfTestCase
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view2.xhtml");
         
-        Assert.assertEquals("/view2.xhtml", derivedViewId);
+        Assertions.assertEquals("/view2.xhtml", derivedViewId);
     }
     
     /**
@@ -157,7 +158,7 @@ public class ViewIdSupportTest extends AbstractJsfTestCase
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "//view2.xhtml");
         
-        Assert.assertEquals("/view2.xhtml", derivedViewId);
+        Assertions.assertEquals("/view2.xhtml", derivedViewId);
     }
 
 }

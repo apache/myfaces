@@ -528,7 +528,7 @@ public class DefaultContext implements Context, Serializable
             for (Iterator iterator = subBindings.entrySet().iterator(); iterator.hasNext();)
             {
                 Map.Entry entry = (Map.Entry) iterator.next();
-                String subName = segment + "/" + (String) entry.getKey();
+                String subName = segment + "/" + entry.getKey();
                 Object bound = entry.getValue();
                 treeBindings.put(subName, bound);
                 newBindings.put(subName, bound);

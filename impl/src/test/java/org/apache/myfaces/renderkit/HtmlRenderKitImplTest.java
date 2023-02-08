@@ -20,12 +20,12 @@ package org.apache.myfaces.renderkit;
 
 import java.io.StringWriter;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HtmlRenderKitImplTest extends AbstractJsfTestCase
 {
@@ -38,8 +38,8 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
     
     @Test
@@ -53,8 +53,8 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assert.assertEquals(ContentTypeUtils.XHTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assert.assertEquals(ContentTypeUtils.XHTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        Assertions.assertEquals(ContentTypeUtils.XHTML_CONTENT_TYPE, responseWriter.getContentType());
+        Assertions.assertEquals(ContentTypeUtils.XHTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
     
     @Test
@@ -67,8 +67,8 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
     
     @Test
@@ -81,8 +81,8 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
     
     @Test
@@ -94,8 +94,8 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
     
     @Test
@@ -110,7 +110,7 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
             StringWriter writer = new StringWriter();
             HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
             
-            Assert.fail();
+            Assertions.fail();
         }
         catch (IllegalArgumentException e)
         {
@@ -128,8 +128,8 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
     
     @Test
@@ -142,8 +142,8 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
 
     @Test
@@ -160,7 +160,7 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assert.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
 }

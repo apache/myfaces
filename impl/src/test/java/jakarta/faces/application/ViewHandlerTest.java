@@ -18,7 +18,6 @@
  */
 package jakarta.faces.application;
 
-import jakarta.faces.application.ViewHandler;
 import static org.easymock.EasyMock.*;
 
 import java.io.IOException;
@@ -33,23 +32,23 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
-import junit.framework.TestCase;
-
 import org.apache.myfaces.test.MyFacesAsserts;
 import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ViewHandlerTest extends TestCase
+public class ViewHandlerTest
 {
     private MockFacesContext _facesContext;
     private IMocksControl _mocksControl;
     private ExternalContext _externalContext;
     private TestViewHandler _testimpl;
 
-    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();
@@ -63,13 +62,14 @@ public class ViewHandlerTest extends TestCase
      * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testCalculateCharacterEncodingWithRequestHeaderContentType()
     {
         Map<String, String> map = _mocksControl.createMock(Map.class);
         expect(_externalContext.getRequestHeaderMap()).andReturn(map);
         expect(map.get(eq("Content-Type"))).andReturn("text/html;charset=UTF-8");
         _mocksControl.replay();
-        Assert.assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
+        Assertions.assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 
@@ -77,6 +77,7 @@ public class ViewHandlerTest extends TestCase
      * Test method for
      * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndNoSession()
     {
         Map<String, String> emptyMap = Collections.emptyMap();
@@ -84,7 +85,7 @@ public class ViewHandlerTest extends TestCase
         expect(_externalContext.getRequestHeaderMap()).andReturn(emptyMap);
         expect(_externalContext.getSession(eq(false))).andReturn(null);
         _mocksControl.replay();
-        Assert.assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
+        Assertions.assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 
@@ -92,6 +93,7 @@ public class ViewHandlerTest extends TestCase
      * Test method for
      * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     @SuppressWarnings("unchecked")
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionButNoSessionValue()
     {
@@ -103,7 +105,7 @@ public class ViewHandlerTest extends TestCase
         expect(_externalContext.getSessionMap()).andReturn(map);
         expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn(null);
         _mocksControl.replay();
-        Assert.assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
+        Assertions.assertNull(_testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 
@@ -111,6 +113,7 @@ public class ViewHandlerTest extends TestCase
      * Test method for
      * {@link jakarta.faces.application.ViewHandler#calculateCharacterEncoding(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     @SuppressWarnings("unchecked")
     public void testCalculateCharacterEncodingWithNoRequestContentTypeAndWithSessionAndNoSessionValue()
     {
@@ -122,7 +125,7 @@ public class ViewHandlerTest extends TestCase
         expect(_externalContext.getSessionMap()).andReturn(map);
         expect(map.get(eq(ViewHandler.CHARACTER_ENCODING_KEY))).andReturn("UTF-8");
         _mocksControl.replay();
-        Assert.assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
+        Assertions.assertEquals("UTF-8", _testimpl.calculateCharacterEncoding(_facesContext));
         _mocksControl.verify();
     }
 
@@ -131,15 +134,16 @@ public class ViewHandlerTest extends TestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testInitView() throws Exception
     {
         ViewHandler handler = _mocksControl
                                            .createMock(
                                                        ViewHandler.class,
-                                                       new Method[] { ViewHandler.class
-                                                                                       .getMethod(
-                                                                                                  "calculateCharacterEncoding",
-                                                                                                  new Class[] { FacesContext.class }) });
+                                                   ViewHandler.class
+                                                                                   .getMethod(
+                                                                                              "calculateCharacterEncoding",
+                                                           FacesContext.class));
         expect(handler.calculateCharacterEncoding(_facesContext)).andReturn("xxx");
         _externalContext.setRequestCharacterEncoding(eq("xxx"));
         _mocksControl.replay();
@@ -152,21 +156,23 @@ public class ViewHandlerTest extends TestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testInitViewWithUnsupportedEncodingException() throws Exception
     {
         final ViewHandler handler = _mocksControl
                                                  .createMock(
                                                              ViewHandler.class,
-                                                             new Method[] { ViewHandler.class
-                                                                                             .getMethod(
-                                                                                                        "calculateCharacterEncoding",
-                                                                                                        new Class[] { FacesContext.class }) });
+                                                         ViewHandler.class
+                                                                                         .getMethod(
+                                                                                                    "calculateCharacterEncoding",
+                                                                 FacesContext.class));
         expect(handler.calculateCharacterEncoding(_facesContext)).andReturn("xxx");
         _externalContext.setRequestCharacterEncoding(eq("xxx"));
         expectLastCall().andThrow(new UnsupportedEncodingException());
         _mocksControl.replay();
         MyFacesAsserts.assertException(FacesException.class, new TestRunner()
         {
+            @Override
             public void run() throws Throwable
             {
                 handler.initView(_facesContext);

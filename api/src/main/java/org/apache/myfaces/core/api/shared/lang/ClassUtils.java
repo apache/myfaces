@@ -263,7 +263,7 @@ public class ClassUtils
         Assert.notNull(type, "type");
 
         // try common types and arrays of common types first
-        Class clazz = (Class) COMMON_TYPES.get(type);
+        Class clazz = COMMON_TYPES.get(type);
         if (clazz != null)
         {
             return clazz;

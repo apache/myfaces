@@ -51,7 +51,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
     {
         if (_name != null)
         {
-            return (String) _name.getValue(FacesContext.getCurrentInstance().getELContext());
+            return _name.getValue(FacesContext.getCurrentInstance().getELContext());
         }        
         return null;
     }
@@ -115,7 +115,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
     {
         if (_targets != null)
         {
-            return StringUtils.splitShortString((String) _targets.getValue(context.getELContext()), ' ');
+            return StringUtils.splitShortString(_targets.getValue(context.getELContext()), ' ');
         }
         return ArrayUtils.EMPTY_STRING_ARRAY;
     }

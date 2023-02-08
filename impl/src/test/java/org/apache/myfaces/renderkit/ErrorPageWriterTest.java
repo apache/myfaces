@@ -25,8 +25,8 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.html.HtmlOutputText;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+
+
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.application.viewstate.StateUtils;
@@ -34,7 +34,10 @@ import org.apache.myfaces.spi.impl.DefaultSerialFactory;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author: struberg $)
@@ -45,6 +48,8 @@ public class ErrorPageWriterTest extends AbstractJsfTestCase
     private MockResponseWriter writer ;
     private HtmlOutputText outputText;
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -64,6 +69,8 @@ public class ErrorPageWriterTest extends AbstractJsfTestCase
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_FACES_JS", Boolean.TRUE);
     }
 
+    @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -71,6 +78,7 @@ public class ErrorPageWriterTest extends AbstractJsfTestCase
         writer = null;
     }
 
+    @Test
     public void testValueExpressionGetExpressionStringReturnsNull() throws IOException
     {
         //See MYFACES-3413 for details
@@ -98,7 +106,7 @@ public class ErrorPageWriterTest extends AbstractJsfTestCase
         }
         int indexOfHasRenderedAttribute = output.indexOf("rendered=\"\"");
         boolean hasRenderedAttribute = (-1 != indexOfHasRenderedAttribute);
-        Assert.assertTrue("rendered attribute wasn't written correctly: " + surroundingText, hasRenderedAttribute);
+        Assertions.assertTrue(hasRenderedAttribute, "rendered attribute wasn't written correctly: " + surroundingText);
     }
     
 }

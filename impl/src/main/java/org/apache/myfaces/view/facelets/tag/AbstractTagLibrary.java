@@ -434,7 +434,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
         {
             try
             {
-                return handlerType.getConstructor(CONSTRUCTOR_SIG).newInstance(new Object[] { cfg });
+                return handlerType.getConstructor(CONSTRUCTOR_SIG).newInstance(cfg);
             }
             catch (InvocationTargetException ite)
             {
@@ -592,7 +592,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
             try
             {
                 ComponentConfig ccfg = new ComponentConfigWrapper(cfg, componentType, renderType);
-                return constructor.newInstance(new Object[] { ccfg });
+                return constructor.newInstance(ccfg);
             }
             catch (InvocationTargetException e)
             {
@@ -665,7 +665,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
             try
             {
                 ConverterConfig ccfg = new ConverterConfigWrapper(cfg, converterId);
-                return constructor.newInstance(new Object[] { ccfg });
+                return constructor.newInstance(ccfg);
             }
             catch (InvocationTargetException e)
             {
@@ -706,7 +706,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
             try
             {
                 ValidatorConfig ccfg = new ValidatorConfigWrapper(cfg, validatorId);
-                return constructor.newInstance(new Object[] { ccfg });
+                return constructor.newInstance(ccfg);
             }
             catch (InvocationTargetException e)
             {
@@ -801,7 +801,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
             try
             {
                 BehaviorConfig bcfg = new BehaviorConfigWrapper(cfg,this.behaviorId);
-                return constructor.newInstance(new Object[] { bcfg });
+                return constructor.newInstance(bcfg);
             }
             catch (InvocationTargetException e)
             {

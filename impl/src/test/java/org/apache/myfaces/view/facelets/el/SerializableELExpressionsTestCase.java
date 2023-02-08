@@ -29,8 +29,8 @@ import jakarta.faces.view.Location;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class SerializableELExpressionsTestCase extends FaceletTestCase
 {
@@ -61,10 +61,10 @@ public class SerializableELExpressionsTestCase extends FaceletTestCase
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         LocationValueExpression lve2 = (LocationValueExpression) ois.readObject();
-        Assert.assertEquals(lve.getExpressionString(), lve2.getExpressionString());
-        Assert.assertEquals(lve.getLocation().getPath(), lve2.getLocation().getPath());
-        Assert.assertEquals(lve.getLocation().getLine(), lve2.getLocation().getLine());
-        Assert.assertEquals(lve.getLocation().getColumn(), lve2.getLocation().getColumn());
+        Assertions.assertEquals(lve.getExpressionString(), lve2.getExpressionString());
+        Assertions.assertEquals(lve.getLocation().getPath(), lve2.getLocation().getPath());
+        Assertions.assertEquals(lve.getLocation().getLine(), lve2.getLocation().getLine());
+        Assertions.assertEquals(lve.getLocation().getColumn(), lve2.getLocation().getColumn());
         oos.close();
         ois.close();
     }
@@ -89,10 +89,10 @@ public class SerializableELExpressionsTestCase extends FaceletTestCase
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         LocationValueExpression lve2 = (LocationValueExpression) ois.readObject();
-        Assert.assertEquals(lve.getExpressionString(), lve2.getExpressionString());
-        Assert.assertEquals(lve.getLocation().getPath(), lve2.getLocation().getPath());
-        Assert.assertEquals(lve.getLocation().getLine(), lve2.getLocation().getLine());
-        Assert.assertEquals(lve.getLocation().getColumn(), lve2.getLocation().getColumn());
+        Assertions.assertEquals(lve.getExpressionString(), lve2.getExpressionString());
+        Assertions.assertEquals(lve.getLocation().getPath(), lve2.getLocation().getPath());
+        Assertions.assertEquals(lve.getLocation().getLine(), lve2.getLocation().getLine());
+        Assertions.assertEquals(lve.getLocation().getColumn(), lve2.getLocation().getColumn());
         oos.close();
         ois.close();
     }

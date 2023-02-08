@@ -32,8 +32,8 @@ import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.spi.impl.DefaultSerialFactory;
 import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class StateManagerWithFaceletsTest extends FaceletMultipleRequestsTestCase
 {
@@ -96,7 +96,7 @@ public class StateManagerWithFaceletsTest extends FaceletMultipleRequestsTestCas
             
             UIViewRoot restoredViewRoot = sms.restoreView(facesContext, viewId, RenderKitFactory.HTML_BASIC_RENDER_KIT);
             
-            Assert.assertNotNull(restoredViewRoot);
+            Assertions.assertNotNull(restoredViewRoot);
         }
         finally
         {
@@ -149,7 +149,7 @@ public class StateManagerWithFaceletsTest extends FaceletMultipleRequestsTestCas
             
             UIViewRoot restoredViewRoot = sms.restoreView(facesContext, viewId, RenderKitFactory.HTML_BASIC_RENDER_KIT);
             
-            Assert.assertNotNull(restoredViewRoot);
+            Assertions.assertNotNull(restoredViewRoot);
         }
         finally
         {

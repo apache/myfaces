@@ -24,8 +24,9 @@ import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 public class TagLibraryTestCase extends FaceletTestCase
@@ -36,6 +37,8 @@ public class TagLibraryTestCase extends FaceletTestCase
     private URL _invalidLibUrl = null;
     private URL _invalidOldLibUrl = null;
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         _validLibUrl = resolveUrl("/testlib.taglib.xml");
@@ -57,7 +60,7 @@ public class TagLibraryTestCase extends FaceletTestCase
         FaceletTagLibrary faceletTagLib = TagLibraryConfigUnmarshallerImpl.create(
             externalContext, _validLibUrl);
         TagLibrary lib = TagLibraryConfig.create(facesContext, faceletTagLib);
-        Assert.assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
+        Assertions.assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
     }
 
     @Test
@@ -68,7 +71,7 @@ public class TagLibraryTestCase extends FaceletTestCase
         FaceletTagLibrary faceletTagLib = TagLibraryConfigUnmarshallerImpl.create(
             externalContext, _validLibUrl);
         TagLibrary lib = TagLibraryConfig.create(facesContext, faceletTagLib);
-        Assert.assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
+        Assertions.assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
     }
     /*
     public void testLoadInvalidLibraryWithValidation() throws Exception
@@ -77,9 +80,9 @@ public class TagLibraryTestCase extends FaceletTestCase
 
         try {
             TagLibraryConfig.create(_invalidLibUrl);
-            Assert.fail("IOException expected");
+            Assertions.fail("IOException expected");
         } catch (IOException ioe) {
-            Assert.assertTrue(ioe.getCause() instanceof SAXException);
+            Assertions.assertTrue(ioe.getCause() instanceof SAXException);
         }
 
     }
@@ -89,7 +92,7 @@ public class TagLibraryTestCase extends FaceletTestCase
         servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_VALIDATE_XML, "false");
 
         TagLibrary lib = TagLibraryConfig.create(_invalidLibUrl);
-        Assert.assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib_invalid"));
+        Assertions.assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib_invalid"));
     }
 
     public void testLoadInvalidOldLibraryWithValidation() throws Exception
@@ -98,9 +101,9 @@ public class TagLibraryTestCase extends FaceletTestCase
 
         try {
             TagLibraryConfig.create(_invalidOldLibUrl);
-            Assert.fail("IOException expected");
+            Assertions.fail("IOException expected");
         } catch (IOException ioe) {
-            Assert.assertTrue(ioe.getCause() instanceof SAXException);
+            Assertions.assertTrue(ioe.getCause() instanceof SAXException);
         }
     }
     */

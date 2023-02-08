@@ -18,8 +18,8 @@
  */
 package jakarta.faces.component.html;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 public class HtmlOutputLinkTest
@@ -31,7 +31,7 @@ public class HtmlOutputLinkTest
     @Test
     public void testRendererType()
     {
-        Assert.assertEquals("jakarta.faces.Link", new HtmlOutputLink().getRendererType());
+        Assertions.assertEquals("jakarta.faces.Link", new HtmlOutputLink().getRendererType());
     }
 
 }

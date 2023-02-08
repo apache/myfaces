@@ -69,7 +69,7 @@ public class ComponentBindingVDLBean6
             cc.setId("ccpanel");
             
             Map<String, Object> attributes2 = new HashMap<String, Object>();
-            UIComponent text = (UIComponent) vdl.createComponent(facesContext, 
+            UIComponent text = vdl.createComponent(facesContext,
                 "http://java.sun.com/jsf/composite/testComposite", 
                 "dynComp_2", attributes2);
             text.setId("component");

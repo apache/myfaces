@@ -26,8 +26,8 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CompositeComponentCConIncludeTestCase extends FaceletTestCase
 {
@@ -51,7 +51,7 @@ public class CompositeComponentCConIncludeTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCConInclude1.xhtml");
 
         //UIComponent panelGroup1 = root.findComponent("testGroup1");
-        //Assert.assertNotNull(panelGroup1);
+        //Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -59,9 +59,9 @@ public class CompositeComponentCConIncludeTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("value1"));
-        Assert.assertTrue(sw.toString().contains("value2"));
-        Assert.assertTrue(sw.toString().contains("value3"));
+        Assertions.assertTrue(sw.toString().contains("value1"));
+        Assertions.assertTrue(sw.toString().contains("value2"));
+        Assertions.assertTrue(sw.toString().contains("value3"));
     }
     
     @Test
@@ -71,7 +71,7 @@ public class CompositeComponentCConIncludeTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCConInclude2.xhtml");
 
         //UIComponent panelGroup1 = root.findComponent("testGroup1");
-        //Assert.assertNotNull(panelGroup1);
+        //Assertions.assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -79,8 +79,8 @@ public class CompositeComponentCConIncludeTestCase extends FaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assert.assertTrue(sw.toString().contains("value1"));
-        Assert.assertTrue(sw.toString().contains("value2"));
-        Assert.assertTrue(sw.toString().contains("value3"));
+        Assertions.assertTrue(sw.toString().contains("value1"));
+        Assertions.assertTrue(sw.toString().contains("value2"));
+        Assertions.assertTrue(sw.toString().contains("value3"));
     }
 }

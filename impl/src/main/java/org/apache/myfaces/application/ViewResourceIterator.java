@@ -112,7 +112,7 @@ public class ViewResourceIterator implements Iterator<String>
                 {
                     do
                     {
-                        loader = (ResourceLoader) stack.pop();
+                        loader = stack.pop();
                         basePath = basePathStack.pop();
                         
                         if (loader != null)

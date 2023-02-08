@@ -219,7 +219,7 @@ public final class RefreshDynamicComponentListener implements ComponentSystemEve
                     ns = "";
                     break;
             }
-            taglibURI = ns + (String) ((Object[]) values[0])[1];
+            taglibURI = ns + ((Object[]) values[0])[1];
         }
         tagName = (String) values[1];
         attributes = (Map<String, Object>) values[2];

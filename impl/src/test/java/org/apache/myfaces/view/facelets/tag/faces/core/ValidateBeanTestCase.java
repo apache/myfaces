@@ -29,8 +29,9 @@ import jakarta.faces.validator.Validator;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for <f:validateBean />.
@@ -42,6 +43,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
 {
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -147,7 +149,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the UIInput has to have the BeanValidator installed
-        Assert.assertTrue(_hasValidator(input, BeanValidator.class));
+        Assertions.assertTrue(_hasValidator(input, BeanValidator.class));
     }
     
     /**
@@ -170,7 +172,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the UIInput has to have the BeanValidator installed
-        Assert.assertTrue(_hasValidator(input, BeanValidator.class));
+        Assertions.assertTrue(_hasValidator(input, BeanValidator.class));
     }
     
     /**
@@ -197,7 +199,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the UIInput must not have the BeanValidator installed
-        Assert.assertFalse(_hasValidator(input, BeanValidator.class));
+        Assertions.assertFalse(_hasValidator(input, BeanValidator.class));
     }
     
     /**
@@ -226,10 +228,10 @@ public class ValidateBeanTestCase extends FaceletTestCase
         UIInput nonnestedinput = (UIInput) root.findComponent("form:nonnestedinput");
         
         // all wrapped UIInputs have to have the BeanValidator installed
-        Assert.assertTrue(_hasValidator(nestedinput, BeanValidator.class));
-        Assert.assertTrue(_hasValidator(doublenestedinput, BeanValidator.class));
-        Assert.assertTrue(_hasValidator(nestedinput2, BeanValidator.class));
-        Assert.assertFalse(_hasValidator(nonnestedinput, BeanValidator.class));
+        Assertions.assertTrue(_hasValidator(nestedinput, BeanValidator.class));
+        Assertions.assertTrue(_hasValidator(doublenestedinput, BeanValidator.class));
+        Assertions.assertTrue(_hasValidator(nestedinput2, BeanValidator.class));
+        Assertions.assertFalse(_hasValidator(nonnestedinput, BeanValidator.class));
     }
     
     /**
@@ -261,10 +263,10 @@ public class ValidateBeanTestCase extends FaceletTestCase
         UIInput nonnestedinput = (UIInput) root.findComponent("form:nonnestedinput");
         
         // all wrapped UIInputs have to have the BeanValidator installed
-        Assert.assertFalse(_hasValidator(nestedinput, BeanValidator.class));
-        Assert.assertFalse(_hasValidator(doublenestedinput, BeanValidator.class));
-        Assert.assertFalse(_hasValidator(nestedinput2, BeanValidator.class));
-        Assert.assertTrue(_hasValidator(nonnestedinput, BeanValidator.class));
+        Assertions.assertFalse(_hasValidator(nestedinput, BeanValidator.class));
+        Assertions.assertFalse(_hasValidator(doublenestedinput, BeanValidator.class));
+        Assertions.assertFalse(_hasValidator(nestedinput2, BeanValidator.class));
+        Assertions.assertTrue(_hasValidator(nonnestedinput, BeanValidator.class));
     }
     
     /**
@@ -286,7 +288,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the UIInput has to have the BeanValidator installed
-        Assert.assertTrue(_hasValidator(input, BeanValidator.class));
+        Assertions.assertTrue(_hasValidator(input, BeanValidator.class));
     }
     
     /**
@@ -319,9 +321,9 @@ public class ValidateBeanTestCase extends FaceletTestCase
         
         // no wrapped UIInput has to have the BeanValidator installed,
         // except the one nesting <f:validateBean /> itself.
-        Assert.assertFalse(_hasValidator(nestedinput, BeanValidator.class));
-        Assert.assertTrue(_hasValidator(nestedinputWithValidator, BeanValidator.class));
-        Assert.assertTrue(_hasValidator(nonnestedinput, BeanValidator.class));
+        Assertions.assertFalse(_hasValidator(nestedinput, BeanValidator.class));
+        Assertions.assertTrue(_hasValidator(nestedinputWithValidator, BeanValidator.class));
+        Assertions.assertTrue(_hasValidator(nonnestedinput, BeanValidator.class));
     }
     
     /**
@@ -346,7 +348,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the validationGroups have to match
-        Assert.assertEquals(validationGroups, _getValidationGroups(input));
+        Assertions.assertEquals(validationGroups, _getValidationGroups(input));
     }
     
     /**
@@ -369,7 +371,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the validationGroups have to match the Default ones
-        Assert.assertEquals(jakarta.validation.groups.Default.class.getName(),
+        Assertions.assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(input));
     }
     
@@ -406,10 +408,10 @@ public class ValidateBeanTestCase extends FaceletTestCase
         // the validationGroups in the wrapped components have to match
         // org.apache.myfaces.beanvalidation.Group1 and the non-nested ones
         // have to match the Default group.
-        Assert.assertEquals(validationGroups, _getValidationGroups(nestedinput));
-        Assert.assertEquals(validationGroups, _getValidationGroups(doublenestedinput));
-        Assert.assertEquals(validationGroups, _getValidationGroups(nestedinput2));
-        Assert.assertEquals(jakarta.validation.groups.Default.class.getName(),
+        Assertions.assertEquals(validationGroups, _getValidationGroups(nestedinput));
+        Assertions.assertEquals(validationGroups, _getValidationGroups(doublenestedinput));
+        Assertions.assertEquals(validationGroups, _getValidationGroups(nestedinput2));
+        Assertions.assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
     
@@ -450,9 +452,9 @@ public class ValidateBeanTestCase extends FaceletTestCase
         // the nested component without a validator must get the wrapping validationGroups,
         // the nested component with the validator must get the validationGroups from the 
         // validator and the non-nested component must get the Default validationGroups.
-        Assert.assertEquals(wrappingValidationGroups, _getValidationGroups(nestedinput));
-        Assert.assertEquals(componentValidationGroups, _getValidationGroups(nestedinputWithValidator));
-        Assert.assertEquals(jakarta.validation.groups.Default.class.getName(),
+        Assertions.assertEquals(wrappingValidationGroups, _getValidationGroups(nestedinput));
+        Assertions.assertEquals(componentValidationGroups, _getValidationGroups(nestedinputWithValidator));
+        Assertions.assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
     
@@ -490,9 +492,9 @@ public class ValidateBeanTestCase extends FaceletTestCase
         // the nested component must get the outer wrapping validationGroups,
         // the double-nested component must get the inner wrapping validationGroups
         // and the non-nested component must get the Default validationGroups.
-        Assert.assertEquals(validationGroupsOuter, _getValidationGroups(nestedinput));
-        Assert.assertEquals(validationGroupsInner, _getValidationGroups(doublenestedinput));
-        Assert.assertEquals(jakarta.validation.groups.Default.class.getName(),
+        Assertions.assertEquals(validationGroupsOuter, _getValidationGroups(nestedinput));
+        Assertions.assertEquals(validationGroupsInner, _getValidationGroups(doublenestedinput));
+        Assertions.assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
     
@@ -521,7 +523,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         
         // the UIInput must not have the BeanValidator installed,
         // because bean validation is not available
-        Assert.assertFalse(_hasValidator(input, BeanValidator.class));
+        Assertions.assertFalse(_hasValidator(input, BeanValidator.class));
     }
 
     /**
@@ -555,10 +557,10 @@ public class ValidateBeanTestCase extends FaceletTestCase
         // the nested component must get the outer wrapping validationGroups,
         // the double-nested component must get the inner wrapping validationGroups
         // and the non-nested component must get the Default validationGroups.
-        Assert.assertEquals(validationGroupsOuter, _getValidationGroups(nestedinput));
-        Assert.assertFalse(_hasValidator(doublenestedinput, BeanValidator.class));
-        Assert.assertEquals(validationGroupsInner, _getValidationGroups(nesteouterdisabledinput));
-        Assert.assertEquals(jakarta.validation.groups.Default.class.getName(),
+        Assertions.assertEquals(validationGroupsOuter, _getValidationGroups(nestedinput));
+        Assertions.assertFalse(_hasValidator(doublenestedinput, BeanValidator.class));
+        Assertions.assertEquals(validationGroupsInner, _getValidationGroups(nesteouterdisabledinput));
+        Assertions.assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
 

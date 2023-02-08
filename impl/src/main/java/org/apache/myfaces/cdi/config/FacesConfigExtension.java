@@ -46,7 +46,7 @@ public class FacesConfigExtension implements Extension
         {
             Annotated annotated = event.getAnnotatedBeanClass();
             
-            facesConfig = (FacesConfig) annotated.getAnnotation(FacesConfig.class);
+            facesConfig = annotated.getAnnotation(FacesConfig.class);
         }
     }
     

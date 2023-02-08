@@ -213,7 +213,7 @@ class _ELText
             Object v = this.ve.getValue(ctx);
             if (v != null)
             {
-                out.writeText((String) v, null);
+                out.writeText(v, null);
             }
         }
     }
@@ -399,11 +399,11 @@ class _ELText
         }
         else if (text.size() == 1)
         {
-            return (_ELText) text.get(0);
+            return text.get(0);
         }
         else
         {
-            _ELText[] ta = (_ELText[]) text.toArray(new _ELText[text.size()]);
+            _ELText[] ta = text.toArray(new _ELText[text.size()]);
             return new ELTextComposite(ta);
         }
     }

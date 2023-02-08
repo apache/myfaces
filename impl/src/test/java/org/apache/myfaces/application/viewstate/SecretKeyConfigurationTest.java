@@ -15,13 +15,16 @@
  */
 package org.apache.myfaces.application.viewstate;
 
+import jakarta.faces.FacesException;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SecretKeyConfigurationTest extends AbstractJsfTestCase
 {
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -35,7 +38,7 @@ public class SecretKeyConfigurationTest extends AbstractJsfTestCase
         
         try{
             StateUtils.encrypt("serialized objects".getBytes(), externalContext);
-            Assert.fail("An exception should be thrown if there" +
+            Assertions.fail("An exception should be thrown if there" +
                     " is no SecretKey in application scope and cacheing is enabled ");
         }catch(Exception e){
         }
@@ -50,7 +53,7 @@ public class SecretKeyConfigurationTest extends AbstractJsfTestCase
         try{
             
             StateUtils.encrypt("serialized objects".getBytes(), externalContext);
-            Assert.fail("An exception should be thrown if there" +
+            Assertions.fail("An exception should be thrown if there" +
                     " is no SecretKey in application scope and cacheing is enabled ");
         }catch(Exception cce){
         }
@@ -60,20 +63,9 @@ public class SecretKeyConfigurationTest extends AbstractJsfTestCase
     @Test
     public void testMissingSecretKeyDecrypt(){
         
-        boolean npeThrown = false;
-        
-        try{
+        Assertions.assertThrows(FacesException.class, () -> {
             StateUtils.decrypt("serialized objects".getBytes(), externalContext);
-        }
-        catch(Exception e){
-            if (e.getCause() instanceof NullPointerException)
-            {
-                npeThrown = true;
-            }
-        }
-        
-        Assert.assertTrue("An exception should be thrown if there" +
-                " is no SecretKey in application scope and cacheing is enabled ", npeThrown);
+        });
     }
     
     @Test
@@ -84,7 +76,7 @@ public class SecretKeyConfigurationTest extends AbstractJsfTestCase
         try{
             
             StateUtils.decrypt("serialized objects".getBytes(), externalContext);
-            Assert.fail("An exception should be thrown if there" +
+            Assertions.fail("An exception should be thrown if there" +
                     " is no SecretKey in application scope and cacheing is enabled ");
         }catch(Exception cce){
         }

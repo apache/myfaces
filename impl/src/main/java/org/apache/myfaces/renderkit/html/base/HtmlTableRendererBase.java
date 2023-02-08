@@ -575,7 +575,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
                 {
                     children = getChildren(component);
                 }
-                UIComponent child = (UIComponent) children.get(j);
+                UIComponent child = children.get(j);
                 if (child.isRendered())
                 {
                     boolean columnRendering = child instanceof UIColumn;
@@ -983,8 +983,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
         UIComponent facet = null;
         if (component.getFacetCount() > 0)
         {
-            facet = header ? (UIComponent) component.getFacets().get(HEADER_FACET_NAME) 
-                    : (UIComponent) component.getFacets().get(FOOTER_FACET_NAME);
+            facet = header ? component.getFacets().get(HEADER_FACET_NAME)
+                    : component.getFacets().get(FOOTER_FACET_NAME);
         }
         if (facet != null || hasColumnFacet)
         {
@@ -1263,7 +1263,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
                     String headerClass = (String) column.getAttributes().get("headerClass");
                     if (headerClass != null)
                     {
-                        styleClass = (String) headerClass;
+                        styleClass = headerClass;
                     }
                 }
                 else
@@ -1271,7 +1271,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
                     String footerClass = (String) column.getAttributes().get("footerClass");
                     if (footerClass != null)
                     {
-                        styleClass = (String) footerClass;
+                        styleClass = footerClass;
                     }
                 }
             }

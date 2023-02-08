@@ -24,6 +24,8 @@ import jakarta.faces.component.html.HtmlOutputLink;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.util.lang.ArrayUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -34,6 +36,7 @@ public class HtmlOutputLinkClientBehaviorRendererTest extends AbstractClientBeha
     private HtmlRenderedClientEventAttr[] attrs = null;
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -46,6 +49,7 @@ public class HtmlOutputLinkClientBehaviorRendererTest extends AbstractClientBeha
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();

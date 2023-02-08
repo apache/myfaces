@@ -63,6 +63,7 @@ import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.tag.faces.TagHandlerDelegateFactoryImpl;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCase
 {
@@ -238,6 +239,7 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         //    setResourceHandlerSupport(new MockResourceHandlerSupport(this.getClass()));
     }
     
+    @BeforeEach
     @Override
     public void setUp() throws Exception
     {
@@ -262,12 +264,6 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
             getViewDeclarationLanguage(facesContext,"/test");
 
     }
-    
-    /*@Override
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }*/
 
     protected void loadStandardFacesConfig() throws Exception
     {

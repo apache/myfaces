@@ -139,7 +139,7 @@ public abstract class MockApplication12 extends MockApplication10
     
     // ----------------------------------------------------- Application Methods
 
-    /** {@inheritDoc} */
+    @Override
     public void addELContextListener(ELContextListener listener)
     {
 
@@ -147,7 +147,7 @@ public abstract class MockApplication12 extends MockApplication10
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void addELResolver(ELResolver resolver)
     {
 
@@ -162,7 +162,7 @@ public abstract class MockApplication12 extends MockApplication10
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public UIComponent createComponent(ValueExpression expression,
             FacesContext context, String componentType)
     {
@@ -170,7 +170,7 @@ public abstract class MockApplication12 extends MockApplication10
         UIComponent component = null;
         try
         {
-            component = (UIComponent) expression.getValue(context
+            component = expression.getValue(context
                     .getELContext());
             if (component == null)
             {
@@ -187,7 +187,7 @@ public abstract class MockApplication12 extends MockApplication10
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Object evaluateExpressionGet(FacesContext context,
             String expression, Class expectedType) throws ELException
     {
@@ -198,7 +198,7 @@ public abstract class MockApplication12 extends MockApplication10
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ELContextListener[] getELContextListeners()
     {
 
@@ -207,7 +207,7 @@ public abstract class MockApplication12 extends MockApplication10
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ELResolver getELResolver()
     {
 
@@ -244,7 +244,7 @@ public abstract class MockApplication12 extends MockApplication10
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ExpressionFactory getExpressionFactory()
     {
 
@@ -252,7 +252,7 @@ public abstract class MockApplication12 extends MockApplication10
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ResourceBundle getResourceBundle(FacesContext context, String name)
     {
 
@@ -295,7 +295,7 @@ public abstract class MockApplication12 extends MockApplication10
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void removeELContextListener(ELContextListener listener)
     {
 

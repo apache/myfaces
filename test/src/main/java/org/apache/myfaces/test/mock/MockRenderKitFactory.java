@@ -60,7 +60,7 @@ public class MockRenderKitFactory extends RenderKitFactory
 
     // ------------------------------------------------ RenderKitFactory Methods
 
-    /** {@inheritDoc} */
+    @Override
     public void addRenderKit(String renderKitId, RenderKit renderKit)
     {
 
@@ -76,7 +76,7 @@ public class MockRenderKitFactory extends RenderKitFactory
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public RenderKit getRenderKit(FacesContext context, String renderKitId)
     {
 
@@ -106,7 +106,7 @@ public class MockRenderKitFactory extends RenderKitFactory
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getRenderKitIds()
     {
 

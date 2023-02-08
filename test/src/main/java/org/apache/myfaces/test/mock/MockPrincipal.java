@@ -70,7 +70,7 @@ public class MockPrincipal implements Principal
 
     // ------------------------------------------------------- Principal Methods
 
-    /** {@inheritDoc} */
+    @Override
     public String getName()
     {
         return this.name;

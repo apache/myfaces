@@ -159,7 +159,7 @@ class StateCacheServerSide extends StateCache<Object, Object>
                 ClientWindow clientWindow = context.getExternalContext().getClientWindow();
                 if (clientWindow != null)
                 {
-                    key = (SerializedViewKey) viewCollection.getLastWindowKey(context, clientWindow.getId());
+                    key = viewCollection.getLastWindowKey(context, clientWindow.getId());
                 }
                 else if (useFlashScopePurgeViewsInSession && Boolean.TRUE.equals(
                         context.getExternalContext().getRequestMap().get(FlashImpl.FLASH_PREVIOUS_REQUEST_REDIRECT)))

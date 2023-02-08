@@ -22,8 +22,8 @@ package org.apache.myfaces.cdi.bean;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UIOutput;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *  A unit test to test the CDI @ManagedProperty
@@ -46,7 +46,8 @@ public class DynamicManagedPropertyProducerTest extends AbstractMyFacesCDIReques
         result = result.substring(0, result.indexOf('@'));
         result = result.replaceAll("\\s","");
 
-        Assert.assertTrue("The value output should have matched: " + expectedValue + " but was : " + result, result.equals(expectedValue));
+        Assertions.assertTrue(result.equals(expectedValue),
+                "The value output should have matched: " + expectedValue + " but was : " + result);
     }
 
     @Override

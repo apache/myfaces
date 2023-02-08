@@ -19,14 +19,14 @@
 
 package jakarta.faces.convert;
 
-import jakarta.faces.convert.Converter;
-import jakarta.faces.convert.ConverterException;
-import jakarta.faces.convert.EnumConverter;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * This testcase test <code>jakarta.faces.convert.EnumConverter</code>.
@@ -45,11 +45,12 @@ public class EnumConverterTest extends AbstractJsfTestCase
             return "enum value";
         }
         
-    };
+    }
 
     private EnumConverter converter;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -57,6 +58,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -67,35 +69,38 @@ public class EnumConverterTest extends AbstractJsfTestCase
      * Test method for
      * {@link jakarta.faces.convert.EnumConverter#getAsObject(FacesContext, jakarta.faces.component.UIComponent, String)}.
      */
+    @Test
     public void testGetAsObject()
     {
         UIInput input = new UIInput();
         Object convertedObj = converter.getAsObject(FacesContext.getCurrentInstance(), input, "ITEM2");
-        Assert.assertEquals(convertedObj, testEnum.ITEM2);
+        Assertions.assertEquals(convertedObj, testEnum.ITEM2);
     }
 
     /**
      * Test method for
      * {@link jakarta.faces.convert.EnumConverter#getAsObject(FacesContext, jakarta.faces.component.UIComponent, String)}.
      */
+    @Test
     public void testGetAsObjectNull()
     {
         UIInput input = new UIInput();
         Object convertedObj = converter.getAsObject(FacesContext.getCurrentInstance(), input, null);
-        Assert.assertNull(convertedObj);
+        Assertions.assertNull(convertedObj);
     }
 
     /**
      * Test method for
      * {@link jakarta.faces.convert.EnumConverter#getAsObject(FacesContext, jakarta.faces.component.UIComponent, String)}.
      */
+    @Test
     public void testGetAsObjectNoEnum()
     {
         UIInput input = new UIInput();
         try
         {
             converter.getAsObject(FacesContext.getCurrentInstance(), input, "NO_ENUM_CONST");
-            Assert.fail("Converter exception should be thrown");
+            Assertions.fail("Converter exception should be thrown");
         }
         catch (ConverterException e)
         {
@@ -107,6 +112,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
      * Test method for
      * {@link jakarta.faces.convert.EnumConverter#getAsObject(FacesContext, jakarta.faces.component.UIComponent, String)}.
      */
+    @Test
     public void testGetAsObjectNoClassSet()
     {
         Converter testConverter = new EnumConverter();
@@ -114,7 +120,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
         try
         {
             testConverter.getAsObject(FacesContext.getCurrentInstance(), input, "ITEM2");
-            Assert.fail("Converter exception should be thrown");
+            Assertions.fail("Converter exception should be thrown");
         }
         catch (ConverterException e)
         {
@@ -126,35 +132,38 @@ public class EnumConverterTest extends AbstractJsfTestCase
      * Test method for
      * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
      */
+    @Test
     public void testGetAsString()
     {
         UIInput input = new UIInput();
         String convertedStr = converter.getAsString(FacesContext.getCurrentInstance(), input, testEnum.ITEM1);
-        Assert.assertEquals(convertedStr, testEnum.ITEM1.name());
+        Assertions.assertEquals(convertedStr, testEnum.ITEM1.name());
     }
 
     /**
      * Test method for
      * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
      */
+    @Test
     public void testGetAsStringNull()
     {
         UIInput input = new UIInput();
         String convertedStr = converter.getAsString(FacesContext.getCurrentInstance(), input, null);
-        Assert.assertEquals(convertedStr, "");
+        Assertions.assertEquals(convertedStr, "");
     }
 
     /**
      * Test method for
      * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
      */
+    @Test
     public void testGetAsStringNoEnum()
     {
         UIInput input = new UIInput();
         try
         {
             String convertedStr = converter.getAsString(FacesContext.getCurrentInstance(), input, "HALLO");
-            Assert.fail("Converter exception should be thrown");
+            Assertions.fail("Converter exception should be thrown");
         }
         catch (ConverterException e)
         {
@@ -166,6 +175,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
      * Test method for
      * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
      */
+    @Test
     public void testGetAsStringNoClassSet()
     {
         Converter testConverter = new EnumConverter();
@@ -173,7 +183,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
         try
         {
             testConverter.getAsString(FacesContext.getCurrentInstance(), input, testEnum.ITEM1);
-            Assert.fail("Converter exception should be thrown");
+            Assertions.fail("Converter exception should be thrown");
         }
         catch (ConverterException e)
         {

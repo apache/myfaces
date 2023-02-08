@@ -97,7 +97,7 @@ public class JstlFnLibrary implements TagLibrary
     {
         if (NAMESPACE.equals(ns) || JCP_NAMESPACE.equals(ns) || SUN_NAMESPACE.equals(ns))
         {
-            return (Method) this.fns.get(name);
+            return this.fns.get(name);
         }
         
         return null;

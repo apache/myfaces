@@ -253,7 +253,7 @@ public class ViewIdSupport
                 {
                     if (viewId.endsWith(contextSuffix))
                     {
-                        builder.append(viewId.substring(0, viewId.indexOf(contextSuffix)));
+                        builder.append(viewId, 0, viewId.indexOf(contextSuffix));
                         builder.append(mapping.getExtension());
                         founded = true;
                         break;
@@ -278,7 +278,7 @@ public class ViewIdSupport
                     }
                     else if(viewId.lastIndexOf('.') != -1 )
                     {
-                        builder.append(viewId.substring(0, viewId.lastIndexOf('.')));
+                        builder.append(viewId, 0, viewId.lastIndexOf('.'));
                         builder.append(config.getViewSuffix()[0]);
                     }
                     else
@@ -573,7 +573,7 @@ public class ViewIdSupport
         String viewId = null;
         if (ExternalContextUtils.isPortlet(externalContext))
         {
-            viewId = (String) externalContext.getRequestPathInfo();
+            viewId = externalContext.getRequestPathInfo();
         }
         else
         {

@@ -88,7 +88,7 @@ public class BigIntegerConverter implements Converter
 
         try
         {
-            return ((BigInteger)value).toString();
+            return value.toString();
         }
         catch (Exception e)
         {

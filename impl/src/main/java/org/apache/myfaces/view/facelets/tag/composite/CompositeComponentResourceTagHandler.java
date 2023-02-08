@@ -368,7 +368,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 ValueExpression requiredExpr = (ValueExpression) entry.getValue().getValue("required");
                 if (requiredExpr != null)
                 {
-                    Boolean required = (Boolean) requiredExpr.getValue(ctx.getFacesContext().getELContext());
+                    Boolean required = requiredExpr.getValue(ctx.getFacesContext().getELContext());
                     if (Boolean.TRUE.equals(required))
                     {
                         initFacetHandlersMap(ctx);
@@ -807,7 +807,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 ValueExpression requiredExpr = (ValueExpression) entry.getValue().getValue("required");
                 if (requiredExpr != null)
                 {
-                    Boolean required = (Boolean) requiredExpr.getValue(ctx.getFacesContext().getELContext());
+                    Boolean required = requiredExpr.getValue(ctx.getFacesContext().getELContext());
                     if (Boolean.TRUE.equals(required))
                     {
                         if (c.getFacet(entry.getKey()) == null)

@@ -656,12 +656,12 @@ public final class MessageUtils
      */
     public static FacesMessage getMessage(FacesContext context, String messageId)
     {
-        return getMessage(context, messageId, ((Object []) (null)));
+        return getMessage(context, messageId, null);
     }
     
     public static FacesMessage getMessage(String bundleBaseName, FacesContext context, String messageId)
     {
-        return getMessage(bundleBaseName, context, messageId, ((Object []) (null)));
+        return getMessage(bundleBaseName, context, messageId, null);
     }
 
     /**

@@ -23,8 +23,8 @@ import java.util.List;
 import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -62,7 +62,7 @@ public class CompressSpacesTextUnitTestCase extends FaceletTestCase
             i.write(facesContext);
         }
         
-        Assert.assertEquals(fw.toString(), " <p> hello </p><tr><td/></tr> ");
+        Assertions.assertEquals(fw.toString(), " <p> hello </p><tr><td/></tr> ");
     }
 
     @Test
@@ -87,7 +87,7 @@ public class CompressSpacesTextUnitTestCase extends FaceletTestCase
             i.write(facesContext);
         }
         
-        Assert.assertEquals(fw.toString(), "<p> hello </p>");
+        Assertions.assertEquals(fw.toString(), "<p> hello </p>");
 
     }
 
@@ -120,7 +120,7 @@ public class CompressSpacesTextUnitTestCase extends FaceletTestCase
             i.write(facesContext);
         }
         
-        Assert.assertEquals(fw.toString(), " <p> hello </p><tr><td/></tr>\n");
+        Assertions.assertEquals(fw.toString(), " <p> hello </p><tr><td/></tr>\n");
     }
     
     @Test
@@ -143,7 +143,7 @@ public class CompressSpacesTextUnitTestCase extends FaceletTestCase
             i.write(facesContext);
         }
         
-        Assert.assertEquals(fw.toString(), "\n");
+        Assertions.assertEquals(fw.toString(), "\n");
 
     }
 
@@ -167,7 +167,7 @@ public class CompressSpacesTextUnitTestCase extends FaceletTestCase
             i.write(facesContext);
         }
         
-        Assert.assertEquals(fw.toString(), "\r\n");
+        Assertions.assertEquals(fw.toString(), "\r\n");
 
     }    
     
@@ -191,7 +191,7 @@ public class CompressSpacesTextUnitTestCase extends FaceletTestCase
             i.write(facesContext);
         }
         
-        Assert.assertEquals(fw.toString(), "&amp;#160;\n");
+        Assertions.assertEquals(fw.toString(), "&amp;#160;\n");
 
     }
     
@@ -224,20 +224,20 @@ public class CompressSpacesTextUnitTestCase extends FaceletTestCase
             i.write(facesContext);
         }        
         
-        Assert.assertEquals(fw.toString(), "\r\n<script type=\"text/javascript\">\r\n//<![CDATA[   "+
+        Assertions.assertEquals(fw.toString(), "\r\n<script type=\"text/javascript\">\r\n//<![CDATA[   "+
             "\r\n     someJavascript();\r\n     //]]>\r\n</script> ");
     }
 
     @Test
     public void testCompressOnELExpressions() throws Exception
     {
-        Assert.assertEquals(tryCompress("#{bean.name}"), "#{bean.name}");
-        Assert.assertEquals(tryCompress(" #{bean.name}"), " #{bean.name}");
-        Assert.assertEquals(tryCompress("#{bean.name} "), "#{bean.name} ");
+        Assertions.assertEquals(tryCompress("#{bean.name}"), "#{bean.name}");
+        Assertions.assertEquals(tryCompress(" #{bean.name}"), " #{bean.name}");
+        Assertions.assertEquals(tryCompress("#{bean.name} "), "#{bean.name} ");
         String text = tryCompress("  #{bean.name}  ");
-        Assert.assertEquals(tryCompress("  #{bean.name}  "), " #{bean.name} ");
-        Assert.assertEquals(tryCompress("\n #{bean.name}\n "), "\n#{bean.name}\n");
-        Assert.assertEquals(tryCompress(" \r\n #{bean.name} \r\n "), "\r\n#{bean.name} ");
+        Assertions.assertEquals(tryCompress("  #{bean.name}  "), " #{bean.name} ");
+        Assertions.assertEquals(tryCompress("\n #{bean.name}\n "), "\n#{bean.name}\n");
+        Assertions.assertEquals(tryCompress(" \r\n #{bean.name} \r\n "), "\r\n#{bean.name} ");
     }
     
     public String tryCompress(String value)

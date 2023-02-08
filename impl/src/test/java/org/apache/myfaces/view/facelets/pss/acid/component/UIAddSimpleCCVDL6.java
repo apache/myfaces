@@ -85,7 +85,7 @@ public class UIAddSimpleCCVDL6 extends UIComponentBase implements
                 "dynComp_4", attributes);
             
             Map<String, Object> attributes2 = new HashMap<String, Object>();
-            UIComponent text = (UIComponent) vdl.createComponent(facesContext, 
+            UIComponent text = vdl.createComponent(facesContext,
                 "http://java.sun.com/jsf/composite/testComposite", 
                 "dynComp_2", attributes2);
 

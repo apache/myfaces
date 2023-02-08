@@ -295,7 +295,7 @@ public class CODIClientSideWindow extends ClientWindow
         // like e.g. ?"></a><a href%3D"http://hacker.org/attack.html?a
         // DO NOT REMOVE THE FOLLOWING LINES!
         url = url.replace("\"", "");
-        url = url.replace("\'", "");
+        url = url.replace("'", "");
 
         return url;
     }

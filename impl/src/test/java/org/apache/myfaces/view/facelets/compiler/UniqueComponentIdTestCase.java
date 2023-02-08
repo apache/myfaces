@@ -41,8 +41,8 @@ import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.view.facelets.FaceletMultipleRequestsTestCase;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
 {
@@ -104,13 +104,13 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
@@ -123,8 +123,8 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertNotNull(componentBid);
-            Assert.assertNotNull(tagBId);
+            Assertions.assertNotNull(componentBid);
+            Assertions.assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdCif.xhtml").saveView(facesContext));
             
@@ -154,12 +154,12 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
             }
             
@@ -219,13 +219,13 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
@@ -238,8 +238,8 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertNotNull(componentBid);
-            Assert.assertNotNull(tagBId);
+            Assertions.assertNotNull(componentBid);
+            Assertions.assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdCif.xhtml").saveView(facesContext));
             
@@ -260,7 +260,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
     
             UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdCif.xhtml").restoreView(facesContext, "/testUniqueComponentIdCif.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
-            Assert.assertNotNull(root);
+            Assertions.assertNotNull(root);
             
             boolean restoredB = false;
             //1. test unique MARK_CREATED id
@@ -269,12 +269,12 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
                 {
@@ -285,7 +285,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertTrue(restoredB);
+            Assertions.assertTrue(restoredB);
             
             //Now let's refresh the view on render response, to reflect the value on the condition
             tagUniqueIdSet.remove(tagBId);
@@ -301,12 +301,12 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
             }
         }
@@ -356,13 +356,13 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
@@ -375,8 +375,8 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertNotNull(componentBid);
-            Assert.assertNotNull(tagBId);
+            Assertions.assertNotNull(componentBid);
+            Assertions.assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
@@ -406,12 +406,12 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
             }
             
@@ -472,13 +472,13 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
@@ -491,8 +491,8 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertNotNull(componentBid);
-            Assert.assertNotNull(tagBId);
+            Assertions.assertNotNull(componentBid);
+            Assertions.assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
@@ -524,17 +524,17 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (componentBid.equals(componentId))
                 {
-                    Assert.assertFalse(tagBId.equals(id));
+                    Assertions.assertFalse(tagBId.equals(id));
                 }
                 else
                 {
                     if (!tagUniqueIdSet.contains(id))
                     {
-                        Assert.fail();
+                        Assertions.fail();
                     }
                     if (!componentIdSet.contains(componentId))
                     {
-                        Assert.fail();
+                        Assertions.fail();
                     }
                 }
             }
@@ -600,13 +600,13 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
@@ -620,8 +620,8 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertNotNull(componentBid);
-            Assert.assertNotNull(tagBId);
+            Assertions.assertNotNull(componentBid);
+            Assertions.assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
@@ -642,7 +642,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
     
             UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").restoreView(facesContext, "/testUniqueComponentIdInclude1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
-            Assert.assertNotNull(root);
+            Assertions.assertNotNull(root);
             
             boolean restoredB = false;
             //1. test unique MARK_CREATED id
@@ -651,24 +651,24 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
                 {
                     if ("-B-".equals(((UIOutput)child).getValue()))
                     {
                         restoredB = true;
-                        Assert.assertNotNull(child.getAttributes().get("test"));
+                        Assertions.assertNotNull(child.getAttributes().get("test"));
                     }
                 }
             }
             
-            Assert.assertTrue(restoredB);
+            Assertions.assertTrue(restoredB);
             
             //Now let's refresh the view on render response, to reflect the value on the condition
             tagUniqueIdSet.remove(tagBId);
@@ -684,12 +684,12 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
             }
         }
@@ -749,13 +749,13 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
@@ -769,8 +769,8 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertNotNull(componentBid);
-            Assert.assertNotNull(tagBId);
+            Assertions.assertNotNull(componentBid);
+            Assertions.assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
@@ -791,7 +791,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
     
             UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").restoreView(facesContext, "/testUniqueComponentIdInclude1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
-            Assert.assertNotNull(root);
+            Assertions.assertNotNull(root);
             
             boolean restoredB = false;
             //1. test unique MARK_CREATED id
@@ -800,24 +800,24 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
                 {
                     if ("-B-".equals(((UIOutput)child).getValue()))
                     {
                         restoredB = true;
-                        Assert.assertNotNull(child.getAttributes().get("test"));
+                        Assertions.assertNotNull(child.getAttributes().get("test"));
                     }
                 }
             }
             
-            Assert.assertTrue(restoredB);
+            Assertions.assertTrue(restoredB);
             
             //Now let's refresh the view on render response, to reflect the value on the condition
             tagUniqueIdSet.remove(tagBId);
@@ -841,24 +841,24 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                         restoredB = true;
                         //Check if the B component is not the same as before. 
                         //It should have different tag-component id and its state is different.
-                        Assert.assertFalse(tagBId.equals(id));
-                        Assert.assertNull(child.getAttributes().get("test"));
+                        Assertions.assertFalse(tagBId.equals(id));
+                        Assertions.assertNull(child.getAttributes().get("test"));
                     }
                 }
                 else
                 {
                     if (!tagUniqueIdSet.contains(id))
                     {
-                        Assert.fail();
+                        Assertions.fail();
                     }
                     if (!componentIdSet.contains(componentId))
                     {
-                        Assert.fail();
+                        Assertions.fail();
                     }
                 }
             }
             
-            Assert.assertTrue(restoredB);
+            Assertions.assertTrue(restoredB);
         }
         finally
         {
@@ -895,13 +895,13 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
@@ -919,10 +919,10 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertNotNull(componentBid);
-            Assert.assertNotNull(tagBId);
-            Assert.assertNotNull(componentDid);
-            Assert.assertNotNull(tagDId);
+            Assertions.assertNotNull(componentBid);
+            Assertions.assertNotNull(tagBId);
+            Assertions.assertNotNull(componentDid);
+            Assertions.assertNotNull(tagDId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").saveView(facesContext));
             
@@ -960,17 +960,17 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                         //This is a different C, because it the template is different
                         //the final component id could be the same or different, but the
                         //important here is refreshing algorithm should not mix both 
-                        Assert.assertTrue(!tagUniqueIdSet.contains(id));
+                        Assertions.assertTrue(!tagUniqueIdSet.contains(id));
                     }
                     else
                     {
                         if (!tagUniqueIdSet.contains(id))
                         {
-                            Assert.fail();
+                            Assertions.fail();
                         }
                         if (!componentIdSet.contains(componentId))
                         {
-                            Assert.fail();
+                            Assertions.fail();
                         }
                     }
                 }
@@ -978,11 +978,11 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 {
                     if (!tagUniqueIdSet.contains(id))
                     {
-                        Assert.fail();
+                        Assertions.fail();
                     }
                     if (!componentIdSet.contains(componentId))
                     {
-                        Assert.fail();
+                        Assertions.fail();
                     }
                 }
             }
@@ -1027,13 +1027,13 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
@@ -1051,10 +1051,10 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertNotNull(componentBid);
-            Assert.assertNotNull(tagBId);
-            Assert.assertNotNull(componentDid);
-            Assert.assertNotNull(tagDId);
+            Assertions.assertNotNull(componentBid);
+            Assertions.assertNotNull(tagBId);
+            Assertions.assertNotNull(componentDid);
+            Assertions.assertNotNull(tagDId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").saveView(facesContext));
             
@@ -1094,17 +1094,17 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                         //This is a different C,B or D, because it the template is different
                         //the final component id could be the same or different, but the
                         //important here is refreshing algorithm should not mix both 
-                        Assert.assertTrue(!tagUniqueIdSet.contains(id));
+                        Assertions.assertTrue(!tagUniqueIdSet.contains(id));
                     }
                     else
                     {
                         if (!tagUniqueIdSet.contains(id))
                         {
-                            Assert.fail();
+                            Assertions.fail();
                         }
                         if (!componentIdSet.contains(componentId))
                         {
-                            Assert.fail();
+                            Assertions.fail();
                         }
                     }
                 }
@@ -1112,11 +1112,11 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 {
                     if (!tagUniqueIdSet.contains(id))
                     {
-                        Assert.fail();
+                        Assertions.fail();
                     }
                     if (!componentIdSet.contains(componentId))
                     {
-                        Assert.fail();
+                        Assertions.fail();
                     }
                 }
             }
@@ -1160,13 +1160,13 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
@@ -1180,8 +1180,8 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertNotNull(componentBid);
-            Assert.assertNotNull(tagBId);
+            Assertions.assertNotNull(componentBid);
+            Assertions.assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").saveView(facesContext));
             
@@ -1202,7 +1202,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
     
             UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").restoreView(facesContext, "/testUniqueComponentIdDecorate1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
-            Assert.assertNotNull(root);
+            Assertions.assertNotNull(root);
             
             boolean restoredB = false;
             //1. test unique MARK_CREATED id
@@ -1213,23 +1213,23 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
                 {
                     if ("-B-".equals(((UIOutput)child).getValue()))
                     {
                         restoredB = true;
-                        Assert.assertNotNull(child.getAttributes().get("test"));
+                        Assertions.assertNotNull(child.getAttributes().get("test"));
                     }
                 }
             }
             
-            Assert.assertTrue(restoredB);
+            Assertions.assertTrue(restoredB);
             
             //Now let's refresh the view on render response, to reflect the value on the condition
             tagUniqueIdSet.remove(tagBId);
@@ -1250,17 +1250,17 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     //This is a different C, because it the template is different
                     //the final component id could be the same or different, but the
                     //important here is refreshing algorithm should not mix both 
-                    Assert.assertTrue(!tagUniqueIdSet.contains(id));
+                    Assertions.assertTrue(!tagUniqueIdSet.contains(id));
                 }
                 else
                 {
                     if (!tagUniqueIdSet.contains(id))
                     {
-                        Assert.fail();
+                        Assertions.fail();
                     }
                     if (!componentIdSet.contains(componentId))
                     {
-                        Assert.fail();
+                        Assertions.fail();
                     }
                 }
             }
@@ -1295,13 +1295,13 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
@@ -1314,8 +1314,8 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertNotNull(componentBid);
-            Assert.assertNotNull(tagBId);
+            Assertions.assertNotNull(componentBid);
+            Assertions.assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdChoose.xhtml").saveView(facesContext));
             
@@ -1345,12 +1345,12 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
             }
             
@@ -1393,13 +1393,13 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
@@ -1412,8 +1412,8 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertNotNull(componentBid);
-            Assert.assertNotNull(tagBId);
+            Assertions.assertNotNull(componentBid);
+            Assertions.assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdChoose.xhtml").saveView(facesContext));
             
@@ -1434,7 +1434,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
     
             UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdChoose.xhtml").restoreView(facesContext, "/testUniqueComponentIdChoose.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
-            Assert.assertNotNull(root);
+            Assertions.assertNotNull(root);
             
             boolean restoredB = false;
             //1. test unique MARK_CREATED id
@@ -1443,12 +1443,12 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
                 {
@@ -1459,7 +1459,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 }
             }
             
-            Assert.assertTrue(restoredB);
+            Assertions.assertTrue(restoredB);
             
             //Now let's refresh the view on render response, to reflect the value on the condition
             tagUniqueIdSet.remove(tagBId);
@@ -1475,12 +1475,12 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assert.fail();
+                    Assertions.fail();
                 }
             }
         }

@@ -94,9 +94,9 @@ class _FactoryFinderProviderFactory
             if (factoryFinderProviderClass != null)
             {
                 factoryFinderProviderGetFactoryMethod = factoryFinderProviderClass.getMethod("getFactory",
-                        new Class[]{String.class});
+                        String.class);
                 factoryFinderProviderSetFactoryMethod = factoryFinderProviderClass.getMethod("setFactory",
-                        new Class[]{String.class, String.class});
+                        String.class, String.class);
                 factoryFinderProviderReleaseFactoriesMethod = factoryFinderProviderClass.getMethod
                         ("releaseFactories", null);
             }

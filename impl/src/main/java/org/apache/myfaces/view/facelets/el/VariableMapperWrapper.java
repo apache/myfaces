@@ -64,7 +64,7 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
         {
             if (_vars != null)
             {
-                ve = (ValueExpression) _vars.get(variable);
+                ve = _vars.get(variable);
 
                 // Is this code in a block that wants to cache 
                 // the resulting expression(s) and variable has been resolved?

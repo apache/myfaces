@@ -79,7 +79,7 @@ public class ContentTypeUtils
 
             for (int j = 0; j < contentTypeList.length; j++)
             {
-                String contentType = (String) contentTypeList[j];
+                String contentType = contentTypeList[j];
                 if (contentType.contains(supportedContentType))
                 {
                     if (containsContentType(contentType, htmlContentTypes))
@@ -117,7 +117,7 @@ public class ContentTypeUtils
     
     public static String getContentTypeFromAcceptHeader(FacesContext context)
     {
-        String contentTypeListString = (String) context.getExternalContext()
+        String contentTypeListString = context.getExternalContext()
             .getRequestHeaderMap().get("Accept");
         // There is a windows mobile IE client (6.12) sending
         // "application/vnd.wap.mms-message;*/*"

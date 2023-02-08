@@ -21,7 +21,7 @@ package org.apache.myfaces.test.base.junit;
 
 import java.util.Iterator;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * <p>Abstract base class for testing <code>ViewController</code>
@@ -72,7 +72,7 @@ public abstract class AbstractViewControllerTestCase extends
             messages.next();
             actual++;
         }
-        Assert.assertEquals("Complete message count", expected, actual);
+        Assertions.assertEquals(expected, actual, "Complete message count");
 
     }
 
@@ -94,7 +94,7 @@ public abstract class AbstractViewControllerTestCase extends
             messages.next();
             actual++;
         }
-        Assert.assertEquals("Complete message count", expected, actual);
+        Assertions.assertSame(expected, actual, "Complete message count");
 
     }
 

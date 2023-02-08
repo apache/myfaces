@@ -73,8 +73,7 @@ public final class MetaRulesetImpl extends MetaRuleset
     {
         ClassLoader cl = ClassUtils.getContextClassLoader();
         
-        Map<String, MetadataTarget> metadata = (Map<String, MetadataTarget>)
-                MetaRulesetImpl.metadata.get(cl);
+        Map<String, MetadataTarget> metadata = MetaRulesetImpl.metadata.get(cl);
 
         if (metadata == null)
         {
@@ -202,7 +201,7 @@ public final class MetaRulesetImpl extends MetaRuleset
         Assert.notNull(attribute, "attribute");
         Assert.notNull(property, "property");
 
-        TagAttribute attr = (TagAttribute) _attributes.remove(attribute);
+        TagAttribute attr = _attributes.remove(attribute);
         if (attr != null)
         {
             _attributes.put(property, attr);

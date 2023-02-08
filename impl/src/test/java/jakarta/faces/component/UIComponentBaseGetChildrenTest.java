@@ -18,18 +18,16 @@
  */
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIPanel;
-import jakarta.faces.component.UIInput;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase
 {
+    @Test
     public void testGetChildrenAddAll()
     {
         UIInput input0 = new UIInput();
@@ -58,20 +56,21 @@ public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase
         // inserted to the first ones
         children.addAll(0, list);
         
-        Assert.assertEquals(4, children.size());
-        Assert.assertEquals(input2.getId(), children.get(0).getId());
-        Assert.assertEquals(input3.getId(), children.get(1).getId());
+        Assertions.assertEquals(4, children.size());
+        Assertions.assertEquals(input2.getId(), children.get(0).getId());
+        Assertions.assertEquals(input3.getId(), children.get(1).getId());
     }
     
+    @Test
     public void testSimpleAddRemove()
     {
         UIInput input = new UIInput();
         input.setId("input0");
         UIPanel panel = new UIPanel();
         panel.getChildren().add(input);
-        Assert.assertEquals(panel, input.getParent());
+        Assertions.assertEquals(panel, input.getParent());
         panel.getChildren().remove(input);
-        Assert.assertNull(input.getParent());
+        Assertions.assertNull(input.getParent());
     }
     
     /** Whenever a new child component is added, the parent property 
@@ -80,6 +79,7 @@ public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase
      * the child must first be removed from its previous parent 
      * (where it may have been either a child or a facet).
      */
+    @Test
     public void testSetChild1()
     {
         UIInput input = new UIInput();
@@ -90,14 +90,15 @@ public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase
         
         UIPanel panel = new UIPanel();
         panel.getChildren().add(input);
-        Assert.assertEquals(panel, input.getParent());
+        Assertions.assertEquals(panel, input.getParent());
         
         panel.getChildren().set(0, input1);
         
-        Assert.assertEquals(panel, input1.getParent());
-        Assert.assertNull(input.getParent());
+        Assertions.assertEquals(panel, input1.getParent());
+        Assertions.assertNull(input.getParent());
     }
     
+    @Test
     public void testSetChild2()
     {
         UIInput input = new UIInput();
@@ -108,7 +109,7 @@ public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase
         
         UIPanel panel = new UIPanel();
         panel.getChildren().add(input);
-        Assert.assertEquals(panel, input.getParent());
+        Assertions.assertEquals(panel, input.getParent());
         
         UIViewRoot root = new UIViewRoot();
         root.getChildren().add(panel);
@@ -116,10 +117,10 @@ public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase
         
         panel.getChildren().set(0, input1);
         
-        Assert.assertEquals(panel, input1.getParent());
-        Assert.assertNull(input.getParent());
+        Assertions.assertEquals(panel, input1.getParent());
+        Assertions.assertNull(input.getParent());
         
-        Assert.assertTrue(root.getFacets().isEmpty());
+        Assertions.assertTrue(root.getFacets().isEmpty());
     }
     
     
@@ -127,6 +128,7 @@ public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase
     /** Whenever an existing child component is removed, the parent 
      * property of the child must be set to null.
      */
+    @Test
     public void testSetFacetClearChild()
     {
         UIInput input = new UIInput();
@@ -137,21 +139,21 @@ public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase
         
         UIPanel panel = new UIPanel();
         panel.getChildren().add(input);
-        Assert.assertEquals(panel, input.getParent());
+        Assertions.assertEquals(panel, input.getParent());
 
         UIViewRoot root = new UIViewRoot();
         root.getChildren().add(panel);
         root.getFacets().put("customFacet", input1);
 
         root.getFacets().put("customFacet", input);
-        Assert.assertEquals(root, input.getParent());
-        Assert.assertNull(input1.getParent());
+        Assertions.assertEquals(root, input.getParent());
+        Assertions.assertNull(input1.getParent());
         
-        Assert.assertFalse(root.getFacets().isEmpty());
-        Assert.assertTrue(panel.getChildCount() == 0);
+        Assertions.assertFalse(root.getFacets().isEmpty());
+        Assertions.assertTrue(panel.getChildCount() == 0);
     }
 
-    
+    @Test
     public void testSetFacetClearFacet()
     {
         UIInput input = new UIInput();
@@ -162,17 +164,17 @@ public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase
         
         UIPanel panel = new UIPanel();
         panel.getFacets().put("header", input);
-        Assert.assertEquals(panel, input.getParent());
+        Assertions.assertEquals(panel, input.getParent());
 
         UIViewRoot root = new UIViewRoot();
         root.getChildren().add(panel);
         root.getFacets().put("customFacet", input1);
 
         root.getFacets().put("customFacet", input);
-        Assert.assertEquals(root, input.getParent());
-        Assert.assertNull(input1.getParent());
+        Assertions.assertEquals(root, input.getParent());
+        Assertions.assertNull(input1.getParent());
         
-        Assert.assertFalse(root.getFacets().isEmpty());
-        Assert.assertTrue(panel.getChildCount() == 0);
+        Assertions.assertFalse(root.getFacets().isEmpty());
+        Assertions.assertTrue(panel.getChildCount() == 0);
     }
 }

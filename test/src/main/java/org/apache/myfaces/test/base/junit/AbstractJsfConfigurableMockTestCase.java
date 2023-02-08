@@ -33,7 +33,6 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
-import junit.framework.TestCase;
 
 import org.apache.myfaces.test.config.ResourceBundleVarNames;
 import org.apache.myfaces.test.mock.MockExternalContext;
@@ -44,8 +43,8 @@ import org.apache.myfaces.test.mock.MockHttpSession;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
-import org.junit.After;
-import org.junit.Before;
+import  org.junit.jupiter.api.AfterEach;
+import  org.junit.jupiter.api.BeforeEach;
 
 /**
  * <p>Abstract JUnit 4.5 test case base class, which sets up the JavaServer Faces
@@ -79,7 +78,7 @@ import org.junit.Before;
  * @since 1.0.0
  */
 
-public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
+public abstract class AbstractJsfConfigurableMockTestCase
 {
 
     // ------------------------------------------------------------ Constructors
@@ -96,7 +95,7 @@ public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
     /**
      * <p>Set up instance variables required by this test case.</p>
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         // Set up a new thread context class loader
@@ -243,7 +242,7 @@ public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
     {
         facesContextFactory = (FacesContextFactory) FactoryFinder
                 .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = (FacesContext) facesContextFactory.getFacesContext(
+        facesContext = facesContextFactory.getFacesContext(
                 servletContext, request, response, lifecycle);
         if (facesContext.getExternalContext() != null)
         {
@@ -299,7 +298,7 @@ public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
     /**
      * <p>Tear down instance variables required by this test case.</p>
      */
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
 

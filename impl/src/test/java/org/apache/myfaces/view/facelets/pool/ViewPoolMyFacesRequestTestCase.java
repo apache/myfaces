@@ -39,8 +39,8 @@ import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.pool.impl.ViewPoolImpl;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
@@ -96,8 +96,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         endRequest();
     }
 
@@ -128,7 +128,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBeforeRender(facesContext);
         executeBuildViewCycle(facesContext);
         
-        Assert.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
+        Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -139,7 +139,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         // Check it was used.
-        Assert.assertNull(entry);
+        Assertions.assertNull(entry);
     }
     
     @Test
@@ -154,11 +154,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIOutput testjs1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
-        Assert.assertNotNull(testjs1_1);
+        Assertions.assertNotNull(testjs1_1);
         testjs1_1.getAttributes().put("param1", "value1");
         
         List<UIComponent> crlist = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(2, crlist.size());
+        Assertions.assertEquals(2, crlist.size());
         for(UIComponent comp : crlist)
         {
             comp.getAttributes().put("param2", "value2");
@@ -175,18 +175,18 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBeforeRender(facesContext);
         executeBuildViewCycle(facesContext);
         
-        Assert.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
+        Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
         UIOutput testjs2_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
-        Assert.assertNotNull(testjs2_1);
+        Assertions.assertNotNull(testjs2_1);
         // The state of the component should not be transferred.
-        Assert.assertNull(testjs2_1.getAttributes().get("param1"));
+        Assertions.assertNull(testjs2_1.getAttributes().get("param1"));
         
         List<UIComponent> crlist2 = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(2, crlist2.size());   
+        Assertions.assertEquals(2, crlist2.size());   
         for(UIComponent comp : crlist)
         {
-            Assert.assertNull(comp.getAttributes().get("param2"));
+            Assertions.assertNull(comp.getAttributes().get("param2"));
         }
 
         UIViewRoot root = new UIViewRoot();
@@ -198,7 +198,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         // Check it was used.
-        Assert.assertNull(entry);
+        Assertions.assertNull(entry);
     }    
 
     @Test
@@ -218,8 +218,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         endRequest();
     }
     
@@ -251,14 +251,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         
         //Check the component was removed
         UIForm form2 = (UIForm) entry.getViewRoot().findComponent("mainForm");
-        Assert.assertNotNull(form2);
+        Assertions.assertNotNull(form2);
         UIOutput testComponent2 = (UIOutput) form2.findComponent("testId");
-        Assert.assertNull(testComponent2);
+        Assertions.assertNull(testComponent2);
         
         endRequest();
     }
@@ -291,14 +291,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         
         //Check the component was removed
         UIForm form2 = (UIForm) entry.getViewRoot().findComponent("mainForm");
-        Assert.assertNotNull(form2);
+        Assertions.assertNotNull(form2);
         UIOutput testComponent2 = (UIOutput) form2.findComponent("testId");
-        Assert.assertNull(testComponent2);
+        Assertions.assertNull(testComponent2);
         
         endRequest();
     }
@@ -331,8 +331,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
         endRequest();
     }
     
@@ -366,8 +366,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
         endRequest();
     }
     
@@ -397,7 +397,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         //Check if the view scope value is preserved
-        Assert.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
+        Assertions.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
         
         facesContext.getViewRoot().getViewMap().put("someKey", "someValue2");
         
@@ -414,9 +414,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         //Check if the view scope value is preserved
-        Assert.assertEquals("someValue2", facesContext.getViewRoot().getViewMap().get("someKey"));
+        Assertions.assertEquals("someValue2", facesContext.getViewRoot().getViewMap().get("someKey"));
         
-        Assert.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
+        Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -429,8 +429,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         
         endRequest();
     }    
@@ -448,7 +448,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
 
         // Use view scope
-        Assert.assertEquals("someBeforeValue", facesContext.getViewRoot().getViewMap().get("keyBeforeView"));
+        Assertions.assertEquals("someBeforeValue", facesContext.getViewRoot().getViewMap().get("keyBeforeView"));
         facesContext.getViewRoot().getViewMap().put("someKey", "someValue");
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
@@ -464,7 +464,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         //Check if the view scope value is preserved
-        Assert.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
+        Assertions.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
         
         facesContext.getViewRoot().getViewMap().put("someKey", "someValue2");
         
@@ -481,9 +481,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         //Check if the view scope value is preserved
-        Assert.assertEquals("someValue2", facesContext.getViewRoot().getViewMap().get("someKey"));
+        Assertions.assertEquals("someValue2", facesContext.getViewRoot().getViewMap().get("someKey"));
         
-        Assert.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
+        Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -496,8 +496,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         
         endRequest();
     }    
@@ -515,7 +515,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
 
         // Use view scope
         facesContext.getViewRoot().getViewMap().put("someKey", "someValue");
-        //Assert.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
+        //Assertions.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -527,20 +527,20 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         facesContext.getViewRoot().getViewMap().put("keyBeforeView", "someBeforeValue");
         
         UIViewParameter paramComponent = ViewMetadata.getViewParameters(facesContext.getViewRoot()).iterator().next();
-        Assert.assertNotNull(paramComponent);
-        Assert.assertEquals("someId", paramComponent.getValue());
+        Assertions.assertNotNull(paramComponent);
+        Assertions.assertEquals("someId", paramComponent.getValue());
 
         executeBeforeRender(facesContext);
         executeBuildViewCycle(facesContext);
 
         paramComponent = ViewMetadata.getViewParameters(facesContext.getViewRoot()).iterator().next();
-        Assert.assertNotNull(paramComponent);
-        Assert.assertEquals("someId", paramComponent.getValue());
+        Assertions.assertNotNull(paramComponent);
+        Assertions.assertEquals("someId", paramComponent.getValue());
         
         // Use view scope
-        Assert.assertEquals("someBeforeValue", facesContext.getViewRoot().getViewMap().get("keyBeforeView"));
+        Assertions.assertEquals("someBeforeValue", facesContext.getViewRoot().getViewMap().get("keyBeforeView"));
         facesContext.getViewRoot().getViewMap().put("someKey", "someValue");
-        //Assert.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
+        //Assertions.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         
@@ -562,11 +562,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIOutput testjs1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
-        Assert.assertNotNull(testjs1_1);
+        Assertions.assertNotNull(testjs1_1);
         testjs1_1.getAttributes().put("param1", "value1");
         
         List<UIComponent> crlist = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(2, crlist.size());
+        Assertions.assertEquals(2, crlist.size());
         for(UIComponent comp : crlist)
         {
             comp.getAttributes().put("param2", "value2");
@@ -584,18 +584,18 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBeforeRender(facesContext);
         executeBuildViewCycle(facesContext);
         
-        Assert.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
+        Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
         UIOutput testjs2_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
-        Assert.assertNotNull(testjs2_1);
+        Assertions.assertNotNull(testjs2_1);
         // The state of the component should not be transferred.
-        Assert.assertEquals("value1",testjs2_1.getAttributes().get("param1"));
+        Assertions.assertEquals("value1",testjs2_1.getAttributes().get("param1"));
         
         List<UIComponent> crlist2 = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(2, crlist2.size());   
+        Assertions.assertEquals(2, crlist2.size());   
         for(UIComponent comp : crlist)
         {
-            Assert.assertEquals("value2", comp.getAttributes().get("param2"));
+            Assertions.assertEquals("value2", comp.getAttributes().get("param2"));
         }
 
         UIViewRoot root = new UIViewRoot();
@@ -607,7 +607,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         // Check it was used.
-        Assert.assertNull(entry);
+        Assertions.assertNull(entry);
     }
     
     @Test
@@ -631,7 +631,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         // Check the ViewMap value is not passed to the view
-        Assert.assertNull(facesContext.getViewRoot().getViewMap(false));
+        Assertions.assertNull(facesContext.getViewRoot().getViewMap(false));
         
         // Check the view was used
         UIViewRoot root = new UIViewRoot();
@@ -641,7 +641,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
     }
     
     @Test
@@ -665,8 +665,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         endRequest();
     }
     
@@ -695,14 +695,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
 
         // Check the ViewMap is passed to the view
-        Assert.assertNotNull(facesContext.getViewRoot().getViewMap(false));
-        Assert.assertEquals("someValue", facesContext.getViewRoot().getViewMap(false).get("viewItem"));
+        Assertions.assertNotNull(facesContext.getViewRoot().getViewMap(false));
+        Assertions.assertEquals("someValue", facesContext.getViewRoot().getViewMap(false).get("viewItem"));
         
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         // Check the view was used
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
     }
 
     @Test
@@ -722,8 +722,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         endRequest();
     }
     
@@ -738,12 +738,12 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIOutput outParam1_1 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:paramOut_1");
-        Assert.assertNotNull(outParam1_1);
-        Assert.assertEquals("hello_1", outParam1_1.getValue());
+        Assertions.assertNotNull(outParam1_1);
+        Assertions.assertEquals("hello_1", outParam1_1.getValue());
 
         UIOutput outParam1_2 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:paramOut_2");
-        Assert.assertNotNull(outParam1_2);
-        Assert.assertEquals("hello_2", outParam1_2.getValue());
+        Assertions.assertNotNull(outParam1_2);
+        Assertions.assertEquals("hello_2", outParam1_2.getValue());
         
         executeViewHandlerRender(facesContext);
         
@@ -760,12 +760,12 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIOutput outParam2_1 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:paramOut_1");
-        Assert.assertNotNull(outParam2_1);
-        Assert.assertEquals("hello_1", outParam2_1.getValue());
+        Assertions.assertNotNull(outParam2_1);
+        Assertions.assertEquals("hello_1", outParam2_1.getValue());
 
         UIOutput outParam2_2 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:paramOut_2");
-        Assert.assertNotNull(outParam2_2);
-        Assert.assertEquals("hello_2", outParam2_2.getValue());        
+        Assertions.assertNotNull(outParam2_2);
+        Assertions.assertEquals("hello_2", outParam2_2.getValue());        
         
         // Check the view was used
         UIViewRoot root = new UIViewRoot();
@@ -775,7 +775,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         
         executeViewHandlerRender(facesContext);
         
@@ -802,8 +802,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         endRequest();
     }
     
@@ -818,7 +818,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIOutput testId1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testId");
-        Assert.assertNotNull(testId1_1);
+        Assertions.assertNotNull(testId1_1);
         testId1_1.getAttributes().put("param1", "value1");
         
         executeViewHandlerRender(facesContext);
@@ -833,8 +833,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIOutput testId2_1 = (UIOutput) facesContext.getViewRoot().findComponent("testId");
-        Assert.assertNotNull(testId2_1);
-        Assert.assertNull(testId2_1.getAttributes().get("param1"));
+        Assertions.assertNotNull(testId2_1);
+        Assertions.assertNull(testId2_1.getAttributes().get("param1"));
         
         // Check the view was used
         UIViewRoot root = new UIViewRoot();
@@ -844,7 +844,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         
         executeViewHandlerRender(facesContext);
         
@@ -862,7 +862,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIOutput testId1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testId");
-        Assert.assertNotNull(testId1_1);
+        Assertions.assertNotNull(testId1_1);
         // With the line below, we put something into the state. The idea is everything inside
         // metadata facet should not be taken into account by the view pool
         testId1_1.getAttributes().put("param1", "value1");
@@ -878,16 +878,16 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
 
         UIOutput testId2_1 = (UIOutput) facesContext.getViewRoot().findComponent("testId");
-        Assert.assertNotNull(testId2_1);
+        Assertions.assertNotNull(testId2_1);
         // Check the state is correctly restored. 
-        Assert.assertEquals("value1", testId2_1.getAttributes().get("param1"));
+        Assertions.assertEquals("value1", testId2_1.getAttributes().get("param1"));
         
         executeBuildViewCycle(facesContext);
         
         UIOutput testId3_1 = (UIOutput) facesContext.getViewRoot().findComponent("testId");
-        Assert.assertNotNull(testId3_1);
+        Assertions.assertNotNull(testId3_1);
         // Check the state is correctly restored. 
-        Assert.assertEquals("value1", testId3_1.getAttributes().get("param1"));
+        Assertions.assertEquals("value1", testId3_1.getAttributes().get("param1"));
         
         // Check the view was used
         UIViewRoot root = new UIViewRoot();
@@ -897,7 +897,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         
         executeViewHandlerRender(facesContext);
         
@@ -929,8 +929,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         endRequest();
     }
     
@@ -965,14 +965,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         
         //Check the component was removed
         UIForm form2 = (UIForm) entry.getViewRoot().findComponent("mainForm");
-        Assert.assertNotNull(form2);
+        Assertions.assertNotNull(form2);
         UIOutput testComponent2 = (UIOutput) form2.findComponent("testId");
-        Assert.assertNull(testComponent2);
+        Assertions.assertNull(testComponent2);
         
         endRequest();
     }
@@ -997,8 +997,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         
         // Check the ViewMap is passed to the view
-        Assert.assertNotNull(facesContext.getViewRoot().getViewMap(false));
-        Assert.assertEquals("someValue", facesContext.getViewRoot().getViewMap(false).get("viewItem"));
+        Assertions.assertNotNull(facesContext.getViewRoot().getViewMap(false));
+        Assertions.assertEquals("someValue", facesContext.getViewRoot().getViewMap(false).get("viewItem"));
         
         FaceletState faceletState = (FaceletState) facesContext.getViewRoot().getAttributes().get(
             ComponentSupport.FACELET_STATE_INSTANCE);        
@@ -1012,9 +1012,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         // Check the view was used
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         ViewEntry entry3 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNull(entry3);
+        Assertions.assertNull(entry3);
     }
         
     @Test
@@ -1026,7 +1026,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBeforeRender(facesContext);
         executeBuildViewCycle(facesContext);
         locale = facesContext.getViewRoot().getLocale();
-        Assert.assertEquals(Locale.US, locale);
+        Assertions.assertEquals(Locale.US, locale);
         
         
         executeViewHandlerRender(facesContext);
@@ -1040,8 +1040,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         endRequest();
     }
     
@@ -1052,7 +1052,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/staticPageLocale1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        Assert.assertEquals(Locale.US, locale);
+        Assertions.assertEquals(Locale.US, locale);
         
         executeBuildViewCycle(facesContext);
         executeViewHandlerRender(facesContext);
@@ -1073,7 +1073,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
     }
     
     /**
@@ -1088,7 +1088,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/staticPageLocale1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        Assert.assertEquals(Locale.US, locale);
+        Assertions.assertEquals(Locale.US, locale);
         
         executeBuildViewCycle(facesContext);
         executeViewHandlerRender(facesContext);
@@ -1103,7 +1103,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/staticPageLocale1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        Assert.assertEquals(Locale.UK, locale);
+        Assertions.assertEquals(Locale.UK, locale);
         executeBuildViewCycle(facesContext);
         
         // Check the view with Locale.US was not used
@@ -1114,7 +1114,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry2);
+        Assertions.assertNotNull(entry2);
     }
 
     @Test
@@ -1138,8 +1138,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         endRequest();
     }
     
@@ -1170,7 +1170,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
     }
     
     /**
@@ -1212,7 +1212,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry2);
+        Assertions.assertNotNull(entry2);
     }
     
     @Test
@@ -1239,7 +1239,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry1 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNotNull(entry1);
+        Assertions.assertNotNull(entry1);
     }
     
     @Test
@@ -1254,11 +1254,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIOutput testjs1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
-        Assert.assertNotNull(testjs1_1);
+        Assertions.assertNotNull(testjs1_1);
         testjs1_1.getAttributes().put("param1", "value1");
         
         List<UIComponent> crlist = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(2, crlist.size());
+        Assertions.assertEquals(2, crlist.size());
         for(UIComponent comp : crlist)
         {
             comp.getAttributes().put("param2", "value2");
@@ -1276,18 +1276,18 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBeforeRender(facesContext);
         executeBuildViewCycle(facesContext);
         
-        Assert.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
+        Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
         UIOutput testjs2_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
-        Assert.assertNotNull(testjs2_1);
+        Assertions.assertNotNull(testjs2_1);
         // The state of the component should not be transferred.
-        Assert.assertEquals("value1",testjs2_1.getAttributes().get("param1"));
+        Assertions.assertEquals("value1",testjs2_1.getAttributes().get("param1"));
         
         List<UIComponent> crlist2 = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(2, crlist2.size());   
+        Assertions.assertEquals(2, crlist2.size());   
         for(UIComponent comp : crlist)
         {
-            Assert.assertEquals("value2", comp.getAttributes().get("param2"));
+            Assertions.assertEquals("value2", comp.getAttributes().get("param2"));
         }
 
         UIViewRoot root = new UIViewRoot();
@@ -1299,7 +1299,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         // Check it was used.
-        Assert.assertNull(entry);
+        Assertions.assertNull(entry);
     }
     
     @Test
@@ -1331,11 +1331,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIOutput testjs1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
-        Assert.assertNotNull(testjs1_1);
+        Assertions.assertNotNull(testjs1_1);
         testjs1_1.getAttributes().put("param1", "value1");
         
         List<UIComponent> crlist = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(2, crlist.size());
+        Assertions.assertEquals(2, crlist.size());
         for(UIComponent comp : crlist)
         {
             comp.getAttributes().put("param2", "value2");
@@ -1353,17 +1353,17 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         
         UIOutput testjs2_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
-        Assert.assertNotNull(testjs2_1);
+        Assertions.assertNotNull(testjs2_1);
         // The state of the component should not be transferred.
-        Assert.assertEquals("value1",testjs2_1.getAttributes().get("param1"));
+        Assertions.assertEquals("value1",testjs2_1.getAttributes().get("param1"));
         
         List<UIComponent> crlist2 = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assert.assertEquals(2, crlist2.size());   
+        Assertions.assertEquals(2, crlist2.size());   
         
         /* Resource dependency components do not preserve state
         for(UIComponent comp : crlist)
         {
-            Assert.assertEquals("value2", comp.getAttributes().get("param2"));
+            Assertions.assertEquals("value2", comp.getAttributes().get("param2"));
         } */       
         
         executeBeforeRender(facesContext);
@@ -1378,7 +1378,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         // Check it was used.
-        Assert.assertNull(entry);
+        Assertions.assertNull(entry);
     }
     
     @Test
@@ -1392,7 +1392,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
 
         UIPanel panel1 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel1");
-        Assert.assertNotNull(panel1);
+        Assertions.assertNotNull(panel1);
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -1405,8 +1405,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         endRequest();
     }
     
@@ -1422,7 +1422,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
         UIPanel panel1 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel1");
-        Assert.assertNotNull(panel1);
+        Assertions.assertNotNull(panel1);
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -1432,7 +1432,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         
         UIPanel panel2_1 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel1");
-        Assert.assertNotNull(panel2_1);
+        Assertions.assertNotNull(panel2_1);
         
         FaceletState faceletState = (FaceletState) facesContext.getViewRoot().getAttributes().get(
             ComponentSupport.FACELET_STATE_INSTANCE);        
@@ -1446,9 +1446,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         // Check the view was used
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         ViewEntry entry3 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNull(entry3);
+        Assertions.assertNull(entry3);
         
     }
     
@@ -1464,9 +1464,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
 
         UIPanel panel1_2 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel2");
-        Assert.assertNotNull(panel1_2);
-        Assert.assertEquals(1, panel1_2.getChildCount());
-        Assert.assertEquals("added component through binding", 
+        Assertions.assertNotNull(panel1_2);
+        Assertions.assertEquals(1, panel1_2.getChildCount());
+        Assertions.assertEquals("added component through binding", 
             panel1_2.getChildren().get(0).getAttributes().get("value"));
         
         executeViewHandlerRender(facesContext);
@@ -1480,8 +1480,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
         endRequest();
     }
     
@@ -1496,9 +1496,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIPanel panel1_2 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel2");
-        Assert.assertNotNull(panel1_2);
-        Assert.assertEquals(1, panel1_2.getChildCount());
-        Assert.assertEquals("added component through binding", 
+        Assertions.assertNotNull(panel1_2);
+        Assertions.assertEquals(1, panel1_2.getChildCount());
+        Assertions.assertEquals("added component through binding", 
             panel1_2.getChildren().get(0).getAttributes().get("value"));
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
@@ -1511,9 +1511,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         
         UIPanel panel2_2 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel2");
-        Assert.assertNotNull(panel2_2);
-        Assert.assertEquals(1, panel2_2.getChildCount());
-        Assert.assertEquals("added component through binding", 
+        Assertions.assertNotNull(panel2_2);
+        Assertions.assertEquals(1, panel2_2.getChildCount());
+        Assertions.assertEquals("added component through binding", 
             panel2_2.getChildren().get(0).getAttributes().get("value"));
 
         FaceletState faceletState = (FaceletState) facesContext.getViewRoot().getAttributes().get(
@@ -1528,9 +1528,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         // Check the view was used
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         ViewEntry entry3 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNull(entry3);
+        Assertions.assertNull(entry3);
     }
     
     @Test
@@ -1545,9 +1545,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
 
         UIPanel panel1_3 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel3");
-        Assert.assertNotNull(panel1_3);
-        Assert.assertEquals(1, panel1_3.getChildCount());
-        Assert.assertEquals("added component through binding", 
+        Assertions.assertNotNull(panel1_3);
+        Assertions.assertEquals(1, panel1_3.getChildCount());
+        Assertions.assertEquals("added component through binding", 
             panel1_3.getChildren().get(0).getAttributes().get("value"));
         
         executeViewHandlerRender(facesContext);
@@ -1561,8 +1561,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
         endRequest();
     }
 
@@ -1577,9 +1577,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIPanel panel1_3 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel3");
-        Assert.assertNotNull(panel1_3);
-        Assert.assertEquals(1, panel1_3.getChildCount());
-        Assert.assertEquals("added component through binding", 
+        Assertions.assertNotNull(panel1_3);
+        Assertions.assertEquals(1, panel1_3.getChildCount());
+        Assertions.assertEquals("added component through binding", 
             panel1_3.getChildren().get(0).getAttributes().get("value"));
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
@@ -1592,9 +1592,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         
         UIPanel panel2_3 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel3");
-        Assert.assertNotNull(panel2_3);
-        Assert.assertEquals(1, panel2_3.getChildCount());
-        Assert.assertEquals("added component through binding", 
+        Assertions.assertNotNull(panel2_3);
+        Assertions.assertEquals(1, panel2_3.getChildCount());
+        Assertions.assertEquals("added component through binding", 
             panel2_3.getChildren().get(0).getAttributes().get("value"));
 
         FaceletState faceletState = (FaceletState) facesContext.getViewRoot().getAttributes().get(
@@ -1609,9 +1609,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         // Check the view was used
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         ViewEntry entry3 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNull(entry3);
+        Assertions.assertNull(entry3);
     }
     
     @Test
@@ -1626,8 +1626,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
 
         UIPanel panel1_4 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel4");
-        Assert.assertNotNull(panel1_4);
-        Assert.assertEquals(1, panel1_4.getChildCount());
+        Assertions.assertNotNull(panel1_4);
+        Assertions.assertEquals(1, panel1_4.getChildCount());
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -1640,8 +1640,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
         endRequest();
     }
     
@@ -1656,8 +1656,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBuildViewCycle(facesContext);
         
         UIPanel panel1_4 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel4");
-        Assert.assertNotNull(panel1_4);
-        Assert.assertEquals(1, panel1_4.getChildCount());
+        Assertions.assertNotNull(panel1_4);
+        Assertions.assertEquals(1, panel1_4.getChildCount());
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
@@ -1669,8 +1669,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         
         UIPanel panel2_4 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel4");
-        Assert.assertNotNull(panel2_4);
-        Assert.assertEquals(1, panel2_4.getChildCount());
+        Assertions.assertNotNull(panel2_4);
+        Assertions.assertEquals(1, panel2_4.getChildCount());
 
         FaceletState faceletState = (FaceletState) facesContext.getViewRoot().getAttributes().get(
             ComponentSupport.FACELET_STATE_INSTANCE);        
@@ -1684,9 +1684,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         // Check the view was used
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         ViewEntry entry3 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNull(entry3);
+        Assertions.assertNull(entry3);
     }
     
     @Test
@@ -1710,8 +1710,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
         endRequest();
     }
     
@@ -1745,9 +1745,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         // Check the view was used
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         ViewEntry entry3 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNull(entry3);
+        Assertions.assertNull(entry3);
         
     }
     
@@ -1779,8 +1779,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
         endRequest();
     }
     
@@ -1814,9 +1814,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         // Check the view was used
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         ViewEntry entry3 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNull(entry3);
+        Assertions.assertNull(entry3);
         
     }
     
@@ -1848,8 +1848,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
         endRequest();
     }
     
@@ -1883,9 +1883,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         // Check the view was used
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         ViewEntry entry3 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNull(entry3);
+        Assertions.assertNull(entry3);
         
     }
     
@@ -1918,8 +1918,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
+        Assertions.assertNotNull(entry);
+        Assertions.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
         endRequest();
     }
     
@@ -1960,9 +1960,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         // Check the view was used
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         ViewEntry entry3 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNull(entry3);
+        Assertions.assertNull(entry3);
         
     }
     
@@ -1993,7 +1993,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         processLifecycleExecute();
         
-        Assert.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
+        Assertions.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
         
         FaceletState faceletState = (FaceletState) facesContext.getViewRoot().getAttributes().get(
             ComponentSupport.FACELET_STATE_INSTANCE);        
@@ -2007,9 +2007,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewPool viewPool = processor.getViewPool(facesContext, root);
         // Check the view was used
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
-        Assert.assertNull(entry2);
+        Assertions.assertNull(entry2);
         ViewEntry entry3 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
-        Assert.assertNull(entry3);
+        Assertions.assertNull(entry3);
         
     }    
     

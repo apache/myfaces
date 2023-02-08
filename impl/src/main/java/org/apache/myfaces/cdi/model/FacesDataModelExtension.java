@@ -48,7 +48,7 @@ public class FacesDataModelExtension implements Extension
         Annotated annotated = event.getAnnotatedBeanClass();
         if (annotated.isAnnotationPresent(FacesDataModel.class))
         {
-            FacesDataModel model = (FacesDataModel) annotated.getAnnotation(FacesDataModel.class);
+            FacesDataModel model = annotated.getAnnotation(FacesDataModel.class);
 
             boolean hasValue = model.forClass() != null;
             if (hasValue)

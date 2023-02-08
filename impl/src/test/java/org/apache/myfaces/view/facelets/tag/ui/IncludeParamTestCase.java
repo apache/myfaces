@@ -33,8 +33,8 @@ import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class IncludeParamTestCase extends FaceletTestCase
 {
@@ -120,8 +120,8 @@ public class IncludeParamTestCase extends FaceletTestCase
         
         String result = fw.toString();
         
-        Assert.assertTrue("Output:" + result, result.contains("<p>Component value: page test2</p>"));
-        Assert.assertTrue("Output:" + result,result.contains("<p>Inline EL value: page test2</p>"));
+        Assertions.assertTrue(result.contains("<p>Component value: page test2</p>"));
+        Assertions.assertTrue(result.contains("<p>Inline EL value: page test2</p>"));
         
         //System.out.println(fw);
 
@@ -145,8 +145,8 @@ public class IncludeParamTestCase extends FaceletTestCase
         
         result = fw.toString();
         
-        Assert.assertTrue("Output:" + result, result.contains("<p>Component value: page test3</p>"));
-        Assert.assertTrue("Output:" + result, result.contains("<p>Inline EL value: page test3</p>"));
+        Assertions.assertTrue(result.contains("<p>Component value: page test3</p>"));
+        Assertions.assertTrue(result.contains("<p>Inline EL value: page test3</p>"));
 
     }
     
@@ -164,7 +164,7 @@ public class IncludeParamTestCase extends FaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertTrue("Output:" + result, result.contains("value1"));
+        Assertions.assertTrue(result.contains("value1"));
     }
 
     /**
@@ -187,8 +187,8 @@ public class IncludeParamTestCase extends FaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertTrue(result.contains("rightValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
     
     /**
@@ -211,7 +211,7 @@ public class IncludeParamTestCase extends FaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
     
     /**
@@ -234,8 +234,8 @@ public class IncludeParamTestCase extends FaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertTrue(result.contains("rightValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
     
     /**
@@ -258,8 +258,8 @@ public class IncludeParamTestCase extends FaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertTrue(result.contains("rightValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
     
     /**
@@ -281,9 +281,9 @@ public class IncludeParamTestCase extends FaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
-        Assert.assertTrue("Output should contain 'right2Value'", result.contains("right2Value"));
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertTrue(result.contains("rightValue"));
+        Assertions.assertTrue(result.contains("right2Value"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
     
     /**
@@ -306,8 +306,8 @@ public class IncludeParamTestCase extends FaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
-        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+        Assertions.assertTrue(result.contains("rightValue"));
+        Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
     
     /**
@@ -331,13 +331,13 @@ public class IncludeParamTestCase extends FaceletTestCase
         rw.flush();
         
         String result = fw.toString();
-        Assert.assertTrue("Output should contain 'value1'", result.contains("value1"));
-        Assert.assertTrue("Output should contain 'value2'", result.contains("value2"));
-        Assert.assertTrue("Output should contain 'value3'", result.contains("value3"));
-        Assert.assertTrue("Output should contain 'value4'", result.contains("value4"));
-        Assert.assertTrue("Output should contain 'value5'", result.contains("value5"));
-        Assert.assertTrue("Output should contain 'valu1e5'", result.contains("valu1e5"));
-        Assert.assertTrue("Output should contain 'valu1e6'", result.contains("valu1e6"));
-        Assert.assertFalse("Output should not contain 'value6'", result.contains("value6"));
+        Assertions.assertTrue(result.contains("value1"));
+        Assertions.assertTrue(result.contains("value2"));
+        Assertions.assertTrue(result.contains("value3"));
+        Assertions.assertTrue(result.contains("value4"));
+        Assertions.assertTrue(result.contains("value5"));
+        Assertions.assertTrue(result.contains("valu1e5"));
+        Assertions.assertTrue(result.contains("valu1e6"));
+        Assertions.assertFalse(result.contains("value6"));
     }
 }

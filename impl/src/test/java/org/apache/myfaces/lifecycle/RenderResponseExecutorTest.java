@@ -20,10 +20,10 @@ package org.apache.myfaces.lifecycle;
 
 import jakarta.faces.component.UIViewRoot;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RenderResponseExecutorTest extends AbstractJsfTestCase
 {
@@ -40,22 +40,22 @@ public class RenderResponseExecutorTest extends AbstractJsfTestCase
         c.setViewId("/c.xhtml");
 
         //If the view was not changed continue (return false)
-        Assert.assertFalse(checkCondition(a, a));
+        Assertions.assertFalse(checkCondition(a, a));
         
         //If the view is different instance but same viewId iterate again (return true) 
-        Assert.assertTrue(checkCondition(a, b));
+        Assertions.assertTrue(checkCondition(a, b));
         
         //If the view is different instance and different id iterate again
-        Assert.assertTrue(checkCondition(a, c));
+        Assertions.assertTrue(checkCondition(a, c));
         
         //If the view is different instance and id is null iterate again
-        Assert.assertTrue(checkCondition(a, d));
+        Assertions.assertTrue(checkCondition(a, d));
         
         //If the view is different instance and id is not null iterate again
-        Assert.assertTrue(checkCondition(d, a));
+        Assertions.assertTrue(checkCondition(d, a));
 
         //If the view was not change continue (return false)
-        Assert.assertFalse(checkCondition(d, d));
+        Assertions.assertFalse(checkCondition(d, d));
     }
     
     protected boolean checkCondition(UIViewRoot previousRoot, UIViewRoot root)

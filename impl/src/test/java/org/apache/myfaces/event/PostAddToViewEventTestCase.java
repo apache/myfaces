@@ -32,8 +32,8 @@ import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
 {
@@ -63,8 +63,8 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         bean.invokePostAddToViewEvent(EasyMock.isA(ComponentSystemEvent.class));
         EasyMock.expectLastCall().andAnswer(() -> {
             ComponentSystemEvent e = (ComponentSystemEvent) EasyMock.getCurrentArguments()[0];
-            Assert.assertTrue(e.getComponent() instanceof UIViewRoot);
-            Assert.assertEquals(PhaseId.RENDER_RESPONSE, facesContext.getCurrentPhaseId());
+            Assertions.assertTrue(e.getComponent() instanceof UIViewRoot);
+            Assertions.assertEquals(PhaseId.RENDER_RESPONSE, facesContext.getCurrentPhaseId());
             return null;
         }).once();
         EasyMock.replay(bean);
@@ -84,10 +84,10 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         {
             EasyMock.expectLastCall().andAnswer(() -> {
                 ComponentSystemEvent e = (ComponentSystemEvent) EasyMock.getCurrentArguments()[0];
-                Assert.assertTrue(e.getComponent() instanceof UIViewRoot);
-                Assert.assertEquals(PhaseId.RESTORE_VIEW, facesContext.getCurrentPhaseId());
-                Assert.assertTrue(facesContext.getAttributes().containsKey("jakarta.faces.IS_BUILDING_INITIAL_STATE"));
-                Assert.assertFalse(FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
+                Assertions.assertTrue(e.getComponent() instanceof UIViewRoot);
+                Assertions.assertEquals(PhaseId.RESTORE_VIEW, facesContext.getCurrentPhaseId());
+                Assertions.assertTrue(facesContext.getAttributes().containsKey("jakarta.faces.IS_BUILDING_INITIAL_STATE"));
+                Assertions.assertFalse(FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
                 return null;
             }).once();
         }
@@ -96,7 +96,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
             // Without PSS the listener should not be called, because it was already
             // called on the first request
             EasyMock.expectLastCall().andAnswer(() -> {
-                Assert.fail();
+                Assertions.fail();
                 return null;
             }).anyTimes();
         }
@@ -131,8 +131,8 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
             {
                 ComponentSystemEvent e = (ComponentSystemEvent) EasyMock
                         .getCurrentArguments()[0];
-                Assert.assertTrue(e.getComponent() instanceof UIForm);
-                Assert.assertEquals(PhaseId.RENDER_RESPONSE, facesContext.getCurrentPhaseId());
+                Assertions.assertTrue(e.getComponent() instanceof UIForm);
+                Assertions.assertEquals(PhaseId.RENDER_RESPONSE, facesContext.getCurrentPhaseId());
                 return null;
             }
         }).once();
@@ -157,10 +157,10 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
                 {
                     ComponentSystemEvent e = (ComponentSystemEvent) EasyMock
                             .getCurrentArguments()[0];
-                    Assert.assertTrue(e.getComponent() instanceof UIForm);
-                    Assert.assertEquals(PhaseId.RESTORE_VIEW, facesContext.getCurrentPhaseId());
-                    Assert.assertTrue(facesContext.getAttributes().containsKey("jakarta.faces.IS_BUILDING_INITIAL_STATE"));
-                    Assert.assertFalse(FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
+                    Assertions.assertTrue(e.getComponent() instanceof UIForm);
+                    Assertions.assertEquals(PhaseId.RESTORE_VIEW, facesContext.getCurrentPhaseId());
+                    Assertions.assertTrue(facesContext.getAttributes().containsKey("jakarta.faces.IS_BUILDING_INITIAL_STATE"));
+                    Assertions.assertFalse(FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
                     return null;
                 }
             }).once();
@@ -173,7 +173,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
             {
                 public Object answer()
                 {
-                    Assert.fail();
+                    Assertions.fail();
                     return null;
                 }
             }).anyTimes();
@@ -199,7 +199,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         PostAddToViewEventBean bean = EasyMock.createMock(PostAddToViewEventBean.class);
         bean.invokePostAddToViewEvent(EasyMock.isA(ComponentSystemEvent.class));
         EasyMock.expectLastCall().andAnswer(() -> {
-            Assert.fail();
+            Assertions.fail();
             return null;
         }).anyTimes();
         EasyMock.replay(bean);
@@ -216,7 +216,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         bean = EasyMock.createMock(PostAddToViewEventBean.class);
         bean.invokePostAddToViewEvent(EasyMock.isA(ComponentSystemEvent.class));
         EasyMock.expectLastCall().andAnswer(() -> {
-            Assert.fail();
+            Assertions.fail();
             return null;
         }).anyTimes();
         
@@ -230,8 +230,8 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         bean.invokePostAddToViewEvent(EasyMock.isA(ComponentSystemEvent.class));
         EasyMock.expectLastCall().andAnswer(() -> {
             ComponentSystemEvent e = (ComponentSystemEvent) EasyMock.getCurrentArguments()[0];
-            Assert.assertTrue(e.getComponent() instanceof UIPanel);
-            Assert.assertEquals(PhaseId.RENDER_RESPONSE, facesContext.getCurrentPhaseId());
+            Assertions.assertTrue(e.getComponent() instanceof UIPanel);
+            Assertions.assertEquals(PhaseId.RENDER_RESPONSE, facesContext.getCurrentPhaseId());
             return null;
         }).once();
         EasyMock.replay(bean);
@@ -252,8 +252,8 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         bean.invokePostAddToViewEvent(EasyMock.isA(ComponentSystemEvent.class));
         EasyMock.expectLastCall().andAnswer(() -> {
             ComponentSystemEvent e = (ComponentSystemEvent) EasyMock.getCurrentArguments()[0];
-            Assert.assertTrue(e.getComponent() instanceof UIOutput);
-            Assert.assertTrue(e.getComponent().getRendererType().equals("jakarta.faces.Head"));
+            Assertions.assertTrue(e.getComponent() instanceof UIOutput);
+            Assertions.assertTrue(e.getComponent().getRendererType().equals("jakarta.faces.Head"));
             return null;
         }).once();
         EasyMock.replay(bean);
@@ -273,8 +273,8 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         {
             EasyMock.expectLastCall().andAnswer(() -> {
                 ComponentSystemEvent e = (ComponentSystemEvent) EasyMock.getCurrentArguments()[0];
-                Assert.assertTrue(e.getComponent() instanceof UIOutput);
-                Assert.assertTrue(e.getComponent().getRendererType().equals("jakarta.faces.Head"));
+                Assertions.assertTrue(e.getComponent() instanceof UIOutput);
+                Assertions.assertTrue(e.getComponent().getRendererType().equals("jakarta.faces.Head"));
                 return null;
             }).once();
         }
@@ -283,7 +283,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
             // Without PSS the listener should not be called, because it was already
             // called on the first request
             EasyMock.expectLastCall().andAnswer(() -> {
-                Assert.fail();
+                Assertions.fail();
                 return null;
             }).anyTimes();
         }

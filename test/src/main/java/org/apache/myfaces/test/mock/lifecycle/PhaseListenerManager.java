@@ -96,7 +96,7 @@ class PhaseListenerManager
 
     void informPhaseListenersAfter(PhaseId phaseId)
     {
-        boolean[] beforePhaseSuccess = (boolean[]) listenerSuccessMap.get(phaseId);
+        boolean[] beforePhaseSuccess = listenerSuccessMap.get(phaseId);
 
         for (int i = phaseListeners.length - 1; i >= 0; i--)
         {

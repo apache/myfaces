@@ -19,41 +19,28 @@
 
 package jakarta.faces.application;
 
-import jakarta.faces.application.StateManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-
-import junit.framework.TestCase;
 
 import org.apache.myfaces.test.mock.MockStateManager;
 import org.easymock.MockControl;
 import org.easymock.classextension.MockClassControl;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class StateManagerTest extends TestCase
+public class StateManagerTest
 {
-    @Override
-    public void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
-
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
+    @Test
     public void testNullThrowsIsSavingStateInClient()
     {
         MockStateManager subject = new MockStateManager();
         try
         {
             subject.isSavingStateInClient(null);
-            Assert.fail("should have thrown an exception");
+            Assertions.fail("should have thrown an exception");
         }
         catch (RuntimeException e)
         {
@@ -63,6 +50,7 @@ public class StateManagerTest extends TestCase
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
+    @Test
     public void testIsSavingStateInClientTrue()
     {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);
@@ -77,12 +65,13 @@ public class StateManagerTest extends TestCase
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        Assert.assertEquals(true, subject.isSavingStateInClient(context));
+        Assertions.assertEquals(true, subject.isSavingStateInClient(context));
     }
 
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
+    @Test
     public void testIsSavingStateInClientFalse()
     {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);
@@ -97,14 +86,15 @@ public class StateManagerTest extends TestCase
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        Assert.assertEquals(false, subject.isSavingStateInClient(context));
+        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
         // calling a second time asserts that the code is caching the value correctly
-        Assert.assertEquals(false, subject.isSavingStateInClient(context));
+        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
     }
 
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
+    @Test
     public void testIsSavingStateInClientBogus()
     {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);
@@ -123,12 +113,13 @@ public class StateManagerTest extends TestCase
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        Assert.assertEquals(false, subject.isSavingStateInClient(context));
+        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
     }
 
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
+    @Test
     public void testIsSavingStateInClientNull()
     {
         MockControl contextControl = MockClassControl.createControl(FacesContext.class);
@@ -147,7 +138,7 @@ public class StateManagerTest extends TestCase
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        Assert.assertEquals(false, subject.isSavingStateInClient(context));
+        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
     }
 
 }

@@ -69,7 +69,7 @@ public final class Classpath
         _searchResource(all, loader, prefix, prefix, suffix);
         _searchResource(all, loader, prefix + "MANIFEST.MF", prefix, suffix);
 
-        URL[] urlArray = (URL[]) all.toArray(new URL[all.size()]);
+        URL[] urlArray = all.toArray(new URL[all.size()]);
 
         return urlArray;
     }

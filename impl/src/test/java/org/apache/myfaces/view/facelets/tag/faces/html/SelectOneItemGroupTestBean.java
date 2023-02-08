@@ -34,7 +34,7 @@ public class SelectOneItemGroupTestBean {
 
     @PostConstruct
     public void init() {
-        this.animalList = Arrays.asList(new Product[] {new Product(1L, "Dog"),new Product(2L, "Cat"), new Product(3L, "Fish") });
+        this.animalList = Arrays.asList(new Product(1L, "Dog"),new Product(2L, "Cat"), new Product(3L, "Fish"));
 
     }
 

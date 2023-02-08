@@ -47,7 +47,6 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
-import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.component.html.HtmlDataTable;
 import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.component.html.HtmlPanelGrid;
@@ -64,7 +63,6 @@ import jakarta.faces.model.SelectItemGroup;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
-import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.core.api.shared.SharedRendererUtils;
 
@@ -225,14 +223,11 @@ public final class HtmlRendererUtils
                 {
                     String result = SharedRendererUtils.getConvertedStringValue(
                         facesContext,component,((ValueHolder) component).getConverter(), itemInfo.getItem().getValue());
-                    if(reqValues.contains(result))
-                    {
-                        reqValues.remove(result);
-                    }
+                    reqValues.remove(result);
                 }
             }
             // submitted value needs to be of type String[]
-            String[] submittedValue = (String[]) reqValues.toArray(new String[reqValues.size()]);
+            String[] submittedValue = reqValues.toArray(new String[reqValues.size()]);
             ((EditableValueHolder) component).setSubmittedValue(submittedValue);
         }
         else
@@ -401,109 +396,6 @@ public final class HtmlRendererUtils
         }
     }
 
-    public static void renderListbox(FacesContext facesContext,
-            UISelectOne selectOne, boolean disabled, int size,
-            Converter converter) throws IOException
-    {
-        internalRenderSelect(facesContext, selectOne, disabled, size, false, converter);
-    }
-
-    public static void renderListbox(FacesContext facesContext,
-            UISelectMany selectMany, boolean disabled, int size,
-            Converter converter) throws IOException
-    {
-        internalRenderSelect(facesContext, selectMany, disabled, size, true, converter);
-    }
-
-    public static void renderMenu(FacesContext facesContext,
-            UISelectOne selectOne, boolean disabled, Converter converter)
-            throws IOException
-    {
-        internalRenderSelect(facesContext, selectOne, disabled, 1, false, converter);
-    }
-
-    public static void renderMenu(FacesContext facesContext,
-            UISelectMany selectMany, boolean disabled, Converter converter)
-            throws IOException
-    {
-        internalRenderSelect(facesContext, selectMany, disabled, 1, true, converter);
-    }
-
-    private static void internalRenderSelect(FacesContext facesContext,
-            UIComponent uiComponent, boolean disabled, int size,
-            boolean selectMany, Converter converter) throws IOException
-    {
-        ResponseWriter writer = facesContext.getResponseWriter();
-        writer.startElement(HTML.SELECT_ELEM, uiComponent);
-        if (uiComponent instanceof ClientBehaviorHolder
-                && !((ClientBehaviorHolder) uiComponent).getClientBehaviors().isEmpty())
-        {
-            writer.writeAttribute(HTML.ID_ATTR, uiComponent.getClientId(facesContext), null);
-        }
-        else
-        {
-            HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
-        }
-        writer.writeAttribute(HTML.NAME_ATTR, uiComponent.getClientId(facesContext), null);
-        
-        List selectItemList;
-        if (selectMany)
-        {
-            writer.writeAttribute(HTML.MULTIPLE_ATTR, HTML.MULTIPLE_ATTR, null);
-            selectItemList = RendererUtils.getSelectItemList((UISelectMany) uiComponent, facesContext);
-        }
-        else
-        {
-            selectItemList = RendererUtils.getSelectItemList((UISelectOne) uiComponent, facesContext);
-        }
-
-        if (size == Integer.MIN_VALUE)
-        {
-            //No size given (Listbox) --> size is number of select items
-            writer.writeAttribute(HTML.SIZE_ATTR,
-                    Integer.toString(selectItemList.size()), null);
-        }
-        else
-        {
-            writer.writeAttribute(HTML.SIZE_ATTR, Integer.toString(size), null);
-        }
-
-        if (uiComponent instanceof ClientBehaviorHolder)
-        {
-            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
-            renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
-            renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-            renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, uiComponent, behaviors);
-            renderHTMLAttributes(
-                    writer,
-                    uiComponent,
-                    HTML.SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
-        }
-        else
-        {
-            renderHTMLAttributes(writer, uiComponent,
-                    HTML.SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
-        }
-
-        if (disabled)
-        {
-            writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
-        }
-
-        if (isReadOnly(uiComponent))
-        {
-            writer.writeAttribute(HTML.READONLY_ATTR, HTML.READONLY_ATTR, null);
-        }
-
-        Set lookupSet = getSubmittedOrSelectedValuesAsSet(selectMany, uiComponent, facesContext, converter);
-
-        renderSelectOptions(facesContext, uiComponent, converter, lookupSet,
-                selectItemList);
-        // bug #970747: force separate end tag
-        writer.writeText(RendererUtils.EMPTY_STRING, null);
-        writer.endElement(HTML.SELECT_ELEM);
-    }
-
     public static Set getSubmittedOrSelectedValuesAsSet(boolean selectMany,
             UIComponent uiComponent, FacesContext facesContext, Converter converter)
     {
@@ -541,15 +433,13 @@ public final class HtmlRendererUtils
         return lookupSet;
     }
 
-    public static Converter findUISelectManyConverterFailsafe(
-            FacesContext facesContext, UIComponent uiComponent)
+    public static Converter findUISelectManyConverterFailsafe(FacesContext facesContext, UIComponent uiComponent)
     {
         // invoke with considerValueType = false
         return findUISelectManyConverterFailsafe(facesContext, uiComponent, false);
     }
 
-    public static Converter findUISelectManyConverterFailsafe(
-            FacesContext facesContext, UIComponent uiComponent,
+    public static Converter findUISelectManyConverterFailsafe(FacesContext facesContext, UIComponent uiComponent,
             boolean considerValueType)
     {
         Converter converter;
@@ -584,120 +474,6 @@ public final class HtmlRendererUtils
             converter = null;
         }
         return converter;
-    }
-
-    /**
-     * Renders the select options for a <code>UIComponent</code> that is
-     * rendered as an HTML select element.
-     *
-     * @param context        the current <code>FacesContext</code>.
-     * @param component      the <code>UIComponent</code> whose options need to be
-     *                       rendered.
-     * @param converter      <code>component</code>'s converter
-     * @param lookupSet      the <code>Set</code> to use to look up selected options
-     * @param selectItemList the <code>List</code> of <code>SelectItem</code> s to be
-     *                       rendered as HTML option elements.
-     * @throws IOException
-     */
-    public static void renderSelectOptions(FacesContext context,
-            UIComponent component, Converter converter, Set lookupSet,
-            List selectItemList) throws IOException
-    {
-        ResponseWriter writer = context.getResponseWriter();
-        // check for the hideNoSelectionOption attribute
-        boolean hideNoSelectionOption = isHideNoSelectionOption(component);
-        boolean componentDisabled = isTrue(component.getAttributes().get("disabled"));
-
-        for (int i = 0; i < selectItemList.size(); i++)
-        {
-            SelectItem selectItem = (SelectItem) selectItemList.get(i);
-            if (selectItem instanceof SelectItemGroup)
-            {
-                writer.startElement(HTML.OPTGROUP_ELEM, null); // component);
-                writer.writeAttribute(HTML.LABEL_ATTR, selectItem.getLabel(), null);
-                SelectItem[] selectItems = ((SelectItemGroup) selectItem).getSelectItems();
-                renderSelectOptions(context, component, converter, lookupSet, Arrays.asList(selectItems));
-                writer.endElement(HTML.OPTGROUP_ELEM);
-            }
-            else
-            {
-                String itemStrValue = 
-                    SharedRendererUtils.getConvertedStringValue(context, component, converter,selectItem);
-                boolean selected = lookupSet.contains(itemStrValue); 
-                //TODO/FIX: we always compare the String values, better fill lookupSet with Strings 
-                //only when useSubmittedValue==true, else use the real item value Objects
-
-                // IF the hideNoSelectionOption attribute of the component is true
-                // AND this selectItem is the "no selection option"
-                // AND there are currently selected items 
-                // AND this item (the "no selection option") is not selected
-                // (if there is currently no value on UISelectOne, lookupSet contains "")
-                if (hideNoSelectionOption && selectItem.isNoSelectionOption()
-                        && !lookupSet.isEmpty()
-                        && !(lookupSet.size() == 1 && lookupSet.contains(""))
-                        && !selected)
-                {
-                    // do not render this selectItem
-                    continue;
-                }
-
-                writer.write(TABULATOR);
-                writer.startElement(HTML.OPTION_ELEM, null); // component);
-                if (itemStrValue != null)
-                {
-                    writer.writeAttribute(HTML.VALUE_ATTR, itemStrValue, null);
-                }
-                else
-                {
-                    writer.writeAttribute(HTML.VALUE_ATTR, "", null);
-                }
-
-                if (selected)
-                {
-                    writer.writeAttribute(HTML.SELECTED_ATTR, HTML.SELECTED_ATTR, null);
-                }
-
-                boolean disabled = selectItem.isDisabled();
-                if (disabled)
-                {
-                    writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
-                }
-
-                String labelClass = null;
-
-                if (componentDisabled || disabled)
-                {
-                    labelClass = (String) component.getAttributes().get(ComponentAttrs.DISABLED_CLASS_ATTR);
-                }
-                else
-                {
-                    labelClass = (String) component.getAttributes().get(ComponentAttrs.ENABLED_CLASS_ATTR);
-                }
-                if (labelClass != null)
-                {
-                    writer.writeAttribute("class", labelClass, "labelClass");
-                }
-
-                boolean escape = AttributeUtils.getBooleanAttribute(component, ComponentAttrs.ESCAPE_ATTR, false);
-                //default is to escape
-                //In Faces 1.2, when a SelectItem is created by default 
-                //selectItem.isEscape() returns true (this property
-                //is not available on Faces 1.1).
-                //so, if we found a escape property on the component
-                //set to true, escape every item, but if not
-                //check if isEscape() = true first.
-                if (escape || selectItem.isEscape())
-                {
-                    writer.writeText(selectItem.getLabel(), null);
-                }
-                else
-                {
-                    writer.write(selectItem.getLabel());
-                }
-
-                writer.endElement(HTML.OPTION_ELEM);
-            }
-        }
     }
 
     /**
@@ -966,8 +742,7 @@ public final class HtmlRendererUtils
         writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
     }
 
-    public static void renderDisplayValueOnlyForSelects(
-            FacesContext facesContext, UIComponent uiComponent)
+    public static void renderDisplayValueOnlyForSelects(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
         // invoke renderDisplayValueOnlyForSelects with considerValueType = false
@@ -979,7 +754,7 @@ public final class HtmlRendererUtils
     {
         ResponseWriter writer = facesContext.getResponseWriter();
 
-        List selectItemList = null;
+        List<SelectItem> selectItemList = null;
         Converter converter = null;
         boolean isSelectOne = false;
 
@@ -1001,13 +776,13 @@ public final class HtmlRendererUtils
             if (uiComponent instanceof UISelectMany)
             {
                 isSelectOne = false;
-                selectItemList = RendererUtils.getSelectItemList((UISelectMany) uiComponent, facesContext);
+                selectItemList = RendererUtils.getSelectItemList(uiComponent, facesContext);
                 converter = findUISelectManyConverterFailsafe(facesContext, uiComponent, considerValueType);
             }
             else if (uiComponent instanceof UISelectOne)
             {
                 isSelectOne = true;
-                selectItemList = RendererUtils.getSelectItemList((UISelectOne) uiComponent, facesContext);
+                selectItemList = RendererUtils.getSelectItemList(uiComponent, facesContext);
                 converter = findUIOutputConverterFailSafe(facesContext, uiComponent);
             }
 
@@ -1072,8 +847,8 @@ public final class HtmlRendererUtils
         }
     }
 
-    public static void renderTableCaption(FacesContext context,
-            ResponseWriter writer, UIComponent component) throws IOException
+    public static void renderTableCaption(FacesContext context, ResponseWriter writer, UIComponent component)
+            throws IOException
     {
         UIComponent captionFacet = component.getFacet("caption");
         if (captionFacet == null)
@@ -1114,8 +889,8 @@ public final class HtmlRendererUtils
         writer.endElement(HTML.CAPTION_ELEM);
     }
 
-    public static void renderDisplayValueOnly(FacesContext facesContext,
-            UIInput input) throws IOException
+    public static void renderDisplayValueOnly(FacesContext facesContext, UIInput input)
+            throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.startElement(HTML.SPAN_ELEM, input);
@@ -1139,8 +914,8 @@ public final class HtmlRendererUtils
         HtmlJavaScriptUtils.renderFormSubmitScript(facesContext);
     }
 
-    public static void renderHiddenCommandFormParams(ResponseWriter writer,
-            Set dummyFormParams) throws IOException
+    public static void renderHiddenCommandFormParams(ResponseWriter writer, Set dummyFormParams)
+            throws IOException
     {
         for (Iterator it = dummyFormParams.iterator(); it.hasNext();)
         {
@@ -1149,8 +924,8 @@ public final class HtmlRendererUtils
         }
     }
 
-    public static void renderHiddenInputField(ResponseWriter writer,
-            Object name, Object value) throws IOException
+    public static void renderHiddenInputField(ResponseWriter writer, Object name, Object value)
+            throws IOException
     {
         writer.startElement(HTML.INPUT_ELEM, null);
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
@@ -1280,8 +1055,7 @@ public final class HtmlRendererUtils
         return form.getClientId(facesContext) + ':' + HIDDEN_COMMANDLINK_FIELD_NAME;
     }
 
-    public static boolean isPartialOrBehaviorSubmit(FacesContext facesContext,
-            String clientId)
+    public static boolean isPartialOrBehaviorSubmit(FacesContext facesContext, String clientId)
     {
         Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
         String sourceId = params.get(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME);
@@ -1307,8 +1081,8 @@ public final class HtmlRendererUtils
         return partialOrBehaviorSubmit;
     }
 
-    public static String getOutcomeTargetHref(FacesContext facesContext,
-            UIOutcomeTarget component) throws IOException
+    public static String getOutcomeTargetHref(FacesContext facesContext, UIOutcomeTarget component)
+            throws IOException
     {
         return OutcomeTargetUtils.getOutcomeTargetHref(facesContext, component);
     }

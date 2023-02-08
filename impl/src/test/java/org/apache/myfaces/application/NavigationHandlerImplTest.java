@@ -18,9 +18,6 @@
  */
 package org.apache.myfaces.application;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,21 +35,18 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 public class NavigationHandlerImplTest extends AbstractJsfTestCase
 {
-
     private FacesConfigUnmarshallerImpl _facesConfigUnmarshaller;
 
-    public NavigationHandlerImplTest()
-    {
-        super();
-    }
-    
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -70,6 +64,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         _facesConfigUnmarshaller = null;
@@ -101,7 +96,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
 
     @Test
@@ -114,7 +109,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         nh.handleNavigation(facesContext, null, "go");
 
-        Assert.assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
+        Assertions.assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
     }
 
     @Test
@@ -127,7 +122,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
 
     @Test
@@ -140,7 +135,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         nh.handleNavigation(facesContext, null, "go");
 
-        Assert.assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
+        Assertions.assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
     }
     
     @Test
@@ -153,13 +148,13 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/c.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/c.jsp", nc.getToViewId(facesContext));
         
         facesContext.getViewRoot().setViewId("/z.jsp");
 
         nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
 
     @Test
@@ -172,13 +167,13 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         nh.handleNavigation(facesContext, null, "go");
 
-        Assert.assertEquals("/c.jsp", facesContext.getViewRoot().getViewId());
+        Assertions.assertEquals("/c.jsp", facesContext.getViewRoot().getViewId());
         
         facesContext.getViewRoot().setViewId("/z.jsp");
         
         nh.handleNavigation(facesContext, null, "go");
         
-        Assert.assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
+        Assertions.assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
     }
     
     @Test
@@ -191,13 +186,13 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/cars/b.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/cars/b.jsp", nc.getToViewId(facesContext));
         
         facesContext.getViewRoot().setViewId("/cars/z.jsp");
 
         nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/cars/c.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/cars/c.jsp", nc.getToViewId(facesContext));
     }
 
     @Test
@@ -210,13 +205,13 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         nh.handleNavigation(facesContext, null, "go");
 
-        Assert.assertEquals("/cars/b.jsp", facesContext.getViewRoot().getViewId());
+        Assertions.assertEquals("/cars/b.jsp", facesContext.getViewRoot().getViewId());
         
         facesContext.getViewRoot().setViewId("/cars/z.jsp");
         
         nh.handleNavigation(facesContext, null, "go");
         
-        Assert.assertEquals("/cars/c.jsp", facesContext.getViewRoot().getViewId());
+        Assertions.assertEquals("/cars/c.jsp", facesContext.getViewRoot().getViewId());
     }
     
     @Test
@@ -230,7 +225,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "go");
 
-        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
     
     @Test
@@ -244,7 +239,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", null);
 
-        Assert.assertNull(nc);
+        Assertions.assertNull(nc);
     }
     
     public static class TestBean
@@ -273,7 +268,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
     
     @Test
@@ -289,7 +284,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
     
     @Test
@@ -305,11 +300,11 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, "go", null);
 
-        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
         
         nc = nh.getNavigationCase(facesContext, "go", "xx");
 
-        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
 
     @Test
@@ -325,7 +320,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/d.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/d.jsp", nc.getToViewId(facesContext));
     }
     
     @Test
@@ -341,7 +336,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/go.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/go.jsp", nc.getToViewId(facesContext));
     }    
     
     @Test
@@ -357,7 +352,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/a.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/a.jsp", nc.getToViewId(facesContext));
     }
     
     @Test
@@ -371,7 +366,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "go");
 
-        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
     
     @Test
@@ -385,7 +380,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", null);
 
-        Assert.assertNull(nc);
+        Assertions.assertNull(nc);
     }
     
     @Test
@@ -423,7 +418,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
     
             NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "go");
     
-            Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+            Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
         }
     }
     
@@ -462,7 +457,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
     
             NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "nogo");
     
-            Assert.assertEquals("/c.jsp", nc.getToViewId(facesContext));
+            Assertions.assertEquals("/c.jsp", nc.getToViewId(facesContext));
         }
     }
 
@@ -502,7 +497,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
             NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", null);
     
             //If the <if> element is absent, only match a non-null outcome
-            Assert.assertNull(nc);
+            Assertions.assertNull(nc);
         }
     }
     
@@ -541,7 +536,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
     
             NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "go");
     
-            Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+            Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
         }
     }
     
@@ -567,11 +562,9 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         // note that faces-redirect and includeViewParams
         // should not be added as a parameter
         
-        Assert.assertEquals(expected, navigationCase.getParameters());
-        Assert.assertTrue("includeViewParams=true in the query String must "
-                + "set includeViewParams to true.", navigationCase.isIncludeViewParams());
-        Assert.assertTrue("redirect=true in the query String must "
-                + "set redirect to true.", navigationCase.isRedirect());
+        Assertions.assertEquals(expected, navigationCase.getParameters());
+        Assertions.assertTrue(navigationCase.isIncludeViewParams());
+        Assertions.assertTrue(navigationCase.isRedirect());
     }
     
     /**
@@ -598,11 +591,9 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         // note that faces-redirect and faces-include-view-params
         // should not be added as a parameter
         
-        Assert.assertEquals(expected, navigationCase.getParameters());
-        Assert.assertTrue("faces-include-view-params=true in the query String must "
-                + "set includeViewParams to true.", navigationCase.isIncludeViewParams());
-        Assert.assertTrue("redirect=true in the query String must "
-                + "set redirect to true.", navigationCase.isRedirect());
+        Assertions.assertEquals(expected, navigationCase.getParameters());
+        Assertions.assertTrue(navigationCase.isIncludeViewParams());
+        Assertions.assertTrue(navigationCase.isRedirect());
     }
     
     /**
@@ -619,8 +610,8 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
         underTest.handleNavigation(facesContext, null, "viewExpired");
 
-        Assert.assertNotNull(facesContext.getViewRoot());
-        Assert.assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
+        Assertions.assertNotNull(facesContext.getViewRoot());
+        Assertions.assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
     }
     
     @Test
@@ -634,8 +625,8 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
         underTest.handleNavigation(facesContext, null, "viewExpired.xhtml");
 
-        Assert.assertNotNull(facesContext.getViewRoot());
-        Assert.assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
+        Assertions.assertNotNull(facesContext.getViewRoot());
+        Assertions.assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
         
     }
     
@@ -650,11 +641,11 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
         underTest.handleNavigation(facesContext, null, "viewExpired");
 
-        Assert.assertNotNull(facesContext.getViewRoot());
+        Assertions.assertNotNull(facesContext.getViewRoot());
         
         // In this case, we have /viewExpired.jsf, but note the default ViewHandlerImpl converts the viewId
         // from /viewExpired.jsf to /viewExpired.xhtml, when deriveViewId() is called.
-        Assert.assertEquals("/viewExpired.jsf", facesContext.getViewRoot().getViewId());
+        Assertions.assertEquals("/viewExpired.jsf", facesContext.getViewRoot().getViewId());
         
     }
 
@@ -667,8 +658,8 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
         underTest.handleNavigation(facesContext, null, "viewExpired.xhtml");
 
-        Assert.assertNotNull(facesContext.getViewRoot());
-        Assert.assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
+        Assertions.assertNotNull(facesContext.getViewRoot());
+        Assertions.assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
         
     } 
     
@@ -684,8 +675,8 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         
         underTest.handleNavigation(facesContext, null, "/viewExpired.xhtml");
         
-        Assert.assertNotNull(facesContext.getViewRoot());
-        Assert.assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
+        Assertions.assertNotNull(facesContext.getViewRoot());
+        Assertions.assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
     }
     
     @Test
@@ -701,11 +692,11 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, null);
 
-        Assert.assertNull(nc);
+        Assertions.assertNull(nc);
         
         nc = nh.getNavigationCase(facesContext, null, "go");
 
-        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
     
 }

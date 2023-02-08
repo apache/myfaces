@@ -40,7 +40,7 @@ public class ResponseMockup22 extends ResponseMockup
     {
         response.setContentType("text/xml;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        String op = (String) request.getParameter("op");
+        String op = request.getParameter("op");
 
 
         PartialResponse root = new PartialResponse();

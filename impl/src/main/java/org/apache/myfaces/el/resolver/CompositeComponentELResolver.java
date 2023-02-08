@@ -208,7 +208,7 @@ public final class CompositeComponentELResolver extends ELResolver
     private Map<String, Object> _getCompositeComponentAttributesMapWrapper(
             UIComponent baseComponent, ELContext elContext)
     {
-        Map<Object, Object> contextMap = (Map<Object, Object>) facesContext(elContext).getAttributes();
+        Map<Object, Object> contextMap = facesContext(elContext).getAttributes();
 
         // We use a WeakHashMap<UIComponent, WeakReference<Map<String, Object>>> to
         // hold attribute map wrappers by two reasons:

@@ -129,7 +129,7 @@ public abstract class MockApplication10 extends Application
 
     // ----------------------------------------------------- Application Methods
 
-    /** {@inheritDoc} */
+    @Override
     public ActionListener getActionListener()
     {
 
@@ -137,13 +137,13 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setActionListener(ActionListener actionListener)
     {
         this.actionListener = actionListener;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Locale getDefaultLocale()
     {
 
@@ -151,7 +151,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setDefaultLocale(Locale defaultLocale)
     {
 
@@ -159,7 +159,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getDefaultRenderKitId()
     {
 
@@ -167,7 +167,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setDefaultRenderKitId(String defaultRenderKitId)
     {
 
@@ -175,7 +175,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getMessageBundle()
     {
 
@@ -183,7 +183,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setMessageBundle(String messageBundle)
     {
 
@@ -191,7 +191,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public NavigationHandler getNavigationHandler()
     {
 
@@ -199,7 +199,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setNavigationHandler(NavigationHandler navigationHandler)
     {
 
@@ -207,7 +207,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public StateManager getStateManager()
     {
 
@@ -215,7 +215,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setStateManager(StateManager stateManager)
     {
 
@@ -223,7 +223,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getSupportedLocales()
     {
 
@@ -231,7 +231,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setSupportedLocales(Collection supportedLocales)
     {
 
@@ -239,7 +239,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public ViewHandler getViewHandler()
     {
 
@@ -247,7 +247,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setViewHandler(ViewHandler viewHandler)
     {
 
@@ -255,7 +255,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void addComponent(String componentType, String componentClass)
     {
 
@@ -263,7 +263,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public UIComponent createComponent(String componentType)
     {
 
@@ -296,7 +296,7 @@ public abstract class MockApplication10 extends Application
     }
 
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getComponentTypes()
     {
 
@@ -304,7 +304,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void addConverter(String converterId, String converterClass)
     {
 
@@ -312,7 +312,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void addConverter(Class targetClass, String converterClass)
     {
 
@@ -320,7 +320,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Converter createConverter(String converterId)
     {
 
@@ -341,7 +341,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Converter createConverter(Class targetClass)
     {
 
@@ -362,7 +362,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getConverterIds()
     {
 
@@ -370,7 +370,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getConverterTypes()
     {
 
@@ -379,7 +379,7 @@ public abstract class MockApplication10 extends Application
     }
 
 
-    /** {@inheritDoc} */
+    @Override
     public void addValidator(String validatorId, String validatorClass)
     {
 
@@ -387,7 +387,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Validator createValidator(String validatorId)
     {
 
@@ -404,7 +404,7 @@ public abstract class MockApplication10 extends Application
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getValidatorIds()
     {
         return (validators.keySet().iterator());

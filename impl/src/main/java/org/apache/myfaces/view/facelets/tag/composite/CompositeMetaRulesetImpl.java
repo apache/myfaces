@@ -123,7 +123,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         Assert.notNull(attribute, "attribute");
         Assert.notNull(property, "property");
 
-        TagAttribute attr = (TagAttribute) _attributes.remove(attribute);
+        TagAttribute attr = _attributes.remove(attribute);
         if (attr != null)
         {
             _attributes.put(property, attr);

@@ -225,7 +225,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
             if (_delegate.getBinding() != null)
             {
                 ve = _delegate.getBinding().getValueExpression(faceletContext, Validator.class);
-                v = (Validator) ve.getValue(faceletContext);
+                v = ve.getValue(faceletContext);
             }
             if (v == null)
             {

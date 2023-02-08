@@ -1009,7 +1009,7 @@ public abstract class UIComponentBase extends UIComponent
         {
             if (getChildCount() == 0)
             {
-                return Collections.<UIComponent>emptyIterator();
+                return Collections.emptyIterator();
             }
 
             return getChildren().iterator();
@@ -1057,7 +1057,7 @@ public abstract class UIComponentBase extends UIComponent
         ValueExpression expression = getValueExpression("rendererType");
         if (expression != null)
         {
-            return (String) expression.getValue(getFacesContext().getELContext());
+            return expression.getValue(getFacesContext().getELContext());
         }
         return null;
     }
@@ -1999,7 +1999,7 @@ public abstract class UIComponentBase extends UIComponent
     
     private Object saveFacesListenersList(FacesContext facesContext)
     {
-        PartialStateHolder holder = (PartialStateHolder) _facesListeners;
+        PartialStateHolder holder = _facesListeners;
         if (initialStateMarked() && _facesListeners != null && holder.initialStateMarked())
         {                
             Object attachedState = holder.saveState(facesContext);

@@ -78,7 +78,7 @@ public class ClientConfig implements Serializable
                                 getRequestCookieMap().get(COOKIE_NAME_NOSCRIPT_ENABLED);
                         if (cookie!= null)
                         {
-                            javaScriptEnabled = Boolean.parseBoolean((String) cookie.getValue());
+                            javaScriptEnabled = Boolean.parseBoolean(cookie.getValue());
                         }
                     }
                 }

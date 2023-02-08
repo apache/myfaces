@@ -25,8 +25,8 @@ import jakarta.faces.validator.Validator;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test is the same as FlowMyFacesRequestTestCase with the diference that
@@ -68,9 +68,9 @@ public class BeanValidationCDIRequestTestCase extends AbstractMyFacesCDIRequestT
         processLifecycleExecute();
         
         UIInput username = (UIInput) facesContext.getViewRoot().findComponent("mainForm:username");
-        Assert.assertNotNull(username);
+        Assertions.assertNotNull(username);
         Validator[] array = username.getValidators();
-        Assert.assertTrue(array[0] instanceof BeanValidator);
+        Assertions.assertTrue(array[0] instanceof BeanValidator);
     }
     
     @Test
@@ -87,8 +87,8 @@ public class BeanValidationCDIRequestTestCase extends AbstractMyFacesCDIRequestT
         processLifecycleExecute();
         
         UIInput username = (UIInput) facesContext.getViewRoot().findComponent("mainForm:username");
-        Assert.assertNotNull(username);
+        Assertions.assertNotNull(username);
         Validator[] array = username.getValidators();
-        Assert.assertTrue(array[0] instanceof BeanValidator);
+        Assertions.assertTrue(array[0] instanceof BeanValidator);
     }
 }

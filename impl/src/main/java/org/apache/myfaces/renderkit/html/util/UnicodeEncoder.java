@@ -48,7 +48,7 @@ public abstract class UnicodeEncoder
                 if( sb == null )
                 {
                     sb = new StringBuilder(string.length() + 4);
-                    sb.append(string.substring(0,i));
+                    sb.append(string, 0, i);
                 }
                 //encode all non basic latin characters
                 sb.append("&#");
@@ -85,7 +85,7 @@ public abstract class UnicodeEncoder
                 start = i+1;
                 //encode all non basic latin characters
                 writer.write("&#");
-                writer.write(Integer.toString((int)c));
+                writer.write(Integer.toString(c));
                 writer.write(';');
             }
         }
@@ -121,7 +121,7 @@ public abstract class UnicodeEncoder
                 start = i+1;
                 //encode all non basic latin characters
                 writer.write("&#");
-                writer.write(Integer.toString((int)c));
+                writer.write(Integer.toString(c));
                 writer.write(';');
             }
         }
@@ -157,7 +157,7 @@ public abstract class UnicodeEncoder
                 start = i+1;
                 //encode all non basic latin characters
                 writer.write("&#");
-                writer.write(Integer.toString((int)c));
+                writer.write(Integer.toString(c));
                 writer.write(';');
             }
         }

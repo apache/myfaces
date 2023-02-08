@@ -130,9 +130,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             REQUEST_VIEW_CONTEXT_CLASS
                     = ClassUtils.classForName("org.apache.myfaces.context.RequestViewContext");
             REQUEST_VIEW_CONTEXT_GET_INSTANCE = REQUEST_VIEW_CONTEXT_CLASS.getMethod("getCurrentInstance",
-                    new Class[] { FacesContext.class });
+                    FacesContext.class);
             REQUEST_VIEW_CONTEXT_SET_RENDER_TARGET = REQUEST_VIEW_CONTEXT_CLASS.getMethod("setRenderTarget",
-                    new Class[] { String.class, boolean.class, UIComponent.class });
+                    String.class, boolean.class, UIComponent.class);
         }
         catch (Exception e)
         {
@@ -704,10 +704,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
             else
             {
-                return Collections.<UIComponent>emptyList();
+                return Collections.emptyList();
             }
         }
-        return Collections.<UIComponent>emptyList();
+        return Collections.emptyList();
     }
     
     private List<UIComponent> _getComponentResources(FacesContext context, String target)
@@ -802,7 +802,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
             else
             {
-                return (Locale) LocaleUtils.toLocale(veLocale.toString());
+                return LocaleUtils.toLocale(veLocale.toString());
             }
         }
         else
@@ -1448,7 +1448,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public void resetValues(FacesContext context, java.util.Collection<java.lang.String> clientIds)    
     {
-        VisitContext visitContext = (VisitContext) VisitContext.createVisitContext(context, clientIds, null);
+        VisitContext visitContext = VisitContext.createVisitContext(context, clientIds, null);
         this.visitTree(visitContext, ResetValuesCallback.INSTANCE);
     }
 

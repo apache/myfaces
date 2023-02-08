@@ -62,7 +62,7 @@ public class RestoreViewSupport
         {
             facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);
 
-            VisitContext visitContext = (VisitContext) visitContextFactory.getVisitContext(facesContext,
+            VisitContext visitContext = visitContextFactory.getVisitContext(facesContext,
                     null, MyFacesVisitHints.SET_SKIP_ITERATION);
             component.visitTree(visitContext, new RestoreStateCallback());
         }

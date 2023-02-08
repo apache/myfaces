@@ -101,7 +101,7 @@ class _ViewAttributeMap implements Map<String, Object>, Serializable
     @Override
     public Object put(String key, Object value)
     {
-        int keyLength = ((String)key).length();
+        int keyLength = key.length();
 
         if (RESET_SAVE_STATE_MODE_KEY.length() == keyLength
             && RESET_SAVE_STATE_MODE_KEY.equals(key))

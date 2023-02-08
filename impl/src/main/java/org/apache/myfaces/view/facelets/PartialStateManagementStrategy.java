@@ -920,7 +920,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
     {
         UIViewRoot uiViewRoot = facesContext.getViewRoot();
 
-        List<String> clientIdsAdded = (List<String>) getClientIdsAdded(uiViewRoot);
+        List<String> clientIdsAdded = getClientIdsAdded(uiViewRoot);
         if (clientIdsAdded == null)
         {
             //Create a set that preserve insertion order
@@ -930,7 +930,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
 
         setClientsIdsAdded(uiViewRoot, clientIdsAdded);
 
-        List<String> clientIdsRemoved = (List<String>) getClientIdsRemoved(uiViewRoot);
+        List<String> clientIdsRemoved = getClientIdsRemoved(uiViewRoot);
         if (clientIdsRemoved == null)
         {
             //Create a set that preserve insertion order
@@ -947,7 +947,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
     {
         UIViewRoot uiViewRoot = facesContext.getViewRoot();
 
-        List<String> clientIdsAdded = (List<String>) getClientIdsAdded(uiViewRoot);
+        List<String> clientIdsAdded = getClientIdsAdded(uiViewRoot);
         if (clientIdsAdded == null)
         {
             //Create a set that preserve insertion order

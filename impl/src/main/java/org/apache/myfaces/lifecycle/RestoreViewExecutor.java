@@ -344,7 +344,7 @@ class RestoreViewExecutor extends PhaseExecutor
             // "... Obtain the value of the value of the request parameter whose 
             // name is given by the value of ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM. 
             // If there is no value, throw ProtectedViewException ..."
-            String token = (String) facesContext.getExternalContext().getRequestParameterMap().get(
+            String token = facesContext.getExternalContext().getRequestParameterMap().get(
                 ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM);
             if (token != null && token.length() > 0)
             {

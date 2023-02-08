@@ -92,6 +92,6 @@ abstract class _UIWebsocket extends UIComponentBase
 
     enum PropertyKeys 
     {
-        channel, scope, user, onopen, onmessage, onclose, connected;
+        channel, scope, user, onopen, onmessage, onclose, connected
     }
 }

@@ -267,7 +267,7 @@ public class ApplicationImpl extends Application
         
         String configParam = getFacesContext().getExternalContext().
                 getInitParameter(Converter.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME);
-        if (configParam != null && configParam.toLowerCase().equals("true"))
+        if (configParam != null && configParam.equalsIgnoreCase("true"))
         {
             _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = true;
         }
@@ -489,7 +489,7 @@ public class ApplicationImpl extends Application
 
         ExpressionFactory factory = getExpressionFactory();
 
-        return (T) factory.createValueExpression(elContext, expression, expectedType).getValue(elContext);
+        return factory.createValueExpression(elContext, expression, expectedType).getValue(elContext);
     }
 
     @Override
@@ -1090,7 +1090,7 @@ public class ApplicationImpl extends Application
         boolean annotationsApplied = false;
         if (componentType != null)
         {
-            component = application.createComponent((String) componentType.getValue(context.getELContext()));
+            component = application.createComponent(componentType.getValue(context.getELContext()));
             annotationsApplied = true;
         }
         else
@@ -1481,9 +1481,9 @@ public class ApplicationImpl extends Application
                             // look for a constructor that takes a single Class object
                             // See Faces 1.2 javadoc for Converter
                             Constructor<? extends Converter> constructor = converterClass
-                                    .getConstructor(new Class[] { Class.class });
+                                    .getConstructor(Class.class);
 
-                            converter = constructor.newInstance(new Object[] { targetClass });
+                            converter = constructor.newInstance(targetClass);
                         }
                         catch (Exception e)
                         {

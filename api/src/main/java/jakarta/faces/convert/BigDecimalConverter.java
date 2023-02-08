@@ -93,7 +93,7 @@ public class BigDecimalConverter
         
         try
         {
-            return ((BigDecimal)value).toString();
+            return value.toString();
         }
         catch (Exception e)
         {

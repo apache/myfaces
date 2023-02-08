@@ -53,7 +53,7 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
     {
         if (_name != null)
         {
-            return (String) _name.getValue(FacesContext.getCurrentInstance().getELContext());
+            return _name.getValue(FacesContext.getCurrentInstance().getELContext());
         }        
         return null;
     }
@@ -133,7 +133,7 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
     {
         if (_targets != null)
         {
-            return StringUtils.splitShortString((String) _targets.getValue(context.getELContext()), ' ');
+            return StringUtils.splitShortString(_targets.getValue(context.getELContext()), ' ');
         }
         return ArrayUtils.EMPTY_STRING_ARRAY;
     }
@@ -153,7 +153,7 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
     {
         if (_event != null)
         {
-            return (String) _event.getValue(FacesContext.getCurrentInstance().getELContext());
+            return _event.getValue(FacesContext.getCurrentInstance().getELContext());
         }        
         return null;
     }

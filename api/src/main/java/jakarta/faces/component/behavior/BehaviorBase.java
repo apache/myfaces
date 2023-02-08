@@ -130,7 +130,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
     
     private Object saveBehaviorListenersList(FacesContext facesContext)
     {
-        PartialStateHolder holder = (PartialStateHolder) _behaviorListeners;
+        PartialStateHolder holder = _behaviorListeners;
         if (initialStateMarked() && _behaviorListeners != null && holder.initialStateMarked())
         {                
             Object attachedState = holder.saveState(facesContext);

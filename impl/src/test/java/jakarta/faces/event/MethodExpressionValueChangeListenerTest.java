@@ -18,8 +18,6 @@
  */
 package jakarta.faces.event;
 
-import jakarta.faces.event.ValueChangeEvent;
-import jakarta.faces.event.MethodExpressionValueChangeListener;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
@@ -29,7 +27,10 @@ import jakarta.faces.component.UICommand;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link MethodExpressionValueChangeListener}
@@ -44,6 +45,8 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
     private ValueChangeEvent valueChangeEvent;
     private Object[] paramsWithValueChangeEvent;
 
+    @Override
+    @BeforeEach
     public void setUp() throws Exception 
     {
         super.setUp();
@@ -58,6 +61,8 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
         methodExpressionZeroArg = EasyMock.createNiceMock(MethodExpression.class);
     }
 
+    @Override
+    @AfterEach
     public void tearDown() throws Exception 
     {
         uiComponent = null;
@@ -68,17 +73,20 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
         super.tearDown();
     }
 
+    @Test
     public void testMethodExpressionValueChangeListener() 
     {
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener();
     }
 
+    @Test
     public void testMethodExpressionValueChangeListenerMethodExpression() 
     {
         EasyMock.replay(methodExpressionOneArg);
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener(methodExpressionOneArg);
     }
 
+    @Test
     public void testMethodExpressionValueChangeListenerMethodExpressionMethodExpression() 
     {
         EasyMock.replay(methodExpressionOneArg);
@@ -90,6 +98,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
     /**
      * Test for case: method with ValueChangeEvent param exists (pre-Faces 2.0 case)
      */
+    @Test
     public void testProcessValueChange() 
     {
         // First, try to invoke the MethodExpression passed to the constructor of this instance,
@@ -107,6 +116,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
     /**
      * Test for case: method exists but has no ValueChangeEvent param (new possibility in Faces 2.0)
      */
+    @Test
     public void testProcessValueChange2() throws Exception 
     {
         // First, try to invoke the MethodExpression passed to the constructor of this instance,
@@ -129,14 +139,16 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
         EasyMock.verify(methodExpressionZeroArg);
     }
 
+    @Test
     public void testSaveState() 
     {
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg);
         Object[] expectedState = new Object [] {methodExpressionOneArg, methodExpressionZeroArg};
-        Assert.assertTrue("Both MethodExpression instances described in the constructor must be saved.", 
-                Arrays.deepEquals(expectedState, (Object[]) methodExpressionValueChangeListener.saveState(facesContext)));
+        Assertions.assertTrue(Arrays.deepEquals(expectedState, (Object[]) methodExpressionValueChangeListener.saveState(facesContext)), 
+                "Both MethodExpression instances described in the constructor must be saved.");
     }
 
+    @Test
     public void testRestoreState() throws IllegalAccessException, NoSuchFieldException
     {
         // State saving always call JavaBean constructor:
@@ -148,11 +160,11 @@ public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase
         // Test if the instance variables are set to the right values via reflection
         Field oneArgField = MethodExpressionValueChangeListener.class.getDeclaredField("methodExpressionOneArg");
         oneArgField.setAccessible(true);
-        Assert.assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionValueChangeListener));
+        Assertions.assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionValueChangeListener));
         
         Field zeroArgField = MethodExpressionValueChangeListener.class.getDeclaredField("methodExpressionZeroArg");
         zeroArgField.setAccessible(true);
-        Assert.assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionValueChangeListener));
+        Assertions.assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionValueChangeListener));
     }
 
 }

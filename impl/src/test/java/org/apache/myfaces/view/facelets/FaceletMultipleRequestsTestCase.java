@@ -63,6 +63,7 @@ import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.tag.faces.TagHandlerDelegateFactoryImpl;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigurableMultipleRequestsTestCase
 {
@@ -214,11 +215,11 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
             "org.apache.myfaces.test.mock.MockFacesContextFactory");
         facesContextFactory = (MockFacesContextFactory) FactoryFinder
             .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = (MockFacesContext) facesContextFactory.getFacesContext(
+        facesContext = facesContextFactory.getFacesContext(
                 servletContext, request, response, lifecycle);
         if (facesContext.getExternalContext() != null)
         {
-            externalContext = (MockExternalContext) facesContext.getExternalContext();
+            externalContext = facesContext.getExternalContext();
         }
 
         super.setUpApplication();
@@ -256,6 +257,7 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
     }
     
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();

@@ -79,21 +79,21 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
             if (converterId != null)
             {
                 FacesConverter.Literal literal = FacesConverter.Literal.of(converterId, Object.class, true);
-                delegate = (Converter) CDIUtils.get(bm, CONVERTER_TYPE, true, literal);
+                delegate = CDIUtils.get(bm, CONVERTER_TYPE, true, literal);
 
                 if (delegate == null)
                 {
-                    delegate = (Converter) CDIUtils.get(bm, Converter.class, true, literal);
+                    delegate = CDIUtils.get(bm, Converter.class, true, literal);
                 }
             }
             else if (forClass != null)
             {
                 FacesConverter.Literal literal = FacesConverter.Literal.of("", forClass, true);
-                delegate = (Converter) CDIUtils.get(bm, CONVERTER_TYPE, true, literal);
+                delegate = CDIUtils.get(bm, CONVERTER_TYPE, true, literal);
 
                 if (delegate == null)
                 {
-                    delegate = (Converter) CDIUtils.get(bm, Converter.class, true, literal);
+                    delegate = CDIUtils.get(bm, Converter.class, true, literal);
                 }
             }
         }

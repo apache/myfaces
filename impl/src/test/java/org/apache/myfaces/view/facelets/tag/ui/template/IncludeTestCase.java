@@ -25,8 +25,8 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class IncludeTestCase extends FaceletTestCase
 {
@@ -51,7 +51,7 @@ public class IncludeTestCase extends FaceletTestCase
         
         String response = sw.toString();
         
-        Assert.assertTrue(response.contains("Do you see me?"));
+        Assertions.assertTrue(response.contains("Do you see me?"));
     }
 
 }

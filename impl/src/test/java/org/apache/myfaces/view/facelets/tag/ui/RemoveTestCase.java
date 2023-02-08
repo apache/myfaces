@@ -34,8 +34,8 @@ import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -85,7 +85,7 @@ public class RemoveTestCase extends FaceletTestCase
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testRemoveMetadata.xhtml");
 
-        Assert.assertNull(root.getFacet(UIViewRoot.METADATA_FACET_NAME));
+        Assertions.assertNull(root.getFacet(UIViewRoot.METADATA_FACET_NAME));
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -95,9 +95,9 @@ public class RemoveTestCase extends FaceletTestCase
         sw.flush();
         
         //System.out.println(sw.toString());
-        Assert.assertFalse(sw.toString().contains("ui:remove"));
-        Assert.assertFalse(sw.toString().contains("f:metadata"));
-        Assert.assertFalse(sw.toString().contains("Should not be here"));
+        Assertions.assertFalse(sw.toString().contains("ui:remove"));
+        Assertions.assertFalse(sw.toString().contains("f:metadata"));
+        Assertions.assertFalse(sw.toString().contains("Should not be here"));
     }    
     
 

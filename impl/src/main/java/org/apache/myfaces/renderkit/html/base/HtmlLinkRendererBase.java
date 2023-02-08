@@ -94,7 +94,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             boolean activateActionEvent = false;
             if (form != null && !disabled)
             {
-                String reqValue = (String) facesContext.getExternalContext().getRequestParameterMap().get(
+                String reqValue = facesContext.getExternalContext().getRequestParameterMap().get(
                         HtmlRendererUtils.getHiddenCommandLinkFieldName(form, facesContext));
                 activateActionEvent = reqValue != null && reqValue.equals(clientId)
                     || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId);
@@ -664,7 +664,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                         if (buff == null)
                         {
                             buff = new StringBuilder();
-                            buff.append(strParamValue.substring(0,i));
+                            buff.append(strParamValue, 0, i);
                         }
                         buff.append('\\');
                         buff.append(c);
@@ -803,7 +803,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             if (isAnchorInHref)
             {
                 // remove anchor element and add it again after the parameter are encoded
-                anchorString = href.substring(index,href.length());
+                anchorString = href.substring(index);
                 href = href.substring(0,index);
             }
             if (getChildCount(output) > 0)

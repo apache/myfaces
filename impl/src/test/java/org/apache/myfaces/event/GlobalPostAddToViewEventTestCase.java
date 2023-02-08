@@ -28,8 +28,8 @@ import jakarta.faces.event.SystemEventListener;
 import org.apache.myfaces.application.ApplicationImplEventManager;
 import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMockTestCase
 {
@@ -57,7 +57,7 @@ public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMoc
 
         eventManager.publishEvent(facesContext, PostAddToViewEvent.class, HtmlHead.class, new HtmlHead());
 
-        Assert.assertTrue(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
     }
     
     @Test
@@ -69,7 +69,7 @@ public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMoc
 
         eventManager.publishEvent(facesContext, PostAddToViewEvent.class, HtmlHead.class, new HtmlHead());
 
-        Assert.assertTrue(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
     }
     
     @Test
@@ -81,7 +81,7 @@ public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMoc
 
         eventManager.publishEvent(facesContext, PostAddToViewEvent.class, HtmlHead.class, new HtmlHead());
 
-        Assert.assertTrue(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
+        Assertions.assertTrue(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
     }
     
     @Test
@@ -93,6 +93,6 @@ public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMoc
 
         eventManager.publishEvent(facesContext, PostAddToViewEvent.class, HtmlHead.class, new HtmlHead());
 
-        Assert.assertFalse(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
+        Assertions.assertFalse(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
     }
 }

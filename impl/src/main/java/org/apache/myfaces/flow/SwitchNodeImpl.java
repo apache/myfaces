@@ -66,7 +66,7 @@ public class SwitchNodeImpl extends SwitchNode implements Freezable
     {
         if (_defaultOutcomeEL != null)
         {
-            return (String) _defaultOutcomeEL.getValue(context.getELContext());
+            return _defaultOutcomeEL.getValue(context.getELContext());
         }
         return _defaultOutcome;
     }

@@ -27,8 +27,8 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CompositeComponentConditionalButtonTestCase extends FaceletTestCase
 {
@@ -58,25 +58,25 @@ public class CompositeComponentConditionalButtonTestCase extends FaceletTestCase
 
         //The first component has a default command button
         UIComponent form = root.findComponent("testForm1");
-        Assert.assertNotNull(form);
+        Assertions.assertNotNull(form);
         UINamingContainer compositeComponent1 = (UINamingContainer) form.findComponent("actionSource1");
-        Assert.assertNotNull(compositeComponent1);
+        Assertions.assertNotNull(compositeComponent1);
         UICommand button1 = (UICommand) compositeComponent1.findComponent("button");
-        Assert.assertNotNull(button1);
-        Assert.assertEquals("submit", button1.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertNotNull(button1);
+        Assertions.assertEquals("submit", button1.getActionExpression().invoke(facesContext.getELContext(), null));
         
-        Assert.assertNotNull(button1.getActionListeners());
-        Assert.assertEquals(1, button1.getActionListeners().length);
+        Assertions.assertNotNull(button1.getActionListeners());
+        Assertions.assertEquals(1, button1.getActionListeners().length);
         
         UINamingContainer compositeComponent2 = (UINamingContainer) form.findComponent("actionSource2");
-        Assert.assertNotNull(compositeComponent2);
+        Assertions.assertNotNull(compositeComponent2);
         UICommand button2 = (UICommand) compositeComponent2.findComponent("button");
-        Assert.assertNotNull(button2);
+        Assertions.assertNotNull(button2);
         //Since the button is outside cc:implementation, by the spec it cannot be taken into account as a valid "targets" value.
-        Assert.assertEquals("fail", button2.getActionExpression().invoke(facesContext.getELContext(), null));
+        Assertions.assertEquals("fail", button2.getActionExpression().invoke(facesContext.getELContext(), null));
         //It also cannot be target of cc:actionSource
-        Assert.assertNotNull(button2.getActionListeners());
-        Assert.assertEquals(0, button2.getActionListeners().length);
+        Assertions.assertNotNull(button2.getActionListeners());
+        Assertions.assertEquals(0, button2.getActionListeners().length);
 
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);

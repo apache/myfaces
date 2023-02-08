@@ -88,7 +88,7 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
         }
         else
         {
-            _params = (LegacyParamHandler[]) params.toArray(new LegacyParamHandler[params.size()]);
+            _params = params.toArray(new LegacyParamHandler[params.size()]);
         }
     }
 

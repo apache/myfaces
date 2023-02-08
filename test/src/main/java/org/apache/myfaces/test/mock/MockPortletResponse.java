@@ -41,7 +41,7 @@ public class MockPortletResponse implements PortletResponse
 
     // -------------------------------------------------- PortletContext Methods
 
-    /** {@inheritDoc} */
+    @Override
     public void addProperty(String name, String value)
     {
 
@@ -49,14 +49,14 @@ public class MockPortletResponse implements PortletResponse
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String encodeURL(String url)
     {
 
         return url;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void setProperty(String name, String value)
     {
 

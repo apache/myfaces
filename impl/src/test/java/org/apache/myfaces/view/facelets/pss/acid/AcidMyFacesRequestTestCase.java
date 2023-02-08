@@ -42,8 +42,8 @@ import org.apache.myfaces.view.facelets.pss.acid.managed.CustomSessionBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ResourceDependencyBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.AcidTestBean;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
@@ -77,12 +77,12 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
-        Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
         
         /*
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer1.content()).contains(
+        Assertions.assertTrue(new String(writer1.content()).contains(
                 "<div style=\"border: 1px solid red; margin: 2px\">" +
                 "<div style=\"background-color: #ffc0c0; padding: 2px; margin-bottom: 5px; display:block\">" +
                 "TestComponent::encodeBegin <span style=\"color: #888888\">(1 children)</span>" +
@@ -96,11 +96,11 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
-        Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
         /*
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer2.content()).contains(
+        Assertions.assertTrue(new String(writer2.content()).contains(
                 "<div style=\"border: 1px solid red; margin: 2px\">" +
                 "<div style=\"background-color: #ffc0c0; padding: 2px; margin-bottom: 5px; display:block\">" +
                 "TestComponent::encodeBegin <span style=\"color: #888888\">(1 children)</span>" +
@@ -119,12 +119,12 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
         
-        Assert.assertEquals(1, comp.getChildCount());
-        Assert.assertEquals(1, comp.getChildren().get(0).getChildCount());
-        Assert.assertEquals("mainForm:input", comp.getChildren().get(0).getChildren().get(0).getClientId(facesContext));
+        Assertions.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildren().get(0).getChildCount());
+        Assertions.assertEquals("mainForm:input", comp.getChildren().get(0).getChildren().get(0).getClientId(facesContext));
         /*
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer1.content()).contains(
+        Assertions.assertTrue(new String(writer1.content()).contains(
                "<div style=\"border: 1px solid red; margin: 2px\">" +
                "<div style=\"background-color: #ffc0c0; padding: 2px; margin-bottom: 5px; display:block\">" +
                "TestComponent::encodeBegin <span style=\"color: #888888\">(1 children)</span>" +
@@ -140,14 +140,14 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
 
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
-        Assert.assertEquals(1, comp.getChildren().get(0).getChildCount());
-        Assert.assertEquals("mainForm:input", comp.getChildren().get(0).getChildren().get(0).getClientId(facesContext));
+        Assertions.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildren().get(0).getChildCount());
+        Assertions.assertEquals("mainForm:input", comp.getChildren().get(0).getChildren().get(0).getClientId(facesContext));
 
         /*
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         System.out.println(writer2.content());
-        Assert.assertTrue(new String(writer2.content()).contains(
+        Assertions.assertTrue(new String(writer2.content()).contains(
                 "<div style=\"border: 1px solid red; margin: 2px\">" +
                 "<div style=\"background-color: #ffc0c0; padding: 2px; margin-bottom: 5px; display:block\">" +
                 "TestComponent::encodeBegin <span style=\"color: #888888\">(1 children)</span>" +
@@ -165,20 +165,20 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         startViewRequest("/recursive.xhtml");
         processLifecycleExecuteAndRender();
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(2, comp.getChildCount());
-        Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
-        Assert.assertEquals(1, comp.getChildren().get(1).getChildCount());
-        Assert.assertEquals("Dynamically added child", comp.getChildren().get(1).getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals(2, comp.getChildCount());
+        Assertions.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals(1, comp.getChildren().get(1).getChildCount());
+        Assertions.assertEquals("Dynamically added child", comp.getChildren().get(1).getChildren().get(0).getAttributes().get("value"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(2, comp.getChildCount());
-        Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
-        Assert.assertEquals(1, comp.getChildren().get(1).getChildCount());
-        Assert.assertEquals("Dynamically added child", comp.getChildren().get(1).getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals(2, comp.getChildCount());
+        Assertions.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals(1, comp.getChildren().get(1).getChildCount());
+        Assertions.assertEquals("Dynamically added child", comp.getChildren().get(1).getChildren().get(0).getAttributes().get("value"));
         
         endRequest();
     }
@@ -189,30 +189,30 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         startViewRequest("/stable.xhtml");
         processLifecycleExecuteAndRender();
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(3, comp.getChildCount());
-        Assert.assertEquals("1", comp.getChildren().get(0).getAttributes().get("value"));
-        Assert.assertEquals("2", comp.getChildren().get(1).getAttributes().get("value"));
-        Assert.assertEquals("text3", comp.getChildren().get(2).getId());
+        Assertions.assertEquals(3, comp.getChildCount());
+        Assertions.assertEquals("1", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals("2", comp.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals("text3", comp.getChildren().get(2).getId());
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(3, comp.getChildCount());
-        Assert.assertEquals("1", comp.getChildren().get(0).getAttributes().get("value"));
-        Assert.assertEquals("2", comp.getChildren().get(1).getAttributes().get("value"));
-        Assert.assertEquals("text3", comp.getChildren().get(2).getId());
+        Assertions.assertEquals(3, comp.getChildCount());
+        Assertions.assertEquals("1", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals("2", comp.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals("text3", comp.getChildren().get(2).getId());
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(3, comp.getChildCount());
-        Assert.assertEquals("1", comp.getChildren().get(0).getAttributes().get("value"));
-        Assert.assertEquals("2", comp.getChildren().get(1).getAttributes().get("value"));
-        Assert.assertEquals("text3", comp.getChildren().get(2).getId());
+        Assertions.assertEquals(3, comp.getChildCount());
+        Assertions.assertEquals("1", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals("2", comp.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals("text3", comp.getChildren().get(2).getId());
 
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         UIInput input = (UIInput) facesContext.getViewRoot().findComponent("mainForm:text3");
@@ -221,10 +221,10 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(3, comp.getChildCount());
-        Assert.assertEquals("1", comp.getChildren().get(0).getAttributes().get("value"));
-        Assert.assertEquals("2", comp.getChildren().get(1).getAttributes().get("value"));
-        Assert.assertEquals("text3", comp.getChildren().get(2).getId());
+        Assertions.assertEquals(3, comp.getChildCount());
+        Assertions.assertEquals("1", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals("2", comp.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals("text3", comp.getChildren().get(2).getId());
         
     }
     
@@ -235,18 +235,18 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         HtmlDataTable dataTable = (HtmlDataTable) comp.getChildren().get(0);
-        Assert.assertEquals(1, dataTable.getChildCount());
+        Assertions.assertEquals(1, dataTable.getChildCount());
 
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
 
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         dataTable = (HtmlDataTable) comp.getChildren().get(0);
-        Assert.assertEquals(1, dataTable.getChildCount());
+        Assertions.assertEquals(1, dataTable.getChildCount());
     }
     
     @Test
@@ -256,36 +256,36 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(2, comp.getChildCount());
-        Assert.assertEquals("Manually added child 2<br/>", comp.getChildren().get(0).getAttributes().get("value"));
-        Assert.assertEquals("Manually added child 1<br/>", comp.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals(2, comp.getChildCount());
+        Assertions.assertEquals("Manually added child 2<br/>", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals("Manually added child 1<br/>", comp.getChildren().get(1).getAttributes().get("value"));
 
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
 
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(2, comp.getChildCount());
-        Assert.assertEquals("Manually added child 1<br/>", comp.getChildren().get(0).getAttributes().get("value"));
-        Assert.assertEquals("Manually added child 2<br/>", comp.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals(2, comp.getChildCount());
+        Assertions.assertEquals("Manually added child 1<br/>", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals("Manually added child 2<br/>", comp.getChildren().get(1).getAttributes().get("value"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(2, comp.getChildCount());
-        Assert.assertEquals("Manually added child 2<br/>", comp.getChildren().get(0).getAttributes().get("value"));
-        Assert.assertEquals("Manually added child 1<br/>", comp.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals(2, comp.getChildCount());
+        Assertions.assertEquals("Manually added child 2<br/>", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals("Manually added child 1<br/>", comp.getChildren().get(1).getAttributes().get("value"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(2, comp.getChildCount());
-        Assert.assertEquals("Manually added child 1<br/>", comp.getChildren().get(0).getAttributes().get("value"));
-        Assert.assertEquals("Manually added child 2<br/>", comp.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals(2, comp.getChildCount());
+        Assertions.assertEquals("Manually added child 1<br/>", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals("Manually added child 2<br/>", comp.getChildren().get(1).getAttributes().get("value"));
         
     }
     
@@ -307,11 +307,11 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
         //Check it is restored
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
-        Assert.assertEquals("test1", component.getAttributes().get("test"));
+        Assertions.assertEquals("test1", component.getAttributes().get("test"));
         renderResponse();
         //Check buildView does not destroy the state
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
-        Assert.assertEquals("test1", component.getAttributes().get("test"));
+        Assertions.assertEquals("test1", component.getAttributes().get("test"));
         
         //Go to page2
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
@@ -320,7 +320,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
         //Check it is restored
-        Assert.assertEquals("test1", component.getAttributes().get("test"));
+        Assertions.assertEquals("test1", component.getAttributes().get("test"));
         
         //Build the view
         facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(
@@ -328,13 +328,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
 
         //Check the page was changed and the state discarded, because it is a different component.
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
-        Assert.assertNull(component.getAttributes().get("test"));
+        Assertions.assertNull(component.getAttributes().get("test"));
         //Set a token to save on the state as delta
         component.getAttributes().put("test", "test2");
         renderResponse();
         
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
-        Assert.assertEquals("test2", component.getAttributes().get("test"));
+        Assertions.assertEquals("test2", component.getAttributes().get("test"));
 
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
         client.submit(button);
@@ -342,8 +342,8 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
         //Check it is restored
-        Assert.assertNotNull("mainForm:component2 was not restored correctly",component);
-        Assert.assertEquals("test2", component.getAttributes().get("test"));
+        Assertions.assertNotNull(component);
+        Assertions.assertEquals("test2", component.getAttributes().get("test"));
         
         //Build the view
         facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(
@@ -351,7 +351,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
 
         //Check buildView does not destroy the state
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
-        Assert.assertEquals("test2", component.getAttributes().get("test"));
+        Assertions.assertEquals("test2", component.getAttributes().get("test"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
         client.submit(button);
@@ -359,7 +359,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
         //Check it is restored
-        Assert.assertEquals("test2", component.getAttributes().get("test"));
+        Assertions.assertEquals("test2", component.getAttributes().get("test"));
     }
 
     /**
@@ -378,7 +378,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
                 facesContext, facesContext.getViewRoot().getViewId()).buildView(facesContext, facesContext.getViewRoot());
         //Set a token to save on the state as delta
         UIComponent component = facesContext.getViewRoot().findComponent("mainForm:component1");
-        Assert.assertNotNull(component);
+        Assertions.assertNotNull(component);
         renderResponse();
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page1");
@@ -387,11 +387,11 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
         //Check it is restored
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
-        Assert.assertNotNull(component);
+        Assertions.assertNotNull(component);
         renderResponse();
         //Check buildView does not destroy the state
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
-        Assert.assertNotNull(component);
+        Assertions.assertNotNull(component);
         
         //Go to page2
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
@@ -400,7 +400,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
         //Check it is restored
-        Assert.assertNotNull(component);
+        Assertions.assertNotNull(component);
         
         //Build the view
         facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(
@@ -408,11 +408,11 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
 
         //Check the page was changed and the state discarded, because it is a different component.
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
-        Assert.assertNotNull(component);
+        Assertions.assertNotNull(component);
         renderResponse();
         
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
-        Assert.assertNotNull(component);
+        Assertions.assertNotNull(component);
 
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
         client.submit(button);
@@ -420,7 +420,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
         //Check it is restored
-        Assert.assertNotNull(component);
+        Assertions.assertNotNull(component);
         
         //Build the view
         facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(
@@ -428,7 +428,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
 
         //Check buildView does not destroy the state
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
-        Assert.assertNotNull(component);
+        Assertions.assertNotNull(component);
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
         client.submit(button);
@@ -436,7 +436,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
         //Check it is restored
-        Assert.assertNotNull(component);
+        Assertions.assertNotNull(component);
     }
     
     /**
@@ -463,34 +463,34 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel");
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(1, comp.getChildCount());
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         // Even if in the postback two components were added, pss algorithm must replace the
         // component with the one saved.
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         
         comp = facesContext.getViewRoot().findComponent("panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
 
         comp = facesContext.getViewRoot().findComponent("panel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         // Even if in the postback two components were added, pss algorithm must replace the
         // component with the one saved.
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         endRequest();
     }
@@ -502,7 +502,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         int fieldCount = comp.getChildCount();
         Set<String> clientIds = new TreeSet<String>();
         for (UIComponent c : comp.getChildren())
@@ -515,15 +515,15 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         // Check the components are restored.
-        Assert.assertEquals(fieldCount, comp.getChildCount());
+        Assertions.assertEquals(fieldCount, comp.getChildCount());
         Set<String> clientIds2 = new TreeSet<String>();
         for (UIComponent c : comp.getChildren())
         {
             clientIds2.add(c.getClientId(facesContext));
         }
-        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());        
+        Assertions.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());        
 
         ComponentBindingFormBean formBean = facesContext.getApplication().evaluateExpressionGet(
                 facesContext, "#{componentBindingFormBean}", ComponentBindingFormBean.class);
@@ -532,7 +532,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         fieldCount = comp.getChildCount();
         clientIds.clear();
         for (UIComponent c : comp.getChildren())
@@ -546,14 +546,14 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(fieldCount, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(fieldCount, comp.getChildCount());
         clientIds2.clear();
         for (UIComponent c : comp.getChildren())
         {
             clientIds2.add(c.getClientId(facesContext));
         }
-        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());        
+        Assertions.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());        
         
         formBean = facesContext.getApplication().evaluateExpressionGet(
                 facesContext, "#{componentBindingFormBean}", ComponentBindingFormBean.class);
@@ -562,7 +562,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         fieldCount = comp.getChildCount();
         clientIds.clear();
         for (UIComponent c : comp.getChildren())
@@ -576,14 +576,14 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(fieldCount, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(fieldCount, comp.getChildCount());
         clientIds2.clear();
         for (UIComponent c : comp.getChildren())
         {
             clientIds2.add(c.getClientId(facesContext));
         }
-        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());        
+        Assertions.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());        
         
         formBean = facesContext.getApplication().evaluateExpressionGet(
                 facesContext, "#{componentBindingFormBean}", ComponentBindingFormBean.class);
@@ -592,7 +592,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         
         
         endRequest();
@@ -605,42 +605,42 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel");
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(1, comp.getChildCount());
         
         UIViewParameter viewParam = (UIViewParameter) facesContext.getExternalContext().getRequestMap().get("foo");
-        Assert.assertNotNull(viewParam);
-        Assert.assertEquals("foo", viewParam.getName());
+        Assertions.assertNotNull(viewParam);
+        Assertions.assertEquals("foo", viewParam.getName());
         UIViewParameter viewParam2 = facesContext.getApplication().evaluateExpressionGet(
                 facesContext, "#{componentBindingBean}", ComponentBindingBean.class).getViewParam();
-        Assert.assertNotNull(viewParam2);
-        Assert.assertEquals("foo2", viewParam2.getName());
+        Assertions.assertNotNull(viewParam2);
+        Assertions.assertEquals("foo2", viewParam2.getName());
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         // Even if in the postback two components were added, pss algorithm must replace the
         // component with the one saved.
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         
         comp = facesContext.getViewRoot().findComponent("panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
 
         comp = facesContext.getViewRoot().findComponent("panel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         // Even if in the postback two components were added, pss algorithm must replace the
         // component with the one saved.
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         endRequest();
     }    
@@ -651,7 +651,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         startViewRequest("/dynamicForm.xhtml");
         processLifecycleExecuteAndRender();
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         int fieldCount = comp.getChildCount();
         Set<String> clientIds = new TreeSet<String>();
         for (UIComponent c : comp.getChildren())
@@ -663,19 +663,19 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         client.submit(button);
         processLifecycleExecute();
         comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         // Check the components are restored.
-        Assert.assertEquals(fieldCount, comp.getChildCount());
+        Assertions.assertEquals(fieldCount, comp.getChildCount());
         Set<String> clientIds2 = new TreeSet<String>();
         for (UIComponent c : comp.getChildren())
         {
             clientIds2.add(c.getClientId(facesContext));
         }
-        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
+        Assertions.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
         
         processLifecycleRender();
         comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         fieldCount = comp.getChildCount();
         clientIds.clear();
         for (UIComponent c : comp.getChildren())
@@ -687,44 +687,20 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         client.submit(button);
         processLifecycleExecute();
         comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         // Check the components are restored.
-        Assert.assertEquals(fieldCount, comp.getChildCount());
+        Assertions.assertEquals(fieldCount, comp.getChildCount());
         clientIds2.clear();
         for (UIComponent c : comp.getChildren())
         {
             clientIds2.add(c.getClientId(facesContext));
         }
-        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
+        Assertions.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
         
         // Check the components are restored.
         processLifecycleRender();
         comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
-        Assert.assertNotNull(comp);
-        fieldCount = comp.getChildCount();
-        clientIds.clear();
-        for (UIComponent c : comp.getChildren())
-        {
-            clientIds.add(c.getClientId(facesContext));
-        }        
-
-        button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        client.submit(button);
-        processLifecycleExecute();
-        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
-        Assert.assertNotNull(comp);
-        // Check the components are restored.
-        Assert.assertEquals(fieldCount, comp.getChildCount());
-        clientIds2.clear();
-        for (UIComponent c : comp.getChildren())
-        {
-            clientIds2.add(c.getClientId(facesContext));
-        }
-        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
-        
-        processLifecycleRender();
-        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         fieldCount = comp.getChildCount();
         clientIds.clear();
         for (UIComponent c : comp.getChildren())
@@ -736,19 +712,43 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         client.submit(button);
         processLifecycleExecute();
         comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
         // Check the components are restored.
-        Assert.assertEquals(fieldCount, comp.getChildCount());
+        Assertions.assertEquals(fieldCount, comp.getChildCount());
         clientIds2.clear();
         for (UIComponent c : comp.getChildren())
         {
             clientIds2.add(c.getClientId(facesContext));
         }
-        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
+        Assertions.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
         
         processLifecycleRender();
         comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
-        Assert.assertNotNull(comp);
+        Assertions.assertNotNull(comp);
+        fieldCount = comp.getChildCount();
+        clientIds.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds.add(c.getClientId(facesContext));
+        }        
+
+        button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+        processLifecycleExecute();
+        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
+        Assertions.assertNotNull(comp);
+        // Check the components are restored.
+        Assertions.assertEquals(fieldCount, comp.getChildCount());
+        clientIds2.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds2.add(c.getClientId(facesContext));
+        }
+        Assertions.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
+        
+        processLifecycleRender();
+        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
+        Assertions.assertNotNull(comp);
         fieldCount = comp.getChildCount();
         clientIds.clear();
         for (UIComponent c : comp.getChildren())
@@ -769,8 +769,8 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         executeBuildViewCycle(facesContext);
 
         UIPanel headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
-        Assert.assertNotNull(headPanel);
-        Assert.assertEquals(1, headPanel.getChildCount());
+        Assertions.assertNotNull(headPanel);
+        Assertions.assertEquals(1, headPanel.getChildCount());
         
         String nextUniqueId = facesContext.getViewRoot().createUniqueId(facesContext, null);
         
@@ -790,9 +790,9 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         executeBuildViewCycle(facesContext);
         
         headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
-        Assert.assertNotNull(headPanel);
-        Assert.assertEquals(1, headPanel.getChildCount());
-        Assert.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
+        Assertions.assertNotNull(headPanel);
+        Assertions.assertEquals(1, headPanel.getChildCount());
+        Assertions.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -808,7 +808,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         executeBuildViewCycle(facesContext);
 
         UIPanel headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
-        Assert.assertNull(headPanel);
+        Assertions.assertNull(headPanel);
         
         String nextUniqueId = facesContext.getViewRoot().createUniqueId(facesContext, null);
         
@@ -828,9 +828,9 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         executeBuildViewCycle(facesContext);
         
         headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
-        Assert.assertNotNull(headPanel);
-        Assert.assertTrue(1 >= headPanel.getChildCount());
-        Assert.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
+        Assertions.assertNotNull(headPanel);
+        Assertions.assertTrue(1 >= headPanel.getChildCount());
+        Assertions.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -848,9 +848,9 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         executeBuildViewCycle(facesContext);
         
         headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
-        Assert.assertNotNull(headPanel);
-        Assert.assertTrue(1 >= headPanel.getChildCount());
-        //Assert.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
+        Assertions.assertNotNull(headPanel);
+        Assertions.assertTrue(1 >= headPanel.getChildCount());
+        //Assertions.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);    
@@ -868,9 +868,9 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         executeBuildViewCycle(facesContext);
         
         headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
-        Assert.assertNotNull(headPanel);
-        Assert.assertTrue(1 >= headPanel.getChildCount());
-        //Assert.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
+        Assertions.assertNotNull(headPanel);
+        Assertions.assertTrue(1 >= headPanel.getChildCount());
+        //Assertions.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -888,9 +888,9 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         executeBuildViewCycle(facesContext);
         
         headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
-        Assert.assertNotNull(headPanel);
-        Assert.assertTrue(1 >= headPanel.getChildCount());
-        //Assert.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
+        Assertions.assertNotNull(headPanel);
+        Assertions.assertTrue(1 >= headPanel.getChildCount());
+        //Assertions.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
         
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
@@ -903,16 +903,16 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
-        Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
-        Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
 
         endRequest();
     }
@@ -924,24 +924,24 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         UIComponent wrapper = comp.getChildren().get(0);
-        Assert.assertEquals(2, wrapper.getChildCount());
-        Assert.assertEquals("Dynamically added child", wrapper.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals(2, wrapper.getChildCount());
+        Assertions.assertEquals("Dynamically added child", wrapper.getChildren().get(1).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer1.content()).contains("Dynamically added markup"));
+        Assertions.assertTrue(new String(writer1.content()).contains("Dynamically added markup"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         wrapper = comp.getChildren().get(0);
-        Assert.assertEquals(2, wrapper.getChildCount());
-        Assert.assertEquals("Dynamically added child", wrapper.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals(2, wrapper.getChildCount());
+        Assertions.assertEquals("Dynamically added child", wrapper.getChildren().get(1).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer2.content()).contains("Dynamically added markup"));
+        Assertions.assertTrue(new String(writer2.content()).contains("Dynamically added markup"));
 
         endRequest();
     }
@@ -953,15 +953,15 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         UIComponent wrapper = comp.getChildren().get(0);
-        Assert.assertEquals(3, wrapper.getChildCount());
-        Assert.assertEquals("Dynamically added child", wrapper.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals(3, wrapper.getChildCount());
+        Assertions.assertEquals("Dynamically added child", wrapper.getChildren().get(1).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content = new String(writer1.content());
-        Assert.assertTrue(content.contains("Dynamically added markup"));
-        Assert.assertTrue(content.contains("Value in param1: value1"));
-        Assert.assertTrue(content.contains("Value in param2: value2"));
+        Assertions.assertTrue(content.contains("Dynamically added markup"));
+        Assertions.assertTrue(content.contains("Value in param1: value1"));
+        Assertions.assertTrue(content.contains("Value in param2: value2"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
@@ -973,15 +973,15 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         wrapper = comp.getChildren().get(0);
-        Assert.assertEquals(3, wrapper.getChildCount());
-        Assert.assertEquals("Dynamically added child", wrapper.getChildren().get(1).getAttributes().get("value"));
+        Assertions.assertEquals(3, wrapper.getChildCount());
+        Assertions.assertEquals("Dynamically added child", wrapper.getChildren().get(1).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
-        Assert.assertTrue(content2.contains("Value in param1: value1"));
-        Assert.assertTrue(content2.contains("Value in param2: otherValue2"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Value in param1: value1"));
+        Assertions.assertTrue(content2.contains("Value in param2: otherValue2"));
 
         endRequest();
     }
@@ -993,36 +993,36 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         UIComponent wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added header", 
             ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));        
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer1.content()).contains("Dynamically added markup"));
+        Assertions.assertTrue(new String(writer1.content()).contains("Dynamically added markup"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added header", 
             ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));        
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer2.content()).contains("Dynamically added markup"));
+        Assertions.assertTrue(new String(writer2.content()).contains("Dynamically added markup"));
 
         endRequest();
     }
@@ -1034,36 +1034,36 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         UIComponent wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added header"));
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added header"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added header"));
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added header"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
 
         endRequest();
     }
@@ -1075,50 +1075,50 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         UIComponent wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));        
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
         int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
         int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_1);
-        Assert.assertNotSame(-1, indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_3);
+        Assertions.assertNotSame(-1, indexDynHeader1_1);
+        Assertions.assertNotSame(-1, indexDynHeader1_2);
+        Assertions.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));        
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         int indexDynHeader1 = content2.indexOf("Start Dynamic Header");
         int indexDynHeader2 = content2.indexOf("Dynamically added header", indexDynHeader1);
         int indexDynHeader3 = content2.indexOf("End Dynamic Header", indexDynHeader2);
-        Assert.assertNotSame(-1, indexDynHeader1);
-        Assert.assertNotSame(-1, indexDynHeader2);
-        Assert.assertNotSame(-1, indexDynHeader3);
+        Assertions.assertNotSame(-1, indexDynHeader1);
+        Assertions.assertNotSame(-1, indexDynHeader2);
+        Assertions.assertNotSame(-1, indexDynHeader3);
 
         endRequest();
     }
@@ -1130,50 +1130,50 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         UIComponent wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));        
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
         int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
         int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_1);
-        Assert.assertNotSame(-1, indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_3);
+        Assertions.assertNotSame(-1, indexDynHeader1_1);
+        Assertions.assertNotSame(-1, indexDynHeader1_2);
+        Assertions.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));        
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         int indexDynHeader1 = content2.indexOf("Start Dynamic Header");
         int indexDynHeader2 = content2.indexOf("Dynamically added header", indexDynHeader1);
         int indexDynHeader3 = content2.indexOf("End Dynamic Header", indexDynHeader2);
-        Assert.assertNotSame(-1, indexDynHeader1);
-        Assert.assertNotSame(-1, indexDynHeader2);
-        Assert.assertNotSame(-1, indexDynHeader3);
+        Assertions.assertNotSame(-1, indexDynHeader1);
+        Assertions.assertNotSame(-1, indexDynHeader2);
+        Assertions.assertNotSame(-1, indexDynHeader3);
 
         endRequest();
     }
@@ -1185,46 +1185,46 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         UIComponent wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
         int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
         int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_1);
-        Assert.assertNotSame(-1, indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_3);
+        Assertions.assertNotSame(-1, indexDynHeader1_1);
+        Assertions.assertNotSame(-1, indexDynHeader1_2);
+        Assertions.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         int indexDynHeader2_1 = content2.indexOf("Start Dynamic Header");
         int indexDynHeader2_2 = content2.indexOf("Dynamically added header", indexDynHeader2_1);
         int indexDynHeader2_3 = content2.indexOf("End Dynamic Header", indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_1);
-        Assert.assertNotSame(-1, indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_3);
+        Assertions.assertNotSame(-1, indexDynHeader2_1);
+        Assertions.assertNotSame(-1, indexDynHeader2_2);
+        Assertions.assertNotSame(-1, indexDynHeader2_3);
 
 
         endRequest();
@@ -1237,46 +1237,46 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         UIComponent wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
         int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
         int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_1);
-        Assert.assertNotSame(-1, indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_3);
+        Assertions.assertNotSame(-1, indexDynHeader1_1);
+        Assertions.assertNotSame(-1, indexDynHeader1_2);
+        Assertions.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         int indexDynHeader2_1 = content2.indexOf("Start Dynamic Header");
         int indexDynHeader2_2 = content2.indexOf("Dynamically added header", indexDynHeader2_1);
         int indexDynHeader2_3 = content2.indexOf("End Dynamic Header", indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_1);
-        Assert.assertNotSame(-1, indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_3);
+        Assertions.assertNotSame(-1, indexDynHeader2_1);
+        Assertions.assertNotSame(-1, indexDynHeader2_2);
+        Assertions.assertNotSame(-1, indexDynHeader2_3);
 
         endRequest();
     }
@@ -1288,27 +1288,27 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         UIComponent wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));        
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
         int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
         int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_1);
-        Assert.assertNotSame(-1, indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_3);
+        Assertions.assertNotSame(-1, indexDynHeader1_1);
+        Assertions.assertNotSame(-1, indexDynHeader1_2);
+        Assertions.assertNotSame(-1, indexDynHeader1_3);
         
-        Assert.assertFalse(content1.contains("This is section 1"));
+        Assertions.assertFalse(content1.contains("This is section 1"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
@@ -1323,27 +1323,27 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         renderResponse();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertEquals(1, comp.getChildCount());
+        Assertions.assertEquals(1, comp.getChildCount());
         wrapper = comp.getChildren().get(0);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));        
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         int indexDynHeader1 = content2.indexOf("Start Dynamic Header");
         int indexDynHeader2 = content2.indexOf("Dynamically added header", indexDynHeader1);
         int indexDynHeader3 = content2.indexOf("End Dynamic Header", indexDynHeader2);
-        Assert.assertNotSame(-1, indexDynHeader1);
-        Assert.assertNotSame(-1, indexDynHeader2);
-        Assert.assertNotSame(-1, indexDynHeader3);
+        Assertions.assertNotSame(-1, indexDynHeader1);
+        Assertions.assertNotSame(-1, indexDynHeader2);
+        Assertions.assertNotSame(-1, indexDynHeader3);
         
-        Assert.assertTrue(content2.contains("This is section 1"));
+        Assertions.assertTrue(content2.contains("This is section 1"));
 
         endRequest();
     }
@@ -1356,72 +1356,72 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel");
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         UIComponent wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added header", 
             ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecute();
 
         UIComponent comp2 = facesContext.getViewRoot().findComponent("panel");
-        Assert.assertNotNull(comp2);
-        Assert.assertEquals(2, comp2.getChildCount());
+        Assertions.assertNotNull(comp2);
+        Assertions.assertEquals(2, comp2.getChildCount());
         
-        Assert.assertEquals("value1", comp2.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp2.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp2.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp2.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp2.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added header", 
             ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         
         renderResponse();
         
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
 
         UIComponent comp3 = facesContext.getViewRoot().findComponent("panel");
-        Assert.assertNotNull(comp3);
-        Assert.assertEquals(2, comp3.getChildCount());
+        Assertions.assertNotNull(comp3);
+        Assertions.assertEquals(2, comp3.getChildCount());
         
-        Assert.assertEquals("value1", comp3.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp3.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp3.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp3.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp3.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added header", 
             ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer3 = (MockPrintWriter) response.getWriter();
         String content3 = new String(writer3.content());
-        Assert.assertTrue(content3.contains("Dynamically added markup"));
+        Assertions.assertTrue(content3.contains("Dynamically added markup"));
         
         endRequest();
     }
@@ -1433,27 +1433,27 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         UIComponent wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added header"));
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added header"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         
         UIComponent ccpanel = facesContext.getViewRoot().findComponent("mainForm:ccpanel");
-        Assert.assertNotNull(ccpanel);
+        Assertions.assertNotNull(ccpanel);
         UIComponent ccinnerpanel = facesContext.getViewRoot().findComponent("mainForm:ccpanel:component");
-        Assert.assertNotNull(ccinnerpanel);
+        Assertions.assertNotNull(ccinnerpanel);
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:ccpanel:component:increment");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         
         CheckActionEventBean checkBean = facesContext.getApplication().evaluateExpressionGet(facesContext,
                 "#{checkActionEventBean}", CheckActionEventBean.class);
@@ -1462,58 +1462,58 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         client.submit(button);
         processLifecycleExecute();
         
-        Assert.assertEquals("event not called", oldcount1+1, checkBean.getActionListenerCount());
+        Assertions.assertEquals(oldcount1+1, checkBean.getActionListenerCount());
         renderResponse();
 
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added header"));
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added header"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:ccpanel:component:increment");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         int oldcount2 = checkBean.getActionListenerCount();        
         
         client.submit(button);
         processLifecycleExecute();
         
-        Assert.assertEquals("event not called", oldcount2+1, checkBean.getActionListenerCount());
+        Assertions.assertEquals(oldcount2+1, checkBean.getActionListenerCount());
         
         renderResponse();
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer3 = (MockPrintWriter) response.getWriter();
         String content3 = new String(writer3.content());
-        Assert.assertTrue(content3.contains("Dynamically added header"));
-        Assert.assertTrue(content3.contains("Dynamically added markup"));
+        Assertions.assertTrue(content3.contains("Dynamically added header"));
+        Assertions.assertTrue(content3.contains("Dynamically added markup"));
         
         endRequest();
     }
@@ -1525,87 +1525,87 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         UIComponent wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
         int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
         int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_1);
-        Assert.assertNotSame(-1, indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_3);
+        Assertions.assertNotSame(-1, indexDynHeader1_1);
+        Assertions.assertNotSame(-1, indexDynHeader1_2);
+        Assertions.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         int indexDynHeader2_1 = content2.indexOf("Start Dynamic Header");
         int indexDynHeader2_2 = content2.indexOf("Dynamically added header", indexDynHeader2_1);
         int indexDynHeader2_3 = content2.indexOf("End Dynamic Header", indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_1);
-        Assert.assertNotSame(-1, indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_3);
+        Assertions.assertNotSame(-1, indexDynHeader2_1);
+        Assertions.assertNotSame(-1, indexDynHeader2_2);
+        Assertions.assertNotSame(-1, indexDynHeader2_3);
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer3 = (MockPrintWriter) response.getWriter();
         String content3 = new String(writer3.content());
-        Assert.assertTrue(content3.contains("Dynamically added markup"));
+        Assertions.assertTrue(content3.contains("Dynamically added markup"));
         int indexDynHeader3_1 = content3.indexOf("Start Dynamic Header");
         int indexDynHeader3_2 = content3.indexOf("Dynamically added header", indexDynHeader3_1);
         int indexDynHeader3_3 = content3.indexOf("End Dynamic Header", indexDynHeader3_2);
-        Assert.assertNotSame(-1, indexDynHeader3_1);
-        Assert.assertNotSame(-1, indexDynHeader3_2);
-        Assert.assertNotSame(-1, indexDynHeader3_3);
+        Assertions.assertNotSame(-1, indexDynHeader3_1);
+        Assertions.assertNotSame(-1, indexDynHeader3_2);
+        Assertions.assertNotSame(-1, indexDynHeader3_3);
 
         endRequest();
     }
@@ -1617,87 +1617,87 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         UIComponent wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
         int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
         int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_1);
-        Assert.assertNotSame(-1, indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_3);
+        Assertions.assertNotSame(-1, indexDynHeader1_1);
+        Assertions.assertNotSame(-1, indexDynHeader1_2);
+        Assertions.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         int indexDynHeader2_1 = content2.indexOf("Start Dynamic Header");
         int indexDynHeader2_2 = content2.indexOf("Dynamically added header", indexDynHeader2_1);
         int indexDynHeader2_3 = content2.indexOf("End Dynamic Header", indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_1);
-        Assert.assertNotSame(-1, indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_3);
+        Assertions.assertNotSame(-1, indexDynHeader2_1);
+        Assertions.assertNotSame(-1, indexDynHeader2_2);
+        Assertions.assertNotSame(-1, indexDynHeader2_3);
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer3 = (MockPrintWriter) response.getWriter();
         String content3 = new String(writer3.content());
-        Assert.assertTrue(content3.contains("Dynamically added markup"));
+        Assertions.assertTrue(content3.contains("Dynamically added markup"));
         int indexDynHeader3_1 = content3.indexOf("Start Dynamic Header");
         int indexDynHeader3_2 = content3.indexOf("Dynamically added header", indexDynHeader3_1);
         int indexDynHeader3_3 = content3.indexOf("End Dynamic Header", indexDynHeader3_2);
-        Assert.assertNotSame(-1, indexDynHeader3_1);
-        Assert.assertNotSame(-1, indexDynHeader3_2);
-        Assert.assertNotSame(-1, indexDynHeader3_3);
+        Assertions.assertNotSame(-1, indexDynHeader3_1);
+        Assertions.assertNotSame(-1, indexDynHeader3_2);
+        Assertions.assertNotSame(-1, indexDynHeader3_3);
 
         endRequest();
     }
@@ -1709,32 +1709,32 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         UIComponent wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
         int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
         int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_1);
-        Assert.assertNotSame(-1, indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_3);
+        Assertions.assertNotSame(-1, indexDynHeader1_1);
+        Assertions.assertNotSame(-1, indexDynHeader1_2);
+        Assertions.assertNotSame(-1, indexDynHeader1_3);
         
         UIComponent ccpanel = facesContext.getViewRoot().findComponent("mainForm:ccpanel");
-        Assert.assertNotNull(ccpanel);
+        Assertions.assertNotNull(ccpanel);
         UIComponent ccinnerpanel = facesContext.getViewRoot().findComponent("mainForm:ccpanel:component");
-        Assert.assertNotNull(ccinnerpanel);
+        Assertions.assertNotNull(ccinnerpanel);
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:ccpanel:component:increment");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         
         CheckActionEventBean checkBean = facesContext.getApplication().evaluateExpressionGet(facesContext,
                 "#{checkActionEventBean}", CheckActionEventBean.class);
@@ -1743,68 +1743,68 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         client.submit(button);
         processLifecycleExecute();
         
-        Assert.assertEquals("event not called", oldcount1+1, checkBean.getActionListenerCount());
+        Assertions.assertEquals(oldcount1+1, checkBean.getActionListenerCount());
         renderResponse();
 
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         int indexDynHeader2_1 = content2.indexOf("Start Dynamic Header");
         int indexDynHeader2_2 = content2.indexOf("Dynamically added header", indexDynHeader2_1);
         int indexDynHeader2_3 = content2.indexOf("End Dynamic Header", indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_1);
-        Assert.assertNotSame(-1, indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_3);
+        Assertions.assertNotSame(-1, indexDynHeader2_1);
+        Assertions.assertNotSame(-1, indexDynHeader2_2);
+        Assertions.assertNotSame(-1, indexDynHeader2_3);
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:ccpanel:component:increment");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         int oldcount2 = checkBean.getActionListenerCount();        
         
         client.submit(button);
         processLifecycleExecute();
         
-        Assert.assertEquals("event not called", oldcount2+1, checkBean.getActionListenerCount());
+        Assertions.assertEquals(oldcount2+1, checkBean.getActionListenerCount());
         
         renderResponse();
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer3 = (MockPrintWriter) response.getWriter();
         String content3 = new String(writer3.content());
-        Assert.assertTrue(content3.contains("Dynamically added markup"));
+        Assertions.assertTrue(content3.contains("Dynamically added markup"));
         int indexDynHeader3_1 = content3.indexOf("Start Dynamic Header");
         int indexDynHeader3_2 = content3.indexOf("Dynamically added header", indexDynHeader3_1);
         int indexDynHeader3_3 = content3.indexOf("End Dynamic Header", indexDynHeader3_2);
-        Assert.assertNotSame(-1, indexDynHeader3_1);
-        Assert.assertNotSame(-1, indexDynHeader3_2);
-        Assert.assertNotSame(-1, indexDynHeader3_3);
+        Assertions.assertNotSame(-1, indexDynHeader3_1);
+        Assertions.assertNotSame(-1, indexDynHeader3_2);
+        Assertions.assertNotSame(-1, indexDynHeader3_3);
         
         endRequest();
     }
@@ -1816,32 +1816,32 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         UIComponent wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
         int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
         int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_1);
-        Assert.assertNotSame(-1, indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_3);
+        Assertions.assertNotSame(-1, indexDynHeader1_1);
+        Assertions.assertNotSame(-1, indexDynHeader1_2);
+        Assertions.assertNotSame(-1, indexDynHeader1_3);
         
         UIComponent ccpanel = facesContext.getViewRoot().findComponent("mainForm:ccpanel");
-        Assert.assertNotNull(ccpanel);
+        Assertions.assertNotNull(ccpanel);
         UIComponent ccinnerpanel = facesContext.getViewRoot().findComponent("mainForm:ccpanel:component");
-        Assert.assertNotNull(ccinnerpanel);
+        Assertions.assertNotNull(ccinnerpanel);
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:ccpanel:component:increment");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         
         CheckActionEventBean checkBean = facesContext.getApplication().evaluateExpressionGet(facesContext,
                 "#{checkActionEventBean}", CheckActionEventBean.class);
@@ -1850,68 +1850,68 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         client.submit(button);
         processLifecycleExecute();
         
-        Assert.assertEquals("event not called", oldcount1+1, checkBean.getActionListenerCount());
+        Assertions.assertEquals(oldcount1+1, checkBean.getActionListenerCount());
         renderResponse();
 
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         int indexDynHeader2_1 = content2.indexOf("Start Dynamic Header");
         int indexDynHeader2_2 = content2.indexOf("Dynamically added header", indexDynHeader2_1);
         int indexDynHeader2_3 = content2.indexOf("End Dynamic Header", indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_1);
-        Assert.assertNotSame(-1, indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_3);
+        Assertions.assertNotSame(-1, indexDynHeader2_1);
+        Assertions.assertNotSame(-1, indexDynHeader2_2);
+        Assertions.assertNotSame(-1, indexDynHeader2_3);
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:ccpanel:component:increment");
-        Assert.assertNotNull(button);
+        Assertions.assertNotNull(button);
         int oldcount2 = checkBean.getActionListenerCount();        
         
         client.submit(button);
         processLifecycleExecute();
         
-        Assert.assertEquals("event not called", oldcount2+1, checkBean.getActionListenerCount());
+        Assertions.assertEquals(oldcount2+1, checkBean.getActionListenerCount());
         
         renderResponse();
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer3 = (MockPrintWriter) response.getWriter();
         String content3 = new String(writer3.content());
-        Assert.assertTrue(content3.contains("Dynamically added markup"));
+        Assertions.assertTrue(content3.contains("Dynamically added markup"));
         int indexDynHeader3_1 = content3.indexOf("Start Dynamic Header");
         int indexDynHeader3_2 = content3.indexOf("Dynamically added header", indexDynHeader3_1);
         int indexDynHeader3_3 = content3.indexOf("End Dynamic Header", indexDynHeader3_2);
-        Assert.assertNotSame(-1, indexDynHeader3_1);
-        Assert.assertNotSame(-1, indexDynHeader3_2);
-        Assert.assertNotSame(-1, indexDynHeader3_3);
+        Assertions.assertNotSame(-1, indexDynHeader3_1);
+        Assertions.assertNotSame(-1, indexDynHeader3_2);
+        Assertions.assertNotSame(-1, indexDynHeader3_3);
         
         endRequest();
     }
@@ -1923,29 +1923,29 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         UIComponent wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        Assertions.assertTrue(content1.contains("Dynamically added markup"));
         int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
         int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
         int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_1);
-        Assert.assertNotSame(-1, indexDynHeader1_2);
-        Assert.assertNotSame(-1, indexDynHeader1_3);
+        Assertions.assertNotSame(-1, indexDynHeader1_1);
+        Assertions.assertNotSame(-1, indexDynHeader1_2);
+        Assertions.assertNotSame(-1, indexDynHeader1_3);
         
-        Assert.assertFalse(content1.contains("This is section 1"));
+        Assertions.assertFalse(content1.contains("This is section 1"));
 
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
@@ -1958,34 +1958,34 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         sessionBean.setShowSection1(true);
         
         renderResponse();
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
         
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assertions.assertTrue(content2.contains("Dynamically added markup"));
         int indexDynHeader2_1 = content2.indexOf("Start Dynamic Header");
         int indexDynHeader2_2 = content2.indexOf("Dynamically added header", indexDynHeader2_1);
         int indexDynHeader2_3 = content2.indexOf("End Dynamic Header", indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_1);
-        Assert.assertNotSame(-1, indexDynHeader2_2);
-        Assert.assertNotSame(-1, indexDynHeader2_3);
+        Assertions.assertNotSame(-1, indexDynHeader2_1);
+        Assertions.assertNotSame(-1, indexDynHeader2_2);
+        Assertions.assertNotSame(-1, indexDynHeader2_3);
         
-        Assert.assertTrue(content2.contains("This is section 1"));
+        Assertions.assertTrue(content2.contains("This is section 1"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
@@ -1994,34 +1994,34 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         sessionBean.setShowSection1(false);
         
         renderResponse();
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+        Assertions.assertNotNull(comp);
+        Assertions.assertEquals(2, comp.getChildCount());
 
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assertions.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assertions.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         wrapper = comp.getChildren().get(1);
-        Assert.assertNotNull(wrapper);
-        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        Assertions.assertNotNull(wrapper);
+        Assertions.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        Assert.assertNotNull(ccContent);
-        Assert.assertEquals(3, ccContent.getChildCount());
-        //Assert.assertEquals("Dynamically added header", 
+        Assertions.assertNotNull(ccContent);
+        Assertions.assertEquals(3, ccContent.getChildCount());
+        //Assertions.assertEquals("Dynamically added header", 
         //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
-        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        Assertions.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer3 = (MockPrintWriter) response.getWriter();
         String content3 = new String(writer3.content());
-        Assert.assertTrue(content3.contains("Dynamically added markup"));
+        Assertions.assertTrue(content3.contains("Dynamically added markup"));
         int indexDynHeader3_1 = content3.indexOf("Start Dynamic Header");
         int indexDynHeader3_2 = content3.indexOf("Dynamically added header", indexDynHeader3_1);
         int indexDynHeader3_3 = content3.indexOf("End Dynamic Header", indexDynHeader3_2);
-        Assert.assertNotSame(-1, indexDynHeader3_1);
-        Assert.assertNotSame(-1, indexDynHeader3_2);
-        Assert.assertNotSame(-1, indexDynHeader3_3);
+        Assertions.assertNotSame(-1, indexDynHeader3_1);
+        Assertions.assertNotSame(-1, indexDynHeader3_2);
+        Assertions.assertNotSame(-1, indexDynHeader3_3);
         
-        Assert.assertFalse(content3.contains("This is section 1"));
+        Assertions.assertFalse(content3.contains("This is section 1"));
 
         endRequest();
     }
@@ -2036,16 +2036,16 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         executeBuildViewCycle(facesContext);
         
         UIOutput itemA_1 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_a");
-        Assert.assertNotNull(itemA_1);
-        Assert.assertEquals("a", itemA_1.getValue());
+        Assertions.assertNotNull(itemA_1);
+        Assertions.assertEquals("a", itemA_1.getValue());
         itemA_1.getAttributes().put("prop", "a");
         UIOutput itemB_1 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_b");
-        Assert.assertNotNull(itemB_1);
-        Assert.assertEquals("b", itemB_1.getValue());
+        Assertions.assertNotNull(itemB_1);
+        Assertions.assertEquals("b", itemB_1.getValue());
         itemB_1.getAttributes().put("prop", "b");
         UIOutput itemC_1 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_c");
-        Assert.assertNotNull(itemC_1);
-        Assert.assertEquals("c", itemC_1.getValue());
+        Assertions.assertNotNull(itemC_1);
+        Assertions.assertEquals("c", itemC_1.getValue());
         itemC_1.getAttributes().put("prop", "c");
         
         executeViewHandlerRender(facesContext);
@@ -2056,17 +2056,17 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
 
         UIOutput itemA_2 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_a");
-        Assert.assertNotNull(itemA_2);
-        Assert.assertEquals("a", itemA_2.getValue());
-        Assert.assertEquals("a", itemA_2.getAttributes().get("prop"));
+        Assertions.assertNotNull(itemA_2);
+        Assertions.assertEquals("a", itemA_2.getValue());
+        Assertions.assertEquals("a", itemA_2.getAttributes().get("prop"));
         UIOutput itemB_2 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_b");
-        Assert.assertNotNull(itemB_2);
-        Assert.assertEquals("b", itemB_2.getValue());
-        Assert.assertEquals("b", itemB_2.getAttributes().get("prop"));
+        Assertions.assertNotNull(itemB_2);
+        Assertions.assertEquals("b", itemB_2.getValue());
+        Assertions.assertEquals("b", itemB_2.getAttributes().get("prop"));
         UIOutput itemC_2 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_c");
-        Assert.assertNotNull(itemC_2);
-        Assert.assertEquals("c", itemC_2.getValue());
-        Assert.assertEquals("c", itemC_2.getAttributes().get("prop"));
+        Assertions.assertNotNull(itemC_2);
+        Assertions.assertEquals("c", itemC_2.getValue());
+        Assertions.assertEquals("c", itemC_2.getAttributes().get("prop"));
 
         ForEachBean bean = facesContext.getApplication().evaluateExpressionGet(facesContext, "#{forEachBean}", 
             ForEachBean.class);
@@ -2078,23 +2078,23 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         executeBuildViewCycle(facesContext);
 
         UIOutput itemA_3 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_a");
-        Assert.assertNotNull(itemA_3);
-        Assert.assertEquals("a", itemA_3.getValue());
-        Assert.assertEquals("a", itemA_3.getAttributes().get("prop"));
+        Assertions.assertNotNull(itemA_3);
+        Assertions.assertEquals("a", itemA_3.getValue());
+        Assertions.assertEquals("a", itemA_3.getAttributes().get("prop"));
         UIOutput itemB_3 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_b");
-        Assert.assertNotNull(itemB_3);
-        Assert.assertEquals("b", itemB_3.getValue());
-        Assert.assertEquals("b", itemB_3.getAttributes().get("prop"));
+        Assertions.assertNotNull(itemB_3);
+        Assertions.assertEquals("b", itemB_3.getValue());
+        Assertions.assertEquals("b", itemB_3.getAttributes().get("prop"));
         UIOutput itemC_3 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_c");
-        Assert.assertNull(itemC_3);
+        Assertions.assertNull(itemC_3);
         UIOutput itemZ_3 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_z");
-        Assert.assertNotNull(itemZ_3);
-        Assert.assertEquals("z", itemZ_3.getValue());
-        Assert.assertNull(itemZ_3.getAttributes().get("prop"));
+        Assertions.assertNotNull(itemZ_3);
+        Assertions.assertEquals("z", itemZ_3.getValue());
+        Assertions.assertNull(itemZ_3.getAttributes().get("prop"));
         UIOutput itemX_3 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_x");
-        Assert.assertNotNull(itemX_3);
-        Assert.assertEquals("x", itemX_3.getValue());
-        Assert.assertNull(itemX_3.getAttributes().get("prop"));
+        Assertions.assertNotNull(itemX_3);
+        Assertions.assertEquals("x", itemX_3.getValue());
+        Assertions.assertNull(itemX_3.getAttributes().get("prop"));
         
         executeViewHandlerRender(facesContext);
 
@@ -2104,19 +2104,19 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecute();
 
         UIOutput itemA_4 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_a");
-        Assert.assertNotNull(itemA_4);
-        Assert.assertEquals("a", itemA_4.getValue());
+        Assertions.assertNotNull(itemA_4);
+        Assertions.assertEquals("a", itemA_4.getValue());
         UIOutput itemB_4 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_b");
-        Assert.assertNotNull(itemB_4);
-        Assert.assertEquals("b", itemB_4.getValue());
+        Assertions.assertNotNull(itemB_4);
+        Assertions.assertEquals("b", itemB_4.getValue());
         UIOutput itemC_4 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_c");
-        Assert.assertNull(itemC_4);
+        Assertions.assertNull(itemC_4);
         UIOutput itemZ_4 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_z");
-        Assert.assertNotNull(itemZ_4);
-        Assert.assertEquals("z", itemZ_4.getValue());
+        Assertions.assertNotNull(itemZ_4);
+        Assertions.assertEquals("z", itemZ_4.getValue());
         UIOutput itemX_4 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_x");
-        Assert.assertNotNull(itemX_4);
-        Assert.assertEquals("x", itemX_4.getValue());
+        Assertions.assertNotNull(itemX_4);
+        Assertions.assertEquals("x", itemX_4.getValue());
 
         endRequest();
     }
@@ -2137,18 +2137,18 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertNotNull(comp);
-        Assert.assertTrue(comp instanceof UISimpleComponent1);
-        //Assert.assertEquals(1, comp.getChildCount());
-        //Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertNotNull(comp);
+        Assertions.assertTrue(comp instanceof UISimpleComponent1);
+        //Assertions.assertEquals(1, comp.getChildCount());
+        //Assertions.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertNotNull(comp);
-        Assert.assertTrue(comp instanceof UISimpleComponent1);
+        Assertions.assertNotNull(comp);
+        Assertions.assertTrue(comp instanceof UISimpleComponent1);
 
         endRequest();
     }
@@ -2160,18 +2160,18 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertNotNull(comp);
-        Assert.assertTrue(comp instanceof UISimpleComponent2);
-        //Assert.assertEquals(1, comp.getChildCount());
-        //Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
+        Assertions.assertNotNull(comp);
+        Assertions.assertTrue(comp instanceof UISimpleComponent2);
+        //Assertions.assertEquals(1, comp.getChildCount());
+        //Assertions.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
-        Assert.assertNotNull(comp);
-        Assert.assertTrue(comp instanceof UISimpleComponent2);
+        Assertions.assertNotNull(comp);
+        Assertions.assertTrue(comp instanceof UISimpleComponent2);
 
         endRequest();
     }
@@ -2184,9 +2184,9 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         String content1 = new String(writer1.content());
-        Assert.assertTrue(content1.contains("A-"));
-        Assert.assertTrue(content1.contains("B-"));
-        Assert.assertTrue(content1.contains("C-"));
+        Assertions.assertTrue(content1.contains("A-"));
+        Assertions.assertTrue(content1.contains("B-"));
+        Assertions.assertTrue(content1.contains("C-"));
         
         this.client.ajax("mainForm:j_id_7:1:j_id_8:refresh", "action", 
                 "mainForm:j_id_7:1:j_id_8:refresh", 
@@ -2196,8 +2196,8 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assert.assertTrue(content2.contains("mainForm:j_id_7:1:j_id_8:compToUpdate"));
-        Assert.assertTrue(content2.contains("B-"));
+        Assertions.assertTrue(content2.contains("mainForm:j_id_7:1:j_id_8:compToUpdate"));
+        Assertions.assertTrue(content2.contains("B-"));
 
         endRequest();
     }
@@ -2209,16 +2209,16 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         processLifecycleExecuteAndRender();
 
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer2.content()).contains("onloadScript successfully executed"));
-        Assert.assertTrue(new String(writer2.content()).contains("Remove this c:if and it will work."));
+        Assertions.assertTrue(new String(writer2.content()).contains("onloadScript successfully executed"));
+        Assertions.assertTrue(new String(writer2.content()).contains("Remove this c:if and it will work."));
 
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
         processLifecycleExecuteAndRender();
         
         writer2 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer2.content()).contains("onloadScript successfully executed"));
-        Assert.assertTrue(new String(writer2.content()).contains("Remove this c:if and it will work."));
+        Assertions.assertTrue(new String(writer2.content()).contains("onloadScript successfully executed"));
+        Assertions.assertTrue(new String(writer2.content()).contains("Remove this c:if and it will work."));
         
 
         endRequest();

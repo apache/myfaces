@@ -316,7 +316,7 @@ public class ViewPoolImpl extends ViewPool
     @Override
     public void pushDynamicStructureView(FacesContext context, UIViewRoot root, FaceletState faceletDynamicState)
     {
-        DynamicViewKey key = (DynamicViewKey) generateDynamicStructureViewKey(context, root, faceletDynamicState);
+        DynamicViewKey key = generateDynamicStructureViewKey(context, root, faceletDynamicState);
         MetadataViewKey ordinaryKey = deriveViewKey(context, root);
         Map<DynamicViewKey, ViewStructureMetadata> map = dynamicStructureViewMetadataMap.get(ordinaryKey);
         if (map != null)
@@ -405,7 +405,7 @@ public class ViewPoolImpl extends ViewPool
     public void storeDynamicViewStructureMetadata(FacesContext context, UIViewRoot root,
             FaceletState faceletDynamicState)
     {
-        DynamicViewKey key = (DynamicViewKey) generateDynamicStructureViewKey(context, root, faceletDynamicState);
+        DynamicViewKey key = generateDynamicStructureViewKey(context, root, faceletDynamicState);
         MetadataViewKey ordinaryKey = deriveViewKey(context, root);
         if (!dynamicStructureViewMetadataMap.containsKey(ordinaryKey))
         {
@@ -426,7 +426,7 @@ public class ViewPoolImpl extends ViewPool
     public ViewStructureMetadata retrieveDynamicViewStructureMetadata(FacesContext context, UIViewRoot root,
             FaceletState  faceletDynamicState)
     {
-        DynamicViewKey key = (DynamicViewKey) generateDynamicStructureViewKey(context, root, faceletDynamicState);
+        DynamicViewKey key = generateDynamicStructureViewKey(context, root, faceletDynamicState);
         MetadataViewKey ordinaryKey = deriveViewKey(context, root);
         Map<DynamicViewKey, ViewStructureMetadata> map = dynamicStructureViewMetadataMap.get(ordinaryKey);
         if (map != null)

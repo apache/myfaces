@@ -18,10 +18,13 @@
  */
 package org.apache.myfaces.application.viewstate;
 
+import org.junit.jupiter.api.BeforeEach;
+
 
 public class CachedStateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
 {
-
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();

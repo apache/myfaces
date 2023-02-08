@@ -20,8 +20,8 @@ package org.apache.myfaces.view.facelets.tag.faces.html;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class SelectOneItemsTest extends AbstractMyFacesCDIRequestTestCase
 {
@@ -33,10 +33,10 @@ public class SelectOneItemsTest extends AbstractMyFacesCDIRequestTestCase
         
         String content = getRenderedContent();
         System.err.println(content);
-        Assert.assertTrue(content.contains("Cars"));
-        Assert.assertTrue(content.contains("Animals"));
-        Assert.assertTrue(content.contains("Audi"));
-        Assert.assertTrue(content.contains("Fish"));
+        Assertions.assertTrue(content.contains("Cars"));
+        Assertions.assertTrue(content.contains("Animals"));
+        Assertions.assertTrue(content.contains("Audi"));
+        Assertions.assertTrue(content.contains("Fish"));
 
         endRequest();
     }

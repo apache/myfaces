@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
 
-import org.junit.After;
-import org.junit.Before;
+import  org.junit.jupiter.api.AfterEach;
+import  org.junit.jupiter.api.BeforeEach;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -82,7 +82,7 @@ public abstract class AbstractHtmlUnitTestCase
      *
      * @exception Exception if an error occurs
      */
-    @Before
+    @BeforeEach
     protected void setUp() throws Exception
     {
 
@@ -98,7 +98,7 @@ public abstract class AbstractHtmlUnitTestCase
     /**
      * <p>Tear down instance variables required by this test case.</p>
      */
-    @After
+    @AfterEach
     protected void tearDown() throws Exception
     {
 
@@ -210,7 +210,7 @@ public abstract class AbstractHtmlUnitTestCase
     protected HtmlPage link(HtmlAnchor anchor) throws IOException
     {
 
-        HtmlPage page = (HtmlPage) anchor.click();
+        HtmlPage page = anchor.click();
         this.page = page;
         return page;
 
@@ -240,7 +240,7 @@ public abstract class AbstractHtmlUnitTestCase
     protected HtmlPage page(String path) throws Exception
     {
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url(path));
+        HtmlPage page = webClient.getPage(url(path));
         this.page = page;
         return (page);
 
@@ -272,7 +272,7 @@ public abstract class AbstractHtmlUnitTestCase
     protected HtmlPage submit(HtmlSubmitInput submit) throws IOException
     {
 
-        HtmlPage page = (HtmlPage) submit.click();
+        HtmlPage page = submit.click();
         this.page = page;
         return page;
 

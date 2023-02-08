@@ -20,10 +20,10 @@ package org.apache.myfaces.spi;
 
 import jakarta.faces.FactoryFinder;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import  org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FactoryFinderProviderTest
 {
@@ -33,12 +33,12 @@ public class FactoryFinderProviderTest
         super();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception
     {
         
@@ -53,7 +53,7 @@ public class FactoryFinderProviderTest
         
         Object uno = FactoryFinder.getFactory("anything");
         
-        Assert.assertEquals(1, uno);
+        Assertions.assertEquals(1, uno);
         
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, "sfdsfdsf");
         

@@ -26,7 +26,9 @@ import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.application.ViewIdSupport;
 
 import org.apache.myfaces.test.FacesTestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
@@ -41,6 +43,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
     private ViewIdSupport _viewHandlerSupport;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -56,6 +59,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
      * Test method for
      * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testExecuteWithExistingViewRoot()
     {
         Mockito.when(_facesContext.getApplication()).thenReturn(_application);
@@ -79,7 +83,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
      */
     public void testGetPhase()
     {
-        Assert.assertEquals(PhaseId.RESTORE_VIEW, _testimpl.getPhase());
+        Assertions.assertEquals(PhaseId.RESTORE_VIEW, _testimpl.getPhase());
     }
 
 }

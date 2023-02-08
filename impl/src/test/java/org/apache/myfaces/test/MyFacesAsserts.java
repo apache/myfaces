@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.test;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Provides various assert calls which can be used for tests.
@@ -40,8 +40,8 @@ public class MyFacesAsserts
      */
     public static void assertException(Class<? extends Throwable> expected, TestRunner testCase)
     {
-        Assert.assertNotNull(expected);
-        Assert.assertNotNull(testCase);
+        Assertions.assertNotNull(expected);
+        Assertions.assertNotNull(testCase);
         try
         {
             testCase.run();
@@ -54,7 +54,7 @@ public class MyFacesAsserts
             }
         }
 
-        Assert.fail(expected.getName() + " expected");
+        Assertions.fail(expected.getName() + " expected");
     }
 
 }

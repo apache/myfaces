@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.application.viewstate;
 
-import org.apache.myfaces.application.viewstate.StateUtils;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * <p>This TestCase uses the Advanced Encryption Standard with
@@ -32,6 +32,8 @@ import org.apache.myfaces.application.viewstate.StateUtils;
 
 public class StateUtilsAES_CBCTest extends AbstractStateUtilsTest
 {
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();

@@ -78,7 +78,7 @@ public abstract class MockFacesContext12 extends MockFacesContext10
 
     // ---------------------------------------------------- FacesContext Methods
 
-    /** {@inheritDoc} */
+    @Override
     public ELContext getELContext()
     {
 
@@ -106,7 +106,7 @@ public abstract class MockFacesContext12 extends MockFacesContext10
 
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void release()
     {
         super.release();

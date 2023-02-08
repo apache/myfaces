@@ -91,7 +91,7 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
         }
         else
         {
-            _params = (ParamHandler[]) params.toArray(new ParamHandler[params.size()]);
+            _params = params.toArray(new ParamHandler[params.size()]);
         }
     }
 

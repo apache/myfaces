@@ -22,7 +22,7 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TemplateClientTestCase extends FaceletTestCase {
 

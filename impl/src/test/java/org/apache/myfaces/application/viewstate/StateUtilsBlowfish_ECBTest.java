@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.application.viewstate;
 
-import org.apache.myfaces.application.viewstate.StateUtils;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * This TestCase uses Blowfish in Electronic CodeBook mode
@@ -30,6 +30,8 @@ import org.apache.myfaces.application.viewstate.StateUtils;
 
 public class StateUtilsBlowfish_ECBTest extends AbstractStateUtilsTest
 {
+    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();

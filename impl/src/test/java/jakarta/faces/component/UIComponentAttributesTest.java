@@ -21,12 +21,16 @@ package jakarta.faces.component;
 import jakarta.faces.component.html.HtmlInputText;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UIComponentAttributesTest extends AbstractJsfTestCase
 {
     private HtmlInputText input;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -35,12 +39,14 @@ public class UIComponentAttributesTest extends AbstractJsfTestCase
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception
     {
         super.tearDown();
         input = null;
     }
 
+    @Test
     public void testSetNullAttributeOnValidProperty()
     {
         input.getAttributes().put("style", null);
@@ -51,7 +57,7 @@ public class UIComponentAttributesTest extends AbstractJsfTestCase
         try
         {
             input.getAttributes().put("someBogus", null);
-            Assert.fail("Should have thrown NullPointerException");
+            Assertions.fail("Should have thrown NullPointerException");
         }
         catch (NullPointerException npe)
         {
