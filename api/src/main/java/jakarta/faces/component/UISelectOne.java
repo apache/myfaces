@@ -81,7 +81,7 @@ public class UISelectOne extends UIInput
         String group = getGroup();
         String submittedValue = (String) getSubmittedValue();
 
-        if (group != null && !group.isEmpty()) 
+        if (group != null && !group.isEmpty() && isEmpty(submittedValue) ) 
         {
             final UIComponent form = getRadioNestingForm(context, this);
 
@@ -95,7 +95,7 @@ public class UISelectOne extends UIInput
                     {
                         // check if the is empty (see ) or if it's not valid (means this path has been taken already)
                         // See conditions listed under spec: uiselectone#processValidators
-                        if(isEmpty(submittedValue) && isSubmittedAlready(target)){
+                        if(isSubmittedAlready(target)){
                             previouslySubmittedOrValidated = true;
                             return VisitResult.COMPLETE;
                         }          
@@ -103,15 +103,16 @@ public class UISelectOne extends UIInput
                     return VisitResult.ACCEPT;
                 }
             });
+
+            if(previouslySubmittedOrValidated){
+                // Skip further validation due to either 
+                // 1) one of the submissions are not valid (for instance, required, but none submitted (see jakarta/faces#329))
+                // 2) submitted value has been found and validated
+                return;
+            }
+            
         }
 
-        if(previouslySubmittedOrValidated){
-            // Skip further validation due to either 
-            // 1) one of the submissions are not valid (for instance, required, but none submitted (see jakarta/faces#329))
-            // 2) submitted value has been found and validated
-            return;
-        }
-        
         super.processValidators(context);
     }
 
@@ -173,12 +174,7 @@ public class UISelectOne extends UIInput
         // and if required is true it must not match an option with noSelectionOption set to true (since 2.0)
         Converter converter = getConverter();
 
-        // Since the iterator is used twice, it has sense to traverse it only once.
-        Collection<SelectItem> items = new ArrayList<>();
-        for (Iterator<SelectItem> iter = new SelectItemsIterator(this, context); iter.hasNext();)
-        {
-            items.add(iter.next());
-        }
+        Collection<SelectItem> items = getSelectItemCollectionForGroup(context);
         
         if (SelectItemsUtil.matchValue(context, this, value, items.iterator(), converter))
         {
@@ -192,16 +188,43 @@ public class UISelectOne extends UIInput
             }
         }
 
-        // if previouslySubmittedOrValidated is true, then it means that we have found the select item value
-        // in the other UISelectOne radio components, and no validation error is thrown.
-        if (previouslySubmittedOrValidated) 
-        {
-            return;
-        }
-
         MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, 
                 new Object[] {MessageUtils.getLabel(context, this) });
         setValid(false);
+    }
+
+    // Added as part of MYFACES-4551
+    private Collection<SelectItem> getSelectItemCollectionForGroup(FacesContext context){
+        final UIComponent form = getRadioNestingForm(context, this);
+        String group = getGroup();
+        Collection<SelectItem> items = new ArrayList<>();
+        if (group != null && !group.isEmpty()) {
+            form.visitTree(VisitContext.createVisitContext(context), new VisitCallback() 
+            {
+                @Override
+                public VisitResult visit(VisitContext visitContext, UIComponent target) 
+                {
+                    if (target instanceof UISelectOne  && ((UISelectOne) target).getGroup().equals(group)) 
+                    {
+                        for (Iterator<SelectItem> iter = new SelectItemsIterator(target, context); iter.hasNext();)
+                        {
+                            items.add(iter.next());
+                        }
+
+                        return VisitResult.REJECT;
+                    }
+                    return VisitResult.ACCEPT;
+                }
+            });
+        }
+        else
+        {
+            for (Iterator<SelectItem> iter = new SelectItemsIterator(this, context); iter.hasNext();)
+            {
+                items.add(iter.next());
+            }
+        }
+        return items;
     }
 
     public String getGroup()
