@@ -167,10 +167,6 @@ public class IntegrationTest
         trigger("cmd_error", webDriver -> webDriver.findElement(new ByIdOrName("processedErrror")).isDisplayed() &&
                 webDriver.findElement(new ByIdOrName("processedErrror")).getText().contains("serverError"));
 
-        //component error, client side, only log error
-        // functionality dropped afair, errors are now log only
-        trigger("cmd_error_component", webDriver -> webDriver.findElement(new ByIdOrName("logError")).isDisplayed() &&
-                webDriver.findElement(new ByIdOrName("logError")).getText().contains("ArgNotSet"));
 
     }
 
