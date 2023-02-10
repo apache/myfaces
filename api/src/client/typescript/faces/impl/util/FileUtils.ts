@@ -75,7 +75,7 @@ export function resolveFiles(dataSource: DQ): Stream<[string, File]> {
 }
 
 
-export function fixKeyWithoutVal(keyVal: any[]): [string, any] {
+export function fixEmmptyParameters(keyVal: any[]): [string, any] {
     return (keyVal.length < 3 ? [keyVal?.[0] ?? [], keyVal?.[1] ?? []] : keyVal) as [string, any];
 }
 

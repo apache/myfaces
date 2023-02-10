@@ -18,7 +18,7 @@ import {$nsp, EMPTY_STR, IDENT_NONE, P_VIEWSTATE} from "../core/Const";
 
 import {
     encodeFormData,
-    fixKeyWithoutVal, getFormInputsAsStream
+    fixEmmptyParameters, getFormInputsAsStream
 } from "../util/FileUtils";
 
 
@@ -77,20 +77,20 @@ export class XhrFormData extends Config {
     toFormData(): FormData {
         /*
          * expands key: [item1, item2]
-         * to: [{key: item1}, {key, item2}]
+         * to: [{key: key,  value: item1}, {key: key, value: item2}]
          */
         let expandAssocArray = ([key, item]) =>
-            Stream.of(...(item as Array<any>)).map(item => {
-                return {key, item};
+            Stream.of(...(item as Array<any>)).map(value => {
+                return {key, value};
             });
 
         /*
          * remaps the incoming {key, value} tuples
          * to naming container prefixed keys and values
          */
-        let remapForNamingContainer = ({key, item}) => {
+        let remapForNamingContainer = ({key, value}) => {
             key = this.remapKeyForNamingContainer(key);
-            return {key, item}
+            return {key, value}
         };
 
         /*
@@ -146,10 +146,13 @@ export class XhrFormData extends Config {
     private encodeSubmittableFields(parentItem: DQ, partialIds ?: string[]) {
 
         const formInputs = getFormInputsAsStream(parentItem);
+        const mergeIntoThis = ([key, value]) => this.append(key).value = value;
+        const namingContainerRemap = ([key, value]) => this.paramsMapper(key as string, value);
+
         formInputs
-            .map(fixKeyWithoutVal)
-            .map(([key, value]) => this.paramsMapper(key as string, value))
-            .each(([key, value]) => this.append(key).value = value);
+            .map(fixEmmptyParameters)
+            .map(namingContainerRemap)
+            .each(mergeIntoThis);
     }
 
     private remapKeyForNamingContainer(key: string): string {
