@@ -42,7 +42,7 @@ describe('javax.ajax.request test suite', () => {
         return await defaultMyFaces23();
     });
 
-    it("jsf.ajax.request can be called", () => {
+    it("jsf.ajax.request can be called", (done) => {
         //we stub the addRequestToQueue, to enable the request check only
         //without any xhr and response, both will be tested separately for
         //proper behavior
@@ -66,6 +66,7 @@ describe('javax.ajax.request test suite', () => {
         } finally {
             //once done we restore the proper state
             addRequestToQueue.restore();
+            done();
         }
 
     });
@@ -75,7 +76,7 @@ describe('javax.ajax.request test suite', () => {
         done();
     });
 
-    it("javax.util.chain must work", () => {
+    it("javax.util.chain must work", (done) => {
         let called = {};
         window.called = called;
 
@@ -119,11 +120,8 @@ describe('javax.ajax.request test suite', () => {
         expect(!!called["func4"]).to.be.true;
         expect(!!called["func5"]).to.be.false;
 
+        done();
     });
-
-
-
-
 });
 
 
