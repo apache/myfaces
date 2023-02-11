@@ -31,7 +31,6 @@ import javax.faces.annotation.RequestParameterMap;
 import javax.faces.annotation.RequestParameterValuesMap;
 import javax.faces.annotation.SessionMap;
 import javax.faces.annotation.ViewMap;
-import javax.faces.application.Application;
 import javax.faces.application.ResourceHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
@@ -46,9 +45,9 @@ public class JsfArtifactProducer
    @Produces
    @Named("application")
    @ApplicationScoped
-   public Application getApplication()
+   public Object getApplication()
    {
-      return FacesContext.getCurrentInstance().getApplication();
+      return FacesContext.getCurrentInstance().getExternalContext().getContext();
    }
    
    @Produces
