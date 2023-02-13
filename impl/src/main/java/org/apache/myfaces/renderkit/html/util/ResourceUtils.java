@@ -31,8 +31,8 @@ import org.apache.myfaces.resource.ContractResource;
 
 public class ResourceUtils
 {
-    public final static String FACES_DEVELOPMENT_JS = "faces-development.js";
-    public final static String FACES_PRODUCTION_JS = "faces-minimal.js";
+    public final static String FACES_UNCOMPRESSED_JS_RESOURCE_NAME = "faces-development.js";
+    public final static String FACES_MINIMAL_JS_RESOURCE_NAME = "faces.js";
 
     private final static String RENDERED_FACES_JS = "org.apache.myfaces.RENDERED_FACES_JS";
 

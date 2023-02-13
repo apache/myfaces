@@ -1,0 +1,53 @@
+/*!
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+* Changes to the downstream tsconfig
+* for the myfaces build integration.
+* key requirement no github dependencies on code level
+* we have to compile mona-dish in directly on source level
+* The idea is to copy all the needed files from the node
+* dependencies into the source tree whenever we update the codebase
+* and then build locally.
+* Theoretically a build from the node folders would suffice.
+* The end result is the same as well as in the mapping files
+* but that would mean we do host the typescript code ourselves.
+*
+* That however means we have to upstream the code into the
+* jsf_ts github project for the time being to be in sync with it.
+*/
+{
+  "extends": "./typescript/faces/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    /**
+    * key requirement no github dependencies on code level
+    * we have to compile mona-dish in directly on source level
+    */
+    "typeRoots": [
+      "./node_modules/@types",
+      "./typescript/faces/@types/"
+    ],
+    "paths": {
+      "mona-dish": ["./typescript/mona_dish/index_core.ts"]
+    }
+  },
+  "exclude": [
+    "./typescript/mona_dish/ExtendedArray.ts",
+    "./typescript/mona_dish/index.ts",
+    "./typescript/mona_dish/Messaging.ts"
+  ]
+}

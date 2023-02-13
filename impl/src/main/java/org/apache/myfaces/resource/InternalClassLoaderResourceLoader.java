@@ -31,7 +31,10 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
 /**
- * A resource loader implementation which loads resources from the thread ClassLoader.
+ * A specialized classloader for our internal resources
+ * it enables el resolution on source level for our jsf.js files
+ * and reserves a myfaces namespace in the resources for other custom files.
+ * This resource loader is generally reserved for internal purposes.
  */
 public class InternalClassLoaderResourceLoader extends ResourceLoader
 {
@@ -41,7 +44,6 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     public InternalClassLoaderResourceLoader(String prefix)
     {
         super(prefix);
-
         _developmentStage = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
     }
 
@@ -103,7 +105,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             return url;
         }
     }
-    
+
     @Override
     public URL getResourceURL(ResourceMeta resourceMeta)
     {
@@ -121,19 +123,24 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                                            String resourceName, String resourceVersion)
     {
         //handle faces.js
-        final boolean jakartaFacesLib = libraryName != null &&
-                ResourceHandler.FACES_SCRIPT_LIBRARY_NAME.equals(libraryName);
+        final boolean jakartaFacesLib = ResourceHandler.FACES_SCRIPT_LIBRARY_NAME.equals(libraryName);
         final boolean jakartaFaces = jakartaFacesLib &&
                 ResourceHandler.FACES_SCRIPT_RESOURCE_NAME.equals(resourceName);
 
         if (jakartaFaces)
         {
-            String rescourceName = _developmentStage ?
-                    ResourceUtils.FACES_DEVELOPMENT_JS :
-                    ResourceUtils.FACES_PRODUCTION_JS;
+            String remappedResourceName = _developmentStage ?
+                    ResourceUtils.FACES_UNCOMPRESSED_JS_RESOURCE_NAME :
+                    ResourceUtils.FACES_MINIMAL_JS_RESOURCE_NAME;
+
+            // in development stage we serve the uncompressed
+            // file and the map file, we have a special case of el expressions
+            // in our javascript for context path and separator char,
+            // hence we enable value expressions for those resources
             return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
-                            rescourceName, false);
+                    remappedResourceName, true);
         }
+        // TODO still needed for tests?
         else if (_developmentStage && libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
@@ -167,10 +174,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             {
                 url = this.getClass().getClassLoader().getResource(name);
             }
-            if (url != null)
-            {
-                return true;
-            }
+            return url != null;
         }
         else
         {
@@ -179,16 +183,12 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             {
                 url = this.getClass().getClassLoader().getResource(libraryName);
             }
-            if (url != null)
-            {
-                return true;
-            }
+            return url != null;
         }
-        return false;
     }
 
     @Override
-    public Iterator<String> iterator(FacesContext facesContext, String path, 
+    public Iterator<String> iterator(FacesContext facesContext, String path,
             int maxDepth, ResourceVisitOption... options)
     {
         String basePath = path;

@@ -109,6 +109,26 @@ public final class ExternalContextUtils
 
         return null;
     }
+
+    /**
+     * Returns an HttpServletRequest if one exists on the externalContext or null
+     * if it does not.  Please note that some portal environments implement the
+     * PortletRequest and Response objects as HttpServletRequest/Response objects.
+     * This method handles these types of requests properly and will therefore
+     * return null in portal environments.
+     *
+     * @param ec
+     * @return an HttpServletResponse if we have one or null if we do not
+     */
+    public static HttpServletRequest getHttpServletRequest(ExternalContext ec)
+    {
+        if (isHttpServletRequest(ec))
+        {
+            return (HttpServletRequest) ec.getRequest();
+        }
+
+        return null;
+    }
     
     /**
      * Trys to obtain a HttpServletResponse from the Response.

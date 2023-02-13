@@ -64,130 +64,6 @@
                 </configuration>
             </plugin>
 
-            <!-- compilation and compression of our javascripts -->
-            <plugin>
-                <groupId>org.apache.myfaces.buildtools</groupId>
-                <artifactId>myfaces-javascript-plugin</artifactId>
-                <extensions>true</extensions>
-                <executions>
-                     <execution>
-                        <id>compile</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
-                            <descriptor>${basedir}/src/assembler/jsfscripts-compiler.xml</descriptor>
-                            <excludes>
-                                <exclude>**/myfaces/_impl/core/faces-development.js</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>compile-uncompressed-full</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
-                            <descriptor>src/assembler/jsfscripts-development-compiler.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/jakarta.faces/</outputDirectory>
-                            <excludes>
-                                <exclude>**/myfaces/_impl/core/faces-development.js</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>compile-minimal</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
-                            <descriptor>src/assembler/jsfscripts-production-compiler.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/jakarta.faces/</outputDirectory>
-                            <excludes>
-                                <exclude>**/myfaces/_impl/core/faces-development.js</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>compile-i18n</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
-                            <descriptor>${basedir}/src/assembler/jsfscripts-i18n-compiler.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/resources/myfaces/</outputDirectory>
-                            <excludes>
-                                <exclude>**/myfaces/_impl/core/faces-development.js</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>compress</id>
-                        <goals>
-                            <goal>compress</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <scripts>target/classes/META-INF/resources/jakarta.faces/</scripts>
-                            <excludes>
-                                <exclude>faces-development.js</exclude>
-
-                            </excludes>
-                            <compressor>yahooUI</compressor>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>compress-extended</id>
-                        <goals>
-                            <goal>compress</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <scripts>target/classes/META-INF/resources/myfaces/</scripts>
-                            <excludes>
-                                <exclude>faces-development.js</exclude>
-                            </excludes>
-                            <compressor>yahooUI</compressor>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>compress-alternatives</id>
-                        <goals>
-                            <goal>compress</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <scripts>target/classes/META-INF/internal-resources/jakarta.faces/</scripts>
-                            <excludes>
-                                <exclude>faces-development.js</exclude>
-                                <exclude>META-INF/**/*.js</exclude>
-                            </excludes>
-                            <compressor>yahooUI</compressor>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <optimizationLevel>0</optimizationLevel>
-                    <sourceDirectory>src/main/javascript</sourceDirectory>
-                    <webappDirectory>${basedir}</webappDirectory>
-                    <outputDirectory>${basedir}/target/classes/META-INF/resources/jakarta.faces/</outputDirectory>
-                </configuration>
-            </plugin>
-
 
             <!-- we want to use the test cases also in myfacse-impl, thus creating a test-jar -->
             <plugin>
@@ -322,8 +198,96 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
-        </plugins>
 
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/README.md</exclude>
+                        <exclude>**/*/MANIFEST.MF</exclude>
+                        <exclude>**/*.iml</exclude>
+                        <exclude>src/main/resources/META-INF/licenses/*-LICENSE.txt</exclude>
+                        <exclude>src/main/resources/META-INF/licenses/*-LICENSE.TXT</exclude>
+                        <exclude>src/main/resources/META-INF/services/**</exclude>
+                        <exclude>.git</exclude>
+                        <exclude>.gitignore</exclude>
+                        <exclude>**/target/**/*</exclude>
+                        <exclude>**/dist/**/*</exclude>
+                        <!-- node modules is only used by the build -->
+                        <exclude>**/node_modules/**/*</exclude>
+                        <exclude>**/client/**/*.md</exclude>
+                        <exclude>**/client/package*.json</exclude>
+                        <exclude>**/client/**/*.js.map</exclude>
+                        <exclude>**/client/typescript/**/*.js</exclude>
+                        <exclude>**/client/**/.mocharc.json</exclude>
+
+                        <exclude>src/client/webpack.config.js</exclude>
+                        <exclude>DEPENDENCIES</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.12.1</version>
+                <!-- Use the latest released version:
+                https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ -->
+                <configuration>
+                    <nodeVersion>v16.13.1</nodeVersion>
+                    <npmVersion>8.1.2</npmVersion>
+                    <installDirectory>./target/node</installDirectory>
+                    <workingDirectory>src/client</workingDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm run build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm run test</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <arguments>run test</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 
@@ -347,19 +311,6 @@
                         <executions>
                             <execution>
                                 <id>attach-javadoc</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.myfaces.buildtools</groupId>
-                        <artifactId>myfaces-jsdoc-plugin</artifactId>
-                        <version>1.0-beta-1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-jsdoc</id>
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
@@ -428,19 +379,39 @@
             <id>generateJsDoc</id>
             <build>
               <plugins>
-                    <plugin>
-                        <groupId>org.apache.myfaces.buildtools</groupId>
-                        <artifactId>myfaces-jsdoc-plugin</artifactId>
-                        <version>1.0-beta-1</version>
-                        <executions>
-                            <execution>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>jsdoc</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
+                  <plugin>
+                      <groupId>com.github.eirslett</groupId>
+                      <artifactId>frontend-maven-plugin</artifactId>
+                      <version>1.12.1</version>
+                      <!-- Use the latest released version:
+                      https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ -->
+                      <configuration>
+                          <nodeVersion>v16.13.1</nodeVersion>
+                          <npmVersion>8.1.2</npmVersion>
+                          <installDirectory>./target/node</installDirectory>
+                          <workingDirectory>src/client</workingDirectory>
+                      </configuration>
+                      <executions>
+                          <execution>
+                              <id>install node and npm</id>
+                              <goals>
+                                  <goal>install-node-and-npm</goal>
+                              </goals>
+                              <phase>generate-resources</phase>
+                          </execution>
+
+                          <execution>
+                              <id>npm run build</id>
+                              <goals>
+                                  <goal>npm</goal>
+                              </goals>
+                              <phase>generate-resources</phase>
+                              <configuration>
+                                  <arguments>run doc</arguments>
+                              </configuration>
+                          </execution>
+                      </executions>
+                  </plugin>
                </plugins>
             </build>
         </profile>

@@ -20,19 +20,20 @@ package org.apache.myfaces.application;
 
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.resource.ClassLoaderContractResourceLoader;
-import org.apache.myfaces.resource.ExternalContextContractResourceLoader;
-import org.apache.myfaces.resource.FacesFlowClassLoaderResourceLoader;
 
+import org.apache.myfaces.resource.BaseResourceHandlerSupport;
+import org.apache.myfaces.resource.ClassLoaderContractResourceLoader;
+import org.apache.myfaces.resource.ClassLoaderResourceLoader;
+import org.apache.myfaces.resource.ContractResourceLoader;
+import org.apache.myfaces.resource.ExternalContextContractResourceLoader;
+import org.apache.myfaces.resource.ExternalContextResourceLoader;
+import org.apache.myfaces.resource.FacesFlowClassLoaderResourceLoader;
+import org.apache.myfaces.resource.FacesJSResourceLoader;
 import org.apache.myfaces.resource.InternalClassLoaderResourceLoader;
+import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.resource.RootExternalContextResourceLoader;
 import org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader;
 import org.apache.myfaces.resource.TempDirFileCacheResourceLoader;
-import org.apache.myfaces.resource.BaseResourceHandlerSupport;
-import org.apache.myfaces.resource.ClassLoaderResourceLoader;
-import org.apache.myfaces.resource.ContractResourceLoader;
-import org.apache.myfaces.resource.ExternalContextResourceLoader;
-import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
@@ -72,27 +73,26 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
             
             if (TempDirFileCacheResourceLoader.isValidCreateTemporalFiles(facesContext))
             {
-                // The ExternalContextResourceLoader has precedence over
-                // The internal one
                 _resourceLoaders = new ResourceLoader[] {
                         new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader('/' +directory)),
                         new TempDirFileCacheResourceLoader(new FacesFlowClassLoaderResourceLoader()),
-                        // jsf-development and production hosted in internal-resources
                         new TempDirFileCacheResourceLoader(
-                                         new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES)),
-                        new TempDirFileCacheResourceLoader(new ClassLoaderResourceLoader(META_INF_RESOURCES))
+                                new FacesJSResourceLoader(
+                                         new InternalClassLoaderResourceLoader(META_INF_RESOURCES))),
+                        new TempDirFileCacheResourceLoader(
+                                new FacesJSResourceLoader(
+                                        new ClassLoaderResourceLoader(META_INF_RESOURCES)))
                 };
             }
             else
             {
-                //The ExternalContextResourceLoader has precedence over
-                //ClassLoaderResourceLoader, so it goes first.
-
                 _resourceLoaders = new ResourceLoader[] {
                         new ExternalContextResourceLoader('/' +directory),
                         new FacesFlowClassLoaderResourceLoader(),
-                        new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES),
-                        new ClassLoaderResourceLoader(META_INF_RESOURCES)
+                        new TempDirFileCacheResourceLoader(
+                                new FacesJSResourceLoader(new InternalClassLoaderResourceLoader(META_INF_RESOURCES))),
+                        new FacesJSResourceLoader(
+                                new ClassLoaderResourceLoader(META_INF_RESOURCES))
                 };
             }
         }
