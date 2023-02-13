@@ -713,12 +713,12 @@ public class MyfacesConfig
     /**
      * Indicate if log all web config params should be done before initialize the webapp. 
      * <p>
-     * If is set in "auto" mode, web config params are only logged on "Development" and "Production" project stages.
+     * Web config params are only logged on "Development" project stages when set to true.
      * </p> 
      */
-    @JSFWebConfigParam(expectedValues="true, auto, false", defaultValue="auto")
-    public static final String LOG_WEB_CONTEXT_PARAMS = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS";
-    private static final String LOG_WEB_CONTEXT_PARAMS_DEFAULT = "auto";
+    @JSFWebConfigParam(expectedValues="true, false", defaultValue="true")
+    public static final String LOG_WEB_CONTEXT_PARAMS_IN_DEV_MODE = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS_IN_DEV_MODE";
+    private static final String LOG_WEB_CONTEXT_PARAMS_IN_DEV_MODE_DEFAULT = "true";
     
 
     public static final boolean AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT = false;
@@ -1256,19 +1256,18 @@ public class MyfacesConfig
         {
             cfg.resourceCacheLastModified = false;
         }
-        
-        String logWebContextParams = getString(extCtx, LOG_WEB_CONTEXT_PARAMS,
-                LOG_WEB_CONTEXT_PARAMS_DEFAULT);    
-        if (logWebContextParams.equals("false") || (logWebContextParams.equals("auto")
-                && (cfg.projectStage == ProjectStage.SystemTest || cfg.projectStage == ProjectStage.UnitTest)))
-        {
-            cfg.logWebContextParams = false;
-        }
-        else
+
+        String logWebContextParams = getString(extCtx, LOG_WEB_CONTEXT_PARAMS_IN_DEV_MODE, LOG_WEB_CONTEXT_PARAMS_IN_DEV_MODE_DEFAULT);    
+
+        if(logWebContextParams.equals("true") && cfg.projectStage == ProjectStage.Development)
         {
             cfg.logWebContextParams = true;
         }
-        
+        else
+        {
+            cfg.logWebContextParams = false;
+        }
+
         cfg.websocketMaxConnections = getInt(extCtx, WEBSOCKET_MAX_CONNECTIONS,
                 WEBSOCKET_MAX_CONNECTIONS_DEFAULT);
 
@@ -1709,6 +1708,7 @@ public class MyfacesConfig
     {
         return resourceCacheLastModified;
     }
+
 
     public boolean isLogWebContextParams()
     {

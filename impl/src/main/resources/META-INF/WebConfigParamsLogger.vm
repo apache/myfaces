@@ -38,18 +38,12 @@ public class WebConfigParamsLogger
     {
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
 
-        if (!myfacesConfig.isLogWebContextParams())
-        {
-            //No log if is disabled or is in auto mode and project stage is UnitTest or SystemTest
-            return;
-        }
-
+        Boolean infologgingEnabled = myfacesConfig.isLogWebContextParams();
 
         if(myfacesConfig.isRiImplAvailable() && myfacesConfig.isMyfacesImplAvailable())
         {
             log.severe("Both MyFaces and the RI are on your classpath. Please make sure to use only one of the two JSF-implementations.");
         }
-
 
 ## ----------------------------- PROPERTY MACROS -----------------------------
 ##
@@ -61,7 +55,14 @@ public class WebConfigParamsLogger
             paramValue = facesContext.getExternalContext().getInitParameter("$webConfigParam.name");
             if (paramValue == null)
             {
-                log.info("No context init parameter '$webConfigParam.name' found#if($webConfigParam.defaultValue), using default value '$webConfigParam.defaultValue'#end.");
+                if(infologgingEnabled) 
+                {
+                    log.info("No context init parameter '$webConfigParam.name' found#if($webConfigParam.defaultValue), using default value '$webConfigParam.defaultValue'#end.");
+                }
+                else if (!infologgingEnabled && log.isLoggable(Level.FINEST))
+                {
+                    log.finest("No context init parameter '$webConfigParam.name' found#if($webConfigParam.defaultValue), using default value '$webConfigParam.defaultValue'#end.");
+                }
             }
 #if (!$webConfigParam.isDeprecated())
 #if ($webConfigParam.expectedValues)
@@ -88,6 +89,10 @@ public class WebConfigParamsLogger
                         log.warning("Wrong value in context init parameter '$webConfigParam.name' (='" + paramValue + "'), using default value #if($webConfigParam.defaultValue)'$webConfigParam.defaultValue'#else'null'#end");
                     }
                 }
+                else if (!infologgingEnabled && log.isLoggable(Level.FINEST))
+                {
+                    log.finest("Context parameter FOUND: '$webConfigParam.name' set to '" + paramValue + "'");
+                }
             }
 #elseif ($webConfigParam.classType)
             else
@@ -110,12 +115,9 @@ public class WebConfigParamsLogger
 ##
 ## ----------------------------- END PROPERTY MACROS -------------------------
 ##
-
         if (log.isLoggable(Level.INFO))
         {
-            log.info("Scanning for context init parameters not defined. It is not necessary to define them all into your web.xml, " +
-                     "they are just provided here for informative purposes. To disable this messages set " +
-                     MyfacesConfig.LOG_WEB_CONTEXT_PARAMS + " config param to 'false'");
+
             String paramValue = null;
 #set ($webConfigList = ${model.getWebConfigs()})
 #foreach( $webConfig in $webConfigList )
