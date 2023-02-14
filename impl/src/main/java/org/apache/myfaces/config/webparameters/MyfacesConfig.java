@@ -21,6 +21,7 @@ package org.apache.myfaces.config.webparameters;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
@@ -711,14 +712,16 @@ public class MyfacesConfig
     private static final boolean RESOURCE_CACHE_LAST_MODIFIED_DEFAULT = true;
 
     /**
-     * Indicate if log all web config params should be done before initialize the webapp. 
+     * Indicate if INFO logging of all the web config params should be done before initialize the webapp. 
      * <p>
-     * Web config params are only logged on "Development" project stages when set to true.
+     * If is set in "auto" mode, web config params are only logged in "Development" mode. 
+     * If is set to "true", web config params are only logged in "Production" and "Development" mode. 
+     * If is set in "false" mode, no info logging occurs in either mode.
      * </p> 
      */
-    @JSFWebConfigParam(expectedValues="true, false", defaultValue="true")
-    public static final String LOG_WEB_CONTEXT_PARAMS_IN_DEV_MODE = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS_IN_DEV_MODE";
-    private static final String LOG_WEB_CONTEXT_PARAMS_IN_DEV_MODE_DEFAULT = "true";
+    @JSFWebConfigParam(expectedValues="true, auto, false", defaultValue="auto")
+    public static final String LOG_WEB_CONTEXT_PARAMS = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS";
+    private static final String LOG_WEB_CONTEXT_PARAMS_DEFAULT = "auto";
     
 
     public static final boolean AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT = false;
@@ -1256,18 +1259,36 @@ public class MyfacesConfig
         {
             cfg.resourceCacheLastModified = false;
         }
+        
+        String logWebContextParams = getString(extCtx, LOG_WEB_CONTEXT_PARAMS,
+                LOG_WEB_CONTEXT_PARAMS_DEFAULT);    
 
-        String logWebContextParams = getString(extCtx, LOG_WEB_CONTEXT_PARAMS_IN_DEV_MODE, LOG_WEB_CONTEXT_PARAMS_IN_DEV_MODE_DEFAULT);    
-
-        if(logWebContextParams.equals("true") && cfg.projectStage == ProjectStage.Development)
+        switch(logWebContextParams)
         {
-            cfg.logWebContextParams = true;
+            case "auto": 
+                if(cfg.projectStage == ProjectStage.Development)
+                {
+                    cfg.logWebContextParams = true;
+                }
+                else
+                {
+                    cfg.logWebContextParams = false;
+                }
+                break;
+            case "true":
+                if(cfg.projectStage == ProjectStage.Production || cfg.projectStage == ProjectStage.Development)
+                {
+                    cfg.logWebContextParams = true;
+                }
+                else
+                {
+                    cfg.logWebContextParams = false;
+                }
+                break;
+            default: 
+                cfg.logWebContextParams = false;
         }
-        else
-        {
-            cfg.logWebContextParams = false;
-        }
-
+        
         cfg.websocketMaxConnections = getInt(extCtx, WEBSOCKET_MAX_CONNECTIONS,
                 WEBSOCKET_MAX_CONNECTIONS_DEFAULT);
 
@@ -1708,7 +1729,6 @@ public class MyfacesConfig
     {
         return resourceCacheLastModified;
     }
-
 
     public boolean isLogWebContextParams()
     {
