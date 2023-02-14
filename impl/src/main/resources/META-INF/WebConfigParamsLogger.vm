@@ -54,56 +54,56 @@ public class WebConfigParamsLogger
 ## -------------------------------
 ##
 #macro (writePropertyCheck $webConfigParam)
-            paramValue = facesContext.getExternalContext().getInitParameter("$webConfigParam.name");
-            if (paramValue == null)
-            {
-                logMessageToAppropriateLevel("No context init parameter '$webConfigParam.name' found#if($webConfigParam.defaultValue), using default value '$webConfigParam.defaultValue'#end.");
-            }
+        paramValue = facesContext.getExternalContext().getInitParameter("$webConfigParam.name");
+        if (paramValue == null)
+        {
+            logMessageToAppropriateLevel("No context init parameter '$webConfigParam.name' found#if($webConfigParam.defaultValue), using default value '$webConfigParam.defaultValue'#end.");
+        }
 #if (!$webConfigParam.isDeprecated())
 #if ($webConfigParam.expectedValues)
-            else
+        else
+        {
+            boolean found = false;
+            String[] expectedValues = StringUtils.trim(StringUtils.splitShortString("$webConfigParam.expectedValues",','));
+            for (int i = 0; i < expectedValues.length; i++)
             {
-                boolean found = false;
-                String[] expectedValues = StringUtils.trim(StringUtils.splitShortString("$webConfigParam.expectedValues",','));
-                for (int i = 0; i < expectedValues.length; i++)
-                {
 #if ($webConfigParam.isIgnoreUpperLowerCase())
-                    if (paramValue.equalsIgnoreCase(expectedValues[i]))
+                if (paramValue.equalsIgnoreCase(expectedValues[i]))
 #else
-                    if (paramValue.equals(expectedValues[i]))
+                if (paramValue.equals(expectedValues[i]))
 #end
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
                 {
-                    if (log.isLoggable(Level.WARNING))
-                    {
-                        log.warning("Wrong value in context init parameter '$webConfigParam.name' (='" + paramValue + "'), using default value #if($webConfigParam.defaultValue)'$webConfigParam.defaultValue'#else'null'#end");
-                    }
-                }
-                else
-                {
-                    logMessageToAppropriateLevel("Init Context parameter FOUND '$webConfigParam.name' set to '" + paramValue + "'");
+                    found = true;
+                    break;
                 }
             }
-#elseif ($webConfigParam.classType)
+            if (!found)
+            {
+                if (log.isLoggable(Level.WARNING))
+                {
+                    log.warning("Wrong value in context init parameter '$webConfigParam.name' (='" + paramValue + "'), using default value #if($webConfigParam.defaultValue)'$webConfigParam.defaultValue'#else'null'#end");
+                }
+            }
             else
             {
-                try
+                logMessageToAppropriateLevel("Init context parameter found '$webConfigParam.name' set to '" + paramValue + "'");
+            }
+        }
+#elseif ($webConfigParam.classType)
+        else
+        {
+            try
+            {
+                ${webConfigParam.classType}.valueOf(paramValue);
+            }
+            catch(Exception e)
+            {
+                if (log.isLoggable(Level.WARNING))
                 {
-                    ${webConfigParam.classType}.valueOf(paramValue);
-                }
-                catch(Exception e)
-                {
-                    if (log.isLoggable(Level.WARNING))
-                    {
-                        log.warning("Wrong value in context init parameter '$webConfigParam.name' (='" + paramValue + "'), using default value #if($webConfigParam.defaultValue)'$webConfigParam.defaultValue'#else'null'#end");
-                    }
+                    log.warning("Wrong value in context init parameter '$webConfigParam.name' (='" + paramValue + "'), using default value #if($webConfigParam.defaultValue)'$webConfigParam.defaultValue'#else'null'#end");
                 }
             }
+        }
 #end
 #end
 #end
