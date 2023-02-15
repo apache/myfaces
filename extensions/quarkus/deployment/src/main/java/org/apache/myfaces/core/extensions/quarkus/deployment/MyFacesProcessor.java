@@ -78,7 +78,7 @@ import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewScop
 import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewTransientScopeContext;
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusInjectionProvider;
 import io.quarkus.runtime.LaunchMode;
-import io.quarkus.runtime.configuration.ProfileManager;
+import io.quarkus.runtime.configuration.ConfigUtils;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
@@ -337,11 +337,11 @@ class MyFacesProcessor
         if (!projectStage.isPresent())
         {
             projectStage = Optional.of(ProjectStage.Production.name());
-            if (LaunchMode.DEVELOPMENT.getDefaultProfile().equals(ProfileManager.getActiveProfile()))
+            if (ConfigUtils.getProfiles().contains(LaunchMode.DEVELOPMENT.getDefaultProfile()))
             {
                 projectStage = Optional.of(ProjectStage.Development.name());
             }
-            else if (LaunchMode.TEST.getDefaultProfile().equals(ProfileManager.getActiveProfile()))
+            else if (ConfigUtils.getProfiles().contains(LaunchMode.TEST.getDefaultProfile()))
             {
                 projectStage = Optional.of(ProjectStage.SystemTest.name());
             }
@@ -558,9 +558,11 @@ class MyFacesProcessor
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_mt"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_nl"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_pl"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_pt_PR"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_pt"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_pt_BR"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_ru"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_sk"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_uk"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_CN"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_HK"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_TW"));
