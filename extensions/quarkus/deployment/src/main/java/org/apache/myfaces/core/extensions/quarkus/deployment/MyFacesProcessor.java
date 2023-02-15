@@ -38,7 +38,7 @@ import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
 import io.quarkus.runtime.LaunchMode;
-import io.quarkus.runtime.configuration.ProfileManager;
+import io.quarkus.runtime.configuration.ConfigUtils;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
@@ -355,11 +355,11 @@ class MyFacesProcessor
         if (!projectStage.isPresent())
         {
             projectStage = Optional.of(ProjectStage.Production.name());
-            if (LaunchMode.DEVELOPMENT.getDefaultProfile().equals(ProfileManager.getActiveProfile()))
+            if (ConfigUtils.getProfiles().contains(LaunchMode.DEVELOPMENT.getDefaultProfile()))
             {
                 projectStage = Optional.of(ProjectStage.Development.name());
             }
-            else if (LaunchMode.TEST.getDefaultProfile().equals(ProfileManager.getActiveProfile()))
+            else if (ConfigUtils.getProfiles().contains(LaunchMode.TEST.getDefaultProfile()))
             {
                 projectStage = Optional.of(ProjectStage.SystemTest.name());
             }
@@ -575,9 +575,11 @@ class MyFacesProcessor
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_mt"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_nl"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_pl"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_pt_PR"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_pt"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_pt_BR"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_ru"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_sk"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_uk"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_zh_CN"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_zh_HK"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_zh_TW"));
