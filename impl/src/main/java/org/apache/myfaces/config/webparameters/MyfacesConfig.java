@@ -21,6 +21,7 @@ package org.apache.myfaces.config.webparameters;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
@@ -711,9 +712,11 @@ public class MyfacesConfig
     private static final boolean RESOURCE_CACHE_LAST_MODIFIED_DEFAULT = true;
 
     /**
-     * Indicate if log all web config params should be done before initialize the webapp. 
+     * Indicate if INFO logging of all the web config params should be done before initialize the webapp. 
      * <p>
-     * If is set in "auto" mode, web config params are only logged on "Development" and "Production" project stages.
+     * If is set in "auto" mode, web config params are only logged in "Development" mode. 
+     * If is set to "true", web config params are only logged in "Production" and "Development" mode. 
+     * If is set in "false" mode, no info logging occurs in either mode.
      * </p> 
      */
     @JSFWebConfigParam(expectedValues="true, auto, false", defaultValue="auto")
@@ -1259,14 +1262,31 @@ public class MyfacesConfig
         
         String logWebContextParams = getString(extCtx, LOG_WEB_CONTEXT_PARAMS,
                 LOG_WEB_CONTEXT_PARAMS_DEFAULT);    
-        if (logWebContextParams.equals("false") || (logWebContextParams.equals("auto")
-                && (cfg.projectStage == ProjectStage.SystemTest || cfg.projectStage == ProjectStage.UnitTest)))
+
+        switch(logWebContextParams)
         {
-            cfg.logWebContextParams = false;
-        }
-        else
-        {
-            cfg.logWebContextParams = true;
+            case "auto": 
+                if(cfg.projectStage == ProjectStage.Development)
+                {
+                    cfg.logWebContextParams = true;
+                }
+                else
+                {
+                    cfg.logWebContextParams = false;
+                }
+                break;
+            case "true":
+                if(cfg.projectStage == ProjectStage.Production || cfg.projectStage == ProjectStage.Development)
+                {
+                    cfg.logWebContextParams = true;
+                }
+                else
+                {
+                    cfg.logWebContextParams = false;
+                }
+                break;
+            default: 
+                cfg.logWebContextParams = false;
         }
         
         cfg.websocketMaxConnections = getInt(extCtx, WEBSOCKET_MAX_CONNECTIONS,
