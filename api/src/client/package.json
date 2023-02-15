@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "doc": "npx typedoc --tsconfig typescript/faces/tsconfig-typedoc.json",
-    "test": "env TS_NODE_PROJECT=./tsconfig-myfaces.json mocha",
+    "test": "cross-env TS_NODE_PROJECT=./tsconfig-myfaces.json mocha",
     "copy:npm-sources": "ts-node typescript/node_build/copysources.ts",
     "build:development": "webpack --mode development --env FILE_NAME=faces-development ",
     "build:production": "webpack --mode production --env FILE_NAME=faces",
@@ -19,6 +19,7 @@
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "chai": "^4.3.7",
     "compression-webpack-plugin": "^10.0.0",
+    "cross-env": "^7.0.3",
     "fs-extra": "^11.1.0",
     "html-webpack-plugin": "^5.5.0",
     "jsdom": "^21.1.0",
