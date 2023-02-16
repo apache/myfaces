@@ -90,6 +90,7 @@ public class IntegrationTest
     @ArquillianResource
     protected URL contextPath;
 
+
     @After
     public void after()
     {
@@ -99,6 +100,8 @@ public class IntegrationTest
     @Before
     public void before()
     {
+        // Cannot hurt to have a long implicit wait window!
+        webDriver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
     }
 
     public void resetServerValues()
