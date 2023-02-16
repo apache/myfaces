@@ -89,8 +89,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
                 _resourceLoaders = new ResourceLoader[] {
                         new ExternalContextResourceLoader('/' +directory),
                         new FacesFlowClassLoaderResourceLoader(),
-                        new TempDirFileCacheResourceLoader(
-                                new FacesJSResourceLoader(new InternalClassLoaderResourceLoader(META_INF_RESOURCES))),
+                        new FacesJSResourceLoader(new InternalClassLoaderResourceLoader(META_INF_RESOURCES)),
                         new FacesJSResourceLoader(
                                 new ClassLoaderResourceLoader(META_INF_RESOURCES))
                 };
