@@ -100,7 +100,7 @@ public class IntegrationTest
     @Before
     public void before()
     {
-        // Cannot hurt to have a long implicit wait window!
+        // The default is 0 which causes race conditions on findElement!
         webDriver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
     }
 
