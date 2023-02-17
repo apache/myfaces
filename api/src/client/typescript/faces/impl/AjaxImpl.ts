@@ -20,7 +20,6 @@ import {XhrRequest} from "./xhrCore/XhrRequest";
 import {AsynchronousQueue} from "./util/AsyncQueue";
 import {AssocArrayCollector, Config, DQ, Lang, LazyStream, Optional, Stream} from "mona-dish";
 import {Assertions} from "./util/Assertions";
-import {XhrFormData} from "./xhrCore/XhrFormData";
 import {ExtConfig, ExtDomQuery} from "./util/ExtDomQuery";
 import {ErrorData} from "./xhrCore/ErrorData";
 import {EventData} from "./xhrCore/EventData";
@@ -113,11 +112,15 @@ export module Implementation {
  a) Monad like structures for querying because this keeps the code denser and adds abstractions
  that always was the strong point of jquery and it still is better in this regard than what ecmascript provides
 
- b) Streams and lazystreams like java has, a pull like construct, ecmascript does not have anything like Lazystreams.
+ b) Streams and lazy streams like java has, a pull stream construct, ecmascript does not have anything like it.
+ (it has array filters and maps, but ES2015 does not support flatMap)
  Another option would have been rxjs but that would have introduced a code dependency and probably more code. We might
- move to RXJS if the need arises however. But for now I would rather stick with my small self grown library which works
+ move to RXJS if the need arises, however. But for now I would rather stick with my small self grown library which works
  quite well and where I can patch quickly (I have used it in several industrial projects, so it works well
  and is heavily fortified by unit tests (140 testcases as time of writing this))
+ The long term plan is to eliminate the Stream usage as soon as we can move up to ES2019 (adding the missing
+ functions as shims, is a no go, because we are a library, and absolutey do not Shim anything which can leak
+ into the global namespace!)
 
  c) A neutral json like configuration which allows assignments of arbitrary values with reduce code which then can be
  transformed into different data representations
@@ -189,7 +192,7 @@ export module Implementation {
     /**
      * @return the project stage also emitted by the server:
      * it cannot be cached and must be delivered over the server
-     * The value for it comes from the requestInternal parameter of the faces.js script called "stage".
+     * The value for it comes from the request parameter of the faces.js script called "stage".
      */
     export function getProjectStage(): string | null {
         return resolveGlobalConfig()?.projectStage ??
@@ -215,7 +218,7 @@ export module Implementation {
      * @param event
      * @param funcs
      */
-    export function chain(source: any, event: Event, ...funcs: EvalFuncs): boolean {
+    export function chain(source: HTMLElement | string, event: Event | null, ...funcs: EvalFuncs): boolean {
         // we can use our lazy stream each functionality to run our chain here..
         // by passing a boolean as return value into the onElem call
         // we can stop early at the first false, just like the spec requests

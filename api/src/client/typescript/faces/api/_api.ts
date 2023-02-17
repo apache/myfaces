@@ -117,19 +117,19 @@ export module faces {
         /**
          * this function has to send the ajax requests
          *
-         * following requestInternal conditions must be met:
+         * following request conditions must be met:
          * <ul>
-         *  <li> the requestInternal must be sent asynchronously! </li>
-         *  <li> the requestInternal must be a POST!!! requestInternal </li>
-         *  <li> the requestInternal url must be the form action attribute </li>
-         *  <li> all requests must be queued with a client side requestInternal queue to ensure the requestInternal ordering!</li>
+         *  <li> the request must be sent asynchronously! </li>
+         *  <li> the request must be a POST!!! request </li>
+         *  <li> the request url must be the form action attribute </li>
+         *  <li> all requests must be queued with a client side request queue to ensure the request ordering!</li>
          * </ul>
          *
          * @param {String|Node} element: any dom element no matter being it html or jsf, from which the event is emitted
          * @param {EVENT} event: any javascript event supported by that object
          * @param {Map} options : map of options being pushed into the ajax cycle
          */
-        export function request(element: Element, event?: Event, options?: Context): void {
+        export function request(element: Element, event?: Event, options?: Options): void {
             Implementation.request(element, event, options)
         }
 
@@ -138,7 +138,6 @@ export module faces {
          * @param request the request object having triggered this response
          * @param context the request context
          *
-         * TODO add info on what can be in the context
          */
         export function response(request: XMLHttpRequest, context?: Context): void {
             Implementation.response(request, context);
@@ -153,10 +152,10 @@ export module faces {
          *     <li> errorData.status : the error status message</li>
          *     <li> errorData.serverErrorName : the server error name in case of a server error</li>
          *     <li> errorData.serverErrorMessage : the server error message in case of a server error</li>
-         *     <li> errorData.source  : the issuing source element which triggered the requestInternal </li>
-         *     <li> eventData.responseCode: the response code (aka http requestInternal response code, 401 etc...) </li>
-         *     <li> eventData.responseText: the requestInternal response text </li>
-         *     <li> eventData.responseXML: the requestInternal response xml </li>
+         *     <li> errorData.source  : the issuing source element which triggered the request </li>
+         *     <li> eventData.responseCode: the response code (aka http request response code, 401 etc...) </li>
+         *     <li> eventData.responseText: the request response text </li>
+         *     <li> eventData.responseXML: the request response xml </li>
          * </ul>
          *
          * @param errorListener error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
@@ -189,7 +188,7 @@ export module faces {
          * @param funcs ... arbitrary array of functions or strings
          * @returns true if the chain has succeeded false otherwise
          */
-        export function chain(source, event, ...funcs: Array<Function | string>): boolean {
+        export function chain(source: HTMLElement | string, event: Event | null, ...funcs: Array<Function | string>): boolean {
             return Implementation.chain(source, event, ...(funcs as EvalFuncs));
         }
     }
