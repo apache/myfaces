@@ -714,14 +714,14 @@ public class MyfacesConfig
     /**
      * Indicate if INFO logging of all the web config params should be done before initialize the webapp. 
      * <p>
-     * If is set in "auto" mode, web config params are only logged in "Development" mode. 
+     * If is set to "dev-only" mode, web config params are only logged in "Development" mode. 
      * If is set to "true", web config params are only logged in "Production" and "Development" mode. 
-     * If is set in "false" mode, no info logging occurs in either mode.
+     * If is set to "false" mode, info logging does not occur in any mode.
      * </p> 
      */
-    @JSFWebConfigParam(expectedValues="true, auto, false", defaultValue="auto")
+    @JSFWebConfigParam(expectedValues="true, dev-only, false", defaultValue="dev-only")
     public static final String LOG_WEB_CONTEXT_PARAMS = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS";
-    private static final String LOG_WEB_CONTEXT_PARAMS_DEFAULT = "auto";
+    private static final String LOG_WEB_CONTEXT_PARAMS_DEFAULT = "dev-only";
     
 
     public static final boolean AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT = false;
@@ -1265,7 +1265,7 @@ public class MyfacesConfig
 
         switch(logWebContextParams)
         {
-            case "auto": 
+            case "dev-only": 
                 if(cfg.projectStage == ProjectStage.Development)
                 {
                     cfg.logWebContextParams = true;

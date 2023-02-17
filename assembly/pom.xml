@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>4.0.0-RC5-SNAPSHOT</version>
+        <version>4.0.0-RC6-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -89,7 +89,8 @@
                             <outputDirectory>${project.build.directory}/tlddoc</outputDirectory>
                         </configuration>
                     </execution>
-                    <execution>
+                    <!-- Skip until MYFACES-4567 is resolved -->
+                    <!-- <execution>
                         <id>copy-jsdoc</id>
                         <phase>package</phase>
                         <goals>
@@ -106,7 +107,7 @@
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/jsdoc</outputDirectory>
                         </configuration>
-                    </execution>
+                    </execution> -->
                     <execution>
                         <id>copy-source</id>
                         <phase>package</phase>

@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-extensions</artifactId>
-        <version>4.0.0-RC5-SNAPSHOT</version>
+        <version>4.0.0-RC6-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -41,7 +41,7 @@
     </modules>
 
     <properties>
-        <quarkus.version>3.0.0.Alpha3</quarkus.version>
+        <quarkus.version>3.0.0.Alpha4</quarkus.version>
     </properties>
 
     <build>
