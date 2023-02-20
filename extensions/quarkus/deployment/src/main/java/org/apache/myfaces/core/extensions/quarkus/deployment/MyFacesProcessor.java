@@ -94,6 +94,7 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -417,6 +418,7 @@ class MyFacesProcessor
         classNames.addAll(collectSubclasses(combinedIndex, SystemEvent.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, FacesContext.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, Application.class.getName()));
+        classNames.addAll(collectImplementors(combinedIndex, StateHolder.class.getName()));
 
         // Web.xml parsing
         classNames.addAll(collectSubclasses(combinedIndex, DocumentBuilderFactory.class.getName()));
