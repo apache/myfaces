@@ -107,6 +107,7 @@ import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UIComponent;
+import javax.faces.component.StateHolder;
 import javax.faces.component.behavior.Behavior;
 import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.context.FacesContext;
@@ -436,6 +437,7 @@ class MyFacesProcessor
         classNames.addAll(collectSubclasses(combinedIndex, SystemEvent.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, FacesContext.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, Application.class.getName()));
+        classNames.addAll(collectImplementors(combinedIndex, StateHolder.class.getName()));
 
         // Web.xml parsing
         classNames.addAll(collectSubclasses(combinedIndex, DocumentBuilderFactory.class.getName()));
