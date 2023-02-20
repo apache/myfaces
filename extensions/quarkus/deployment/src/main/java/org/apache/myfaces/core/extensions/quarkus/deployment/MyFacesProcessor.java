@@ -462,6 +462,25 @@ class MyFacesProcessor
         List<Class<?>> classes = new ArrayList<>();
 
         classNames.add("jakarta.faces._FactoryFinderProviderFactory");
+        classNames.add("java.util.Set");
+        classNames.add("java.util.List");
+        classNames.add("java.util.Collection");
+        classNames.add("java.util.Date");
+        classNames.add("java.util.Calendar");
+        classNames.add("java.lang.Iterable");
+        classNames.add("java.lang.Throwable");
+        classNames.add("java.time.LocalDate");
+        classNames.add("java.time.LocalDateTime");
+        classNames.add("java.time.OffsetDateTime");
+        classNames.add("java.time.ZonedDateTime");
+        classNames.add("java.math.BigDecimal");
+        classNames.add("java.math.BigInteger");
+        classNames.add("java.lang.Integer");
+        classNames.add("java.lang.Long");
+        classNames.add("java.lang.Byte");
+        classNames.add("java.lang.Double");
+        classNames.add("java.lang.String");
+        classNames.add("java.lang.Number");
 
         classNames.addAll(collectSubclasses(combinedIndex, TagHandler.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ConverterHandler.class.getName()));
