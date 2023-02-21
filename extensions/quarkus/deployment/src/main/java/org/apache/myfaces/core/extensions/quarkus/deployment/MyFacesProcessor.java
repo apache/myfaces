@@ -439,10 +439,46 @@ class MyFacesProcessor
         classNames.addAll(collectSubclasses(combinedIndex, Application.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, StateHolder.class.getName()));
 
-        // Web.xml parsing
+        // Web.xml XPath parsing (borrowed from CamelQuarkus XPath)
         classNames.addAll(collectSubclasses(combinedIndex, DocumentBuilderFactory.class.getName()));
         classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLocalPart");
         classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNot");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncBoolean");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncCeiling");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncConcat");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncContains");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncCount");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncCurrent");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncDoclocation");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncExtElementAvailable");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncExtFunction");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncExtFunctionAvailable");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncFalse");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncFloor");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncGenerateId");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncHere");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncId");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLang");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLast");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLocalPart");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNamespace");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNormalizeSpace");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNot");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNumber");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncPosition");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncQname");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncRound");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncStartsWith");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncString");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncStringLength");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncSubstring");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncSubstringAfter");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncSubstringBefore");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncSum");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncSystemProperty");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncTranslate");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncTrue");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI");
         classNames.add("com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
         
         for (String factory : FACTORIES)
@@ -484,25 +520,26 @@ class MyFacesProcessor
         List<Class<?>> classes = new ArrayList<>();
         
         classNames.add("javax.faces._FactoryFinderProviderFactory");
-        classNames.add("java.util.Set");
-        classNames.add("java.util.List");
-        classNames.add("java.util.Collection");
-        classNames.add("java.util.Date");
-        classNames.add("java.util.Calendar");
-        classNames.add("java.lang.Iterable");
-        classNames.add("java.lang.Throwable");
-        classNames.add("java.time.LocalDate");
-        classNames.add("java.time.LocalDateTime");
-        classNames.add("java.time.OffsetDateTime");
-        classNames.add("java.time.ZonedDateTime");
-        classNames.add("java.math.BigDecimal");
-        classNames.add("java.math.BigInteger");
-        classNames.add("java.lang.Integer");
-        classNames.add("java.lang.Long");
-        classNames.add("java.lang.Byte");
-        classNames.add("java.lang.Double");
-        classNames.add("java.lang.String");
-        classNames.add("java.lang.Number");
+        classNames.add(java.util.Set.class.getName());
+        classNames.add(java.util.List.class.getName());
+        classNames.add(java.util.Collection.class.getName());
+        classNames.add(java.util.Date.class.getName());
+        classNames.add(java.util.Calendar.class.getName());
+        classNames.add(java.time.LocalTime.class.getName());
+        classNames.add(java.time.LocalDate.class.getName());
+        classNames.add(java.time.LocalDateTime.class.getName());
+        classNames.add(java.time.OffsetDateTime.class.getName());
+        classNames.add(java.time.ZonedDateTime.class.getName());
+        classNames.add(java.math.BigDecimal.class.getName());
+        classNames.add(java.math.BigInteger.class.getName());
+        classNames.add(java.lang.Iterable.class.getName());
+        classNames.add(java.lang.Throwable.class.getName());
+        classNames.add(java.lang.Integer.class.getName());
+        classNames.add(java.lang.Long.class.getName());
+        classNames.add(java.lang.Byte.class.getName());
+        classNames.add(java.lang.Double.class.getName());
+        classNames.add(java.lang.String.class.getName());
+        classNames.add(java.lang.Number.class.getName());
         
         classNames.addAll(collectSubclasses(combinedIndex, TagHandler.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ConverterHandler.class.getName()));
