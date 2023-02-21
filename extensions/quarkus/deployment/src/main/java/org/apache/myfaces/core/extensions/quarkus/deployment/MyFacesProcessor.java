@@ -488,7 +488,8 @@ class MyFacesProcessor
 
         classNames.addAll(Arrays.asList(
             "javax.faces.component._DeltaStateHelper",
-            "javax.faces.component._DeltaStateHelper$InternalMap"));
+            "javax.faces.component._DeltaStateHelper$InternalMap",
+            "javax.validation.groups.Default"));
 
         classes.addAll(Arrays.asList(
                 ApplicationImplEventManager.class,
