@@ -1,13 +1,13 @@
-This directory hosts the 4.0+ version of the faces.ajax implementation.
 
-It is a new clean room implementation, implemented in Typescript for modern browsers.
+This is a new clean room implementation, implemented in Typescript for modern browsers.
 
-The baseline atm is Microsoft Edge 14 and Ecmascript 2015. 
+The baseline atm is all Chromium based Edge browsers, modern Chrome, Safari and Firefox
+and Ecmascript 2015. 
 
-usage, as per spec
+### Usage
 
-* load the faces.js script via the resource loading
-* use the faces.* calls as before *faces.ajax.request(..)* for instance
+* Load the **faces.js** script via the resource loading
+* Use the faces.* calls as before *faces.ajax.request(..)* for instance
 
 ### API Documentation
 
