@@ -50,10 +50,10 @@ declare global {
      *     <li> errorData.status : the error status message</li>
      *     <li> errorData.serverErrorName : the server error name in case of a server error</li>
      *     <li> errorData.serverErrorMessage : the server error message in case of a server error</li>
-     *     <li> errorData.source  : the issuing source element which triggered the requestInternal </li>
-     *     <li> eventData.responseCode: the response code (aka http requestInternal response code, 401 etc...) </li>
-     *     <li> eventData.responseText: the requestInternal response text </li>
-     *     <li> eventData.responseXML: the requestInternal response xml </li>
+     *     <li> errorData.source  : the issuing source element which triggered the request </li>
+     *     <li> eventData.responseCode: the response code (aka http request response code, 401 etc...) </li>
+     *     <li> eventData.responseText: the response text </li>
+     *     <li> eventData.responseXML: the response xml </li>
      * </ul>
      */
     interface IErrorData {
@@ -78,7 +78,7 @@ declare global {
     }
 
     interface Ajax {
-        request(element: Element, event?: Event, options?: Context): void;
+        request(element: Element, event?: Event, options?: Options): void;
         response(request: XMLHttpRequest, context?: Context): void;
     }
 
