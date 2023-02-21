@@ -469,7 +469,8 @@ class MyFacesProcessor
 
         classNames.addAll(Arrays.asList(
             "jakarta.faces.component._DeltaStateHelper",
-            "jakarta.faces.component._DeltaStateHelper$InternalMap"));
+            "jakarta.faces.component._DeltaStateHelper$InternalMap",
+            "jakarta.validation.groups.Default"));
 
         classes.addAll(Arrays.asList(ApplicationImplEventManager.class,
                 DefaultWebConfigProviderFactory.class,
