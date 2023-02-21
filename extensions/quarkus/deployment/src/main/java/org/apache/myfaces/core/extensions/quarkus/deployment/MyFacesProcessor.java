@@ -521,26 +521,14 @@ class MyFacesProcessor
         List<Class<?>> classes = new ArrayList<>();
         
         classNames.add("javax.faces._FactoryFinderProviderFactory");
-        classNames.add(java.util.Set.class.getName());
-        classNames.add(java.util.List.class.getName());
-        classNames.add(java.util.Collection.class.getName());
+        classNames.addAll(collectImplementors(combinedIndex, java.util.Collection.class.getName()));
+        classNames.addAll(collectImplementors(combinedIndex, java.time.temporal.TemporalAccessor.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, java.lang.Number.class.getName()));
         classNames.add(java.util.Date.class.getName());
         classNames.add(java.util.Calendar.class.getName());
-        classNames.add(java.time.LocalTime.class.getName());
-        classNames.add(java.time.LocalDate.class.getName());
-        classNames.add(java.time.LocalDateTime.class.getName());
-        classNames.add(java.time.OffsetDateTime.class.getName());
-        classNames.add(java.time.ZonedDateTime.class.getName());
-        classNames.add(java.math.BigDecimal.class.getName());
-        classNames.add(java.math.BigInteger.class.getName());
         classNames.add(java.lang.Iterable.class.getName());
         classNames.add(java.lang.Throwable.class.getName());
-        classNames.add(java.lang.Integer.class.getName());
-        classNames.add(java.lang.Long.class.getName());
-        classNames.add(java.lang.Byte.class.getName());
-        classNames.add(java.lang.Double.class.getName());
         classNames.add(java.lang.String.class.getName());
-        classNames.add(java.lang.Number.class.getName());
         
         classNames.addAll(collectSubclasses(combinedIndex, TagHandler.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ConverterHandler.class.getName()));
