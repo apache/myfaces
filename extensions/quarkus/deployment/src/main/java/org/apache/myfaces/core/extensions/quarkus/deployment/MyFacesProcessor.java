@@ -83,6 +83,7 @@ import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
 import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
 import org.apache.myfaces.view.facelets.tag.MethodRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFunction;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 import org.apache.myfaces.webapp.FaceletsInitilializer;
 import org.apache.myfaces.webapp.MyFacesContainerInitializer;
@@ -550,14 +551,15 @@ class MyFacesProcessor
                 io.undertow.servlet.spec.HttpSessionImpl.class));
 
         classes.addAll(Arrays.asList(
-                ClassUtils.class,
-                FactoryFinderProviderFactory.class,
-                ComponentSupport.class,
-                QuarkusFactoryFinderProvider.class,
-                ELResolverBuilderForFaces.class,
                 AbstractFacesInitializer.class,
+                BeanEntry.class,
+                ClassUtils.class,
+                ComponentSupport.class,
+                ELResolverBuilderForFaces.class,
                 ExternalContextUtils.class,
-                BeanEntry.class));
+                FactoryFinderProviderFactory.class,
+                JstlFunction.class,
+                QuarkusFactoryFinderProvider.class));
         
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, false, classNames.toArray(new String[classNames.size()])));
