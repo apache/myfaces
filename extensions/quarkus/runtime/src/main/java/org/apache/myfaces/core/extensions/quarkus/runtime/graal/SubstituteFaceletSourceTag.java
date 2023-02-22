@@ -39,8 +39,13 @@ public final class SubstituteFaceletSourceTag
         {
             return source;
         }
-        source = "resource:/META-INF" + source.split("!")[1];
-        return source;
+        String resource = source.split("!")[1];
+        if (!resource.startsWith("/META-INF"))
+        {
+            resource = "/META-INF" + resource;
+        }
+        resource = "resource:" + resource;
+        return resource;
     }
 
 }
