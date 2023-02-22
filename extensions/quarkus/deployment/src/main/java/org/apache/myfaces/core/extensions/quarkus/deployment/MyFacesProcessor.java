@@ -21,8 +21,8 @@ package org.apache.myfaces.core.extensions.quarkus.deployment;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
 import io.quarkus.arc.deployment.BeanRegistrationPhaseBuildItem;
-import io.quarkus.arc.deployment.ContextRegistrationPhaseBuildItem;
 import io.quarkus.arc.deployment.ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem;
+import io.quarkus.arc.deployment.ContextRegistrationPhaseBuildItem;
 import io.quarkus.arc.deployment.CustomScopeBuildItem;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -32,9 +32,9 @@ import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.AdditionalApplicationArchiveMarkerBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBundleBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
 import io.quarkus.runtime.LaunchMode;
@@ -43,6 +43,7 @@ import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
 import io.quarkus.undertow.deployment.WebMetadataBuildItem;
+
 import org.apache.el.ExpressionFactoryImpl;
 import org.apache.myfaces.application.ApplicationImplEventManager;
 import org.apache.myfaces.application.viewstate.StateUtils;
@@ -72,6 +73,10 @@ import org.apache.myfaces.el.ELResolverBuilderForFaces;
 import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
 import org.apache.myfaces.flow.cdi.FlowBuilderFactoryBean;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
+import org.apache.myfaces.push.cdi.PushContextFactory;
+import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilder;
+import org.apache.myfaces.push.cdi.WebsocketScopeManager;
+import org.apache.myfaces.push.cdi.WebsocketSessionManager;
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.spi.FactoryFinderProviderFactory;
 import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
@@ -83,6 +88,7 @@ import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
 import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
 import org.apache.myfaces.view.facelets.tag.MethodRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFunction;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 import org.apache.myfaces.webapp.FaceletsInitilializer;
 import org.apache.myfaces.webapp.MyFacesContainerInitializer;
@@ -142,10 +148,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.myfaces.push.cdi.PushContextFactory;
-import org.apache.myfaces.push.cdi.WebsocketSessionManager;
-import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilder;
-import org.apache.myfaces.push.cdi.WebsocketScopeManager;
 
 class MyFacesProcessor
 {
@@ -488,7 +490,8 @@ class MyFacesProcessor
 
         classNames.addAll(Arrays.asList(
             "javax.faces.component._DeltaStateHelper",
-            "javax.faces.component._DeltaStateHelper$InternalMap"));
+            "javax.faces.component._DeltaStateHelper$InternalMap",
+            "javax.validation.groups.Default"));
 
         classes.addAll(Arrays.asList(
                 ApplicationImplEventManager.class,
@@ -520,26 +523,14 @@ class MyFacesProcessor
         List<Class<?>> classes = new ArrayList<>();
         
         classNames.add("javax.faces._FactoryFinderProviderFactory");
-        classNames.add(java.util.Set.class.getName());
-        classNames.add(java.util.List.class.getName());
-        classNames.add(java.util.Collection.class.getName());
+        classNames.addAll(collectImplementors(combinedIndex, java.util.Collection.class.getName()));
+        classNames.addAll(collectImplementors(combinedIndex, java.time.temporal.TemporalAccessor.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, java.lang.Number.class.getName()));
         classNames.add(java.util.Date.class.getName());
         classNames.add(java.util.Calendar.class.getName());
-        classNames.add(java.time.LocalTime.class.getName());
-        classNames.add(java.time.LocalDate.class.getName());
-        classNames.add(java.time.LocalDateTime.class.getName());
-        classNames.add(java.time.OffsetDateTime.class.getName());
-        classNames.add(java.time.ZonedDateTime.class.getName());
-        classNames.add(java.math.BigDecimal.class.getName());
-        classNames.add(java.math.BigInteger.class.getName());
         classNames.add(java.lang.Iterable.class.getName());
         classNames.add(java.lang.Throwable.class.getName());
-        classNames.add(java.lang.Integer.class.getName());
-        classNames.add(java.lang.Long.class.getName());
-        classNames.add(java.lang.Byte.class.getName());
-        classNames.add(java.lang.Double.class.getName());
         classNames.add(java.lang.String.class.getName());
-        classNames.add(java.lang.Number.class.getName());
         
         classNames.addAll(collectSubclasses(combinedIndex, TagHandler.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ConverterHandler.class.getName()));
@@ -561,14 +552,15 @@ class MyFacesProcessor
                 io.undertow.servlet.spec.HttpSessionImpl.class));
 
         classes.addAll(Arrays.asList(
-                ClassUtils.class,
-                FactoryFinderProviderFactory.class,
-                ComponentSupport.class,
-                QuarkusFactoryFinderProvider.class,
-                ELResolverBuilderForFaces.class,
                 AbstractFacesInitializer.class,
+                BeanEntry.class,
+                ClassUtils.class,
+                ComponentSupport.class,
+                ELResolverBuilderForFaces.class,
                 ExternalContextUtils.class,
-                BeanEntry.class));
+                FactoryFinderProviderFactory.class,
+                JstlFunction.class,
+                QuarkusFactoryFinderProvider.class));
         
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, false, classNames.toArray(new String[classNames.size()])));
