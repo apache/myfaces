@@ -19,108 +19,78 @@
 package org.apache.myfaces.core.extensions.quarkus.deployment;
 
 import java.io.IOException;
-import java.util.Optional;
-
-import jakarta.faces.application.ProjectStage;
-import jakarta.faces.component.FacesComponent;
-import jakarta.faces.component.behavior.FacesBehavior;
-import jakarta.faces.convert.FacesConverter;
-import jakarta.faces.flow.FlowScoped;
-import jakarta.faces.flow.builder.FlowDefinition;
-import jakarta.faces.model.FacesDataModel;
-import jakarta.faces.render.FacesBehaviorRenderer;
-import jakarta.faces.render.FacesRenderer;
-import jakarta.faces.validator.FacesValidator;
-import jakarta.faces.view.ViewScoped;
-import jakarta.faces.view.facelets.FaceletHandler;
-import jakarta.faces.webapp.FacesServlet;
-
-import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
-import org.apache.myfaces.cdi.FacesScoped;
-import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
-import org.apache.myfaces.cdi.FacesArtifactProducer;
-import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
-import org.apache.myfaces.cdi.model.FacesDataModelManager;
-import org.apache.myfaces.cdi.view.ViewTransientScoped;
-import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
-import org.apache.myfaces.config.element.NamedEvent;
-import org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory;
-import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
-import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
-import org.apache.myfaces.webapp.StartupServletContextListener;
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.jboss.jandex.AnnotationInstance;
-import org.jboss.jandex.AnnotationValue;
-import org.jboss.jandex.DotName;
-
-import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
-import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
-import io.quarkus.arc.deployment.BeanRegistrationPhaseBuildItem;
-import io.quarkus.arc.deployment.ContextRegistrationPhaseBuildItem;
-import io.quarkus.deployment.annotations.BuildProducer;
-import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.annotations.ExecutionTime;
-import io.quarkus.deployment.annotations.Record;
-import io.quarkus.deployment.builditem.AdditionalApplicationArchiveMarkerBuildItem;
-import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
-import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBundleBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
-import org.apache.myfaces.core.extensions.quarkus.runtime.MyFacesRecorder;
-import org.apache.myfaces.core.extensions.quarkus.runtime.QuarkusFacesInitializer;
-import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFacesScopeContext;
-import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFlowScopedContext;
-import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewScopeContext;
-import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewTransientScopeContext;
-import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusInjectionProvider;
-import io.quarkus.runtime.LaunchMode;
-import io.quarkus.runtime.configuration.ConfigUtils;
-import io.quarkus.undertow.deployment.ListenerBuildItem;
-import io.quarkus.undertow.deployment.ServletBuildItem;
-import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
-import io.quarkus.undertow.deployment.WebMetadataBuildItem;
-
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import jakarta.el.ELResolver;
 import jakarta.enterprise.inject.Produces;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
-import jakarta.faces.component.UIComponent;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.FacesComponent;
 import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.SystemEvent;
+import jakarta.faces.flow.FlowScoped;
+import jakarta.faces.flow.builder.FlowDefinition;
+import jakarta.faces.model.FacesDataModel;
 import jakarta.faces.render.ClientBehaviorRenderer;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.render.Renderer;
+import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
+import jakarta.faces.view.ViewScoped;
 import jakarta.faces.view.facelets.ComponentHandler;
 import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.TagHandler;
 import jakarta.faces.view.facelets.ValidatorHandler;
+import jakarta.faces.webapp.FacesServlet;
 import jakarta.inject.Named;
 import jakarta.servlet.MultipartConfigElement;
-import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.el.ExpressionFactoryImpl;
 import org.apache.myfaces.application.ApplicationImplEventManager;
 import org.apache.myfaces.application.viewstate.StateUtils;
+import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
+import org.apache.myfaces.cdi.FacesArtifactProducer;
+import org.apache.myfaces.cdi.FacesScoped;
+import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
+import org.apache.myfaces.cdi.model.FacesDataModelManager;
 import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.cdi.view.ViewScopeContextualStorageHolder;
 import org.apache.myfaces.cdi.view.ViewScopeEventListenerBridge;
+import org.apache.myfaces.cdi.view.ViewTransientScoped;
 import org.apache.myfaces.config.FacesConfigurator;
+import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
+import org.apache.myfaces.config.element.NamedEvent;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
+import org.apache.myfaces.core.extensions.quarkus.runtime.MyFacesRecorder;
+import org.apache.myfaces.core.extensions.quarkus.runtime.QuarkusFacesInitializer;
+import org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory;
+import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFacesScopeContext;
+import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFlowScopedContext;
+import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewScopeContext;
+import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewTransientScopeContext;
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProvider;
+import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusInjectionProvider;
 import org.apache.myfaces.el.DefaultELResolverBuilder;
+import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
 import org.apache.myfaces.flow.cdi.FlowScopeContextualStorageHolder;
 import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilder;
 import org.apache.myfaces.push.cdi.WebsocketScopeManager;
@@ -133,17 +103,48 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
 import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
+import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
 import org.apache.myfaces.view.facelets.tag.MethodRule;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFunction;
 import org.apache.myfaces.webapp.FacesInitializerImpl;
 import org.apache.myfaces.webapp.MyFacesContainerInitializer;
+import org.apache.myfaces.webapp.StartupServletContextListener;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
+import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.jandex.Type;
 import org.jboss.metadata.web.spec.ServletMetaData;
 import org.jboss.metadata.web.spec.WebMetaData;
+
+import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
+import io.quarkus.arc.deployment.BeanRegistrationPhaseBuildItem;
+import io.quarkus.arc.deployment.ContextRegistrationPhaseBuildItem;
+import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.annotations.ExecutionTime;
+import io.quarkus.deployment.annotations.Record;
+import io.quarkus.deployment.builditem.AdditionalApplicationArchiveMarkerBuildItem;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
+import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBundleBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
+import io.quarkus.runtime.LaunchMode;
+import io.quarkus.runtime.configuration.ConfigUtils;
+import io.quarkus.undertow.deployment.ListenerBuildItem;
+import io.quarkus.undertow.deployment.ServletBuildItem;
+import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
+import io.quarkus.undertow.deployment.WebMetadataBuildItem;
 
 class MyFacesProcessor
 {
@@ -529,14 +530,16 @@ class MyFacesProcessor
                 io.undertow.servlet.spec.HttpServletResponseImpl.class,
                 io.undertow.servlet.spec.HttpSessionImpl.class));
 
-        classes.addAll(Arrays.asList(ClassUtils.class,
-                FactoryFinderProviderFactory.class,
+        classes.addAll(Arrays.asList(
+                BeanEntry.class,
+                ClassUtils.class,
                 ComponentSupport.class,
-                QuarkusFactoryFinderProvider.class,
                 DefaultELResolverBuilder.class,
-                FacesInitializerImpl.class,
                 ExternalContextUtils.class,
-                BeanEntry.class));
+                FacesInitializerImpl.class,
+                FactoryFinderProviderFactory.class,
+                JstlFunction.class,
+                QuarkusFactoryFinderProvider.class));
 
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, false, classNames.toArray(new String[classNames.size()])));
