@@ -67,24 +67,27 @@ public class WebXmlParser
 
     /**
      * Parses the web.xml and web-fragements.xml for error pages.
-     * "null" as key represents the default error page. Otherwise the key is the exception class.
+     * "null" as key represents the default error page. Otherwise, the key is the exception class.
      * 
-     * @param context
-     * @return 
+     * @param context the External Context or NULL if checking current classload
+     * @return a Map of Exception to XHTML pages
      */
     public static Map<String, String> getErrorPages(ExternalContext context)
     {
-        // it would be nicer if the cache would probably directly in DefaultWebConfigProvider
-        // as its currently the only caller of the method
-        // however it's recreated every request, we have to refactor the SPI thing a bit probably.
-        Map<String, String> cached = (Map<String, String>) context.getApplicationMap().get(KEY_ERROR_PAGES);
-        if (cached != null)
+        if (context != null)
         {
-            return cached;
+            // it would be nicer if the cache would probably directly in DefaultWebConfigProvider
+            // as it's currently the only caller of the method
+            // however it's recreated every request, we have to refactor the SPI thing a bit, probably.
+            Map<String, String> cached = (Map<String, String>) context.getApplicationMap().get(KEY_ERROR_PAGES);
+            if (cached != null)
+            {
+                return cached;
+            }
         }
         
         Map<String, String> webXmlErrorPages = getWebXmlErrorPages(context);
-        Map<String, String> webFragmentXmlsErrorPages = getWebFragmentXmlsErrorPages(context);
+        Map<String, String> webFragmentXmlsErrorPages = getWebFragmentXmlsErrorPages();
 
         Map<String, String> errorPages = webXmlErrorPages;
         if (errorPages == null)
@@ -102,7 +105,10 @@ public class WebXmlParser
             }
         }
 
-        context.getApplicationMap().put(KEY_ERROR_PAGES, errorPages);
+        if (context != null)
+        {
+            context.getApplicationMap().put(KEY_ERROR_PAGES, errorPages);
+        }
         
         return errorPages;
     }
@@ -111,8 +117,13 @@ public class WebXmlParser
     {
         try
         {
-            Document webXml = toDocument(context.getResource("/WEB-INF/web.xml"));
-            
+            Document webXml = null;
+            if (context != null)
+            {
+                // only try web app if external context is loaded
+                webXml = toDocument(context.getResource("/WEB-INF/web.xml"));
+            }
+
             if (webXml == null)
             {
                 // Quarkus
@@ -132,7 +143,7 @@ public class WebXmlParser
         return null;
     }
 
-    private static Map<String, String> getWebFragmentXmlsErrorPages(ExternalContext context)
+    private static Map<String, String> getWebFragmentXmlsErrorPages()
     {
         Map<String, String> webFragmentXmlsErrorPages = null;
 
