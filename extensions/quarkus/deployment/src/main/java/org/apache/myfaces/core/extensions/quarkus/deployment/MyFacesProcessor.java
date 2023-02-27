@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -99,6 +102,7 @@ import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.spi.FactoryFinderProviderFactory;
 import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
 import org.apache.myfaces.util.ExternalContextUtils;
+import org.apache.myfaces.util.WebXmlParser;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
@@ -139,6 +143,7 @@ import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBundleBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
+import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
@@ -471,7 +476,8 @@ class MyFacesProcessor
         classNames.addAll(Arrays.asList(
             "jakarta.faces.component._DeltaStateHelper",
             "jakarta.faces.component._DeltaStateHelper$InternalMap",
-            "jakarta.validation.groups.Default"));
+            "jakarta.validation.groups.Default",
+            "jakarta.validation.Validation"));
 
         classes.addAll(Arrays.asList(ApplicationImplEventManager.class,
                 DefaultWebConfigProviderFactory.class,
@@ -547,6 +553,24 @@ class MyFacesProcessor
                 new ReflectiveClassBuildItem(true, false, classes.toArray(new Class[classes.size()])));
     }
 
+    @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
+    void registerErrorPageClassesForReflection(BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+            CombinedIndexBuildItem combinedIndex)
+    {
+        final Set<String> classNames = new HashSet<>();
+        classNames.add(jakarta.faces.application.ViewExpiredException.class.getName());
+
+        Map<String, String> errorPages = WebXmlParser.getErrorPages(null);
+        for (String key : errorPages.keySet())
+        {
+            if (key != null)
+            {
+                classNames.add(key);
+            }
+        }
+
+        reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, classNames.toArray(new String[0])));
+    }
 
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
@@ -575,6 +599,7 @@ class MyFacesProcessor
                 "org/apache/myfaces/resource/default.dtd",
                 "org/apache/myfaces/resource/datatypes.dtd",
                 "META-INF/web-fragment.xml",
+                "META-INF/web.xml",
                 "META-INF/standard-faces-config.xml",
                 "META-INF/resources/org/apache/myfaces/windowId/windowhandler.html",
                 "org/apache/myfaces/resource/facelet-taglib_1_0.dtd",
