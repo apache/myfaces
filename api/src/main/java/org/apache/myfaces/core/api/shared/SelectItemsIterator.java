@@ -206,43 +206,27 @@ public class SelectItemsIterator implements Iterator<SelectItem>
         if (_nestedItems != null)
         {
             Object item = _nestedItems.next();
-            
-            if (!(item instanceof SelectItem))
-            {
-                // check new params of SelectItems (since 2.0): itemValue, itemLabel, itemDescription,...
-                // Note that according to the spec UISelectItems does not provide Getter and Setter 
-                // methods for this values, so we have to use the attribute map
-                Map<String, Object> attributeMap = _currentUISelectItems.getAttributes();
-                _currentValue = item;
-                
-                // write the current item into the request map under the key listed in var, if available
-                boolean wroteRequestMapVarValue = false;
-                Object oldRequestMapVarValue = null;
-                String var = (String) attributeMap.get(SelectItemsUtil.ATTR_VAR);
-                if (var != null && !var.isEmpty())
-                {
-                    // save the current value of the key listed in var from the request map
-                    oldRequestMapVarValue = _facesContext.getExternalContext().getRequestMap().put(var, item);
-                    wroteRequestMapVarValue = true;
-                }
 
-                item = SelectItemsUtil.createSelectItem(_currentUISelectItems, item, SelectItem::new);
-                    
-                // remove the value with the key from var from the request map, if previously written
-                if (wroteRequestMapVarValue)
+            // check new params of SelectItems (since 2.0): itemValue, itemLabel, itemDescription,...
+            // Note that according to the spec UISelectItems does not provide Getter and Setter
+            // methods for this values, so we have to use the attribute map
+            Map<String, Object> attributeMap = _currentUISelectItems.getAttributes();
+
+            String var = (String) attributeMap.get(SelectItemsUtil.ATTR_VAR);
+
+            return VarUtils.executeInScope(_facesContext, var, item, () ->
+            {
+                if (item instanceof SelectItem)
                 {
-                    // If there was a previous value stored with the key from var in the request map, restore it
-                    if (oldRequestMapVarValue != null)
-                    {
-                        _facesContext.getExternalContext().getRequestMap().put(var, oldRequestMapVarValue);
-                    }
-                    else
-                    {
-                        _facesContext.getExternalContext().getRequestMap().remove(var);
-                    }
-                } 
-            }
-            return (SelectItem) item;
+                    _currentValue = null;
+                    return SelectItemsUtil.updateSelectItem(_currentUISelectItems, (SelectItem) item);
+                }
+                else
+                {
+                    _currentValue = item;
+                    return SelectItemsUtil.createSelectItem(_currentUISelectItems, item, SelectItem::new);
+                }
+            });
         }
         throw new NoSuchElementException();
     }

@@ -18,10 +18,16 @@
  */
 package jakarta.faces.component;
 
+import jakarta.el.ValueExpression;
+import jakarta.faces.model.SelectItem;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import org.apache.myfaces.core.api.shared.SelectItemsUtil;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.el.MockValueExpression;
 import  org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
@@ -163,4 +169,42 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
         
     }
 
+    @Test
+    public void testSelectListAsValue()
+    {
+        List<SelectItem> values = new ArrayList<>();
+
+        values.add(new SelectItem("#1", "D1"));
+        values.add(new SelectItem("#2", "D2"));
+        values.add(new SelectItem("#3", "D3"));
+
+        UISelectItems selectItems = new UISelectItems();
+        selectItems.setValue(values);
+        selectItems.getAttributes().put("var", "item");
+        ValueExpression itemValue = new MockValueExpression("#{item.label}", Object.class);
+        ValueExpression itemLabel = new MockValueExpression("#{item.value}", Object.class);
+        ValueExpression itemDescription = new MockValueExpression("#{item.value}", Object.class);
+
+        selectItems.setValueExpression("itemValue", itemValue);
+        selectItems.setValueExpression("itemLabel", itemLabel);
+        selectItems.setValueExpression("itemDescription", itemDescription);
+        UISelectOne selectOne = new UISelectOne();
+        selectOne.getChildren().add(selectItems);
+
+        SelectItemsIterator iter = new SelectItemsIterator(selectOne, facesContext);
+        List<String> options = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+        List<String> descriptions = new ArrayList<>();
+        while (iter.hasNext())
+        {
+            SelectItem next = iter.next();
+            options.add((String) next.getValue());
+            labels.add(next.getLabel());
+            descriptions.add(next.getDescription());
+        }
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(values.stream().map(SelectItem::getLabel).collect(Collectors.toList()), options),
+                () -> Assertions.assertEquals(values.stream().map(SelectItem::getValue).collect(Collectors.toList()), labels),
+                () -> Assertions.assertEquals(values.stream().map(SelectItem::getValue).collect(Collectors.toList()), descriptions));
+    }
 }

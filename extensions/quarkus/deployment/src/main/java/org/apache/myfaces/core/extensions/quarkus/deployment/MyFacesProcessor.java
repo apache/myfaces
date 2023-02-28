@@ -19,41 +19,113 @@
 package org.apache.myfaces.core.extensions.quarkus.deployment;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import jakarta.el.ELResolver;
+import jakarta.enterprise.inject.Produces;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.event.SystemEvent;
 import jakarta.faces.flow.FlowScoped;
 import jakarta.faces.flow.builder.FlowDefinition;
 import jakarta.faces.model.FacesDataModel;
+import jakarta.faces.render.ClientBehaviorRenderer;
 import jakarta.faces.render.FacesBehaviorRenderer;
 import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.render.Renderer;
 import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.validator.Validator;
 import jakarta.faces.view.ViewScoped;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.ConverterHandler;
 import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagHandler;
+import jakarta.faces.view.facelets.ValidatorHandler;
 import jakarta.faces.webapp.FacesServlet;
+import jakarta.inject.Named;
+import jakarta.servlet.MultipartConfigElement;
 
-import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
-import org.apache.myfaces.cdi.FacesScoped;
+import org.apache.el.ExpressionFactoryImpl;
+import org.apache.myfaces.application.ApplicationImplEventManager;
+import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
 import org.apache.myfaces.cdi.FacesArtifactProducer;
+import org.apache.myfaces.cdi.FacesScoped;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
+import org.apache.myfaces.cdi.util.BeanEntry;
+import org.apache.myfaces.cdi.view.ViewScopeContextualStorageHolder;
+import org.apache.myfaces.cdi.view.ViewScopeEventListenerBridge;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
-import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
+import org.apache.myfaces.core.extensions.quarkus.runtime.MyFacesRecorder;
+import org.apache.myfaces.core.extensions.quarkus.runtime.QuarkusFacesInitializer;
 import org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory;
+import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFacesScopeContext;
+import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFlowScopedContext;
+import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewScopeContext;
+import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewTransientScopeContext;
+import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProvider;
+import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusInjectionProvider;
+import org.apache.myfaces.el.DefaultELResolverBuilder;
 import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
+import org.apache.myfaces.flow.cdi.FlowScopeContextualStorageHolder;
+import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilder;
+import org.apache.myfaces.push.cdi.WebsocketScopeManager;
+import org.apache.myfaces.push.cdi.WebsocketSessionManager;
+import org.apache.myfaces.renderkit.ErrorPageWriter;
+import org.apache.myfaces.spi.FactoryFinderProviderFactory;
+import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
+import org.apache.myfaces.util.ExternalContextUtils;
+import org.apache.myfaces.util.WebXmlParser;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.view.ViewScopeProxyMap;
+import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
+import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
 import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
+import org.apache.myfaces.view.facelets.tag.MethodRule;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFunction;
+import org.apache.myfaces.webapp.FacesInitializerImpl;
+import org.apache.myfaces.webapp.MyFacesContainerInitializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.AnnotationValue;
+import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
+import org.jboss.jandex.FieldInfo;
+import org.jboss.jandex.MethodInfo;
+import org.jboss.jandex.Type;
+import org.jboss.metadata.web.spec.ServletMetaData;
+import org.jboss.metadata.web.spec.WebMetaData;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
@@ -66,83 +138,18 @@ import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.AdditionalApplicationArchiveMarkerBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBundleBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
-import org.apache.myfaces.core.extensions.quarkus.runtime.MyFacesRecorder;
-import org.apache.myfaces.core.extensions.quarkus.runtime.QuarkusFacesInitializer;
-import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFacesScopeContext;
-import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFlowScopedContext;
-import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewScopeContext;
-import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewTransientScopeContext;
-import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusInjectionProvider;
+import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
+import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
 import io.quarkus.undertow.deployment.WebMetadataBuildItem;
-
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import jakarta.el.ELResolver;
-import jakarta.enterprise.inject.Produces;
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.application.Application;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.behavior.Behavior;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.convert.Converter;
-import jakarta.faces.event.ExceptionQueuedEventContext;
-import jakarta.faces.event.SystemEvent;
-import jakarta.faces.render.ClientBehaviorRenderer;
-import jakarta.faces.render.Renderer;
-import jakarta.faces.validator.Validator;
-import jakarta.faces.view.facelets.ComponentHandler;
-import jakarta.faces.view.facelets.ConverterHandler;
-import jakarta.faces.view.facelets.MetaRuleset;
-import jakarta.faces.view.facelets.TagHandler;
-import jakarta.faces.view.facelets.ValidatorHandler;
-import jakarta.inject.Named;
-import jakarta.servlet.MultipartConfigElement;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.apache.el.ExpressionFactoryImpl;
-import org.apache.myfaces.application.ApplicationImplEventManager;
-import org.apache.myfaces.application.viewstate.StateUtils;
-import org.apache.myfaces.cdi.util.BeanEntry;
-import org.apache.myfaces.cdi.view.ViewScopeContextualStorageHolder;
-import org.apache.myfaces.cdi.view.ViewScopeEventListenerBridge;
-import org.apache.myfaces.config.FacesConfigurator;
-import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
-import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProvider;
-import org.apache.myfaces.el.DefaultELResolverBuilder;
-import org.apache.myfaces.flow.cdi.FlowScopeContextualStorageHolder;
-import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilder;
-import org.apache.myfaces.push.cdi.WebsocketScopeManager;
-import org.apache.myfaces.push.cdi.WebsocketSessionManager;
-import org.apache.myfaces.renderkit.ErrorPageWriter;
-import org.apache.myfaces.spi.FactoryFinderProviderFactory;
-import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
-import org.apache.myfaces.util.ExternalContextUtils;
-import org.apache.myfaces.util.lang.ClassUtils;
-import org.apache.myfaces.view.ViewScopeProxyMap;
-import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
-import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
-import org.apache.myfaces.view.facelets.tag.MethodRule;
-import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
-import org.apache.myfaces.webapp.FacesInitializerImpl;
-import org.apache.myfaces.webapp.MyFacesContainerInitializer;
-import org.jboss.jandex.AnnotationTarget;
-import org.jboss.jandex.ClassInfo;
-import org.jboss.jandex.FieldInfo;
-import org.jboss.jandex.MethodInfo;
-import org.jboss.jandex.Type;
-import org.jboss.metadata.web.spec.ServletMetaData;
-import org.jboss.metadata.web.spec.WebMetaData;
 
 class MyFacesProcessor
 {
@@ -417,11 +424,48 @@ class MyFacesProcessor
         classNames.addAll(collectSubclasses(combinedIndex, SystemEvent.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, FacesContext.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, Application.class.getName()));
+        classNames.addAll(collectImplementors(combinedIndex, StateHolder.class.getName()));
 
         // Web.xml parsing
         classNames.addAll(collectSubclasses(combinedIndex, DocumentBuilderFactory.class.getName()));
         classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLocalPart");
         classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNot");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncBoolean");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncCeiling");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncConcat");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncContains");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncCount");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncCurrent");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncDoclocation");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncExtElementAvailable");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncExtFunction");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncExtFunctionAvailable");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncFalse");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncFloor");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncGenerateId");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncHere");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncId");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLang");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLast");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLocalPart");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNamespace");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNormalizeSpace");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNot");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNumber");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncPosition");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncQname");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncRound");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncStartsWith");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncString");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncStringLength");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncSubstring");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncSubstringAfter");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncSubstringBefore");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncSum");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncSystemProperty");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncTranslate");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncTrue");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI");
         classNames.add("com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
 
         for (String factory : FACTORIES)
@@ -431,7 +475,9 @@ class MyFacesProcessor
 
         classNames.addAll(Arrays.asList(
             "jakarta.faces.component._DeltaStateHelper",
-            "jakarta.faces.component._DeltaStateHelper$InternalMap"));
+            "jakarta.faces.component._DeltaStateHelper$InternalMap",
+            "jakarta.validation.groups.Default",
+            "jakarta.validation.Validation"));
 
         classes.addAll(Arrays.asList(ApplicationImplEventManager.class,
                 DefaultWebConfigProviderFactory.class,
@@ -462,6 +508,14 @@ class MyFacesProcessor
         List<Class<?>> classes = new ArrayList<>();
 
         classNames.add("jakarta.faces._FactoryFinderProviderFactory");
+        classNames.addAll(collectImplementors(combinedIndex, java.util.Collection.class.getName()));
+        classNames.addAll(collectImplementors(combinedIndex, java.time.temporal.TemporalAccessor.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, java.lang.Number.class.getName()));
+        classNames.add(java.util.Date.class.getName());
+        classNames.add(java.util.Calendar.class.getName());
+        classNames.add(java.lang.Iterable.class.getName());
+        classNames.add(java.lang.Throwable.class.getName());
+        classNames.add(java.lang.String.class.getName());
 
         classNames.addAll(collectSubclasses(combinedIndex, TagHandler.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ConverterHandler.class.getName()));
@@ -482,14 +536,16 @@ class MyFacesProcessor
                 io.undertow.servlet.spec.HttpServletResponseImpl.class,
                 io.undertow.servlet.spec.HttpSessionImpl.class));
 
-        classes.addAll(Arrays.asList(ClassUtils.class,
-                FactoryFinderProviderFactory.class,
+        classes.addAll(Arrays.asList(
+                BeanEntry.class,
+                ClassUtils.class,
                 ComponentSupport.class,
-                QuarkusFactoryFinderProvider.class,
                 DefaultELResolverBuilder.class,
-                FacesInitializerImpl.class,
                 ExternalContextUtils.class,
-                BeanEntry.class));
+                FacesInitializerImpl.class,
+                FactoryFinderProviderFactory.class,
+                JstlFunction.class,
+                QuarkusFactoryFinderProvider.class));
 
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, false, classNames.toArray(new String[classNames.size()])));
@@ -497,6 +553,24 @@ class MyFacesProcessor
                 new ReflectiveClassBuildItem(true, false, classes.toArray(new Class[classes.size()])));
     }
 
+    @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
+    void registerErrorPageClassesForReflection(BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+            CombinedIndexBuildItem combinedIndex)
+    {
+        final Set<String> classNames = new HashSet<>();
+        classNames.add(jakarta.faces.application.ViewExpiredException.class.getName());
+
+        Map<String, String> errorPages = WebXmlParser.getErrorPages(null);
+        for (String key : errorPages.keySet())
+        {
+            if (key != null)
+            {
+                classNames.add(key);
+            }
+        }
+
+        reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, classNames.toArray(new String[0])));
+    }
 
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
@@ -525,6 +599,7 @@ class MyFacesProcessor
                 "org/apache/myfaces/resource/default.dtd",
                 "org/apache/myfaces/resource/datatypes.dtd",
                 "META-INF/web-fragment.xml",
+                "META-INF/web.xml",
                 "META-INF/standard-faces-config.xml",
                 "META-INF/resources/org/apache/myfaces/windowId/windowhandler.html",
                 "org/apache/myfaces/resource/facelet-taglib_1_0.dtd",
@@ -758,78 +833,6 @@ class MyFacesProcessor
                 collectPublicTypes(fieldType, publicTypes, combinedIndex);
             }
         }
-    }
-
-    @BuildStep
-    void producePrimeFacesApplicationArchiveMarker(
-            BuildProducer<AdditionalApplicationArchiveMarkerBuildItem> additionalArchiveMarkers)
-    {
-        additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("org/primefaces/component"));
-    }
-
-    @BuildStep
-    void substratePrimeFacesResourceBuildItems(BuildProducer<NativeImageResourceBuildItem> nativeImageResourceProducer,
-                                     BuildProducer<NativeImageResourceBundleBuildItem> resourceBundleBuildItem)
-    {
-        nativeImageResourceProducer
-                .produce(new NativeImageResourceBuildItem("META-INF/maven/org.primefaces/primefaces/pom.properties"));
-
-
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_cs"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_de"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_el"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_en"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_es"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_fa"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_fr"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_hi"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_in"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_it"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ka"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ko"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_lv"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_nl"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_no"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_pl"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_pt"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ro"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_ru"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_sk"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_sv"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_tr"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_zh"));
-    }
-
-    @BuildStep
-    @Record(ExecutionTime.STATIC_INIT)
-    void registerPrimeFaces(MyFacesRecorder recorder,
-            BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-            CombinedIndexBuildItem combinedIndex)
-    {
-        reflectiveClass.produce(new ReflectiveClassBuildItem(true, false,
-                "org.primefaces.expression.SearchExpressionUtils",
-                "org.primefaces.util.AgentUtils",
-                "org.primefaces.util.BeanUtils",
-                "org.primefaces.util.CalendarUtils",
-                "org.primefaces.util.ChartUtils",
-                "org.primefaces.util.ComponentTraversalUtils",
-                "org.primefaces.util.ComponentUtils",
-                "org.primefaces.util.CompositeUtils",
-                "org.primefaces.util.ELUtils",
-                "org.primefaces.util.EscapeUtils",
-                "org.primefaces.util.FileUploadUtils",
-                "org.primefaces.util.GridLayoutUtils",
-                "org.primefaces.util.IOUtils",
-                "org.primefaces.util.LangUtils",
-                "org.primefaces.util.LocaleUtils",
-                "org.primefaces.util.ResourceUtils",
-                "org.primefaces.util.SecurityUtils"));
-
-        reflectiveClass.produce(new ReflectiveClassBuildItem(false, false,
-                "org.primefaces.config.PrimeEnvironment",
-                "org.primefaces.util.MessageFactory",
-                "com.lowagie.text.pdf.MappedRandomAccessFile"));
     }
 
     @BuildStep

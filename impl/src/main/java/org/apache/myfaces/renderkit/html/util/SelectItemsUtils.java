@@ -120,8 +120,7 @@ public class SelectItemsUtils
             else
             {
                 String itemStrValue = org.apache.myfaces.core.api.shared.SharedRendererUtils
-                        .getConvertedStringValue(context, component, converter,
-                                selectItem);
+                        .getConvertedStringValue(context, component, converter, selectItem);
                 boolean selected = lookupSet.contains(itemStrValue); 
                 //TODO/FIX: we always compare the String values, better fill lookupSet with Strings 
                 //only when useSubmittedValue==true, else use the real item value Objects
@@ -183,7 +182,6 @@ public class SelectItemsUtils
                 }
 
                 String labelClass = null;
-
                 if (componentDisabled || disabled)
                 {
                     labelClass = (String) component.getAttributes().get(ComponentAttrs.DISABLED_CLASS_ATTR);
@@ -198,23 +196,15 @@ public class SelectItemsUtils
                 }
 
                 boolean escape = AttributeUtils.getBooleanAttribute(component, ComponentAttrs.ESCAPE_ATTR, false);
-                //default is to escape
-                //In Faces 1.2, when a SelectItem is created by default 
-                //selectItem.isEscape() returns true (this property
-                //is not available on Faces 1.1).
-                //so, if we found a escape property on the component
-                //set to true, escape every item, but if not
-                //check if isEscape() = true first.
+                // default is to escape
+                // In Faces 1.2, when a SelectItem is created, by default selectItem.isEscape() returns true
+                //(this propertyis not available on Faces 1.1).
+                // so, if we found a escape property on the component set to true, escape every item,
+                // but if not check if isEscape() = true first.
                 if (escape || selectItem.isEscape())
                 {
                     String label = selectItem.getLabel();
-
-                    if(label == null)
-                    {
-                        label = "";
-                    }
-
-                    writer.writeText(label, null);
+                    writer.writeText(label == null ? "" : label, null);
                 }
                 else
                 {

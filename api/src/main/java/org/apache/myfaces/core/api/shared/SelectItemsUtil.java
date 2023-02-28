@@ -44,6 +44,7 @@ public class SelectItemsUtil
     public static final String ATTR_ITEM_DISABLED = "itemDisabled";
     public static final String ATTR_ITEM_LABEL_ESCAPED = "itemLabelEscaped";
     public static final String ATTR_NO_SELECTION_VALUE = "noSelectionValue";
+    public static final String ATTR_NO_SELECTION_OPTION = "noSelectionOption";
     public static final String ATTR_VAR = "var";
     
     public static <S extends SelectItem> S createSelectItem(UISelectItem uiSelectItem, Supplier<S> supplier)
@@ -115,6 +116,48 @@ public class SelectItemsUtil
         return selectItem;
     }
 
+    public static SelectItem updateSelectItem(UISelectItems uiSelectItems, SelectItem value)
+    {
+        if (value instanceof SelectItemGroup)
+        {
+            return value;
+        }
+
+        Map<String, Object> attrs = uiSelectItems.getAttributes();
+
+        Object itemLabel = attrs.get(ATTR_ITEM_LABEL);
+        if (itemLabel != null)
+        {
+            value.setLabel(String.valueOf(itemLabel));
+        }
+
+        Object itemDisabled = attrs.get(ATTR_ITEM_DISABLED);
+        if (itemDisabled != null)
+        {
+            value.setDisabled(Boolean.parseBoolean(itemDisabled.toString()));
+        }
+
+        Object itemEscaped = attrs.get(ATTR_ITEM_LABEL_ESCAPED);
+        if (itemEscaped != null)
+        {
+            value.setEscape(Boolean.parseBoolean(itemEscaped.toString()));
+        }
+
+        Object noSelection = attrs.get(ATTR_NO_SELECTION_OPTION);
+        if (noSelection != null)
+        {
+            value.setNoSelectionOption(Boolean.parseBoolean(noSelection.toString()));
+        }
+
+        Object itemDescription = attrs.get(ATTR_ITEM_DESCRIPTION);
+        if (itemDescription != null)
+        {
+            value.setDescription(String.valueOf(itemDescription));
+        }
+
+        return value;
+    }
+
     public static List<SelectItem> collectSelectItems(FacesContext context, UIComponent component)
     {
         List<SelectItem> items = new ArrayList<>();
@@ -144,19 +187,13 @@ public class SelectItemsUtil
  
         CollectionUtils.forEach(values, value ->
         {
-            Object oldValue = context.getExternalContext().getRequestMap().put(var, value);
-            
-            callback.accept(
-                    createSelectItem(component, getItemValue(attributes, value), supplier));
+            VarUtils.executeInScope(context, var, value, () ->
+            {
+                callback.accept(
+                        createSelectItem(component, getItemValue(attributes, value), supplier));
 
-            if (oldValue != null)
-            {
-                context.getExternalContext().getRequestMap().put(var, oldValue);
-            }
-            else
-            {
-                context.getExternalContext().getRequestMap().remove(var);
-            }
+                return null;
+            });
         });
     }
     
@@ -194,7 +231,7 @@ public class SelectItemsUtil
             }
             else
             {
-                Object itemValue = _convertOrCoerceValue(context, uiComponent, value, item, converter);
+                Object itemValue = convertOrCoerceValue(context, uiComponent, value, item, converter);
                 if (value == itemValue || value.equals(itemValue))
                 {
                     return true;
@@ -233,7 +270,7 @@ public class SelectItemsUtil
             }
             else if (item.isNoSelectionOption())
             {
-                Object itemValue = _convertOrCoerceValue(context, uiComponent, value, item, converter);
+                Object itemValue = convertOrCoerceValue(context, uiComponent, value, item, converter);
                 if (value == itemValue || value.equals(itemValue))
                 {
                     return true;
@@ -247,7 +284,7 @@ public class SelectItemsUtil
      * If converter is available and selectItem.value is String uses getAsObject,
      * otherwise uses EL type coertion and return result.
      */
-    private static Object _convertOrCoerceValue(FacesContext facesContext,
+    private static Object convertOrCoerceValue(FacesContext facesContext,
             UIComponent uiComponent, Object value, SelectItem selectItem, Converter converter)
     {
         Object itemValue = selectItem.getValue();
