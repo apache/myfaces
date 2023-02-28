@@ -277,7 +277,7 @@ export module myfaces {
      *
      * @param executionFunc the function to be executed upon ready
      */
-    export function onOnDomReady(executionFunc: () => void) {
+    export function onDomReady(executionFunc: () => void) {
         if(document.readyState !== "complete") {
             onReadyChain.push(executionFunc);
             if(!readyStateListener) {
