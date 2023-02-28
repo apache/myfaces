@@ -71,6 +71,7 @@ public class DebugUtils
         IGNORE_ATTRIBUTES.add("jakarta.faces.webapp.COMPONENT_IDS");
         IGNORE_ATTRIBUTES.add("jakarta.faces.webapp.FACET_NAMES");
         IGNORE_ATTRIBUTES.add("jakarta.faces.webapp.CURRENT_VIEW_ROOT");
+        IGNORE_ATTRIBUTES.add("viewMap"); // MYFACES-4563
     }
 
     private static final String JSF_COMPONENT_PACKAGE = "jakarta.faces.component.";
