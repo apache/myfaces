@@ -111,6 +111,38 @@ export module StandardInits {
 </html>`;
 
 
+    /**
+     * a page based on Tobago for a file upload
+     */
+    const HTML_TOBAGO_FILE_FORM = `<!DOCTYPE html>
+<html lang='de'>
+ <head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Test</title>
+ </head>
+ <body>
+  <tobago-page locale='de' class='container-fluid' id='page' focus-on-error='true' wait-overlay-delay-full='1000' wait-overlay-delay-ajax='1000'>
+   <form action='/content/100-upload/File_Upload.xhtml' id='page::form' method='post' enctype='multipart/form-data' accept-charset='UTF-8' data-tobago-context-path=''>
+    <input type='hidden' name='javax.faces.source' id='javax.faces.source' disabled='disabled'>
+    <tobago-focus id='page::lastFocusId'>
+     <input type='hidden' name='page::lastFocusId' id='page::lastFocusId::field'>
+    </tobago-focus>
+    <input type='hidden' name='org.apache.myfaces.tobago.webapp.Secret' id='org.apache.myfaces.tobago.webapp.Secret' value='secretValue'>
+    <tobago-file id='page:fileAjax' class='tobago-auto-spacing'>
+     <div class='input-group'>
+      <input type='file' tabindex='-1' id='page:fileAjax::field' class='form-control' name='page:fileAjax'>
+      <tobago-behavior event='change' client-id='page:fileAjax' field-id='page:fileAjax::field' execute='page:fileAjax'></tobago-behavior>
+      <label class='input-group-text' for='page:fileAjax::field'><span><i class='bi-folder2-open'></i></span></label>
+     </div>
+    </tobago-file>
+    <div class='tobago-page-menuStore'>
+    </div>
+    <span id='page::jsf-state-container'><input type='hidden' name='javax.faces.ViewState' id='j_id__v_0:javax.faces.ViewState:1' value='viewStateValue' autocomplete='off'><input type='hidden' name='javax.faces.RenderKitId' value='tobago'><input type='hidden' id='j_id__v_0:javax.faces.ClientWindow:1' name='javax.faces.ClientWindow' value='clientWindowValue'></span>
+   </form>
+  </tobago-page>
+ </body>
+</html>`;
 
     /**
      * a page simulating basically a simple faces form
@@ -349,6 +381,9 @@ export module StandardInits {
     }
     export function defaultFileForm(withJsf = true): Promise<() => void> {
         return init(HTML_FILE_FORM_DEFAULT, withJsf);
+    }
+    export function tobagoFileForm(withJsf = true): Promise<() => void> {
+        return init(HTML_TOBAGO_FILE_FORM, withJsf);
     }
     export function defaultFileForm_23(withJsf = true): Promise<() => void> {
         return init(HTML_FILE_FORM_DEFAULT.replace(/jakarta/gi, "javax"), withJsf, false);

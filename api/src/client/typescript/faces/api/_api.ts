@@ -99,7 +99,7 @@ export module faces {
         return Implementation.getClientWindow(rootNode);
     }
 
-    //private helper functions
+    // private helper functions
     function getSeparatorChar(): string {
         const sep = '#{facesContext.namingContainerSeparatorChar}';
         //We now enable standalone mode, the separator char was not mapped we make a fallback to 2.3 behavior
@@ -158,7 +158,7 @@ export module faces {
          *     <li> eventData.responseXML: the request response xml </li>
          * </ul>
          *
-         * @param errorListener error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
+         * @param errorFunc error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
          */
         export function addOnError(errorFunc: (data: ErrorData) => void): void {
             Implementation.addOnError(<any>errorFunc);
@@ -168,7 +168,7 @@ export module faces {
          * Adds a global event listener to the ajax event queue. The event listener must be a function
          * of following format: <i>function eventListener(&lt;eventData&gt;)</i>
          *
-         * @param eventListener event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
+         * @param eventFunc event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
          */
         export function addOnEvent(eventFunc: (data: EventData) => void): void {
             Implementation.addOnEvent(<any>eventFunc);
@@ -183,7 +183,7 @@ export module faces {
          * if any of the code returns false, the execution
          * is terminated prematurely skipping the rest of the code!
          *
-         * @param {DomNode} source, the callee object
+         * @param {HTMLElement | String} source, the callee object
          * @param {Event} event, the event object of the callee event triggering this function
          * @param funcs ... arbitrary array of functions or strings
          * @returns true if the chain has succeeded false otherwise
@@ -219,7 +219,7 @@ export module faces {
 
         /**
          * Open the web socket on the given channel.
-         * @param  channel The name of the web socket channel.
+         * @param  socketClientId The name of the web socket channel.
          * @throws  Error is thrown, if the channel is unknown.
          */
         export function open(socketClientId: string): void {
@@ -228,7 +228,7 @@ export module faces {
 
         /**
          * Close the web socket on the given channel.
-         * @param  channel The name of the web socket channel.
+         * @param  socketClientId The id of the web socket client.
          * @throws  Error is thrown, if the channel is unknown.
          */
         export function close(socketClientId: string): void {
@@ -248,8 +248,8 @@ export module myfaces {
      * @param event the event
      * @param eventName event name for java.jakarta.faces.behavior.evemnt
      * @param execute execute list as passed down in faces.ajax.request
-     * @param render
-     * @param options
+     * @param render the render list as string
+     * @param options the options which need to be mered in
      */
     export function ab(source: Element, event: Event, eventName: string, execute: string, render: string, options: Options = {}): void {
         if (eventName) {
@@ -264,6 +264,42 @@ export module myfaces {
         }
 
         (window?.faces ?? window.jsf).ajax.request(source, event, options);
+    }
+
+
+    const onReadyChain: Array<() => void> = [];
+    let readyStateListener = null;
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Helper function in the myfaces namespace to handle document ready properly for the load case
+     * the ajax case, does not need proper treatment, since it is deferred anyway.
+     * Used by command script as helper function!
+     *
+     * @param executionFunc the function to be executed upon ready
+     */
+    export function onOnDomReady(executionFunc: () => void) {
+        if(document.readyState !== "complete") {
+            onReadyChain.push(executionFunc);
+            if(!readyStateListener) {
+                readyStateListener = () => {
+                    window.removeEventListener("DOMContentLoaded", readyStateListener);
+                    readyStateListener = null;
+                    try {
+                        onReadyChain.forEach(func => func());
+                    } finally {
+                        //done we clear now the ready chain
+                        onReadyChain.length = 0;
+                    }
+                };
+                window.addEventListener("DOMContentLoaded", readyStateListener);
+            }
+        } else {
+            if(readyStateListener) {
+                readyStateListener();
+            }
+            executionFunc();
+        }
+
     }
 
     /**

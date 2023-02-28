@@ -376,7 +376,7 @@ describe('DOMQuery tests', function () {
         expect(length2 == 8).to.be.true;
 
         let count = DomQuery.byId("embed1").elements
-            .stream.map<number>(item => item.disabled ? 1 : 0)
+            .stream.map(item => item.disabled ? 1 : 0)
             .reduce((val1, val2) => val1 + val2, 0);
         expect(count.value).to.eq(1);
 
@@ -385,12 +385,12 @@ describe('DOMQuery tests', function () {
             .each(item => item.disabled = false);
 
         count = DomQuery.byId("embed1").elements
-            .stream.map<number>(item => item.disabled ? 1 : 0)
+            .stream.map(item => item.disabled ? 1 : 0)
             .reduce((val1, val2) => val1 + val2, 0);
         expect(count.value).to.eq(0);
 
         count = DomQuery.byId("embed1").elements
-            .stream.map<number>(item => item.attr("checked").isPresent() ? 1 : 0)
+            .stream.map(item => item.attr("checked").isPresent() ? 1 : 0)
             .reduce((val1, val2) => val1 + val2, 0);
         expect(count.value).to.eq(1);
 

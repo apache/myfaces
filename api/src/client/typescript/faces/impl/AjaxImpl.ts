@@ -208,7 +208,7 @@ export module Implementation {
 
         /* run through all script tags and try to find the one that includes faces.js */
         const foundStage = ExtDomQuery.searchJsfJsFor(/stage=([^&;]*)/).value as string;
-        return (foundStage in ProjectStages) ? foundStage : ProjectStages.Production; // MYFACES-4572: default is production
+        return (foundStage in ProjectStages) ? foundStage : null;
     }
 
     /**
@@ -503,7 +503,7 @@ export module Implementation {
          * or non-existent. If they exist all of them must be the same
          */
 
-        let formWindowId: Optional<string> = searchRoot.stream.map<string>(getValue).reduce(differenceCheck, INIT);
+        let formWindowId: Optional<string> = searchRoot.stream.map(getValue).reduce(differenceCheck, INIT);
 
 
         //if the resulting window id is set on altered then we have an unresolvable problem
