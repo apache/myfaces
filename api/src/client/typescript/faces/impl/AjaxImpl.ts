@@ -208,7 +208,7 @@ export module Implementation {
 
         /* run through all script tags and try to find the one that includes faces.js */
         const foundStage = ExtDomQuery.searchJsfJsFor(/stage=([^&;]*)/).value as string;
-        return (foundStage in ProjectStages) ? foundStage : ProjectStages.Production; // MYFACES-4572: default is production
+        return (foundStage in ProjectStages) ? foundStage : null;
     }
 
     /**
