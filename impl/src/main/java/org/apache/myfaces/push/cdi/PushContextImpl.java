@@ -143,26 +143,4 @@ public class PushContextImpl implements PushContext
 
         return resultsByUser;
     }
-    
-    private Set<Future<Void>> send(List<String> channelTokens, Object message)
-    {
-        if (channelTokens != null && !channelTokens.isEmpty())
-        {
-            Set<Future<Void>> result = null;
-            for (int i = 0; i < channelTokens.size(); i++)
-            {
-                String channelToken = channelTokens.get(i);
-                if (result == null)
-                {
-                    result = sessionManager.send(channelToken, message);
-                }
-                else
-                {
-                    result.addAll(sessionManager.send(channelToken, message));
-                }
-            }
-            return result;
-        }
-        return Collections.emptySet();
-    }
 }

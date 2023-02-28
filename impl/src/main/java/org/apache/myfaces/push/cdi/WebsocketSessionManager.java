@@ -29,7 +29,6 @@ import java.lang.ref.SoftReference;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -91,9 +90,10 @@ public class WebsocketSessionManager
 
     public void registerSessionToken(String channelToken)
     {
-        if (this.getSessionMap().get(channelToken) == null)
+        ConcurrentLRUCache<String, Collection<Reference<Session>>> sessionMap = this.getSessionMap();
+        if (sessionMap.get(channelToken) == null)
         {
-            this.getSessionMap().put(channelToken, new ConcurrentLinkedQueue<>());
+            sessionMap.put(channelToken, new ConcurrentLinkedQueue<>());
         }
     }
 
@@ -180,11 +180,15 @@ public class WebsocketSessionManager
             LOG.log (Level.FINE, "WebsocketSessionManager: addOrUpdateSession for channelToken = {0}, " +
                     "session.id = {1}", new Object[] {channelToken ,session.getId()});
         }
-        Collection<Reference<Session>> sessions = this.getSessionMap().get(channelToken);
+        
+        ConcurrentLRUCache<String, Collection<Reference<Session>>> sessionMap = this.getSessionMap();
+        Collection<Reference<Session>> sessions = sessionMap.get(channelToken);
         if (sessions == null)
         {
             registerSessionToken(channelToken);
+            sessions = sessionMap.get(channelToken);
         }
+
         Optional<Reference<Session>> referenceOptional =
                 sessions.stream().filter(p -> Objects.equals(p.get(), session)).findFirst();
 
@@ -202,13 +206,13 @@ public class WebsocketSessionManager
      * at view expiration time.
      * 
      * @param channelToken
-     * @return 
+     * @param session
      */
     public void removeSession(String channelToken, Session session)
     {
         if (LOG.isLoggable(Level.FINE))
         {
-            LOG.log (Level.FINE, "WebsocketSessionManager: removeSession for channelToken = {0}, " +
+            LOG.log(Level.FINE, "WebsocketSessionManager: removeSession for channelToken = {0}, " +
                     "session.id = {1}", new Object[] {channelToken ,session.getId()});
         }
         Collection<Reference<Session>> collection = getSessionMap().get(channelToken);
@@ -261,26 +265,24 @@ public class WebsocketSessionManager
         {
             String json = Json.encode(message);
 
-            sessions.forEach (
-                    sessionRef ->
+            sessions.forEach(sessionRef ->
+            {
+                if (sessionRef != null && sessionRef.get() != null)
+                {
+                    Session session = sessionRef.get();
+                    if (session.isOpen())
                     {
-                        if (sessionRef != null && sessionRef.get() != null)
-                        {
-                            Session session = sessionRef.get();
-                            if (session.isOpen())
-                            {
-                                send(session, json, results, 0);
-                            }
-                            else
-                            {
-                                //If session is not open, remove the session, because a websocket
-                                // session after is closed cannot
-                                //be alive.
-                                removeSession(channelToken, session);
-                            }
-                        }
+                        send(session, json, results, 0);
                     }
-            );
+                    else
+                    {
+                        //If session is not open, remove the session, because a websocket
+                        // session after is closed cannot
+                        //be alive.
+                        removeSession(channelToken, session);
+                    }
+                }
+            });
             return results;
         }
         else
@@ -298,11 +300,9 @@ public class WebsocketSessionManager
         try
         {
             results.add(session.getAsyncRemote().sendText(text));
-
             if (retries > 0)
             {
-                Logger.getLogger(WebsocketSessionManager.class.getName())
-                        .warning(String.format(WARNING_TOMCAT_WEB_SOCKET_BOMBED, retries));
+                LOG.warning(String.format(WARNING_TOMCAT_WEB_SOCKET_BOMBED, retries));
             }
         }
         catch (IllegalStateException e)
@@ -354,36 +354,27 @@ public class WebsocketSessionManager
             {
 
                 Collection<Reference<Session>> collectionRef = map.values().iterator().next();
-
-                collectionRef.forEach( ref ->
+                collectionRef.stream().filter(ref -> ref != null).forEach(ref ->
+                {
+                    Session session = ref.get();
+                    if (session != null)
+                    {
+                        Set<Session> sessions = session.getOpenSessions();
+                        for (Session instance : sessions)
                         {
-                        if (ref != null)
-                        {
-                            Session s = ref.get();
-                            if (s != null)
+                            WebsocketSessionClusterSerializedRestore r = (WebsocketSessionClusterSerializedRestore)
+                                    instance.getUserProperties().get(WebsocketSessionClusterSerializedRestore
+                                            .WEBSOCKET_SESSION_SERIALIZED_RESTORE);
+                            if (r != null && r.isDeserialized())
                             {
-                                Set<Session> set = s.getOpenSessions();
-
-                                for (Iterator<Session> it = set.iterator(); it.hasNext(); )
-                                {
-                                    Session instance = it.next();
-                                    WebsocketSessionClusterSerializedRestore r =
-                                            (WebsocketSessionClusterSerializedRestore) instance.
-                                                    getUserProperties().get(
-                            WebsocketSessionClusterSerializedRestore.WEBSOCKET_SESSION_SERIALIZED_RESTORE
-                                                    );
-                                    if (r != null && r.isDeserialized())
-                                    {
-                                        addOrUpdateSession(r.getChannelToken(), s);
-                                    }
-                                }
-
-                                // Remove one element from the queue
-                                queue.poll();
+                                addOrUpdateSession(r.getChannelToken(), session);
                             }
                         }
+
+                        // Remove one element from the queue
+                        queue.poll();
                     }
-                );
+                });
             }
         }
     }
@@ -393,12 +384,11 @@ public class WebsocketSessionManager
         return restoreQueue;
     }
 
-
-    private class UserChannelKey implements Serializable
+    public class UserChannelKey implements Serializable
     {
-
         private final Serializable user;
         private final String channel;
+
         public UserChannelKey(Serializable user, String channel)
         {
             this.user = user;
