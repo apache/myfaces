@@ -108,7 +108,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         if (commandScript.isAutorun())
         {
             script.append(";");
-            script.append("myfaces.onOnDomReady(");
+            script.append("myfaces.onDomReady(");
             script.append(name);
             script.append(");");
         }
