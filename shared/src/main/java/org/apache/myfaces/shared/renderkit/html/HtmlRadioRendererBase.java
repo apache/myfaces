@@ -56,14 +56,13 @@ public class HtmlRadioRendererBase
 {
     private static final Logger log = Logger.getLogger(HtmlRadioRendererBase.class.getName());
 
+    private static final String ATTR_GROUP_FIRST = HtmlRadioRendererBase.class.getName() + "#groupFirst";
     private static final String PAGE_DIRECTION = "pageDirection";
     private static final String LINE_DIRECTION = "lineDirection";
     
     private static final Set<VisitHint> FIND_SELECT_LIST_HINTS = 
             Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED, VisitHint.SKIP_ITERATION));
 
-    private Map<String, UISelectOne> groupFirst = new HashMap<String, UISelectOne>();
-    
     @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
@@ -106,6 +105,14 @@ public class HtmlRadioRendererBase
         String group = selectOne instanceof HtmlSelectOneRadio ? ((HtmlSelectOneRadio) selectOne).getGroup() : null;
         if (group != null && !group.isEmpty())
         {
+            Map<String, UISelectOne> groupFirst = (Map<String, UISelectOne>) facesContext.getAttributes()
+                    .get(ATTR_GROUP_FIRST);
+            if (groupFirst == null)
+            {
+                groupFirst = new HashMap<>();
+                facesContext.getAttributes().put(ATTR_GROUP_FIRST, groupFirst);
+            }
+            
             if (!groupFirst.containsKey(group)) 
             {
                 groupFirst.put(group, selectOne);
