@@ -138,7 +138,6 @@ import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.AdditionalApplicationArchiveMarkerBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBundleBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
@@ -508,6 +507,7 @@ class MyFacesProcessor
         List<Class<?>> classes = new ArrayList<>();
 
         classNames.add("jakarta.faces._FactoryFinderProviderFactory");
+        classNames.add("jakarta.faces.context._MyFacesExternalContextHelper");
         classNames.addAll(collectImplementors(combinedIndex, java.util.Collection.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, java.time.temporal.TemporalAccessor.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, java.lang.Number.class.getName()));
@@ -573,22 +573,6 @@ class MyFacesProcessor
     }
 
     @BuildStep
-    @Record(ExecutionTime.STATIC_INIT)
-    NativeImageConfigBuildItem registerForFieldReflection(MyFacesRecorder recorder,
-                               BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-                               CombinedIndexBuildItem combinedIndex)
-    {
-        reflectiveClass.produce(new ReflectiveClassBuildItem(true, true,
-                "jakarta.faces.context._MyFacesExternalContextHelper"));
-
-        // Register ViewScopeContextualStorageHolder to be initialized at runtime, it uses a static random
-        NativeImageConfigBuildItem.Builder builder = NativeImageConfigBuildItem.builder();
-        builder.addRuntimeInitializedClass(ViewScopeContextualStorageHolder.class.getName());
-
-        return builder.build();
-    }
-
-    @BuildStep
     void substrateResourceBuildItems(BuildProducer<NativeImageResourceBuildItem> nativeImageResourceProducer,
                                      BuildProducer<NativeImageResourceBundleBuildItem> resourceBundleBuildItem)
     {
@@ -596,12 +580,13 @@ class MyFacesProcessor
                 "META-INF/rsc/myfaces-dev-error.xml",
                 "META-INF/rsc/myfaces-dev-debug.xml",
                 "META-INF/rsc/myfaces-dev-error-include.xhtml",
-                "org/apache/myfaces/resource/default.dtd",
-                "org/apache/myfaces/resource/datatypes.dtd",
+                "META-INF/services/jakarta.servlet.ServletContainerInitializer",
                 "META-INF/web-fragment.xml",
                 "META-INF/web.xml",
                 "META-INF/standard-faces-config.xml",
                 "META-INF/resources/org/apache/myfaces/windowId/windowhandler.html",
+                "org/apache/myfaces/resource/default.dtd",
+                "org/apache/myfaces/resource/datatypes.dtd",
                 "org/apache/myfaces/resource/facelet-taglib_1_0.dtd",
                 "org/apache/myfaces/resource/javaee_5.xsd",
                 "org/apache/myfaces/resource/jakartaee_9.xsd",
@@ -617,8 +602,7 @@ class MyFacesProcessor
                 "org/apache/myfaces/resource/web-facesconfig_2_3.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_3_0.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_4_0.dtd",
-                "org/apache/myfaces/resource/xml.xsd",
-                "META-INF/services/jakarta.servlet.ServletContainerInitializer"));
+                "org/apache/myfaces/resource/xml.xsd"));
 
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_ar"));
@@ -634,7 +618,6 @@ class MyFacesProcessor
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_nl"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_pl"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_pt"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_pt_BR"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_ru"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_sk"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_uk"));
@@ -642,8 +625,8 @@ class MyFacesProcessor
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_HK"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages_zh_TW"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.el.PrivateMessages"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.servlet.LocalStrings"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.el.LocalStrings"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.servlet.LocalStrings"));
     }
 
     public List<String> collectSubclasses(CombinedIndexBuildItem combinedIndex, String className)
@@ -844,6 +827,8 @@ class MyFacesProcessor
                 new RuntimeInitializedClassBuildItem(LambdaMetadataTargetImpl.class.getCanonicalName()));
         runtimeInitClassBuildItem.produce(
                 new RuntimeInitializedClassBuildItem(PropertyDescriptorUtils.class.getCanonicalName()));
+        runtimeInitClassBuildItem.produce(
+                new RuntimeInitializedClassBuildItem(ViewScopeContextualStorageHolder.class.getCanonicalName()));
     }
 
 
