@@ -72,6 +72,7 @@ import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
 import org.apache.myfaces.cdi.FacesArtifactProducer;
 import org.apache.myfaces.cdi.FacesScoped;
+import org.apache.myfaces.cdi.clientwindow.ClientWindowScopeContextualStorageHolder;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
 import org.apache.myfaces.cdi.util.BeanEntry;
@@ -165,6 +166,7 @@ class MyFacesProcessor
             WebsocketChannelTokenBuilder.class,
             WebsocketSessionManager.class,
             WebsocketScopeManager.class,
+            ClientWindowScopeContextualStorageHolder.class,
             FlowScopeContextualStorageHolder.class
     };
 
@@ -507,7 +509,6 @@ class MyFacesProcessor
         List<Class<?>> classes = new ArrayList<>();
 
         classNames.add("jakarta.faces._FactoryFinderProviderFactory");
-        classNames.add("jakarta.faces.context._MyFacesExternalContextHelper");
         classNames.addAll(collectImplementors(combinedIndex, java.util.Collection.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, java.time.temporal.TemporalAccessor.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, java.lang.Number.class.getName()));
@@ -551,6 +552,15 @@ class MyFacesProcessor
                 new ReflectiveClassBuildItem(true, false, classNames.toArray(new String[classNames.size()])));
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, false, classes.toArray(new Class[classes.size()])));
+    }
+
+    @BuildStep
+    @Record(ExecutionTime.STATIC_INIT)
+    void registerForFieldReflection(MyFacesRecorder recorder,
+                               BuildProducer<ReflectiveClassBuildItem> reflectiveClass)
+    {
+        reflectiveClass.produce(new ReflectiveClassBuildItem(true, true,
+                "jakarta.faces.context._MyFacesExternalContextHelper"));
     }
 
     @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
