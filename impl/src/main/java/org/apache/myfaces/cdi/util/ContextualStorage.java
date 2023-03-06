@@ -141,8 +141,8 @@ public class ContextualStorage implements Serializable
     }
 
     /**
-     * If the context is a passivating scope then we return the passivationId of the Bean.
-     * Otherwise we use the Bean directly.
+     * If the context is a passivating scope then we return the passivationId of the bean.
+     * Otherwise we use the bean directly, this is mainly for Quarkus.
      *
      * @param bean
      * 
@@ -160,7 +160,9 @@ public class ContextualStorage implements Serializable
     }
 
     /**
-     * Restores the Bean from its beanKey.
+     * Restores the bean from its beanKey.
+     * It returns null if the beanKey does not belong to a bean or is not Contextual.
+     *
      * @see #getBeanKey(jakarta.enterprise.context.spi.Contextual)
      */
     public Contextual<?> getBean(Object beanKey)
@@ -171,7 +173,12 @@ public class ContextualStorage implements Serializable
             return beanManager.getPassivationCapableBean((String) beanKey);
         }
 
-        return (Contextual<?>) beanKey;
+        if (beanKey instanceof Contextual)
+        {
+            return (Contextual<?>) beanKey;
+        }
+
+        return null;
     }
 
     public boolean isActivated()
