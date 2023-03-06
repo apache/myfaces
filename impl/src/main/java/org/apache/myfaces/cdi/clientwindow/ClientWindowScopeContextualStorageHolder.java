@@ -24,7 +24,9 @@ import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.inject.Typed;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.lifecycle.ClientWindowScoped;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.util.Map;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
@@ -80,7 +82,7 @@ public class ClientWindowScopeContextualStorageHolder
     @Override
     protected ContextualStorage newContextualStorage(String slotId)
     {
-        return new ContextualStorage(beanManager, true);
+        return new ContextualStorage(beanManager, true, isPassivating());
     }
 
     public void pushClientWindow(FacesContext facesContext, ClientWindow clientWindow)
@@ -95,6 +97,12 @@ public class ClientWindowScopeContextualStorageHolder
         }
     }
 
+    @Override
+    public Class<? extends Annotation> getScope()
+    {
+        return ClientWindowScoped.class;
+    }
+    
     public static ClientWindowScopeContextualStorageHolder getInstance(FacesContext facesContext)
     {
         return getInstance(facesContext, false);

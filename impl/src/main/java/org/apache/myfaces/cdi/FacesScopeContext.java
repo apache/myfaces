@@ -141,7 +141,7 @@ public class FacesScopeContext implements Context
         ContextualStorage storage = (ContextualStorage) facesContext.getAttributes().get(FACES_SCOPED_STORAGE);
         if (storage == null && createIfNotExist)
         {
-            storage = new ContextualStorage(beanManager, false);
+            storage = new ContextualStorage(beanManager, false, false);
             facesContext.getAttributes().put(FACES_SCOPED_STORAGE, storage);
         }
         return storage;

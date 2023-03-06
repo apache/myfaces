@@ -23,7 +23,10 @@ import java.util.Random;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.inject.Typed;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
+import java.lang.annotation.Annotation;
 import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
+import org.apache.myfaces.cdi.util.ContextualStorage;
 
 /**
  *
@@ -32,7 +35,7 @@ import org.apache.myfaces.cdi.util.AbstractContextualStorageHolder;
 @Typed(ViewScopeContextualStorageHolder.class)
 @SessionScoped
 public class ViewScopeContextualStorageHolder
-        extends AbstractContextualStorageHolder<ViewScopeContextualStorage>
+        extends AbstractContextualStorageHolder<ContextualStorage>
         implements Serializable
 {    
     private static final Random RANDOM_GENERATOR = new Random();
@@ -54,9 +57,9 @@ public class ViewScopeContextualStorageHolder
     }
 
     @Override
-    protected ViewScopeContextualStorage newContextualStorage(String slotId)
+    protected ContextualStorage newContextualStorage(String slotId)
     {
-        return new ViewScopeContextualStorage(beanManager);
+        return new ContextualStorage(beanManager, false, isPassivating());
     }
 
     protected static ViewScopeContextualStorageHolder getInstance(FacesContext facesContext)
@@ -67,5 +70,11 @@ public class ViewScopeContextualStorageHolder
     protected static ViewScopeContextualStorageHolder getInstance(FacesContext facesContext, boolean create)
     {
         return getInstance(facesContext, ViewScopeContextualStorageHolder.class, create);
+    }
+
+    @Override
+    public Class<? extends Annotation> getScope()
+    {
+        return ViewScoped.class;
     }
 }

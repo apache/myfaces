@@ -139,7 +139,7 @@ public class ViewTransientScopeContext implements Context
                 facesContext.getViewRoot().getTransientStateHelper().getTransient(VIEW_TRANSIENT_SCOPED_STORAGE);
         if (contextualStorage == null && createIfNotExist)
         {
-            contextualStorage = new ContextualStorage(beanManager, false);
+            contextualStorage = new ContextualStorage(beanManager, false, false);
             facesContext.getViewRoot().getTransientStateHelper()
                     .putTransient(VIEW_TRANSIENT_SCOPED_STORAGE, contextualStorage);
         }

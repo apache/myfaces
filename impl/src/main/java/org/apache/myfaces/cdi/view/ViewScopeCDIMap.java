@@ -29,6 +29,7 @@ import jakarta.faces.context.FacesContext;
 import java.util.stream.Collectors;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
+import org.apache.myfaces.cdi.util.ContextualStorage;
 
 /**
  *
@@ -37,14 +38,14 @@ import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 public class ViewScopeCDIMap implements Map<String, Object>
 {
     private String viewScopeId;
-    private ViewScopeContextualStorage storage;
+    private ContextualStorage storage;
 
     public ViewScopeCDIMap(String viewScopeId)
     {
         this.viewScopeId = viewScopeId;
     }
     
-    private ViewScopeContextualStorage getStorage()
+    private ContextualStorage getStorage()
     {
         if (storage != null && !storage.isActivated())
         {

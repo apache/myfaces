@@ -32,6 +32,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
+import org.apache.myfaces.cdi.util.ContextualStorage;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 
 /**
@@ -79,7 +80,7 @@ public class ViewScopeContext implements Context
         return null;
     }
 
-    protected ViewScopeContextualStorage getContextualStorage(FacesContext facesContext, boolean createIfNotExist)
+    protected ContextualStorage getContextualStorage(FacesContext facesContext, boolean createIfNotExist)
     {
         String viewScopeId = getCurrentViewScopeId(createIfNotExist);
         if (createIfNotExist && viewScopeId == null)
@@ -126,7 +127,7 @@ public class ViewScopeContext implements Context
         // force session creation if ViewScoped is used
         facesContext.getExternalContext().getSession(true);
         
-        ViewScopeContextualStorage storage = getContextualStorage(facesContext, false);
+        ContextualStorage storage = getContextualStorage(facesContext, false);
         if (storage == null)
         {
             return null;
@@ -158,7 +159,7 @@ public class ViewScopeContext implements Context
         // force session creation if ViewScoped is used
         facesContext.getExternalContext().getSession(true);
         
-        ViewScopeContextualStorage storage = getContextualStorage(facesContext, true);
+        ContextualStorage storage = getContextualStorage(facesContext, true);
 
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
         ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
@@ -187,7 +188,7 @@ public class ViewScopeContext implements Context
 
     public boolean destroy(Contextual bean)
     {
-        ViewScopeContextualStorage storage = getContextualStorage(FacesContext.getCurrentInstance(), false);
+        ContextualStorage storage = getContextualStorage(FacesContext.getCurrentInstance(), false);
         if (storage == null)
         {
             return false;

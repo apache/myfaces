@@ -38,6 +38,7 @@ import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.flow.FlowScoped;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.inject.Inject;
+import java.lang.annotation.Annotation;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
@@ -223,9 +224,15 @@ public class FlowScopeContextualStorageHolder
     @Override
     protected ContextualStorage newContextualStorage(String slotId)
     {
-        return new ContextualStorage(beanManager, true);
+        return new ContextualStorage(beanManager, true, isPassivating());
     }
 
+    @Override
+    public Class<? extends Annotation> getScope()
+    {
+        return FlowScoped.class;
+    }
+    
     public static FlowScopeContextualStorageHolder getInstance(FacesContext facesContext)
     {
         return getInstance(facesContext, false);
@@ -235,4 +242,5 @@ public class FlowScopeContextualStorageHolder
     {
         return getInstance(facesContext, FlowScopeContextualStorageHolder.class, create);
     }
+
 }

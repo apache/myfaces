@@ -28,6 +28,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContext;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
@@ -44,6 +45,8 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
     protected BeanManager beanManager;
     
     protected Map<String, T> storageMap;
+    
+    protected boolean passivating;
 
     public AbstractContextualStorageHolder()
     {
@@ -53,7 +56,8 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
     public void init()
     {
         storageMap = new ConcurrentHashMap<>();
-        
+        passivating = beanManager.isPassivatingScope(getScope());
+
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
         Object context = facesContext.getExternalContext().getContext();
@@ -297,4 +301,10 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
         return cached;
     }
 
+    public boolean isPassivating()
+    {
+        return passivating;
+    }
+
+    public abstract Class<? extends Annotation> getScope();
 }
