@@ -36,28 +36,30 @@ import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFind
  */
 public class QuarkusFacesInitializer extends FacesInitializerImpl
 {
+    // DIRTY HACK as somehow quarkus initializes a second time?
     private static boolean initialized = false;
-    
+
     @Override
     public void initFaces(ServletContext servletContext)
     {
-        // DIRTY HACK as somehow quarkus initializes a second time?
         if (!initialized)
         {
-            initialized = true;
-
+            // only initialize FactoryFinderProviderFactory once and not on hot reloading
             FactoryFinderProviderFactory.setInstance(new QuarkusFactoryFinderProviderFactory());
-
-            // see FacesDataModelExtension
-            FacesDataModelManager facesDataModelManager = CDI.current().select(FacesDataModelManager.class).get();
-            for (Map.Entry<Class<? extends DataModel>, Class<?>> typeInfo
-                    : MyFacesRecorder.FACES_DATA_MODELS.entrySet())
-            {
-                facesDataModelManager.addFacesDataModel(typeInfo.getValue(), typeInfo.getKey());
-            }
-            facesDataModelManager.init();
-
-            super.initFaces(servletContext);
+            initialized = true;
+            return;
         }
+
+        // see FacesDataModelExtension
+        FacesDataModelManager facesDataModelManager = CDI.current().select(FacesDataModelManager.class).get();
+        facesDataModelManager.reset();
+        for (Map.Entry<Class<? extends DataModel>, Class<?>> typeInfo
+                : MyFacesRecorder.FACES_DATA_MODELS.entrySet())
+        {
+            facesDataModelManager.addFacesDataModel(typeInfo.getValue(), typeInfo.getKey());
+        }
+        facesDataModelManager.init();
+
+        super.initFaces(servletContext);
     }
 }

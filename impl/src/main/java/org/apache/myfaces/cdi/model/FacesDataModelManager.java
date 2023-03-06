@@ -64,6 +64,11 @@ public class FacesDataModelManager
         }
     }
 
+    public void reset()
+    {
+        facesDataModels = null;
+    }
+
     public DataModel tryToCreateDataModel(FacesContext facesContext, Class<?> forClass, Object value)
     {
         if (facesDataModels == null)
