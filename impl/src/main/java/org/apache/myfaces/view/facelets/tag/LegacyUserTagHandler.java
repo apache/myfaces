@@ -60,15 +60,15 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
         this._vars = this.tag.getAttributes().getAll();
         this._location = location;
         
-        Collection<DefineHandler> handlers = TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class);
-        if (handlers.isEmpty())
+        Collection<DefineHandler> defines = TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class);
+        if (defines.isEmpty())
         {
             _handlers = null;
         }
         else
         {
-            _handlers = new HashMap<>(handlers.size());
-            for (DefineHandler handler : handlers)
+            _handlers = new HashMap<>(defines.size());
+            for (DefineHandler handler : defines)
             {
                 _handlers.put(handler.getName(), handler);
             }
@@ -80,8 +80,9 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
      * Facelet. Finally, replace the old VariableMapper.
      * 
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
-     * @see VariableMapper
-     * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext, jakarta.faces.component.UIComponent)
+     * @see jakarta.el.VariableMapper
+     * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
+     *        jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,

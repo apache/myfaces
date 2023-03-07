@@ -61,9 +61,6 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
     protected final URL _location;
     protected final Map<String, DefineHandler> _handlers;
 
-    /**
-     * @param config
-     */
     public UserTagHandler(TagConfig config, URL location)
     {
         super(config);
