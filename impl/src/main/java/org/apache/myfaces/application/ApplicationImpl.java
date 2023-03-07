@@ -213,6 +213,8 @@ public class ApplicationImpl extends Application
     
     private Map<Class<? extends Behavior>, Boolean> _cdiManagedBehaviorMap = new ConcurrentHashMap<>();
     
+    private Map<String, Map<Locale, java.util.ResourceBundle>> resourceBundleCache = new ConcurrentHashMap<>();
+
     /** Value of javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE parameter */
     private boolean _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = false; 
     
@@ -404,12 +406,33 @@ public class ApplicationImpl extends Application
     java.util.ResourceBundle getResourceBundle(final String name, final Locale locale, final ClassLoader loader)
             throws MissingResourceException
     {
-        if (_myfacesConfig.getResourceBundleControl() != null)
+        Map<Locale, java.util.ResourceBundle> cacheByLocale = resourceBundleCache.get(name);
+        if (cacheByLocale == null)
         {
-            return java.util.ResourceBundle.getBundle(name, locale, loader,_myfacesConfig.getResourceBundleControl());
+            cacheByLocale = new ConcurrentHashMap<>();
+            resourceBundleCache.put(name, cacheByLocale);
         }
 
-        return java.util.ResourceBundle.getBundle(name, locale, loader);
+        java.util.ResourceBundle resourceBundle = cacheByLocale.get(locale);
+        if (resourceBundle == null)
+        {
+            if (_myfacesConfig.getResourceBundleControl() != null)
+            {
+                resourceBundle = java.util.ResourceBundle.getBundle(name, locale, loader,
+                        _myfacesConfig.getResourceBundleControl());
+            }
+            else
+            {
+                resourceBundle = java.util.ResourceBundle.getBundle(name, locale, loader);
+            }
+
+            if (resourceBundle != null && getProjectStage() == ProjectStage.Production)
+            {
+                cacheByLocale.put(locale, resourceBundle);
+            }
+        }
+
+        return resourceBundle;
     }
 
     final FacesContext getFacesContext()
