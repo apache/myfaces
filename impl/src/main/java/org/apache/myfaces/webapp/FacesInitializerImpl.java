@@ -55,6 +55,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ViewVisitOption;
@@ -66,6 +67,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ServiceLoader;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
@@ -529,14 +532,14 @@ public class FacesInitializerImpl implements FacesInitializer
         // directly, so if no CDI api is on the classpath no exception will be thrown.
         
         // Try with servlet context
-        Object beanManager = servletContext.getAttribute(CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE);
-        if (beanManager == null)
-        {
-            beanManager = lookupBeanManagerFromCDI();
-        }
+        BeanManager beanManager = (BeanManager) servletContext.getAttribute(CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE);
         if (beanManager == null)
         {
             beanManager = lookupBeanManagerFromJndi();
+        }
+        if (beanManager == null)
+        {
+            beanManager = lookupBeanManagerFromCDI();
         }
         if (beanManager != null)
         {
@@ -546,26 +549,17 @@ public class FacesInitializerImpl implements FacesInitializer
 
     /**
      * This method tries to use the CDI-1.1 CDI.current() method to lookup the CDI BeanManager.
-     * We do all this via reflection to not blow up if CDI-1.1 is not on the classpath.
+     *
      * @return the BeanManager or {@code null} if either not in a CDI-1.1 environment
      *         or the BeanManager doesn't exist yet.
      */
-    private Object lookupBeanManagerFromCDI()
+    private BeanManager lookupBeanManagerFromCDI()
     {
         try
         {
-            Class cdiClass = ClassUtils.simpleClassForName("jakarta.enterprise.inject.spi.CDI", false);
-            if (cdiClass != null)
-            {
-                Method currentMethod = cdiClass.getMethod("current");
-                Object cdi = currentMethod.invoke(null);
-
-                Method getBeanManagerMethod = cdiClass.getMethod("getBeanManager");
-                Object beanManager = getBeanManagerMethod.invoke(cdi);
-                return beanManager;
-            }
+            return CDI.current().getBeanManager();
         }
-        catch (Exception e)
+        catch (Exception | LinkageError e)
         {
             // ignore
         }
@@ -574,67 +568,44 @@ public class FacesInitializerImpl implements FacesInitializer
 
     /**
      * Try to lookup the CDI BeanManager from JNDI.
-     * We do all this via reflection to not blow up if CDI is not available.
      */
-    private Object lookupBeanManagerFromJndi()
+    private BeanManager lookupBeanManagerFromJndi()
     {
-        Object beanManager = null;
-        // Use reflection to avoid restricted API in GAE
-        Class icclazz = null;
-        Method lookupMethod = null;
+        BeanManager beanManager = null;
+        
         try
         {
-            icclazz = ClassUtils.simpleClassForName("javax.naming.InitialContext");
-            if (icclazz != null)
-            {
-                lookupMethod = icclazz.getMethod("doLookup", String.class);
-            }
+            // in an application server
+            InitialContext initialContext = new InitialContext();
+            beanManager = (BeanManager) initialContext.lookup("java:comp/BeanManager");
         }
-        catch (Throwable t)
+        catch (NamingException e)
         {
-            // noop
+            // silently ignore
         }
-        if (lookupMethod != null)
+        catch (NoClassDefFoundError e)
         {
-            // Try with JNDI
+            // ignore
+        }
+
+        if (beanManager != null)
+        {
             try
             {
                 // in an application server
-                //beanManager = InitialContext.doLookup("java:comp/BeanManager");
-                beanManager = lookupMethod.invoke(icclazz, "java:comp/BeanManager");
+                InitialContext initialContext = new InitialContext();
+                beanManager = (BeanManager) initialContext.lookup("java:comp/env/BeanManager");
             }
-            catch (Exception e)
+            catch (NamingException e)
             {
                 // silently ignore
             }
             catch (NoClassDefFoundError e)
             {
-                //On Google App Engine, javax.naming.Context is a restricted class.
-                //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
-                //below by context parameter.
-            }
-
-            if (beanManager == null)
-            {
-                try
-                {
-                    // in a servlet container
-                    //beanManager = InitialContext.doLookup("java:comp/env/BeanManager");
-                    beanManager = lookupMethod.invoke(icclazz, "java:comp/env/BeanManager");
-                }
-                catch (Exception e)
-                {
-                    // silently ignore
-                }
-                catch (NoClassDefFoundError e)
-                {
-                    //On Google App Engine, javax.naming.Context is a restricted class.
-                    //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
-                    //below by context parameter.
-                }
+                // ignore
             }
         }
-
+        
         return beanManager;
     }
 
