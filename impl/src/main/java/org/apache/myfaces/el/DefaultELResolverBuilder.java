@@ -33,6 +33,7 @@ import jakarta.el.StaticFieldELResolver;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.myfaces.cdi.util.CDIUtils;
@@ -59,10 +60,17 @@ import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
 public class DefaultELResolverBuilder extends ELResolverBuilder
 {
     private static final Logger LOG = Logger.getLogger(DefaultELResolverBuilder.class.getName());
+    public static final List<String> CDI_EL_RESOLVERS = Arrays.asList(
+            "org.apache.webbeans.el22.WebBeansELResolver",
+            "org.apache.webbeans.el.WebBeansELResolver",
+            "org.jboss.weld.module.web.el.WeldELResolver",
+            "org.jboss.weld.environment.servlet.jsf.WeldApplication$LazyBeanManagerIntegrationELResolver");
 
     public DefaultELResolverBuilder(RuntimeConfig runtimeConfig, MyfacesConfig myfacesConfig)
     {
         super(runtimeConfig, myfacesConfig);
+        
+
     }
 
     @Override
@@ -73,12 +81,12 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         // add the ELResolvers to a List first to be able to sort them
         List<ELResolver> list = new ArrayList<>();
 
-        // Since Faces 4.0 CDI is a required dependency 
-        // but our mocked tests doesnt run in a CDI container
-        if (isReplaceImplicitObjectResolverWithCDIResolver(facesContext))
+        boolean replaceImplicitObjectResolverWithCDIResolver =
+                isReplaceImplicitObjectResolverWithCDIResolver(facesContext);
+        if (replaceImplicitObjectResolverWithCDIResolver)
         {
-            list.add(getCDIELResolver());
             list.add(ImplicitObjectResolver.makeResolverForCDI());
+            list.add(getCDIELResolver());
         }
         else
         {
@@ -87,7 +95,20 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
             
         list.add(new CompositeComponentELResolver(config));
 
-        addFromRuntimeConfig(list);
+        // the spec forces us to add BeanManager#getELResolver manually
+        // but both CDI impls also add this ELResolver... remove it here
+        // see https://github.com/jakartaee/faces/issues/1798
+        if (replaceImplicitObjectResolverWithCDIResolver)
+        {
+            List<ELResolver> temp = new ArrayList<>();
+            addFromRuntimeConfig(temp);
+            temp.removeIf(resolver -> CDI_EL_RESOLVERS.contains(resolver.getClass().getName()));
+            list.addAll(temp);
+        }
+        else
+        {
+            addFromRuntimeConfig(list);
+        }
 
         if ("true".equalsIgnoreCase(
                 facesContext.getExternalContext().getInitParameter(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME)))

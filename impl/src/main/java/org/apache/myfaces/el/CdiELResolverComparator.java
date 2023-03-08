@@ -18,10 +18,32 @@
  */
 package org.apache.myfaces.el;
 
-/**
- * Backward compatibility
- */
-public class OpenWebBeansELResolverComparator extends CdiELResolverComparator
-{
+import java.util.Comparator;
 
+import jakarta.el.ELResolver;
+
+/**
+ * Comparator for ELResolvers that shifts the ELResolver from CDI to the last place.
+ * 
+ * @author Jakob Korherr (latest modification by $Author$)
+ * @version $Revision$ $Date$
+ *
+ * @since 1.2.10, 2.0.2
+ */
+public class CdiELResolverComparator implements Comparator<ELResolver>
+{
+    @Override
+    public int compare(ELResolver r1, ELResolver r2)
+    {
+        if (DefaultELResolverBuilder.CDI_EL_RESOLVERS.contains(r1.getClass().getName()))
+        {
+            return 1;
+        }
+        else if (DefaultELResolverBuilder.CDI_EL_RESOLVERS.contains(r2.getClass().getName()))
+        {
+            return -1;
+        }
+        return 0; // keep order
+    }
+   
 }
