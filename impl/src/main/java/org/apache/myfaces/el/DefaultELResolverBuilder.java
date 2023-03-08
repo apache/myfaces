@@ -19,8 +19,6 @@
 package org.apache.myfaces.el;
 
 import org.apache.myfaces.el.resolver.FlashELResolver;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,13 +26,15 @@ import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELResolver;
-import jakarta.el.ExpressionFactory;
 import jakarta.el.ListELResolver;
 import jakarta.el.MapELResolver;
 import jakarta.el.ResourceBundleELResolver;
+import jakarta.el.StaticFieldELResolver;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
 import org.apache.myfaces.config.RuntimeConfig;
@@ -49,7 +49,6 @@ import org.apache.myfaces.el.resolver.implicitobject.ImplicitObjectResolver;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.el.resolver.EmptyStringToNullELResolver;
 import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
-import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * Create the el resolver for faces. see 1.2 spec section 5.6.2
@@ -59,27 +58,8 @@ import org.apache.myfaces.util.lang.ClassUtils;
  */
 public class DefaultELResolverBuilder extends ELResolverBuilder
 {
-    private static final Class STATIC_FIELD_EL_RESOLVER_CLASS;
-    private static final Method GET_STREAM_EL_RESOLVER_METHOD;
-    
-    static
-    {
-        Class staticFieldELResolverClass = null;
-        Method getStreamELResolverMethod = null;
-        try
-        {
-            staticFieldELResolverClass = ClassUtils.classForName("jakarta.el.StaticFieldELResolver");
-            getStreamELResolverMethod = ExpressionFactory.class.getMethod("getStreamELResolver");
-        }
-        catch (NoSuchMethodException | SecurityException | ClassNotFoundException ex)
-        {
-            //No op
-        }
+    private static final Logger LOG = Logger.getLogger(DefaultELResolverBuilder.class.getName());
 
-        STATIC_FIELD_EL_RESOLVER_CLASS = staticFieldELResolverClass;
-        GET_STREAM_EL_RESOLVER_METHOD = getStreamELResolverMethod;
-    }
-    
     public DefaultELResolverBuilder(RuntimeConfig runtimeConfig, MyfacesConfig myfacesConfig)
     {
         super(runtimeConfig, myfacesConfig);
@@ -122,30 +102,29 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         list.add(new ResourceBundleELResolver());
         list.add(new ResourceBundleResolver());
         list.add(new ImportConstantsELResolver());
-        
-        if (STATIC_FIELD_EL_RESOLVER_CLASS != null &&
-            GET_STREAM_EL_RESOLVER_METHOD != null)
+ 
+        try
         {
-            try
+            ELResolver streamElResolver = (ELResolver) runtimeConfig.getExpressionFactory().getStreamELResolver();
+            if (streamElResolver != null)
             {
-                ELResolver streamElResolver = (ELResolver) GET_STREAM_EL_RESOLVER_METHOD.invoke(
-                        runtimeConfig.getExpressionFactory());
-                if (streamElResolver != null)
-                {
-                    // By default return null, but in a EL 3 implementation it should be there,
-                    // this is just to avoid exceptions in junit testing
-                    list.add(streamElResolver);
-                }
-                list.add((ELResolver) STATIC_FIELD_EL_RESOLVER_CLASS.newInstance());
-            } 
-            catch (IllegalAccessException
-                    | IllegalArgumentException
-                    | InvocationTargetException
-                    | InstantiationException ex)
-            {
+                list.add(streamElResolver);
             }
+        } 
+        catch (Throwable ex)
+        {
+            LOG.log(Level.WARNING, "Could not add ExpressionFactory#getStreamELResolver!", ex);
         }
-        
+
+        try
+        {
+            list.add(new StaticFieldELResolver());
+        } 
+        catch (Throwable ex)
+        {
+            LOG.log(Level.WARNING, "Could not add StaticFieldELResolver!", ex);
+        }
+
         list.add(new MapELResolver());
         list.add(new ListELResolver());
         list.add(new ArrayELResolver());
