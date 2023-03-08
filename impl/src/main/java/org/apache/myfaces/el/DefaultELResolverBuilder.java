@@ -77,8 +77,8 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         // but our mocked tests doesnt run in a CDI container
         if (isReplaceImplicitObjectResolverWithCDIResolver(facesContext))
         {
-            list.add(ImplicitObjectResolver.makeResolverForCDI());
             list.add(getCDIELResolver());
+            list.add(ImplicitObjectResolver.makeResolverForCDI());
         }
         else
         {
