@@ -55,7 +55,7 @@ pipeline {
                     stage('BuildAndTest') {
                         steps {
                             sh 'find . -name "debug.log" -exec rm {} \\;'
-                            sh 'mvn -V clean verify checkstyle:check apache-rat:check'
+                            sh 'mvn -V -DchromeDriverVersion=110.0.5481.77 clean verify checkstyle:check apache-rat:check'
                         }
                         post {
                             always {
@@ -75,7 +75,7 @@ pipeline {
                 jdk "jdk_11_latest"
             }
             steps {
-                sh "mvn clean deploy -Pgenerate-assembly"
+                sh "mvn -DchromeDriverVersion=110.0.5481.77 clean deploy -Pgenerate-assembly"
             }
         }
     }
