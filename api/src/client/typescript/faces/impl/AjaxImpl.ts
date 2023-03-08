@@ -18,7 +18,7 @@ import {IListener} from "./util/IListener";
 import {Response} from "./xhrCore/Response";
 import {XhrRequest} from "./xhrCore/XhrRequest";
 import {AsynchronousQueue} from "./util/AsyncQueue";
-import {AssocArrayCollector, Config, DQ, Lang, LazyStream, Optional, Stream} from "mona-dish";
+import {AssocArrayCollector, Config, DQ, DQ$, Lang, LazyStream, Optional, Stream} from "mona-dish";
 import {Assertions} from "./util/Assertions";
 import {ExtConfig, ExtDomQuery} from "./util/ExtDomQuery";
 import {ErrorData} from "./xhrCore/ErrorData";
@@ -54,7 +54,7 @@ import {
     EMPTY_STR,
     CTX_PARAM_MF_INTERNAL,
     NAMED_VIEWROOT,
-    NAMING_CONTAINER_ID
+    NAMING_CONTAINER_ID, $nsp
 } from "./core/Const";
 import {
     resolveDefaults,
@@ -63,6 +63,7 @@ import {
     resolveTimeout, resolveViewId, resolveViewRootId, resoveNamingContainerMapper
 } from "./xhrCore/RequestDataResolver";
 import {encodeFormData} from "./util/FileUtils";
+
 
 /*
  * allowed project stages
@@ -467,12 +468,29 @@ export module Implementation {
         /*
          * the search root for the dom element search
          */
-        let searchRoot = new DQ(node || document.body).querySelectorAll(`form input [name='${P_CLIENT_WINDOW}']`);
+
+
+        let searchRoot = ((node) ? DQ.byId(node): DQ$("form"));
+        let inputs = searchRoot
+            .filterSelector(`input[name='${$nsp(P_CLIENT_WINDOW)}']`)
+            .orElseLazy(() => searchRoot.querySelectorAll(`input[name='${$nsp(P_CLIENT_WINDOW)}']`))
 
         /*
-         * lazy helper to fetch the window id from the window url
+         * lazy helper to fetch the window id from the included faces.js
          */
-        let fetchWindowIdFromUrl = () => ExtDomQuery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null).value;
+        let fetchWindowIdFromJSFJS = () => ExtDomQuery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null).value;
+
+        /*
+         * fetch window id from the url
+         */
+        let fetchWindowIdFromURL = function () {
+            const href = window.location.href, windowId = "jfwid";
+            const regex = new RegExp("[\\?&]" + windowId + "=([^&#\\;]*)");
+            const results = regex.exec(href);
+            //initial trial over the url and a regexp
+            if (results != null) return results[1];
+            return null;
+        };
 
         /*
          * functional double check based on stream reduction
@@ -482,7 +500,7 @@ export module Implementation {
          * @param value1
          * @param value2
          */
-        let differenceCheck = (value1: string, value2: string) => {
+        let differenceCheck = (value1: string, value2: string): string => {
             if(value1 == INIT) {
                 return value2;
             } else if (value1 == ALTERED || value1 != value2) {
@@ -496,14 +514,14 @@ export module Implementation {
          *
          * @param item
          */
-        let getValue = (item: DQ) => item.attr("value").value;
+        let getValue = (item: DQ): string => item.val as string;
         /*
          * fetch the window id from the forms
          * window ids must be present in all forms
          * or non-existent. If they exist all of them must be the same
          */
 
-        let formWindowId: Optional<string> = searchRoot.stream.map(getValue).reduce(differenceCheck, INIT);
+        let formWindowId: Optional<string> = inputs.stream.map(getValue).reduce(differenceCheck, INIT);
 
 
         //if the resulting window id is set on altered then we have an unresolvable problem
@@ -512,7 +530,7 @@ export module Implementation {
         /*
          * return the window id or null
          */
-        return formWindowId.value != INIT ? formWindowId.value : fetchWindowIdFromUrl();
+        return formWindowId.value != INIT ? formWindowId.value : (fetchWindowIdFromURL() || fetchWindowIdFromJSFJS());
     }
 
     /**

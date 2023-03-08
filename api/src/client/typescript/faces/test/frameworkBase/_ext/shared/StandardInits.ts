@@ -124,7 +124,7 @@ export module StandardInits {
  <body>
   <tobago-page locale='de' class='container-fluid' id='page' focus-on-error='true' wait-overlay-delay-full='1000' wait-overlay-delay-ajax='1000'>
    <form action='/content/100-upload/File_Upload.xhtml' id='page::form' method='post' enctype='multipart/form-data' accept-charset='UTF-8' data-tobago-context-path=''>
-    <input type='hidden' name='javax.faces.source' id='javax.faces.source' disabled='disabled'>
+    <input type='hidden' name='jakarta.faces.source' id='jakarta.faces.source' disabled='disabled'>
     <tobago-focus id='page::lastFocusId'>
      <input type='hidden' name='page::lastFocusId' id='page::lastFocusId::field'>
     </tobago-focus>
@@ -138,7 +138,7 @@ export module StandardInits {
     </tobago-file>
     <div class='tobago-page-menuStore'>
     </div>
-    <span id='page::jsf-state-container'><input type='hidden' name='javax.faces.ViewState' id='j_id__v_0:javax.faces.ViewState:1' value='viewStateValue' autocomplete='off'><input type='hidden' name='javax.faces.RenderKitId' value='tobago'><input type='hidden' id='j_id__v_0:javax.faces.ClientWindow:1' name='javax.faces.ClientWindow' value='clientWindowValue'></span>
+    <span id='page::jsf-state-container'><input type='hidden' name='jakarta.faces.ViewState' id='j_id__v_0:jakarta.faces.ViewState:1' value='viewStateValue' autocomplete='off'><input type='hidden' name='jakarta.faces.RenderKitId' value='tobago'><input type='hidden' id='j_id__v_0:jakarta.faces.ClientWindow:1' name='jakarta.faces.ClientWindow' value='clientWindowValue'></span>
    </form>
   </tobago-page>
  </body>
