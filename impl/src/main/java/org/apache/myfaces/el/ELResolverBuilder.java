@@ -104,7 +104,7 @@ public class ELResolverBuilder
                 
                 if (log.isLoggable(Level.INFO))
                 {
-                    log.log(Level.INFO, "Chain of EL resolvers sorted with: {1} and the result order is {2}", 
+                    log.log(Level.INFO, "Chain of EL resolvers sorted with: {0} and the result order is {1}", 
                             new Object [] { runtimeConfig.getELResolverComparator(), resolvers});
                 }
             }
@@ -112,6 +112,13 @@ public class ELResolverBuilder
             {
                 log.log(Level.WARNING, 
                         "Could not sort ELResolvers with custom Comparator", e);
+            }
+        }
+        else
+        {
+            if (log.isLoggable(Level.INFO))
+            {
+                log.log(Level.INFO, "Chain of EL resolvers: {0}", new Object [] { resolvers });
             }
         }
     }
