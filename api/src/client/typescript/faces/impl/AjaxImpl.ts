@@ -54,7 +54,8 @@ import {
     EMPTY_STR,
     CTX_PARAM_MF_INTERNAL,
     NAMED_VIEWROOT,
-    NAMING_CONTAINER_ID, $nsp
+    NAMING_CONTAINER_ID,
+    $nsp
 } from "./core/Const";
 import {
     resolveDefaults,
