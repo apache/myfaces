@@ -18,22 +18,19 @@ import {describe, it} from "mocha";
 import * as sinon from "sinon";
 import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import {DomQuery, DQ$, Stream} from "mona-dish";
+import {_Es2019Array, DQ$} from "mona-dish";
 import {
-    $nsp,
-    COMPLETE,
     P_AJAX,
     P_EXECUTE,
-    P_PARTIAL_SOURCE,
+    P_AJAX_SOURCE,
     P_RENDER,
     P_VIEWSTATE,
-    P_WINDOW_ID,
-    SUCCESS
+    P_WINDOW_ID
 } from "../../impl/core/Const";
-import defaultMyFaces = StandardInits.defaultMyFaces;
-import STD_XML = StandardInits.STD_XML;
 import defaultMyFacesNamespaces = StandardInits.defaultMyFacesNamespaces;
 import {escape} from "querystring";
+import {ExtLang} from "../../impl/util/Lang";
+import ofAssoc = ExtLang.ofAssoc;
 
 declare var faces: any;
 declare var Implementation: any;
@@ -50,6 +47,7 @@ let issueStdReq = function (element) {
 };
 
 describe('Namespacing tests', function () {
+    let oldFlatMap = null;
     beforeEach(async function () {
 
         let waitForResult = defaultMyFacesNamespaces();
@@ -65,6 +63,9 @@ describe('Namespacing tests', function () {
             window.XMLHttpRequest = this.xhr;
 
             this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
+            oldFlatMap =Array.prototype["flatMap"];
+            window["Es2019Array"] = _Es2019Array;
+            delete Array.prototype["flatMap"];
 
             this.closeIt = () => {
                 (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
@@ -77,6 +78,10 @@ describe('Namespacing tests', function () {
 
     afterEach(function () {
         this.closeIt();
+        if(oldFlatMap) {
+            Array.prototype["flatMap"] = oldFlatMap;
+            oldFlatMap = null;
+        }
     });
 
     it('must send the element identifiers properly encoded', function () {
@@ -107,7 +112,7 @@ describe('Namespacing tests', function () {
             expect(!!resultsMap["execute"]).to.be.false;
             expect(P_WINDOW_ID in resultsMap).to.be.false;
             expect(P_VIEWSTATE in resultsMap).to.be.true;
-            expect(resultsMap[P_PARTIAL_SOURCE]).to.eq(escape("jd_0:input_2"));
+            expect(resultsMap[P_AJAX_SOURCE]).to.eq(escape("jd_0:input_2"));
             expect(resultsMap[P_AJAX]).to.eq("true");
             expect(resultsMap[P_RENDER]).to.eq(escape("jd_0:blarg jd_0:input_2"));
             expect(resultsMap[P_EXECUTE]).to.eq(escape("jd_0:input_1 jd_0:input_2"));
@@ -143,7 +148,7 @@ describe('Namespacing tests', function () {
             expect(!!resultsMap["execute"]).to.be.false;
             expect(P_WINDOW_ID in resultsMap).to.be.false;
             expect(P_VIEWSTATE in resultsMap).to.be.true;
-            expect(resultsMap[P_PARTIAL_SOURCE]).to.eq(escape("jd_0:input_2"));
+            expect(resultsMap[P_AJAX_SOURCE]).to.eq(escape("jd_0:input_2"));
             expect(resultsMap[P_AJAX]).to.eq("true");
             expect(resultsMap[P_RENDER]).to.eq(escape("jd_0:blarg jd_0:input_2"));
             expect(resultsMap[P_EXECUTE]).to.eq(escape("jd_0:input_1 jd_0:input_2"));
@@ -182,16 +187,16 @@ describe('Namespacing tests', function () {
             expect(!!resultsMap["render"]).to.be.false;
             expect(!!resultsMap["execute"]).to.be.false;
 
-            let hasWindowdId = Stream.ofAssoc(resultsMap).filter(data => data[0].indexOf(P_WINDOW_ID) != -1).first().isPresent();
-            let hasViewState = Stream.ofAssoc(resultsMap).filter(data => data[0].indexOf(P_VIEWSTATE) != -1).first().isPresent();
+            let hasWindowdId = ofAssoc(resultsMap).filter(data => data[0].indexOf(P_WINDOW_ID) != -1)?.[0];
+            let hasViewState = ofAssoc(resultsMap).filter(data => data[0].indexOf(P_VIEWSTATE) != -1)?.[0];
 
-            expect(hasWindowdId).to.be.false;
-            expect(hasViewState).to.be.true;
+            expect(!!hasWindowdId).to.be.false;
+            expect(!!hasViewState).to.be.true;
 
-            let viewState = Stream.ofAssoc(resultsMap).filter(data => data[0].indexOf(P_VIEWSTATE) != -1).map(item => item[1]).first().value;
+            let viewState = ofAssoc(resultsMap).filter(data => data[0].indexOf(P_VIEWSTATE) != -1).map(item => item[1])?.[0];
 
             expect(viewState).to.eq("booga");
-            expect(resultsMap[NAMING_CONTAINER_PREF + P_PARTIAL_SOURCE]).to.eq("jd_0:input_2");
+            expect(resultsMap[NAMING_CONTAINER_PREF + P_AJAX_SOURCE]).to.eq("jd_0:input_2");
             expect(resultsMap[NAMING_CONTAINER_PREF + P_AJAX]).to.eq("true");
             expect(resultsMap[NAMING_CONTAINER_PREF + P_RENDER]).to.eq("jd_0:blarg jd_0:input_2");
             expect(resultsMap[NAMING_CONTAINER_PREF + P_EXECUTE]).to.eq("jd_0:input_1 jd_0:input_2");

@@ -21,14 +21,15 @@
 import {IMonad, IValueHolder, Optional} from "./Monad";
 import {
     ArrayCollector,
-    ArrayStreamDataSource,
+    ArrayStreamDataSource, calculateSkips,
     FilteredStreamDatasource,
-    FlatMapStreamDataSource,
     ICollector,
     IStreamDataSource,
     ITERATION_STATUS,
     MappedStreamDataSource, MultiStreamDatasource
 } from "./SourcesCollectors";
+import {DomQuery} from "./DomQuery";
+import {Config} from "./Config";
 //import {from, Observable} from "rxjs";
 
 
@@ -42,6 +43,124 @@ export type Reducable<T, V> = (val1: T | V, val2: T) => V;
 export type Matchable<T> = (data: T) => boolean;
 export type Mappable<T, R> = (data: T) => R;
 export type Comparator<T> = (el1: T, el2: T) => number;
+
+
+/**
+ * Same for flatmap to deal with element -> stream mappings
+ */
+export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
+
+    mapFunc: StreamMapper<T>;
+
+    inputDataSource: IStreamDataSource<T>;
+
+    /**
+     * the currently active stream
+     * coming from an incoming element
+     * once the end of this one is reached
+     * it is swapped out by another one
+     * from the next element
+     */
+    activeDataSource: IStreamDataSource<S>;
+    walkedDataSources = [];
+    _currPos = 0;
+
+    constructor(func: StreamMapper<T>, parent: IStreamDataSource<T>) {
+        this.mapFunc = func;
+        this.inputDataSource = parent;
+    }
+
+    hasNext(): boolean {
+        return this.resolveActiveHasNext() || this.resolveNextHasNext();
+    }
+
+    private resolveActiveHasNext() {
+        let next = false;
+        if (this.activeDataSource) {
+            next = this.activeDataSource.hasNext();
+        }
+        return next;
+    }
+
+    lookAhead(cnt = 1): ITERATION_STATUS | S {
+
+        let lookAhead = this?.activeDataSource?.lookAhead(cnt);
+        if (this?.activeDataSource && lookAhead != ITERATION_STATUS.EO_STRM) {
+            //this should cover 95% of all cases
+            return lookAhead;
+        }
+
+        if (this.activeDataSource) {
+            cnt -= calculateSkips(this.activeDataSource)
+        }
+
+        //the idea is basically to look into the streams sub-sequentially for a match
+        //after each stream we have to take into consideration that the skipCnt is
+        //reduced by the number of datasets we already have looked into in the previous stream/datasource
+        //unfortunately for now we have to loop into them, so we introduce a small o2 here
+        for (let dsLoop = 1; true; dsLoop++) {
+            let datasourceData = this.inputDataSource.lookAhead(dsLoop);
+            //we have looped out
+            //no embedded data anymore? we are done, data
+            //can either be a scalar an array or another datasource
+            if (datasourceData === ITERATION_STATUS.EO_STRM) {
+                return ITERATION_STATUS.EO_STRM;
+            }
+            let mappedData = this.mapFunc(datasourceData as T);
+
+            //it either comes in as datasource or as array
+            //both cases must be unified into a datasource
+            let currentDataSource = this.toDatasource(mappedData);
+            //we now run again  a lookahead
+            let ret = currentDataSource.lookAhead(cnt);
+            //if the value is found then we are set
+            if (ret != ITERATION_STATUS.EO_STRM) {
+                return ret;
+            }
+            //reduce the next lookahead by the number of elements
+            //we are now skipping in the current data source
+            cnt -= calculateSkips(currentDataSource);
+        }
+    }
+
+    private toDatasource(mapped: Array<S> | IStreamDataSource<S>) {
+        let ds = Array.isArray(mapped) ? new ArrayStreamDataSource(...mapped) : mapped;
+        this.walkedDataSources.push(ds)
+        return ds;
+    }
+
+    private resolveNextHasNext() {
+        let next = false;
+        while (!next && this.inputDataSource.hasNext()) {
+            let mapped = this.mapFunc(this.inputDataSource.next() as T);
+            this.activeDataSource = this.toDatasource(mapped);
+            next = this.activeDataSource.hasNext();
+        }
+        return next;
+    }
+
+    next(): S | ITERATION_STATUS {
+        if (this.hasNext()) {
+            this._currPos++;
+            return this.activeDataSource.next();
+        }
+    }
+
+    reset(): void {
+        this.inputDataSource.reset();
+        this.walkedDataSources.forEach(ds => ds.reset());
+        this.walkedDataSources = [];
+        this._currPos = 0;
+        this.activeDataSource = null;
+    }
+
+    current(): S | ITERATION_STATUS {
+        if (!this.activeDataSource) {
+            this.hasNext();
+        }
+        return this.activeDataSource.current();
+    }
+}
 
 /**
  * Generic interface defining a stream
@@ -214,6 +333,14 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
         }
 
         return new Stream(...value);
+    }
+
+    static ofDomQuery(value: DomQuery): Stream<DomQuery> {
+        return Stream.of(...value.asArray);
+    }
+
+    static ofConfig(value: Config): Stream<[string, any]> {
+        return Stream.of(... Object.keys(value.value)).map(key => [key, value.value[key]])
     }
 
     current(): T | ITERATION_STATUS {
@@ -459,6 +586,14 @@ export class LazyStream<T> implements IStreamDataSource<T>, IStream<T>, IMonad<T
         return new LazyStream(value);
     }
 
+    static ofDomQuery(value: DomQuery): LazyStream<DomQuery> {
+        return LazyStream.of(...value.asArray);
+    }
+
+    static ofConfig(value: Config): LazyStream<[string, any]> {
+        return LazyStream.of(... Object.keys(value.value)).map(key => [key, value.value[key]])
+    }
+
     constructor(parent: IStreamDataSource<T>) {
         this.dataSource = parent;
 
@@ -669,3 +804,23 @@ export class LazyStream<T> implements IStreamDataSource<T>, IStream<T>, IMonad<T
 }
 
 
+/**
+ * 1.0 backwards compatibility functions
+ *
+ * this restores the stream and lazy stream
+ * property on DomQuery on prototype level
+ *
+ */
+
+Object.defineProperty(DomQuery.prototype, "stream", {
+    get: function stream(){
+        return Stream.ofDomQuery(this);
+    }
+})
+
+
+Object.defineProperty(DomQuery.prototype, "lazyStream", {
+    get: function lazyStream(){
+        return LazyStream.ofDomQuery(this);
+    }
+})

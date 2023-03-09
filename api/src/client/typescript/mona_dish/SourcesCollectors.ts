@@ -15,25 +15,32 @@
  * limitations under the License.
  */
 
-import {Stream, StreamMapper} from "./Stream";
 import {DomQuery} from "./DomQuery";
-
-import {Config} from "./Monad";
+import {Es2019Array} from "./Es2019Array";
+import {Config} from "./Config";
 
 /**
  * special status of the datasource location pointer
- * if an access, outside of the possible data boundaries is happening
+ * if an access, outside - of the possible data boundaries is happening
  * (example for instance current without a first next call, or next
  * which goes over the last possible dataset), an iteration status return
  * value is returned marking this boundary instead of a classical element
  *
- * Note this is only internally used but must be implemented to fullfill
+ * Note this is only internally used but must be implemented to fulfill
  * internal contracts, the end user will never see those values if he uses
  * streams!
  */
 export enum ITERATION_STATUS {
     EO_STRM = '__EO_STRM__',
     BEF_STRM = '___BEF_STRM__',
+}
+
+export function calculateSkips(next_strm: IStreamDataSource<any>) {
+    let pos = 1;
+    while (next_strm.lookAhead(pos) != ITERATION_STATUS.EO_STRM) {
+        pos++;
+    }
+    return --pos;
 }
 
 /**
@@ -55,12 +62,14 @@ export interface IStreamDataSource<T> {
     next(): T | ITERATION_STATUS;
 
     /**
-     * returns the next element in the stream
-     * difference to next is, that the internal data position
-     * is not changed, so next still will deliver the next item from the current
-     * data position. Look ahead is mostly needed internally
-     * by possible endless data constructs which have no fixed data boundary, or index
-     * positions. (aka infinite sets, or flatmapped constructs)
+     * looks ahead cnt without changing the internal data "pointers" of the data source
+     * (this is mostly needed by possibly infinite constructs like lazy streams,
+     * because they do not know by definition their
+     * boundaries)
+     *
+     * @param cnt the elements to look ahead
+     * @return either the element or ITERATION_STATUS.EO_STRM if we hit the end of the stream before
+     * finding the "cnt" element
      */
     lookAhead(cnt ?: number): T | ITERATION_STATUS;
 
@@ -95,14 +104,11 @@ export interface ICollector<T, S> {
     finalValue: S;
 }
 
-function calculateSkips(next_strm: IStreamDataSource<any>) {
-    let pos = 1;
-    while (next_strm.lookAhead(pos) != ITERATION_STATUS.EO_STRM) {
-        pos++;
-    }
-    return --pos;
-}
 
+/**
+ * A data source which combines multiple streams sequentially into one
+ * (this is used internally by  flatmap, but also can be used externally)
+ */
 export class MultiStreamDatasource<T> implements IStreamDataSource<T> {
 
     private  activeStrm;
@@ -229,7 +235,7 @@ export class SequenceDataSource implements IStreamDataSource<number> {
 
 
 /**
- * implementation of iteratable on top of array
+ * implementation of a datasource on top of a standard array
  */
 export class ArrayStreamDataSource<T> implements IStreamDataSource<T> {
     value: Array<T>;
@@ -329,6 +335,15 @@ export class FilteredStreamDatasource<T> implements IStreamDataSource<T> {
         return found;
     }
 
+    /**
+     * looks ahead cnt without changing the internal data "pointers" of the data source
+     * (this is mostly needed by LazyStreams, because they do not know by definition their
+     * boundaries)
+     *
+     * @param cnt the elements to look ahead
+     * @return either the element or ITERATION_STATUS.EO_STRM if we hit the end of the stream before
+     * finding the "cnt" element
+     */
     lookAhead(cnt = 1): ITERATION_STATUS | T {
         let lookupVal: T | ITERATION_STATUS;
 
@@ -390,129 +405,13 @@ export class MappedStreamDataSource<T, S> implements IStreamDataSource<S> {
     }
 }
 
-/**
- * Same for flatmap to deal with element -> stream mappings
- */
-export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
-
-    mapFunc: StreamMapper<T>;
-
-    inputDataSource: IStreamDataSource<T>;
-
-    /**
-     * the currently active stream
-     * coming from an incoming element
-     * once the end of this one is reached
-     * it is swapped out by another one
-     * from the next element
-     */
-    activeDataSource: IStreamDataSource<S>;
-    walkedDataSources = [];
-    _currPos = 0;
-
-    constructor(func: StreamMapper<T>, parent: IStreamDataSource<T>) {
-        this.mapFunc = func;
-        this.inputDataSource = parent;
-    }
-
-    hasNext(): boolean {
-        return this.resolveActiveHasNext() || this.resolveNextHasNext();
-    }
-
-    private resolveActiveHasNext() {
-        let next = false;
-        if (this.activeDataSource) {
-            next = this.activeDataSource.hasNext();
-        }
-        return next;
-    }
-
-    lookAhead(cnt = 1): ITERATION_STATUS | S {
-
-        let lookAhead = this?.activeDataSource?.lookAhead(cnt);
-        if (this?.activeDataSource && lookAhead != ITERATION_STATUS.EO_STRM) {
-            //this should cover 95% of all cases
-            return lookAhead;
-        }
-
-        if (this.activeDataSource) {
-            cnt -= calculateSkips(this.activeDataSource)
-        }
-
-        //the idea is basically to look into the streams sub-sequentially for a match
-        //after each stream we have to take into consideration that the skipCnt is
-        //reduced by the number of datasets we already have looked into in the previous stream/datasource
-        //unfortunately for now we have to loop into them, so we introduce a small o2 here
-        for (let dsLoop = 1; true; dsLoop++) {
-            let datasourceData = this.inputDataSource.lookAhead(dsLoop);
-            //we have looped out
-            //no embedded data anymore? we are done, data
-            //can either be a scalar an array or another datasource
-            if (datasourceData === ITERATION_STATUS.EO_STRM) {
-                return ITERATION_STATUS.EO_STRM;
-            }
-            let mappedData = this.mapFunc(datasourceData as T);
-
-            //it either comes in as datasource or as array
-            //both cases must be unified into a datasource
-            let currentDataSource = this.toDatasource(mappedData);
-            //we now run again  a lookahead
-            let ret = currentDataSource.lookAhead(cnt);
-            //if the value is found then we are set
-            if (ret != ITERATION_STATUS.EO_STRM) {
-                return ret;
-            }
-            //reduce the next lookahead by the number of elements
-            //we are now skipping in the current data source
-            cnt -= calculateSkips(currentDataSource);
-        }
-    }
-
-    private toDatasource(mapped: Array<S> | IStreamDataSource<S>) {
-        let ds = Array.isArray(mapped) ? new ArrayStreamDataSource(...mapped) : mapped;
-        this.walkedDataSources.push(ds)
-        return ds;
-    }
-
-    private resolveNextHasNext() {
-        let next = false;
-        while (!next && this.inputDataSource.hasNext()) {
-            let mapped = this.mapFunc(this.inputDataSource.next() as T);
-            this.activeDataSource = this.toDatasource(mapped);
-            next = this.activeDataSource.hasNext();
-        }
-        return next;
-    }
-
-    next(): S | ITERATION_STATUS {
-        if (this.hasNext()) {
-            this._currPos++;
-            return this.activeDataSource.next();
-        }
-    }
-
-    reset(): void {
-        this.inputDataSource.reset();
-        this.walkedDataSources.forEach(ds => ds.reset());
-        this.walkedDataSources = [];
-        this._currPos = 0;
-        this.activeDataSource = null;
-    }
-
-    current(): S | ITERATION_STATUS {
-        if (!this.activeDataSource) {
-            this.hasNext();
-        }
-        return this.activeDataSource.current();
-    }
-}
 
 /**
  * For the time being we only need one collector
  * a collector which collects a stream back into arrays
  */
-export class ArrayCollector<S> implements ICollector<S, Array<S>> {
-    private data: Array<S> = [];
+export class ShimArrayCollector<S> implements ICollector<S, Array<S>> {
+    private data: Array<S> = new Es2019Array(...[]);
 
     collect(element: S) {
         this.data.push(element);
@@ -632,9 +531,24 @@ export class QueryFormStringCollector implements ICollector<DomQuery, string> {
     }
 
     get finalValue(): string {
-        return Stream.of(...this.formData)
-            .map<string>(keyVal => keyVal.join("="))
-            .reduce((item1, item2) => [item1, item2].join("&"))
-            .orElse("").value;
+        return new Es2019Array(...this.formData)
+            .map(keyVal => keyVal.join("="))
+            .reduce((item1, item2) => [item1, item2].join("&"));
+    }
+}
+
+/**
+ * For the time being we only need one collector
+ * a collector which collects a stream back into arrays
+ */
+export class ArrayCollector<S> implements ICollector<S, Array<S>> {
+    private data: Array<S> = [];
+
+    collect(element: S) {
+        this.data.push(element);
+    }
+
+    get finalValue(): Array<S> {
+        return this.data;
     }
 }

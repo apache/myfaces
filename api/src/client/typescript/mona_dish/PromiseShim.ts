@@ -21,7 +21,6 @@
  */
 
 import {Promise as _Promise} from "./Promise";
-import type = Mocha.utils.type;
 import {_global$} from "./Global";
 
 

@@ -17,8 +17,7 @@
 import {IListener} from "./util/IListener";
 import {Response} from "./xhrCore/Response";
 import {XhrRequest} from "./xhrCore/XhrRequest";
-import {AsynchronousQueue} from "./util/AsyncQueue";
-import {AssocArrayCollector, Config, DQ, DQ$, Lang, LazyStream, Optional, Stream} from "mona-dish";
+import {Config, DQ, DQ$, Lang} from "mona-dish";
 import {Assertions} from "./util/Assertions";
 import {ExtConfig, ExtDomQuery} from "./util/ExtDomQuery";
 import {ErrorData} from "./xhrCore/ErrorData";
@@ -41,7 +40,7 @@ import {
     P_CLIENT_WINDOW,
     P_EVT,
     P_EXECUTE,
-    P_PARTIAL_SOURCE,
+    P_AJAX_SOURCE,
     P_RENDER,
     P_RESET_VALUES,
     P_WINDOW_ID,
@@ -52,9 +51,10 @@ import {
     VIEW_ID,
     $faces,
     EMPTY_STR,
-    CTX_PARAM_MF_INTERNAL,
     NAMED_VIEWROOT,
     NAMING_CONTAINER_ID,
+    CTX_PARAM_PPS,
+    MYFACES_OPTION_PPS,
     $nsp
 } from "./core/Const";
 import {
@@ -64,7 +64,7 @@ import {
     resolveTimeout, resolveViewId, resolveViewRootId, resoveNamingContainerMapper
 } from "./xhrCore/RequestDataResolver";
 import {encodeFormData} from "./util/FileUtils";
-
+import {XhrQueueController} from "./util/XhrQueueController";
 
 /*
  * allowed project stages
@@ -93,6 +93,8 @@ enum BlockFilter {
     params = "params"
 }
 
+
+
 /**
  * Core Implementation
  * to distinct between api and impl
@@ -112,17 +114,7 @@ export module Implementation {
  it provides following
 
  a) Monad like structures for querying because this keeps the code denser and adds abstractions
- that always was the strong point of jquery and it still is better in this regard than what ecmascript provides
-
- b) Streams and lazy streams like java has, a pull stream construct, ecmascript does not have anything like it.
- (it has array filters and maps, but ES2015 does not support flatMap)
- Another option would have been rxjs but that would have introduced a code dependency and probably more code. We might
- move to RXJS if the need arises, however. But for now I would rather stick with my small self grown library which works
- quite well and where I can patch quickly (I have used it in several industrial projects, so it works well
- and is heavily fortified by unit tests (140 testcases as time of writing this))
- The long term plan is to eliminate the Stream usage as soon as we can move up to ES2019 (adding the missing
- functions as shims, is a no go, because we are a library, and absolutey do not Shim anything which can leak
- into the global namespace!)
+ that always was the strong point of jQuery, and it still is better in this regard than what ecmascript provides
 
  c) A neutral json like configuration which allows assignments of arbitrary values with reduce code which then can be
  transformed into different data representations
@@ -159,12 +151,14 @@ export module Implementation {
     import getMessage = ExtLang.getMessage;
     import getGlobalConfig = ExtLang.getGlobalConfig;
     import assert = Assertions.assert;
+    import ofAssoc = ExtLang.ofAssoc;
+    import collectAssoc = ExtLang.collectAssoc;
 
     let projectStage: string = null;
     let separator: string = null;
     let eventQueue = [];
     let errorQueue = [];
-    export let requestQueue: AsynchronousQueue<XhrRequest> = null;
+    export let requestQueue: XhrQueueController<XhrRequest> = null;
     /*error reporting threshold*/
     let threshold = "ERROR";
 
@@ -194,7 +188,7 @@ export module Implementation {
     /**
      * @return the project stage also emitted by the server:
      * it cannot be cached and must be delivered over the server
-     * The value for it comes from the request parameter of the faces.js script called "stage".
+     * The value for it comes from the requestInternal parameter of the faces.js script called "stage".
      */
     export function getProjectStage(): string | null {
         return resolveGlobalConfig()?.projectStage ??
@@ -220,17 +214,21 @@ export module Implementation {
      * @param event
      * @param funcs
      */
-    export function chain(source: HTMLElement | string, event: Event | null, ...funcs: EvalFuncs): boolean {
-        // we can use our lazy stream each functionality to run our chain here..
+    export function chain(source: any, event: Event, ...funcs: EvalFuncs): boolean {
+        // we can use our lazy stream each functionality to run our chain here.
         // by passing a boolean as return value into the onElem call
         // we can stop early at the first false, just like the spec requests
 
-        return LazyStream.of(...funcs)
-            .map(func => resolveAndExecute(source, event, func))
-            // we use the return false == stop as an early stop, onElem stops at the first false
-            .onElem((opResult: boolean) => opResult)
-            //last ensures we run until the first false is returned
-            .last().value;
+        let ret;
+        funcs.every(func => {
+            let returnVal = resolveAndExecute(source, event, func);
+            if(returnVal !== false) {
+                ret = returnVal;
+            }
+            return returnVal !== false;
+        });
+        return ret;
+
     }
 
     /**
@@ -280,7 +278,7 @@ export module Implementation {
 
         requestCtx.assignIf(!!windowId, P_WINDOW_ID).value = windowId;
 
-        // old non spec behavior will be removed after it is clear whether the removal breaks any code
+        // old non - spec behavior will be removed after it is clear whether the removal breaks any code
         requestCtx.assign(CTX_PARAM_REQ_PASS_THR).value = extractLegacyParams(options.value);
 
         // spec conform behavior, all passthrough params must be under "passthrough
@@ -312,14 +310,14 @@ export module Implementation {
         requestCtx.assign(ON_ERROR).value = options.value?.onerror;
 
         /**
-         * lets drag the myfaces config params also in
+         * Fetch the myfaces config params
          */
         requestCtx.assign(MYFACES).value = options.value?.myfaces;
 
         /**
          * binding contract the jakarta.faces.source must be set
          */
-        requestCtx.assign(CTX_PARAM_REQ_PASS_THR, P_PARTIAL_SOURCE).value = elementId;
+        requestCtx.assign(CTX_PARAM_REQ_PASS_THR, P_AJAX_SOURCE).value = elementId;
 
         /**
          * jakarta.faces.partial.ajax must be set to true
@@ -346,6 +344,9 @@ export module Implementation {
         // won't hurt but for the sake of compatibility we are going to add it
         requestCtx.assign(CTX_PARAM_REQ_PASS_THR, formId).value = formId;
         internalCtx.assign(CTX_PARAM_SRC_CTL_ID).value = elementId;
+        // reintroduction of PPS as per myfaces 2.3 (myfaces.pps = true, only the executes are submitted)
+        internalCtx.assign(CTX_PARAM_PPS).value = extractMyFacesParams(options.value)?.[MYFACES_OPTION_PPS] ?? false;
+
 
         assignClientWindowId(form, requestCtx);
         assignExecute(options, requestCtx, form, elementId);
@@ -426,7 +427,7 @@ export module Implementation {
             }
         } finally {
             if (clearRequestQueue) {
-                requestQueue.cleanup();
+                requestQueue.clear();
             }
         }
     }
@@ -522,16 +523,16 @@ export module Implementation {
          * or non-existent. If they exist all of them must be the same
          */
 
-        let formWindowId: Optional<string> = inputs.stream.map(getValue).reduce(differenceCheck, INIT);
+        let formWindowId: string = inputs.asArray.map(getValue).reduce(differenceCheck, INIT);
 
 
         //if the resulting window id is set on altered then we have an unresolvable problem
-        assert(ALTERED != formWindowId.value, "Multiple different windowIds found in document");
+        assert(ALTERED != formWindowId, "Multiple different windowIds found in document");
 
         /*
          * return the window id or null
          */
-        return formWindowId.value != INIT ? formWindowId.value : (fetchWindowIdFromURL() || fetchWindowIdFromJSFJS());
+        return formWindowId != INIT ? formWindowId : (fetchWindowIdFromURL() || fetchWindowIdFromJSFJS());
     }
 
     /**
@@ -560,7 +561,7 @@ export module Implementation {
         let formElements = element.deepElements.encodeFormElement()
 
         // encode them! (file inputs are handled differently and are not part of the viewstate)
-        return encodeFormData(formElements, resoveNamingContainerMapper(dummyContext));
+        return encodeFormData(new ExtConfig(formElements), resoveNamingContainerMapper(dummyContext));
     }
 
     /**
@@ -575,8 +576,8 @@ export module Implementation {
          * adds a new request to our queue for further processing
          */
         addRequestToQueue: function (elem: DQ, form: DQ, reqCtx: ExtConfig, respPassThr: Config, delay = 0, timeout = 0) {
-            requestQueue = requestQueue ?? new AsynchronousQueue<XhrRequest>();
-            requestQueue.enqueue(new XhrRequest(elem, form, reqCtx, respPassThr, [], timeout), delay);
+            requestQueue = requestQueue ?? new XhrQueueController<XhrRequest>();
+            requestQueue.enqueue(new XhrRequest(reqCtx, respPassThr, timeout), delay);
         }
     };
 
@@ -685,7 +686,7 @@ export module Implementation {
          * can deal with them either prefixed ir not
          * also resolves the absolute id case (it was assumed the server does this, but
          * apparently the RI does not, so we have to follow the RI behavior here)
-         * @param componentIdToTransform the componentId which needs post processing
+         * @param componentIdToTransform the componentId which needs post-processing
          */
         const remapNamingContainer = componentIdToTransform => {
             // pattern :<anything> must be prepended by viewRoot if there is one,
@@ -699,7 +700,7 @@ export module Implementation {
             const hasLeadingSep = componentIdToTransform.indexOf(SEP) === 0;
             const isAbsolutSearchExpr = hasLeadingSep || (rootNamingContainerId.length
                 && componentIdToTransform.indexOf(rootNamingContainerPrefix) == 0);
-            let finalIdentifier = "";
+            let finalIdentifier: string;
             if (isAbsolutSearchExpr) {
                 //we cut off the leading sep if there is one
                 componentIdToTransform = hasLeadingSep ? componentIdToTransform.substring(1) : componentIdToTransform;
@@ -718,14 +719,14 @@ export module Implementation {
                     [rootNamingContainerPrefix, componentIdToTransform].join(EMPTY_STR) :
                     [nearestNamingContainerPrefix,  componentIdToTransform].join(EMPTY_STR);
             }
-            // We need to double check because we have scenarios where we have a naming container
+            // We need to double-check because we have scenarios where we have a naming container
             // and no prepend (aka tobago testcase "must handle ':' in IDs properly", scenario 3,
             // in this case we return the component id, and be happy
             // we can roll a dom check here
             return (!!document.getElementById(finalIdentifier)) ? finalIdentifier : componentIdToTransform;
         };
 
-        // in this case we do not use lazy stream because it wont bring any code reduction
+        // in this case we do not use lazy stream because it won´t bring any code reduction
         // or speedup
         for (let cnt = 0; cnt < iterValues.length; cnt++) {
             //avoid doubles
@@ -767,24 +768,37 @@ export module Implementation {
      * the values required for params-through are processed in the ajax request
      *
      * Note this is a bug carried over from the old implementation
-     * the spec conform behavior is to use params for passthrough values
+     * the spec conform behavior is to use params for pass - through values
      * this will be removed soon, after it is cleared up whether removing
      * it breaks any legacy code
      *
      * @param {Context} mappedOpts the options to be filtered
-     * @deprecated
      */
-    function extractLegacyParams(mappedOpts: Options): Context {
+    function extractLegacyParams(mappedOpts: Options): {[key: string]: any} {
         //we now can use the full code reduction given by our stream api
         //to filter
-        return Stream.ofAssoc(mappedOpts)
-            .filter(item => !(item[0] in BlockFilter))
-            .collect(new AssocArrayCollector());
+        return ofAssoc(mappedOpts)
+            .filter((item => !(item[0] in BlockFilter)))
+            .reduce(collectAssoc, {});
+    }
+
+    /**
+     * extracts the myfaces config parameters which provide extra functionality
+     * on top of JSF
+     * @param mappedOpts
+     * @private
+     */
+    function extractMyFacesParams(mappedOpts: Options): {[key: string]: any} {
+        //we now can use the full code reduction given by our stream api
+        //to filter
+        return ofAssoc(mappedOpts)
+            .filter((item => (item[0] == "myfaces")))
+            .reduce(collectAssoc, {})?.[MYFACES];
     }
 
     function remapArrayToAssocArr(arrayedParams: [[string, any]] | {[key: string]: any}): {[key: string]: any} {
         if(Array.isArray(arrayedParams)) {
-            return Stream.of(... arrayedParams).collect(new AssocArrayCollector());
+            return arrayedParams.reduce(collectAssoc, {} as any);
         }
         return arrayedParams;
     }

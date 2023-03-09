@@ -19,11 +19,11 @@ import * as sinon from "sinon";
 import {Implementation} from "../../impl/AjaxImpl";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import defaultMyFaces = StandardInits.defaultMyFaces;
-import {DQ, DQ$} from "mona-dish";
+import {_Es2019Array, DQ, DQ$} from "mona-dish";
 import {expect} from "chai";
 
 describe('Tests for the MyFaces specifig oam submit', function () {
-
+    let oldFlatMap = null;
     beforeEach(async function () {
 
         let waitForResult = defaultMyFaces();
@@ -39,6 +39,9 @@ describe('Tests for the MyFaces specifig oam submit', function () {
             window.XMLHttpRequest = this.xhr;
 
             this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
+            oldFlatMap =Array.prototype["flatMap"];
+            window["Es2019Array"] = _Es2019Array;
+            delete Array.prototype["flatMap"];
 
             this.closeIt = () => {
                 (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
@@ -51,6 +54,10 @@ describe('Tests for the MyFaces specifig oam submit', function () {
 
     afterEach(function () {
         this.closeIt();
+        if(oldFlatMap) {
+            Array.prototype["flatMap"] = oldFlatMap;
+            oldFlatMap = null;
+        }
     });
 
     it(("must handle oam submit correctly, tuples"), (done) => {

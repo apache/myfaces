@@ -18,7 +18,7 @@ import {Implementation} from "../../impl/AjaxImpl";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 
 import protocolPage = StandardInits.protocolPage;
-import {Config, DQ, Stream} from "mona-dish";
+import {Config, DQ} from "mona-dish";
 import {expect} from "chai";
 import HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
 import {it} from "mocha";
@@ -31,7 +31,7 @@ import {ExtConfig} from "../../impl/util/ExtDomQuery";
  * @param keyValueEntries a list of key value entries divided by =
  * @param paramsMapper a key value remapper
  */
-function mergeKeyValueEntries(target: Config, keyValueEntries: Stream<string[]>, paramsMapper = (key, value) => [key, value]) {
+function mergeKeyValueEntries(target: Config, keyValueEntries: string[][], paramsMapper = (key, value) => [key, value]) {
 
     function fixKeyWithoutVal(keyVal: string[]) {
         return keyVal.length < 3 ? [keyVal?.[0] ?? [], keyVal?.[1] ?? []] : keyVal;
@@ -42,7 +42,7 @@ function mergeKeyValueEntries(target: Config, keyValueEntries: Stream<string[]>,
         //special case of having keys without values
         .map(keyVal => fixKeyWithoutVal(keyVal))
         .map(keyVal => paramsMapper(keyVal[0] as string, keyVal[1]))
-        .each(keyVal => {
+        .forEach(keyVal => {
             let value = keyVal?.splice(1)?.join("") ?? "";
             if(toMerge.getIfPresent(keyVal[0]).isPresent()) {
                 toMerge.append(keyVal[0] as string).value = value;

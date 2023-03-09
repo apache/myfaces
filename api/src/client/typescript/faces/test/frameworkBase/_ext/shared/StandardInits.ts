@@ -83,6 +83,7 @@ export module StandardInits {
 <body>
 <form id="blarg">
     <input type="text" id="input_1" name="input_1" value="input_1_val"></input>
+    <input type="text" id="input_2_text" name="input_2_text" value="input_2_text_val"></input>
     <input type="hidden" id="jakarta.faces.ViewState" name="jakarta.faces.ViewState" value="blubbblubblubb"></input>
     <input type="button" id="input_2" name="input_2" value="input_1_val"></input>
 </form>
@@ -222,7 +223,7 @@ export module StandardInits {
     <meta charset="UTF-8">
     <title>Title</title>
     <script type="text/javascript"
-            src="/wfmportal/${IS_40 ? 'jakarta' : 'javax'}.faces.resource/${IS_40 ? 'faces': 'jsf'}.js.jsf?ln=jakarta.faces&separator=${separatorChar}"></script>
+            src="./fixtures/${IS_40 ? 'jakarta' : 'javax'}.faces.resource/${IS_40 ? 'faces': 'jsf'}.js.jsf?ln=jakarta.faces&separator=${separatorChar}"></script>
 </head>
 <body>
 <form id="blarg">
@@ -513,7 +514,7 @@ export module StandardInits {
         //let dom2 = new JSDOM(template)
         //return initMyFacesFromDom(dom2);
         let clean = null;
-        //we use jsdom global to fullfill our requirements
+        //we use jsdom global to fulfill our requirements
         //we need to import dynamically and use awaits
         if (withJsf) {
 

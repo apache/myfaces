@@ -125,7 +125,7 @@ describe('Config tests', () => {
     });
 
     it('array config2', () => {
-        let config = setup();
+        let config = new Config([]);
         config.assign("[5]", "world[3]", "from").value = "me";
         expect(config.getIf("[5]", "world[3]", "from").value).to.be.eq("me");
         expect(config.value[5].world[3].from).to.be.eq("me");
@@ -133,7 +133,7 @@ describe('Config tests', () => {
     });
 
     it('array config3', () => {
-        let config = setup();
+        let config = new Config([]);
         config.assign("[5]", "[3]", "from").value = "me";
         expect(config.getIf("[5]", "[3]", "from").value).to.be.eq("me");
         expect(config.value[5][3].from).to.be.eq("me");
@@ -141,7 +141,7 @@ describe('Config tests', () => {
     });
 
     it('array config4', () => {
-        let config = setup();
+        let config = new Config([]);
         config.assign("[5]", "[3]", "[2]").value = "me";
         expect(config.getIf("[5]", "[3]", "[2]").value).to.be.eq("me");
         expect(config.value[5][3][2]).to.be.eq("me");
@@ -149,7 +149,7 @@ describe('Config tests', () => {
     });
 
     it('array config5', () => {
-        let config = setup();
+        let config = new Config([]);
         config.assign("[5]", "world[3]", "from[2]").value = "me";
         expect(config.getIf("[5]", "world[3]", "from[2]").value).to.be.eq("me");
         expect(config.value[5].world[3].from[2]).to.be.eq("me");

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {DQ, Stream} from "mona-dish";
+import {DQ} from "mona-dish";
+import {ExtLang} from "../impl/util/Lang";
 
 /**
  * legacy code to enable various aspects
@@ -28,6 +29,7 @@ import {DQ, Stream} from "mona-dish";
  * we might move the code over in the future, but for now a straight 1:1 port suffices
  */
 export module oam {
+    import ofAssoc = ExtLang.ofAssoc;
     /**
      * sets a hidden input field
      * @param formName the formName
@@ -86,8 +88,8 @@ export module oam {
         if (window?.myfaces?.core?.config?.autoScroll && (window as any)?.getScrolling) {
             myfaces.oam.setHiddenInput(formName, 'autoScroll', (window as any)?.getScrolling());
         }
-        let paramsStream: Stream<[string, any]> = Array.isArray(params) ? Stream.of(...params) : Stream.ofAssoc(params);
-        paramsStream.each(([key, data]) => myfaces.oam.setHiddenInput(formName, key, data));
+        let paramsStream: Array<[string, any]> = Array.isArray(params) ? [...params] : ofAssoc(params);
+        paramsStream.forEach(([key, data]) => myfaces.oam.setHiddenInput(formName, key, data));
 
         //we call the namespaced function, to allow decoration, via a direct call we would
         myfaces.oam.setHiddenInput(formName, `${formName}:_idcl`, linkId ?? '');
@@ -101,8 +103,6 @@ export module oam {
             if(target != "null" && target) {
                 (form.getAsElem(0).value as HTMLFormElement).setAttribute("target", target);
             }
-
-
 
             const result = formElement?.onsubmit?.(null);
 
@@ -120,7 +120,7 @@ export module oam {
                 }
 
                 // noinspection JSUnusedLocalSymbols
-                paramsStream.each(([key, data]) => {
+                paramsStream.forEach(([key, data]) => {
                     myfaces.oam.clearHiddenInput(formName, key);
                 });
                 myfaces.oam.clearHiddenInput(formName, `${formName}:_idcl`);

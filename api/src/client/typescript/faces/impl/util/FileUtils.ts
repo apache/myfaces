@@ -1,4 +1,4 @@
-import {ArrayCollector, Config, DomQuery, DQ, LazyStream, Stream} from "mona-dish";
+import {Config, DomQuery, DQ, Es2019Array} from "mona-dish";
 import {ExtDomQuery} from "./ExtDomQuery";
 import {$faces, EMPTY_STR} from "../core/Const";
 
@@ -22,27 +22,24 @@ export function encodeFormData(formData: Config,
     }
     const assocValues = formData.value;
 
-    const expandValueArrAndRename = key => Stream.of(...assocValues[key]).map(val => paramsMapper(key, val));
+    const expandValueArrAndRename = key => assocValues[key].map(val => paramsMapper(key, val));
     const isPropertyKey = key => assocValues.hasOwnProperty(key);
     const isNotFile = ([, value]) => !(value instanceof ExtDomQuery.global().File);
     const mapIntoUrlParam = keyVal => `${encodeURIComponent(keyVal[0])}=${encodeURIComponent(keyVal[1])}`;
 
-    const entries = LazyStream.of(...Object.keys(assocValues))
+    return new Es2019Array(...Object.keys(assocValues))
         .filter(isPropertyKey)
         .flatMap(expandValueArrAndRename)
-        //we cannot encode file elements that is handled by multipart requests anyway
         .filter(isNotFile)
         .map(mapIntoUrlParam)
-        .collect(new ArrayCollector());
-
-    return entries.join("&")
+        .join("&");
 }
 
 /**
  * splits and decodes encoded values into strings containing of key=value
  * @param encoded encoded string
  */
-export function decodeEncodedValues(encoded: string): Stream<string[]> {
+export function decodeEncodedValues(encoded: string): string[][] {
     const filterBlanks = item => !!(item || '').replace(/\s+/g, '');
     const splitKeyValuePair = line => {
         let index = line.indexOf("=");
@@ -53,9 +50,7 @@ export function decodeEncodedValues(encoded: string): Stream<string[]> {
     };
 
     let requestParamEntries = decodeURIComponent(encoded).split(/&/gi);
-    return Stream.of(...requestParamEntries)
-        .filter(filterBlanks)
-        .map(splitKeyValuePair)
+    return requestParamEntries.filter(filterBlanks).map(splitKeyValuePair);
 }
 
 
@@ -63,19 +58,28 @@ export function decodeEncodedValues(encoded: string): Stream<string[]> {
  * gets all the input files and their corresponding file objects
  * @param dataSource
  */
-export function resolveFiles(dataSource: DQ): Stream<[string, File]> {
+export function resolveFiles(dataSource: DQ): [string, File][] {
 
-    const expandFilesArr = ([key, files]) => Stream.of(...files).map(file => [key, file]);
-    const remapFileInput = fileInput => [fileInput.name.value || fileInput.id.value, fileInput.filesFromElem(0)];
-    return dataSource
+    const expandFilesArr = ([key, files]) => {
+        return [...files].map(file => [key, file]);
+    }
+    const remapFileInput = fileInput => {
+        return [fileInput.name.value || fileInput.id.value, fileInput.filesFromElem(0)];
+    }
+
+    const files = dataSource
         .querySelectorAllDeep("input[type='file']")
-        .stream
+        .asArray;
+
+    const ret = files
         .map(remapFileInput)
         .flatMap(expandFilesArr);
+
+    return ret as any;
 }
 
 
-export function fixEmmptyParameters(keyVal: any[]): [string, any] {
+export function fixEmptyParameters(keyVal: any[]): [string, any] {
     return (keyVal.length < 3 ? [keyVal?.[0] ?? [], keyVal?.[1] ?? []] : keyVal) as [string, any];
 }
 
@@ -83,7 +87,7 @@ export function fixEmmptyParameters(keyVal: any[]): [string, any] {
  * returns the decoded viewState from parentItem
  * @param parentItem
  */
-function resolveViewState(parentItem: DomQuery): Stream<string[] | [string, File]> {
+function resolveViewState(parentItem: DomQuery): string[][] | [string, File][] {
     const viewStateStr = $faces().getViewState(parentItem.getAsElem(0).value);
 
     // we now need to decode it and then merge it into the target buf
@@ -94,11 +98,11 @@ function resolveViewState(parentItem: DomQuery): Stream<string[] | [string, File
 
 /**
  * gets all the inputs under the form parentItem
- * as stream
+ * as array
  * @param parentItem
  */
-export function getFormInputsAsStream(parentItem: DomQuery): Stream<string[] | [string, File]> {
-    const standardInputs = resolveViewState(parentItem);
+export function getFormInputsAsArr(parentItem: DomQuery): string[][] | [string, File][] {
+    const standardInputs: any = resolveViewState(parentItem);
     const fileInputs = resolveFiles(parentItem);
-    return  standardInputs.concat(fileInputs as any)
+    return standardInputs.concat(...fileInputs)
 }

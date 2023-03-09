@@ -15,10 +15,11 @@
  *
  */
 
-import {Lang as LangBase, Config, Optional, DomQuery, DQ, Stream} from "mona-dish";
+import {Lang as LangBase, Config, Optional, DomQuery, DQ} from "mona-dish";
 import {Messages} from "../i18n/Messages";
 import {EMPTY_STR, HTML_TAG_FORM} from "../core/Const";
 import {getEventTarget} from "../xhrCore/RequestDataResolver";
+import {Es2019Array} from "mona-dish";
 
 
 export module ExtLang {
@@ -85,10 +86,10 @@ export module ExtLang {
         installedLocale = installedLocale ?? new Messages();
 
         let msg = installedLocale[key] ?? defaultMessage ?? key;
-
-        Stream.of(...templateParams).each((param, cnt) => {
+        templateParams.forEach((param, cnt) => {
             msg = msg.replace(new RegExp(["\\{", cnt, "\\}"].join(EMPTY_STR), "g"), param);
-        });
+        })
+
 
         return msg;
     }
@@ -203,6 +204,61 @@ export module ExtLang {
     }
 
     /**
+     * expands an associative array into an array of key value tuples
+     * @param value
+     */
+    export function ofAssoc(value: {[key: string]: any}) {
+        return new Es2019Array(...Object.keys(value))
+            .map(key => [key, value[key]]);
+    }
+
+    export function collectAssoc(target: any, item: any) {
+        target[item[0]] = item[1];
+        return target;
+    }
+
+    /**
+     * The active timeout for the "debounce".
+     * Since we only use it in the XhrController
+     * we can use a local module variable here
+     */
+    let activeTimeouts = {};
+
+
+
+
+    /**
+     * a simple debounce function
+     * which waits until a timeout is reached and
+     * if something comes in in between debounces
+     *
+     * @param runnable a runnable which should go under debounce control
+     * @param timeout a timeout for the debounce window
+     */
+    export function debounce(key, runnable, timeout) {
+        function clearActiveTimeout() {
+            clearTimeout(activeTimeouts[key]);
+            delete activeTimeouts[key];
+        }
+
+        if (!!(activeTimeouts?.[key])) {
+            clearActiveTimeout();
+        }
+        if (timeout > 0) {
+            activeTimeouts[key] = setTimeout(() => {
+                try {
+                    runnable();
+                } finally {
+                    clearActiveTimeout();
+                }
+            }, timeout);
+        } else {
+            runnable();
+        }
+    }
+
+
+    /**
      * assert that the form exists and throw an exception in the case it does not
      *
      * @param form the form to check for
@@ -212,4 +268,6 @@ export module ExtLang {
             throw makeException(new Error(), null, null, "Impl", "getForm", getMessage("ERR_FORM"));
         }
     }
+
+
 }

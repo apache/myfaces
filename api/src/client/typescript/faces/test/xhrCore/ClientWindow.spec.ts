@@ -4,6 +4,8 @@ import {Implementation} from "../../impl/AjaxImpl";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {expect} from "chai";
 
+const jsdom = require("jsdom");
+const {JSDOM} = jsdom;
 
 describe('adds a getClientWindowTests', function () {
 

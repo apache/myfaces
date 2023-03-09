@@ -26,7 +26,7 @@
  * from the implementation side it is mostly registering callbacks
  * and calling them at the appropriate time.
  */
-export interface AsyncRunnable<T> {
+export interface IAsyncRunnable<T> {
     /**
      * starts the runnable
      */
@@ -45,9 +45,9 @@ export interface AsyncRunnable<T> {
      * and then triggers all the registered then functions
      * when it is complete
      *
-     * @param func
+     * @param func the then functor
      */
-    then(func: (data: any) => any): AsyncRunnable<T>;
+    then(func: (data: any) => any): IAsyncRunnable<T>;
 
     /**
      * callback for catch functionality
@@ -59,7 +59,7 @@ export interface AsyncRunnable<T> {
      *
      * @param func
      */
-    catch(func: (data: any) => any): AsyncRunnable<T>;
+    catch(func: (data: any) => any): IAsyncRunnable<T>;
 
 
     /**
@@ -68,5 +68,80 @@ export interface AsyncRunnable<T> {
      * and once the finally time for the promise has
      * come the finally functions must be performed
      */
-    finally(func: () => void): AsyncRunnable<T>;
+    finally(func: () => void): IAsyncRunnable<T>;
 }
+
+
+/**
+ * pretty much the same as cancellable Promise, but given
+ * we do not have that on browser level yet this is sort
+ * of a non - intrusive Shim!
+ */
+export abstract class AsyncRunnable<T> implements IAsyncRunnable<T>{
+    /**
+     * helper support so that we do not have to drag in Promise shims
+     */
+    private catchFunctions: Array<Function> = [];
+    private thenFunctions: Array<Function> = [];
+
+    /**
+     * cancel the run of the runnable (which then depending on the implementation
+     * either triggers indirectly resolve or reject)
+     */
+    abstract cancel(): void;
+
+    /**
+     * extended functionality start to trigger the runnable
+     */
+    abstract start(): void;
+
+    /**
+     * resolve handler function which calls the then chain
+     * and after that finally
+     * @param data
+     */
+    resolve(data: any) {
+        this.thenFunctions.reduce((inputVal: any, thenFunc: any) => {
+            return thenFunc(inputVal);
+        }, data)
+    }
+
+    /**
+     * reject handler function which triggers the catch chain
+     * @param data
+     */
+    reject(data: any) {
+        this.catchFunctions.reduce((inputVal: any, catchFunc: any) => {
+            return catchFunc(inputVal);
+        }, data);
+    }
+
+    /**
+     * register a catch functor
+     * @param func the functor for the catch monad
+     */
+    catch(func: (data: any) => any): IAsyncRunnable<T> {
+        this.catchFunctions.push(func);
+        return this;
+    }
+
+    /**
+     * registers a finally functor
+     * @param func the functor for the finally handling chanin
+     */
+    finally(func: () => void): IAsyncRunnable<T> {
+        // no ie11 support we probably are going to revert to shims for that one
+        this.catchFunctions.push(func);
+        this.thenFunctions.push(func);
+        return this;
+    }
+
+    /**
+     * @param func then functor similar to promise
+     */
+    then(func: (data: any) => any): IAsyncRunnable<T> {
+        this.thenFunctions.push(func);
+        return this;
+    }
+}
+
