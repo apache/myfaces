@@ -68,6 +68,9 @@
                             <includes>
                                 <include>**/*IntegrationTest</include>
                             </includes>
+                            <systemPropertyVariables>
+                                <webdriver.http.factory>jdk-http-client</webdriver.http.factory>
+                            </systemPropertyVariables>
                         </configuration>
                     </execution>
                 </executions>
@@ -128,6 +131,16 @@
             <artifactId>selenium-java</artifactId>
             <version>4.7.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-http-jdk-client</artifactId>
+            <version>4.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
