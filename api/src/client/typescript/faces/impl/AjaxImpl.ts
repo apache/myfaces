@@ -17,7 +17,7 @@
 import {IListener} from "./util/IListener";
 import {Response} from "./xhrCore/Response";
 import {XhrRequest} from "./xhrCore/XhrRequest";
-import {Config, DQ, DQ$, Lang} from "mona-dish";
+import {Config, DQ, DQ$, Lang, Optional} from "mona-dish";
 import {Assertions} from "./util/Assertions";
 import {ExtConfig, ExtDomQuery} from "./util/ExtDomQuery";
 import {ErrorData} from "./xhrCore/ErrorData";

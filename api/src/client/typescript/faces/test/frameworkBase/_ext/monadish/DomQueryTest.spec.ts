@@ -17,8 +17,6 @@
 import {expect} from 'chai';
 import {describe, it} from 'mocha';
 import {from} from "rxjs";
-// This is needed to get full mona-dish coverage, myfaces uses only a reduced one
-// but this test is carried over from mona-dish
 import {ArrayCollector, Config, DomQuery, DomQueryCollector, Lang, LazyStream, Stream} from "mona-dish/dist/js/umd";
 import {tobagoSheetWithHeader} from "./markups/tobago-with-header";
 import {tobagoSheetWithoutHeader} from "./markups/tobago-without-header";

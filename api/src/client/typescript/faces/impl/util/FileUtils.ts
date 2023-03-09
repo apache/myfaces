@@ -104,5 +104,5 @@ function resolveViewState(parentItem: DomQuery): string[][] | [string, File][] {
 export function getFormInputsAsArr(parentItem: DomQuery): string[][] | [string, File][] {
     const standardInputs: any = resolveViewState(parentItem);
     const fileInputs = resolveFiles(parentItem);
-    return standardInputs.concat(...fileInputs)
+    return standardInputs.concat(fileInputs)
 }

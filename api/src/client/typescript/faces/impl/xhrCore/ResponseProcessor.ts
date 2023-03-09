@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Config, DomQuery, DomQueryCollector, DQ, DQ$, Lang, XMLQuery} from "mona-dish";
+import {Config, DomQuery, DQ, DQ$, Lang, XMLQuery} from "mona-dish";
 import {Implementation} from "../AjaxImpl";
 import {Assertions} from "../util/Assertions";
 import {IResponseProcessor} from "./IResponseProcessor";
@@ -115,8 +115,8 @@ export class ResponseProcessor implements IResponseProcessor {
         const nodesToAdd = (shadowHead.tagName.value === "HEAD") ? shadowHead.childNodes : shadowHead;
         // this is stored for "post" processing
         // after the rest of the "physical build up", head before body
-        const scriptElements = nodesToAdd.stream
-            .filter(item => scriptTags.indexOf(item.tagName.orElse("").value) != -1).collect(new DomQueryCollector());
+        const scriptElements = new DomQuery(...nodesToAdd.asArray
+            .filter(item => scriptTags.indexOf(item.tagName.orElse("").value) != -1));
 
         this.addToHeadDeferred(scriptElements);
     }
@@ -366,7 +366,7 @@ export class ResponseProcessor implements IResponseProcessor {
      * is done.
      */
     fixClientWindow() {
-       ofAssoc(this.internalContext.getIf(APPLIED_CLIENT_WINDOW).orElse({}).value)
+        ofAssoc(this.internalContext.getIf(APPLIED_CLIENT_WINDOW).orElse({}).value)
             .forEach(([, value]) => {
                 const namingContainerId = this.internalContext.getIf(NAMING_CONTAINER_ID);
                 const namedViewRoot = !!this.internalContext.getIf(NAMED_VIEWROOT).value;
