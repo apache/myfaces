@@ -33,10 +33,10 @@ describe('Tests on the xhr core when it starts to call the request', function ()
         return
     });
 
-    it("must be present", async function(done)  {
+    it("must be present", async function()  {
         await defaultMyFaces();
         expect(myfaces?.onDomReady).to.exist;
-        done();
+        return true;
     });
 
     it("must be called on onDocumentReady", async function(done) {
