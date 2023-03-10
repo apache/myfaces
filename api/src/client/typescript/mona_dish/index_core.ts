@@ -18,24 +18,15 @@
  */
 export {DomQuery, ElementAttribute, DomQueryCollector, DQ, DQ$} from "./DomQuery";
 export {Lang} from "./Lang";
-export {Config, CONFIG_VALUE, CONFIG_ANY, ConfigDef, Monad, IValueHolder, IFunctor, IMonad, IIdentity, Optional, ValueEmbedder} from "./Monad";
+export {Monad, IValueHolder, IFunctor, IMonad, IIdentity, Optional, ValueEmbedder} from "./Monad";
 export {XMLQuery, XQ} from "./XmlQuery";
-export {Stream, LazyStream, IteratableConsumer, IStream} from "./Stream";
-export {
-    ArrayStreamDataSource,
-    MappedStreamDataSource,
-    FilteredStreamDatasource,
-    FlatMapStreamDataSource,
-    SequenceDataSource,
-    QueryFormStringCollector,
-    IStreamDataSource,
-    ICollector,
-    ArrayCollector,
-    AssocArrayCollector,
-    FormDataCollector,
-    QueryFormDataCollector
-} from "./SourcesCollectors";
-
+export {assign, assignIf, append, simpleShallowMerge, shallowMerge} from "./AssocArray"
+export {Config} from "./Config";
+export {ConfigDef} from "./Config";
+export {CONFIG_ANY} from "./Config";
+export {CONFIG_VALUE} from "./Config";
+export * as Assoc from "./AssocArray";
+export {Es2019Array, _Es2019Array} from "./Es2019Array";
 
 
 

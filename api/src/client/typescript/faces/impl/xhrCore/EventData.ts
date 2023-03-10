@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import {Config, DQ} from "mona-dish";
-import {BEGIN, CTX_PARAM_REQ_PASS_THR, EVENT, P_PARTIAL_SOURCE, SOURCE} from "../core/Const";
+import {BEGIN, CTX_PARAM_REQ_PASS_THR, EVENT, P_AJAX_SOURCE, SOURCE} from "../core/Const";
 
 export class EventData implements IEventData{
     type: string;
@@ -32,8 +32,8 @@ export class EventData implements IEventData{
         eventData.status = name;
 
         let sourceId: string = context.getIf(SOURCE)
-            .orElseLazy(() => context.getIf(P_PARTIAL_SOURCE).value)
-            .orElseLazy(() => context.getIf(CTX_PARAM_REQ_PASS_THR, P_PARTIAL_SOURCE).value)
+            .orElseLazy(() => context.getIf(P_AJAX_SOURCE).value)
+            .orElseLazy(() => context.getIf(CTX_PARAM_REQ_PASS_THR, P_AJAX_SOURCE).value)
             .value;
         if (sourceId) {
             eventData.source = DQ.byId(sourceId, true).first().value.value;

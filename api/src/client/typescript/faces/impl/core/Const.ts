@@ -21,8 +21,8 @@
 export const XML_ATTR_NAMED_VIEWROOT = "namedViewRoot";
 export const NAMED_VIEWROOT = "namedViewRoot";
 
-export const P_PARTIAL_SOURCE = "jakarta.faces.source";
-export const NAMING_CONTAINER_ID = "myfaces.partialId";
+export const P_AJAX_SOURCE = "jakarta.faces.source";
+export const NAMING_CONTAINER_ID = "myfaces.NamingContainerId";
 
 export const VIEW_ID = "myfaces.viewId";
 export const P_VIEWSTATE = "jakarta.faces.ViewState";
@@ -108,6 +108,7 @@ export const CTX_PARAM_MF_INTERNAL = "myfaces.internal";
 export const CTX_PARAM_SRC_FRM_ID = "myfaces.source.formId";
 export const CTX_PARAM_SRC_CTL_ID = "myfaces.source.controlId";
 export const CTX_PARAM_REQ_PASS_THR = "myfaces.request.passThrough";
+export const CTX_PARAM_PPS = "myfaces.request.pps";
 
 export const CONTENT_TYPE = "Content-Type";
 export const HEAD_FACES_REQ = "Faces-Request";
@@ -140,6 +141,8 @@ export const PHASE_PROCESS_RESPONSE = "processResponse";
 
 
 export const ERR_NO_PARTIAL_RESPONSE = "Partial response not set";
+
+export const MYFACES_OPTION_PPS = "pps";
 
 export const ATTR_URL = "url";
 export const ATTR_NAME = "name";

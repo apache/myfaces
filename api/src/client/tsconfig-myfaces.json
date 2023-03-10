@@ -46,7 +46,6 @@
     }
   },
   "exclude": [
-    "./typescript/mona_dish/ExtendedArray.ts",
     "./typescript/mona_dish/index.ts",
     "./typescript/mona_dish/Messaging.ts"
   ]

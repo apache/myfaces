@@ -15,23 +15,19 @@
  * limitations under the License.
  */
 
-import {Config, Optional, ValueEmbedder} from "./Monad";
+import {Optional, ValueEmbedder} from "./Monad";
 import {XMLQuery} from "./XmlQuery";
-import {IStream, LazyStream, Stream} from "./Stream";
-import {
-    ArrayCollector,
-    AssocArrayCollector,
-    ICollector,
-    IStreamDataSource,
-    ITERATION_STATUS
-} from "./SourcesCollectors";
+
+import {ICollector, IStreamDataSource, ITERATION_STATUS} from "./SourcesCollectors";
 import {Lang} from "./Lang";
+import {_global$} from "./Global";
+import {Es2019Array} from "./Es2019Array";
 import trim = Lang.trim;
 
 import isString = Lang.isString;
 import eqi = Lang.equalsIgnoreCase;
-import {_global$} from "./Global";
 import objToArray = Lang.objToArray;
+import {append, assign, simpleShallowMerge} from "./AssocArray";
 
 declare var ownerDocument: any;
 
@@ -307,11 +303,11 @@ interface IDomQuery {
     /**
      * an early stream representation for this DomQuery
      */
-    readonly stream: Stream<DomQuery>;
+    readonly stream: any;
     /**
      * lazy stream representation for this DomQuery
      */
-    readonly lazyStream: LazyStream<DomQuery>;
+    readonly lazyStream: any;
     /**
      * transform this node collection to an array
      */
@@ -332,7 +328,7 @@ interface IDomQuery {
     innerHtml: string;
 
     /**
-     * convenience for dq.id.value to make the code a little bit tighter
+     * convenience for dq.id.value to make the code a little tighter
      */
     nodeId: string;
 
@@ -660,7 +656,7 @@ interface IDomQuery {
 
     /**
      * all parents until the selector match stops
-     * @param tagName
+     * @param selector
      */
     parentsWhileMatch(selector: string): DomQuery;
 
@@ -749,7 +745,7 @@ interface IDomQuery {
      * @param toMerge optional config which can be merged in
      * @return a copy pf
      */
-    encodeFormElement(toMerge): Config;
+    encodeFormElement(toMerge): {[key: string]: any};
 
     /**
      * fetches the sub-nodes from ... to..
@@ -854,6 +850,14 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return _global$;
     }
 
+    get stream(): any {
+        throw Error("Not implemented, include Stream.ts for this to work")
+    }
+
+    get lazyStream(): any {
+        throw Error("Not implemented, include Stream.ts for this to work")
+    }
+
     /**
      * returns the id of the first element
      */
@@ -942,7 +946,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     get checked(): boolean {
-        return Stream.of(...this.values).allMatch(el => !!(<any>el).checked);
+        return new Es2019Array(...this.values).every(el => !!(<any>el).checked);
     }
 
     set checked(newChecked: boolean) {
@@ -1010,65 +1014,47 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return new DomQuery(...childNodeArr);
     }
 
-    /**
-     * binding into stream
-     */
-    get stream(): Stream<DomQuery> {
-        return new Stream<DomQuery>(...this.asArray);
-    }
 
-    /**
-     * fetches a lazy stream representation
-     * lazy should be applied if you have some filters etc.
-     * in between, this can reduce the number of post filter operations
-     * and ram usage
-     * significantly because the operations are done lazily and stop
-     * once they hit a dead end.
-     */
-    get lazyStream(): LazyStream<DomQuery> {
-        return LazyStream.of(...this.asArray);
-    }
-
-    get asArray(): Array<DomQuery> {
+    get asArray(): DomQuery[] {
         // filter not supported by IE11
-        return [].concat(LazyStream.of(...this.rootNode).filter(item => {
+        let items = new Es2019Array(...this.rootNode).filter(item => {
             return item != null
-        })
-            .map(item => {
-                return DomQuery.byId(item)
-            }).collect(new ArrayCollector()));
+        }).map(item => {
+            return DomQuery.byId(item)
+        });
+        return items as DomQuery[];
     }
 
     get offsetWidth(): number {
-        return LazyStream.of(...this.rootNode)
+        return new Es2019Array(...this.rootNode)
             .filter(item => item != null)
             .map(elem => (elem as HTMLElement).offsetWidth)
-            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
+            .reduce((accumulate, incoming) => accumulate + incoming, 0);
     }
 
     get offsetHeight(): number {
-        return LazyStream.of(...this.rootNode)
+        return new Es2019Array(...this.rootNode)
             .filter(item => item != null)
             .map(elem => (elem as HTMLElement).offsetHeight)
-            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
+            .reduce((accumulate, incoming) => accumulate + incoming, 0);
     }
 
     get offsetLeft(): number {
-        return LazyStream.of(...this.rootNode)
+        return new Es2019Array(...this.rootNode)
             .filter(item => item != null)
             .map(elem => (elem as HTMLElement).offsetLeft)
-            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
+            .reduce((accumulate, incoming) => accumulate + incoming, 0);
     }
 
     get offsetTop(): number {
-        return LazyStream.of(...this.rootNode)
+        return new Es2019Array(this.rootNode)
             .filter(item => item != null)
-            .map(elem => (elem as HTMLElement).offsetTop)
-            .reduce((accumulate, incoming) => accumulate + incoming, 0).value;
+            .map(elem => (elem as any).offsetTop)
+            .reduce((accumulate, incoming) => accumulate + incoming, 0);
     }
 
-    get asNodeArray(): Array<DomQuery> {
-        return [].concat(Stream.of(...this.rootNode).filter(item => item != null).collect(new ArrayCollector()));
+    get asNodeArray(): Array<Element> {
+        return new Es2019Array(...this.rootNode.filter(item => item != null));
     }
 
 
@@ -1138,10 +1124,10 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         const doc = document.implementation.createHTMLDocument("");
         markup = trim(markup);
         let lowerMarkup = markup.toLowerCase();
-        if (lowerMarkup.search(/\<\!doctype[^\w\-]+/gi) != -1 ||
-            lowerMarkup.search(/\<html[^\w\-]+/gi) != -1 ||
-            lowerMarkup.search(/\<head[^\w\-]+/gi) != -1 ||
-            lowerMarkup.search(/\<body[^\w\-]+/gi) != -1) {
+        if (lowerMarkup.search(/<!doctype[^\w\-]+/gi) != -1 ||
+            lowerMarkup.search(/<html[^\w\-]+/gi) != -1 ||
+            lowerMarkup.search(/<head[^\w\-]+/gi) != -1 ||
+            lowerMarkup.search(/<body[^\w\-]+/gi) != -1) {
             doc.documentElement.innerHTML = markup;
             return new DomQuery(doc.documentElement);
         } else {
@@ -1283,11 +1269,10 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     byId(id: string, includeRoot?: boolean): DomQuery {
         let res: Array<DomQuery> = [];
         if (includeRoot) {
-            res = res.concat(
-                LazyStream.of(...(this?.rootNode || []))
-                    .filter(item => id == item.id)
+            res = res.concat(...
+                new Es2019Array(...(this?.rootNode || []))
+                    .filter(((item) => id == item.id) as any)
                     .map(item => new DomQuery(item))
-                    .collect(new ArrayCollector())
             );
         }
 
@@ -1303,10 +1288,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         let res: Array<DomQuery> = [];
         if (includeRoot) {
             res = res.concat(
-                LazyStream.of(...(this?.rootNode || []))
+                new Es2019Array(...(this?.rootNode || []))
                     .filter(item => id == item.id)
                     .map(item => new DomQuery(item))
-                    .collect(new ArrayCollector())
             );
         }
 
@@ -1327,10 +1311,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     byTagName(tagName: string, includeRoot ?: boolean, deep ?: boolean): DomQuery {
         let res: Array<Element | DomQuery> = [];
         if (includeRoot) {
-            res = <any>LazyStream.of(...(this?.rootNode ?? []))
+            res = new Es2019Array(...(this?.rootNode ?? []))
                 .filter(element => element?.tagName == tagName)
-                .reduce<Array<Element | DomQuery>>((reduction: any, item: Element) => reduction.concat([item]), res)
-                .orElse(res).value;
+                .reduce((reduction: any, item: Element) => reduction.concat([item]), res);
         }
 
         (deep) ? res.push(this.querySelectorAllDeep(tagName)) : res.push(this.querySelectorAll(tagName));
@@ -1481,11 +1464,8 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * @param selector
      */
     matchesSelector(selector: string): boolean {
-        const ret = this.lazyStream
-            .map(item => this._mozMatchesSelector(item.getAsElem(0).value, selector))
-            .filter(match => match)
-            .first();
-        return ret.isPresent();
+        return this.asArray
+            .some(item => this._mozMatchesSelector(item.getAsElem(0).value, selector));
     }
 
     /**
@@ -1533,8 +1513,8 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     each(func: (item: DomQuery, cnt?: number) => any): DomQuery {
-        Stream.of(...this.rootNode)
-            .each((item, cnt) => {
+        new Es2019Array(...this.rootNode)
+            .forEach((item, cnt) => {
                 // we could use a filter, but for the best performance we don´t
                 if (item == null) {
                     return;
@@ -1775,7 +1755,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         let ret = [];
         while(parent.isPresent()) {
             if(parent.matchesSelector(selector)) {
-               ret.push(parent);
+                ret.push(parent);
             }
             parent = parent.parent();
         }
@@ -1916,7 +1896,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 // scripts before we run the 'include' command
                 // this.globalEval(finalScripts.join("\n"));
                 let joinedScripts = [];
-                Stream.of(...scriptsToProcess).each(item => {
+                new Es2019Array(...scriptsToProcess).forEach(item => {
                     if (!item.nonce) {
                         joinedScripts.push(item.evalText)
                     } else {
@@ -2006,10 +1986,10 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         try {
             let scriptElements = new DomQuery(this.filterSelector("script"), this.querySelectorAll("script"));
             // script execution order by relative pos in their dom tree
-            scriptElements.stream
-                .flatMap(item => Stream.of(...item.values))
+            scriptElements.asArray
+                .flatMap(item => [...item.values])
                 .sort((node1, node2) => node1.compareDocumentPosition(node2) - 3) // preceding 2, following == 4)
-                .each(item => execScript(item));
+                .forEach(item => execScript(item));
 
             evalCollectedScripts(finalScripts);
         } catch (e) {
@@ -2036,38 +2016,39 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     runCss(): DomQuery {
 
         const execCss = (toReplace: HTMLElement) => {
-                const _toReplace = DomQuery.byId(toReplace);
-                const tagName = _toReplace.tagName.orElse("").value;
-                const head = DomQuery.byTagName("head");
+            const _toReplace = DomQuery.byId(toReplace);
+            const tagName = _toReplace.tagName.orElse("").value;
+            const head = DomQuery.byTagName("head");
 
-                if (tagName && eqi(tagName, "link") && eqi(toReplace.getAttribute("rel"), "stylesheet")) {
-                    const rel = toReplace.getAttribute("rel");
-                    //if possible we are now replacing the existing elements where we reference this stylesheet
-                    const matches = head.querySelectorAll(`link[rel='stylesheet'][href='${rel}']`);
+            if (tagName && eqi(tagName, "link") && eqi(toReplace.getAttribute("rel"), "stylesheet")) {
+                const rel = toReplace.getAttribute("rel");
+                //if possible we are now replacing the existing elements where we reference this stylesheet
+                const matches = head.querySelectorAll(`link[rel='stylesheet'][href='${rel}']`);
 
-                    if(matches.length) {
-                        matches.replace(_toReplace);
-                    } else {
-                        head.append(_toReplace);
-                    }
-                } else if (tagName && eqi(tagName, "style")) {
-                    let innerText = _toReplace.innerHTML.replace(/\s+/gi, "");
-                    let styles = head.querySelectorAll("style");
-                    styles = styles.stream.filter(style => {
-                        return style.innerHTML.replace(/\s+/gi, "") == innerText;
-                    }).collect(new DomQueryCollector())
-                    if(!styles.length) { //already present
-                        head.append(_toReplace);
-                    }
+                if(matches.length) {
+                    matches.replace(_toReplace);
+                } else {
+                    head.append(_toReplace);
                 }
-            };
+            } else if (tagName && eqi(tagName, "style")) {
+                let innerText = _toReplace.innerHTML.replace(/\s+/gi, "");
+                let styles = head.querySelectorAll("style");
+                let filteredStyles = styles.asArray.filter(style => {
+                    return style.innerHTML.replace(/\s+/gi, "") == innerText;
+                });
+                styles = new DomQuery(...filteredStyles);
+                if(!styles.length) { //already present
+                    head.append(_toReplace);
+                }
+            }
+        };
 
         const scriptElements: DomQuery = new DomQuery(this.filterSelector("link, style"), this.querySelectorAll("link, style"));
 
-        scriptElements.stream
-            .flatMap(item => Stream.of(...item.values))
+        scriptElements.asArray
+            .flatMap(item => [...item.values])
             .sort((node1, node2) => node1.compareDocumentPosition(node2) - 3)
-            .each(item => execCss(item));
+            .forEach(item => execCss(item as HTMLElement));
 
         return this;
     }
@@ -2095,10 +2076,12 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      */
     fireEvent(eventName: string, options: {[key: string]: any} = {}) {
         // merge with last one having the highest priority
-        let finalOptions = Stream.ofAssoc({
+
+        let finalOptions: any = {
             bubbles: true, cancelable: true
-        }).concat(Stream.ofAssoc(options)).collect(new AssocArrayCollector());
-        
+        }
+        finalOptions = simpleShallowMerge(finalOptions, options);
+
         this.eachElem((node: Element) => {
             let doc;
             if (node.ownerDocument) {
@@ -2149,16 +2132,14 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 // IE-old school style, you can drop this if you don't need to support IE8 and lower
                 let event = doc.createEventObject();
                 event.synthetic = true; // allow detection of synthetic events
-                Stream.ofAssoc(finalOptions).each(([key, value]): void => {
-                    event[key] = value;
-                });
+                Object.keys(finalOptions).forEach(key => event[key] = finalOptions[key]);
                 (<any>node).fireEvent("on" + eventName, event);
             }
         })
     }
 
     textContent(joinString: string = ""): string {
-        return this.stream
+        return this.asArray
             .map((value: DomQuery) => {
                 let item = value.getAsElem(0).orElseLazy(() => {
                     return <any>{
@@ -2167,11 +2148,11 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 }).value;
                 return (<any>item).textContent || "";
             })
-            .reduce((text1, text2) => [text1,joinString,text2].join(""), "").value;
+            .reduce((text1, text2) => [text1,joinString,text2].join(""), "");
     }
 
     innerText(joinString: string = ""): string {
-        return this.stream
+        return this.asArray
             .map((value: DomQuery) => {
                 let item = value.getAsElem(0).orElseLazy(() => {
                     return <any>{
@@ -2180,8 +2161,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 }).value;
                 return (<any>item).innerText || "";
             })
-            .reduce((text1, text2) => [text1, text2].join(joinString), "").value;
-
+            .reduce((text1, text2) => {
+                return [text1, text2].join(joinString)
+            }, "");
     }
 
     /**
@@ -2193,7 +2175,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * @param toMerge optional config which can be merged in
      * @return a copy pf
      */
-    encodeFormElement(toMerge = new Config({})): Config {
+    encodeFormElement(toMerge = {}): {[key: string]: any} {
 
         // browser behavior no element name no encoding (normal submit fails in that case)
         // https:// issues.apache.org/jira/browse/MYFACES-2847
@@ -2202,7 +2184,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         }
 
         // let´s keep it side-effects free
-        let target = toMerge.shallowCopy;
+        let target = simpleShallowMerge(toMerge);
 
         this.each((element: DomQuery) => {
             if (element.name.isAbsent()) {// no name, no encoding
@@ -2240,7 +2222,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                             // let subBuf = [];
                             if (selectElem.options[u].selected) {
                                 let elementOption = selectElem.options[u];
-                                target.append(name).value = (elementOption.getAttribute("value") != null) ?
+                                append(target, name).value = (elementOption.getAttribute("value") != null) ?
                                     elementOption.value : elementOption.text;
                             }
                         }
@@ -2268,13 +2250,13 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                     let filesArr: any = uploadedFiles ?? [];
                     if (filesArr?.length) { //files can be empty but set
                         // xhr level2, single multiple must be passes as they are
-                        target.assign(name).value = Array.from(filesArr);
+                        assign(target, name).value = Array.from(filesArr);
                     } else {
                         if(!!uploadedFiles) { //we skip empty file elements i
                             return;
                         }
                         //checkboxes etc.. need to be appended
-                        target.append(name).value = element.inputValue.value;
+                        append(target, name).value = element.inputValue.value;
                     }
                 }
 
@@ -2287,14 +2269,25 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     get cDATAAsString(): string {
         let TYPE_CDATA_BLOCK = 4;
 
-        let res: any = this.lazyStream.flatMap(item => {
+        let res = this.asArray
+            .flatMap( item => {
+                return item.childNodes.asArray;
+            })
+            .filter(item => {
+                return item?.value?.value?.nodeType == TYPE_CDATA_BLOCK;
+            })
+            .reduce((reduced: Array<any>, item: DomQuery) => {
+                reduced.push((<any>item?.value?.value)?.data ?? "");
+                return reduced;
+            }, []);
+        /*let res: any = this.lazyStream.flatMap(item => {
             return item.childNodes.stream
         }).filter(item => {
             return item?.value?.value?.nodeType == TYPE_CDATA_BLOCK;
         }).reduce((reduced: Array<any>, item: DomQuery) => {
             reduced.push((<any>item?.value?.value)?.data ?? "");
             return reduced;
-        }, []).value;
+        }, []).value;*/
 
         // response may contain several blocks
         return res.join("");
@@ -2311,7 +2304,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     // because we can stream from an array stream directly into the dom query
     _limits = -1;
 
-    limits(end: number): IStream<DomQuery> {
+    limits(end: number): DomQuery {
         this._limits = end;
         return <any>this;
     }
@@ -2456,7 +2449,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * Implementation of an iterator
      * to allow loops over dom query collections
      */
-    [Symbol.iterator](): Iterator<DomQuery, any, undefined> {
+    [Symbol.iterator](): Iterator<DomQuery> {
         return {
             next: () => {
                 let done = !this.hasNext();
@@ -2474,18 +2467,19 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * @param toAttach the elements to attach
      * @param filterDoubles filter out possible double elements (aka same markup)
      */
-    concat(toAttach: DomQuery, filterDoubles = true): any {
-        const ret = this.lazyStream.concat(toAttach.lazyStream).collect(new DomQueryCollector());
+    concat(toAttach: DomQuery, filterDoubles = true): DomQuery {
+        let domQueries = this.asArray;
+        const ret = new DomQuery(...domQueries.concat(toAttach.asArray));
         // we now filter the doubles out
         if (!filterDoubles) {
             return ret;
         }
         let idx = {}; // ie11 does not support sets, we have to fake it
-        return ret.lazyStream.filter(node => {
+        return new DomQuery(...ret.asArray.filter(node => {
             const notFound = !(idx?.[node.value.value.outerHTML as any]);
             idx[node.value.value.outerHTML as any] = true;
             return notFound;
-        }).collect(new DomQueryCollector());
+        }));
     }
 
     append(elem: DomQuery): DomQuery {
@@ -2523,7 +2517,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 continue;
             }
             let res = this.rootNode[cnt].querySelectorAll(selector);
-            nodes = nodes.concat(objToArray(res));
+            nodes = nodes.concat(...objToArray(res));
         }
 
         return new DomQuery(...nodes);

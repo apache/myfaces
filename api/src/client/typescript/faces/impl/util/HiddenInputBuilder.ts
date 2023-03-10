@@ -58,13 +58,17 @@ export class HiddenInputBuilder {
         const SEP = $faces().separatorchar;
 
         let existingStates = DQ$(`[name*='${$nsp(this.name)}']`);
-        let cnt = existingStates.stream.map(state => {
+        let cnt = existingStates.asArray.map(state => {
             let ident: string = state.id.orElse("-1").value;
             ident = ident.substring(ident.lastIndexOf(SEP)+1);
             return parseInt(ident);
         })
-            .filter(item => !isNaN(item))
-            .reduce((item1, item2) => Math.max(item1, item2), -1).value;
+            .filter(item => {
+                return !isNaN(item);
+            })
+            .reduce((item1, item2) => {
+                return Math.max(item1, item2);
+            }, -1);
         //the maximum  new ident is the current max + 1
         cnt++;
 

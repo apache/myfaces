@@ -21,16 +21,16 @@ import {Implementation} from "../../impl/AjaxImpl";
 import {expect} from "chai";
 
 import defaultMyFaces = StandardInits.defaultMyFaces;
-import {Lang} from "mona-dish";
+import {_Es2019Array, Lang} from "mona-dish";
 import {FakeWebsocket} from "./FakeWebsocket";
 import assertType = Lang.assertType;
 
 declare var faces: any;
 
 describe('Tests the jsf websocket client side api on high level (generic test without any myfaces dependencies', function () {
-
+    let oldFlatMap = null;
     beforeEach(async function () {
-
+        let oldFlatMap = null;
         let waitForResult = defaultMyFaces();
 
         return waitForResult.then((close) => {
@@ -51,6 +51,9 @@ describe('Tests the jsf websocket client side api on high level (generic test wi
 
             this.pushImpl = (<any>global).PushImpl;
             this.initSpy = sinon.spy(this.pushImpl, "init");
+            oldFlatMap =Array.prototype["flatMap"];
+            window["Es2019Array"] = _Es2019Array;
+            delete Array.prototype["flatMap"];
 
             this.closeIt = () => {
                 (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
@@ -67,6 +70,10 @@ describe('Tests the jsf websocket client side api on high level (generic test wi
 
     afterEach(function () {
         this.closeIt();
+        if(oldFlatMap) {
+            Array.prototype["flatMap"] = oldFlatMap;
+            oldFlatMap = null;
+        }
     });
 
     it("must register a channel", function (done: Function) {

@@ -87,28 +87,34 @@ describe('tests the addOnEvent and addOnError handling', function () {
     });
 
     it("must have onError called in case of error", function () {
-        let onErrorCalled1 = 0;
-        let onErrorCalled2 = 0;
+        const oldErr = console.error;
+        console.error = () => {}
+        try {
+            let onErrorCalled1 = 0;
+            let onErrorCalled2 = 0;
 
-        let errorTitle = '';
-        let errorMessage = '';
-        faces.ajax.addOnError((data: any) => {
-            errorTitle = data.errorName;
-            errorMessage = data.errorMessage;
-            onErrorCalled1++
-        });
-        faces.ajax.addOnError(() => {
-            onErrorCalled2++;
-        });
+            let errorTitle = '';
+            let errorMessage = '';
+            faces.ajax.addOnError((data: any) => {
+                errorTitle = data.errorName;
+                errorMessage = data.errorMessage;
+                onErrorCalled1++
+            });
+            faces.ajax.addOnError(() => {
+                onErrorCalled2++;
+            });
 
-        //cmd_error_component
-        DQ.byId("cmd_error_component").click();
-        this.respond(XmlResponses.ERROR_2);
+            //cmd_error_component
+            DQ.byId("cmd_error_component").click();
+            this.respond(XmlResponses.ERROR_2);
 
-        expect(onErrorCalled1).to.eq(1);
-        expect(onErrorCalled2).to.eq(1);
-        expect(errorTitle).to.eq('Erro21');
-        expect(errorMessage).to.eq('serverError: Error2 Text');
+            expect(onErrorCalled1).to.eq(1);
+            expect(onErrorCalled2).to.eq(1);
+            expect(errorTitle).to.eq('Erro21');
+            expect(errorMessage).to.eq('serverError: Error2 Text');
+        } finally {
+            console.error = oldErr;
+        }
     });
 
     it("must have an id set if there is an emitting element", function () {

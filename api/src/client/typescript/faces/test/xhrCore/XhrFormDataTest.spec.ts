@@ -15,7 +15,7 @@
  */
 
 import {describe, it} from 'mocha';
-import {DQ} from "mona-dish";
+import {_Es2019Array, DQ} from "mona-dish";
 import * as sinon from 'sinon';
 import {XhrFormData} from "../../impl/xhrCore/XhrFormData";
 import {expect} from "chai";
@@ -27,7 +27,7 @@ const jsdom = require("jsdom");
 const {JSDOM} = jsdom;
 
 describe('XhrFormData tests', function () {
-
+    let oldFlatMap = null;
     beforeEach(async function () {
 
         let waitForResult = defaultMyFaces();
@@ -43,12 +43,19 @@ describe('XhrFormData tests', function () {
             window.XMLHttpRequest = this.xhr;
 
             this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
+            oldFlatMap =Array.prototype["flatMap"];
+            window["Es2019Array"] = _Es2019Array;
+            delete Array.prototype["flatMap"];
 
             this.closeIt = () => {
                 (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();
+                if(oldFlatMap) {
+                    Array.prototype["flatMap"] = oldFlatMap;
+                    oldFlatMap = null;
+                }
             }
         });
     });

@@ -109,7 +109,10 @@ class MessageWrapper implements CustomEventInit<Message> {
     }
 }
 
-
+/**
+ * abstract broker class
+ * (The broker is the central distribution unit of messages)
+ */
 abstract class BaseBroker {
 
     static readonly EVENT_TYPE = "brokerEvent";
@@ -346,8 +349,12 @@ let broadCastChannelBrokerGenerator = (name) => {
 const DEFAULT_CHANNEL_GROUP = "brokr";
 
 /**
- * a broker which hooks into the Broadcast Channel broker
+ * a broker which hooks into the Broadcast Channel
  * either via shim or substitute lib
+ *
+ * The broadcast channels are a standardized messaging library
+ * The broker mechanism sets a layer on top to make it more manageable!
+ *
  */
 export class BroadcastChannelBroker extends BaseBroker {
     private openChannels: [{ key: string }, BroadcastChannel] = <any>{};

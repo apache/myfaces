@@ -15,13 +15,14 @@
  */
 
 import {Config, DomQuery} from "mona-dish";
-import {describe, it} from 'mocha';
+import {afterEach, describe, it} from 'mocha';
 import {expect} from 'chai';
 import * as sinon from 'sinon';
 
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {CTX_PARAM_REQ_PASS_THR, P_EXECUTE, P_RENDER} from "../../impl/core/Const";
 import defaultMyFaces = StandardInits.defaultMyFaces;
+import {_Es2019Array} from "mona-dish";
 
 
 sinon.reset();
@@ -37,10 +38,25 @@ declare var Implementation: any;
  */
 
 describe('faces.ajax.request test suite', () => {
-
+    let oldFlatMap = null;
     beforeEach(async () => {
-        return await defaultMyFaces();
+        //we test ES2019 with it and whether we have missed
+        //a map somewhere
+        return await defaultMyFaces().then( () => {
+            if(Array.prototype.map) {
+                oldFlatMap =Array.prototype["flatMap"];
+                window["Es2019Array"] = _Es2019Array;
+                delete Array.prototype["flatMap"];
+            }
+        });
     });
+
+    afterEach(() => {
+        if(oldFlatMap) {
+            Array.prototype["flatMap"] = oldFlatMap;
+            oldFlatMap = null;
+        }
+    })
 
     it("faces.ajax.request can be called", () => {
         //we stub the addRequestToQueue, to enable the request check only
@@ -50,11 +66,14 @@ describe('faces.ajax.request test suite', () => {
         //now the faces.ajax.request should trigger but should not go into
         //the asynchronous event loop.
         //lets check it out
+        let flatMap = Array.prototype.flatMap;
 
         try {
             DomQuery.byId("input_2").addEventListener("click", (event: Event) => {
-                faces.ajax.request(null, event, {render: '@all', execute: '@form'})
+
+                faces.ajax.request(null, event, {render: '@all', execute: '@form'});
             }).click();
+
 
             expect(addRequestToQueue.called).to.be.true;
             expect(addRequestToQueue.callCount).to.eq(1);
@@ -103,7 +122,7 @@ describe('faces.ajax.request test suite', () => {
             called["func5"] = true;
             return false;
         };
-
+        delete Array.prototype["flatMap"];
         faces.util.chain(this, called, func1, func2, func3, func4, func5);
 
         expect(called["func1"]).to.be.true;
@@ -118,7 +137,6 @@ describe('faces.ajax.request test suite', () => {
         expect(called["func2"]).to.be.true;
         expect(!!called["func4"]).to.be.true;
         expect(!!called["func5"]).to.be.false;
-
     });
 
 

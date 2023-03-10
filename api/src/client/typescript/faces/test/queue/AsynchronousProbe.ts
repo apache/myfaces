@@ -18,10 +18,10 @@
  * we need a probe to test our asynchronous behavior
  * the asynchronous behavior needs to be in an asynchronous runnable
  */
-import {AsyncRunnable} from "../../impl/util/AsyncRunnable";
+import {IAsyncRunnable} from "../../impl/util/AsyncRunnable";
 import {IValueHolder} from "mona-dish";
 
-export class ProbeClass implements AsyncRunnable<Promise<any>>, IValueHolder<Promise<any>> {
+export class ProbeClass implements IAsyncRunnable<Promise<any>>, IValueHolder<Promise<any>> {
 
     value: Promise<any>;
     fCatch: (data: any) => any;
@@ -44,7 +44,7 @@ export class ProbeClass implements AsyncRunnable<Promise<any>>, IValueHolder<Pro
         });
     }
 
-    catch(func: (data: any) => any): AsyncRunnable<boolean> {
+    catch(func: (data: any) => any): IAsyncRunnable<boolean> {
         let catchFunc = (data: any) => {
             this.catchPerformed = true;
             return func(data);
@@ -57,7 +57,7 @@ export class ProbeClass implements AsyncRunnable<Promise<any>>, IValueHolder<Pro
         return this;
     }
 
-    finally(func: () => void): AsyncRunnable<boolean> {
+    finally(func: () => void): IAsyncRunnable<boolean> {
         let finallyFunc = () => {
             this.finallyPerformed = true;
             func();
@@ -88,7 +88,7 @@ export class ProbeClass implements AsyncRunnable<Promise<any>>, IValueHolder<Pro
         //TODO do something with it
     }
 
-    then(func: (data: any) => any): AsyncRunnable<boolean> {
+    then(func: (data: any) => any): IAsyncRunnable<boolean> {
 
         let thenFunc = (data: any) => {
             this.thenPerformed = true;

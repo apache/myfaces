@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Config, DQ, FormDataCollector, Stream} from "mona-dish";
+import {Config, DQ} from "mona-dish";
 import {$nsp, EMPTY_STR, IDENT_NONE, P_VIEWSTATE} from "../core/Const";
 
 import {
     encodeFormData,
-    fixEmmptyParameters, getFormInputsAsStream
+    fixEmptyParameters, getFormInputsAsArr
 } from "../util/FileUtils";
+import {ExtLang} from "../util/Lang";
+import ofAssoc = ExtLang.ofAssoc;
+import {Es2019Array} from "mona-dish";
 
 
 type ParamsMapper<V, K> = (key: V, item: K) => [V, K];
 const defaultParamsMapper: ParamsMapper<string, any> = (key, item) => [key, item];
-
 
 /**
  * A unified form data class
@@ -76,13 +78,17 @@ export class XhrFormData extends Config {
      */
     toFormData(): FormData {
         /*
-         * expands key: [item1, item2]
-         * to: [{key: key,  value: item1}, {key: key, value: item2}]
-         */
-        let expandAssocArray = ([key, item]) =>
-            Stream.of(...(item as Array<any>)).map(value => {
-                return {key, value};
-            });
+           * expands key: [item1, item2]
+           * to: [{key: key,  value: item1}, {key: key, value: item2}]
+           */
+        let expandValueArrays = ([key, item]) => {
+            if (Array.isArray(item)) {
+                return new Es2019Array(...item).map(value => {
+                    return {key, value}
+                })
+            }
+            return [{key, value: item}]
+        }
 
         /*
          * remaps the incoming {key, value} tuples
@@ -96,10 +102,13 @@ export class XhrFormData extends Config {
         /*
          * collects everything into a FormData object
          */
-        return  Stream.ofAssoc(this.value)
-            .flatMap(expandAssocArray)
+        return ofAssoc(this.value)
+            .flatMap(expandValueArrays)
             .map(remapForNamingContainer)
-            .collect(new FormDataCollector() as any);
+            .reduce((formData: FormData, {key, value}: any) => {
+                formData.append(key, value);
+                return formData;
+            }, new FormData()) as FormData;
     }
 
     /**
@@ -113,6 +122,7 @@ export class XhrFormData extends Config {
 
     /**
      * generic post init code, for now, this performs some post assign data post-processing
+     * @param rootElement the root element which knows the request type (usually a form)
      * @param executes the executable dom nodes which need to be processed into the form data, which we can send
      * in our ajax request
      */
@@ -139,20 +149,24 @@ export class XhrFormData extends Config {
 
     /**
      * determines fields to submit
-     * @param {Object} targetBuf - the target form buffer receiving the data
      * @param {Node} parentItem - form element item is nested in
      * @param {Array} partialIds - ids fo PPS
      */
-    private encodeSubmittableFields(parentItem: DQ, partialIds ?: string[]) {
+    private encodeSubmittableFields(parentItem: DQ, partialIds: string[] = []) {
 
-        const formInputs = getFormInputsAsStream(parentItem);
         const mergeIntoThis = ([key, value]) => this.append(key).value = value;
         const namingContainerRemap = ([key, value]) => this.paramsMapper(key as string, value);
 
-        formInputs
-            .map(fixEmmptyParameters)
+        const remappedPartialIds = partialIds.map(partialId => this.remapKeyForNamingContainer(partialId));
+        const partialIdsFilter = ([key, value]) => (!remappedPartialIds.length || key.indexOf("@") == 0) ? true :
+            remappedPartialIds.indexOf(key) != -1;
+
+        let inputs = getFormInputsAsArr(parentItem);
+        inputs
+            .map(fixEmptyParameters)
             .map(namingContainerRemap)
-            .each(mergeIntoThis);
+            .filter(partialIdsFilter)
+            .forEach(mergeIntoThis);
     }
 
     private remapKeyForNamingContainer(key: string): string {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Config, DomQuery, DomQueryCollector, DQ, DQ$, Lang, LazyStream, Stream, XMLQuery} from "mona-dish";
+import {Config, DomQuery, DQ, DQ$, Lang, XMLQuery} from "mona-dish";
 import {Implementation} from "../AjaxImpl";
 import {Assertions} from "../util/Assertions";
 import {IResponseProcessor} from "./IResponseProcessor";
@@ -46,7 +46,7 @@ import {
     ON_EVENT,
     P_CLIENT_WINDOW,
     P_EXECUTE,
-    P_PARTIAL_SOURCE,
+    P_AJAX_SOURCE,
     P_RENDER,
     P_RENDER_OVERRIDE,
     P_VIEWSTATE,
@@ -65,6 +65,8 @@ import {
 import {ExtConfig, ExtDomQuery} from "../util/ExtDomQuery";
 import {HiddenInputBuilder} from "../util/HiddenInputBuilder";
 import trim = Lang.trim;
+import {ExtLang} from "../util/Lang";
+import ofAssoc = ExtLang.ofAssoc;
 
 
 /**
@@ -113,8 +115,8 @@ export class ResponseProcessor implements IResponseProcessor {
         const nodesToAdd = (shadowHead.tagName.value === "HEAD") ? shadowHead.childNodes : shadowHead;
         // this is stored for "post" processing
         // after the rest of the "physical build up", head before body
-        const scriptElements = nodesToAdd.stream
-            .filter(item => scriptTags.indexOf(item.tagName.orElse("").value) != -1).collect(new DomQueryCollector());
+        const scriptElements = new DomQuery(...nodesToAdd.asArray
+            .filter(item => scriptTags.indexOf(item.tagName.orElse("").value) != -1));
 
         this.addToHeadDeferred(scriptElements);
     }
@@ -174,7 +176,7 @@ export class ResponseProcessor implements IResponseProcessor {
          */
 
         const mergedErrorData = new ExtConfig({});
-        mergedErrorData.assign(SOURCE).value = this.externalContext.getIf(P_PARTIAL_SOURCE).get(0).value;
+        mergedErrorData.assign(SOURCE).value = this.externalContext.getIf(P_AJAX_SOURCE).get(0).value;
         mergedErrorData.assign(ERROR_NAME).value = node.querySelectorAll(ERROR_NAME).textContent(EMPTY_STR);
         mergedErrorData.assign(ERROR_MESSAGE).value = node.querySelectorAll(ERROR_MESSAGE).cDATAAsString;
 
@@ -346,15 +348,15 @@ export class ResponseProcessor implements IResponseProcessor {
      * as last lifecycle step, before going into the next request.
      */
     fixViewStates() {
-        Stream.ofAssoc<StateHolder>(this.internalContext.getIf(APPLIED_VST).orElse({}).value)
-            .each(([, value]) => {
+        ofAssoc(this.internalContext.getIf(APPLIED_VST).orElse({}).value)
+            .forEach(([, value]) => {
                 const namingContainerId = this.internalContext.getIf(NAMING_CONTAINER_ID);
                 const namedViewRoot = !!this.internalContext.getIf(NAMED_VIEWROOT).value
                 const affectedForms = this.getContainerForms(namingContainerId)
                     .filter(affectedForm => this.isInExecuteOrRender(affectedForm));
 
                 this.appendViewStateToForms(affectedForms, namedViewRoot, value.value, namingContainerId.orElse("").value);
-            });
+            })
     }
 
 
@@ -364,8 +366,8 @@ export class ResponseProcessor implements IResponseProcessor {
      * is done.
      */
     fixClientWindow() {
-        Stream.ofAssoc<StateHolder>(this.internalContext.getIf(APPLIED_CLIENT_WINDOW).orElse({}).value)
-            .each(([, value]) => {
+        ofAssoc(this.internalContext.getIf(APPLIED_CLIENT_WINDOW).orElse({}).value)
+            .forEach(([, value]) => {
                 const namingContainerId = this.internalContext.getIf(NAMING_CONTAINER_ID);
                 const namedViewRoot = !!this.internalContext.getIf(NAMED_VIEWROOT).value;
                 const affectedForms = this.getContainerForms(namingContainerId)
@@ -522,7 +524,7 @@ export class ResponseProcessor implements IResponseProcessor {
             .orElseLazy(() => this.externalContext.getIf($nsp(P_RENDER)).value)
             .orElse(IDENT_NONE).value.split(/\s+/gi);
         const executeAndRenders = executes.concat(...renders);
-        return LazyStream.of(...executeAndRenders).filter(nameOrId => {
+        return [...executeAndRenders].filter(nameOrId => {
             if ([IDENT_ALL, IDENT_NONE].indexOf(nameOrId) != -1) {
                 return true;
             }
@@ -532,7 +534,7 @@ export class ResponseProcessor implements IResponseProcessor {
             return affectedForm.matchesSelector(NAME_OR_ID) ||
                 affectedForm.querySelectorAll(NAME_OR_ID).isPresent() ||
                 affectedForm.firstParent(NAME_OR_ID).isPresent();
-        }).first().isPresent();
+        }).length > 0;
     }
 
     /**

@@ -16,6 +16,7 @@
  */
 
 import {Optional} from "./Monad";
+import {Es2019Array} from "./Es2019Array";
 
 /**
  * Lang helpers crossported from the apache myfaces project
@@ -25,7 +26,7 @@ export module Lang {
 
     //should be in lang, but for now here to avoid recursive imports, not sure if typescript still has a problem with those
     /**
-     * helper function to savely resolve anything
+     * helper function to safely resolve anything
      * this is not an elvis operator, it resolves
      * a value without exception in a tree and if
      * it is not resolvable then an optional of
@@ -50,6 +51,12 @@ export module Lang {
         }
     }
 
+    /**
+     * lazy resolve... aka the function is called on resolve and a default value also
+     * is a producing function (called only if the original producer does not produce any result)
+     * @param resolverProducer the producer for the resolve
+     * @param defaultValue the default value producer function
+     */
     export function saveResolveLazy<T>(resolverProducer: () => T, defaultValue: () => T = null): Optional<T> {
         try {
             let result = resolverProducer();
@@ -105,11 +112,11 @@ export module Lang {
         //special condition array delivered no offset no pack
         if ((<any>obj) instanceof Array && !offset && !pack) return obj;
 
-        return pack.concat(Array.prototype.slice.call(obj, offset));
+        return new Es2019Array(...pack.concat(Array.prototype.slice.call(obj, offset)));
     }
 
     /**
-     * equalsIgnoreCase, case insensitive comparison of two strings
+     * equalsIgnoreCase, case-insensitive comparison of two strings
      *
      * @param source
      * @param destination
@@ -134,7 +141,7 @@ export module Lang {
     }
 
     /**
-     * Backported from dojo
+     * Back ported from Dojo
      * a failsafe string determination method
      * (since in javascript String != "" typeof alone fails!)
      * @param it {|Object|} the object to be checked for being a string
@@ -146,6 +153,10 @@ export module Lang {
         return !!arguments.length && it != null && (typeof it == "string" || it instanceof String); // Boolean
     }
 
+    /**
+     * Back-ported, a failsafe determination code for checking whether an object is a function
+     * @param it the object to check for being a function
+     */
     export function isFunc(it: any): boolean {
         return it instanceof Function || typeof it === "function";
     }

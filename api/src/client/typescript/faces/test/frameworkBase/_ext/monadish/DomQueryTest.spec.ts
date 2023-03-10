@@ -16,20 +16,21 @@
 
 import {expect} from 'chai';
 import {describe, it} from 'mocha';
-import {ArrayCollector, DomQuery, DomQueryCollector, Lang, LazyStream} from "mona-dish";
-import trim = Lang.trim;
 import {from} from "rxjs";
-
+import {ArrayCollector, Config, DomQuery, DomQueryCollector, Lang, LazyStream, Stream} from "mona-dish/dist/js/umd";
+import {tobagoSheetWithHeader} from "./markups/tobago-with-header";
+import {tobagoSheetWithoutHeader} from "./markups/tobago-without-header";
 
 const jsdom = require("jsdom");
 const {JSDOM} = jsdom;
+import trim = Lang.trim;
+
 (global as any).window = {}
 let dom = null;
 describe('DOMQuery tests', function () {
 
     beforeEach(function () {
 
-        // language=HTML
         dom = new JSDOM(`
             <!DOCTYPE html>
         <html lang="en">
@@ -86,14 +87,14 @@ describe('DOMQuery tests', function () {
         let probe1 = new DomQuery(window.document.body);
         let probe2 = DomQuery.querySelectorAll("div");
 
-        let o1 = from(probe1.stream);
-        let o2 = from(probe2.stream);
+        let o1 = from(Stream.ofDataSource(probe1));
+        let o2 = from(Stream.ofDataSource(probe2));
 
         let cnt1 = 0;
         let isDQuery = false;
         let cnt2 = 0;
 
-        o1.subscribe(() => {
+        o1.subscribe((item: any) => {
             cnt1++;
         });
 
@@ -112,14 +113,14 @@ describe('DOMQuery tests', function () {
         let probe1 = new DomQuery(window.document.body);
         let probe2 = DomQuery.querySelectorAll("div");
 
-        let o1 = from(probe1.stream);
-        let o2 = from(probe2.stream);
+        let o1 = from(Stream.ofDataSource(probe1));
+        let o2 = from(Stream.ofDataSource(probe2));
 
         let cnt1 = 0;
         let isDQuery = false;
         let cnt2 = 0;
 
-        o1.subscribe(() => {
+        o1.subscribe((item: any) => {
             cnt1++;
         });
 
@@ -183,7 +184,7 @@ describe('DOMQuery tests', function () {
     it('domquery ops test2 eachNode', function () {
         let probe2 = DomQuery.querySelectorAll("div");
         let noIter = 0;
-        probe2.each((item, cnt) => {
+        probe2 = probe2.each((item, cnt) => {
             expect(item instanceof DomQuery).to.be.true;
             expect(noIter == cnt).to.be.true;
             noIter++;
@@ -298,28 +299,61 @@ describe('DOMQuery tests', function () {
         expect(DomQuery.querySelectorAll("#insertedAfter2").isPresent()).to.be.true;
     });
 
+    it('do not create new <html> tag on <header', function () {
+
+        const fromMarkupWithHeader = DomQuery.fromMarkup(tobagoSheetWithHeader);
+        const fromMarkupWithoutHeader = DomQuery.fromMarkup(tobagoSheetWithoutHeader);
+
+        expect(fromMarkupWithHeader.tagName.value === "HTML").to.be.false;
+        expect(fromMarkupWithoutHeader.tagName.value === "HTML").to.be.false;
+    });
+
+
+    it('do not falsely assume standard tag', function () {
+
+        const fromMarkup1 = DomQuery.fromMarkup(`
+        <head-mine>booga</head-mine>
+        `);
+
+        const fromMarkup2 = DomQuery.fromMarkup(`
+        <body_mine>booga</body_mine>
+        
+        `);
+        expect(fromMarkup1.tagName.value === "HTML").to.be.false;
+        expect(fromMarkup1.tagName.value === "HTML").to.be.false;
+        expect(fromMarkup1.tagName.value === "HEAD").to.be.false;
+        expect(fromMarkup2.tagName.value === "BODY").to.be.false;
+    });
+
+
     it('it must stream', function () {
         let probe1 = new DomQuery(document).querySelectorAll("div");
-        let coll: Array<any> = probe1.stream.collect(new ArrayCollector());
+        let coll: Array<any> = Stream.ofDomQuery(probe1).collect(new ArrayCollector());
         expect(coll.length == 4).to.be.true;
 
-        coll = probe1.lazyStream.collect(new ArrayCollector());
+        coll = LazyStream.ofDomQuery(probe1).collect(new ArrayCollector());
         expect(coll.length == 4).to.be.true;
 
     });
 
+    it('it must stream - DQ API (dynamically added)', function () {
+        let probe1 = new DomQuery(document).querySelectorAll("div");
+        let coll: Array<any> = probe1.asArray;
+        expect(coll.length == 4).to.be.true;
+    });
+
     it('it must stream to a domquery', function () {
         let probe1 = new DomQuery(document).querySelectorAll("div");
-        let coll: DomQuery = probe1.stream.collect(new DomQueryCollector());
+        let coll: DomQuery = Stream.ofDataSource(probe1).collect(new DomQueryCollector());
         expect(coll.length == 4).to.be.true;
-
-        coll = probe1.lazyStream.collect(new DomQueryCollector());
+        probe1.reset();
+        coll = LazyStream.ofStreamDataSource(probe1).collect(new DomQueryCollector());
         expect(coll.length == 4).to.be.true;
     });
 
     it('it must have parents', function () {
         let probe1 = new DomQuery(document).querySelectorAll("div");
-        let coll: Array<any> = probe1.firstParent("body").stream.collect(new ArrayCollector());
+        let coll: Array<any> = Stream.ofDataSource(probe1.parentsWhileMatch("body")).collect(new ArrayCollector());
         expect(coll.length == 1).to.be.true;
 
     });
@@ -342,22 +376,90 @@ describe('DOMQuery tests', function () {
         expect(innerHtml.indexOf("id_x_1_1") > innerHtml.indexOf("id_x_0_1")).to.be.true;
     })
 
+
+    it("must have a working replace", function () {
+        let probe1 = new DomQuery(document).byId("id_1");
+        probe1.replace(DomQuery.fromMarkup(` <div id="id_x_0"></div><div id="id_x_1"></div>`));
+
+
+        expect(DomQuery.querySelectorAll("div").length).to.eq(5);
+
+        let innerHtml = DomQuery.querySelectorAll("body").innerHTML;
+
+        expect(innerHtml.indexOf("id_x_0") > 0).to.be.true;
+        expect(innerHtml.indexOf("id_x_0") < innerHtml.indexOf("id_2")).to.be.true;
+        expect(innerHtml.indexOf("id_x_0") < innerHtml.indexOf("id_3")).to.be.true;
+
+        expect(innerHtml.indexOf("id_x_0") < innerHtml.indexOf("id_x_1")).to.be.true;
+
+        expect(innerHtml.indexOf("id_x_1") > 0).to.be.true;
+        expect(innerHtml.indexOf("id_x_1") < innerHtml.indexOf("id_2")).to.be.true;
+        expect(innerHtml.indexOf("id_x_1") < innerHtml.indexOf("id_3")).to.be.true;
+
+        expect(innerHtml.indexOf("id_1") == -1).to.be.true;
+    })
+
+    it("must have a working replace - 2", function () {
+        let probe1 = new DomQuery(document).byId("id_2");
+        probe1.replace(DomQuery.fromMarkup(` <div id="id_x_0"></div><div id="id_x_1"></div>`));
+
+
+        expect(DomQuery.querySelectorAll("div").length).to.eq(5);
+
+        let innerHtml = DomQuery.querySelectorAll("body").innerHTML;
+        expect(innerHtml.indexOf("id_x_0") > innerHtml.indexOf("id_1")).to.be.true;
+
+        expect(innerHtml.indexOf("id_x_0") > 0).to.be.true;
+        expect(innerHtml.indexOf("id_x_0") > innerHtml.indexOf("id_0")).to.be.true;
+        expect(innerHtml.indexOf("id_x_0") < innerHtml.indexOf("id_3")).to.be.true;
+
+        expect(innerHtml.indexOf("id_x_1") > 0).to.be.true;
+        expect(innerHtml.indexOf("id_x_1") > innerHtml.indexOf("id_0")).to.be.true;
+        expect(innerHtml.indexOf("id_x_1") < innerHtml.indexOf("id_3")).to.be.true;
+
+        expect(innerHtml.indexOf("id_2") == -1).to.be.true;
+    })
+
+    it("must have a working replace - 3", function () {
+        let probe1 = new DomQuery(document).byId("id_4");
+        probe1.replace(DomQuery.fromMarkup(` <div id="id_x_0"></div><div id="id_x_1"></div>`));
+
+
+        expect(DomQuery.querySelectorAll("div").length).to.eq(5);
+
+        let innerHtml = DomQuery.querySelectorAll("body").innerHTML;
+
+        expect(innerHtml.indexOf("id_x_0") > 0).to.be.true;
+        expect(innerHtml.indexOf("id_x_0") > innerHtml.indexOf("id_1")).to.be.true;
+        expect(innerHtml.indexOf("id_x_0") > innerHtml.indexOf("id_2")).to.be.true;
+        expect(innerHtml.indexOf("id_x_0") > innerHtml.indexOf("id_3")).to.be.true;
+
+        expect(innerHtml.indexOf("id_x_0") < innerHtml.indexOf("id_x_1")).to.be.true;
+
+        expect(innerHtml.indexOf("id_x_1") > 0).to.be.true;
+        expect(innerHtml.indexOf("id_x_1") > innerHtml.indexOf("id_1")).to.be.true;
+        expect(innerHtml.indexOf("id_x_1") > innerHtml.indexOf("id_2")).to.be.true;
+        expect(innerHtml.indexOf("id_x_1") > innerHtml.indexOf("id_3")).to.be.true;
+
+        expect(innerHtml.indexOf("id_4") == -1).to.be.true;
+    })
+
     it("must have a working input handling", function () {
         DomQuery.querySelectorAll("body").innerHTML = `<form id="blarg">
     <div id="embed1">
-        <input type="text" id="id_1" name="id_1" value="id_1_val">
-        <input type="text" id="id_2" name="id_2" value="id_2_val" disabled="disabled">
-        <textarea id="id_3" name="id_3">textareaVal</textarea>
+        <input type="text" id="id_1" name="id_1" value="id_1_val"></input>
+        <input type="text" id="id_2" name="id_2" value="id_2_val" disabled="disabled"> </input>
+        <textarea type="text" id="id_3" name="id_3">textareaVal</textarea>
 
         <fieldset>
-            <input type="radio" id="mc" name="cc_1" value="Mastercard" checked="checked">
+            <input type="radio" id="mc" name="cc_1" value="Mastercard" checked="checked"></input>
             <label for="mc"> Mastercard</label>
-            <input type="radio" id="vi" name="cc_1" value="Visa">
+            <input type="radio" id="vi" name="cc_1" value="Visa"></input>
             <label for="vi"> Visa</label>
-            <input type="radio" id="ae" name="cc_1" value="AmericanExpress">
+            <input type="radio" id="ae" name="cc_1" value="AmericanExpress"></input>
             <label for="ae"> American Express</label>
         </fieldset>
-        <select id="val_5" name="val_5" size="5">
+        <select id="val_5" name="val_5" name="top5" size="5">
             <option>barg</option>
             <option>jjj</option>
             <option selected>akaka</option>
@@ -375,22 +477,22 @@ describe('DOMQuery tests', function () {
         let length2 = DomQuery.byId("embed1").elements.length;
         expect(length2 == 8).to.be.true;
 
-        let count = DomQuery.byId("embed1").elements
-            .stream.map(item => item.disabled ? 1 : 0)
+        let count = Stream.ofDataSource(DomQuery.byId("embed1").elements)
+            .map<number>(item => item.disabled ? 1 : 0)
             .reduce((val1, val2) => val1 + val2, 0);
         expect(count.value).to.eq(1);
 
-        DomQuery.byId("embed1").elements
-            .stream.filter(item => item.disabled)
+        Stream.ofDataSource(DomQuery.byId("embed1").elements)
+            .filter(item => item.disabled)
             .each(item => item.disabled = false);
 
-        count = DomQuery.byId("embed1").elements
-            .stream.map(item => item.disabled ? 1 : 0)
+        count = Stream.ofDataSource(DomQuery.byId("embed1").elements)
+            .map<number>(item => item.disabled ? 1 : 0)
             .reduce((val1, val2) => val1 + val2, 0);
         expect(count.value).to.eq(0);
 
-        count = DomQuery.byId("embed1").elements
-            .stream.map(item => item.attr("checked").isPresent() ? 1 : 0)
+        count = Stream.ofDataSource(DomQuery.byId("embed1").elements)
+            .map<number>(item => item.attr("checked").isPresent() ? 1 : 0)
             .reduce((val1, val2) => val1 + val2, 0);
         expect(count.value).to.eq(1);
 
@@ -403,7 +505,7 @@ describe('DOMQuery tests', function () {
         DomQuery.byId("id_3").inputValue.value = "hello world";
         expect(DomQuery.byId("id_3").inputValue.value).to.eq("hello world");
 
-        let cfg = DomQuery.querySelectorAll("form").elements.encodeFormElement();
+        let cfg = new Config(DomQuery.querySelectorAll("form").elements.encodeFormElement());
         expect(cfg.getIf("id_1").value[0]).to.eq("booga");
         expect(cfg.getIf("id_2").value[0]).to.eq("id_2_val");
         expect(cfg.getIf("id_3").value[0]).to.eq("hello world");
@@ -451,17 +553,22 @@ describe('DOMQuery tests', function () {
             //-->   
             </script>
         
-            <style>
+            <style type="text/css">
                 #first {
                     border: 1px solid black;
                 }
             </style>
+            
+            <link rel="stylesheet" href="./fixtures/blank.css"></link>
         `;
         let content = DomQuery.byTagName("body").runScripts().runCss();
         expect(content.byId("first").innerHTML).to.eq("hello world");
         expect(content.byId("second").innerHTML).to.eq("hello world");
         expect(content.byId("third").innerHTML).to.eq("hello world");
         expect(content.byId("fourth").innerHTML).to.eq("hello world");
+
+        expect(DomQuery.byTagName("head")
+            .querySelectorAll("link[rel='stylesheet'][href='./fixtures/blank.css']").length).to.eq(1);
         done();
 
     });
@@ -482,7 +589,7 @@ describe('DOMQuery tests', function () {
 
     it("it must handle events properly", function () {
         let clicked = 0;
-        let listener = () => {
+        let listener = (evt: any) => {
             clicked++;
         };
         let eventReceiver = DomQuery.byId("id_1");
@@ -498,7 +605,7 @@ describe('DOMQuery tests', function () {
 
     });
 
-    it("it must handle innerText properly", function () {
+    it("it must handle innerText properly", function (done) {
 
         //jsdom bug
         Object.defineProperty(Object.prototype, 'innerText', {
@@ -510,6 +617,7 @@ describe('DOMQuery tests', function () {
         let probe = DomQuery.byId("id_1");
         probe.innerHTML = "<div>hello</div><div>world</div>";
         expect(probe.innerText()).to.eq("helloworld");
+        done();
     });
     it("it must handle textContent properly", function () {
         let probe = DomQuery.byId("id_1");
@@ -519,7 +627,7 @@ describe('DOMQuery tests', function () {
 
     it("it must handle iterations properly", function () {
         let probe = DomQuery.byTagName("div");
-        let resArr = probe.lazyStream.collect(new ArrayCollector());
+        let resArr = LazyStream.ofStreamDataSource(probe).collect(new ArrayCollector());
         expect(resArr.length).to.eq(4);
 
         probe.reset();
@@ -551,6 +659,21 @@ describe('DOMQuery tests', function () {
             //we might be able to shim it in one way or the other
             let element = probe.attachShadow();
             expect(element.length > 0).to.eq(true);
+        } catch (e) {
+            //not supported we still need to get an error here
+            expect(e.message.indexOf("not supported") != -1).to.be.true;
+        }
+    })
+
+
+    it("parent must break shadow barriers", function () {
+        let probe = DomQuery.fromMarkup("<div id='shadowItem'>hello</div>'");
+        try {
+            //probably not testable atm, mocha does not have shadow dom support
+            //we might be able to shim it in one way or the other
+            let element = DomQuery.byId("id_1").attachShadow();
+            element.append(probe);
+            expect(probe.firstParent("#id_1").length > 0).to.eq(true);
         } catch (e) {
             //not supported we still need to get an error here
             expect(e.message.indexOf("not supported") != -1).to.be.true;
@@ -629,11 +752,14 @@ describe('DOMQuery tests', function () {
 
     it('must by recycleable', function () {
         let probe = DomQuery.querySelectorAll("div");
+        let probe2 = DomQuery.querySelectorAll("body");
 
         let res1 = probe.filter(item => item.matchesSelector("div"));
         expect(res1.length).to.eq(4);
         let res2 = probe.filter(item => item.matchesSelector("div"));
         expect(res2.length).to.eq(4);
+
+
     })
 
     it('delete must work', function () {
@@ -651,9 +777,22 @@ describe('DOMQuery tests', function () {
         let probe2 = DomQuery.querySelectorAll("div");
         let probeCnt = 0;
         let probe2Cnt = 0;
-        from(probe).subscribe(() => probeCnt++);
-        from(probe2.stream).subscribe(() => probe2Cnt++);
+        from(probe).subscribe(el => probeCnt++);
+        from(Stream.ofDataSource(probe2)).subscribe(el => probe2Cnt++);
         expect(probeCnt).to.be.above(0);
         expect(probeCnt).to.eq(probe2Cnt);
-    })
+    });
+
+    it('must handle closest properly', function() {
+        let probe = DomQuery.byId("id_1");
+        probe.innerHTML = "<div id='inner_elem'>hello world<div id='inner_elem2'></div></div>";
+
+        let probe2 = DomQuery.byId("inner_elem");
+        expect(probe2.closest("div#id_1").id.value).to.eq("id_1");
+        expect(probe2.parent().closest("div").id.value).to.eq("id_1");
+        probe2 = DomQuery.byId("inner_elem2");
+        expect(probe2.closest("div").id.value).to.eq("inner_elem2");
+        expect(probe2.closest("div#id_1").id.value).to.eq("id_1");
+        expect(probe2.parent().parent().closest("div").id.value).to.eq("id_1");
+    });
 });
