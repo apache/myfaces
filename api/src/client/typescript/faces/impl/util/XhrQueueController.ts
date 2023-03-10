@@ -72,13 +72,9 @@ export class XhrQueueController<T extends IAsyncRunnable<any>> {
          * and clear the queue (theoretically this
          * would work with any promise)
          */
-        try {
-            return asyncRunnable
-                .then(() => this.next())
-                .catch((e) => this.handleError(e));
-        } catch (e) {
-            this.handleError(e);
-        }
+        return asyncRunnable
+            .then(() => this.next())
+            .catch(() => this.clear());
     }
 
 
@@ -99,14 +95,4 @@ export class XhrQueueController<T extends IAsyncRunnable<any>> {
         this.taskRunning = !this.isEmpty;
     }
 
-    /**
-     * standard error handling
-     * we clear the queue and then bomb out
-     * @param e
-     * @private
-     */
-    private handleError(e) {
-        this.clear();
-        throw e;
-    }
 }

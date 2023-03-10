@@ -250,4 +250,11 @@ export class XmlResponses {
     `;
 
     static ILLEGAL_RESP = `>>>> xxxx >YYYY-!->>>`;
+
+
+    static  ERROR_CHAIN_RESPOND_OK = (cnt: number): string => {
+        return `<partial-response><changes><update id='form1:out1'><![CDATA[<div id="form1:out1">${cnt}</div>]]>
+    </update></changes></partial-response>`;
+    }
+
 }

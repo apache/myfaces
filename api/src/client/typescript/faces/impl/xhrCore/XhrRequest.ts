@@ -74,6 +74,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
 
 
     private xhrObject = new XMLHttpRequest();
+
     /**
      * Required Parameters
      *
@@ -167,7 +168,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
             // a bug in the xhr stub library prevents the setRequestHeader to be properly executed on fake xhr objects
             // normal browsers should resolve this
             // tests can quietly fail on this one
-            if(this.contentType != "undefined") {
+            if (this.contentType != "undefined") {
                 ignoreErr(() => xhrObject.setRequestHeader(CONTENT_TYPE, `${this.contentType}; charset=utf-8`));
             }
 
@@ -181,11 +182,15 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
             this.sendEvent(BEGIN);
             this.sendRequest(formData);
         } catch (e) {
-            // _onError
-            this.handleError(e);
+            // this happens usually in a client side condition, hence we have to deal in with it in a client
+            // side manner
+            this.handleErrorAndClearQueue(e);
+            throw e;
         }
         return this;
     }
+
+
 
     cancel() {
         try {
@@ -196,7 +201,6 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
             this.handleError(e);
         }
     }
-
 
 
     /**
@@ -210,111 +214,144 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
         const xhrObject = this.xhrObject;
 
         xhrObject.onabort = () => {
-            this.onAbort(reject);
+            this.onAbort(resolve, reject);
         };
         xhrObject.ontimeout = () => {
-            this.onTimeout(reject);
+            this.onTimeout(resolve, reject);
         };
         xhrObject.onload = () => {
-            this.onSuccess(resolve)
+            this.onResponseReceived(resolve)
         };
         xhrObject.onloadend = () => {
-            this.onDone(this.xhrObject, resolve);
+            this.onResponseProcessed(this.xhrObject, resolve);
         };
         xhrObject.onerror = (errorData: any) => {
-
-            // some browsers trigger an error when cancelling a request internally, or when
-            // cancel is called from outside
+            // Safari in rare cases triggers an error when cancelling a request internally, or when
             // in this case we simply ignore the request and clear up the queue, because
             // it is not safe anymore to proceed with the current queue
+
             // This bypasses a Safari issue where it keeps requests hanging after page unload
             // and then triggers a cancel error on then instead of just stopping
             // and clearing the code
-            if(this.isCancelledResponse(this.xhrObject)) {
+            // in a page unload case it is safe to clear the queue
+            // in the exact safari case any request after this one in the queue is invalid
+            // because the queue references xhr requests to a page which already is gone!
+            if (this.isCancelledResponse(this.xhrObject)) {
                 /*
                  * this triggers the catch chain and after that finally
                  */
-                reject();
                 this.stopProgress = true;
+                reject();
                 return;
             }
-            this.onError(errorData, reject);
+            // error already processed somewhere else
+            if (this.stopProgress) {
+                return;
+            }
+            this.handleError(errorData);
         };
     }
 
     private isCancelledResponse(currentTarget: XMLHttpRequest): boolean {
-        return currentTarget?.status === 0 && // cancelled by browser
+        return currentTarget?.status === 0 && // cancelled internally by browser
             currentTarget?.readyState === 4 &&
             currentTarget?.responseText === '' &&
             currentTarget?.responseXML === null;
     }
 
     /*
-         * xhr processing callbacks
-         *
-         * Those methods are the callbacks called by
-         * the xhr object depending on its own state
-         */
-
-    private onAbort(reject: Consumer<any>) {
-        reject();
+     * xhr processing callbacks
+     *
+     * Those methods are the callbacks called by
+     * the xhr object depending on its own state
+     */
+    /**
+     * client side abort... also here for now we clean the queue
+     *
+     * @param resolve
+     * @param reject
+     * @private
+     */
+    private onAbort(resolve: Consumer<any>, reject: Consumer<any>) {
+        // reject means clear queue, in this case we abort entirely the processing
+        // does not happen yet, we have to probably rethink this strategy in the future
+        // when we introduce cancel functionality
+        this.handleGenericError(reject);
     }
 
-    private onTimeout(reject: Consumer<any>) {
+    /**
+     * request timeout, this must be handled like a generic server error per spec
+     * unfortunately, so we have to jump to the next item (we cancelled before)
+     * @param resolve
+     * @param reject
+     * @private
+     */
+    private onTimeout(resolve: Consumer<any>, reject: Consumer<any>) {
+        // timeout also means we we probably should clear the queue,
+        // the state is unsafe for the next requests
         this.sendEvent(STATE_EVT_TIMEOUT);
-        reject();
+        this.handleGenericError(resolve);
     }
 
-    private onSuccess(resolve: Consumer<any>) {
+    /**
+     * the response is received and normally is a normal response
+     * but also can be some kind of error (http code >= 300)
+     * In any case the response will be resolved either as error or response
+     * and the next item in the queue will be processed
+     * @param resolve
+     * @private
+     */
+    private onResponseReceived(resolve: Consumer<any>) {
 
         this.sendEvent(COMPLETE);
-
-        // malformed responses always result in empty response xml
-        // per spec a valid response cannot be empty
-        if (!this?.xhrObject?.responseXML) {
-            this.handleMalFormedXML(resolve);
+        /*
+         * second on error path
+         */
+        if ((this.xhrObject?.status ?? 0) >= 300 || !this?.xhrObject?.responseXML) {
+            // all errors from the server are resolved without interfering in the queue
+            this.handleGenericError(resolve);
             return;
         }
 
         $faces().ajax.response(this.xhrObject, this.responseContext.value ?? {});
     }
 
-    private handleMalFormedXML(resolve: Function) {
+    private handleGenericError(resolveOrReject: Function) {
         this.stopProgress = true;
         const errorData = {
             type: ERROR,
             status: MALFORMEDXML,
-            responseCode: 200,
-            responseText: this.xhrObject?.responseText,
-            source:  this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value
+            responseCode: this.xhrObject?.status ?? 400,
+            responseText: this.xhrObject?.responseText ?? "Error",
+            source: this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value
         };
         try {
             this.handleError(errorData, true);
         } finally {
-            // we issue a resolve in this case to allow the system to recover
+            // we issue a resolveOrReject in this case to allow the system to recover
             // reject would clean up the queue
-            resolve(errorData);
+            // resolve would trigger the next element in the queue to be processed
+            resolveOrReject(errorData);
         }
         // non blocking non clearing
     }
 
-    private onDone(data: any, resolve: Consumer<any>) {
-        // if stop progress a special handling including resolve is already performed
+    /**
+     * last minute cleanup, the request now either is fully done
+     * or not by having had a cancel or error event be
+     * @param data
+     * @param resolve
+     * @private
+     */
+    private onResponseProcessed(data: any, resolve: Consumer<any>) {
+        // if stop progress true, the cleanup already has been performed
         if (this.stopProgress) {
             return;
         }
-        /**
-         * now call the then chain
+        /*
+         * normal case, cleanup == next item if possible
          */
         resolve(data);
-    }
-
-    private onError(errorData: any,  reject: Consumer<any>) {
-        this.handleError(errorData);
-        /*
-         * this triggers the catch chain and after that finally
-         */
-        reject();
     }
 
     private sendRequest(formData: XhrFormData) {
@@ -343,10 +380,16 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
             Implementation.sendEvent(eventData, eventHandler);
         } catch (e) {
             e.source = e?.source ?? this.requestContext.getIf(SOURCE).value;
-            this.handleError(e);
-
+            // this is a client error, no save state anymore for queue processing!
+            this.handleErrorAndClearQueue(e);
+            // we forward the error upward like all client side errors
             throw e;
         }
+    }
+
+    private handleErrorAndClearQueue(e, responseFormatError: boolean = false) {
+        this.handleError(e, responseFormatError);
+        this.reject(e);
     }
 
     private handleError(exception, responseFormatError: boolean = false) {
