@@ -236,6 +236,42 @@ export module StandardInits {
     `;
     }
 
+    export const ERROR_CHAIN_PAGE = `
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>Error Chain Testcase</h2>
+<script type="text/javascript">
+/**
+* code identical to mojarra test, both stem from me
+* so mojarras side EPL here ASL2!
+* 
+* @param event
+*/
+function triggerRequestChain(event) {
+    for(let cnt = 0; cnt < 5; cnt++) {
+        faces.ajax.request(event.target, "click", {
+            render:"form1",
+            onerror: function() {
+                document.getElementById("errorCalled").innerHTML = "1";
+            }
+        })
+    }
+}
+</script>
+<div id="errorCalled"></div>
+<form id="form1">
+    <div id="form1:out1">0</div>
+    <input type="button" id="form1:button1" onclick="triggerRequestChain(event)">
+</form>
+</body>
+</html>
+    `;
+
     /**
      * This is a standardized small page mockup
      * testing the various aspects of the protocol
@@ -403,6 +439,10 @@ export module StandardInits {
 
     export function protocolPage(withJsf = true, IS_40 = true): Promise<() => void> {
         return <any>init((IS_40) ? PROTOCOL_PAGE : PROTOCOL_PAGE.replace(/jakarta/gi,"javax"), withJsf, IS_40);
+    }
+
+    export function errorChainPage(withJsf = true, IS_40 = true): Promise<() => void> {
+        return <any>init((IS_40) ? ERROR_CHAIN_PAGE : ERROR_CHAIN_PAGE.replace(/jakarta/gi,"javax"), withJsf, IS_40);
     }
 
     export function prefixEmbeddedPage(withJsf = true, IS_40 = true): Promise<() => void> {
