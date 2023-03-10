@@ -80,6 +80,8 @@ public class IntegrationTest
     @Before
     public void before()
     {
+        // The default is 0 which causes race conditions on findElement!
+        webDriver.manage().timeouts().implicitlyWait(Duration.ofMillis(300));
     }
 
     @After
@@ -190,7 +192,7 @@ public class IntegrationTest
         // call ajax button
         WebElement element = webDriver.findElement(By.id("form:commandButtonAjax"));
         element.click();
-        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofMillis(20));
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofMillis(50));
         wait.until((ExpectedCondition<Boolean>) driver -> driver.getPageSource().contains("fooAjax invoked"));
     }
 }
