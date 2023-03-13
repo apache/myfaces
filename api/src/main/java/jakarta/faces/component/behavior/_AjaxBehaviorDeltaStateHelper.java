@@ -142,36 +142,44 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
     public Object eval(Serializable key, Object defaultValue)
     {
         Object returnValue = _fullState.get(key);
-        if (returnValue != null)
+
+        if (returnValue == null)
         {
-            return returnValue;
+            ValueExpression expression = _target.getValueExpression(key.toString());
+            if (expression != null)
+            {
+                returnValue = expression.getValue(_target.getFacesContext().getELContext());
+            }
         }
-        ValueExpression expression = _target.getValueExpression(key.toString());
-        if (expression != null)
+
+        if (returnValue == null)
         {
-            return expression.getValue(FacesContext.getCurrentInstance().getELContext());
+            returnValue = defaultValue;
         }
-        return defaultValue;
+
+        return returnValue;
     }
 
     @Override
     public Object eval(Serializable key, Supplier<Object> defaultValueSupplier)
     {
         Object returnValue = _fullState.get(key);
-        if (returnValue != null)
+        
+        if (returnValue == null)
         {
-            return returnValue;
+            ValueExpression expression = _target.getValueExpression(key.toString());
+            if (expression != null)
+            {
+                returnValue = expression.getValue(_target.getFacesContext().getELContext());
+            }
         }
-        ValueExpression expression = _target.getValueExpression(key.toString());
-        if (expression != null)
+
+        if (returnValue == null && defaultValueSupplier != null)
         {
-            return expression.getValue(FacesContext.getCurrentInstance().getELContext());
+            returnValue = defaultValueSupplier.get();
         }
-        if (defaultValueSupplier != null)
-        {
-            return defaultValueSupplier.get();
-        }
-        return null;
+
+        return returnValue;
     }
 
     @Override

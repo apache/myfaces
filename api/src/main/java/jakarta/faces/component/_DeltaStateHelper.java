@@ -345,16 +345,22 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     public Object eval(Serializable key, Object defaultValue)
     {
         Object returnValue = _fullState.get(key);
-        if (returnValue != null)
+
+        if (returnValue == null)
         {
-            return returnValue;
+            ValueExpression expression = _component.getValueExpression(key.toString());
+            if (expression != null)
+            {
+                returnValue = expression.getValue(_component.getFacesContext().getELContext());
+            }
         }
-        ValueExpression expression = _component.getValueExpression(key.toString());
-        if (expression != null)
+        
+        if (returnValue == null)
         {
-            return expression.getValue(_component.getFacesContext().getELContext());
+            returnValue = defaultValue;
         }
-        return defaultValue;
+
+        return returnValue;
     }
     
 
@@ -370,20 +376,21 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     public Object eval(Serializable key, Supplier<Object> defaultValueSupplier)
     {
         Object returnValue = _fullState.get(key);
-        if (returnValue != null)
-        {
-            return returnValue;
+        
+        if (returnValue == null) {
+            ValueExpression expression = _component.getValueExpression(key.toString());
+            if (expression != null)
+            {
+                returnValue = expression.getValue(_component.getFacesContext().getELContext());
+            }
         }
-        ValueExpression expression = _component.getValueExpression(key.toString());
-        if (expression != null)
+
+        if (returnValue == null && defaultValueSupplier != null)
         {
-            return expression.getValue(_component.getFacesContext().getELContext());
+            returnValue = defaultValueSupplier.get();
         }
-        if (defaultValueSupplier != null)
-        {
-            return defaultValueSupplier.get();
-        }
-        return null;
+
+        return returnValue;
     }
 
     @Override
