@@ -21,10 +21,12 @@ package jakarta.faces.component;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
+import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +50,8 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         private enum PropertyKeys
         {
             testProperty1,
-            testProperty2
+            testProperty2,
+            testPropertyWithDefault
         }
         
         public String getTestProperty1()
@@ -69,6 +72,16 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         public void setTestProperty2(String testProperty2)
         {
             getStateHelper().put(PropertyKeys.testProperty2, testProperty2);
+        }
+
+        public Long getTestPropertyWithDefault()
+        {
+            return (Long) getStateHelper().eval(PropertyKeys.testPropertyWithDefault, Long.MAX_VALUE);
+        }
+
+        public void setTestPropertyWithDefault(Long testPropertyWithDefault)
+        {
+            getStateHelper().put(PropertyKeys.testPropertyWithDefault, testPropertyWithDefault);
         }
 
         /*
@@ -100,7 +113,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         @Override
         public Object saveState(FacesContext context)
         {
-            Object[] values = new Object[2];
+            Object[] values = new Object[3];
             values[0] = super.saveState(context);
             //values[1] = _stateHelper == null ? null : _stateHelper.saveState(context);
             return values;
@@ -209,6 +222,34 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         retValue = helper.put("someProperty", "someOtherOtherOtherValue");
         
         Assertions.assertEquals("someOtherOtherValue",retValue);
+    }
+
+    @Test
+    // https://issues.apache.org/jira/browse/MYFACES-4590
+    public void testPropertyWithDefault()
+    {
+        UITestComponent a = new UITestComponent();
+
+        Assertions.assertEquals(Long.MAX_VALUE, a.getTestPropertyWithDefault(),
+                "Property should be Long.MAX_VALUE from default)");
+
+        ValueExpression valueExpression = new MockValueExpression("#{testPropertyWithDefault}", Object.class);
+        a.setValueExpression("testPropertyWithDefault", valueExpression);
+        Map applicationMap = externalContext.getApplicationMap();
+        applicationMap.put("testPropertyWithDefault", 100L);
+
+        Assertions.assertEquals(100L, a.getTestPropertyWithDefault(),
+                "Property should be 100L from expression");
+
+        applicationMap.remove("testPropertyWithDefault");
+
+        Assertions.assertEquals(Long.MAX_VALUE, a.getStateHelper().eval("testPropertyWithDefault", Long.MAX_VALUE),
+                "Value from stateHelper should be Long.MAX_VALUE from default");
+        Assertions.assertEquals(Long.MAX_VALUE, a.getStateHelper().eval("testPropertyWithDefault", () -> Long.MAX_VALUE),
+                "Value from stateHelper should be Long.MAX_VALUE from default");
+        Assertions.assertEquals(Long.MAX_VALUE, a.getTestPropertyWithDefault(),
+                "Property should be Long.MAX_VALUE from default");
+
     }
     
     @Test
