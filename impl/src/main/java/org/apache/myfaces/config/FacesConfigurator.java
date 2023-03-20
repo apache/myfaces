@@ -557,6 +557,13 @@ public class FacesConfigurator
         lifecyclePurgeMethod = getPurgeMethod(lifecycleFactory, "purgeLifecycle", NO_PARAMETER_TYPES);
 
         FacesContext facesContext = getFacesContext();
+        while(!(facesContext instanceof org.apache.myfaces.context.servlet.FacesContextImpl))
+        {
+            if(facesContext instanceof javax.faces.context.FacesContextWrapper) 
+            {
+                facesContext = ((javax.faces.context.FacesContextWrapper)facesContext).getWrapped(); // MYFACES-4469
+            }
+        }
         facesContextPurgeMethod = getPurgeMethod(facesContext, "purgeFacesContext", NO_PARAMETER_TYPES);
         
         // If there was no exception so far, now we can purge
