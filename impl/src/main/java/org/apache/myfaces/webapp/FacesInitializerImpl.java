@@ -197,7 +197,8 @@ public class FacesInitializerImpl implements FacesInitializer
             
             initWebsocketIntegration(servletContext, externalContext);
 
-            WebConfigParamsLogger.logWebContextParams(facesContext);
+            WebConfigParamsLogger contextParamLogger = new WebConfigParamsLogger();
+            contextParamLogger.logWebContextParams(facesContext);
 
             //Start ViewPoolProcessor if necessary
             ViewPoolProcessor.initialize(facesContext);
