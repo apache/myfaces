@@ -110,6 +110,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         done();
     })
 
+
     it("must process the error chain properly with a standard Ajax Error", function (done) {
         DQ.byId("form1:button1").click();
         expect(Implementation.requestQueue.queue.length >= 4).to.be.true;

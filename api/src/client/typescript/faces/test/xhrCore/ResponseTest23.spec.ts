@@ -359,6 +359,24 @@ describe('Tests of the various aspects of the response protocol functionality', 
         expect(DQ.byId("j_id__v_0:javax.faces.ClientWindow:1").isAbsent()).to.be.false;
     });
 
+    it("<style> element must be in <tobago-sheet> instead of <head>", function () {
+        window.document.documentElement.innerHTML = StandardInits.HTML_TOBAGO_SHEET_WITH_STYLE;
+
+        expect(DQ.querySelectorAll("head > style").length).to.be.eq(0);
+        expect(DQ.querySelectorAll("body tobago-page tobago-sheet > style").length).to.be.eq(1);
+
+        jsf.ajax.request(window.document.getElementById("page:ajaxButton"), null, {
+            "jakarta.faces.behavior.event": "click",
+            execute: "page:ajaxButton",
+            render: "page:s1"
+        });
+
+        this.respond(XmlResponses.UPDATE_TOBAGO_SHEET_WITH_STYLE);
+
+        expect(DQ.querySelectorAll("head > style").length).to.be.eq(0);
+        expect(DQ.querySelectorAll("body tobago-page tobago-sheet > style").length).to.be.eq(1);
+    });
+
     
     it("must pass named params properly (tobago testcase)", function(done) {
             window.document.body.innerHTML = HTML_PREFIX_EMBEDDED_BODY;

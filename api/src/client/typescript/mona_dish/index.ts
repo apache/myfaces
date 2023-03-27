@@ -17,6 +17,7 @@
  * under the License.
  */
 export {DomQuery, ElementAttribute, DomQueryCollector, DQ, DQ$} from "./DomQuery";
+export {IDomQuery} from "./IDomQuery";
 export {Lang} from "./Lang";
 export {Monad, IValueHolder, IFunctor, IMonad, IIdentity, Optional, ValueEmbedder} from "./Monad";
 export {CancellablePromise, IPromise, PromiseStatus} from "./Promise";
