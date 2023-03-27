@@ -567,7 +567,7 @@ describe('DOMQuery tests', function () {
         expect(content.byId("third").innerHTML).to.eq("hello world");
         expect(content.byId("fourth").innerHTML).to.eq("hello world");
 
-        expect(DomQuery.byTagName("head")
+        expect(DomQuery.byTagName("body")
             .querySelectorAll("link[rel='stylesheet'][href='./fixtures/blank.css']").length).to.eq(1);
         done();
 

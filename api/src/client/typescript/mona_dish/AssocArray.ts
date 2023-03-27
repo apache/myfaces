@@ -252,7 +252,7 @@ export function simpleShallowMerge(...assocArrays) {
 }
 
 /**
- * Shallow merge as in config
+ * Shallow merge as in config, but on raw associative arrays
  *
  * @param overwrite
  * @param withAppend

@@ -26,6 +26,59 @@ export class XmlResponses {
     </partial-response>
     `;
 
+    static UPDATE_TOBAGO_SHEET_WITH_STYLE = `<?xml version="1.0" encoding="UTF-8"?>
+<partial-response id='j_id__v_0'>
+  <changes>
+    <update id='page:s1'><![CDATA[
+      <tobago-sheet id='page:s1' data-tobago-selection-mode='multi' data-tobago-first='0' rows='0' row-count='2'>
+        <style nonce='nonceValue' id='page:s1:j_id_4'>#page\\:s1 {
+          max-height: 500px;
+        }
+        </style>
+        <input id='page:s1::scrollPosition' name='page:s1::scrollPosition' type='hidden' value='[0,0]'/>
+        <input id='page:s1::selected' name='page:s1::selected' type='hidden' value='[]'/>
+        <div class='tobago-body'>
+          <table cellspacing='0' cellpadding='0' summary='' class='table'>
+            <thead>
+            <tr>
+              <th>
+                <span><tobago-out id='page:s1:_col0'><span
+                        class='form-control-plaintext'>Name</span></tobago-out></span>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr row-index='0'>
+              <td>
+                <tobago-out id='page:s1:0:t_name'><span class='form-control-plaintext'>Earth</span></tobago-out>
+              </td>
+              <td>
+                <div>
+                </div>
+              </td>
+            </tr>
+            <tr row-index='1'>
+              <td>
+                <tobago-out id='page:s1:1:t_name'><span class='form-control-plaintext'>Moon</span></tobago-out>
+              </td>
+              <td>
+                <div>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </tobago-sheet>
+      ]]>
+    </update>
+    <update id='j_id__v_0:javax.faces.ViewState:1'><![CDATA[viewStateValue]]>
+    </update>
+    <update id='j_id__v_0:javax.faces.ClientWindow:1'><![CDATA[clientWindowValue]]>
+    </update>
+  </changes>
+</partial-response>`;
+
     static SHADOW_DOM_UPDATE=`
         <partial-response>
             <changes><update id="shadowContent"><![CDATA[<div id="shadowContent">after update</div>]]></update></changes>

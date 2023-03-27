@@ -145,6 +145,92 @@ export module StandardInits {
  </body>
 </html>`;
 
+    export const HTML_TOBAGO_SHEET_WITH_STYLE = `<!DOCTYPE html>
+<html lang='de'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Test
+  </title>
+  <link rel='stylesheet' href='./fixtures/css/tobago.css' type='text/css'>
+  <link rel='stylesheet' href='./fixtures/css/bootstrap-icons.css' type='text/css'>
+  <script src='./fixtures/jakarta.faces.resource/faces.js.jsf' type='text/javascript'></script>
+  <script src='./fixtures/js/tobago.js' type='module'></script>
+</head>
+<body>
+<tobago-page locale='de' class='container-fluid' id='page' focus-on-error='true' wait-overlay-delay-full='1000'
+             wait-overlay-delay-ajax='1000'>
+  <form action='/content/080-sheet/30-event/Sheet_Event.xhtml' id='page::form' method='post'
+        accept-charset='UTF-8' data-tobago-context-path=''>
+    <input type='hidden' name='javax.faces.source' id='javax.faces.source' disabled='disabled'>
+    <tobago-focus id='page::lastFocusId'>
+      <input type='hidden' name='page::lastFocusId' id='page::lastFocusId::field'>
+    </tobago-focus>
+    <input type='hidden' name='org.apache.myfaces.tobago.webapp.Secret' id='org.apache.myfaces.tobago.webapp.Secret'
+           value='secretValue'>
+    <div class='tobago-page-menuStore'>
+    </div>
+    <span id='page::jsf-state-container'><input type='hidden' name='javax.faces.ViewState'
+                                                id='j_id__v_0:javax.faces.ViewState:1'
+                                                value='viewStateValue' autocomplete='off'><input
+            type='hidden' name='javax.faces.RenderKitId' value='tobago'><input type='hidden'
+                                                                               id='j_id__v_0:javax.faces.ClientWindow:1'
+                                                                               name='javax.faces.ClientWindow'
+                                                                               value='clientWindowValue'></span>
+    <button type='button' id='page:ajaxButton' name='page:ajaxButton'
+            class='tobago-button btn btn-secondary tobago-auto-spacing'>
+      <tobago-behavior event='click' client-id='page:ajaxButton' execute='page:ajaxButton'
+                       render='page:s1'></tobago-behavior>
+      <span>Ajax</span></button>
+    <tobago-sheet id='page:s1' data-tobago-selection-mode='multi' data-tobago-first='0' rows='0' row-count='2'>
+      <style nonce='nonceValue' id='page:s1:j_id_4'>#page\\:s1 {
+        max-height: 500px;
+      }
+      </style>
+      <input id='page:s1::scrollPosition' name='page:s1::scrollPosition' type='hidden' value='[0,0]'>
+      <input id='page:s1::selected' name='page:s1::selected' type='hidden' value='[]'>
+      <div class='tobago-body'>
+        <table cellspacing='0' cellpadding='0' summary='' class='table'>
+          <thead>
+          <tr>
+            <th>
+              <span><tobago-out id='page:s1:_col0'><span class='form-control-plaintext'>Name</span></tobago-out></span>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr row-index='0'>
+            <td>
+              <tobago-out id='page:s1:0:t_name'><span class='form-control-plaintext'>Earth</span></tobago-out>
+            </td>
+            <td>
+              <div>
+              </div>
+            </td>
+          </tr>
+          <tr row-index='1'>
+            <td>
+              <tobago-out id='page:s1:1:t_name'><span class='form-control-plaintext'>Moon</span></tobago-out>
+            </td>
+            <td>
+              <div>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </tobago-sheet>
+  </form>
+  <noscript>
+    <div class='tobago-page-noscript'>Diese Seite benötigt JavaScript, allerdings ist JavaScript in Ihrem Browser
+      derzeit deaktiviert. Um JavaScript zu aktivieren, lesen Sie ggf. die Anleitung Ihres Browsers.
+    </div>
+  </noscript>
+</tobago-page>
+</body>
+</html>`;
+
     /**
      * a page simulating basically a simple faces form
      */

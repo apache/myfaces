@@ -131,5 +131,10 @@ export function _Es2019Array<T>(...data: T[]): Es2019Array_<T> {
  * does not yet have flatMap support on arrays
  */
 export var Es2019Array: any = (Array.prototype.flatMap) ? function<T>(...data: T[]): T[] {
-    return data;
+    // sometimes the typescript compiler produces
+    // an array without flatmap between boundaries (the result produces True for Array.isArray
+    // but has no flatMap function, could be a node issue also or Typescript!
+    // we remap that (could be related to: https://github.com/microsoft/TypeScript/issues/31033
+    // the check and remap fixes the issue which should not exist in the first place
+    return data?.flatMap ? data : _Es2019Array(...data);
 } : _Es2019Array;
