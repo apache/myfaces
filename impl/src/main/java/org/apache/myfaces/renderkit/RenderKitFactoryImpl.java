@@ -29,6 +29,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 import org.apache.myfaces.core.api.shared.lang.Assert;
+import org.apache.myfaces.util.Purgeable;
 
 /**
  * RenderKitFactory implementation as defined in Spec. Faces.7.3
@@ -36,7 +37,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RenderKitFactoryImpl extends RenderKitFactory
+public class RenderKitFactoryImpl extends RenderKitFactory implements Purgeable
 {
     private static final Logger log = Logger.getLogger(RenderKitFactoryImpl.class.getName());
 
@@ -46,7 +47,8 @@ public class RenderKitFactoryImpl extends RenderKitFactory
     {
     }
 
-    public void purgeRenderKit()
+    @Override
+    public void purge()
     {
         renderkits.clear();
     }
