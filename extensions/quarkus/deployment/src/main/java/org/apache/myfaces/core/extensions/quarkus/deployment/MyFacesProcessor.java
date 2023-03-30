@@ -132,6 +132,7 @@ import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
 import io.quarkus.arc.deployment.BeanRegistrationPhaseBuildItem;
 import io.quarkus.arc.deployment.ContextRegistrationPhaseBuildItem;
+import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -139,6 +140,7 @@ import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.AdditionalApplicationArchiveMarkerBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBundleBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
@@ -841,5 +843,13 @@ class MyFacesProcessor
                 new RuntimeInitializedClassBuildItem(ViewScopeContextualStorageHolder.class.getCanonicalName()));
     }
 
+    @BuildStep(onlyIf = IsDevelopment.class)
+    List<HotDeploymentWatchedFileBuildItem> hotDeploymentWatchedFiles()
+    {
+        final List<HotDeploymentWatchedFileBuildItem> watchedFiles = new ArrayList<>(2);
+        watchedFiles.add(new HotDeploymentWatchedFileBuildItem("META-INF/web.xml"));
+        watchedFiles.add(new HotDeploymentWatchedFileBuildItem("META-INF/faces-config.xml"));
+        return watchedFiles;
+    }
 
 }
