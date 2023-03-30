@@ -17,7 +17,7 @@
  * under the License.
  */
 import { LitElement, html, css} from 'lit';
-import { pages } from 'myfaces-core-data';
+import { pages } from 'build-time-data';
 import 'qwc/qwc-extension-link.js';
 
 const NAME = "MyFaces Core";
@@ -92,7 +92,9 @@ export class QwcMyFacesCoreCard extends LitElement {
                                 staticLabel="${page.staticLabel}"
                                 dynamicLabel="${page.dynamicLabel}"
                                 streamingLabel="${page.streamingLabel}"
-                                path="${page.id}" 
+                                path="${page.id}"
+                                ?embed=${page.embed}
+                                externalUrl="${page.metadata.externalUrl}"
                                 webcomponent="${page.componentLink}" >
                             </qwc-extension-link>
                         `)}`;

@@ -36,12 +36,12 @@ public class MyFacesCoreDevUIProcessor
     @BuildStep(onlyIf = IsDevelopment.class)
     void createVersion(BuildProducer<CardPageBuildItem> cardPageBuildItemBuildProducer)
     {
-        final CardPageBuildItem card = new CardPageBuildItem("MyFaces Core");
+        final CardPageBuildItem card = new CardPageBuildItem();
 
         final PageBuilder versionPage = Page.externalPageBuilder("Version")
                 .icon("font-awesome-solid:book")
                 .url("https://myfaces.apache.org/#/core40")
-                .isHtmlContent()
+                .doNotEmbed()
                 .staticLabel(MyfacesConfig.class.getPackage().getImplementationVersion());
 
         card.addPage(versionPage);
