@@ -71,12 +71,6 @@
             <version>2.0.1.Final</version>
         </dependency>
 
-        <dependency> <!-- workaround for https://github.com/quarkusio/quarkus/issues/7359 -->
-            <groupId>com.fasterxml.woodstox</groupId>
-            <artifactId>woodstox-core</artifactId>
-            <version>5.4.0</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
