@@ -503,7 +503,7 @@ public class MyfacesConfig
      * Indicates that the serialized state will be compressed before it is written to the session. By default true.
      * 
      * Only applicable if state saving method is "server" (= default) and if
-     * <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
+     * <code>jakarta.faces.SERIALIZE_SERVER_STATE</code> is <code>true</code>.
      * If <code>true</code> (default) the serialized state will be compressed before it is written to the session.
      * If <code>false</code> the state will not be compressed.
      */
