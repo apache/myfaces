@@ -774,6 +774,8 @@ class MyFacesProcessor
         {
             // register type
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, type.name().toString()));
+            // and try to register the ClientProxy
+            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, type.name().toString() + "_ClientProxy"));
         }
 
 
@@ -785,6 +787,8 @@ class MyFacesProcessor
         {
             // register type
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName));
+            // and try to register the ClientProxy
+            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName + "_ClientProxy"));
         }
     }
 
