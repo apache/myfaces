@@ -772,10 +772,14 @@ class MyFacesProcessor
 
         for (ClassInfo type : types)
         {
+            String typeName = type.name().toString();
             // register type
-            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, type.name().toString()));
+            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName));
             // and try to register the ClientProxy
-            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, type.name().toString() + "_ClientProxy"));
+            if (shouldProxy(typeName))
+            {
+                reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName + "_ClientProxy"));
+            }
         }
 
 
@@ -788,8 +792,18 @@ class MyFacesProcessor
             // register type
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName));
             // and try to register the ClientProxy
-            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName + "_ClientProxy"));
+            if (shouldProxy(typeName))
+            {
+                reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName + "_ClientProxy"));
+            }
         }
+    }
+
+    boolean shouldProxy(String typeName)
+    {
+        return !(typeName.startsWith("java.lang") 
+                 || typeName.startsWith("java.util") 
+                 || typeName.startsWith("jakarta.faces"));
     }
 
     void collectPublicTypes(ClassInfo type, List<ClassInfo> publicTypes, CombinedIndexBuildItem combinedIndex)

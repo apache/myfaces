@@ -133,9 +133,20 @@
     </build>
     <profiles>
         <profile>
-            <id>native</id>
+            <id>native-image</id>
+            <activation>
+                <property>
+                    <name>native</name>
+                </property>
+            </activation>
             <build>
                 <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>${native.surefire.skip}</skipTests>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>io.quarkus</groupId>
                         <artifactId>quarkus-maven-plugin</artifactId>
@@ -143,7 +154,7 @@
                         <executions>
                             <execution>
                                 <goals>
-                                    <goal>native-image</goal>
+                                    <goal>build</goal>
                                 </goals>
                                 <configuration>
                                     <enableHttpUrlHandler>true</enableHttpUrlHandler>
@@ -172,6 +183,12 @@
                     </plugin>
                 </plugins>
             </build>
+            <properties>
+                <skipITs>false</skipITs>
+                <quarkus.package.type>native</quarkus.package.type>
+                <quarkus.native.container-build>true</quarkus.native.container-build>
+                <quarkus.native.builder-image>mandrel</quarkus.native.builder-image>
+            </properties>
         </profile>
     </profiles>
 </project>
