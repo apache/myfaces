@@ -802,8 +802,7 @@ class MyFacesProcessor
     boolean shouldProxy(String typeName)
     {
         return !(typeName.startsWith("java.lang") 
-                 || typeName.startsWith("java.util") 
-                 || typeName.startsWith("jakarta.faces"));
+                 || typeName.startsWith("java.util"));
     }
 
     void collectPublicTypes(ClassInfo type, List<ClassInfo> publicTypes, CombinedIndexBuildItem combinedIndex)
