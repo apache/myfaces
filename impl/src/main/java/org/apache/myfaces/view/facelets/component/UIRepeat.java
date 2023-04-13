@@ -19,7 +19,6 @@
 package org.apache.myfaces.view.facelets.component;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,6 +57,7 @@ import jakarta.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
+import org.apache.myfaces.core.api.shared.EditableValueHolderState;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -421,9 +421,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     if (descendantStateIndex != -1 && descendantStateIndex < stateCollection.size())
                     {
                         Object[] object = stateCollection.get(descendantStateIndex);
-                        if (object[0] != null && component instanceof EditableValueHolder)
+                        if (component instanceof EditableValueHolder)
                         {
-                            ((SavedState) object[0]).restoreState((EditableValueHolder) component);
+                            EditableValueHolderState evhState = (EditableValueHolderState) object[0];
+                            if (evhState == null)
+                            {
+                                evhState = EditableValueHolderState.EMPTY;
+                            }
+                            evhState.restoreState((EditableValueHolder) component);
                         }
                         // If there is descendant state to restore, call it recursively, otherwise
                         // it is safe to skip iteration.
@@ -464,9 +469,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     if (descendantStateIndex != -1 && descendantStateIndex < stateCollection.size())
                     {
                         Object[] object = stateCollection.get(descendantStateIndex);
-                        if (object[0] != null && component instanceof EditableValueHolder)
+                        if (component instanceof EditableValueHolder)
                         {
-                            ((SavedState) object[0]).restoreState((EditableValueHolder) component);
+                            EditableValueHolderState evhState = (EditableValueHolderState) object[0];
+                            if (evhState == null)
+                            {
+                                evhState = EditableValueHolderState.EMPTY;
+                            }
+                            evhState.restoreState((EditableValueHolder) component);
                         }
                         // If there is descendant state to restore, call it recursively, otherwise
                         // it is safe to skip iteration.
@@ -584,9 +594,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         }
                     
                         childStates.add(child.getChildCount() > 0 ? 
-                                new Object[]{new SavedState((EditableValueHolder) child),
+                                new Object[] { EditableValueHolderState.create((EditableValueHolder) child),
                                     saveDescendantComponentStates(child, saveChildFacets, true)} :
-                                new Object[]{new SavedState((EditableValueHolder) child),
+                                new Object[] { EditableValueHolderState.create((EditableValueHolder) child),
                                     null});
                     }
                     else if (child.getChildCount() > 0 || (saveChildFacets && child.getFacetCount() > 0))
@@ -665,9 +675,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         }
                     
                         childStates.add(child.getChildCount() > 0 ? 
-                                new Object[]{new SavedState((EditableValueHolder) child),
+                                new Object[] { EditableValueHolderState.create((EditableValueHolder) child),
                                     saveDescendantComponentStates(child, saveChildFacets, true)} :
-                                new Object[]{new SavedState((EditableValueHolder) child),
+                                new Object[] { EditableValueHolderState.create((EditableValueHolder) child),
                                     null});
                     }
                     else if (child.getChildCount() > 0 || (saveChildFacets && child.getFacetCount() > 0))
@@ -1389,95 +1399,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         if (faces.getRenderResponse())
         {
             _isValidChilds = false;
-        }
-    }
-
-    // from RI
-    private final static class SavedState implements Serializable
-    {
-        private boolean _localValueSet;
-        private Object _submittedValue;
-        private boolean _valid = true;
-        private Object _value;
-
-        private static final long serialVersionUID = 2920252657338389849L;
-        
-        public SavedState(EditableValueHolder evh)
-        {
-            _value = evh.getLocalValue();
-            _localValueSet = evh.isLocalValueSet();
-            _valid = evh.isValid();
-            _submittedValue = evh.getSubmittedValue();
-        }        
-
-        Object getSubmittedValue()
-        {
-            return (_submittedValue);
-        }
-
-        void setSubmittedValue(Object submittedValue)
-        {
-            _submittedValue = submittedValue;
-        }
-
-        boolean isValid()
-        {
-            return (_valid);
-        }
-
-        void setValid(boolean valid)
-        {
-            _valid = valid;
-        }
-
-        Object getValue()
-        {
-            return _value;
-        }
-
-        public void setValue(Object value)
-        {
-            _value = value;
-        }
-
-        boolean isLocalValueSet()
-        {
-            return _localValueSet;
-        }
-
-        public void setLocalValueSet(boolean localValueSet)
-        {
-            _localValueSet = localValueSet;
-        }
-
-        @Override
-        public String toString()
-        {
-            return ("submittedValue: " + _submittedValue + " value: " + _value + " localValueSet: " + _localValueSet);
-        }
-        
-        public void restoreState(EditableValueHolder evh)
-        {
-            evh.setValue(_value);
-            evh.setValid(_valid);
-            evh.setSubmittedValue(_submittedValue);
-            evh.setLocalValueSet(_localValueSet);
-        }
-
-        public void populate(EditableValueHolder evh)
-        {
-            _value = evh.getLocalValue();
-            _valid = evh.isValid();
-            _submittedValue = evh.getSubmittedValue();
-            _localValueSet = evh.isLocalValueSet();
-        }
-
-        public void apply(EditableValueHolder evh)
-        {
-            evh.setValue(_value);
-            evh.setValid(_valid);
-            evh.setSubmittedValue(_submittedValue);
-            evh.setLocalValueSet(_localValueSet);
         }
     }
 
