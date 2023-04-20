@@ -143,8 +143,8 @@ export function resolveDelay(options: Config): number {
  *
  * @param options
  */
-export function resolveWindowId(options: Config) {
-    return options?.value?.windowId ?? ExtDomQuery.windowId;
+export function resolveWindowId(options: Config): string | null {
+    return options?.value?.windowId ?? ExtDomQuery.windowId.value;
 }
 
 /**

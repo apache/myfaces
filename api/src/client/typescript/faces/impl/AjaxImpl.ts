@@ -480,18 +480,18 @@ export module Implementation {
         /*
          * lazy helper to fetch the window id from the included faces.js
          */
-        let fetchWindowIdFromJSFJS = () => ExtDomQuery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null).value;
+        let fetchWindowIdFromJSFJS = (): Optional<string> => ExtDomQuery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null);
 
         /*
          * fetch window id from the url
          */
-        let fetchWindowIdFromURL = function () {
+        let fetchWindowIdFromURL = function (): Optional<string> {
             const href = window.location.href, windowId = "jfwid";
             const regex = new RegExp("[\\?&]" + windowId + "=([^&#\\;]*)");
             const results = regex.exec(href);
             //initial trial over the url and a regexp
-            if (results != null) return results[1];
-            return null;
+            if (results != null) return Optional.fromNullable(results[1]);
+            return Optional.fromNullable(null);
         };
 
         /*
@@ -532,7 +532,7 @@ export module Implementation {
         /*
          * return the window id or null
          */
-        return formWindowId != INIT ? formWindowId : (fetchWindowIdFromURL() || fetchWindowIdFromJSFJS());
+        return formWindowId != INIT ? formWindowId : (fetchWindowIdFromURL() || fetchWindowIdFromJSFJS()).value;
     }
 
     /**

@@ -1,4 +1,4 @@
-import {Optional, ValueEmbedder} from "./Monad";
+import {IValueHolder, Optional, ValueEmbedder} from "./Monad";
 import {XMLQuery} from "./XmlQuery";
 import {DomQuery, ElementAttribute, Style, WAIT_OPTS} from "./DomQuery";
 
@@ -62,6 +62,10 @@ export interface IDomQuery {
      */
     readonly offsetTop: number;
 
+    /**
+     * nonce value if our first root element
+     */
+    readonly nonce: ValueEmbedder<string>;
 
     /**
      * abbreviation for inputValue\.value to make
