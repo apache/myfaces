@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Config, IValueHolder, Optional, DomQuery, DQ, Es2019Array} from "mona-dish";
+import {Config, IValueHolder, Optional, DomQuery, DQ, Es2019Array, ValueEmbedder} from "mona-dish";
 import {$nsp, P_WINDOW_ID} from "../core/Const";
 
 
@@ -67,15 +67,15 @@ const ATTR_SRC = 'src';
  */
 export class ExtDomQuery extends DQ {
 
-    static get windowId() {
+    static get windowId(): Optional<string> {
         return new ExtDomQuery(document.body).windowId;
     }
 
-    static get nonce(): string {
+    static get nonce(): Optional<string> {
         return new ExtDomQuery(document.body).nonce;
     }
 
-    get windowId(): string | null {
+    get windowId(): Optional<string> {
 
         const fetchWindowIdFromURL = function (): string | null {
             let href = window.location.href;
@@ -94,9 +94,9 @@ export class ExtDomQuery extends DQ {
                 throw Error("Multiple different windowIds found in document");
             }
 
-            return (result.isPresent()) ? (<HTMLInputElement>result.getAsElem(0).value).value : fetchWindowIdFromURL();
+            return Optional.fromNullable((result.isPresent()) ? (<HTMLInputElement>result.getAsElem(0).value).value : fetchWindowIdFromURL());
         } else {
-            return fetchWindowIdFromURL();
+            return Optional.fromNullable(fetchWindowIdFromURL());
         }
     }
 
@@ -104,31 +104,32 @@ export class ExtDomQuery extends DQ {
     * determines the faces.js nonce and adds them to the namespace
     * this is done once and only lazily
     */
-    get nonce(): string | null {
+    get nonce(): ValueEmbedder<string> {
         //already processed
         let myfacesConfig = new ExtConfig(window.myfaces);
-        let nonce: IValueHolder<string> = myfacesConfig.getIf("config", "cspMeta", "nonce");
-        if (nonce.value) {
-            return <string>nonce.value;
+        let globalNonce: IValueHolder<string> = myfacesConfig.getIf("config", "cspMeta", "nonce");
+        if (!!globalNonce.value) {
+            return ValueEmbedder.fromNullable(globalNonce);
         }
 
         let curScript = new DQ(document.currentScript);
         //since our baseline atm is ie11 we cannot use document.currentScript globally
-        if (!!this.extractNonce(curScript)) {
+        let nonce = curScript.nonce;
+        if (nonce.isPresent()) {
             // fast-path for modern browsers
-            return this.extractNonce(curScript);
+            return ValueEmbedder.fromNullable(nonce);
         }
         // fallback if the currentScript method fails, we just search the jsf tags for nonce, this is
         // the last possibility
-        let nonceScript = Optional.fromNullable(DQ
+        let nonceScript: Optional<DomQuery> = Optional.fromNullable(DQ
             .querySelectorAll("script[src], link[src]").asArray
-            .filter((item) => this.extractNonce(item)  && item.attr(ATTR_SRC) != null)
+            .filter((item) => item.nonce.isPresent()  && item.attr(ATTR_SRC) != null)
             .filter(item => IS_FACES_SOURCE(item.attr(ATTR_SRC).value))?.[0]);
-
-        if (nonceScript.isPresent()) {
-            return this.extractNonce(nonceScript.value);
+        if(!nonceScript?.value) {
+            return ValueEmbedder.absent as ValueEmbedder<string>;
         }
-        return null;
+
+        return new DomQuery(nonceScript.value).nonce;
     }
 
     static searchJsfJsFor(item: RegExp): Optional<String> {
@@ -152,13 +153,13 @@ export class ExtDomQuery extends DQ {
     }
 
     globalEval(code: string, nonce ?: string): DQ {
-        return new ExtDomQuery(super.globalEval(code, nonce ?? this.nonce));
+        return new ExtDomQuery(super.globalEval(code, nonce ?? this.nonce.value));
     }
 
     // called from base class runScripts, do not delete
     // noinspection JSUnusedGlobalSymbols
     globalEvalSticky(code: string, nonce ?: string): DQ {
-        return new ExtDomQuery(super.globalEvalSticky(code, nonce ?? this.nonce));
+        return new ExtDomQuery(super.globalEvalSticky(code, nonce ?? this.nonce.value));
     }
 
     /**
@@ -238,9 +239,6 @@ export class ExtDomQuery extends DQ {
         return new ExtDomQuery(ret);
     }
 
-    private extractNonce(curScript: DomQuery) {
-        return (curScript.getAsElem(0).value as HTMLElement)?.nonce ?? curScript.attr("nonce").value;
-    }
 
     filter(func: (item: DomQuery) => boolean): ExtDomQuery {
         return new ExtDomQuery(super.filter(func));
