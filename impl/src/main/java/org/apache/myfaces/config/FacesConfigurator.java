@@ -451,6 +451,10 @@ public class FacesConfigurator
             {
                 instance = ((FacesWrapper<T>) instance).getWrapped();
             }
+            else
+            {
+                return;
+            }
         }
     }
 
