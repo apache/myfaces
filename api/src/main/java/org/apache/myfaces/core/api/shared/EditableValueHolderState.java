@@ -77,17 +77,17 @@ public class EditableValueHolderState implements Serializable
     public void saveState(EditableValueHolder evh)
     {
         this.localValue = evh.getLocalValue();
+        this.localValueSet = evh.isLocalValueSet();
         this.valid = evh.isValid();
         this.submittedValue = evh.getSubmittedValue();
-        this.localValueSet = evh.isLocalValueSet();
     }
 
     public void restoreState(EditableValueHolder evh)
     {
         evh.setValue(localValue);
+        evh.setLocalValueSet(localValueSet);
         evh.setValid(valid);
         evh.setSubmittedValue(submittedValue);
-        evh.setLocalValueSet(localValueSet);
     }
 
     public static EditableValueHolderState create(EditableValueHolder evh)
@@ -104,6 +104,7 @@ public class EditableValueHolderState implements Serializable
     {
         return evh.getLocalValue() == null
                 && evh.isValid()
+                && !evh.isLocalValueSet()
                 && evh.getSubmittedValue() == null;
     }
 
