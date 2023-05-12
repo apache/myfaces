@@ -18,13 +18,13 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.deployment;
 
-import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,6 +48,7 @@ import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.flow.FlowScoped;
 import jakarta.faces.flow.builder.FlowDefinition;
+import jakarta.faces.lifecycle.ClientWindowScoped;
 import jakarta.faces.model.FacesDataModel;
 import jakarta.faces.render.ClientBehaviorRenderer;
 import jakarta.faces.render.FacesBehaviorRenderer;
@@ -87,6 +88,7 @@ import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.extensions.quarkus.runtime.MyFacesRecorder;
 import org.apache.myfaces.core.extensions.quarkus.runtime.QuarkusFacesInitializer;
 import org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory;
+import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusClientWindowScopedContext;
 import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFacesScopeContext;
 import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFlowScopedContext;
 import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusViewScopeContext;
@@ -207,7 +209,7 @@ class MyFacesProcessor
     };
 
     @BuildStep
-    void buildFeature(BuildProducer<FeatureBuildItem> feature) throws IOException
+    void buildFeature(BuildProducer<FeatureBuildItem> feature)
     {
         feature.produce(new FeatureBuildItem("myfaces"));
     }
@@ -216,7 +218,7 @@ class MyFacesProcessor
     void buildServlet(WebMetadataBuildItem  webMetaDataBuildItem,
             BuildProducer<FeatureBuildItem> feature,
             BuildProducer<ServletBuildItem> servlet,
-            BuildProducer<ListenerBuildItem> listener) throws IOException
+            BuildProducer<ListenerBuildItem> listener)
     {
         WebMetaData webMetaData = webMetaDataBuildItem.getWebMetaData();
         ServletMetaData facesServlet = null;
@@ -242,7 +244,7 @@ class MyFacesProcessor
 
     @BuildStep
     void buildCdiBeans(BuildProducer<AdditionalBeanBuildItem> additionalBean,
-            BuildProducer<BeanDefiningAnnotationBuildItem> beanDefiningAnnotation) throws IOException
+            BuildProducer<BeanDefiningAnnotationBuildItem> beanDefiningAnnotation)
     {
         for (Class<?> clazz : BEAN_CLASSES)
         {
@@ -301,7 +303,18 @@ class MyFacesProcessor
     }
 
     @BuildStep
-    void buildInitParams(BuildProducer<ServletInitParamBuildItem> initParam) throws IOException
+    ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem registerClientWindowScopedContext(
+            ContextRegistrationPhaseBuildItem phase)
+    {
+        return new ContextRegistrationPhaseBuildItem.ContextConfiguratorBuildItem(
+                phase.getContext()
+                        .configure(ClientWindowScoped.class)
+                        .normal()
+                        .contextClass(QuarkusClientWindowScopedContext.class));
+    }
+
+    @BuildStep
+    void buildInitParams(BuildProducer<ServletInitParamBuildItem> initParam)
     {
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.INJECTION_PROVIDER, QuarkusInjectionProvider.class.getName()));
@@ -310,7 +323,7 @@ class MyFacesProcessor
     }
 
     @BuildStep
-    void buildRecommendedInitParams(BuildProducer<ServletInitParamBuildItem> initParam) throws IOException
+    void buildRecommendedInitParams(BuildProducer<ServletInitParamBuildItem> initParam)
     {
         // user config
         Config config = ConfigProvider.getConfig();
@@ -322,13 +335,11 @@ class MyFacesProcessor
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
     void buildAnnotationProviderIntegration(MyFacesRecorder recorder, CombinedIndexBuildItem combinedIndex)
-            throws IOException
     {
         for (String clazz : BEAN_DEFINING_ANNOTATION_CLASSES)
         {
             combinedIndex.getIndex()
                     .getAnnotations(DotName.createSimple(clazz))
-                    .stream()
                     .forEach(annotation ->
                     {
                         if (annotation.target().kind() == AnnotationTarget.Kind.CLASS)
@@ -344,7 +355,7 @@ class MyFacesProcessor
     {
         Optional<String> projectStage = config.getOptionalValue(ProjectStage.PROJECT_STAGE_PARAM_NAME,
                 String.class);
-        if (!projectStage.isPresent())
+        if (projectStage.isEmpty())
         {
             projectStage = Optional.of(ProjectStage.Production.name());
             if (ConfigUtils.getProfiles().contains(LaunchMode.DEVELOPMENT.getDefaultProfile()))
@@ -362,7 +373,6 @@ class MyFacesProcessor
     @BuildStep
     void buildMangedPropertyProducers(BeanRegistrationPhaseBuildItem beanRegistrationPhase,
             BuildProducer<BeanRegistrationPhaseBuildItem.BeanConfiguratorBuildItem> beanConfigurators)
-            throws IOException
     {
         ManagedPropertyBuildStep.build(beanRegistrationPhase, beanConfigurators);
     }
@@ -370,7 +380,7 @@ class MyFacesProcessor
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
     void buildFacesDataModels(MyFacesRecorder recorder,
-            CombinedIndexBuildItem combinedIndex) throws IOException
+            CombinedIndexBuildItem combinedIndex)
     {
         for (AnnotationInstance ai : combinedIndex.getIndex()
                 .getAnnotations(DotName.createSimple(FacesDataModel.class.getName())))
@@ -388,7 +398,7 @@ class MyFacesProcessor
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
     void buildFlowScopedMapping(MyFacesRecorder recorder,
-            CombinedIndexBuildItem combinedIndex) throws IOException
+            CombinedIndexBuildItem combinedIndex)
     {
         for (AnnotationInstance ai : combinedIndex.getIndex()
                 .getAnnotations(DotName.createSimple(FlowScoped.class.getName())))
@@ -419,7 +429,6 @@ class MyFacesProcessor
             CombinedIndexBuildItem combinedIndex)
     {
         List<String> classNames = new ArrayList<>();
-        List<Class<?>> classes = new ArrayList<>();
 
         classNames.addAll(collectSubclasses(combinedIndex, Renderer.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ClientBehaviorRenderer.class.getName()));
@@ -482,7 +491,7 @@ class MyFacesProcessor
             "jakarta.validation.groups.Default",
             "jakarta.validation.Validation"));
 
-        classes.addAll(Arrays.asList(ApplicationImplEventManager.class,
+        List<Class<?>> classes = new ArrayList<>(Arrays.asList(ApplicationImplEventManager.class,
                 DefaultWebConfigProviderFactory.class,
                 ErrorPageWriter.class,
                 MyFacesContainerInitializer.class,
@@ -497,9 +506,9 @@ class MyFacesProcessor
                 ExpressionFactoryImpl.class));
 
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(false, false, classNames.toArray(new String[classNames.size()])));
+                ReflectiveClassBuildItem.builder(classNames.toArray(new String[0])).build());
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(false, false, classes.toArray(new Class[classes.size()])));
+                ReflectiveClassBuildItem.builder(classes.toArray(new Class[0])).build());
     }
 
     @BuildStep
@@ -551,9 +560,9 @@ class MyFacesProcessor
                 QuarkusFactoryFinderProvider.class));
 
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, false, classNames.toArray(new String[classNames.size()])));
+                ReflectiveClassBuildItem.builder(classNames.toArray(new String[0])).methods(true).build());
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, false, classes.toArray(new Class[classes.size()])));
+                ReflectiveClassBuildItem.builder(classes.toArray(new Class[0])).methods(true).build());
     }
 
     @BuildStep
@@ -561,8 +570,9 @@ class MyFacesProcessor
     void registerForFieldReflection(MyFacesRecorder recorder,
                                BuildProducer<ReflectiveClassBuildItem> reflectiveClass)
     {
-        reflectiveClass.produce(new ReflectiveClassBuildItem(true, true,
-                "jakarta.faces.context._MyFacesExternalContextHelper"));
+        reflectiveClass.produce(
+                ReflectiveClassBuildItem.builder("jakarta.faces.context._MyFacesExternalContextHelper")
+                        .methods(true).fields(true).build());
     }
 
     @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
@@ -581,7 +591,8 @@ class MyFacesProcessor
             }
         }
 
-        reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, classNames.toArray(new String[0])));
+        reflectiveClass.produce(ReflectiveClassBuildItem.builder(classNames.toArray(new String[0]))
+                        .methods(true).fields(true).build());
     }
 
     @BuildStep
@@ -759,24 +770,24 @@ class MyFacesProcessor
 
         // sort our duplicate
         types = types.stream().distinct().collect(Collectors.toList());
-        types.removeIf(ci -> ci == null);
+        types.removeIf(Objects::isNull);
 
         // collect all public types from getters and fields
         List<ClassInfo> temp = new ArrayList();
-        types.stream().forEach(ci -> collectPublicTypes(ci, temp, combinedIndex));
+        types.forEach(ci -> collectPublicTypes(ci, temp, combinedIndex));
         types.addAll(temp);
 
         // sort our duplicate
         types = types.stream().distinct().collect(Collectors.toList());
-        types.removeIf(ci -> ci == null);
+        types.removeIf(Objects::isNull);
 
         for (ClassInfo type : types)
         {
             String typeName = type.name().toString();
             // register type
-            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName));
+            reflectiveClass.produce(ReflectiveClassBuildItem.builder(typeName).methods(true).build());
             // and try to register the ClientProxy
-            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName + "_ClientProxy"));
+            reflectiveClass.produce(ReflectiveClassBuildItem.builder(typeName + "_ClientProxy").methods(true).build());
         }
 
 
@@ -787,9 +798,9 @@ class MyFacesProcessor
         for (String typeName : typeNames)
         {
             // register type
-            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName));
+            reflectiveClass.produce(ReflectiveClassBuildItem.builder(typeName).methods(true).build());
             // and try to register the ClientProxy
-            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName + "_ClientProxy"));
+            reflectiveClass.produce(ReflectiveClassBuildItem.builder(typeName + "_ClientProxy").methods(true).build());
         }
     }
 
@@ -800,8 +811,7 @@ class MyFacesProcessor
             return;
         }
 
-        ClassInfo ci = type;
-        for (MethodInfo mi : ci.methods())
+        for (MethodInfo mi : type.methods())
         {
             if (Modifier.isPublic(mi.flags()) && mi.name().startsWith("get"))
             {
@@ -815,7 +825,7 @@ class MyFacesProcessor
                 collectPublicTypes(returnType, publicTypes, combinedIndex);
             }
         }
-        for (FieldInfo fi : ci.fields())
+        for (FieldInfo fi : type.fields())
         {
             if (Modifier.isPublic(fi.flags()) && !Modifier.isStatic(fi.flags()))
             {

@@ -67,6 +67,16 @@ public class ClientWindowScopeContext implements Context
         return true;
     }
 
+    protected ContextualStorage getContextualStorage(FacesContext facesContext, boolean createIfNotExist)
+    {
+        String windowId = getCurrentClientWindowId(facesContext);
+        if (windowId != null)
+        {
+            return getStorageHolder(facesContext).getContextualStorage(windowId, createIfNotExist);
+        }
+        return null;
+    }
+
     @Override
     public <T> T get(Contextual<T> bean)
     {
@@ -76,8 +86,7 @@ public class ClientWindowScopeContext implements Context
 
         if (facesContext != null)
         {
-            ContextualStorage storage = getStorageHolder(facesContext).getContextualStorage(
-                    getCurrentClientWindowId(facesContext), false);
+            ContextualStorage storage = getContextualStorage(facesContext, false);
             if (storage != null)
             {
                 Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
@@ -103,8 +112,7 @@ public class ClientWindowScopeContext implements Context
         
         checkActive(facesContext);
 
-        ContextualStorage storage = getStorageHolder(facesContext).getContextualStorage(
-                getCurrentClientWindowId(facesContext), true);
+        ContextualStorage storage = getContextualStorage(facesContext, true);
 
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
         ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
@@ -142,6 +150,24 @@ public class ClientWindowScopeContext implements Context
         return context.getExternalContext().getClientWindow().getId();
     }
 
+    public boolean destroy(Contextual bean)
+    {
+        ContextualStorage storage = getContextualStorage(FacesContext.getCurrentInstance(), false);
+        if (storage == null)
+        {
+            return false;
+        }
+        
+        ContextualInstanceInfo<?> contextualInstanceInfo = storage.getStorage().get(storage.getBeanKey(bean));
+        if (contextualInstanceInfo == null)
+        {
+            return false;
+        }
+
+        bean.destroy(contextualInstanceInfo.getContextualInstance(), contextualInstanceInfo.getCreationalContext());
+
+        return true;
+    }
 
     public static void destroyAll(FacesContext facesContext)
     {
