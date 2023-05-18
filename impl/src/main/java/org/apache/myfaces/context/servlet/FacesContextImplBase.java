@@ -40,6 +40,7 @@ import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.el.FacesELContext;
 import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.Purgeable;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage; 
 
 /**
@@ -49,7 +50,7 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class FacesContextImplBase extends FacesContext
+public abstract class FacesContextImplBase extends FacesContext implements Purgeable
 {
     private Application _application;
     private ExternalContext _externalContext;
@@ -173,18 +174,16 @@ public abstract class FacesContextImplBase extends FacesContext
         
         return _application;
     }
-    
-    /**
-     * 
-     */
-    public void purgeFacesContext()
+
+    @Override
+    public void purge()
     {
         _application = null;
         _renderKitFactory = null;
         _cachedRenderKit = null;
         _cachedRenderKitId = null;
     }
-    
+
     @Override
     public final ExceptionHandler getExceptionHandler()
     {
