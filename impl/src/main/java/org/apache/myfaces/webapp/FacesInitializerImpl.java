@@ -647,8 +647,8 @@ public class FacesInitializerImpl implements FacesInitializer
                     servletContext.getAttribute(ServerContainer.class.getName());
             if (serverContainer == null)
             {
-                log.log(Level.INFO, "f:websocket support enabled but cannot found websocket ServerContainer instance "
-                        + "on current context.");
+                log.log(Level.INFO, "f:websocket support is enabled but the WebSocket ServerContainer instance "
+                        + "cannot be found in the current ServletContext.");
                 return;
             }
 
