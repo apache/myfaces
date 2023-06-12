@@ -803,9 +803,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             }
             else
             {
-                log.log(Level.INFO, "f:websocket support enabled but cannot found websocket ServerContainer instance "+
-                        "on current context. If websocket library is available, please include a FakeEndpoint instance "
-                        + "into your code to force enable it (Tyrus users).");
+                log.log(Level.INFO, "f:websocket support is enabled but the WebSocket ServerContainer instance " +
+                        "cannot be found in the current ServletContext. If a websocket library is available, " +
+                        "please include a FakeEndpoint instance into your code to force enable it (Tyrus users).");
             }
         }
     }
