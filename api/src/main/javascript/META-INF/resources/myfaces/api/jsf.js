@@ -100,6 +100,12 @@ if (!window.jsf) {
             return impl.getViewState(formElement);
         };
 
+        this.getViewState = function(formElement, source) {
+            /*we are not allowed to add the impl on a global scope so we have to inline the code*/
+            var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+            return impl.getViewState(formElement, source);
+        };
+
         /**
          * returns the window identifier for the given node / window
          * @param {optional String | DomNode}  the node for which the client identifier has to be determined

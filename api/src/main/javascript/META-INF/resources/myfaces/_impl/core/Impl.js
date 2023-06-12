@@ -113,6 +113,29 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         return ret.makeFinal();
     },
 
+    getViewState:function (form, source) {
+        /**
+         *  typecheck assert!, we opt for strong typing here
+         *  because it makes it easier to detect bugs
+         */
+        if (form) {
+            form = this._Lang.byId(form);
+        }
+
+        if (!form
+                || !form.nodeName
+                || form.nodeName.toLowerCase() != "form") {
+            throw new Error(this._Lang.getMessage("ERR_VIEWSTATE"));
+        }
+
+        var ajaxUtils = myfaces._impl.xhrCore._AjaxUtils;
+
+        var ret = this._Lang.createFormDataDecorator([]);
+        ajaxUtils.encodeSubmittableFields(ret, form, null);
+        ajaxUtils.appendIssuingItem(source, ret);
+        return ret.makeFinal();
+    },
+
     /**
      * this function has to send the ajax requests
      *
