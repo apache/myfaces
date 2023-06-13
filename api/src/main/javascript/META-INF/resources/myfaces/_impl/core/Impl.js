@@ -231,7 +231,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         /**
          * we also now assign the container data to deal with it later
          */
-        _Utils._assignNamingContainerData(mfInternal, form, faces.separatorchar);
+        _Utils._assignNamingContainerData(mfInternal, form, jsf.separatorchar);
 
 
         /**
