@@ -126,6 +126,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
                 executes, partialIdsArray
             );
 
+
             this.contentType = formData.isMultipartRequest ? "undefined" : this.contentType;
 
             // next step the pass through parameters are merged in for post params
@@ -147,6 +148,14 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
                 // on the key renaming before doing ops like deep copy
                 this.requestContext.$nspEnabled = true;
                 requestPassThroughParams.$nspEnabled = true;
+            }
+
+            const issuingItemId = this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value;
+            if(issuingItemId) {
+                const issuingItem = DQ.byId(issuingItemId);
+                const arr = new ExtConfig({});
+                arr.assign(issuingItemId).value = issuingItem.val;
+                formData.shallowMerge(arr, true, true);
             }
 
             this.responseContext = requestPassThroughParams.deepCopy;
