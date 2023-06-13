@@ -68,7 +68,8 @@ describe("test for proper request param patterns identical to the old implementa
         "jakarta.faces.partial.ajax": "true",
         "jakarta.faces.partial.execute": "cmd_update_insert2",
         "form1": "form1",
-        "jakarta.faces.ViewState": "blubbblubblubb"
+        "jakarta.faces.ViewState": "blubbblubblubb",
+        "cmd_update_insert2": "update insert second protocol path"
     }
     /**
      * matches two maps for absolute identicality
