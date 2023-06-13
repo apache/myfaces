@@ -28,6 +28,9 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
 /** @lends myfaces._impl.xhrCore._AjaxUtils.prototype */
 {
 
+    NAMED_VIEWROOT: "namedViewRoot",
+    NAMING_CONTAINER_ID: "myfaces.partialId",
+
 
     /**
      * determines fields to submit
@@ -57,8 +60,11 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
      */
     appendIssuingItem: function (item, targetBuf) {
         // if triggered by a Button send it along
-        if (item && item.type && item.type.toLowerCase() == "submit") {
-            targetBuf.append(item.name, item.value);
+        if (item && item.type &&
+            (item.type.toLowerCase() == "submit" ||
+             item.type.toLowerCase() == "button" )) {
+            //buttons not always have a name unlike inputs
+            targetBuf.append(item.id || item.name, item.value);
         }
     },
 
@@ -132,6 +138,85 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
                 }
             }
 
+        }
+    },
+
+    _$ncRemap: function(internalContext, containerId) {
+        var namedVieRoot = internalContext[this.NAMED_VIEWROOT];
+        var namingContainerId = internalContext[this.NAMING_CONTAINER_ID];
+        if(!namedVieRoot || !namingContainerId) {
+            return containerId
+        }
+        if(containerId.indexOf(namingContainerId) == 0) {
+            return containerId;
+        }
+        return [namingContainerId, containerId].join("");
+    },
+
+    /**
+     * determines the current naming container
+     * and assigns it internally
+     *
+     * @param internalContext
+     * @param formElement
+     * @private
+     */
+    _assignNamingContainerData: function(internalContext, formElement, separatorChar) {
+        const viewRootId = this._resolveViewRootId(formElement, separatorChar);
+
+        if(!!viewRootId) {
+            internalContext[this.NAMED_VIEWROOT] = true;
+            internalContext[this.NAMING_CONTAINER_ID] = viewRootId;
+        }
+    },
+
+    /**
+     * resolve the viewRoot id in a naming container situation
+     * (aka ViewState element name is prefixed)
+     * @param form
+     * @return a string (never null) which is either emtpy or contains the prefix for the ViewState
+     * (including the separator)
+     */
+    _resolveViewRootId: function(form, separatorChar) /*string*/ {
+        form = this._Dom.byId(form);
+        var _t = this;
+        var foundNames = this._Dom.findAll(form, function(node) {
+            var name = node.getAttribute("name");
+            if(!name || name.indexOf(_t.P_VIEWSTATE)) {
+                return false;
+            }
+            return node;
+        }, true);
+        if(!foundNames.length) {
+            return "";
+        }
+        return foundNames[0].name.split(separatorChar, 2)[0];
+    },
+
+    /**
+     * as per jsdoc before the request it must be ensured that every post argument
+     * is prefixed with the naming container id (there is an exception in mojarra with
+     * the element=element param, which we have to follow here as well.
+     * (inputs are prefixed by name anyway normally this only affects our standard parameters)
+     * @private
+     */
+    _resoveConfigNamingContainerMapper: function(myfacesOptions, separatorChar) {
+        var isNamedViewRoot = !!myfacesOptions[this.NAMED_VIEWROOT];
+        if(!isNamedViewRoot) {
+            return;
+        }
+
+        var partialId = myfacesOptions[this.NAMING_CONTAINER_ID];
+        var prefix = partialId + this.getSeparatorChar();
+        return function (data /*assoc array of key value pairs*/) {
+            var ret = {};
+            for(var key in data) {
+                if(!data.hasOwnProperty(key)) {
+                    continue;
+                }
+                ret[prefix + key] = data[key]
+            }
+            return ret;
         }
     }
 });
