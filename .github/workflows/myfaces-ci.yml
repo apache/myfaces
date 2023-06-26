@@ -71,7 +71,7 @@ jobs:
       - name: Build with Maven
         # CHROMEWEBDRIVER env variable https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md#environment-variables-1
         run: |
-          if ! mvn -B -V clean verify checkstyle:check apache-rat:check -Dformats=XML "-Dwebdriver.chrome.driver=$CHROMEWEBDRIVER/chromedriver" -DchromeDriverVersion=112.0.5615.49 -f pom.xml; then
+          if ! mvn -B -V clean verify checkstyle:check apache-rat:check -Dformats=XML "-Dwebdriver.chrome.driver=$CHROMEWEBDRIVER/chromedriver" -f pom.xml; then
             find . \( -path '*/target/surefire-reports/*.xml' -o -path '*/target/failsafe-reports/*.xml' -o -path '*/target/rat.txt' -o -path '*/target/checkstyle-result.xml' -o -path '*/target/dependency-check-report.xml' \) | zip -q reports.zip -@
             exit 1
           fi
