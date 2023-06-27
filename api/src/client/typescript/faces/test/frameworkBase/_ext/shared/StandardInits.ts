@@ -273,6 +273,23 @@ export module StandardInits {
 </html>`;
 
 
+    const VIRTUAL_ELEMENT = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="jd_0:blarg">
+    <tobago-multi-select id="page:numbers">
+        <input type="checkbox" name="page:numbers" id="page:numbers:1" value="1"></input>
+        <input type="checkbox" name="page:numbers" id="page:numbers:2" value="2"></input>
+        <input type="checkbox" name="page:numbers" id="page:numbers:3" value="3"></input>
+    </tobago-multi-select>
+</form>
+</body>
+</html>`;
+
 
     /**
      * a page simulating basically a simple faces form
@@ -499,6 +516,11 @@ function triggerRequestChain(event) {
     export function defaultMyFacesNamespaces(withJsf = true): Promise<() => void> {
         return init(HTML_FORM_NAMESPACED, withJsf);
     }
+
+    export function initVirtualElement(withJsf = true): Promise<() => void> {
+        return init(VIRTUAL_ELEMENT, withJsf);
+    }
+
     export function defaultMyFaces23(withJsf = true): Promise<() => void> {
         return init(HTML_FORM_DEFAULT.replace(/jakarta/gi, "javax"), withJsf, false);
     }

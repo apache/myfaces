@@ -59,7 +59,7 @@ export class HiddenInputBuilder {
 
         let existingStates = DQ$(`[name*='${$nsp(this.name)}']`);
         let cnt = existingStates.asArray.map(state => {
-            let ident: string = state.id.orElse("-1").value;
+            let ident: string = state.id.orElse("0").value;
             ident = ident.substring(ident.lastIndexOf(SEP)+1);
             return parseInt(ident);
         })
@@ -68,7 +68,7 @@ export class HiddenInputBuilder {
             })
             .reduce((item1, item2) => {
                 return Math.max(item1, item2);
-            }, -1);
+            }, 0); //we start with 1 (see cnt++)
         //the maximum  new ident is the current max + 1
         cnt++;
 

@@ -723,9 +723,9 @@ describe('Tests of the various aspects of the response protocol functionality', 
         expect(DQ$("#form2 [name*='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
         expect(DQ$("#form3 [name*='jakarta.faces.ViewState']").val).to.eq("booga_after_update");
 
-        expect(DQ$("#form1 [name*='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:0") === 0).to.be.true;
-        expect(DQ$("#form2 [name*='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:1") === 0).to.be.true;
-        expect(DQ$("#form3 [name*='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:2") === 0).to.be.true;
+        expect(DQ$("#form1 [name*='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:1") === 0).to.be.true;
+        expect(DQ$("#form2 [name*='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:2") === 0).to.be.true;
+        expect(DQ$("#form3 [name*='jakarta.faces.ViewState']").id.value.indexOf("viewroot_1:jakarta.faces.ViewState:3") === 0).to.be.true;
 
         done();
     });

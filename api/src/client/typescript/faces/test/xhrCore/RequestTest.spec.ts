@@ -30,7 +30,9 @@ import {
     SUCCESS
 } from "../../impl/core/Const";
 import defaultMyFaces = StandardInits.defaultMyFaces;
+import initVirtualElement = StandardInits.initVirtualElement;
 import STD_XML = StandardInits.STD_XML;
+import exp from "constants";
 
 declare var faces: any;
 declare var Implementation: any;
@@ -638,6 +640,49 @@ describe('Tests after core when it hits response', function () {
         done();
     });
 
+    it("must handle the virtual issuing elements correctly", function() {
+
+        const waitForResult = initVirtualElement();
+        return waitForResult.then((close) => {
+            const send = sinon.spy(XMLHttpRequest.prototype, "send");
+
+            try {
+                let dqElem = DomQuery.byId("page:numbers");
+                let element = dqElem.getAsElem(0).value;
+                dqElem.querySelectorAll("input").click();
+
+                faces.ajax.request(element, null, {
+                    execute: "page:numbers",
+                    render: "@form",
+                    params: {
+                        pass1: "pass1",
+                        pass2: "pass2"
+                    }
+                });
+
+                let argsVal: any = send.args[0][0];
+                let arsArr = argsVal.split("&");
+                let resultsMap = {};
+                let doubles = 0;
+                for (let val of arsArr) {
+                    let keyVal = val.split("=");
+                    if(!!resultsMap[keyVal[0]]) {
+                        doubles++;
+                    }
+                    resultsMap[keyVal[0]] = keyVal[1];
+                }
+
+                expect(doubles).to.eq(2);
+
+            } finally {
+
+                send.restore();
+            }
+
+            return true;
+        });
+
+    });
 
 });
 
