@@ -152,10 +152,12 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
 
             const issuingItemId = this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value;
             if(issuingItemId) {
-                const issuingItem = DQ.byId(issuingItemId);
-                const arr = new ExtConfig({});
-                arr.assign(issuingItemId).value = issuingItem.val;
-                formData.shallowMerge(arr, true, true);
+                const itemValue = DQ.byId(issuingItemId).inputValue;
+                if(itemValue.isPresent()) {
+                    const arr = new ExtConfig({});
+                    arr.assign(issuingItemId).value = itemValue.value;
+                    formData.shallowMerge(arr, true, true);
+                }
             }
 
             this.responseContext = requestPassThroughParams.deepCopy;
