@@ -55,12 +55,10 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  */
 public class FacesContextImpl extends FacesContextImplBase
 {
-    static final String RE_SPLITTER = "[\\s\\t\\r\\n]*\\,[\\s\\t\\r\\n]*";
     
     // ~ Instance fields ----------------------------------------------------------------------------
     
     private Map<String, List<FacesMessage>> _messages = null;
-    private List<FacesMessage> _orderedMessages = null;
     private PhaseId _currentPhaseId;
     private ResponseStream _responseStream = null;
     private ResponseWriter _responseWriter = null;
@@ -87,8 +85,8 @@ public class FacesContextImpl extends FacesContextImplBase
     }
     
     /**
-     * Private constructor used in internal construtor chain.
-     * @param externalContext
+     * Private constructor used in internal constructor chain.
+     * @param externalContext the external context
      */
     private FacesContextImpl(ServletExternalContextImpl externalContext)
     {
@@ -97,10 +95,10 @@ public class FacesContextImpl extends FacesContextImplBase
     
     /**
      * Creates a FacesContextImpl with the given ExternalContext,
-     * ReleaseableExternalContext and ReleaseableFacesContextFactory.
-     * @param externalContext
-     * @param defaultExternalContext
-     * @param facesContextFactory
+     * ReleasableExternalContext and ReleasableFacesContextFactory.
+     * @param externalContext the external context
+     * @param defaultExternalContext the default context if the external context is null
+     * @param facesContextFactory the factory for creating context
      */
     public FacesContextImpl(final ExternalContext externalContext,
             final ExternalContext defaultExternalContext , 
@@ -143,7 +141,6 @@ public class FacesContextImpl extends FacesContextImplBase
         }
 
         _messages = null;
-        _orderedMessages = null;
         _currentPhaseId = null;
         _responseStream = null;
         _responseWriter = null;
@@ -181,13 +178,10 @@ public class FacesContextImpl extends FacesContextImplBase
         if (_messages == null)
         {
             _messages = new LinkedHashMap<>(5, 1f);
-            _orderedMessages = new ArrayList<>();
         }
 
-        List<FacesMessage> lst = _messages.computeIfAbsent(clientId, k -> new ArrayList<>(3));         
+        List<FacesMessage> lst = _messages.computeIfAbsent(clientId, k -> new ArrayList<>(3));
         lst.add(message);
-
-        _orderedMessages.add(message);
         
         FacesMessage.Severity serSeverity = message.getSeverity();
         if (serSeverity != null)
@@ -208,12 +202,17 @@ public class FacesContextImpl extends FacesContextImplBase
     {
         assertNotReleased();
         
-        if (_messages == null)
+        if (_messages == null || _messages.size() == 0)
         {
-            return Collections.unmodifiableList(Collections.emptyList());
+            return Collections.emptyList();
         }
         
-        return Collections.unmodifiableList(_orderedMessages);
+        List<FacesMessage> orderedMessages = new ArrayList<>();
+        for (List<FacesMessage> list : _messages.values())
+        {
+            orderedMessages.addAll(list);
+        }
+        return Collections.unmodifiableList(orderedMessages);
     }
 
     @Override
@@ -223,7 +222,7 @@ public class FacesContextImpl extends FacesContextImplBase
         
         if (_messages == null || !_messages.containsKey(clientId))
         {
-            return Collections.unmodifiableList(Collections.emptyList());
+            return Collections.emptyList();
         }
         
         return _messages.get(clientId);
@@ -234,12 +233,13 @@ public class FacesContextImpl extends FacesContextImplBase
     {
         assertNotReleased();
 
-        if (_messages == null)
+        if (_messages == null || _messages.size() == 0)
         {
-            return Collections.emptyIterator();
+            List<FacesMessage> emptyList = Collections.emptyList();
+            return emptyList.iterator();
         }
-        
-        return _orderedMessages.iterator();
+
+        return new FacesMessageIterator(_messages);
     }
 
     @Override
@@ -253,7 +253,7 @@ public class FacesContextImpl extends FacesContextImplBase
             return Collections.emptyIterator();
         }
         
-        return _messages.get(clientId).iterator();        
+        return _messages.get(clientId).iterator();
     }
     
     @Override
@@ -389,7 +389,7 @@ public class FacesContextImpl extends FacesContextImplBase
             // 
             // Setting a "phantom" UIViewRoot calling facesContext.setViewRoot(viewRoot)
             // to avoid it is bad, because this is work of RestoreViewExecutor,
-            // and theorically ViewHandler.restoreView must return an UIViewRoot
+            // and theoretically ViewHandler.restoreView must return an UIViewRoot
             // instance.
             //
             // The problem with this is if the user changes the renderkit directly
