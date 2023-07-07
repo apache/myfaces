@@ -245,7 +245,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         } else if (!fieldToApply) {
             var element = this._Dom.getDummyPlaceHolder();
             //spec error, two elements with the same id should not be there, TODO recheck the space if the name does not suffice alone
-            element.innerHTML = ["<input type='hidden'", "id='", identifier+jsf.separatorchar+Math.random() , "' name='", identifier , "' value='" , value , "' />"].join("");
+            element.innerHTML = ["<input type='hidden'", "id='", [identifier,jsf.separatorchar,this._fetchUniqueId(identifier)].join("") , "' name='", identifier , "' value='" , value , "' />"].join("");
             //now we go to proper dom handling after having to deal with another ie screwup
             try {
                 theForm.appendChild(element.childNodes[0]);
@@ -254,6 +254,17 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             }
         }
     },
+
+    _fetchUniqueId: function(identifier) {
+        var cnt = 1;
+        var retVal = identifier + jsf.separatorchar + cnt;
+        while(this._Dom.byId(retVal) != null) {
+            cnt++;
+            retVal = identifier + jsf.separatorchar + cnt;
+        }
+        return retVal;
+    },
+
 
     _setVSTCWInnerForms:function (context, elem, value, identifier) {
 
