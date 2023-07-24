@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
@@ -99,30 +100,30 @@ public class FacesMessage implements Serializable
 
     static
     {
-        Map<String, FacesMessage.Severity> map = new HashMap<String, Severity>(7);
+        Map<String, FacesMessage.Severity> map = new HashMap<>(7);
         map.put(SEVERITY_INFO.toString(), SEVERITY_INFO);
         map.put(SEVERITY_WARN.toString(), SEVERITY_WARN);
         map.put(SEVERITY_ERROR.toString(), SEVERITY_ERROR);
         map.put(SEVERITY_FATAL.toString(), SEVERITY_FATAL);
         VALUES_MAP = Collections.unmodifiableMap(map);
 
-        List<FacesMessage.Severity> severityList = new ArrayList<Severity>(map.values());
+        List<FacesMessage.Severity> severityList = new ArrayList<>(map.values());
         Collections.sort(severityList); // the Faces spec requires it to be sorted
         VALUES = Collections.unmodifiableList(severityList);
     }
 
-    private transient FacesMessage.Severity _severity;  // transient, b/c FacesMessage.Severity is not Serializable
-    private String _summary;
-    private String _detail;
-    private boolean _rendered;
+    private transient FacesMessage.Severity severity;  // transient, b/c FacesMessage.Severity is not Serializable
+    private String summary;
+    private String detail;
+    private boolean rendered;
 
     /**
      *Construct a new {@link FacesMessage} with no initial values. The severity is set to Severity.INFO.
      */
     public FacesMessage()
     {
-        _severity = SEVERITY_INFO;
-        _rendered = false;
+        severity = SEVERITY_INFO;
+        rendered = false;
     }
 
     /**
@@ -131,9 +132,9 @@ public class FacesMessage implements Serializable
      */
     public FacesMessage(String summary)
     {
-        _summary = summary;
-        _severity = SEVERITY_INFO;
-        _rendered = false;
+        this.summary = summary;
+        this.severity = SEVERITY_INFO;
+        this.rendered = false;
     }
 
     /**
@@ -146,10 +147,10 @@ public class FacesMessage implements Serializable
      */
     public FacesMessage(String summary, String detail)
     {
-        _summary = summary;
-        _detail = detail;
-        _severity = SEVERITY_INFO;
-        _rendered = false;
+        this.summary = summary;
+        this.detail = detail;
+        this.severity = SEVERITY_INFO;
+        this.rendered = false;
     }
 
     /**
@@ -166,10 +167,10 @@ public class FacesMessage implements Serializable
     {
         Assert.notNull(severity, "severity");
 
-        _severity = severity;
-        _summary = summary;
-        _detail = detail;
-        _rendered = false;
+        this.severity = severity;
+        this.summary = summary;
+        this.detail = detail;
+        this.rendered = false;
     }
 
     /**
@@ -178,7 +179,7 @@ public class FacesMessage implements Serializable
      */
     public FacesMessage.Severity getSeverity()
     {
-        return _severity;
+        return this.severity;
     }
 
     /**
@@ -188,7 +189,7 @@ public class FacesMessage implements Serializable
     {
         Assert.notNull(severity, "severity");
 
-        _severity = severity;
+        this.severity = severity;
     }
 
     /**
@@ -196,7 +197,7 @@ public class FacesMessage implements Serializable
      */
     public String getSummary()
     {
-        return _summary;
+        return summary;
     }
 
     /**
@@ -207,7 +208,7 @@ public class FacesMessage implements Serializable
      */
     public void setSummary(String summary)
     {
-        _summary = summary;
+        this.summary = summary;
     }
 
     /**
@@ -216,13 +217,13 @@ public class FacesMessage implements Serializable
      */
     public String getDetail()
     {
-        if (_detail == null)
+        if (this.detail == null)
         {
             // Javadoc:
             // If no localized detail text has been defined for this message, return the localized summary text instead
-            return _summary;
+            return summary;
         }
-        return _detail;
+        return this.detail;
     }
 
     /**
@@ -233,23 +234,57 @@ public class FacesMessage implements Serializable
      */
     public void setDetail(String detail)
     {
-        _detail = detail;
+        this.detail = detail;
     }
 
     public boolean isRendered()
     {
-        return _rendered;
+        return this.rendered;
     }
 
     public void rendered()
     {
-        this._rendered = true;
+        this.rendered = true;
     }
 
+    /**
+     * @since 4.1
+     */
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(severity, summary, detail);
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    public boolean equals(Object object)
+    {
+        return (object == this) || (object != null && object.getClass() == getClass()
+            && Objects.equals(severity, ((FacesMessage) object).severity)
+            && Objects.equals(summary, ((FacesMessage) object).summary)
+            && Objects.equals(detail, ((FacesMessage) object).detail));
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    public String toString()
+    {
+        return getClass().getSimpleName() + "["
+            + "severity='" + severity + "', "
+            + "summary='" + summary + "', "
+            + "detail='" + detail + "']"
+        ;
+    }
+    
     private void writeObject(ObjectOutputStream out) throws IOException
     {
         out.defaultWriteObject();  // write summary, detail, rendered
-        out.writeInt(_severity._ordinal);  // FacesMessage.Severity is not Serializable, write ordinal only
+        out.writeInt(this.severity.ordinal);  // FacesMessage.Severity is not Serializable, write ordinal only
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
@@ -258,31 +293,32 @@ public class FacesMessage implements Serializable
 
         // FacesMessage.Severity is not Serializable, read ordinal and get related FacesMessage.Severity
         int severityOrdinal = in.readInt();
-        _severity = (Severity) VALUES.get(severityOrdinal);
+        this.severity = (Severity) VALUES.get(severityOrdinal);
     }
 
     public static class Severity implements Comparable
     {
-        private String _name;
-        private int _ordinal;
+        private String name;
+        private int ordinal;
 
         private Severity(String name, int ordinal)
         {
-            _name = name;
-            _ordinal = ordinal;
+            this.name = name;
+            this.ordinal = ordinal;
         }
 
         public int getOrdinal()
         {
-            return _ordinal;
+            return this.ordinal;
         }
 
         @Override
         public String toString()
         {
-            return _name;
+            return this.name;
         }
 
+        @Override
         public int compareTo(Object o)
         {
             return getOrdinal() - ((Severity)o).getOrdinal();
