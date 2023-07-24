@@ -29,12 +29,12 @@
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
     <packaging>pom</packaging>
-    <name>Apache MyFaces Core 4.0 - Parent</name>
+    <name>Apache MyFaces Core 4.1 - Parent</name>
     <description>
         This project is the home of the MyFaces implementation of the JavaServer Faces 2.3 specification, and
         consists of an API module (jakarta.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
-    <version>4.0.2-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
     <url>https://myfaces.apache.org/#/core40</url>
 
     <issueManagement>

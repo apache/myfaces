@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>4.1.0-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -28,9 +28,9 @@
 
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-impl</artifactId>
-    <name>Apache MyFaces Core 4.0 - Impl</name>
+    <name>Apache MyFaces Core 4.1 - Impl</name>
     <description>
-        The private implementation classes of the Apache MyFaces Core JSF-4.0 Implementation
+        The private implementation classes of the Apache MyFaces Core 4.1 Implementation
     </description>
     <url>https://myfaces.apache.org/#/core40</url>
 
