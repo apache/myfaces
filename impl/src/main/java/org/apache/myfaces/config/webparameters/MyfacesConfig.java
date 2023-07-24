@@ -869,6 +869,7 @@ public class MyfacesConfig
     private ResourceBundle.Control resourceBundleControl;
     private boolean automaticExtensionlessMapping = AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT;
     private boolean elResolverTracing = EL_RESOLVER_TRACING_DEFAULT;
+    private long faceletsRefreshPeriod = -1; 
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1309,6 +1310,19 @@ public class MyfacesConfig
 
         cfg.elResolverTracing = getBoolean(extCtx, EL_RESOLVER_TRACING,
                 EL_RESOLVER_TRACING_DEFAULT);
+        
+        if (cfg.projectStage == ProjectStage.Production)
+        {
+            cfg.faceletsRefreshPeriod = getLong(extCtx,
+                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
+                    -1);
+        }
+        else
+        {
+            cfg.faceletsRefreshPeriod = getLong(extCtx,
+                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
+                    0);
+        }
         
         return cfg;
     }
@@ -1774,5 +1788,11 @@ public class MyfacesConfig
     {
         return elResolverTracing;
     }
+
+    public long getFaceletsRefreshPeriod()
+    {
+        return faceletsRefreshPeriod;
+    }
+
 }
 

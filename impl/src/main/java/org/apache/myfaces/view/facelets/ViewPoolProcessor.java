@@ -41,7 +41,6 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.context.RequestViewMetadata;
 import org.apache.myfaces.lifecycle.RestoreViewSupport;
-import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 import org.apache.myfaces.view.facelets.pool.ViewPoolFactory;
@@ -177,10 +176,7 @@ public class ViewPoolProcessor
                 initialize = false;
             }
             
-            long refreshPeriod = WebConfigParamUtils.getLongInitParameter(context.getExternalContext(),
-                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
-                    FaceletViewDeclarationLanguage.DEFAULT_REFRESH_PERIOD_PRODUCTION);
-
+            long refreshPeriod = myfacesConfig.getFaceletsRefreshPeriod();
             if (refreshPeriod != -1)
             {
                 Logger.getLogger(ViewPoolProcessor.class.getName()).log(
@@ -190,7 +186,7 @@ public class ViewPoolProcessor
                     " must be set to \"-1\". View Pooling disabled.");
                 initialize = false;
             }
-            
+
             if (myfacesConfig.isStrictJsf2FaceletsCompatibility())
             {
                 Logger.getLogger(ViewPoolProcessor.class.getName()).log(

@@ -119,10 +119,8 @@ public abstract class ViewHandler
     
     /**
      * Define the period used to refresh the facelet abstract syntax tree from the view definition file. 
-     *
-     * <p>By default is infinite (no active).</p>
      */
-    @JSFWebConfigParam(since = "2.0", defaultValue = "-1", alias = "facelets.REFRESH_PERIOD",
+    @JSFWebConfigParam(since = "2.0", defaultValue = "0, -1 in Production", alias = "facelets.REFRESH_PERIOD",
             classType = "java.lang.Long", tags = "performance")
     public static final java.lang.String FACELETS_REFRESH_PERIOD_PARAM_NAME = "jakarta.faces.FACELETS_REFRESH_PERIOD";
 

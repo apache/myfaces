@@ -95,7 +95,6 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
-import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.ViewMetadataBase;
@@ -153,9 +152,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     private static final Class<?>[] VALIDATOR_SIGNATURE
             = new Class[]{FacesContext.class, UIComponent.class, Object.class};
-
-    public final static long DEFAULT_REFRESH_PERIOD = 0;
-    public final static long DEFAULT_REFRESH_PERIOD_PRODUCTION = -1;
 
     public final static String DEFAULT_CHARACTER_ENCODING = "UTF-8";
 
@@ -2068,20 +2064,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     protected FaceletFactory createFaceletFactory(FacesContext context, Compiler compiler)
     {
         ExternalContext eContext = context.getExternalContext();
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(eContext);
 
-        // refresh period
-        long refreshPeriod;
-        if (context.isProjectStage(ProjectStage.Production))
-        {
-            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext,
-                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, DEFAULT_REFRESH_PERIOD_PRODUCTION);
-        }
-        else
-        {
-            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext,
-                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, DEFAULT_REFRESH_PERIOD);
-        }
-
+        long refreshPeriod = myfacesConfig.getFaceletsRefreshPeriod();
         return new DefaultFaceletFactory(compiler, refreshPeriod);
     }
 
