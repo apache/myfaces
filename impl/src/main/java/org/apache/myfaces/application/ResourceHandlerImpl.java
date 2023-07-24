@@ -1704,9 +1704,24 @@ public class ResourceHandlerImpl extends ResourceHandler
     private Set<String> loadSuffixes(ExternalContext context)
     {
         Set<String> result = new HashSet<>();
-
+        String definedSuffixes = WebConfigParamUtils.getStringInitParameter(context, 
+                ViewHandler.DEFAULT_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_SUFFIX);
         StringTokenizer tokenizer;
-
+        
+        if (definedSuffixes == null) 
+        {
+            definedSuffixes = ViewHandler.DEFAULT_SUFFIX;
+        }
+        
+        // This is a space-separated list of suffixes, so parse them out.
+        
+        tokenizer = new StringTokenizer (definedSuffixes, " ");
+        
+        while (tokenizer.hasMoreTokens()) 
+        {
+            result.add (tokenizer.nextToken());
+        }
+        
         String faceletSuffix = WebConfigParamUtils.getStringInitParameter(context, 
                 ViewHandler.FACELETS_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_FACELETS_SUFFIX);
         
@@ -1716,6 +1731,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         }
         
         String faceletViewMappings = WebConfigParamUtils.getStringInitParameter(context, FACELETS_VIEW_MAPPINGS_PARAM);
+        
         if (faceletViewMappings != null)
         {
             tokenizer = new StringTokenizer(faceletViewMappings, ";");

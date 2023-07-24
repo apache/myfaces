@@ -240,6 +240,11 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.MULTIPLE_ATTR, HTML.MULTIPLE_ATTR, null);
         }
 
+        if (AUTOCOMPLETE_VALUE_OFF.equals(inputFile.getAutocomplete()))
+        {
+            writer.writeAttribute(HTML.AUTOCOMPLETE_ATTR, AUTOCOMPLETE_VALUE_OFF, HTML.AUTOCOMPLETE_ATTR);
+        }
+
         if (inputFile.getAccept() != null)
         {
             writer.writeAttribute(HTML.ACCEPT_ATTR, inputFile.getAccept(), HTML.ACCEPT_ATTR);

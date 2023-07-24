@@ -33,7 +33,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         defaultEventName = "valueChange")
 abstract class _HtmlInputSecret extends UIInput implements _AccesskeyProperty,
-    _UniversalProperties, _FocusBlurProperties, _EventProperties,
+    _AltProperty, _UniversalProperties, _FocusBlurProperties, _EventProperties,
     _StyleProperties, _TabindexProperty, _ChangeProperty, _SelectProperty,
     _DisabledReadonlyProperties, _LabelProperty, _RoleProperty
 {

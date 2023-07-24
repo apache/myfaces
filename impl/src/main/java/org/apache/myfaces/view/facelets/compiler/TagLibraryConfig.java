@@ -85,7 +85,7 @@ public final class TagLibraryConfig
             _extension = loadFaceletExtension(externalContext);
             
             String defaultSuffixes = WebConfigParamUtils.getStringInitParameter(externalContext,
-                    ViewHandler.FACELETS_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_FACELETS_SUFFIX );
+                    ViewHandler.DEFAULT_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_SUFFIX );
             
             _defaultSuffixesArray = StringUtils.splitShortString(defaultSuffixes, ' ');
             
