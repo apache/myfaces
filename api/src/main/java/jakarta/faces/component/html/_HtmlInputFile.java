@@ -38,7 +38,7 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
     defaultEventName = "valueChange"
 )
 abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
-    _AltProperty, _UniversalProperties, _DisabledReadonlyProperties,
+    _UniversalProperties, _DisabledProperty,
     _FocusBlurProperties, _ChangeProperty, _SelectProperty,
     _EventProperties, _StyleProperties, _TabindexProperty, _LabelProperty,
     _RoleProperty
@@ -46,33 +46,6 @@ abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
 
     static public final String COMPONENT_FAMILY = "jakarta.faces.Input";
     static public final String COMPONENT_TYPE = "jakarta.faces.HtmlInputFile";
-
-    /**
-     * HTML: The maximum number of characters allowed to be entered.
-     * 
-     * @JSFProperty
-     *   defaultValue = "Integer.MIN_VALUE"
-     */
-    public abstract int getMaxlength();
-
-    /**
-     * HTML: The initial width of this control, in characters.
-     * 
-     * @JSFProperty
-     *   defaultValue = "Integer.MIN_VALUE"
-     */
-    public abstract int getSize();
-
-    /**
-     * If the value of this attribute is "off", render "off" as the value of the attribute.
-     * This indicates that the browser should disable its autocomplete feature for this component.
-     * This is useful for components that perform autocompletion and do not want the browser interfering.
-     * If this attribute is not set or the value is "on", render nothing.
-     *
-     * @return  the new autocomplete value
-     */
-    @JSFProperty
-    public abstract String getAutocomplete();
 
     /**
      * Comma separated string of mime types of files to filter in client side file browse dialog.

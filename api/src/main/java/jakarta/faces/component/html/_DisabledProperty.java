@@ -16,27 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package jakarta.faces.annotation;
+package jakarta.faces.component.html;
 
-import jakarta.enterprise.util.AnnotationLiteral;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import jakarta.inject.Qualifier;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
-/**
- *
- */
-@Qualifier
-@Target(value=ElementType.TYPE)
-@Retention(value=RetentionPolicy.RUNTIME)
-public @interface FacesConfig
+interface _DisabledProperty
 {
-    public static final class Literal extends AnnotationLiteral<FacesConfig> implements FacesConfig
-    {
-        private static final long serialVersionUID = 1L;
-
-        public static final Literal INSTANCE = new Literal();
-    }
+    /**
+     * HTML: When true, this element cannot receive focus.
+     * 
+     */
+    @JSFProperty(defaultValue="false")
+    public abstract boolean isDisabled();
 }

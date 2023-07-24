@@ -249,16 +249,14 @@ public class ViewIdSupport
             {
                 //See Faces 2.0 section 7.5.2 
                 boolean founded = false;
-                for (String contextSuffix : config.getViewSuffix())
+                String contextSuffix = config.getFaceletsViewSuffix();
+                if (viewId.endsWith(contextSuffix))
                 {
-                    if (viewId.endsWith(contextSuffix))
-                    {
-                        builder.append(viewId, 0, viewId.indexOf(contextSuffix));
-                        builder.append(mapping.getExtension());
-                        founded = true;
-                        break;
-                    }
+                    builder.append(viewId, 0, viewId.indexOf(contextSuffix));
+                    builder.append(mapping.getExtension());
+                    founded = true;
                 }
+
                 if (!founded)
                 {   
                     //See Faces 2.0 section 7.5.2
@@ -279,12 +277,12 @@ public class ViewIdSupport
                     else if(viewId.lastIndexOf('.') != -1 )
                     {
                         builder.append(viewId, 0, viewId.lastIndexOf('.'));
-                        builder.append(config.getViewSuffix()[0]);
+                        builder.append(config.getFaceletsViewSuffix());
                     }
                     else
                     {
                         builder.append(viewId);
-                        builder.append(config.getViewSuffix()[0]);
+                        builder.append(config.getFaceletsViewSuffix());
                     }
                 }
             }
@@ -329,14 +327,12 @@ public class ViewIdSupport
     private String calculateExactMapping(FacesContext context, String viewId)
     {
         String prefixedExactMapping = null;
-        for (String contextSuffix : config.getViewSuffix())
+        
+        if (viewId.endsWith(config.getFaceletsViewSuffix()))
         {
-            if (viewId.endsWith(contextSuffix))
-            {
-                prefixedExactMapping = viewId.substring(0, viewId.length() - contextSuffix.length());
-                break;
-            }
+            prefixedExactMapping = viewId.substring(0, viewId.length() - config.getFaceletsViewSuffix().length());
         }
+
         return prefixedExactMapping == null ? viewId : prefixedExactMapping;
     }
 
@@ -404,68 +400,62 @@ public class ViewIdSupport
         StringBuilder builder = SharedStringBuilder.get(context, VIEW_HANDLER_SUPPORT_SB);
         
         //Try to locate any resource that match with the expected id
-        for (String defaultSuffix : config.getViewSuffix())
-        {
-            builder.setLength(0);
-            builder.append(requestViewId);
-           
-            if (extensionPos > -1 && extensionPos > slashPos)
-            {
-                builder.replace(extensionPos, requestViewId.length(), defaultSuffix);
-            }
-            else
-            {
-                builder.append(defaultSuffix);
-            }
+        String defaultSuffix = config.getFaceletsViewSuffix();
+        builder.append(requestViewId);
 
-            String candidateViewId = builder.toString();
-            
-            if (config.getFaceletsViewMappings() != null && config.getFaceletsViewMappings().length > 0 )
+        if (extensionPos > -1 && extensionPos > slashPos)
+        {
+            builder.replace(extensionPos, requestViewId.length(), defaultSuffix);
+        }
+        else
+        {
+            builder.append(defaultSuffix);
+        }
+
+        String candidateViewId = builder.toString();
+
+        if (config.getFaceletsViewMappings() != null && config.getFaceletsViewMappings().length > 0 )
+        {
+            for (String mapping : config.getFaceletsViewMappings())
             {
-                for (String mapping : config.getFaceletsViewMappings())
+                if (mapping.startsWith("/"))
                 {
-                    if (mapping.startsWith("/"))
+                    continue;   //skip this entry, its a prefix mapping
+                }
+                if (mapping.equals(candidateViewId))
+                {
+                    return candidateViewId;
+                }
+                if (mapping.startsWith(".")) //this is a wildcard entry
+                {
+                    builder.setLength(0); //reset/reuse the builder object 
+                    builder.append(candidateViewId); 
+                    builder.replace(candidateViewId.lastIndexOf('.'), candidateViewId.length(), mapping);
+                    String tempViewId = builder.toString();
+                    if (isViewExistent(context, tempViewId))
                     {
-                        continue;   //skip this entry, its a prefix mapping
-                    }
-                    if (mapping.equals(candidateViewId))
-                    {
-                        return candidateViewId;
-                    }
-                    if (mapping.startsWith(".")) //this is a wildcard entry
-                    {
-                        builder.setLength(0); //reset/reuse the builder object 
-                        builder.append(candidateViewId); 
-                        builder.replace(candidateViewId.lastIndexOf('.'), candidateViewId.length(), mapping);
-                        String tempViewId = builder.toString();
-                        if (isViewExistent(context, tempViewId))
-                        {
-                            return tempViewId;
-                        }
+                        return tempViewId;
                     }
                 }
             }
+        }
 
-            // forced facelets mappings did not match or there were no entries in faceletsViewMappings array
-            if (isViewExistent(context,candidateViewId))
-            {
-                return candidateViewId;
-            }
+        // forced facelets mappings did not match or there were no entries in faceletsViewMappings array
+        if (isViewExistent(context,candidateViewId))
+        {
+            return candidateViewId;
         }
         
         //jsp suffixes didn't match, try facelets suffix
         String faceletsDefaultSuffix = config.getFaceletsViewSuffix();
         if (faceletsDefaultSuffix != null)
         {
-            for (String defaultSuffix : config.getViewSuffix())
+            if (faceletsDefaultSuffix.equals(defaultSuffix))
             {
-                if (faceletsDefaultSuffix.equals(defaultSuffix))
-                {
-                    faceletsDefaultSuffix = null;
-                    break;
-                }
+                faceletsDefaultSuffix = null;
             }
         }
+
         if (faceletsDefaultSuffix != null)
         {
             builder.setLength(0);
@@ -480,7 +470,7 @@ public class ViewIdSupport
                 builder.append(faceletsDefaultSuffix);
             }
             
-            String candidateViewId = builder.toString();
+            candidateViewId = builder.toString();
             if (isViewExistent(context,candidateViewId))
             {
                 return candidateViewId;

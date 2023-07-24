@@ -59,18 +59,6 @@ public abstract class ResourceHandler
     public static final String WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME = "jakarta.faces.WEBAPP_RESOURCES_DIRECTORY";
 
     /**
-     * @since 2.3
-     */
-    @Deprecated
-    public static final String JSF_SCRIPT_RESOURCE_NAME = "faces.js";
-
-    /**
-     * @since 2.3
-     */
-    @Deprecated
-    public static final String JSF_SCRIPT_LIBRARY_NAME = "jakarta.faces";
-    
-    /**
      * @since 4.0
      */
     public static final String FACES_SCRIPT_RESOURCE_NAME = "faces.js";
