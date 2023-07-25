@@ -53,7 +53,6 @@ public class EnumConverter implements Converter, PartialStateHolder
 
     private boolean isTransient = false;
 
-    /** Creates a new instance of EnumConverter */
     public EnumConverter()
     {
     }

@@ -24,14 +24,12 @@ import jakarta.faces.application.FacesMessage;
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
-public class ConverterException
-        extends FacesException
+public class ConverterException extends FacesException
 {
     private static final long serialVersionUID = 8668056061177480197L;
-    // FIELDS
+
     private FacesMessage _facesMessage;
 
-    // CONSTRUCTORS
     public ConverterException()
     {
         super();
@@ -64,10 +62,8 @@ public class ConverterException
         super(cause);
     }
 
-    // METHODS
     public FacesMessage getFacesMessage()
     {
         return _facesMessage;
     }
-
 }

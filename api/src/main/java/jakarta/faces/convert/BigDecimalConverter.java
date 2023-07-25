@@ -31,33 +31,23 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @JSFConverter
-public class BigDecimalConverter
-        implements Converter
+public class BigDecimalConverter implements Converter
 {
-    // FIELDS
     public static final String CONVERTER_ID = "jakarta.faces.BigDecimal";
     public static final String STRING_ID = "jakarta.faces.converter.STRING";
     public static final String DECIMAL_ID = "jakarta.faces.converter.BigDecimalConverter.DECIMAL";
 
-    // CONSTRUCTORS
     public BigDecimalConverter()
     {
     }
 
-    // METHODS
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
 
-        if (value == null)
-        {
-            return null;
-        }
-        
-        value = value.trim();
-        if (value.length() < 1)
+        if (value == null || value.isBlank())
         {
             return null;
         }

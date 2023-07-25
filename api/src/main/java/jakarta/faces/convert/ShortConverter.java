@@ -45,13 +45,7 @@ public class ShortConverter implements Converter
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
 
-        if (value == null)
-        {
-            return null;
-        }
-        
-        value = value.trim();
-        if (value.length() < 1)
+        if (value == null || value.isBlank())
         {
             return null;
         }
