@@ -26,7 +26,7 @@ import jakarta.faces.context.FacesContext;
  *
  * @since 2.0
  */
-
+@Deprecated(since = "4.1", forRemoval = true)
 public class PostConstructCustomScopeEvent extends SystemEvent
 {
     public PostConstructCustomScopeEvent(ScopeContext source)

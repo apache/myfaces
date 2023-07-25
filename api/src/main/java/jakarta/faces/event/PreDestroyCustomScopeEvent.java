@@ -23,7 +23,7 @@ import jakarta.faces.context.FacesContext;
 /**
  * A system event which is dispathed prior to the destruction of a custom scope
  */
-
+@Deprecated(since = "4.1", forRemoval = true)
 public class PreDestroyCustomScopeEvent extends SystemEvent
 {
     
