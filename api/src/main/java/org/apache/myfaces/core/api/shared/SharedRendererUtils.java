@@ -344,7 +344,7 @@ public class SharedRendererUtils
                             availableItems.put(keyString, item.getValue());
                         }
                     }
-                    if (availableItems.size() > 0)
+                    if (!availableItems.isEmpty())
                     {
                         value = availableItems.get(submittedValue[i]);
                     }

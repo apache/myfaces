@@ -1900,7 +1900,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
         public boolean hasMoreEvents()
         {
-            return (_anyPhase != null && _anyPhase.size() > 0) || (_onPhase != null && _onPhase.size() > 0); 
+            return (_anyPhase != null && !_anyPhase.isEmpty()) || (_onPhase != null && !_onPhase.isEmpty()); 
         }
 
         public List<FacesEvent> getAnyPhase()

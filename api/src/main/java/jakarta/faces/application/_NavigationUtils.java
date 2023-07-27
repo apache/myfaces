@@ -39,7 +39,7 @@ class _NavigationUtils
             Map<String, List<String>> parameters)
     {
         Map<String,List<String>> evaluatedParameters = null;
-        if (parameters != null && parameters.size() > 0)
+        if (parameters != null && !parameters.isEmpty())
         {
             evaluatedParameters = new HashMap<>(5, 1f);
             for (Map.Entry<String, List<String>> pair : parameters.entrySet())

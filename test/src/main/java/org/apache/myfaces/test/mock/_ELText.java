@@ -393,7 +393,7 @@ class _ELText
             buff.setLength(0);
         }
 
-        if (text.size() == 0)
+        if (text.isEmpty())
         {
             return null;
         }
