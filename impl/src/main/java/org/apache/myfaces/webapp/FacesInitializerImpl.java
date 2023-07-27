@@ -74,7 +74,7 @@ import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.push.EndpointImpl;
 import org.apache.myfaces.push.WebsocketConfigurator;
-import org.apache.myfaces.push.WebsocketFacesInit;
+import org.apache.myfaces.push.cdi.WebsocketSessionManager;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
@@ -96,6 +96,7 @@ public class FacesInitializerImpl implements FacesInitializer
     public static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
 
     public static final String INITIALIZED = "org.apache.myfaces.INITIALIZED";
+    public static final String PUSH_INITIALIZED = "org.apache.myfaces.push.INITIALIZED";
 
     private static final byte FACES_INIT_PHASE_PREINIT = 0;
     private static final byte FACES_INIT_PHASE_POSTINIT = 1;
@@ -331,24 +332,25 @@ public class FacesInitializerImpl implements FacesInitializer
         // clear the cache of MetaRulesetImpl in order to prevent a memory leak
         MetaRulesetImpl.clearMetadataTargetCache();
 
-        if (facesContext.getExternalContext().getApplicationMap().containsKey("org.apache.myfaces.push"))
+        if (facesContext.getExternalContext().getApplicationMap().containsKey(PUSH_INITIALIZED))
         {
-            WebsocketFacesInit.destroy(facesContext.getExternalContext());
+            BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
+            WebsocketSessionManager sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
+            sessionManager.clearSessions();
         }
-        
+
         // clear UIViewParameter default renderer map
         try
         {
-            Class<?> c = ClassUtils.classForName("jakarta.faces.component.UIViewParameter");
-            Method m = c.getDeclaredMethod("releaseRenderer");
+            Method m = jakarta.faces.component.UIViewParameter.class.getDeclaredMethod("releaseRenderer");
             m.setAccessible(true);
             m.invoke(null);
         }
-        catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
         {
             log.log(Level.SEVERE, e.getMessage(), e);
         }
-        
+
         // TODO is it possible to make a real cleanup?
 
         // Destroy startup FacesContext, but note we do before publish postdestroy event on
@@ -659,9 +661,11 @@ public class FacesInitializerImpl implements FacesInitializer
                         .configurator(new WebsocketConfigurator(externalContext)).build());
 
                 //Init LRU cache
-                WebsocketFacesInit.init(externalContext);
+                BeanManager beanManager = CDIUtils.getBeanManager(externalContext);
+                WebsocketSessionManager sessionManager = CDIUtils.get(beanManager, WebsocketSessionManager.class);
+                sessionManager.initSessionMap(externalContext);
 
-                externalContext.getApplicationMap().put("org.apache.myfaces.push", "true");
+                externalContext.getApplicationMap().put(PUSH_INITIALIZED, true);
             }
             catch (DeploymentException e)
             {

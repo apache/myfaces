@@ -52,9 +52,7 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null)
         {
-            FlowScopeContext.destroyAll(facesContext);
-            ViewScopeContext.destroyAll(facesContext);
-            ClientWindowScopeContext.destroyAll(facesContext);
+            destroySessionDependentScopes(facesContext);
         }
         else
         {
@@ -68,9 +66,7 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
                 ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                 facesContext = new StartupFacesContextImpl(externalContext, externalContext, exceptionHandler, false);
 
-                FlowScopeContext.destroyAll(facesContext);
-                ViewScopeContext.destroyAll(facesContext);
-                ClientWindowScopeContext.destroyAll(facesContext);
+                destroySessionDependentScopes(facesContext);
             }
             finally
             {
@@ -80,5 +76,12 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
                 }
             }
         }
+    }
+    
+    protected void destroySessionDependentScopes(FacesContext facesContext)
+    {
+        FlowScopeContext.destroyAll(facesContext);
+        ViewScopeContext.destroyAll(facesContext);
+        ClientWindowScopeContext.destroyAll(facesContext);
     }
 }
