@@ -21,12 +21,11 @@
 <body>
     <h:form id="form">
         <ui:repeat id="repeat" 
-            value="#{iterationBean.values}"
             var="x"
             begin="#{iterationBean.begin}"
             end="#{iterationBean.end}"
             step="#{iterationBean.step}">
-            #{x}
+            User \##{x}
         </ui:repeat>
     </h:form>
 </body>
