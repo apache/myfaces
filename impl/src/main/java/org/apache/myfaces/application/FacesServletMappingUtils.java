@@ -30,11 +30,9 @@ import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRegistration;
 
-import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.ExternalContextUtils;
-import org.apache.myfaces.webapp.DelegatedFacesServlet;
 
 public class FacesServletMappingUtils
 {
@@ -125,7 +123,7 @@ public class FacesServletMappingUtils
                 for (ServletRegistration servletRegistration : registrations.values())
                 {
                     ServletRegistrationInfo info = new ServletRegistrationInfo(servletRegistration,
-                            isFacesServlet(facesContext, servletRegistration.getClassName()));
+                            isFacesServlet(servletRegistration.getClassName()));
 
                     infos.add(info);
                 }
@@ -168,7 +166,7 @@ public class FacesServletMappingUtils
         return facesServletRegistration;
     }
 
-    public static boolean isFacesServlet(FacesContext facesContext, String servletClassName)
+    public static boolean isFacesServlet(String servletClassName)
     {
         // shortcut to avoid class lookup
         if (FacesServlet.class.getName().equals(servletClassName))
@@ -176,14 +174,10 @@ public class FacesServletMappingUtils
             return true;
         }
 
-        Class servletClass = ClassUtils.simpleClassForName(servletClassName, false);
+        Class servletClass = ClassUtils.simpleClassForName(servletClassName, true);
         if (servletClass != null)
         {
-            MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
-            
-            return FacesServlet.class.isAssignableFrom(servletClass)
-                    || DelegatedFacesServlet.class.isAssignableFrom(servletClass)
-                    || servletClass.getName().equals(config.getDelegateFacesServlet());
+            return FacesServlet.class.isAssignableFrom(servletClass);
         }
         return false;
     }

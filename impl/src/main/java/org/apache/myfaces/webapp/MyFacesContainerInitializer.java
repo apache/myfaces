@@ -45,18 +45,17 @@ import jakarta.faces.render.Renderer;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.webapp.FacesServlet;
-import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.annotation.HandlesTypes;
+import org.apache.myfaces.application.FacesServletMappingUtils;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
-import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * This class is called by any Java EE 6 complaint container at startup.
@@ -117,8 +116,6 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     private static final String[] FACES_SERVLET_MAPPINGS = { "/faces/*", "*.jsf", "*.faces" };
     private static final String[] FACES_SERVLET_FULL_MAPPINGS = { "/faces/*", "*.jsf", "*.faces", "*.xhtml" };
     private static final String FACES_SERVLET_NAME = "FacesServlet";
-    private static final Class<? extends Servlet> FACES_SERVLET_CLASS = FacesServlet.class;
-    private static final Class<?> DELEGATED_FACES_SERVLET_CLASS = DelegatedFacesServlet.class;
 
     @Override
     public void onStartup(Set<Class<?>> clazzes, ServletContext servletContext) throws ServletException
@@ -162,11 +159,11 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
              *
              * If a FacesServet definition was not found then add it dynamically.
              */
-            if(!isFacesServletPresent)
+            if (!isFacesServletPresent)
             {
                 // the FacesServlet is not installed yet - install it
                 ServletRegistration.Dynamic servlet =
-                        servletContext.addServlet(FACES_SERVLET_NAME, FACES_SERVLET_CLASS);
+                        servletContext.addServlet(FACES_SERVLET_NAME, FacesServlet.class);
 
                 //try to add typical Faces mappings
                 String[] mappings = isAutomaticXhtmlMappingDisabled(servletContext) ?
@@ -322,48 +319,21 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
      */
     private boolean checkForFacesServlet(ServletContext servletContext)
     {
-        // look for the FacesServlet
         Map<String, ? extends ServletRegistration> servlets = servletContext.getServletRegistrations();
-        boolean isFacesServletPresent = false;
 
-        for (Map.Entry<String, ? extends ServletRegistration> servletEntry : servlets.entrySet())
+        for (ServletRegistration servletRegistration : servlets.values())
         {
-            String className = servletEntry.getValue().getClassName();
-            if (FACES_SERVLET_CLASS.getName().equals(className) || isDelegatedFacesServlet(className))
+            if (FacesServletMappingUtils.isFacesServlet(servletRegistration.getClassName()))
             {
                 // we found a FacesServlet; set an attribute for use during initialization
                 servletContext.setAttribute(FACES_SERVLET_FOUND, Boolean.TRUE);
-                isFacesServletPresent = true;
-
                 // Add the FacesServlet ServletRegistration as an attribute for use during initialization.
-                servletContext.setAttribute(FACES_SERVLET_SERVLETREGISTRATION, servletEntry.getValue());
+                servletContext.setAttribute(FACES_SERVLET_SERVLETREGISTRATION, servletRegistration);
+
+                return true;
             }
         }
-        return isFacesServletPresent;
-    }
 
-    /**
-     * Checks if the class represented by className implements DelegatedFacesServlet.
-     * @param className
-     * @return
-     */
-    private boolean isDelegatedFacesServlet(String className)
-    {
-        if (className == null)
-        {
-            // The class name can be null if this is e.g., a JSP mapped to
-            // a servlet.
-
-            return false;
-        }
-        try
-        {
-            Class<?> clazz = ClassUtils.classForName(className);
-            return DELEGATED_FACES_SERVLET_CLASS.isAssignableFrom(clazz);
-        }
-        catch (ClassNotFoundException cnfe)
-        {
-            return false;
-        }
+        return false;
     }
 }

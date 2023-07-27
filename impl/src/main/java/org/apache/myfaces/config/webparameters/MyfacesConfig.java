@@ -116,17 +116,6 @@ public class MyfacesConfig
     private static final boolean RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT= false;
 
     /**
-     * Define an alternate class name that will be used to initialize MyFaces, instead the default 
-     * jakarta.faces.webapp.FacesServlet.
-     * 
-     * <p>This helps MyFaces to detect the mappings and other additional configuration used to setup the 
-     * environment, and prevent abort initialization if no FacesServlet config is detected.
-     * </p>
-     */
-    @JSFWebConfigParam(since="1.2.7")
-    public static final String DELEGATE_FACES_SERVLET = "org.apache.myfaces.DELEGATE_FACES_SERVLET";
-
-    /**
      * Indicate if the facelet associated to the view should be reapplied when the view is refreshed.
      *  Default mode is "auto".
      * 
@@ -797,7 +786,6 @@ public class MyfacesConfig
     private boolean renderViewStateId = RENDER_VIEWSTATE_ID_DEFAULT;
     private boolean strictXhtmlLinks = STRICT_XHTML_LINKS_DEFAULT;
     private boolean renderClearJavascriptOnButton = RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT;
-    private String delegateFacesServlet;
     private boolean refreshTransientBuildOnPSS = true;
     private boolean refreshTransientBuildOnPSSAuto = true;
     private boolean refreshTransientBuildOnPSSPreserveState = REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT;
@@ -958,9 +946,6 @@ public class MyfacesConfig
         cfg.configRefreshPeriod = getLong(extCtx, CONFIG_REFRESH_PERIOD,
                 CONFIG_REFRESH_PERIOD_DEFAULT);
 
-        cfg.delegateFacesServlet = getString(extCtx, DELEGATE_FACES_SERVLET,
-                null);
-        
         String refreshTransientBuildOnPSS = getString(extCtx, REFRESH_TRANSIENT_BUILD_ON_PSS, 
                 REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT);
         if (refreshTransientBuildOnPSS == null)
@@ -1427,11 +1412,6 @@ public class MyfacesConfig
     public boolean isRenderClearJavascriptOnButton()
     {
         return renderClearJavascriptOnButton;
-    }
-
-    public String getDelegateFacesServlet()
-    {
-        return delegateFacesServlet;
     }
 
     public boolean isRefreshTransientBuildOnPSS()

@@ -36,7 +36,7 @@ import jakarta.servlet.ServletResponse;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class MyFacesServlet implements Servlet, DelegatedFacesServlet
+public class MyFacesServlet implements Servlet
 {
     private static final Logger log = Logger.getLogger(MyFacesServlet.class.getName());
 
