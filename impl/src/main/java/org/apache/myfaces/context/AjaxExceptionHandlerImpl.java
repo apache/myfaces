@@ -136,10 +136,10 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
         {
             if (handled == null)
             {
-                handled = new LinkedList<ExceptionQueuedEvent>();
+                handled = new LinkedList<>();
             }
             
-            List<Throwable> throwableList = new ArrayList<Throwable>();
+            List<Throwable> throwableList = new ArrayList<>();
             FacesContext facesContext = null;
             
             do
@@ -160,7 +160,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
                     
                     // and call getException() on the returned result
                     Throwable exception = context.getException();
-                    
+
                     // Upon encountering the first such Exception that is not an instance of
                     // jakarta.faces.event.AbortProcessingException
                     if (!shouldSkip(exception))
@@ -171,24 +171,9 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
                         Throwable rootCause = getRootCause(exception);
                         
                         throwableList.add(rootCause == null ? exception : rootCause);
-                        
-                        //break;
                     }
-                    else
-                    {
-                        // Testing mojarra it logs a message and the exception
-                        // however, this behaviour is not mentioned in the spec
-                        log.log(Level.SEVERE, exception.getClass().getName() + " occured while processing " +
-                                (context.inBeforePhase() ? "beforePhase() of " : 
-                                        (context.inAfterPhase() ? "afterPhase() of " : "")) + 
-                                "phase " + context.getPhaseId() + ": " +
-                                "UIComponent-ClientId=" + 
-                                (context.getComponent() != null ? 
-                                        context.getComponent().getClientId(context.getContext()) : "") + ", " +
-                                "Message=" + exception.getMessage());
-                        
-                        log.log(Level.SEVERE, exception.getMessage(), exception);
-                    }
+
+                    ExceptionHandlerUtils.logException(context, log);
                 }
                 finally
                 {

@@ -68,9 +68,8 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.context.ExceptionHandlerUtils;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
-import org.apache.myfaces.view.facelets.el.ContextAware;
-import org.apache.myfaces.view.facelets.LocationAware;
 
 /**
  * This class provides utility methods to generate the
@@ -595,42 +594,11 @@ public final class ErrorPageWriter
     private static void writeCause(Writer writer, Throwable ex) throws IOException
     {
         String msg = ex.getMessage();
-        String locationString = null;
-        if (ex instanceof ContextAware)
-        {
-            ContextAware caex = (ContextAware) ex;
-            locationString = caex.getLocation().toString() + "    " +
-                                   caex.getQName() + "=\"" +
-                                   caex.getExpressionString() + '"';
-        }
-        else if (ex instanceof LocationAware)
-        {
-            LocationAware laex = (LocationAware) ex;
-            if (laex.getLocation() != null)
-            {
-                locationString = laex.getLocation().toString();
-            }
-        }
+        String location = ExceptionHandlerUtils.buildLocation(ex, null);
 
         while (ex.getCause() != null)
         {
             ex = ex.getCause();
-            if (ex instanceof ContextAware)
-            {
-                ContextAware caex = (ContextAware) ex;
-                locationString = caex.getLocation().toString() + "    " +
-                        caex.getQName() + "=\"" +
-                        caex.getExpressionString() + '"';
-            }
-            else if (ex instanceof LocationAware)
-            {
-                LocationAware laex = (LocationAware) ex;
-                if (laex.getLocation() != null)
-                {
-                    locationString = laex.getLocation().toString();
-                }
-            }
-            
             if (ex.getMessage() != null)
             {
                 msg = ex.getMessage();
@@ -649,11 +617,11 @@ public final class ErrorPageWriter
         StackTraceElement stackTraceElement = ex.getStackTrace()[0];
         writer.write("<br/> at " + stackTraceElement.toString());
 
-        if (locationString != null)
+        if (location != null)
         {
             writer.write("<br/> <br/>");
             writer.write("Facelet: <br/>");
-            writer.write(locationString);
+            writer.write(location);
             writer.write("<br/>");
         }
     }
