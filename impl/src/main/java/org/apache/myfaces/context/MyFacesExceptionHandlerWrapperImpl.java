@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
@@ -257,24 +256,9 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
                             
                             throwableList.add(rootCause == null ? exception : rootCause);
                             components.add(event.getContext().getComponent());
-                            
-                            //break;
                         }
-                        else
-                        {
-                            // Testing mojarra it logs a message and the exception
-                            // however, this behaviour is not mentioned in the spec
-                            log.log(Level.SEVERE, exception.getClass().getName() + " occured while processing " +
-                                    (context.inBeforePhase() ? "beforePhase() of " : 
-                                            (context.inAfterPhase() ? "afterPhase() of " : "")) + 
-                                    "phase " + context.getPhaseId() + ": " +
-                                    "UIComponent-ClientId=" + 
-                                    (context.getComponent() != null ? 
-                                            context.getComponent().getClientId(context.getContext()) : "") + ", " +
-                                    "Message=" + exception.getMessage());
-                            
-                            log.log(Level.SEVERE, exception.getMessage(), exception);
-                        }
+
+                        ExceptionHandlerUtils.logException(context, log);
                     }
                     finally
                     {

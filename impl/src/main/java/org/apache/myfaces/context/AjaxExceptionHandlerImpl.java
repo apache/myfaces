@@ -171,24 +171,9 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
                         Throwable rootCause = getRootCause(exception);
                         
                         throwableList.add(rootCause == null ? exception : rootCause);
-                        
-                        //break;
                     }
-                    else
-                    {
-                        // Testing mojarra it logs a message and the exception
-                        // however, this behaviour is not mentioned in the spec
-                        log.log(Level.SEVERE, exception.getClass().getName() + " occured while processing " +
-                                (context.inBeforePhase() ? "beforePhase() of " : 
-                                        (context.inAfterPhase() ? "afterPhase() of " : "")) + 
-                                "phase " + context.getPhaseId() + ": " +
-                                "UIComponent-ClientId=" + 
-                                (context.getComponent() != null ? 
-                                        context.getComponent().getClientId(context.getContext()) : "") + ", " +
-                                "Message=" + exception.getMessage());
-                        
-                        log.log(Level.SEVERE, exception.getMessage(), exception);
-                    }
+
+                    ExceptionHandlerUtils.logException(context, log);
                 }
                 finally
                 {

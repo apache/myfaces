@@ -21,7 +21,6 @@ package org.apache.myfaces.context;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELException;
@@ -137,6 +136,8 @@ public class ExceptionHandlerImpl extends ExceptionHandler
                     // and call getException() on the returned result
                     Throwable exception = context.getException();
                     
+                    ExceptionHandlerUtils.logException(context, log);
+                    
                     // Upon encountering the first such Exception that is not an instance of
                     // javax.faces.event.AbortProcessingException
                     if (!shouldSkip(exception))
@@ -150,22 +151,6 @@ public class ExceptionHandlerImpl extends ExceptionHandler
                         //        no other way as ServletException is not a RuntimeException
                         toThrow = wrap(getRethrownException(exception));
                         break;
-                    }
-                    else
-                    {
-                        // Testing mojarra it logs a message and the exception
-                        // however, this behaviour is not mentioned in the spec
-                        log.log(Level.SEVERE, exception.getClass().getName() + " occured while processing " +
-                                (context.inBeforePhase() ? "beforePhase() of " : 
-                                        (context.inAfterPhase() ? "afterPhase() of " : "")) + 
-                                "phase " + context.getPhaseId() + ": " +
-                                "UIComponent-ClientId=" + 
-                                (context.getComponent() != null ? 
-                                        context.getComponent().getClientId(context.getContext()) : "") + ", " +
-                                "Message=" + exception.getMessage());
-                        
-                        log.log(Level.SEVERE, exception.getMessage(), exception);
-                        
                     }
                 }
                 catch (Throwable t)
