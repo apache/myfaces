@@ -33,38 +33,38 @@ import org.apache.myfaces.flow.MethodCallNodeImpl;
  */
 public class MethodCallBuilderImpl extends MethodCallBuilder
 {
-    private FlowImpl _facesFlow;
-    private MethodCallNodeImpl _methodCallNode;
-    private FlowBuilderImpl _flowBuilder;
+    private FlowImpl facesFlow;
+    private MethodCallNodeImpl methodCallNode;
+    private FlowBuilderImpl flowBuilder;
 
     public MethodCallBuilderImpl(FlowBuilderImpl flowBuilder, FlowImpl facesFlow, String methodCallNodeId)
     {
-        this._flowBuilder = flowBuilder;
-        this._facesFlow = facesFlow;
-        this._methodCallNode = new MethodCallNodeImpl(methodCallNodeId);
-        this._facesFlow.addMethodCall(_methodCallNode);
+        this.flowBuilder = flowBuilder;
+        this.facesFlow = facesFlow;
+        this.methodCallNode = new MethodCallNodeImpl(methodCallNodeId);
+        this.facesFlow.addMethodCall(methodCallNode);
     }
 
     @Override
     public MethodCallBuilder expression(MethodExpression me)
     {
-        this._methodCallNode.setMethodExpression(me);
+        this.methodCallNode.setMethodExpression(me);
         return this;
     }
 
     @Override
     public MethodCallBuilder expression(String methodExpression)
     {
-        this._methodCallNode.setMethodExpression(
-            _flowBuilder.createMethodExpression(methodExpression));
+        this.methodCallNode.setMethodExpression(
+            flowBuilder.createMethodExpression(methodExpression));
         return this;
     }
 
     @Override
     public MethodCallBuilder expression(String methodExpression, Class[] paramTypes)
     {
-        this._methodCallNode.setMethodExpression(
-            _flowBuilder.createMethodExpression(methodExpression, paramTypes));
+        this.methodCallNode.setMethodExpression(
+            flowBuilder.createMethodExpression(methodExpression, paramTypes));
         return this;
     }
 
@@ -73,7 +73,7 @@ public class MethodCallBuilderImpl extends MethodCallBuilder
     {
         for (Parameter p : parameters)
         {
-            this._methodCallNode.addParameter(p);
+            this.methodCallNode.addParameter(p);
         }
         return this;
     }
@@ -81,22 +81,22 @@ public class MethodCallBuilderImpl extends MethodCallBuilder
     @Override
     public MethodCallBuilder defaultOutcome(String outcome)
     {
-        this._methodCallNode.setOutcome(
-            this._flowBuilder.createValueExpression(outcome));
+        this.methodCallNode.setOutcome(
+            this.flowBuilder.createValueExpression(outcome));
         return this;
     }
 
     @Override
     public MethodCallBuilder defaultOutcome(ValueExpression outcome)
     {
-        this._methodCallNode.setOutcome(outcome);
+        this.methodCallNode.setOutcome(outcome);
         return this;
     }
 
     @Override
     public MethodCallBuilder markAsStartNode()
     {
-        _facesFlow.setStartNodeId(_methodCallNode.getId());
+        facesFlow.setStartNodeId(methodCallNode.getId());
         return this;
     }
     

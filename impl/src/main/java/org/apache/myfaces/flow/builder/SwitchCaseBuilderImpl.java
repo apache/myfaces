@@ -32,20 +32,20 @@ import org.apache.myfaces.view.facelets.el.ELText;
  */
 public class SwitchCaseBuilderImpl extends SwitchCaseBuilder
 {
-    private FlowBuilderImpl _flowBuilder;
-    private FlowImpl _facesFlow;
-    private SwitchBuilderImpl _switchBuilderImpl;
-    private SwitchNodeImpl _switchNodeImpl;
-    private SwitchCaseImpl _switchCase;
+    private FlowBuilderImpl flowBuilder;
+    private FlowImpl facesFlow;
+    private SwitchBuilderImpl switchBuilderImpl;
+    private SwitchNodeImpl switchNodeImpl;
+    private SwitchCaseImpl switchCase;
 
     public SwitchCaseBuilderImpl(FlowBuilderImpl flowBuilder, FlowImpl facesFlow, 
         SwitchBuilderImpl switchBuilderImpl, SwitchNodeImpl switchNode)
     {
-        this._flowBuilder = flowBuilder;
-        this._facesFlow = facesFlow;
-        this._switchBuilderImpl = switchBuilderImpl;
-        this._switchNodeImpl = switchNode;
-        this._switchCase = null;
+        this.flowBuilder = flowBuilder;
+        this.facesFlow = facesFlow;
+        this.switchBuilderImpl = switchBuilderImpl;
+        this.switchNodeImpl = switchNode;
+        this.switchCase = null;
     }
     
     @Override
@@ -53,11 +53,11 @@ public class SwitchCaseBuilderImpl extends SwitchCaseBuilder
     {
         if (ELText.isLiteral(expression))
         {
-            this._switchCase.setCondition(Boolean.valueOf(expression));
+            this.switchCase.setCondition(Boolean.valueOf(expression));
         }
         else
         {
-            this._switchCase.setCondition(_flowBuilder.createValueExpression(expression));
+            this.switchCase.setCondition(flowBuilder.createValueExpression(expression));
         }
         return this;
     }
@@ -65,22 +65,22 @@ public class SwitchCaseBuilderImpl extends SwitchCaseBuilder
     @Override
     public SwitchCaseBuilder condition(ValueExpression expression)
     {
-        this._switchCase.setCondition(expression);
+        this.switchCase.setCondition(expression);
         return this;
     }
 
     @Override
     public SwitchCaseBuilder fromOutcome(String outcome)
     {
-        this._switchCase.setFromOutcome(outcome);
+        this.switchCase.setFromOutcome(outcome);
         return this;
     }
 
     @Override
     public SwitchCaseBuilder switchCase()
     {
-        this._switchCase =  new SwitchCaseImpl();
-        this._switchNodeImpl.addCase(this._switchCase);
+        this.switchCase =  new SwitchCaseImpl();
+        this.switchNodeImpl.addCase(this.switchCase);
         return this;
     }
 }

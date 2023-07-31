@@ -33,15 +33,15 @@ import org.apache.myfaces.flow.NavigationCaseImpl;
  */
 public class NavigationCaseBuilderImpl extends NavigationCaseBuilder
 {
-    private FlowImpl _facesFlow;
-    private FlowBuilderImpl _flowBuilder;
-    private NavigationCaseImpl _navigationCaseImpl;
+    private FlowImpl facesFlow;
+    private FlowBuilderImpl flowBuilder;
+    private NavigationCaseImpl navigationCaseImpl;
     
     public NavigationCaseBuilderImpl(FlowBuilderImpl flowBuilder, FlowImpl facesFlow)
     {
-        this._flowBuilder = flowBuilder;
-        this._facesFlow = facesFlow;
-        this._navigationCaseImpl = new NavigationCaseImpl();
+        this.flowBuilder = flowBuilder;
+        this.facesFlow = facesFlow;
+        this.navigationCaseImpl = new NavigationCaseImpl();
     }
     
     @Override
@@ -49,14 +49,14 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder
     {
         // This is the best place to add the navigation case into the flow, because
         // fromViewId is required (cannot be null, and null does not mean '*')
-        if (this._navigationCaseImpl.getFromViewId() != null)
+        if (this.navigationCaseImpl.getFromViewId() != null)
         {
-            this._facesFlow.removeNavigationCase(_navigationCaseImpl);
+            this.facesFlow.removeNavigationCase(navigationCaseImpl);
         }
         if (fromViewId != null)
         {
-            this._navigationCaseImpl.setFromViewId(fromViewId);
-            this._facesFlow.addNavigationCase(_navigationCaseImpl);
+            this.navigationCaseImpl.setFromViewId(fromViewId);
+            this.facesFlow.addNavigationCase(navigationCaseImpl);
         }
         return this;
     }
@@ -64,51 +64,51 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder
     @Override
     public NavigationCaseBuilder fromAction(String fromAction)
     {
-        this._navigationCaseImpl.setFromAction(fromAction);
+        this.navigationCaseImpl.setFromAction(fromAction);
         return this;
     }
 
     @Override
     public NavigationCaseBuilder fromOutcome(String fromOutcome)
     {
-        this._navigationCaseImpl.setFromOutcome(fromOutcome);
+        this.navigationCaseImpl.setFromOutcome(fromOutcome);
         return this;
     }
 
     @Override
     public NavigationCaseBuilder toViewId(String toViewId)
     {
-        this._navigationCaseImpl.setToViewId(toViewId);
+        this.navigationCaseImpl.setToViewId(toViewId);
         return this;
     }
 
     @Override
     public NavigationCaseBuilder toFlowDocumentId(String toFlowDocumentId) 
     {
-        this._navigationCaseImpl.setToFlowDocumentId(toFlowDocumentId);
+        this.navigationCaseImpl.setToFlowDocumentId(toFlowDocumentId);
         return this;
     }
 
     @Override
     public NavigationCaseBuilder condition(String condition)
     {
-        this._navigationCaseImpl.setConditionExpression(null);
-        this._navigationCaseImpl.setCondition(condition);
+        this.navigationCaseImpl.setConditionExpression(null);
+        this.navigationCaseImpl.setCondition(condition);
         return this;
     }
 
     @Override
     public NavigationCaseBuilder condition(ValueExpression condition)
     {
-        this._navigationCaseImpl.setCondition(null);
-        this._navigationCaseImpl.setConditionExpression(condition);
+        this.navigationCaseImpl.setCondition(null);
+        this.navigationCaseImpl.setConditionExpression(condition);
         return this;
     }
 
     @Override
     public RedirectBuilder redirect()
     {
-        this._navigationCaseImpl.setRedirect(true);
+        this.navigationCaseImpl.setRedirect(true);
         return new RedirectBuilderImpl();
     }
     
@@ -117,11 +117,11 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder
         @Override
         public RedirectBuilder parameter(String name, String value)
         {
-            Map<String, List<String>> map = _navigationCaseImpl.getParameters();
+            Map<String, List<String>> map = navigationCaseImpl.getParameters();
             if (map == null)
             {
                 map = new HashMap<>(3, 1f);
-                _navigationCaseImpl.setParameters(map);
+                navigationCaseImpl.setParameters(map);
             }
             
             List<String> values = map.computeIfAbsent(name, k -> new ArrayList<>());
@@ -133,7 +133,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder
         @Override
         public RedirectBuilder includeViewParams()
         {
-            _navigationCaseImpl.setIncludeViewParams(true);
+            navigationCaseImpl.setIncludeViewParams(true);
             return this;
         }
     }

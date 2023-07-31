@@ -32,16 +32,16 @@ import org.apache.myfaces.view.facelets.el.ELText;
  */
 public class FlowCallBuilderImpl extends FlowCallBuilder
 {
-    private FlowBuilderImpl _flowBuilder;
-    private FlowImpl _facesFlow;
-    private FlowCallNodeImpl _flowCallNode;
+    private FlowBuilderImpl flowBuilder;
+    private FlowImpl facesFlow;
+    private FlowCallNodeImpl flowCallNode;
 
     public FlowCallBuilderImpl(FlowBuilderImpl flowBuilder, FlowImpl facesFlow, String flowCallNodeId)
     {
-        this._flowBuilder = flowBuilder;
-        this._facesFlow = facesFlow;
-        this._flowCallNode = new FlowCallNodeImpl(flowCallNodeId);
-        this._facesFlow.putFlowCall(flowCallNodeId, _flowCallNode);
+        this.flowBuilder = flowBuilder;
+        this.facesFlow = facesFlow;
+        this.flowCallNode = new FlowCallNodeImpl(flowCallNodeId);
+        this.facesFlow.putFlowCall(flowCallNodeId, flowCallNode);
     }
 
     @Override
@@ -49,19 +49,19 @@ public class FlowCallBuilderImpl extends FlowCallBuilder
     {
         if (ELText.isLiteral(flowDocumentId))
         {
-            this._flowCallNode.setCalledFlowDocumentId(flowDocumentId);
+            this.flowCallNode.setCalledFlowDocumentId(flowDocumentId);
         }
         else
         {
-            this._flowCallNode.setCalledFlowDocumentId(_flowBuilder.createValueExpression(flowDocumentId));
+            this.flowCallNode.setCalledFlowDocumentId(flowBuilder.createValueExpression(flowDocumentId));
         }
         if (ELText.isLiteral(flowId))
         {
-            this._flowCallNode.setCalledFlowId(flowId);
+            this.flowCallNode.setCalledFlowId(flowId);
         }
         else
         {
-            this._flowCallNode.setCalledFlowId(_flowBuilder.createValueExpression(flowId));
+            this.flowCallNode.setCalledFlowId(flowBuilder.createValueExpression(flowId));
         }
         return this;
     }
@@ -69,22 +69,22 @@ public class FlowCallBuilderImpl extends FlowCallBuilder
     @Override
     public FlowCallBuilder outboundParameter(String name, ValueExpression value)
     {
-        this._flowCallNode.putOutboundParameter(name, new ParameterImpl(name, value));
+        this.flowCallNode.putOutboundParameter(name, new ParameterImpl(name, value));
         return this;
     }
 
     @Override
     public FlowCallBuilder outboundParameter(String name, String value)
     {
-        this._flowCallNode.putOutboundParameter(name, new ParameterImpl(name, 
-            this._flowBuilder.createValueExpression(value)));
+        this.flowCallNode.putOutboundParameter(name, new ParameterImpl(name, 
+            this.flowBuilder.createValueExpression(value)));
         return this;
     }
 
     @Override
     public FlowCallBuilder markAsStartNode()
     {
-        _facesFlow.setStartNodeId(_flowCallNode.getId());
+        facesFlow.setStartNodeId(flowCallNode.getId());
         return this;
     }
     

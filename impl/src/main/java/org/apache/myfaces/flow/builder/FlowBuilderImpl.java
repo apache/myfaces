@@ -39,101 +39,99 @@ import org.apache.myfaces.flow.ParameterImpl;
  */
 public class FlowBuilderImpl extends FlowBuilder
 {
+    private static final Class[] EMPTY_PARAMS = new Class[] { };
 
-    private static final Class[] EMPTY_PARAMS = new Class[]
-    {
-    };
-    private FlowImpl _facesFlow;
-    private FacesContext _facesContext;
+    private FlowImpl facesFlow;
+    private FacesContext facesContext;
 
     public FlowBuilderImpl()
     {
-        _facesFlow = new FlowImpl();
+        facesFlow = new FlowImpl();
     }
 
     public FlowBuilderImpl(FacesContext context)
     {
         super();
-        _facesContext = context;
+        facesContext = context;
     }
 
     @Override
     public FlowBuilder id(String definingDocumentId, String id)
     {
-        _facesFlow.setDefiningDocumentId(definingDocumentId);
-        _facesFlow.setId(id);
+        facesFlow.setDefiningDocumentId(definingDocumentId);
+        facesFlow.setId(id);
         return this;
     }
 
     @Override
     public ViewBuilder viewNode(String viewNodeId, String vdlDocumentId)
     {
-        return new ViewBuilderImpl(_facesFlow, viewNodeId, vdlDocumentId);
+        return new ViewBuilderImpl(facesFlow, viewNodeId, vdlDocumentId);
     }
 
     @Override
     public SwitchBuilder switchNode(String switchNodeId)
     {
-        return new SwitchBuilderImpl(this, _facesFlow, switchNodeId);
+        return new SwitchBuilderImpl(this, facesFlow, switchNodeId);
     }
 
     @Override
     public ReturnBuilder returnNode(String returnNodeId)
     {
-        return new ReturnBuilderImpl(this, _facesFlow, returnNodeId);
+        return new ReturnBuilderImpl(this, facesFlow, returnNodeId);
     }
 
     @Override
     public MethodCallBuilder methodCallNode(String methodCallNodeId)
     {
-        return new MethodCallBuilderImpl(this, _facesFlow, methodCallNodeId);
+        return new MethodCallBuilderImpl(this, facesFlow, methodCallNodeId);
     }
 
     @Override
     public FlowCallBuilder flowCallNode(String flowCallNodeId)
     {
-        return new FlowCallBuilderImpl(this, _facesFlow, flowCallNodeId);
+        return new FlowCallBuilderImpl(this, facesFlow, flowCallNodeId);
     }
 
     @Override
     public FlowBuilder initializer(MethodExpression methodExpression)
     {
-        _facesFlow.setInitializer(methodExpression);
+        facesFlow.setInitializer(methodExpression);
         return this;
     }
 
     @Override
     public FlowBuilder initializer(String methodExpression)
     {
-        _facesFlow.setInitializer(createMethodExpression(methodExpression));
+        facesFlow.setInitializer(createMethodExpression(methodExpression));
         return this;
     }
 
     @Override
     public FlowBuilder finalizer(MethodExpression methodExpression)
     {
-        _facesFlow.setFinalizer(methodExpression);
+        facesFlow.setFinalizer(methodExpression);
         return this;
     }
 
     @Override
     public FlowBuilder finalizer(String methodExpression)
     {
-        _facesFlow.setFinalizer(createMethodExpression(methodExpression));
+        facesFlow.setFinalizer(createMethodExpression(methodExpression));
         return this;
     }
 
     @Override
     public FlowBuilder inboundParameter(String name, ValueExpression value)
     {
-        _facesFlow.putInboundParameter(name, new ParameterImpl(name, value));
+        facesFlow.putInboundParameter(name, new ParameterImpl(name, value));
         return this;
     }
 
     @Override
     public FlowBuilder inboundParameter(String name, String value)
     {
-        _facesFlow.putInboundParameter(name, new ParameterImpl(name,
+        facesFlow.putInboundParameter(name, new ParameterImpl(name,
             createValueExpression(value)));
         return this;
     }
@@ -141,8 +139,8 @@ public class FlowBuilderImpl extends FlowBuilder
     @Override
     public Flow getFlow()
     {
-        _facesContext = null;
-        return _facesFlow;
+        facesContext = null;
+        return facesFlow;
     }
 
     /**
@@ -152,11 +150,11 @@ public class FlowBuilderImpl extends FlowBuilder
      */
     FacesContext getFacesContext()
     {
-        if (_facesContext == null)
+        if (facesContext == null)
         {
-            _facesContext = FacesContext.getCurrentInstance();
+            facesContext = FacesContext.getCurrentInstance();
         }
-        return _facesContext;
+        return facesContext;
     }
     
     public MethodExpression createMethodExpression(String methodExpression)
@@ -183,6 +181,6 @@ public class FlowBuilderImpl extends FlowBuilder
     @Override
     public NavigationCaseBuilder navigationCase()
     {
-        return new NavigationCaseBuilderImpl(this, _facesFlow);
+        return new NavigationCaseBuilderImpl(this, facesFlow);
     }
 }

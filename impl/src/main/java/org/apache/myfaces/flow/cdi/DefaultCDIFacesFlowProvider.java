@@ -42,6 +42,8 @@ import org.apache.myfaces.spi.FacesFlowProvider;
  */
 public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
 {
+    private static final Logger LOGGER = Logger.getLogger(DefaultCDIFacesFlowProvider.class.getName());
+
     private final static String CURRENT_FLOW_SCOPE_MAP = "oam.flow.SCOPE_MAP";
     private final static char SEPARATOR_CHAR = '.';
 
@@ -57,8 +59,7 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
             BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
             if (beanManager == null)
             {
-                Logger.getLogger(DefaultCDIFacesFlowProvider.class.getName()).log(Level.INFO,
-                        "CDI BeanManager not found");
+                LOGGER.log(Level.INFO, "CDI BeanManager not found");
                 return null;
             }
 

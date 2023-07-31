@@ -31,16 +31,16 @@ import org.apache.myfaces.view.facelets.el.ELText;
  */
 public class ReturnBuilderImpl extends ReturnBuilder
 {
-    private FlowBuilderImpl _flowBuilder;
-    private FlowImpl _facesFlow;
-    private ReturnNodeImpl _returnNode;
+    private FlowBuilderImpl flowBuilder;
+    private FlowImpl facesFlow;
+    private ReturnNodeImpl returnNode;
 
     public ReturnBuilderImpl(FlowBuilderImpl flowBuilder, FlowImpl facesFlow, String returnNodeId)
     {
-        this._flowBuilder = flowBuilder;
-        this._facesFlow = facesFlow;
-        this._returnNode = new ReturnNodeImpl(returnNodeId);
-        this._facesFlow.putReturn(returnNodeId, _returnNode);
+        this.flowBuilder = flowBuilder;
+        this.facesFlow = facesFlow;
+        this.returnNode = new ReturnNodeImpl(returnNodeId);
+        this.facesFlow.putReturn(returnNodeId, returnNode);
     }
 
     @Override
@@ -48,11 +48,11 @@ public class ReturnBuilderImpl extends ReturnBuilder
     {
         if (ELText.isLiteral(outcome))
         {
-            this._returnNode.setFromOutcome(outcome);
+            this.returnNode.setFromOutcome(outcome);
         }
         else
         {
-            this._returnNode.setFromOutcome(_flowBuilder.createValueExpression(outcome));
+            this.returnNode.setFromOutcome(flowBuilder.createValueExpression(outcome));
         }
         return this;
     }
@@ -60,14 +60,14 @@ public class ReturnBuilderImpl extends ReturnBuilder
     @Override
     public ReturnBuilder fromOutcome(ValueExpression outcome)
     {
-        this._returnNode.setFromOutcome(outcome);
+        this.returnNode.setFromOutcome(outcome);
         return this;
     }
 
     @Override
     public ReturnBuilder markAsStartNode()
     {
-        _facesFlow.setStartNodeId(_returnNode.getId());
+        facesFlow.setStartNodeId(returnNode.getId());
         return this;
     }
     

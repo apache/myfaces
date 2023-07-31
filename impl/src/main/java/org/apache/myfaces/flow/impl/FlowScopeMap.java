@@ -29,28 +29,26 @@ import jakarta.faces.context.FacesContext;
  */
 class FlowScopeMap implements Map<Object,Object>
 {
-    private DefaultFacesFlowProvider _provider;
-    
-    private String _flowMapKey;
-    
-    private Map<Object,Object> _delegate;
-        
+    private DefaultFacesFlowProvider provider;
+    private String flowMapKey;
+    private Map<Object, Object> delegate;
+
     public FlowScopeMap(DefaultFacesFlowProvider provider, String flowMapKey)
     {
-        this._provider = provider;
-        this._flowMapKey = flowMapKey;
+        this.provider = provider;
+        this.flowMapKey = flowMapKey;
     }
     
     private Map<Object,Object> getWrapped(boolean create)
     {
-        if (_delegate == null)
+        if (delegate == null)
         {
             String fullToken = DefaultFacesFlowProvider.FLOW_SESSION_MAP_SUBKEY_PREFIX + 
-                DefaultFacesFlowProvider.SEPARATOR_CHAR + _flowMapKey;
+                DefaultFacesFlowProvider.SEPARATOR_CHAR + flowMapKey;
             FacesContext context = FacesContext.getCurrentInstance();
-            _delegate = _provider.createOrRestoreMap(context, fullToken, create);
+            delegate = provider.createOrRestoreMap(context, fullToken, create);
         }
-        return _delegate;
+        return delegate;
     }
 
     @Override

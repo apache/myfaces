@@ -32,25 +32,25 @@ import org.apache.myfaces.view.facelets.el.ELText;
  */
 public class SwitchBuilderImpl extends SwitchBuilder
 {
-    private FlowBuilderImpl _flowBuilder;
-    private FlowImpl _facesFlow;
-    private SwitchNodeImpl _switchNodeImpl;
-    private SwitchCaseBuilderImpl _lastSwitchCaseBuilderImpl;
+    private FlowBuilderImpl flowBuilder;
+    private FlowImpl facesFlow;
+    private SwitchNodeImpl switchNodeImpl;
+    private SwitchCaseBuilderImpl lastSwitchCaseBuilderImpl;
 
     public SwitchBuilderImpl(FlowBuilderImpl flowBuilder, FlowImpl facesFlow, String switchNodeId)
     {
-        this._flowBuilder = flowBuilder;
-        this._facesFlow = facesFlow;
-        this._switchNodeImpl = new SwitchNodeImpl(switchNodeId);
-        this._facesFlow.putSwitch(switchNodeId, _switchNodeImpl);
-        this._lastSwitchCaseBuilderImpl = new SwitchCaseBuilderImpl(
-            this._flowBuilder, this._facesFlow, this, this._switchNodeImpl);
+        this.flowBuilder = flowBuilder;
+        this.facesFlow = facesFlow;
+        this.switchNodeImpl = new SwitchNodeImpl(switchNodeId);
+        this.facesFlow.putSwitch(switchNodeId, switchNodeImpl);
+        this.lastSwitchCaseBuilderImpl = new SwitchCaseBuilderImpl(
+            this.flowBuilder, this.facesFlow, this, this.switchNodeImpl);
     }
 
     @Override
     public SwitchCaseBuilder switchCase()
     {
-        return this._lastSwitchCaseBuilderImpl.switchCase();
+        return this.lastSwitchCaseBuilderImpl.switchCase();
     }
 
     @Override
@@ -58,26 +58,26 @@ public class SwitchBuilderImpl extends SwitchBuilder
     {
         if (ELText.isLiteral(outcome))
         {
-            this._switchNodeImpl.setDefaultOutcome(outcome);
+            this.switchNodeImpl.setDefaultOutcome(outcome);
         }
         else
         {
-            this._switchNodeImpl.setDefaultOutcome(_flowBuilder.createValueExpression(outcome));
+            this.switchNodeImpl.setDefaultOutcome(flowBuilder.createValueExpression(outcome));
         }
-        return _lastSwitchCaseBuilderImpl;
+        return lastSwitchCaseBuilderImpl;
     }
 
     @Override
     public SwitchCaseBuilder defaultOutcome(ValueExpression outcome)
     {
-        this._switchNodeImpl.setDefaultOutcome(outcome);
-        return _lastSwitchCaseBuilderImpl;
+        this.switchNodeImpl.setDefaultOutcome(outcome);
+        return lastSwitchCaseBuilderImpl;
     }
 
     @Override
     public SwitchBuilder markAsStartNode()
     {
-        _facesFlow.setStartNodeId(_switchNodeImpl.getId());
+        facesFlow.setStartNodeId(switchNodeImpl.getId());
         return this;
     }    
 }

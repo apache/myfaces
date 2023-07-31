@@ -29,20 +29,20 @@ import org.apache.myfaces.flow.ViewNodeImpl;
  */
 public class ViewBuilderImpl extends ViewBuilder
 {
-    private FlowImpl _facesFlow;
-    private ViewNodeImpl _viewNode;
+    private FlowImpl facesFlow;
+    private ViewNodeImpl viewNode;
     
     public ViewBuilderImpl(FlowImpl facesFlow, String viewNodeId, String vdlDocumentId)
     {
-        _facesFlow = facesFlow;
-        _viewNode = new ViewNodeImpl(viewNodeId, vdlDocumentId);
-        _facesFlow.addView(_viewNode);
+        this.facesFlow = facesFlow;
+        this.viewNode = new ViewNodeImpl(viewNodeId, vdlDocumentId);
+        facesFlow.addView(viewNode);
     }
 
     @Override
     public ViewBuilder markAsStartNode()
     {
-        _facesFlow.setStartNodeId(_viewNode.getId());
+        facesFlow.setStartNodeId(viewNode.getId());
         return this;
     }
     
