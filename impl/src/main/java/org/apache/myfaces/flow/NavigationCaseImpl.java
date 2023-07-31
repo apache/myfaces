@@ -31,19 +31,19 @@ import jakarta.faces.context.FacesContext;
  */
 public class NavigationCaseImpl extends NavigationCase implements Freezable
 {
-    private String _condition;
-    private String _fromAction;
-    private String _fromOutcome;
-    private String _fromViewId;
-    private String _toViewId;
-    private String _toFlowDocumentId;
-    private boolean _includeViewParams;
-    private boolean _redirect;
-    private Map<String, List<String>> _parameters;
-    private ValueExpression _conditionExpression;
-    private ValueExpression _toViewIdExpression;
+    private String condition;
+    private String fromAction;
+    private String fromOutcome;
+    private String fromViewId;
+    private String toViewId;
+    private String toFlowDocumentId;
+    private boolean includeViewParams;
+    private boolean redirect;
+    private Map<String, List<String>> parameters;
+    private ValueExpression conditionExpression;
+    private ValueExpression toViewIdExpression;
 
-    private boolean _initialized;
+    private boolean initialized;
 
     public NavigationCaseImpl()
     {
@@ -55,15 +55,15 @@ public class NavigationCaseImpl extends NavigationCase implements Freezable
             Map<String, List<String>> parameters, boolean redirect, boolean includeViewParams)
     {
         super(fromViewId, fromAction, fromOutcome, condition, toViewId, parameters, redirect, includeViewParams);
-        _condition = condition;
-        _fromViewId = fromViewId;
-        _fromAction = fromAction;
-        _fromOutcome = fromOutcome;
-        _toViewId = toViewId;
-        _toFlowDocumentId = null;
-        _redirect = redirect;
-        _includeViewParams = includeViewParams;
-        _parameters = parameters;
+        this.condition = condition;
+        this.fromViewId = fromViewId;
+        this.fromAction = fromAction;
+        this.fromOutcome = fromOutcome;
+        this.toViewId = toViewId;
+        this.toFlowDocumentId = null;
+        this.redirect = redirect;
+        this.includeViewParams = includeViewParams;
+        this.parameters = parameters;
     }
 
     public NavigationCaseImpl(String fromViewId, String fromAction, String fromOutcome, String condition, 
@@ -73,150 +73,150 @@ public class NavigationCaseImpl extends NavigationCase implements Freezable
     {
         super(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, parameters, redirect, 
                 includeViewParams);
-        _condition = condition;
-        _fromViewId = fromViewId;
-        _fromAction = fromAction;
-        _fromOutcome = fromOutcome;
-        _toViewId = toViewId;
-        _toFlowDocumentId = toFlowDocumentId;
-        _redirect = redirect;
-        _includeViewParams = includeViewParams;
-        _parameters = parameters;
+        this.condition = condition;
+        this.fromViewId = fromViewId;
+        this.fromAction = fromAction;
+        this.fromOutcome = fromOutcome;
+        this.toViewId = toViewId;
+        this.toFlowDocumentId = toFlowDocumentId;
+        this.redirect = redirect;
+        this.includeViewParams = includeViewParams;
+        this.parameters = parameters;
 
     }
 
     public String getCondition()
     {
-        return _condition;
+        return condition;
     }
 
     public void setCondition(String condition)
     {
         checkInitialized();
-        this._condition = condition;
+        this.condition = condition;
     }
 
     @Override
     public String getFromAction()
     {
-        return _fromAction;
+        return fromAction;
     }
 
     public void setFromAction(String fromAction)
     {
         checkInitialized();
-        this._fromAction = fromAction;
+        this.fromAction = fromAction;
     }
 
     @Override
     public String getFromOutcome()
     {
-        return _fromOutcome;
+        return fromOutcome;
     }
 
     public void setFromOutcome(String fromOutcome)
     {
         checkInitialized();
-        this._fromOutcome = fromOutcome;
+        this.fromOutcome = fromOutcome;
     }
 
     @Override
     public String getFromViewId()
     {
-        return _fromViewId;
+        return fromViewId;
     }
 
     public void setFromViewId(String fromViewId)
     {
         checkInitialized();
-        this._fromViewId = fromViewId;
+        this.fromViewId = fromViewId;
     }
 
     public String getToViewId()
     {
-        return _toViewId;
+        return toViewId;
     }
 
     public void setToViewId(String toViewId)
     {
         checkInitialized();
-        this._toViewId = toViewId;
+        this.toViewId = toViewId;
     }
 
     @Override
     public String getToFlowDocumentId()
     {
-        return _toFlowDocumentId;
+        return toFlowDocumentId;
     }
 
     public void setToFlowDocumentId(String toFlowDocumentId)
     {
         checkInitialized();
-        this._toFlowDocumentId = toFlowDocumentId;
+        this.toFlowDocumentId = toFlowDocumentId;
     }
 
     @Override
     public boolean isIncludeViewParams()
     {
-        return _includeViewParams;
+        return includeViewParams;
     }
 
     public void setIncludeViewParams(boolean includeViewParams)
     {
         checkInitialized();
-        this._includeViewParams = includeViewParams;
+        this.includeViewParams = includeViewParams;
     }
 
     @Override
     public boolean isRedirect()
     {
-        return _redirect;
+        return redirect;
     }
 
     public void setRedirect(boolean redirect)
     {
         checkInitialized();
-        this._redirect = redirect;
+        this.redirect = redirect;
     }
     
     @Override
     public Map<String, List<String>> getParameters()
     {
-        return _parameters;
+        return parameters;
     }
 
     public void setParameters(Map<String, List<String>> parameters)
     {
         checkInitialized();
-        this._parameters = parameters;
+        this.parameters = parameters;
     }
 
     public ValueExpression getConditionExpression()
     {
-        return _conditionExpression;
+        return conditionExpression;
     }
 
     public void setConditionExpression(ValueExpression conditionExpression)
     {
         checkInitialized();
-        this._conditionExpression = conditionExpression;
+        this.conditionExpression = conditionExpression;
     }
 
     public ValueExpression getToViewIdExpression()
     {
-        return _toViewIdExpression;
+        return toViewIdExpression;
     }
 
     public void setToViewIdExpression(ValueExpression toViewIdExpression)
     {
         checkInitialized();
-        this._toViewIdExpression = toViewIdExpression;
+        this.toViewIdExpression = toViewIdExpression;
     }
 
     @Override
     public Boolean getCondition(FacesContext context)
     {
-        if (_condition == null)
+        if (condition == null)
         {
             return null;
         }
@@ -228,21 +228,21 @@ public class NavigationCaseImpl extends NavigationCase implements Freezable
 
     private ValueExpression _getConditionExpression(FacesContext context)
     {
-        assert _condition != null;
+        assert condition != null;
 
-        if (_conditionExpression == null)
+        if (conditionExpression == null)
         {
             ExpressionFactory factory = context.getApplication().getExpressionFactory();
-            _conditionExpression = factory.createValueExpression(context.getELContext(), _condition, Boolean.class);
+            conditionExpression = factory.createValueExpression(context.getELContext(), condition, Boolean.class);
         }
 
-        return _conditionExpression;
+        return conditionExpression;
     }
 
     @Override
     public String getToViewId(FacesContext context)
     {
-        if (_toViewId == null)
+        if (toViewId == null)
         {
             return null;
         }
@@ -255,38 +255,38 @@ public class NavigationCaseImpl extends NavigationCase implements Freezable
 
     private ValueExpression _getToViewIdExpression(FacesContext context)
     {
-        assert _toViewId != null;
+        assert toViewId != null;
 
-        if (_toViewIdExpression == null)
+        if (toViewIdExpression == null)
         {
             ExpressionFactory factory = context.getApplication().getExpressionFactory();
-            _toViewIdExpression = factory.createValueExpression(context.getELContext(), _toViewId, String.class);
+            toViewIdExpression = factory.createValueExpression(context.getELContext(), toViewId, String.class);
         }
 
-        return _toViewIdExpression;
+        return toViewIdExpression;
     }
 
     @Override
     public boolean hasCondition()
     {
-        return _condition != null && _condition.length() > 0;
+        return condition != null && condition.length() > 0;
     }
 
     @Override
     public int hashCode()
     {
         int hash = 5;
-        hash = 47 * hash + (this._condition != null ? this._condition.hashCode() : 0);
-        hash = 47 * hash + (this._fromAction != null ? this._fromAction.hashCode() : 0);
-        hash = 47 * hash + (this._fromOutcome != null ? this._fromOutcome.hashCode() : 0);
-        hash = 47 * hash + (this._fromViewId != null ? this._fromViewId.hashCode() : 0);
-        hash = 47 * hash + (this._toViewId != null ? this._toViewId.hashCode() : 0);
-        hash = 47 * hash + (this._toFlowDocumentId != null ? this._toFlowDocumentId.hashCode() : 0);
-        hash = 47 * hash + (this._includeViewParams ? 1 : 0);
-        hash = 47 * hash + (this._redirect ? 1 : 0);
-        hash = 47 * hash + (this._parameters != null ? this._parameters.hashCode() : 0);
-        hash = 47 * hash + (this._conditionExpression != null ? this._conditionExpression.hashCode() : 0);
-        hash = 47 * hash + (this._toViewIdExpression != null ? this._toViewIdExpression.hashCode() : 0);
+        hash = 47 * hash + (this.condition != null ? this.condition.hashCode() : 0);
+        hash = 47 * hash + (this.fromAction != null ? this.fromAction.hashCode() : 0);
+        hash = 47 * hash + (this.fromOutcome != null ? this.fromOutcome.hashCode() : 0);
+        hash = 47 * hash + (this.fromViewId != null ? this.fromViewId.hashCode() : 0);
+        hash = 47 * hash + (this.toViewId != null ? this.toViewId.hashCode() : 0);
+        hash = 47 * hash + (this.toFlowDocumentId != null ? this.toFlowDocumentId.hashCode() : 0);
+        hash = 47 * hash + (this.includeViewParams ? 1 : 0);
+        hash = 47 * hash + (this.redirect ? 1 : 0);
+        hash = 47 * hash + (this.parameters != null ? this.parameters.hashCode() : 0);
+        hash = 47 * hash + (this.conditionExpression != null ? this.conditionExpression.hashCode() : 0);
+        hash = 47 * hash + (this.toViewIdExpression != null ? this.toViewIdExpression.hashCode() : 0);
         return hash;
     }
 
@@ -302,52 +302,52 @@ public class NavigationCaseImpl extends NavigationCase implements Freezable
             return false;
         }
         final NavigationCaseImpl other = (NavigationCaseImpl) obj;
-        if ((this._condition == null) ? (other._condition != null) : !this._condition.equals(other._condition))
+        if ((this.condition == null) ? (other.condition != null) : !this.condition.equals(other.condition))
         {
             return false;
         }
-        if ((this._fromAction == null) ? (other._fromAction != null) : !this._fromAction.equals(other._fromAction))
+        if ((this.fromAction == null) ? (other.fromAction != null) : !this.fromAction.equals(other.fromAction))
         {
             return false;
         }
-        if ((this._fromOutcome == null) ? (other._fromOutcome != null) : 
-                !this._fromOutcome.equals(other._fromOutcome))
+        if ((this.fromOutcome == null) ? (other.fromOutcome != null) : 
+                !this.fromOutcome.equals(other.fromOutcome))
         {
             return false;
         }
-        if ((this._fromViewId == null) ? (other._fromViewId != null) : !this._fromViewId.equals(other._fromViewId))
+        if ((this.fromViewId == null) ? (other.fromViewId != null) : !this.fromViewId.equals(other.fromViewId))
         {
             return false;
         }
-        if ((this._toViewId == null) ? (other._toViewId != null) : !this._toViewId.equals(other._toViewId))
+        if ((this.toViewId == null) ? (other.toViewId != null) : !this.toViewId.equals(other.toViewId))
         {
             return false;
         }
-        if ((this._toFlowDocumentId == null) ? (other._toFlowDocumentId != null) : 
-                !this._toFlowDocumentId.equals(other._toFlowDocumentId))
+        if ((this.toFlowDocumentId == null) ? (other.toFlowDocumentId != null) : 
+                !this.toFlowDocumentId.equals(other.toFlowDocumentId))
         {
             return false;
         }
-        if (this._includeViewParams != other._includeViewParams)
+        if (this.includeViewParams != other.includeViewParams)
         {
             return false;
         }
-        if (this._redirect != other._redirect)
+        if (this.redirect != other.redirect)
         {
             return false;
         }
-        if (this._parameters != other._parameters && (this._parameters == null || 
-                !this._parameters.equals(other._parameters)))
+        if (this.parameters != other.parameters && (this.parameters == null || 
+                !this.parameters.equals(other.parameters)))
         {
             return false;
         }
-        if (this._conditionExpression != other._conditionExpression && (this._conditionExpression == null || 
-                !this._conditionExpression.equals(other._conditionExpression)))
+        if (this.conditionExpression != other.conditionExpression && (this.conditionExpression == null || 
+                !this.conditionExpression.equals(other.conditionExpression)))
         {
             return false;
         }
-        if (this._toViewIdExpression != other._toViewIdExpression && (this._toViewIdExpression == null || 
-                !this._toViewIdExpression.equals(other._toViewIdExpression)))
+        if (this.toViewIdExpression != other.toViewIdExpression && (this.toViewIdExpression == null || 
+                !this.toViewIdExpression.equals(other.toViewIdExpression)))
         {
             return false;
         }
@@ -357,12 +357,12 @@ public class NavigationCaseImpl extends NavigationCase implements Freezable
     @Override
     public void freeze()
     {
-        _initialized = true;
+        initialized = true;
     }
     
     private void checkInitialized() throws IllegalStateException
     {
-        if (_initialized)
+        if (initialized)
         {
             throw new IllegalStateException("Flow is inmutable once initialized");
         }

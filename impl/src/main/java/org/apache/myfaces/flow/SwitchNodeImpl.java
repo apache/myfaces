@@ -33,56 +33,56 @@ import jakarta.faces.flow.SwitchNode;
  */
 public class SwitchNodeImpl extends SwitchNode implements Freezable
 {
-    private String _defaultOutcome;
-    private ValueExpression _defaultOutcomeEL;
-    private String _id;
+    private String defaultOutcome;
+    private ValueExpression defaultOutcomeEL;
+    private String id;
     
-    private List<SwitchCase> _cases;
-    private List<SwitchCase> _unmodifiableCases;
+    private List<SwitchCase> cases;
+    private List<SwitchCase> unmodifiableCases;
 
-    private boolean _initialized;
+    private boolean initialized;
 
     public SwitchNodeImpl(String switchNodeId)
     {
-        this._id = switchNodeId;
-        _cases = new ArrayList<SwitchCase>();
-        _unmodifiableCases = Collections.unmodifiableList(_cases);
+        this.id = switchNodeId;
+        cases = new ArrayList<>();
+        unmodifiableCases = Collections.unmodifiableList(cases);
     }
     
     @Override
     public List<SwitchCase> getCases()
     {
-        return _unmodifiableCases;
+        return unmodifiableCases;
     }
     
     public void addCase(SwitchCase switchCase)
     {
         checkInitialized();
-        _cases.add(switchCase);
+        cases.add(switchCase);
     }
 
     @Override
     public String getDefaultOutcome(FacesContext context)
     {
-        if (_defaultOutcomeEL != null)
+        if (defaultOutcomeEL != null)
         {
-            return _defaultOutcomeEL.getValue(context.getELContext());
+            return defaultOutcomeEL.getValue(context.getELContext());
         }
-        return _defaultOutcome;
+        return defaultOutcome;
     }
 
     @Override
     public String getId()
     {
-        return _id;
+        return id;
     }
 
     @Override
     public void freeze()
     {
-        _initialized = true;
+        initialized = true;
         
-        for (SwitchCase switchCase : _cases)
+        for (SwitchCase switchCase : cases)
         {
             if (switchCase instanceof Freezable)
             {
@@ -93,7 +93,7 @@ public class SwitchNodeImpl extends SwitchNode implements Freezable
     
     private void checkInitialized() throws IllegalStateException
     {
-        if (_initialized)
+        if (initialized)
         {
             throw new IllegalStateException("Flow is inmutable once initialized");
         }
@@ -102,20 +102,20 @@ public class SwitchNodeImpl extends SwitchNode implements Freezable
     public void setDefaultOutcome(String defaultOutcome)
     {
         checkInitialized();
-        this._defaultOutcome = defaultOutcome;
-        this._defaultOutcomeEL = null;
+        this.defaultOutcome = defaultOutcome;
+        this.defaultOutcomeEL = null;
     }
     
     public void setDefaultOutcome(ValueExpression defaultOutcome)
     {
         checkInitialized();
-        this._defaultOutcomeEL = defaultOutcome;
-        this._defaultOutcome = null;
+        this.defaultOutcomeEL = defaultOutcome;
+        this.defaultOutcome = null;
     }
 
     public void setId(String id)
     {
         checkInitialized();
-        this._id = id;
+        this.id = id;
     }
 }

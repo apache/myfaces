@@ -29,43 +29,43 @@ import jakarta.faces.flow.SwitchCase;
  */
 public class SwitchCaseImpl extends SwitchCase implements Freezable
 {
-    private String _fromOutcome;
+    private String fromOutcome;
     
-    private Boolean _condition;
-    private ValueExpression _conditionEL;
+    private Boolean condition;
+    private ValueExpression conditionEL;
 
-    private boolean _initialized;
+    private boolean initialized;
 
     @Override
     public String getFromOutcome()
     {
-        return _fromOutcome;
+        return fromOutcome;
     }
 
     @Override
     public Boolean getCondition(FacesContext context)
     {
-        if (_conditionEL != null)
+        if (conditionEL != null)
         {
-            Object value = _conditionEL.getValue(context.getELContext());
+            Object value = conditionEL.getValue(context.getELContext());
             if (value instanceof String)
             {
                 return Boolean.valueOf((String) value);
             }
             return (Boolean) value;
         }
-        return _condition;
+        return condition;
     }
     
     @Override
     public void freeze()
     {
-        _initialized = true;
+        initialized = true;
     }
     
     private void checkInitialized() throws IllegalStateException
     {
-        if (_initialized)
+        if (initialized)
         {
             throw new IllegalStateException("Flow is inmutable once initialized");
         }
@@ -74,20 +74,20 @@ public class SwitchCaseImpl extends SwitchCase implements Freezable
     public void setFromOutcome(String fromOutcome)
     {
         checkInitialized();
-        this._fromOutcome = fromOutcome;
+        this.fromOutcome = fromOutcome;
     }
 
     public void setCondition(Boolean condition)
     {
         checkInitialized();
-        this._condition = condition;
-        this._conditionEL = null;
+        this.condition = condition;
+        this.conditionEL = null;
     }
 
     public void setCondition(ValueExpression conditionEL)
     {
         checkInitialized();
-        this._conditionEL = conditionEL;
-        this._condition = null;
+        this.conditionEL = conditionEL;
+        this.condition = null;
     }
 }

@@ -160,19 +160,21 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     validateFacesConfig(ectx, url);
                 }
             }
-            InputStream stream = ClassUtils.getResourceAsStream(STANDARD_FACES_CONFIG_RESOURCE);
-            if (stream == null)
+
+            try (InputStream stream = ClassUtils.getResourceAsStream(STANDARD_FACES_CONFIG_RESOURCE))
             {
-                throw new FacesException("Standard faces config " + STANDARD_FACES_CONFIG_RESOURCE + " not found");
+                if (stream == null)
+                {
+                    throw new FacesException("Standard faces config " + STANDARD_FACES_CONFIG_RESOURCE + " not found");
+                }
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("Reading standard config " + STANDARD_FACES_CONFIG_RESOURCE);
+                }
+
+                FacesConfig facesConfig = getUnmarshaller(ectx).getFacesConfig(stream, STANDARD_FACES_CONFIG_RESOURCE);
+                return facesConfig;
             }
-            if (log.isLoggable(Level.FINE))
-            {
-                log.fine("Reading standard config " + STANDARD_FACES_CONFIG_RESOURCE);
-            }
-            
-            FacesConfig facesConfig = getUnmarshaller(ectx).getFacesConfig(stream, STANDARD_FACES_CONFIG_RESOURCE);
-            stream.close();
-            return facesConfig;
         }
         catch (IOException | SAXException e)
         {

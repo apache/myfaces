@@ -59,15 +59,14 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     private final static String FLOW_RETURN_STACK = "oam.flow.RETURN_STACK.";
     private final static String CURRENT_FLOW_REQUEST_STACK = "oam.flow.REQUEST_STACK.";
     
-    private Map<String, Map<String, Flow>> _flowMapByDocumentId;
-    private Map<String, Flow> _flowMapById;
-    
-    private FacesFlowProvider _facesFlowProvider;
+    private Map<String, Map<String, Flow>> flowMapByDocumentId;
+    private Map<String, Flow> flowMapById;
+    private FacesFlowProvider facesFlowProvider;
     
     public FlowHandlerImpl()
     {
-        _flowMapByDocumentId = new ConcurrentHashMap<String, Map<String, Flow>>();
-        _flowMapById = new ConcurrentHashMap<String, Flow>();
+        flowMapByDocumentId = new ConcurrentHashMap<>();
+        flowMapById = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -78,7 +77,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
         Assert.notNull(id, "id");
         
         // First try the combination.
-        Map<String, Flow> flowMap = _flowMapByDocumentId.get(definingDocumentId);
+        Map<String, Flow> flowMap = flowMapByDocumentId.get(definingDocumentId);
         if (flowMap != null)
         {
             Flow flow = flowMap.get(id);
@@ -91,7 +90,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
         //if definingDocumentId is an empty string, 
         if (StringUtils.isEmpty(definingDocumentId))
         {
-            return _flowMapById.get(id);
+            return flowMapById.get(id);
         }
         return null;
     }
@@ -118,11 +117,11 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
             throw new IllegalArgumentException("Flow must have a non null definingDocumentId");
         }
         
-        Map<String, Flow> flowMap = _flowMapByDocumentId.computeIfAbsent(definingDocumentId,
+        Map<String, Flow> flowMap = flowMapByDocumentId.computeIfAbsent(definingDocumentId,
                 k -> new ConcurrentHashMap<>());
         flowMap.put(id, toAdd);
         
-        Flow duplicateFlow = _flowMapById.get(id);
+        Flow duplicateFlow = flowMapById.get(id);
         if (duplicateFlow != null)
         {
             // There are two flows with the same flowId.
@@ -135,7 +134,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
             // Give priority to the flow with no defining document id
             else if ("".equals(toAdd.getDefiningDocumentId()))
             {
-                _flowMapById.put(id, toAdd);
+                flowMapById.put(id, toAdd);
             }
             else if ("".equals(duplicateFlow.getDefiningDocumentId()))
             {
@@ -144,12 +143,12 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
             else
             {
                 // Put the last one
-                _flowMapById.put(id, toAdd);
+                flowMapById.put(id, toAdd);
             }
         }
         else
         {
-            _flowMapById.put(id, toAdd);
+            flowMapById.put(id, toAdd);
         }
 
         // Once the flow is added to the map, it is still necessary to 
@@ -359,7 +358,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
         Map<String, Object> outboundParameters = null;
         if (outboundCallNode != null && !outboundCallNode.getOutboundParameters().isEmpty())
         {
-            outboundParameters = new HashMap<String, Object>();
+            outboundParameters = new HashMap<>();
             for (Map.Entry<String, Parameter> entry : outboundCallNode.getOutboundParameters().entrySet())
             {
                 Parameter parameter = entry.getValue();
@@ -396,18 +395,18 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     
     public FacesFlowProvider getFacesFlowProvider(FacesContext facesContext)
     {
-        if (_facesFlowProvider == null)
+        if (facesFlowProvider == null)
         {
             FacesFlowProviderFactory factory = 
                 FacesFlowProviderFactory.getFacesFlowProviderFactory(
                     facesContext.getExternalContext());
-            _facesFlowProvider = factory.getFacesFlowProvider(
+            facesFlowProvider = factory.getFacesFlowProvider(
                     facesContext.getExternalContext());
             
             facesContext.getApplication().unsubscribeFromEvent(PostClientWindowAndViewInitializedEvent.class, this);
             facesContext.getApplication().subscribeToEvent(PostClientWindowAndViewInitializedEvent.class, this);
         }
-        return _facesFlowProvider;
+        return facesFlowProvider;
     }
     
     private void doBeforeExitFlow(FacesContext context, Flow flow)
@@ -543,8 +542,8 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
                     {
                         if (targetFlows == null)
                         {
-                            sourceFlows = new ArrayList<Flow>(4);
-                            targetFlows = new ArrayList<Flow>(4);
+                            sourceFlows = new ArrayList<>(4);
+                            targetFlows = new ArrayList<>(4);
                         }
                         // Get the navigation case using the outcome
                         Flow sourceFlow = currentFlow;

@@ -121,18 +121,18 @@ public class PartialVisitContext extends VisitContext
         // Note that we use default HashSet/Map initial capacities, though
         // perhaps we could pick more intelligent defaults.
         // Initialize unvisitedClientIds collection
-        _unvisitedClientIds = new HashSet<String>();
+        _unvisitedClientIds = new HashSet<>();
 
         // Initialize ids collection
-        _ids = new HashSet<String>();
+        _ids = new HashSet<>();
 
         // Intialize subtreeClientIds collection
-        _subtreeClientIds = new HashMap<String, Collection<String>>();
+        _subtreeClientIds = new HashMap<>();
 
         // Initialize the clientIds collection.  Note that we proxy
         // this collection so that we can trap adds/removes and sync
         // up all of the other collections.
-        _clientIds = new CollectionProxy<String>(new HashSet<String>());
+        _clientIds = new CollectionProxy<>(new HashSet<>());
 
         // Finally, populate the clientIds collection.  This has the
         // side effect of populating all of the other collections.

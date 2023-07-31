@@ -27,36 +27,35 @@ import jakarta.faces.flow.FlowNode;
  */
 public class FlowNodeImpl extends FlowNode implements Freezable
 {
-    private String _id;
-    
-    private boolean _initialized;
+    private String id;
+    private boolean initialized;
 
     public FlowNodeImpl(String id)
     {
-        this._id = id;
+        this.id = id;
     }
 
     @Override
     public String getId()
     {
-        return _id;
+        return id;
     }
 
     public void setId(String id)
     {
         checkInitialized();
-        this._id = id;
+        this.id = id;
     }
 
     @Override
     public void freeze()
     {
-        _initialized = true;
+        initialized = true;
     }
     
     private void checkInitialized() throws IllegalStateException
     {
-        if (_initialized)
+        if (initialized)
         {
             throw new IllegalStateException("Flow is inmutable once initialized");
         }

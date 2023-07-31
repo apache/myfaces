@@ -29,42 +29,42 @@ import jakarta.faces.flow.ReturnNode;
  */
 public class ReturnNodeImpl extends ReturnNode implements Freezable
 {
-    private String _fromOutcome;
-    private ValueExpression _fromOutcomeEL;
-    private String _id;
+    private String fromOutcome;
+    private ValueExpression fromOutcomeEL;
+    private String id;
 
-    private boolean _initialized;
+    private boolean initialized;
 
     public ReturnNodeImpl(String returnNodeId)
     {
-        this._id = returnNodeId;
+        this.id = returnNodeId;
     }
     
     @Override
     public String getFromOutcome(FacesContext context)
     {
-        if (_fromOutcomeEL != null)
+        if (fromOutcomeEL != null)
         {
-            return _fromOutcomeEL.getValue(context.getELContext());
+            return fromOutcomeEL.getValue(context.getELContext());
         }
-        return _fromOutcome;
+        return fromOutcome;
     }
 
     @Override
     public String getId()
     {
-        return _id;
+        return id;
     }
     
     @Override
     public void freeze()
     {
-        _initialized = true;
+        initialized = true;
     }
     
     private void checkInitialized() throws IllegalStateException
     {
-        if (_initialized)
+        if (initialized)
         {
             throw new IllegalStateException("Flow is inmutable once initialized");
         }
@@ -73,20 +73,20 @@ public class ReturnNodeImpl extends ReturnNode implements Freezable
     public void setFromOutcome(String fromOutcome)
     {
         checkInitialized();
-        this._fromOutcome = fromOutcome;
-        this._fromOutcomeEL = null;
+        this.fromOutcome = fromOutcome;
+        this.fromOutcomeEL = null;
     }
     
     public void setFromOutcome(ValueExpression fromOutcome)
     {
         checkInitialized();
-        this._fromOutcomeEL = fromOutcome;
-        this._fromOutcome = null;
+        this.fromOutcomeEL = fromOutcome;
+        this.fromOutcome = null;
     }
 
     public void setId(String id)
     {
         checkInitialized();
-        this._id = id;
+        this.id = id;
     }
 }

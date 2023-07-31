@@ -33,58 +33,58 @@ import jakarta.faces.flow.Parameter;
  */
 public class MethodCallNodeImpl extends MethodCallNode implements Freezable
 {
-    private String _id;
-    private MethodExpression _methodExpression;
-    private ValueExpression _outcome;
+    private String id;
+    private MethodExpression methodExpression;
+    private ValueExpression outcome;
     
-    private List<Parameter> _parameters;
-    private List<Parameter> _unmodifiableParameters;
+    private List<Parameter> parameters;
+    private List<Parameter> unmodifiableParameters;
     
-    private boolean _initialized;
+    private boolean initialized;
     
     public MethodCallNodeImpl(String methodCallNodeId)
     {
-        this._id = methodCallNodeId;
-        _parameters = new ArrayList<Parameter>();
-        _unmodifiableParameters = Collections.unmodifiableList(_parameters);
+        this.id = methodCallNodeId;
+        this.parameters = new ArrayList<>();
+        this.unmodifiableParameters = Collections.unmodifiableList(parameters);
     }
 
     @Override
     public MethodExpression getMethodExpression()
     {
-        return _methodExpression;
+        return methodExpression;
     }
 
     @Override
     public ValueExpression getOutcome()
     {
-        return _outcome;
+        return outcome;
     }
 
     @Override
     public List<Parameter> getParameters()
     {
-        return _unmodifiableParameters;
+        return unmodifiableParameters;
     }
     
     public void addParameter(Parameter parameter)
     {
         checkInitialized();
-        _parameters.add(parameter);
+        parameters.add(parameter);
     }
 
     @Override
     public String getId()
     {
-        return _id;
+        return id;
     }
     
     @Override
     public void freeze()
     {
-        _initialized = true;
+        initialized = true;
         
-        for (Parameter value : _parameters)
+        for (Parameter value : parameters)
         {
             if (value instanceof Freezable)
             {
@@ -95,7 +95,7 @@ public class MethodCallNodeImpl extends MethodCallNode implements Freezable
     
     private void checkInitialized() throws IllegalStateException
     {
-        if (_initialized)
+        if (initialized)
         {
             throw new IllegalStateException("Flow is inmutable once initialized");
         }
@@ -104,18 +104,18 @@ public class MethodCallNodeImpl extends MethodCallNode implements Freezable
     public void setMethodExpression(MethodExpression methodExpression)
     {
         checkInitialized();
-        this._methodExpression = methodExpression;
+        this.methodExpression = methodExpression;
     }
 
     public void setOutcome(ValueExpression outcome)
     {
         checkInitialized();
-        this._outcome = outcome;
+        this.outcome = outcome;
     }
 
     public void setId(String id)
     {
         checkInitialized();
-        this._id = id;
+        this.id = id;
     }
 }

@@ -27,38 +27,38 @@ import jakarta.faces.flow.ViewNode;
  */
 public class ViewNodeImpl extends ViewNode implements Freezable
 {
-    private String _vdlDocumentId;
-    private String _id;
+    private String vdlDocumentId;
+    private String id;
 
-    private boolean _initialized;
+    private boolean initialized;
 
     public ViewNodeImpl(String id, String vdlDocumentId)
     {
-        this._vdlDocumentId = vdlDocumentId;
-        this._id = id;
+        this.vdlDocumentId = vdlDocumentId;
+        this.id = id;
     }
     
     @Override
     public String getVdlDocumentId()
     {
-        return _vdlDocumentId;
+        return vdlDocumentId;
     }
 
     @Override
     public String getId()
     {
-        return _id;
+        return id;
     }
 
     @Override
     public void freeze()
     {
-        _initialized = true;
+        initialized = true;
     }
     
     private void checkInitialized() throws IllegalStateException
     {
-        if (_initialized)
+        if (initialized)
         {
             throw new IllegalStateException("Flow is inmutable once initialized");
         }
@@ -67,12 +67,12 @@ public class ViewNodeImpl extends ViewNode implements Freezable
     public void setVdlDocumentId(String vdlDocumentId)
     {
         checkInitialized();
-        this._vdlDocumentId = vdlDocumentId;
+        this.vdlDocumentId = vdlDocumentId;
     }
 
     public void setId(String id)
     {
         checkInitialized();
-        this._id = id;
+        this.id = id;
     }
 }

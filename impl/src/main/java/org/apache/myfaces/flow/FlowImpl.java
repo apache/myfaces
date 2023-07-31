@@ -45,71 +45,70 @@ import jakarta.faces.lifecycle.ClientWindow;
  */
 public class FlowImpl extends Flow implements Freezable
 {
-    private MethodExpression _initializer;
-    private MethodExpression _finalizer;
-    private String _startNodeId;
-    private String _id;
-    private String _definingDocumentId;
+    private MethodExpression initializer;
+    private MethodExpression finalizer;
+    private String startNodeId;
+    private String id;
+    private String definingDocumentId;
     
-    private Map<String, FlowNode> _flowNodeMap;
+    private Map<String, FlowNode> flowNodeMap;
     
     // The idea is use a normal HashMap, since there will not be modifications
     // after initialization ( all setters must call checkInitialized() )
-    private Map<String, Parameter> _inboundParametersMap;
-    private Map<String, FlowCallNode> _flowCallsMap;
-    private List<MethodCallNode> _methodCallsList;
-    private Map<String, ReturnNode> _returnsMap;
-    private Map<String, SwitchNode> _switchesMap;
-    private List<ViewNode> _viewsList;
+    private Map<String, Parameter> inboundParametersMap;
+    private Map<String, FlowCallNode> flowCallsMap;
+    private List<MethodCallNode> methodCallsList;
+    private Map<String, ReturnNode> returnsMap;
+    private Map<String, SwitchNode> switchesMap;
+    private List<ViewNode> viewsList;
     
     // Note this class should be thread safe and inmutable once
     // the flow is initialized or placed into service by the runtime.
-    private Map<String, Parameter> _unmodifiableInboundParametersMap;
-    private Map<String, FlowCallNode> _unmodifiableFlowCallsMap;
-    private List<MethodCallNode> _unmodifiableMethodCallsList;
-    private Map<String, ReturnNode> _unmodifiableReturnsMap;
-    private Map<String, SwitchNode> _unmodifiableSwitchesMap;
-    private List<ViewNode> _unmodifiableViewsList;
+    private Map<String, Parameter> unmodifiableInboundParametersMap;
+    private Map<String, FlowCallNode> unmodifiableFlowCallsMap;
+    private List<MethodCallNode> unmodifiableMethodCallsList;
+    private Map<String, ReturnNode> unmodifiableReturnsMap;
+    private Map<String, SwitchNode> unmodifiableSwitchesMap;
+    private List<ViewNode> unmodifiableViewsList;
     
-    private Map<String, Set<NavigationCase>> _navigationCases;
-    private Map<String, Set<NavigationCase>> _unmodifiableNavigationCases;
+    private Map<String, Set<NavigationCase>> navigationCases;
+    private Map<String, Set<NavigationCase>> unmodifiableNavigationCases;
     
     // No need to make it volatile, because FlowImpl instances are
     // created and initialized only at application startup, by a single
     // thread.
-    private boolean _initialized;
+    private boolean initialized;
     
     public FlowImpl()
     {
-        _flowNodeMap = new HashMap<String, FlowNode>();
-        _inboundParametersMap = new HashMap<String, Parameter>();
-        _flowCallsMap = new HashMap<String, FlowCallNode>();
-        _methodCallsList = new ArrayList<MethodCallNode>();
-        _returnsMap = new HashMap<String, ReturnNode>();
-        _switchesMap = new HashMap<String, SwitchNode>();
-        _viewsList = new ArrayList<ViewNode>();
-        _navigationCases = new HashMap<String, Set<NavigationCase>>();
+        flowNodeMap = new HashMap<>();
+        inboundParametersMap = new HashMap<>();
+        flowCallsMap = new HashMap<>();
+        methodCallsList = new ArrayList<>();
+        returnsMap = new HashMap<>();
+        switchesMap = new HashMap<>();
+        viewsList = new ArrayList<>();
+        navigationCases = new HashMap<>();
         
         // Collections.unmodifiableMap(...) uses delegation pattern, so as long
         // as we don't modify _inboundParametersMap in the wrong time, it
         // will be thread safe and inmutable.
-        _unmodifiableInboundParametersMap = Collections.unmodifiableMap(_inboundParametersMap);
-        _unmodifiableFlowCallsMap = Collections.unmodifiableMap(_flowCallsMap);
-        _unmodifiableMethodCallsList = Collections.unmodifiableList(_methodCallsList);
-        _unmodifiableReturnsMap = Collections.unmodifiableMap(_returnsMap);
-        _unmodifiableSwitchesMap = Collections.unmodifiableMap(_switchesMap);
-        _unmodifiableViewsList = Collections.unmodifiableList(_viewsList);
+        unmodifiableInboundParametersMap = Collections.unmodifiableMap(inboundParametersMap);
+        unmodifiableFlowCallsMap = Collections.unmodifiableMap(flowCallsMap);
+        unmodifiableMethodCallsList = Collections.unmodifiableList(methodCallsList);
+        unmodifiableReturnsMap = Collections.unmodifiableMap(returnsMap);
+        unmodifiableSwitchesMap = Collections.unmodifiableMap(switchesMap);
+        unmodifiableViewsList = Collections.unmodifiableList(viewsList);
         
-        _unmodifiableNavigationCases = Collections.unmodifiableMap(_navigationCases);
+        unmodifiableNavigationCases = Collections.unmodifiableMap(navigationCases);
     }
     
+    @Override
     public void freeze()
     {
+        initialized = true;
         
-        
-        _initialized = true;
-        
-        for (Map.Entry<String, Parameter> entry : _inboundParametersMap.entrySet())
+        for (Map.Entry<String, Parameter> entry : inboundParametersMap.entrySet())
         {
             if (entry.getValue() instanceof Freezable)
             {
@@ -117,7 +116,7 @@ public class FlowImpl extends Flow implements Freezable
             }
         }
             
-        for (Map.Entry<String, FlowCallNode> entry : _flowCallsMap.entrySet())
+        for (Map.Entry<String, FlowCallNode> entry : flowCallsMap.entrySet())
         {
             if (entry.getValue() instanceof Freezable)
             {
@@ -125,7 +124,7 @@ public class FlowImpl extends Flow implements Freezable
             }
         }
 
-        for (MethodCallNode value : _methodCallsList)
+        for (MethodCallNode value : methodCallsList)
         {
             if (value instanceof Freezable)
             {
@@ -133,7 +132,7 @@ public class FlowImpl extends Flow implements Freezable
             }
         }
 
-        for (Map.Entry<String, ReturnNode> entry : _returnsMap.entrySet())
+        for (Map.Entry<String, ReturnNode> entry : returnsMap.entrySet())
         {
             if (entry.getValue() instanceof Freezable)
             {
@@ -141,7 +140,7 @@ public class FlowImpl extends Flow implements Freezable
             }
         }
 
-        for (Map.Entry<String, SwitchNode> entry : _switchesMap.entrySet())
+        for (Map.Entry<String, SwitchNode> entry : switchesMap.entrySet())
         {
             if (entry.getValue() instanceof Freezable)
             {
@@ -149,7 +148,7 @@ public class FlowImpl extends Flow implements Freezable
             }
         }
         
-        for (ViewNode value : _viewsList)
+        for (ViewNode value : viewsList)
         {
             if (value instanceof Freezable)
             {
@@ -174,145 +173,145 @@ public class FlowImpl extends Flow implements Freezable
     @Override
     public String getDefiningDocumentId()
     {
-        return _definingDocumentId;
+        return definingDocumentId;
     }
     
     public void setDefiningDocumentId(String definingDocumentId)
     {
         checkInitialized();
-        _definingDocumentId = definingDocumentId;
+        this.definingDocumentId = definingDocumentId;
     }
 
     @Override
     public String getId()
     {
-        return _id;
+        return id;
     }
     
     public void setId(String id)
     {
         checkInitialized();
-        _id = id;
+        this.id = id;
     }
 
     @Override
     public MethodExpression getInitializer()
     {
-        return _initializer;
+        return initializer;
     }
     
     public void setInitializer(MethodExpression initializer)
     {
         checkInitialized();
-        _initializer = initializer;
+        this.initializer = initializer;
     }
 
     @Override
     public MethodExpression getFinalizer()
     {
-        return _finalizer;
+        return finalizer;
     }
     
     public void setFinalizer(MethodExpression finalizer)
     {
         checkInitialized();
-        _finalizer = finalizer;
+        this.finalizer = finalizer;
     }
 
     @Override
     public String getStartNodeId()
     {
-        return _startNodeId;
+        return startNodeId;
     }
     
     public void setStartNodeId(String startNodeId)
     {
         checkInitialized();
-        _startNodeId = startNodeId;
+        this.startNodeId = startNodeId;
     }
     
     @Override
     public Map<String, Parameter> getInboundParameters()
     {
-        return _unmodifiableInboundParametersMap;
+        return unmodifiableInboundParametersMap;
     }
     
     public void putInboundParameter(String key, Parameter value)
     {
         checkInitialized();
-        _inboundParametersMap.put(key, value);
+        inboundParametersMap.put(key, value);
     }
     
     @Override
     public Map<String, FlowCallNode> getFlowCalls()
     {
-        return _unmodifiableFlowCallsMap;
+        return unmodifiableFlowCallsMap;
     }
     
     public void putFlowCall(String key, FlowCallNode value)
     {
         checkInitialized();
-        _flowCallsMap.put(key, value);
-        _flowNodeMap.put(value.getId(), value);
+        flowCallsMap.put(key, value);
+        flowNodeMap.put(value.getId(), value);
     }
 
     @Override
     public List<MethodCallNode> getMethodCalls()
     {
-        return _unmodifiableMethodCallsList;
+        return unmodifiableMethodCallsList;
     }
 
     public void addMethodCall(MethodCallNode value)
     {
         checkInitialized();
-        _methodCallsList.add(value);
-        _flowNodeMap.put(value.getId(), value);
+        methodCallsList.add(value);
+        flowNodeMap.put(value.getId(), value);
     }
 
     @Override
     public Map<String, ReturnNode> getReturns()
     {
-        return _unmodifiableReturnsMap;
+        return unmodifiableReturnsMap;
     }
     
     public void putReturn(String key, ReturnNode value)
     {
         checkInitialized();
-        _returnsMap.put(key, value);
-        _flowNodeMap.put(value.getId(), value);
+        returnsMap.put(key, value);
+        flowNodeMap.put(value.getId(), value);
     }
 
     @Override
     public Map<String, SwitchNode> getSwitches()
     {
-        return _unmodifiableSwitchesMap;
+        return unmodifiableSwitchesMap;
     }
     
     public void putSwitch(String key, SwitchNode value)
     {
         checkInitialized();
-        _switchesMap.put(key, value);
-        _flowNodeMap.put(value.getId(), value);
+        switchesMap.put(key, value);
+        flowNodeMap.put(value.getId(), value);
     }
 
     @Override
     public List<ViewNode> getViews()
     {
-        return _unmodifiableViewsList;
+        return unmodifiableViewsList;
     }
     
     public void addView(ViewNode value)
     {
         checkInitialized();
-        _viewsList.add(value);
-        _flowNodeMap.put(value.getId(), value);
+        viewsList.add(value);
+        flowNodeMap.put(value.getId(), value);
     }
 
     @Override
     public FlowCallNode getFlowCall(Flow targetFlow)
     {
         FacesContext facesContext = null;
-        for (Map.Entry<String, FlowCallNode> entry : _flowCallsMap.entrySet())
+        for (Map.Entry<String, FlowCallNode> entry : flowCallsMap.entrySet())
         {
             if (facesContext == null)
             {
@@ -332,15 +331,15 @@ public class FlowImpl extends Flow implements Freezable
     @Override
     public FlowNode getNode(String nodeId)
     {
-        return _flowNodeMap.get(nodeId);
+        return flowNodeMap.get(nodeId);
     }
     
     public void addNavigationCases(String fromViewId, Set<NavigationCase> navigationCases)
     {
         checkInitialized();
 
-        Set<NavigationCase> navigationCaseSet = _navigationCases.computeIfAbsent(fromViewId,
-                k -> new HashSet<NavigationCase>());
+        Set<NavigationCase> navigationCaseSet = this.navigationCases.computeIfAbsent(fromViewId,
+                k -> new HashSet<>());
         navigationCaseSet.addAll(navigationCases);
     }
     
@@ -348,15 +347,15 @@ public class FlowImpl extends Flow implements Freezable
     {
         checkInitialized();
 
-        Set<NavigationCase> navigationCaseSet = _navigationCases.computeIfAbsent(navigationCase.getFromViewId(),
-                k -> new HashSet<NavigationCase>());
+        Set<NavigationCase> navigationCaseSet = navigationCases.computeIfAbsent(navigationCase.getFromViewId(),
+                k -> new HashSet<>());
         navigationCaseSet.add(navigationCase);
     }
     
     public void removeNavigationCase(NavigationCase navigationCase)
     {
         checkInitialized();
-        Set<NavigationCase> navigationCaseSet = _navigationCases.get(navigationCase.getFromViewId());
+        Set<NavigationCase> navigationCaseSet = navigationCases.get(navigationCase.getFromViewId());
         if (navigationCaseSet == null)
         {
             return;
@@ -366,7 +365,7 @@ public class FlowImpl extends Flow implements Freezable
 
     private void checkInitialized() throws IllegalStateException
     {
-        if (_initialized)
+        if (initialized)
         {
             throw new IllegalStateException("Flow is inmutable once initialized");
         }
@@ -375,7 +374,7 @@ public class FlowImpl extends Flow implements Freezable
     @Override
     public Map<String, Set<NavigationCase>> getNavigationCases()
     {
-        return _unmodifiableNavigationCases;
+        return unmodifiableNavigationCases;
     }
     
 }

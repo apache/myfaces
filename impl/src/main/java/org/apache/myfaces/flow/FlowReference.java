@@ -28,41 +28,41 @@ import java.io.Serializable;
  */
 public class FlowReference implements Serializable
 {
-    private String _documentId;
-    private String _id;
+    private String documentId;
+    private String id;
 
     public FlowReference(String documentId, String id)
     {
-        this._documentId = documentId;
-        this._id = id;
+        this.documentId = documentId;
+        this.id = id;
     }
 
     public String getDocumentId()
     {
-        return _documentId;
+        return documentId;
     }
 
     public void setDocumentId(String documentId)
     {
-        this._documentId = documentId;
+        this.documentId = documentId;
     }
 
     public String getId()
     {
-        return _id;
+        return id;
     }
 
     public void setId(String id)
     {
-        this._id = id;
+        this.id = id;
     }
     
     @Override
     public int hashCode()
     {
         int hash = 3;
-        hash = 23 * hash + (this._documentId != null ? this._documentId.hashCode() : 0);
-        hash = 23 * hash + (this._id != null ? this._id.hashCode() : 0);
+        hash = 23 * hash + (this.documentId != null ? this.documentId.hashCode() : 0);
+        hash = 23 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
     }
 
@@ -78,11 +78,11 @@ public class FlowReference implements Serializable
             return false;
         }
         final FlowReference other = (FlowReference) obj;
-        if ((this._documentId == null) ? (other._documentId != null) : !this._documentId.equals(other._documentId))
+        if ((this.documentId == null) ? (other.documentId != null) : !this.documentId.equals(other.documentId))
         {
             return false;
         }
-        if ((this._id == null) ? (other._id != null) : !this._id.equals(other._id))
+        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id))
         {
             return false;
         }

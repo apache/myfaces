@@ -28,38 +28,38 @@ import jakarta.faces.flow.Parameter;
  */
 public class ParameterImpl extends Parameter implements Freezable
 {
-    private String _name;
-    private ValueExpression _value;
+    private String name;
+    private ValueExpression value;
 
-    private boolean _initialized;
+    private boolean initialized;
     
     public ParameterImpl(String name, ValueExpression value)
     {
-        this._name = name;
-        this._value = value;
+        this.name = name;
+        this.value = value;
     }
 
     @Override
     public String getName()
     {
-        return _name;
+        return name;
     }
 
     @Override
     public ValueExpression getValue()
     {
-        return _value;
+        return value;
     }
     
     @Override
     public void freeze()
     {
-        _initialized = true;
+        initialized = true;
     }
     
     private void checkInitialized() throws IllegalStateException
     {
-        if (_initialized)
+        if (initialized)
         {
             throw new IllegalStateException("Flow is inmutable once initialized");
         }
@@ -68,12 +68,12 @@ public class ParameterImpl extends Parameter implements Freezable
     public void setName(String name)
     {
         checkInitialized();
-        this._name = name;
+        this.name = name;
     }
 
     public void setValue(ValueExpression value)
     {
         checkInitialized();
-        this._value = value;
+        this.value = value;
     }
 }

@@ -53,7 +53,7 @@ public class FaceletState implements StateHolder, Serializable
     {
         if (stateMap == null)
         {
-            stateMap = new HashMap<String, Object>();
+            stateMap = new HashMap<>();
         }
         return stateMap.put(key, value);
     }
