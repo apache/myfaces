@@ -142,7 +142,7 @@ public class HtmlFormatRenderer extends HtmlRenderer
             {
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("renderOutputText writing '" + text + '\'');
+                    log.fine("RenderOutputText writing '" + text + '\'');
                 }
                 writer.writeText(text, ComponentAttrs.VALUE_ATTR);
             }

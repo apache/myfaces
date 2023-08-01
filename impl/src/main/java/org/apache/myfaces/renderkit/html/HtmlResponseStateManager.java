@@ -122,7 +122,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         if (log.isLoggable(Level.FINE)) 
         {
-             log.fine("Writing serialized viewstate string with hashCode : " + serializedState.hashCode());
+             log.fine("Writing serialized ViewState string with hashCode: " + serializedState.hashCode());
         }
 
         responseWriter.startElement(HTML.INPUT_ELEM, null);

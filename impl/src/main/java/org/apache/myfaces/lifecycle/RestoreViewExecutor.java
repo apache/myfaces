@@ -530,7 +530,7 @@ class RestoreViewExecutor extends PhaseExecutor
             }
             catch (Throwable t) 
             {
-                log.log(Level.SEVERE, "An Exception occured while processing " +
+                log.log(Level.SEVERE, "An Exception occurred while processing " +
                         afterPhaseExpression.getExpressionString() + 
                         " in Phase " + getPhase(), t);
             }

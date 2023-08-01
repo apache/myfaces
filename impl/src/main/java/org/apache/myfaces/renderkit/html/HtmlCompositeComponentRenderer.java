@@ -58,7 +58,7 @@ public class HtmlCompositeComponentRenderer extends HtmlRenderer
         {
             if (log.isLoggable(Level.SEVERE))
             {
-                log.severe("facet UIComponent.COMPOSITE_FACET_NAME not found when rendering composite component "+
+                log.severe("Facet UIComponent.COMPOSITE_FACET_NAME not found when rendering composite component "+
                         component.getClientId(context));
             }
             return;            

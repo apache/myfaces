@@ -116,7 +116,7 @@ public class ViewHandlerImplTest extends AbstractJsfTestCase
         }
         catch (UnsupportedOperationException uoe)
         {
-            // an UnsupportedOperationException occured, which means getBookmarkableURL()
+            // an UnsupportedOperationException occurred, which means getBookmarkableURL()
             // wanted to change the Map or any of the Lists and this is not allowed!
             Assertions.fail("ViewHandler.getBookmarkableURL() must not change the parameter Map!");
         }
@@ -160,7 +160,7 @@ public class ViewHandlerImplTest extends AbstractJsfTestCase
         }
         catch (UnsupportedOperationException uoe)
         {
-            // an UnsupportedOperationException occured, which means getRedirectURL()
+            // an UnsupportedOperationException occurred, which means getRedirectURL()
             // wanted to change the Map or any of the Lists and this is not allowed!
             Assertions.fail("ViewHandler.getRedirectURL() must not change the parameter Map!");
         }

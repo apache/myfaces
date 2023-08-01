@@ -38,7 +38,7 @@ public class ExceptionHandlerUtils
             exception = (Throwable) ((FacesWrapper) exception).getWrapped();
         }
 
-        String msg = exception.getClass().getName() + " occured while processing " + event.getPhaseId().getName();
+        String msg = exception.getClass().getName() + " occurred while processing " + event.getPhaseId().getName();
         String location = buildLocation(event.getException(), event.getComponent());
         if (location != null)
         {

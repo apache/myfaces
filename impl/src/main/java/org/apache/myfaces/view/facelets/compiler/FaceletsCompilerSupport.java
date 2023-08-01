@@ -170,7 +170,7 @@ public class FaceletsCompilerSupport
                 }
                 catch (Exception e)
                 {
-                    log.log(Level.SEVERE, "Error Loading decorator: " + decorator, e);
+                    log.log(Level.SEVERE, "Error loading decorator: " + decorator, e);
                 }
             }
         }

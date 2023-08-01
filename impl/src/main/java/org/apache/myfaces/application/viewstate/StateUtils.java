@@ -221,7 +221,7 @@ public final class StateUtils
 
         if (log.isLoggable(Level.FINE))
         {
-            log.fine("de/encrypting with " + algorithm + '/' + algorithmParams);
+            log.fine("De/encrypting with " + algorithm + '/' + algorithmParams);
         }
 
         return cipher;
@@ -672,7 +672,7 @@ public final class StateUtils
                 
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("generated random password of length " + bytes.length);
+                    log.fine("Generated random password of length " + bytes.length);
                 }
             }
             catch (NoSuchAlgorithmException e)
@@ -684,7 +684,7 @@ public final class StateUtils
                 
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("generated random password of length " + length);
+                    log.fine("Generated random password of length " + length);
                 }
             }
         }
@@ -788,7 +788,7 @@ public final class StateUtils
                 
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("generated random mac password of length " + bytes.length);
+                    log.fine("Generated random mac password of length " + bytes.length);
                 }
             }
             catch (NoSuchAlgorithmException e)
@@ -800,7 +800,7 @@ public final class StateUtils
                 
                 if(log.isLoggable(Level.FINE))
                 {
-                    log.fine("generated random mac password of length " + length);
+                    log.fine("Generated random mac password of length " + length);
                 }
             }
         }

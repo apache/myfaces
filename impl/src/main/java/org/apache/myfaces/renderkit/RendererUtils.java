@@ -148,7 +148,7 @@ public final class RendererUtils
                 
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("returning '" + submittedValue + '\'');
+                    log.fine("Returning '" + submittedValue + '\'');
                 }
                 return submittedValue.toString();
             }
@@ -181,7 +181,7 @@ public final class RendererUtils
                 converter = facesContext.getApplication().createConverter(value.getClass());
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("the created converter is " + converter);
+                    log.fine("The created converter is " + converter);
                 }
             }
             catch (FacesException e)
@@ -199,7 +199,7 @@ public final class RendererUtils
             {
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("returning an empty string");
+                    log.fine("Returning an empty string");
                 }
                 return "";
             }
@@ -211,7 +211,7 @@ public final class RendererUtils
 
             if (log.isLoggable(Level.FINE))
             {
-                log.fine("returning an .toString");
+                log.fine("Returning an .toString");
             }
             return value.toString();
 
@@ -219,7 +219,7 @@ public final class RendererUtils
 
         if (log.isLoggable(Level.FINE))
         {
-            log.fine("returning converter get as string " + converter);
+            log.fine("Returning converter get as string " + converter);
         }
         return converter.getAsString(facesContext, component, value);
     }
@@ -243,7 +243,7 @@ public final class RendererUtils
                 {
                     if (log.isLoggable(Level.FINE))
                     {
-                        log.fine("returning 1 '" + submittedValue + '\'');
+                        log.fine("Returning 1 '" + submittedValue + '\'');
                     }
                     return submittedValue.toString();
                 }
@@ -277,7 +277,7 @@ public final class RendererUtils
                             value.getClass());
                     if (log.isLoggable(Level.FINE))
                     {
-                        log.fine("the created converter is " + converter);
+                        log.fine("The created converter is " + converter);
                     }
                 }
                 catch (FacesException e)
@@ -304,7 +304,7 @@ public final class RendererUtils
 
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("returning an .toString");
+                    log.fine("Returning an .toString");
                 }
                 return value.toString();
 
@@ -312,14 +312,14 @@ public final class RendererUtils
 
             if (log.isLoggable(Level.FINE))
             {
-                log.fine("returning converter get as string " + converter);
+                log.fine("Returning converter get as string " + converter);
             }
             return converter.getAsString(facesContext, component, value);
 
         }
         catch (PropertyNotFoundException ex)
         {
-            log.log(Level.SEVERE, "Property not found - called by component : "
+            log.log(Level.SEVERE, "Property not found - called by component: "
                     + ComponentUtils.getPathToComponent(component), ex);
 
             throw ex;
@@ -673,7 +673,7 @@ public final class RendererUtils
         {
             if (log.isLoggable(Level.FINE))
             {
-                log.fine("No conversion necessary for null / empty string uiselectone value: client id " 
+                log.fine("No conversion necessary for null / empty string UISelectOne value: client id "
                             + output.getClientId());
             }
             return null;
@@ -783,9 +783,9 @@ public final class RendererUtils
         }
         else if (value != null)
         {
-            log.severe("value for attribute "
+            log.severe("Value for attribute "
                     + attribute
-                    + " must be instanceof 'Boolean' or 'String', is of type : "
+                    + " must be instanceof 'Boolean' or 'String', is of type: "
                     + value.getClass());
 
             return defaultValue;
