@@ -181,7 +181,7 @@ public abstract class ExternalContext
 
     public abstract String getInitParameter(String name);
 
-    public abstract Map<String,String> getInitParameterMap();
+    public abstract Map<String, String> getInitParameterMap();
 
     /**
      * @since Faces 2.0
