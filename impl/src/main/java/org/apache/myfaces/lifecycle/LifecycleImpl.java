@@ -136,7 +136,7 @@ public class LifecycleImpl extends Lifecycle
 
         if (log.isLoggable(Level.FINEST))
         {
-            log.finest("entering " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
+            log.finest("Entering " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
 
         PhaseId currentPhaseId = executor.getPhase();
@@ -200,7 +200,7 @@ public class LifecycleImpl extends Lifecycle
 
         if (!skipFurtherProcessing && log.isLoggable(Level.FINEST))
         {
-            log.finest("exiting " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
+            log.finest("Exiting " + executor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
 
         return skipFurtherProcessing;
@@ -216,7 +216,7 @@ public class LifecycleImpl extends Lifecycle
         }
         if (log.isLoggable(Level.FINEST))
         {
-            log.finest("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+            log.finest("Entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
 
         PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
@@ -268,7 +268,7 @@ public class LifecycleImpl extends Lifecycle
 
         if (log.isLoggable(Level.FINEST))
         {
-            log.finest("exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+            log.finest("Exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
     }
 
@@ -279,7 +279,7 @@ public class LifecycleImpl extends Lifecycle
         {
             if (log.isLoggable(Level.FINE))
             {
-                log.fine("exiting from lifecycle.execute in " + phase
+                log.fine("Exiting from lifecycle.execute in " + phase
                         + " because getResponseComplete is true from one of the " + (before ? "before" : "after")
                         + " listeners");
             }
@@ -295,7 +295,7 @@ public class LifecycleImpl extends Lifecycle
         {
             if (log.isLoggable(Level.FINE))
             {
-                log.fine("exiting from lifecycle.execute in " + phase
+                log.fine("Exiting from lifecycle.execute in " + phase
                         + " because getRenderResponse is true from one of the " + (before ? "before" : "after")
                         + " listeners");
             }

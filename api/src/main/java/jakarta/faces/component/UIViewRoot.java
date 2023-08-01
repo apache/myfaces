@@ -442,7 +442,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                     name.add(clientId);
                 }
                 _getLogger().log(level,
-                        "Event broadcating for PhaseId {0} at UIViewRoot {1} reaches maximal limit, please check " +
+                        "Event broadcasting for PhaseId {0} at UIViewRoot {1} reaches maximum limit, please check " +
                         "listeners for infinite recursion. Component id: {2}",
                         new Object [] {phaseId, getViewId(), name});
             }
@@ -1033,7 +1033,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 catch (Throwable t) 
                 {
                     beforePhaseSuccess[0] = false; // redundant - for clarity
-                    _getLogger().log(Level.SEVERE, "An Exception occured while processing " +
+                    _getLogger().log(Level.SEVERE, "An Exception occurred while processing " +
                                              listener.getExpressionString() + 
                                              " in Phase " + phaseId, t);
                     if (beforePhase)
@@ -1080,7 +1080,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                             catch (Throwable t) 
                             {
                                 beforePhaseSuccess[i + 1] = false; // redundant - for clarity
-                                _getLogger().log(Level.SEVERE, "An Exception occured while processing the " +
+                                _getLogger().log(Level.SEVERE, "An Exception occurred while processing the " +
                                                          "beforePhase method of PhaseListener " + phaseListener +
                                                          " in Phase " + phaseId, t);
                                 if (shouldViewRootPhaseListenerQueuesExceptions(context))
@@ -1123,7 +1123,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                             }
                             catch (Throwable t) 
                             {
-                                logger.log(Level.SEVERE, "An Exception occured while processing the " +
+                                logger.log(Level.SEVERE, "An Exception occurred while processing the " +
                                                          "afterPhase method of PhaseListener " + phaseListener +
                                                          " in Phase " + phaseId, t);
                                 if (shouldViewRootPhaseListenerQueuesExceptions(context))

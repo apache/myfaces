@@ -265,7 +265,7 @@ public class FacesInitializerImpl implements FacesInitializer
         }
         catch (Exception ex)
         {
-            log.log(Level.SEVERE, "An error occured while initializing MyFaces: "
+            log.log(Level.SEVERE, "An error occurred while initializing MyFaces: "
                       + ex.getMessage(), ex);
         }
     }
@@ -457,7 +457,7 @@ public class FacesInitializerImpl implements FacesInitializer
         {
             if (log.isLoggable(Level.FINE))
             {
-                log.log(Level.FINE, "An error occured while instantiating a new ExpressionFactory. "
+                log.log(Level.FINE, "An error occurred while instantiating a new ExpressionFactory. "
                         + "Attempted to load class '" + expressionFactoryClassName + "'.", ex);
             }
         }

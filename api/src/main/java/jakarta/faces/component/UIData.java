@@ -109,7 +109,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * currently being decoded. Exactly the same process applies for the later validation and updateModel phases.
  * </p>
  * <p>
- * When the data model for the table is bound to a backing bean property, and no validation errors have occured during
+ * When the data model for the table is bound to a backing bean property, and no validation errors have occurred during
  * processing of a postback, the data model is refetched at the start of the rendering phase (ie after the update model
  * phase) so that the contents of the data model can be changed as a result of the latest form submission. Because the
  * saved row state must correspond to the elements within the data model, the row state must be discarded whenever a new

@@ -770,7 +770,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 }
                 catch (IOException e)
                 {
-                    log.log(Level.SEVERE, "Error Loading library: " + library, e);
+                    log.log(Level.SEVERE, "Error loading library: " + library, e);
                 }
             }
         }
@@ -795,18 +795,18 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     }
                     if (log.isLoggable(Level.FINE))
                     {
-                        log.fine("Added Library from: " + url);
+                        log.fine("Added library from: " + url);
                     }
                 }
                 catch (Exception e)
                 {
-                    log.log(Level.SEVERE, "Error Loading Library: " + url, e);
+                    log.log(Level.SEVERE, "Error loading library: " + url, e);
                 }
             }
         }
         catch (IOException e)
         {
-            log.log(Level.SEVERE, "Compiler Initialization Error", e);
+            log.log(Level.SEVERE, "Compiler initialization error", e);
         }
         return facesConfigFilesList;
     }

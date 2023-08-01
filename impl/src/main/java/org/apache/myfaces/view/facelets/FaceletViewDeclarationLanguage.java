@@ -260,7 +260,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             externalContext.getApplicationMap().put(CACHED_COMPONENT_IDS, componentIdsCached);
         }
 
-        log.finest("Initialization Successful");
+        log.finest("Initialization successful");
     }
 
 

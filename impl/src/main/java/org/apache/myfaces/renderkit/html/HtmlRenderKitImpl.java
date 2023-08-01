@@ -131,7 +131,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
 
         if (log.isLoggable(Level.FINEST))
         {
-            log.finest("add Renderer family = " + componentFamily + " rendererType = " + rendererType
+            log.finest("Add Renderer family = " + componentFamily + " rendererType = " + rendererType
                     + " renderer class = " + renderer.getClass().getName());
         }
     }
@@ -147,7 +147,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
 
         if (log.isLoggable(Level.FINEST))
         {
-            log.finest("add Renderer family = " + componentFamily + " rendererType = " + rendererType
+            log.finest("Add Renderer family = " + componentFamily + " rendererType = " + rendererType
                     + " renderer class = " + rendererClass);
         }
     }

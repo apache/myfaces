@@ -199,7 +199,7 @@ public final class MessageUtils
     {
         if(log.isLoggable(Level.FINEST))
         {
-          log.finest("adding message " + messageId + " for clientId " + forClientId);
+          log.finest("Adding message " + messageId + " for clientId " + forClientId);
         }
         facesContext.addMessage(forClientId,
                                 getMessage(severity, messageId, args, facesContext));
@@ -214,7 +214,7 @@ public final class MessageUtils
     {
         if(log.isLoggable(Level.FINEST))
         {
-          log.finest("adding message " + messageId + " for clientId " + forClientId);
+          log.finest("Adding message " + messageId + " for clientId " + forClientId);
         }
         facesContext.addMessage(forClientId,
                   getMessage(bundleBaseName, severity, messageId, args, facesContext));

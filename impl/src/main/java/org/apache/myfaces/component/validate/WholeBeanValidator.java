@@ -85,7 +85,7 @@ public class WholeBeanValidator implements Validator
         ValueExpression valueExpression = component.getValueExpression("value");
         if (valueExpression == null)
         {
-            log.warning("cannot validate component with empty value: " 
+            log.warning("Cannot validate component with empty value: "
                     + component.getClientId(context));
             return;
         }
@@ -376,7 +376,7 @@ public class WholeBeanValidator implements Validator
             ValueExpression valueExpression = target.getValueExpression("value");
             if (valueExpression == null)
             {
-                log.warning("cannot validate component with empty value: " 
+                log.warning("Cannot validate component with empty value: "
                         + target.getClientId(context.getFacesContext()));
                 return VisitResult.ACCEPT;
             }

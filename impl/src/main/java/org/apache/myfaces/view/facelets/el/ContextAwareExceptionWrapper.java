@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.el;
 import jakarta.faces.FacesWrapper;
 
 /**
- * A exception wrapper that "knows" interesting info about place where problem occured.
+ * A exception wrapper that "knows" interesting info about place where problem occurred.
 
  * @author martinkoci
  * 

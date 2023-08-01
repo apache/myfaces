@@ -800,7 +800,7 @@ public class FacesConfigurator
         }
         catch (InjectionProviderException ex)
         {
-            log.log(Level.INFO, "Exception on Injection or PostConstruct", ex);
+            log.log(Level.INFO, "Exception on Inject or PostConstruct", ex);
         }
     }
 
