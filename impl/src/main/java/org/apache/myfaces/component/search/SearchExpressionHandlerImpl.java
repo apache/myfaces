@@ -564,7 +564,12 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                     }
                 }
             }
-        
+            
+            if (target == null && nextExpression == null)
+            {
+                return;
+            }
+
             topCallback.invokeContextCallback(facesContext, previous);
         }
         

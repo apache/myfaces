@@ -88,6 +88,19 @@ public class SearchExpressionImplTest extends AbstractMyFacesCDIRequestTestCase
         Assert.assertEquals(componentId, "mainForm:showName");
 
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
+                searchContext, "@form:inputOutsideForm").get(0);
+        Assert.assertEquals("mainForm:inputOutsideForm", componentId);
+  
+        try
+        {
+            facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(searchContext, ":inputOutsideForm");
+            Assert.fail();
+        }
+        catch (ComponentNotFoundException e)
+        {
+        }
+
+        componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, "mainForm:table:0:baseText").get(0);
         Assert.assertEquals(componentId, "mainForm:table:0:baseText");
         
