@@ -29,8 +29,11 @@
     <h:outputText id="topLevelOutputText" value="test" />
     
     <h:panelGrid id="panelGridId" columns="1">
+        
         <h:form id="mainForm">
 
+            <h:inputText id="inputOutsideForm"></h:inputText>
+            
             <h:outputLabel id="labelName" for="name" value="Name: "/>
             <div>
             <h:inputText id="name" value="NAME"/>
