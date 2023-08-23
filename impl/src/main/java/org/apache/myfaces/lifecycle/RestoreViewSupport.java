@@ -61,6 +61,7 @@ public class RestoreViewSupport
         try
         {
             facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);
+            facesContext.getApplication().publishEvent(facesContext, PostRestoreStateEvent.class, facesContext.getViewRoot());
 
             VisitContext visitContext = visitContextFactory.getVisitContext(facesContext,
                     null, MyFacesVisitHints.SET_SKIP_ITERATION);
