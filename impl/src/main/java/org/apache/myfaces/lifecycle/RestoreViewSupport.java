@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitContextFactory;
@@ -50,7 +51,7 @@ public class RestoreViewSupport
         renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
     }
 
-    public void processComponentBinding(FacesContext facesContext, UIComponent component)
+    public void processComponentBinding(FacesContext facesContext, UIViewRoot root)
     {
         // Faces 2.0: Old hack related to t:aliasBean was fixed defining a event that traverse
         // whole tree and let components to override UIComponent.processEvent() method to include it.
@@ -61,11 +62,11 @@ public class RestoreViewSupport
         try
         {
             facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);
-            facesContext.getApplication().publishEvent(facesContext, PostRestoreStateEvent.class, facesContext.getViewRoot());
+            facesContext.getApplication().publishEvent(facesContext, PostRestoreStateEvent.class, root);
 
             VisitContext visitContext = visitContextFactory.getVisitContext(facesContext,
                     null, MyFacesVisitHints.SET_SKIP_ITERATION);
-            component.visitTree(visitContext, new RestoreStateCallback());
+            root.visitTree(visitContext, new RestoreStateCallback());
         }
         finally
         {
