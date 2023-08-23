@@ -103,7 +103,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         _initialized = true;
     }
 
-    public void processComponentBinding(FacesContext facesContext, UIComponent component)
+    public void processComponentBinding(FacesContext facesContext, UIComponent root)
     {
         // JSF 2.0: Old hack related to t:aliasBean was fixed defining a event that traverse
         // whole tree and let components to override UIComponent.processEvent() method to include it.
@@ -114,10 +114,11 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         try
         {
             facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+            facesContext.getApplication().publishEvent(facesContext, PostRestoreStateEvent.class, root);
 
             VisitContext visitContext = (VisitContext) getVisitContextFactory().
                     getVisitContext(facesContext, null, VISIT_HINTS);
-            component.visitTree(visitContext, new RestoreStateCallback());
+            root.visitTree(visitContext, new RestoreStateCallback());
         }
         finally
         {
