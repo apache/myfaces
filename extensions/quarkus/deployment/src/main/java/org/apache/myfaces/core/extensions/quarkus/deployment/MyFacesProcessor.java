@@ -107,6 +107,7 @@ import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
 import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.util.WebXmlParser;
 import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.ThreadsafeXorShiftRandom;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
 import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
@@ -522,6 +523,7 @@ class MyFacesProcessor
         classNames.add("jakarta.faces._FactoryFinderProviderFactory");
         classNames.addAll(collectImplementors(combinedIndex, java.util.Collection.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, java.time.temporal.TemporalAccessor.class.getName()));
+        classNames.addAll(collectImplementors(combinedIndex, java.util.Map.Entry.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, java.lang.Number.class.getName()));
         classNames.add(java.util.Date.class.getName());
         classNames.add(java.util.Calendar.class.getName());
@@ -852,6 +854,8 @@ class MyFacesProcessor
                 new RuntimeInitializedClassBuildItem(PropertyDescriptorUtils.class.getCanonicalName()));
         runtimeInitClassBuildItem.produce(
                 new RuntimeInitializedClassBuildItem(ViewScopeContextualStorageHolder.class.getCanonicalName()));
+        runtimeInitClassBuildItem.produce(
+                new RuntimeInitializedClassBuildItem(ThreadsafeXorShiftRandom.class.getCanonicalName()));
     }
 
     @BuildStep(onlyIf = IsDevelopment.class)
