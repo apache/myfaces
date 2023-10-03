@@ -363,15 +363,6 @@ public class MyfacesConfig
     public static final String VALIDATE = "org.apache.myfaces.VALIDATE";
     
     /**
-     * Defines if CDI should be used for annotation scanning to improve the startup performance.
-     */
-    @JSFWebConfigParam(since="2.2.9", tags = "performance", defaultValue = "false")
-    public static final String USE_CDI_FOR_ANNOTATION_SCANNING
-            = "org.apache.myfaces.annotation.USE_CDI_FOR_ANNOTATION_SCANNING";
-    private static final boolean USE_CDI_FOR_ANNOTATION_SCANNING_DEFAULT = false;
-    
-    
-    /**
      * Controls the size of the cache used to check if a resource exists or not. 
      * 
      * <p>See org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED for details.</p>
@@ -808,7 +799,6 @@ public class MyfacesConfig
     private boolean supportEL3ImportHandler = SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT;
     private boolean strictJsf2OriginHeaderAppPath = STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT;
     private int resourceBufferSize = RESOURCE_BUFFER_SIZE_DEFAULT;
-    private boolean useCdiForAnnotationScanning = USE_CDI_FOR_ANNOTATION_SCANNING_DEFAULT;
     private boolean resourceHandlerCacheEnabled = RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT;
     private int resourceHandlerCacheSize = RESOURCE_HANDLER_CACHE_SIZE_DEFAULT;
     private String scanPackages;
@@ -1085,9 +1075,6 @@ public class MyfacesConfig
 
         cfg.resourceBufferSize = getInt(extCtx, RESOURCE_BUFFER_SIZE, 
                 RESOURCE_BUFFER_SIZE_DEFAULT);
-        
-        cfg.useCdiForAnnotationScanning = getBoolean(extCtx, USE_CDI_FOR_ANNOTATION_SCANNING,
-                USE_CDI_FOR_ANNOTATION_SCANNING_DEFAULT);
         
         cfg.resourceHandlerCacheEnabled = getBoolean(extCtx, RESOURCE_HANDLER_CACHE_ENABLED,
                 RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT);
@@ -1517,11 +1504,6 @@ public class MyfacesConfig
     public int getResourceBufferSize()
     {
         return resourceBufferSize;
-    }
-
-    public boolean isUseCdiForAnnotationScanning()
-    {
-        return useCdiForAnnotationScanning;
     }
 
     public boolean isResourceHandlerCacheEnabled()

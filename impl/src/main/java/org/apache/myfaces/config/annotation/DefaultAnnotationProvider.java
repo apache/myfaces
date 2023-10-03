@@ -128,21 +128,19 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     @Override
     public Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses(ExternalContext ctx)
     {
-        if (MyfacesConfig.getCurrentInstance(ctx).isUseCdiForAnnotationScanning())
+        //1. Use CDI
+        BeanManager beanManager = CDIUtils.getBeanManager(ctx);
+        CdiAnnotationProviderExtension extension = CDIUtils.getOptional(beanManager,
+                CdiAnnotationProviderExtension.class);
+        if (extension != null)
         {
-            BeanManager beanManager = CDIUtils.getBeanManager(ctx);
-            CdiAnnotationProviderExtension extension = CDIUtils.getOptional(beanManager,
-                    CdiAnnotationProviderExtension.class);
-            if (extension != null)
-            {
-                return extension.getMap();
-            }
+            return extension.getMap();
         }
 
         Map<Class<? extends Annotation>, Set<Class<?>>> map = new HashMap<>();
         Collection<Class<?>> classes = null;
 
-        //1. Scan for annotations on /WEB-INF/classes
+        //2. Scan for annotations on /WEB-INF/classes
         try
         {
             classes = getAnnotatedWebInfClasses(ctx);
@@ -157,7 +155,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             processClass(map, clazz);
         }
         
-        //2. Scan for annotations on classpath
+        //3. Scan for annotations on classpath
         try
         {
             AnnotationProvider provider
