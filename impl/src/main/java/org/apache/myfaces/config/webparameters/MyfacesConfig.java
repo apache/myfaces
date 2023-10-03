@@ -1210,6 +1210,13 @@ public class MyfacesConfig
         // lets ignore this on 3.x
         cfg.partialStateSaving = getBoolean(extCtx, StateManager.PARTIAL_STATE_SAVING_PARAM_NAME,
                 true);
+        
+        if (cfg.partialStateSaving == false)
+        {
+            Logger.getLogger(MyfacesConfig.class.getName()).warning(
+                "The configuration 'jakarta.faces.PARTIAL_STATE_SAVING' is deprecated " +
+                    "as of Faces 4.1 and should not longer be used.");
+        }
 
         cfg.fullStateSavingViewIds = StringUtils.splitShortString(
                 getString(extCtx, StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, null),
