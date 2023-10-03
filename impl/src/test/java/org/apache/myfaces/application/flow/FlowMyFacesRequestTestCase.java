@@ -28,7 +28,7 @@ import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,8 @@ import org.junit.jupiter.api.Test;
  *
  * @author Leonardo Uribe
  */
-public class FlowMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
+public class FlowMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
+
 {
 
     @Override

@@ -23,10 +23,12 @@ import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
 import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.junit.jupiter.api.Test;
 
-public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
+public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
+
 {
 
     @Override

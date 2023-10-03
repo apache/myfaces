@@ -23,14 +23,15 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * See https://issues.apache.org/jira/browse/MYFACES-4267
  */
-public class StatelessTest extends AbstractMyFacesRequestTestCase
+public class StatelessTest extends AbstractMyFacesCDIRequestTestCase
+
 {
 
     @Override

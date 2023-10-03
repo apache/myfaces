@@ -30,12 +30,13 @@ import jakarta.faces.component.UICommand;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
+public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
+
 {
 
     @Override

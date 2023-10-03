@@ -27,11 +27,12 @@ import jakarta.faces.application.ViewResource;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
+public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
+
 {
 
     @Override
