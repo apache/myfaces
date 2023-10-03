@@ -65,22 +65,7 @@ function build(env: {[key:string]: string}, argv: {[key:string]: string}) {
                     }], exclude: /node_modules/
                 }
             ]
-        },
-
-        plugins: [
-             new CompressionPlugin({
-                algorithm: 'gzip',
-                test: /\.js$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
-                threshold: 10240,
-                minRatio: 0.3
-            }),
-            new CompressionPlugin({
-                algorithm: 'brotliCompress',
-                test: /\.(js|css|html|svg)$/,
-                threshold: 10240,
-                minRatio: 0.8
-            })
-        ]
+        }
     }
     return config;
 }
