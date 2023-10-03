@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets;
 
 import jakarta.el.ExpressionFactory;
 
-import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +30,8 @@ import org.junit.jupiter.api.Test;
  * @author Jay Sartoris
  */
 
-public class TemplateInResourcesDirTestCase extends AbstractMyFacesRequestTestCase
+public class TemplateInResourcesDirTestCase extends AbstractMyFacesCDIRequestTestCase
+
 {
 
     @Override

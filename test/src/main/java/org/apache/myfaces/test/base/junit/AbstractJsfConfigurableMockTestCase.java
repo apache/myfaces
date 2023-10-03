@@ -46,6 +46,8 @@ import org.apache.myfaces.test.mock.MockServletContext;
 import  org.junit.jupiter.api.AfterEach;
 import  org.junit.jupiter.api.BeforeEach;
 
+// import org.apache.myfaces.spi.impl.CDIAnnotationDelegateInjectionProvider;
+
 /**
  * <p>Abstract JUnit 4.5 test case base class, which sets up the JavaServer Faces
  * mock object environment for a particular simulated request.  The following
@@ -171,6 +173,8 @@ public abstract class AbstractJsfConfigurableMockTestCase
     protected void setUpServletObjects() throws Exception
     {
         servletContext = new MockServletContext();
+        // servletContext.addInitParameter("org.apache.myfaces.spi.InjectionProvider", 
+                //CDIAnnotationDelegateInjectionProvider.class.getName());
         config = new MockServletConfig(servletContext);
         session = new MockHttpSession();
         session.setServletContext(servletContext);
