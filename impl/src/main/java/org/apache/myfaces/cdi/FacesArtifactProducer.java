@@ -38,6 +38,7 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.Flash;
+import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.builder.FlowBuilder;
 import jakarta.faces.flow.builder.FlowBuilderParameter;
 import jakarta.faces.lifecycle.ClientWindow;
@@ -226,6 +227,13 @@ public class FacesArtifactProducer
     {
         return new FlowBuilderImpl();
     }
+
+    @Produces
+    @FacesScoped
+    public Flow getCurrentFlow()
+    {
+        return FacesContext.getCurrentInstance().getApplication().getFlowHandler().getCurrentFlow();
+    }
     
     @Produces
     @Push
@@ -235,6 +243,12 @@ public class FacesArtifactProducer
         String channel = push.channel().isEmpty() ? ip.getMember().getName() : push.channel();
         return new PushContextImpl(channel, beanManager);
     }
+
+    /*
+     *  Convserations are made injectiable via CDI
+     */
+    // @Produces
+    // public Conversation getConversation() { ... }
 
     /*
     The spec actually forces us the use producers for "session" and "request" but this conflicts with CDI spec actually,
