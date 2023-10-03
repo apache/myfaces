@@ -221,6 +221,18 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             // https://issues.apache.org/jira/browse/MYFACES-2775
             componentId = createUniqueId(context, null);
             componentResource.setId(componentId);
+            List<UIComponent> children = componentResource.getChildren();
+
+            /*
+             * MYFACES-4631
+             * Duplicate ID Exception can occur if children also aren't assigned unique IDs
+             * See https://github.com/primefaces-extensions/primefaces-extensions/issues/517
+             */
+            for(UIComponent child : children) {
+                String childId =  createUniqueId(context, null); 
+                child.setId(childId);
+                // TODO - Should we nest down further? 
+            }
         }
         
         // This var helps to handle the case when we try to add a component that already is
