@@ -629,6 +629,24 @@ public abstract class ExternalContext
 
     /**
      *
+     * @param length
+     *
+     * @since 4.1
+     */
+    public void setResponseContentLengthLong(long length)
+    {
+        ExternalContext ctx = _MyFacesExternalContextHelper.firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setResponseContentLengthLong(length);
+    }
+
+    /**
+     *
      * @param contentType
      *
      * @since 2.0

@@ -450,6 +450,12 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
     }
 
     @Override
+    public void setResponseContentLengthLong(long length)
+    {
+        getWrapped().setResponseContentLengthLong(length);
+    }
+
+    @Override
     public void setResponseContentType(String contentType)
     {
         getWrapped().setResponseContentType(contentType);
