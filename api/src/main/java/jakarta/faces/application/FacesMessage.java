@@ -91,12 +91,12 @@ public class FacesMessage implements Serializable
      * Immutable <code>Lis</code> of valid {@link FacesMessage.Severity}instances, in ascending order of their ordinal
      * value.
      */
-    public static final List VALUES;
+    public static final List<FacesMessage.Severity> VALUES;
 
     /**
      * Immutable <code>Map</code> of valid {@link FacesMessage.Severity}instances, keyed by name.
      */
-    public static final Map VALUES_MAP;
+    public static final Map<String, FacesMessage.Severity> VALUES_MAP;
 
     static
     {
