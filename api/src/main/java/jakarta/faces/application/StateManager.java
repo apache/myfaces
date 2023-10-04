@@ -85,6 +85,7 @@ public abstract class StateManager
      * Indicate the viewId(s) separated by commas that should be saved and restored fully,
      * without use Partial State Saving (PSS).
      */
+    @Deprecated(forRemoval = true, since = "4.1")
     @JSFWebConfigParam(since="2.0", group="state")
     public static final String FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME = "jakarta.faces.FULL_STATE_SAVING_VIEW_IDS";
     
@@ -96,9 +97,11 @@ public abstract class StateManager
      * state of the view.</p>
      * <p>If the webapp faces-config file version is 2.0 or upper the default value is true, otherwise is false.</p>   
      */
+    @Deprecated(forRemoval = true, since = "4.1")
     @JSFWebConfigParam(expectedValues="true,false", since="2.0", defaultValue="true (false with 1.2 webapps)",
                        tags="performance", group="state")
     public static final String PARTIAL_STATE_SAVING_PARAM_NAME = "jakarta.faces.PARTIAL_STATE_SAVING";
+
     private Boolean _savingStateInClient = null;
 
     public static final String IS_BUILDING_INITIAL_STATE = "jakarta.faces.IS_BUILDING_INITIAL_STATE";
