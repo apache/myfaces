@@ -142,7 +142,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
 
     public void addAttributeExtension(String attributeExtension)
     {
-        if (attributeExtension == null)
+        if (attributeExtensions == null)
         {
             attributeExtensions = new ArrayList<>(1);
         }
