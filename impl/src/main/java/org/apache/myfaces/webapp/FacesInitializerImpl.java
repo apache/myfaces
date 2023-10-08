@@ -589,7 +589,7 @@ public class FacesInitializerImpl implements FacesInitializer
             // ignore
         }
 
-        if (beanManager != null)
+        if (beanManager == null)
         {
             try
             {
