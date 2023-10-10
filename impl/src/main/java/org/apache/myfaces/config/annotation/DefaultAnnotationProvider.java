@@ -130,12 +130,16 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     {
         //1. Use CDI
         BeanManager beanManager = CDIUtils.getBeanManager(ctx);
-        CdiAnnotationProviderExtension extension = CDIUtils.getOptional(beanManager,
-                CdiAnnotationProviderExtension.class);
-        if (extension != null)
+        if(beanManager != null)  // shouldnt be null, but needed for our mock junit tests
         {
-            return extension.getMap();
+        CdiAnnotationProviderExtension extension = 
+            CDIUtils.getOptional(beanManager,CdiAnnotationProviderExtension.class);
+            if (extension != null)
+            {
+                return extension.getMap();
+            }
         }
+        
 
         Map<Class<? extends Annotation>, Set<Class<?>>> map = new HashMap<>();
         Collection<Class<?>> classes = null;
