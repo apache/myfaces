@@ -642,7 +642,17 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 {
                     try
                     {
-                        target.getChildren().add(childIndex, child);
+                        UIComponent parent = target;
+                        UIComponent dup = parent.getChildren().get(childIndex);
+                        if (child.getId().equals(dup.getId())) // avoid DuplicateIdException  - myfaces-4623
+                        {
+                            parent.getChildren().remove(childIndex.intValue());
+                            parent.getChildren().add(childIndex, child);
+                        }
+                        else
+                        {
+                             target.getChildren().add(childIndex, child);
+                        }
                     }
                     catch (IndexOutOfBoundsException e)
                     {
@@ -650,6 +660,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                         // item, so just add it. 
                         target.getChildren().add(child);
                     }
+
                 }
             }
         }
