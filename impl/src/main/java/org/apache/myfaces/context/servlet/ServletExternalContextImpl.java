@@ -741,6 +741,16 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         _httpServletResponse.setContentLength(length);
     }
 
+    /**
+     * @since 4.1
+     */
+    @Override
+    public void setResponseContentLengthLong(long length)
+    {
+        checkHttpServletResponse();
+        _httpServletResponse.setContentLengthLong(length);
+    }
+
     @Override
     public void setResponseContentType(String contentType)
     {
