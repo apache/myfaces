@@ -31,6 +31,7 @@ import java.util.Map;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.StateManager;
 import jakarta.faces.component.ContextCallback;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.NamingContainer;
@@ -83,6 +84,11 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     private static final Object[] LEAF_NO_STATE = new Object[]{null,null};
     
     private Object _initialDescendantComponentState = null;
+
+    protected Object _initialDescendantFullComponentState = null;
+
+    protected Map<String, Map<String, Object>> _rowDeltaStates = new HashMap<>();
+    protected Map<String, Map<String, Object>> _rowTransientStates = new HashMap<>();
 
     // Holds for each row the states of the child components of this UIData.
     // Note that only "partial" component state is saved: the component fields
@@ -200,6 +206,28 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         getStateHelper().put(PropertyKeys.varStatus, varStatus );
     }
     
+    /**
+     * Indicates whether the state for a component in each row should not be
+     * discarded before the datatable is rendered again.
+     * 
+     * This will only work reliable if the datamodel of the
+     * datatable did not change either by sorting, removing or
+     * adding rows. Default: false
+     * 
+     * @return
+     */
+    @JSFProperty(literalOnly = true, faceletsOnly = true)
+    public boolean isRowStatePreserved()
+    {
+        Boolean b = (Boolean) getStateHelper().get(PropertyKeys.rowStatePreserved);
+        return b == null ? false : b;
+    }
+    
+    public void setRowStatePreserved(boolean preserveComponentState)
+    {
+        getStateHelper().put(PropertyKeys.rowStatePreserved, preserveComponentState);
+    }
+
     protected DataModel getDataModel()
     {
         DataModel dataModel;
@@ -545,7 +573,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     }
 
     /**
-     * Walk the tree of child components of this UIData, saving the parts of their state that can vary between rows.
+     * Walk the tree of child components of this UIRepeat, saving the parts of their state that can vary between rows.
      * <p>
      * This is very similar to the process that occurs for normal components when the view is serialized. Transient
      * components are skipped (no state is saved for them).
@@ -757,122 +785,470 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     
     public void setRowIndex(int index)
     {
-        _setIndex(index);
+        if (isRowStatePreserved())
+        {
+            _setIndexPreserveComponentState(index);
+        }
+        else
+        {
+            _setIndexWithoutPreserveComponentState(index);
+        }
     }
-    
-    private void _setIndex(int index)
+
+    private void _setIndexPreserveComponentState(int index)
     {
-        if (index < -1)
-        {
-            throw new IllegalArgumentException("rowIndex is less than -1");
-        }
+       if (index < -1)
+       {
+           throw new IllegalArgumentException("rowIndex is less than -1");
+       }
 
-        if (_index == index)
-        {
-            return;
-        }
+       if (_index == index)
+       {
+           return;
+       }
 
-        FacesContext facesContext = getFacesContext();
+       FacesContext facesContext = getFacesContext();
 
-        if (_index == -1)
+       if (_initialDescendantFullComponentState != null)
+       {
+           //Just save the row
+           Map<String, Object> sm = saveFullDescendantComponentStates(facesContext, null,
+                                                                      getChildren().iterator(), false);
+           if (sm != null && !sm.isEmpty())
+           {
+               _rowDeltaStates.put(getContainerClientId(facesContext), sm);
+           }
+           if (index != -1)
+           {
+               _rowTransientStates.put(getContainerClientId(facesContext),
+                       saveTransientDescendantComponentStates(facesContext, null, getChildren().iterator(), false));
+           }
+       }
+
+       _index = index;
+       
+       DataModel<?> localModel = getDataModel();
+       localModel.setRowIndex(index);
+
+       if (_index != -1)
+       {
+           String var = getVar();
+           if (var != null && (_emptyModel || localModel.isRowAvailable()))
+           {
+               if (_emptyModel)
+               {
+                   getFacesContext().getExternalContext().getRequestMap().put(var, _index);
+               }
+               else
+               {
+                   getFacesContext().getExternalContext().getRequestMap().put(var, localModel.getRowData());
+               }
+           }
+           String varStatus = getVarStatus();
+           if (varStatus != null)
+           {
+               getFacesContext().getExternalContext().getRequestMap()
+                       .put(varStatus, _getRepeatStatus());
+           }
+       }
+
+       if (_initialDescendantFullComponentState != null)
+       {
+           Map<String, Object> rowState = _rowDeltaStates.get(getContainerClientId(facesContext));
+           if (rowState == null)
+           {
+               //Restore as original
+               restoreFullDescendantComponentStates(facesContext, getChildren().iterator(),
+                       _initialDescendantFullComponentState, false);
+           }
+           else
+           {
+               //Restore first original and then delta
+               restoreFullDescendantComponentDeltaStates(facesContext, getChildren().iterator(),
+                       rowState, _initialDescendantFullComponentState, false);
+           }
+           if (_index == -1)
+           {
+               restoreTransientDescendantComponentStates(facesContext, getChildren().iterator(), null, false);
+           }
+           else
+           {
+               rowState = _rowTransientStates.get(getContainerClientId(facesContext));
+               if (rowState == null)
+               {
+                   restoreTransientDescendantComponentStates(facesContext, getChildren().iterator(), null, false);
+               }
+               else
+               {
+                   restoreTransientDescendantComponentStates(facesContext, getChildren().iterator(), rowState, false);
+               }
+           }
+       }
+
+    }
+   
+   private void _setIndexWithoutPreserveComponentState(int index)
+   {
+       if (index < -1)
+       {
+           throw new IllegalArgumentException("rowIndex is less than -1");
+       }
+
+       if (_index == index)
+       {
+           return;
+       }
+
+       FacesContext facesContext = getFacesContext();
+
+       if (_index == -1)
+       {
+           if (_initialDescendantComponentState == null)
+           {
+               // Create a template that can be used to initialise any row
+               // that we haven't visited before, ie a "saved state" that can
+               // be pushed to the "restoreState" method of all the child
+               // components to set them up to represent a clean row.
+               _initialDescendantComponentState = saveDescendantComponentStates(this, true, true);
+           }
+       }
+       else
+       {
+           // If no initial component state, there are no EditableValueHolder instances,
+           // and that means there is no state to be saved for the current row, so we can
+           // skip row state saving code safely.
+           if (_initialDescendantComponentState != null)
+           {
+               // We are currently positioned on some row, and are about to
+               // move off it, so save the (partial) state of the components
+               // representing the current row. Later if this row is revisited
+               // then we can restore this state.
+               Collection<Object[]> savedRowState = saveDescendantComponentStates(this, true, true);
+               if (savedRowState != null)
+               {
+                   _rowStates.put(getContainerClientId(facesContext), savedRowState);
+               }
+           }
+       }
+
+       _index = index;
+       
+       DataModel<?> localModel = getDataModel();
+       localModel.setRowIndex(index);
+
+       if (_index != -1)
+       {
+           String var = getVar();
+           if (var != null && (_emptyModel || localModel.isRowAvailable()))
+           {
+               if (_emptyModel)
+               {
+                   getFacesContext().getExternalContext().getRequestMap().put(var, _index);
+               }
+               else
+               {
+                   getFacesContext().getExternalContext().getRequestMap().put(var, localModel.getRowData());
+               }
+           }
+           String varStatus = getVarStatus();
+           if (varStatus != null)
+           {
+               getFacesContext().getExternalContext().getRequestMap()
+                       .put(varStatus, _getRepeatStatus());
+           }
+       }
+
+       if (_index == -1)
+       {
+           // reset components to initial state
+           // If no initial state, skip row restore state code
+           if (_initialDescendantComponentState != null)
+           {
+               restoreDescendantComponentStates(this, true, _initialDescendantComponentState, true);
+           }
+           else
+           {
+               restoreDescendantComponentWithoutRestoreState(this, true, true);
+           }
+       }
+       else
+       {
+           Object rowState = _rowStates.get(getContainerClientId(facesContext));
+           if (rowState == null)
+           {
+               // We haven't been positioned on this row before, so just
+               // configure the child components of this component with
+               // the standard "initial" state
+               // If no initial state, skip row restore state code
+               if (_initialDescendantComponentState != null)
+               {
+                   restoreDescendantComponentStates(this, true, _initialDescendantComponentState, true);
+               }
+               else
+               {
+                   restoreDescendantComponentWithoutRestoreState(this, true, true);
+               }
+           }
+           else
+           {
+               // We have been positioned on this row before, so configure
+               // the child components of this component with the (partial)
+               // state that was previously saved. Fields not in the
+               // partial saved state are left with their original values.
+               restoreDescendantComponentStates(this, true, rowState, true);
+           }
+       }
+   }
+
+   /*
+    * Copied from UIData
+    */
+    private void restoreTransientDescendantComponentStates(FacesContext facesContext,
+            Iterator<UIComponent> childIterator,
+            Map<String, Object> state,
+            boolean restoreChildFacets) 
+    {
+        while (childIterator.hasNext()) 
         {
-            if (_initialDescendantComponentState == null)
+            UIComponent component = childIterator.next();
+
+            // reset the client id (see spec 3.1.6)
+            component.setId(component.getId());
+            if (!component.isTransient()) 
             {
-                // Create a template that can be used to initialise any row
-                // that we haven't visited before, ie a "saved state" that can
-                // be pushed to the "restoreState" method of all the child
-                // components to set them up to represent a clean row.
-                _initialDescendantComponentState = saveDescendantComponentStates(this, true, true);
+                component.restoreTransientState(facesContext,
+                        state == null ? null : state.get(component.getClientId(facesContext)));
+
+                Iterator<UIComponent> childsIterator = restoreChildFacets
+                        ? component.getFacetsAndChildren()
+                        : component.getChildren().iterator();
+                restoreTransientDescendantComponentStates(facesContext, childsIterator, state, true);
             }
         }
-        else
-        {
-            // If no initial component state, there are no EditableValueHolder instances,
-            // and that means there is no state to be saved for the current row, so we can
-            // skip row state saving code safely.
-            if (_initialDescendantComponentState != null)
+
+    }
+
+    /*
+    * Copied from UIData
+    */
+    private void restoreFullDescendantComponentDeltaStates(FacesContext facesContext,
+        Iterator<UIComponent> childIterator, Map<String, Object> state, Object initialState,
+        boolean restoreChildFacets) 
+    {
+            Iterator<? extends Object[]> descendantFullStateIterator = null;
+            while (childIterator.hasNext()) 
             {
-                // We are currently positioned on some row, and are about to
-                // move off it, so save the (partial) state of the components
-                // representing the current row. Later if this row is revisited
-                // then we can restore this state.
-                Collection<Object[]> savedRowState = saveDescendantComponentStates(this, true, true);
-                if (savedRowState != null)
+                if (descendantFullStateIterator == null && initialState != null)
                 {
-                    _rowStates.put(getContainerClientId(facesContext), savedRowState);
+                    descendantFullStateIterator = ((Collection<? extends Object[]>) initialState).iterator();
+                }
+
+                UIComponent component = childIterator.next();
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+
+                if (!component.isTransient()) 
+                {
+                    Object childInitialState = null;
+                    Object descendantInitialState = null;
+                    Object childState = null;
+                    String childId = null;
+                    childState = (state == null) ? null : state.get(component.getClientId(facesContext));
+
+                    if (descendantFullStateIterator != null && descendantFullStateIterator.hasNext())
+                    {
+                        do
+                        {
+                            Object[] object = descendantFullStateIterator.next();
+                            childInitialState = object[0];
+                            descendantInitialState = object[1];
+                            childId = (String) object[2];
+                        } while (descendantFullStateIterator.hasNext() && !component.getId().equals(childId));
+
+                        if (!component.getId().equals(childId))
+                        {
+                            // cannot apply initial state to components correctly. State is corrupt
+                            throw new IllegalStateException("Cannot restore row correctly.");
+                        }
+                    }
+
+                    component.clearInitialState();
+                    if (childInitialState != null)
+                    {
+                        component.restoreState(facesContext, childInitialState);
+                        component.markInitialState();
+                        component.restoreState(facesContext, childState);
+                    }
+                    else
+                    {
+                        component.restoreState(facesContext, childState);
+                        component.markInitialState();
+                    }
+
+                    Iterator<UIComponent> childsIterator = restoreChildFacets
+                            ? component.getFacetsAndChildren()
+                            : component.getChildren().iterator();
+                    restoreFullDescendantComponentDeltaStates(facesContext, childsIterator, state,
+                            descendantInitialState, true);
+                }
+            }
+    }
+
+    /*
+    * Copied from UIData
+    */
+    private Map<String, Object> saveFullDescendantComponentStates(FacesContext facesContext,
+        Map<String, Object> stateMap, Iterator<UIComponent> childIterator, boolean saveChildFacets)
+    {
+        while (childIterator.hasNext())
+        {
+            UIComponent child = childIterator.next();
+            if (!child.isTransient())
+            {
+                // Add an entry to the collection, being an array of two
+                // elements. The first element is the state of the children
+                // of this component; the second is the state of the current
+                // child itself.
+                Iterator<UIComponent> childsIterator = saveChildFacets
+                        ? child.getFacetsAndChildren()
+                        : child.getChildren().iterator();
+                stateMap = saveFullDescendantComponentStates(facesContext, stateMap, childsIterator, true);
+                Object state = child.saveState(facesContext);
+                if (state != null)
+                {
+                    if (stateMap == null)
+                    {
+                        stateMap = new HashMap<>();
+                    }
+                    stateMap.put(child.getClientId(facesContext), state);
                 }
             }
         }
+        return stateMap;
+    }
 
-        _index = index;
-        
-        DataModel<?> localModel = getDataModel();
-        localModel.setRowIndex(index);
+    /*
+    * Copied from UIData
+    */
+    private void restoreFullDescendantComponentStates(FacesContext facesContext,
+        Iterator<UIComponent> childIterator, Object initialState, boolean restoreChildFacets) 
+    {
+        Iterator<? extends Object[]> descendantStateIterator = null;
+        while (childIterator.hasNext())
+        {
+            if (descendantStateIterator == null && initialState != null) 
+            {
+                descendantStateIterator = ((Collection<? extends Object[]>) initialState).iterator();
+            }
 
-        if (_index != -1)
-        {
-            String var = getVar();
-            if (var != null && (_emptyModel || localModel.isRowAvailable()))
-            {
-                if (_emptyModel)
-                {
-                    getFacesContext().getExternalContext().getRequestMap().put(var, _index);
-                }
-                else
-                {
-                    getFacesContext().getExternalContext().getRequestMap().put(var, localModel.getRowData());
-                }
-            }
-            String varStatus = getVarStatus();
-            if (varStatus != null)
-            {
-                getFacesContext().getExternalContext().getRequestMap()
-                        .put(varStatus, _getRepeatStatus());
-            }
-        }
+            UIComponent component = childIterator.next();
+            // reset the client id (see spec 3.1.6)
+            component.setId(component.getId());
 
-        if (_index == -1)
-        {
-            // reset components to initial state
-            // If no initial state, skip row restore state code
-            if (_initialDescendantComponentState != null)
+            if (!component.isTransient())
             {
-                restoreDescendantComponentStates(this, true, _initialDescendantComponentState, true);
-            }
-            else
-            {
-                restoreDescendantComponentWithoutRestoreState(this, true, true);
-            }
-        }
-        else
-        {
-            Object rowState = _rowStates.get(getContainerClientId(facesContext));
-            if (rowState == null)
-            {
-                // We haven't been positioned on this row before, so just
-                // configure the child components of this component with
-                // the standard "initial" state
-                // If no initial state, skip row restore state code
-                if (_initialDescendantComponentState != null)
+                Object childState = null;
+                Object descendantState = null;
+                String childId = null;
+                if (descendantStateIterator != null && descendantStateIterator.hasNext())
                 {
-                    restoreDescendantComponentStates(this, true, _initialDescendantComponentState, true);
+                    do
+                    {
+                        Object[] object = descendantStateIterator.next();
+                        childState = object[0];
+                        descendantState = object[1];
+                        childId = (String) object[2];
+                    } while (descendantStateIterator.hasNext() && !component.getId().equals(childId));
+
+                    if (!component.getId().equals(childId))
+                    {
+                        // cannot apply initial state to components correctly.
+                        throw new IllegalStateException("Cannot restore row correctly.");
+                    }
                 }
-                else
-                {
-                    restoreDescendantComponentWithoutRestoreState(this, true, true);
-                }
-            }
-            else
-            {
-                // We have been positioned on this row before, so configure
-                // the child components of this component with the (partial)
-                // state that was previously saved. Fields not in the
-                // partial saved state are left with their original values.
-                restoreDescendantComponentStates(this, true, rowState, true);
+
+                component.clearInitialState();
+                component.restoreState(facesContext, childState);
+                component.markInitialState();
+
+                Iterator<UIComponent> childsIterator = restoreChildFacets
+                        ? component.getFacetsAndChildren()
+                        : component.getChildren().iterator();
+                restoreFullDescendantComponentStates(facesContext, childsIterator, descendantState, true);
             }
         }
     }
-    
+
+    /*
+    * Copied from UIData
+    */
+    private Map<String, Object> saveTransientDescendantComponentStates(FacesContext facesContext,
+        Map<String, Object> childStates, Iterator<UIComponent> childIterator, boolean saveChildFacets)
+    {
+        while (childIterator.hasNext())
+        {
+            UIComponent child = childIterator.next();
+            if (!child.isTransient())
+            {
+                Iterator<UIComponent> childsIterator = saveChildFacets
+                        ? child.getFacetsAndChildren()
+                        : child.getChildren().iterator();
+                childStates = saveTransientDescendantComponentStates(facesContext, childStates, childsIterator, true);
+                Object state = child.saveTransientState(facesContext);
+                if (state != null)
+                {
+                    if (childStates == null)
+                    {
+                        childStates = new HashMap<>();
+                    }
+                    childStates.put(child.getClientId(facesContext), state);
+                }
+            }
+        }
+        return childStates;
+    }
+
+    /*
+    * Copied from UIData
+    */
+    private Collection<Object[]> saveDescendantInitialComponentStates(FacesContext facesContext,
+        Iterator<UIComponent> childIterator, boolean saveChildFacets)
+    {
+        Collection<Object[]> childStates = null;
+        while (childIterator.hasNext())
+        {
+            UIComponent child = childIterator.next();
+            if (!child.isTransient())
+            {
+                Iterator<UIComponent> childsIterator = saveChildFacets
+                        ? child.getFacetsAndChildren()
+                        : child.getChildren().iterator();
+                Object descendantState = saveDescendantInitialComponentStates(facesContext, childsIterator, true);
+                Object state = null;
+                if (child.initialStateMarked())
+                {
+                    child.clearInitialState();
+                    state = child.saveState(facesContext);
+                    child.markInitialState();
+                }
+                else
+                {
+                    state = child.saveState(facesContext);
+                }
+
+                // Add an entry to the collection, being an array of two elements.
+                // The first element is the state of the children of this component;
+                // the second is the state of the current child itself.
+                if (childStates == null)
+                {
+                    childStates = new ArrayList<>();
+                }
+                childStates.add(new Object[] { state, descendantState, child.getId() });
+            }
+        }
+        return childStates;
+    }
+
     /**
      * Calculates the count value for the given index.
      * @param index
@@ -1014,7 +1390,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         
         // reset index
         _captureScopeValues();
-        _setIndex(-1);
+        setRowIndex(-1);
 
         try
         {
@@ -1046,7 +1422,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 
                 _count = 0;
                 
-                _setIndex(i);
+                setRowIndex(i);
                 
                 while (((step > 0 && i <= end) || (step < 0 && i >= end)) && _isIndexAvailable())
                 {
@@ -1083,7 +1459,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     
                     i += step;
                     
-                    _setIndex(i);
+                    setRowIndex(i);
                 }
             }
         }
@@ -1093,7 +1469,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
         finally
         {
-            _setIndex(-1);
+            setRowIndex(-1);
             _restoreScopeValues();
         }
     }
@@ -1175,7 +1551,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                             // calculate count for RepeatStatus
                             _count = _calculateCountForIndex(invokeIndex);
                         }
-                        _setIndex(invokeIndex);
+                        setRowIndex(invokeIndex);
                         
                         if (!_isIndexAvailable())
                         {
@@ -1193,7 +1569,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     {
                         // restore the previous count, index and scope values
                         _count = prevCount;
-                        _setIndex(prevIndex);
+                        setRowIndex(prevIndex);
                         _restoreScopeValues();
                     }
                 }
@@ -1224,6 +1600,21 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         return returnValue;
     }
     
+    /*
+    * Copied from UIData
+    */
+    @Override
+    public void markInitialState()
+    {
+        if (isRowStatePreserved() &&
+                getFacesContext().getAttributes().containsKey(StateManager.IS_BUILDING_INITIAL_STATE))
+                {
+            _initialDescendantFullComponentState = saveDescendantInitialComponentStates(getFacesContext(),
+                    getChildren().iterator(), false);
+        }
+        super.markInitialState();
+    }
+
     @Override
     protected FacesContext getFacesContext()
     {
@@ -1273,7 +1664,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
             // reset index and save scope values
             _captureScopeValues();
-            _setIndex(-1);
+            setRowIndex(-1);
 
             try
             {
@@ -1319,7 +1710,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                             end = (end >= 0) ? i + end : Integer.MAX_VALUE - 1;
                             _count = 0;
 
-                            _setIndex(i);
+                            setRowIndex(i);
                             while (i < end && _isIndexAvailable())
                             {
                                 for (int j = 0, childCount = getChildCount(); j < childCount; j++)
@@ -1334,7 +1725,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                                 _count++;
                                 i += step;
 
-                                _setIndex(i);
+                                setRowIndex(i);
                             }
                         }
                     }
@@ -1346,7 +1737,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
                 // restore the previous count, index and scope values
                 _count = prevCount;
-                _setIndex(prevIndex);
+                setRowIndex(prevIndex);
                 _restoreScopeValues();
             }
         }
@@ -1450,7 +1841,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     // calculate count for RepeatStatus
                     _count = _calculateCountForIndex(this._index);
                 }
-                owner._setIndex(this._index);
+                owner.setRowIndex(this._index);
                 if (owner._isIndexAvailable())
                 {
                     _target.processListener(listener);
@@ -1460,7 +1851,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             {
                 // restore the previous count, index and scope values
                 owner._count = prevCount;
-                owner._setIndex(prevIndex);
+                owner.setRowIndex(prevIndex);
                 owner._restoreScopeValues();
             }
         }
@@ -1496,7 +1887,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     // calculate count for RepeatStatus
                     _count = _calculateCountForIndex(idxEvent.getIndex());
                 }
-                _setIndex(idxEvent.getIndex());
+                setRowIndex(idxEvent.getIndex());
                 if (_isIndexAvailable())
                 {
                     // get the target FacesEvent
@@ -1536,7 +1927,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             {
                 // restore the previous count, index and scope values
                 _count = prevCount;
-                _setIndex(prevIndex);
+                setRowIndex(prevIndex);
                 _restoreScopeValues();
             }
         }
@@ -1563,6 +1954,19 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         Object[] values = (Object[]) state;
         super.restoreState(context, values[0]);
 
+        Object restoredRowStates = UIComponentBase.restoreAttachedState(context, values[1]);
+        if (restoredRowStates == null)
+        {
+            if (!_rowDeltaStates.isEmpty())
+            {
+                _rowDeltaStates.clear();
+            }
+        }
+        else
+        {
+            _rowDeltaStates = (Map<String, Map<String, Object> >) restoredRowStates;
+        }
+
         if (values.length > 2)
         {
             Object rs = UIComponentBase.restoreAttachedState(context, values[2]);
@@ -1578,6 +1982,21 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 _rowStates = (Map<String, Collection<Object[]> >) rs;
             }
         }
+        if (values.length > 3)
+        {
+            Object rs = UIComponentBase.restoreAttachedState(context, values[3]);
+            if (rs == null)
+            {
+                if (!_rowTransientStates.isEmpty())
+                {
+                    _rowTransientStates.clear();
+                }
+            }
+            else
+            {
+                _rowTransientStates = (Map<String, Map<String, Object> >) rs;
+            }
+        }
     }
 
     @Override
@@ -1590,6 +2009,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             {
                 _dataModelMap.clear();
                 _isValidChilds = true;
+                _rowTransientStates.clear();
+                _rowStates.clear();
+                _rowDeltaStates.clear();
             }
             else if (context.getViewRoot().getAttributes().get(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY)
                     == ViewPoolProcessor.RESET_MODE_HARD)
@@ -1611,16 +2033,17 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 }
                 else
                 {
-                    Object[] values = new Object[3];
+                    Object[] values = new Object[4];
                     values[0] = super.saveState(context);
-                    values[1] = null;
+                    values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
                     values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+                    values[3] = UIComponentBase.saveAttachedState(context, _rowTransientStates);
                     return values;
                 }
             }
             else
             {
-                if (parentSaved == null)
+                if (parentSaved == null &&_rowDeltaStates.isEmpty())
                 {
                     return null;
                 }
@@ -1628,8 +2051,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 {
                     Object[] values = new Object[2];
                     values[0] = super.saveState(context);
-                    values[1] = null;
-                    return values; 
+                    values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                    return values;
                 }
             }
         }
@@ -1669,11 +2092,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             // clear the saved row state, as there is an implicit 1:1
             // relation between objects in the _rowStates and the
             // corresponding DataModel element.
-            _rowStates.clear();
+            if (!isRowStatePreserved())
+            {
+                _rowStates.clear();
+            }
         }
         super.encodeBegin(context);
     }
-    
+
     private boolean hasErrorMessages(FacesContext context)
     {
         for (Iterator<FacesMessage> iter = context.getMessages(); iter.hasNext();)
@@ -1723,5 +2149,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         , step
         , begin
         , end
+        , rowStatePreserved
     }
 }
