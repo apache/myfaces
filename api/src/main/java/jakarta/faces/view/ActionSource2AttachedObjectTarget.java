@@ -24,7 +24,8 @@ package jakarta.faces.view;
  * 
  * @since 2.0
  */
-public interface ActionSource2AttachedObjectTarget extends AttachedObjectTarget
+@Deprecated(since = "4.1", forRemoval = true)
+public interface ActionSource2AttachedObjectTarget extends ActionSourceAttachedObjectTarget
 {
 
 }

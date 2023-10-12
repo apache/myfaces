@@ -68,7 +68,7 @@ public class CompositeComponentConditionalButtonTestCase extends FaceletTestCase
         Assertions.assertNotNull(button1.getActionListeners());
         Assertions.assertEquals(1, button1.getActionListeners().length);
         
-        UINamingContainer compositeComponent2 = (UINamingContainer) form.findComponent("actionSource2");
+        UINamingContainer compositeComponent2 = (UINamingContainer) form.findComponent("actionSource");
         Assertions.assertNotNull(compositeComponent2);
         UICommand button2 = (UICommand) compositeComponent2.findComponent("button");
         Assertions.assertNotNull(button2);

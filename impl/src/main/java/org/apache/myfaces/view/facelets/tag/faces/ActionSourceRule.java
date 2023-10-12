@@ -20,7 +20,6 @@ package org.apache.myfaces.view.facelets.tag.faces;
 
 import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource;
-import jakarta.faces.component.ActionSource2;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.MethodExpressionActionListener;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -44,25 +43,9 @@ public final class ActionSourceRule extends MetaRule
 
     final static class ActionMapper extends Metadata
     {
-        private final TagAttribute attr;
-
-        public ActionMapper(TagAttribute attr)
-        {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance)
-        {
-
-        }
-    }
-    
-    final static class ActionMapper2 extends Metadata
-    {
         private final TagAttribute _attr;
 
-        public ActionMapper2(TagAttribute attr)
+        public ActionMapper(TagAttribute attr)
         {
             this._attr = attr;
         }
@@ -71,31 +54,15 @@ public final class ActionSourceRule extends MetaRule
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             MethodExpression expr = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
-            ((ActionSource2) instance).setActionExpression(expr);
+            ((ActionSource) instance).setActionExpression(expr);
         }
     }
 
     final static class ActionListenerMapper extends Metadata
     {
-        private final TagAttribute attr;
-
-        public ActionListenerMapper(TagAttribute attr)
-        {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance)
-        {
-
-        }
-    }
-
-    final static class ActionListenerMapper2 extends Metadata
-    {
         private final TagAttribute _attr;
 
-        public ActionListenerMapper2(TagAttribute attr)
+        public ActionListenerMapper(TagAttribute attr)
         {
             _attr = attr;
         }
@@ -115,12 +82,12 @@ public final class ActionSourceRule extends MetaRule
                     = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
             if (FaceletCompositionContext.getCurrentInstance(ctx).isUsingPSSOnThisView())
             {
-                ((ActionSource2) instance).addActionListener(
+                ((ActionSource) instance).addActionListener(
                         new PartialMethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
             }
             else
             {
-                ((ActionSource2) instance).addActionListener(
+                ((ActionSource) instance).addActionListener(
                         new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
             }
         }
@@ -140,26 +107,12 @@ public final class ActionSourceRule extends MetaRule
         {
             if ("action".equals(name))
             {
-                if (meta.isTargetInstanceOf(ActionSource2.class))
-                {
-                    return new ActionMapper2(attribute);
-                }
-                else
-                {
-                    return new ActionMapper(attribute);
-                }
+                return new ActionMapper(attribute);
             }
 
             if ("actionListener".equals(name))
             {
-                if (meta.isTargetInstanceOf(ActionSource2.class))
-                {
-                    return new ActionListenerMapper2(attribute);
-                }
-                else
-                {
-                    return new ActionListenerMapper(attribute);
-                }
+                return new ActionListenerMapper(attribute);
             }
         }
         

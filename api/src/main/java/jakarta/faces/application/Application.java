@@ -518,10 +518,6 @@ public abstract class Application
      * <li>the logical outcome as determined above</li>
      * </ul>
      * <p>
-     * Note that the specification for the default <code>ActionListener</code> contiues to call for the use of a
-     * deprecated property (<code>action</code>) and class (<code>MethodExpression</code>). Unfortunately, this is
-     * necessary because the default ActionListener must continue to work with components that do not implement
-     * {@link jakarta.faces.component.ActionSource2}, and only implement {@link jakarta.faces.component.ActionSource}.
      */
     public abstract ActionListener getActionListener();
 

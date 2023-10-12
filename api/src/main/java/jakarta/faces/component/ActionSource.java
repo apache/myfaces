@@ -18,6 +18,8 @@
  */
 package jakarta.faces.component;
 
+import jakarta.el.MethodExpression;
+
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
@@ -32,4 +34,8 @@ public interface ActionSource
     public jakarta.faces.event.ActionListener[] getActionListeners();
 
     public void removeActionListener(jakarta.faces.event.ActionListener listener);
+
+    public MethodExpression getActionExpression();
+
+    public void setActionExpression(MethodExpression action);
 }

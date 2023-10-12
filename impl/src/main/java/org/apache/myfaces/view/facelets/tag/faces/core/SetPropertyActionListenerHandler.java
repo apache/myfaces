@@ -32,7 +32,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
-import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.ActionSourceAttachedObjectHandler;
 import jakarta.faces.view.Location;
 import jakarta.faces.view.facelets.ComponentHandler;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -50,7 +50,7 @@ import org.apache.myfaces.view.facelets.el.ContextAwareELException;
 
 @JSFFaceletTag(name = "f:setPropertyActionListener", bodyContent = "empty")
 public class SetPropertyActionListenerHandler extends TagHandler
-    implements ActionSource2AttachedObjectHandler 
+    implements ActionSourceAttachedObjectHandler 
 {
     private final TagAttribute _target;
     private final TagAttribute _value;

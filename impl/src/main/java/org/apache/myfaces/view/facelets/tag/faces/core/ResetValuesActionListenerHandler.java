@@ -35,7 +35,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
-import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.ActionSourceAttachedObjectHandler;
 import jakarta.faces.view.AttachedObjectHandler;
 import jakarta.faces.view.Location;
 import jakarta.faces.view.facelets.ComponentHandler;
@@ -56,7 +56,7 @@ import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
  * @author Leonardo Uribe
  */
 @JSFFaceletTag(name = "f:resetValues", bodyContent = "empty")
-public class ResetValuesActionListenerHandler extends TagHandler implements ActionSource2AttachedObjectHandler
+public class ResetValuesActionListenerHandler extends TagHandler implements ActionSourceAttachedObjectHandler
 {
 
     @JSFFaceletAttribute(name = "render", className = "jakarta.el.ValueExpression",

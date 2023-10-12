@@ -30,7 +30,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
-import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.ActionSourceAttachedObjectHandler;
 import jakarta.faces.view.facelets.ComponentHandler;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
@@ -56,7 +56,7 @@ import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
  */
 @JSFFaceletTag(name = "f:actionListener", bodyContent = "empty")
 public final class ActionListenerHandler extends TagHandler
-    implements ActionSource2AttachedObjectHandler 
+    implements ActionSourceAttachedObjectHandler
 {
 
     private final static class LazyActionListener implements ActionListener, Serializable

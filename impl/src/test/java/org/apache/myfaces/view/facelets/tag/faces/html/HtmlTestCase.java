@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.tag.faces.html;
 
 import java.io.StringWriter;
 import jakarta.el.MethodExpression;
-import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIOutput;
@@ -90,7 +90,7 @@ public class HtmlTestCase extends FaceletTestCase {
         Object v = c.getAttributes().get("id");
         Assertions.assertEquals("cmd", v);
         
-        ActionSource2 as2 = (ActionSource2) c;
+        ActionSource as2 = (ActionSource) c;
         MethodExpression me = as2.getActionExpression();
         Assertions.assertNotNull(me);
         

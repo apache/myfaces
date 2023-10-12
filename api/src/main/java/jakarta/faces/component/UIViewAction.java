@@ -34,7 +34,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * @since 2.2
  */
 @JSFComponent(name = "f:viewAction")
-public class UIViewAction extends UIComponentBase implements ActionSource2
+public class UIViewAction extends UIComponentBase implements ActionSource
 {
 
     public static final String COMPONENT_FAMILY = "jakarta.faces.ViewAction";

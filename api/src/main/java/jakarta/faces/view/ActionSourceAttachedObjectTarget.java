@@ -16,20 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.view.facelets.tag.composite;
-
-import jakarta.faces.view.ActionSource2AttachedObjectTarget;
+package jakarta.faces.view;
 
 /**
+ * A marker interface for PDL tags that represent <code>&lt;composite:actionSource/&gt;</code> for use by the
+ * <em>composite component page author</em>.
  * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
+ * @since 4.1
  */
-@Deprecated(since = "4.1", forRemoval = true)
-public class ActionSource2AttachedObjectTargetImpl extends
-        ActionSourceAttachedObjectTargetImpl implements ActionSource2AttachedObjectTarget
+public interface ActionSourceAttachedObjectTarget extends AttachedObjectTarget
 {
-
-    private static final long serialVersionUID = 6944946794856707903L;
 
 }

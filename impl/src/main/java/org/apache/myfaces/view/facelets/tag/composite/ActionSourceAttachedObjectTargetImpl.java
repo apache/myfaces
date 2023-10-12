@@ -18,16 +18,10 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import jakarta.faces.view.ActionSource2AttachedObjectTarget;
+import jakarta.faces.view.ActionSourceAttachedObjectTarget;
 
-/**
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
-@Deprecated(since = "4.1", forRemoval = true)
-public class ActionSource2AttachedObjectTargetImpl extends
-        ActionSourceAttachedObjectTargetImpl implements ActionSource2AttachedObjectTarget
+public class ActionSourceAttachedObjectTargetImpl extends
+        AttachedObjectTargetImpl implements ActionSourceAttachedObjectTarget
 {
 
     private static final long serialVersionUID = 6944946794856707903L;

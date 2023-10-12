@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import jakarta.faces.view.ActionSource2AttachedObjectTarget;
+import jakarta.faces.view.ActionSourceAttachedObjectTarget;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagConfig;
 
@@ -29,7 +29,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * @version $Revision$ $Date$
  */
 @JSFFaceletTag(name="composite:actionSource")
-public class ActionSourceHandler extends AttachedObjectTargetHandler<ActionSource2AttachedObjectTarget>
+public class ActionSourceHandler extends AttachedObjectTargetHandler<ActionSourceAttachedObjectTarget>
 {
 
     public ActionSourceHandler(TagConfig config)
@@ -38,9 +38,9 @@ public class ActionSourceHandler extends AttachedObjectTargetHandler<ActionSourc
     }
 
     @Override
-    protected ActionSource2AttachedObjectTarget createAttachedObjectTarget(FaceletContext ctx)
+    protected ActionSourceAttachedObjectTarget createAttachedObjectTarget(FaceletContext ctx)
     {
-        ActionSource2AttachedObjectTargetImpl target = new ActionSource2AttachedObjectTargetImpl();
+        ActionSourceAttachedObjectTargetImpl target = new ActionSourceAttachedObjectTargetImpl();
         
         if (_name != null)
         {

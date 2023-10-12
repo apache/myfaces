@@ -16,20 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.view.facelets.tag.composite;
-
-import jakarta.faces.view.ActionSource2AttachedObjectTarget;
+package jakarta.faces.view;
 
 /**
+ * A PDL handler that exposes {@link jakarta.faces.event.ActionListener ActionListener} to a <em>page author</em>. The
+ * default implementation of Facelets must provide an implemention of this in the handler for the
+ * <code>&lt;f:actionListener&gt;</code> tag.
  * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
+ * @since 4.1
  */
-@Deprecated(since = "4.1", forRemoval = true)
-public class ActionSource2AttachedObjectTargetImpl extends
-        ActionSourceAttachedObjectTargetImpl implements ActionSource2AttachedObjectTarget
+public interface ActionSourceAttachedObjectHandler extends AttachedObjectHandler
 {
-
-    private static final long serialVersionUID = 6944946794856707903L;
 
 }

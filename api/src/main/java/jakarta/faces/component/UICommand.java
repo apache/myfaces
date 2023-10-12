@@ -36,7 +36,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * 
  */
 @JSFComponent(defaultRendererType = "jakarta.faces.Button")
-public class UICommand extends UIComponentBase implements ActionSource2
+public class UICommand extends UIComponentBase implements ActionSource
 {
     public static final String COMPONENT_TYPE = "jakarta.faces.Command";
     public static final String COMPONENT_FAMILY = "jakarta.faces.Command";

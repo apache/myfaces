@@ -49,7 +49,7 @@ import jakarta.faces.application.Resource;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
-import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
@@ -72,8 +72,8 @@ import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.validator.MethodExpressionValidator;
 import jakarta.faces.validator.Validator;
-import jakarta.faces.view.ActionSource2AttachedObjectHandler;
-import jakarta.faces.view.ActionSource2AttachedObjectTarget;
+import jakarta.faces.view.ActionSourceAttachedObjectHandler;
+import jakarta.faces.view.ActionSourceAttachedObjectTarget;
 import jakarta.faces.view.AttachedObjectHandler;
 import jakarta.faces.view.AttachedObjectTarget;
 import jakarta.faces.view.BehaviorHolderAttachedObjectHandler;
@@ -799,8 +799,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance();
 
                 if ((forValue != null && forValue.equals(currentTarget.getName())) &&
-                        ((currentTarget instanceof ActionSource2AttachedObjectTarget &&
-                                currentHandler instanceof ActionSource2AttachedObjectHandler) ||
+                        ((currentTarget instanceof ActionSourceAttachedObjectTarget &&
+                                currentHandler instanceof ActionSourceAttachedObjectHandler) ||
                                 (currentTarget instanceof EditableValueHolderAttachedObjectTarget &&
                                         currentHandler instanceof EditableValueHolderAttachedObjectHandler) ||
                                 (currentTarget instanceof ValueHolderAttachedObjectTarget &&
@@ -1217,7 +1217,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                                ValueExpression attributeNameValueExpression, 
                                                boolean ccAttrMeRedirection)
     {
-        // target is ActionSource2
+        // target is ActionSource
         MethodExpression methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
                 createMethodExpression(elContext,
                         attributeExpressionString, null,
@@ -1241,7 +1241,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                                        ValueExpression attributeNameValueExpression, 
                                                        boolean ccAttrMeRedirection)
     {
-        // target is ActionSource2
+        // target is ActionSource
         MethodExpression methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
                 createMethodExpression(elContext,
                         attributeExpressionString, Void.TYPE, ACTION_LISTENER_SIGNATURE),
@@ -1326,7 +1326,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                                    ValueExpression attributeNameValueExpression,
                                                    boolean ccAttrMeRedirection)
     {
-        // target is ActionSource2
+        // target is ActionSource
         MethodExpression methodExpression
                 = reWrapMethodExpression(context.getApplication().getExpressionFactory().
                 createMethodExpression(elContext,
@@ -1337,12 +1337,12 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // locate the right instance and call it properly.
         if (ccAttrMeRedirection)
         {
-            ((ActionSource2) innerComponent).setActionExpression(
+            ((ActionSource) innerComponent).setActionExpression(
                     new ValueExpressionMethodExpression(attributeNameValueExpression));
         }
         else
         {
-            ((ActionSource2) innerComponent).setActionExpression(methodExpression);
+            ((ActionSource) innerComponent).setActionExpression(methodExpression);
         }
     }
 
@@ -1361,10 +1361,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 mctx.removeMethodExpressionTargeted(innerComponent, targetAttributeName);
         if (o != null)
         {
-            ((ActionSource2) innerComponent).removeActionListener(o);
+            ((ActionSource) innerComponent).removeActionListener(o);
         }
 
-        // target is ActionSource2
+        // target is ActionSource
         ActionListener actionListener = null;
         // If it is a redirection, a wrapper is used to locate the right instance and call
         //it properly.
@@ -1392,7 +1392,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 actionListener = new MethodExpressionActionListener(methodExpression, methodExpression2);
             }
         }
-        ((ActionSource2) innerComponent).addActionListener(actionListener);
+        ((ActionSource) innerComponent).addActionListener(actionListener);
         mctx.addMethodExpressionTargeted(innerComponent, targetAttributeName, actionListener);
     }
     
@@ -1617,11 +1617,11 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     {
                         if ("action".equals(targetAttributeName))
                         {
-                            return !(component instanceof ActionSource2);
+                            return !(component instanceof ActionSource);
                         }
                         else if ("actionListener".equals(targetAttributeName))
                         {
-                            return !(component instanceof ActionSource2);
+                            return !(component instanceof ActionSource);
                         }
                         else if ("validator".equals(targetAttributeName))
                         {

@@ -23,7 +23,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -54,12 +54,12 @@ public class ActionListenerImpl implements ActionListener
         String fromAction = null;
         String outcome = null;
         
-        if (component instanceof ActionSource2)
+        if (component instanceof ActionSource)
         {
-            // Must be an instance of ActionSource2, so don't look on action if the actionExpression is set 
-            methodExpression = ((ActionSource2) component).getActionExpression();            
+            // Must be an instance of ActionSource, so don't look on action if the actionExpression is set 
+            methodExpression = ((ActionSource) component).getActionExpression();            
         }
-        
+
         if (methodExpression != null)
         {
             fromAction = methodExpression.getExpressionString();
