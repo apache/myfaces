@@ -25,9 +25,12 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIColumn;
 import jakarta.faces.component.UIData;
 import jakarta.faces.component.UIDataTest.RowData;
 import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
 
@@ -81,6 +84,77 @@ public class UIRepeatTest extends AbstractJsfTestCase
             }
         });
     }
+
+    /*
+     * Borrowed from UIDataTest#testPreserveRowComponentState1
+     * Adapted to use UIRepeat with rowStatePreserved
+     */
+    @Test
+    public void testPreserveRowComponentState() throws Exception
+    {
+        List<RowData> model = new ArrayList<RowData>();
+        model.add(new RowData("text1","style1"));
+        model.add(new RowData("text1","style2"));
+        model.add(new RowData("text1","style3"));
+        model.add(new RowData("text1","style4"));
+        
+        //Put on request map to be resolved later
+        request.setAttribute("list", model);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        UIRepeat table = new UIRepeat();
+        UIColumn column = new UIColumn();
+        UIOutput text = new UIOutput();
+        
+        //This is only required if markInitiaState fix is not used 
+        root.setId(root.createUniqueId());
+        table.setId(root.createUniqueId());
+        column.setId(root.createUniqueId());
+        text.setId(root.createUniqueId());
+        
+        table.setVar("row");
+        table.setRowStatePreserved(true); // Key part of test!
+        table.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{list}",List.class));
+        
+        text.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{row.text}",String.class));
+        
+        root.getChildren().add(table);
+        table.getChildren().add(column);
+        column.getChildren().add(text);
+
+        //Simulate markInitialState call.
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        text.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
+        
+        //Check the value expressions are working and change the component state 
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            Assertions.assertEquals(rowData.getText(), text.getValue());
+            text.getAttributes().put("style", rowData.getStyle());
+        }
+        
+        //Reset row index
+        table.setRowIndex(-1);
+
+        //Check the values were not lost
+        for (int i = 0; i < model.size(); i++)
+        {
+            table.setRowIndex(i);
+            Assertions.assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
+        }
+        
+    }
+
 
     /**
      * Test state save and restore cycle taking in consideration portlet case.
