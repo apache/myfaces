@@ -33,6 +33,7 @@ import defaultMyFaces = StandardInits.defaultMyFaces;
 import initVirtualElement = StandardInits.initVirtualElement;
 import STD_XML = StandardInits.STD_XML;
 import exp from "constants";
+import initCheckboxForm = StandardInits.initCheckboxRadioForm;
 
 declare var faces: any;
 declare var Implementation: any;
@@ -652,7 +653,7 @@ describe('Tests after core when it hits response', function () {
                 dqElem.querySelectorAll("input").click();
 
                 faces.ajax.request(element, null, {
-                    execute: "page:numbers",
+                    execute: "jd_0:blarg",
                     render: "@form",
                     params: {
                         pass1: "pass1",
@@ -682,6 +683,82 @@ describe('Tests after core when it hits response', function () {
             return true;
         });
 
+    });
+
+    /**
+     * the idea is if a checkbox or radio button is the issuing element
+     * we cannot attach it
+     */
+    it("must handle issuing checkboxes and radio buttons with values correctly", () => {
+        const waitForResult = initCheckboxForm();
+        return waitForResult.then((close) => {
+            const send = sinon.spy(XMLHttpRequest.prototype, "send");
+            let dqElem = DomQuery.byId("page:numbers:1");
+            dqElem.removeAttribute("checked");
+            let element = dqElem.getAsElem(0).value;
+
+            faces.ajax.request(element, null, {
+                execute: "form1",
+                render: "@form",
+                params: {
+                    pass1: "pass1",
+                    pass2: "pass2"
+                }
+            });
+
+            let argsVal: any = send.args[0][0];
+            let arsArr = argsVal.split("&");
+            let resultsMap = {};
+            let doubles = 0;
+            for (let val of arsArr) {
+                let keyVal = val.split("=");
+                if(!!resultsMap[keyVal[0]]) {
+                    doubles++;
+                }
+                resultsMap[keyVal[0]] = keyVal[1];
+            }
+
+            //TODO test assert here
+            expect(resultsMap["page%3numbers%31"]).to.not.exist;
+            //expect(doubles).to.eq(2);
+
+        });
+    });
+
+    it("must handle issuing checkboxes and radio buttons with values correctly", () => {
+        const waitForResult = initCheckboxForm();
+        return waitForResult.then((close) => {
+            const send = sinon.spy(XMLHttpRequest.prototype, "send");
+            let dqElem = DomQuery.byId("page:numbers:r:1");
+            dqElem.removeAttribute("checked");
+            let element = dqElem.getAsElem(0).value;
+
+            faces.ajax.request(element, null, {
+                execute: "form2",
+                render: "@form",
+                params: {
+                    pass1: "pass1",
+                    pass2: "pass2"
+                }
+            });
+
+            let argsVal: any = send.args[0][0];
+            let arsArr = argsVal.split("&");
+            let resultsMap = {};
+            let doubles = 0;
+            for (let val of arsArr) {
+                let keyVal = val.split("=");
+                if(!!resultsMap[keyVal[0]]) {
+                    doubles++;
+                }
+                resultsMap[keyVal[0]] = keyVal[1];
+            }
+
+            //TODO test assert here
+            expect(resultsMap["page%3numbers%3r%31"]).to.not.exist;
+            //expect(doubles).to.eq(2);
+
+        });
     });
 
 });
