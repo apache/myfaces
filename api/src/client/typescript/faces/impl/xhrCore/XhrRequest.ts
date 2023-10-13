@@ -150,15 +150,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
                 requestPassThroughParams.$nspEnabled = true;
             }
 
-            const issuingItemId = this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value;
-            if(issuingItemId) {
-                const itemValue = DQ.byId(issuingItemId).inputValue;
-                if(itemValue.isPresent()) {
-                    const arr = new ExtConfig({});
-                    arr.assign(issuingItemId).value = itemValue.value;
-                    formData.shallowMerge(arr, true, true);
-                }
-            }
+            this.appendIssuingItem(formData);
 
             this.responseContext = requestPassThroughParams.deepCopy;
 
@@ -387,7 +379,6 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
             // We need to resolve the local handlers lazily,
             // because some frameworks might decorate them over the context in the response
             let eventHandler = resolveHandlerFunc(this.requestContext, this.responseContext, ON_EVENT);
-
             Implementation.sendEvent(eventData, eventHandler);
         } catch (e) {
             e.source = e?.source ?? this.requestContext.getIf(SOURCE).value;
@@ -408,5 +399,28 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
         const eventHandler = resolveHandlerFunc(this.requestContext, this.responseContext, ON_ERROR);
 
         Implementation.sendError(errorData, eventHandler);
+    }
+
+    private appendIssuingItem(formData: XhrFormData) {
+        const issuingItemId = this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value;
+        //not encoded
+        if(issuingItemId && formData.getIf(issuingItemId).isAbsent()) {
+            const issuingItem = DQ.byId(issuingItemId);
+            const itemValue = issuingItem.inputValue;
+            const arr = new ExtConfig({});
+            const type: string = issuingItem.type.orElse("").value.toLowerCase();
+
+            //Checkbox and radio only value pass if checked is set, otherwise they should not show
+            //up at all, and if checked is set, they either can have a value or simply being boolean
+            if((type == "checkbox" || type == "radio") && issuingItem.attr("checked").isAbsent()) {
+                return;
+            } else if((type == "checkbox" || type == "radio")) {
+                arr.assign(issuingItemId).value = itemValue.orElse(true).value;
+            } else {
+                arr.assign(issuingItemId).value = itemValue.value;
+            }
+
+            formData.shallowMerge(arr, true, true);
+        }
     }
 }
