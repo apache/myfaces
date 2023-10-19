@@ -52,6 +52,7 @@ import jakarta.faces.view.ViewMetadata;
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
 import org.apache.myfaces.context.RequestViewContext;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.HashMapUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
@@ -642,17 +643,25 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 {
                     try
                     {
-                        UIComponent parent = target;
-                        UIComponent dup = parent.getChildren().get(childIndex);
-                        if (child.getId().equals(dup.getId())) // avoid DuplicateIdException  - myfaces-4623
-                        {
-                            parent.getChildren().remove(childIndex.intValue());
-                            parent.getChildren().add(childIndex, child);
-                        }
-                        else
-                        {
-                             target.getChildren().add(childIndex, child);
-                        }
+                            UIComponent parent = target;
+                            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i ++)
+                            {
+                                UIComponent dup = parent.getChildren().get(i);
+                                // myfaces-4623: avoid duplicate id exceptions w/ c:forEach for Resource Dependencies
+                                if (child.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX + ComponentUtils.RD_ID_PREFIX) 
+                                        && child.getId().equals(dup.getId())) 
+                                {
+                                    // Replace
+                                    parent.getChildren().remove(i);
+                                    parent.getChildren().add(i, child);
+                                    done = true;
+                                    break;
+                                }
+                            }
+                            if(!done) // if not replaced yet, then just add it. 
+                            {
+                                target.getChildren().add(childIndex, child);
+                            }
                     }
                     catch (IndexOutOfBoundsException e)
                     {
