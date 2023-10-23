@@ -60,8 +60,16 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
         if (item && item.type &&
             (item.type.toLowerCase() == "submit" ||
              item.type.toLowerCase() == "button" )) {
+
+            // do not append if unselected
+            if ((item.type == "checkbox" || item.type == "radio") 
+             && issuingItem.attr("checked").isAbsent()) {
+                return;
+            }
+            
             //buttons not always have a name unlike inputs
             targetBuf.append(item.id || item.name, item.value);
+
         }
     },
 
