@@ -291,6 +291,30 @@ export module StandardInits {
 </html>`;
 
 
+    const CHECKBOX_RADIO_FORM = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="form1">
+        <input type="checkbox"  checked name="page:numbers:1" id="page:numbers:1" value="1"></input>
+        <input type="checkbox" name="page:numbers:2" id="page:numbers:2" value="2"></input>
+        <input type="checkbox" name="page:numbers:3" id="page:numbers:3" value="3"></input>
+</form>
+
+<form id="form2">
+        <input type="radio"  checked name="page:numbers:r:1" id="page:numbers:r:1" value="1"></input>
+        <input type="radio" name="page:numbers:r:2" id="page:numbers:r:2" value="2"></input>
+        <input type="radio" name="page:numbers:r:3" id="page:numbers:r:3" value="3"></input>
+</form>
+</body>
+</html>    
+    `;
+
+
     /**
      * a page simulating basically a simple faces form
      */
@@ -519,6 +543,10 @@ function triggerRequestChain(event) {
 
     export function initVirtualElement(withJsf = true): Promise<() => void> {
         return init(VIRTUAL_ELEMENT, withJsf);
+    }
+
+    export function initCheckboxRadioForm(withJsf = true): Promise<() => void> {
+        return init(CHECKBOX_RADIO_FORM, withJsf);
     }
 
     export function defaultMyFaces23(withJsf = true): Promise<() => void> {
