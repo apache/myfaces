@@ -18,8 +18,8 @@
 #
 
 ---
-name: "MyFaces Core"
-description: "MyFaces Core is a JSF / Faces implementation which also provides a Quarkus integration."
+name: "MyFaces"
+description: "MyFaces is a JSF / Faces implementation which also provides a Quarkus integration."
 metadata:
   keywords:
   - "JSF"
