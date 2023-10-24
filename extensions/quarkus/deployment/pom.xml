@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces.core.extensions</groupId>
         <artifactId>myfaces-quarkus</artifactId>
-        <version>4.1.0-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -28,7 +28,7 @@
 
     <groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
     <artifactId>myfaces-quarkus-deployment</artifactId>
-    <name>Apache MyFaces Core 4.1 - Extensions - Quarkus - Deployment</name>
+    <name>Apache MyFaces Core 5.0 - Extensions - Quarkus - Deployment</name>
     <description>
         Apache MyFaces Core deployment extension for Quarkus.
     </description>

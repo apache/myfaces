@@ -20,14 +20,14 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>4.1.0-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>myfaces-bundle</artifactId>
-    <name>Apache MyFaces Core 4.1 - OSGi Bundle</name>
+    <name>Apache MyFaces Core 5.0 - OSGi Bundle</name>
     <packaging>bundle</packaging>
 
     <build>

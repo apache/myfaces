@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>4.1.0-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -28,9 +28,9 @@
 
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-api</artifactId>
-    <name>Apache MyFaces Core 4.1 - API</name>
+    <name>Apache MyFaces Core 5.0 - API</name>
     <description>
-        The public API classes of the Apache MyFaces Core 4.1 project
+        The public API classes of the Apache MyFaces Core 5.0 project
     </description>
     <url>https://myfaces.apache.org/#/core40</url>
 
