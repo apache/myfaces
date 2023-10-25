@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-integration-tests</artifactId>
-        <version>4.1.0-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -27,7 +27,7 @@
 
     <groupId>org.apache.myfaces.core.integration-tests</groupId>
     <artifactId>faceletToXhtmlMapping</artifactId>
-    <name>Apache MyFaces Core 4.1 - Integration Tests - faceletToXhtmlMapping</name>
+    <name>Apache MyFaces Core 5.0 - Integration Tests - faceletToXhtmlMapping</name>
     <packaging>war</packaging>
 
 </project>

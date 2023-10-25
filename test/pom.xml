@@ -24,14 +24,14 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>4.1.0-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-test</artifactId>
     <packaging>jar</packaging>
-    <name>Apache MyFaces Core 4.1 - Test</name>
+    <name>Apache MyFaces Core 5.0 - Test</name>
 
     <dependencies>
         <dependency>

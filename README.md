@@ -11,7 +11,11 @@ Apache's implementation of the JavaServer Faces (JSF) and Jakarta Faces specific
 
 ## Branches
 
-### Main
+### main
+
+Jakarta Faces 5.0 implementation  
+
+### 4.1.x
 
 Jakarta Faces 4.1 implementation  
 
