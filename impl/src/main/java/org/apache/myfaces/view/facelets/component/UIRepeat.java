@@ -66,7 +66,7 @@ import org.apache.myfaces.view.facelets.LocationAwareFacesException;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 
 /**
- *  
+ * >Use this tag as an alternative to <code>h:dataTable</code> or <code>c:forEach</code>
  */
 @JSFComponent(name="ui:repeat", defaultRendererType="facelets.ui.Repeat")
 public class UIRepeat extends UIComponentBase implements NamingContainer
@@ -129,6 +129,15 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         return COMPONENT_FAMILY;
     }
     
+    /**
+     * If the <code>value</code> attribute is specified: iteration begins with the specified number as index.
+     * If the <code>value</code> attribute is <em>not</em> specified: a <code>FacesException</code> must be thrown.
+     * If the <code>offset</code> attribute is <em>not</em> specified: use <code>0</code> as default.
+     * If the <code>offset</code> attribute is less than <code>0</code> or is greater than the size of the actual
+     * collection behind the <code>value</code> attribute: a <code>FacesException</code> must be thrown.
+     * 
+     * @return the offset
+     */
     @JSFProperty
     public int getOffset()
     {
@@ -139,7 +148,21 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         getStateHelper().put(PropertyKeys.offset, offset );
     }
-    
+
+    /**
+     * If the <code>value</code> attribute is specified: iteration ends when the specified number of times has been
+     * iterated (inclusive).
+     * If the <code>value</code> attribute is <em>not</em> specified: a <code>FacesException</code> must be thrown.
+     * If the <code>size</code> attribute is <em>not</em> specified: use the size of the actual collection behind 
+     * the value attribute as default.
+     * If the sum of the <code>size</code> attribute and the <code>offset</code> attribute is less than 
+     * <code>0</code> or is greater than the size of the actual collection behind the value attribute:
+     * a <code>FacesException</code> must be thrown.
+     * If the <code>step</code> attribute is specified: each skipped item must also be counted for 
+     * the <code>size</code> attribute.
+     * 
+     * @return the size
+     */
     @JSFProperty
     public int getSize()
     {
@@ -150,7 +173,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         getStateHelper().put(PropertyKeys.size, size );
     }
-    
+
+    /**
+     * Iteration will only process every step items of the collection, starting with the first one.
+     * If the <code>step</code> attribute is less than <code>1</code>: a <code>FacesException</code> must be thrown.
+     * 
+     * @return the step
+     */
     @JSFProperty
     public int getStep()
     {
@@ -161,7 +190,17 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         getStateHelper().put(PropertyKeys.step, step );
     }
-    
+
+    /**
+     * If the <code>value</code> attribute is <em>not</em> specified: iteration begins with the specified number 
+     * (inclusive) as item.
+     * If the <code>value</code> attribute is specified: a <code>FacesException</code> must be thrown.
+     * If the corresponding <code>end</code> attribute is <em>not</em> specified: use <code>0</code> as default.
+     * The corresponding <code>end</code> attribute may be less than the begin<code>begin</code> attribute: 
+     * iteration will take place in a reversed manner.
+     * 
+     * @return the begin value
+     */
     @JSFProperty
     public int getBegin()
     {
@@ -172,7 +211,17 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         getStateHelper().put(PropertyKeys.begin, begin );
     }
-    
+
+    /**
+     * If the <code>value</code> attribute is <em>not</em> specified: iteration ends with the specified number
+     * (inclusive) as item.
+     * If the <code>value</code> attribute is specified: a <code>FacesException</code> must be thrown.
+     * If the corresponding <code>begin</code> attribute is <em>not</em> specified: use <code>0</code> as default.
+     * The corresponding <code>begin</code> attribute may be greater than the <code>end</code> attribute: 
+     * iteration will take place in a reversed manner.
+     * 
+     * @return the end value
+     */
     @JSFProperty
     public int getEnd()
     {
@@ -183,7 +232,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         getStateHelper().put(PropertyKeys.end, end );
     }
-    
+
+    /**
+     * Name of the exported scoped variable for the current item of the iteration. 
+     * This scoped variable has nested visibility.
+     * 
+     * @return the var status value
+     */
     @JSFProperty(literalOnly=true)
     public String getVar()
     {
@@ -195,6 +250,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         getStateHelper().put(PropertyKeys.var, var );
     }
     
+    /**
+     * Name of the exported request scoped variable for the status 
+     * of the iteration. The object the name points to is a POJO 
+     * with the following read-only JavaBeans properties. This 
+     * scoped variable has nested visibility.
+     * 
+     * @return the var status value
+     */
     @JSFProperty(literalOnly=true)
     public String getVarStatus()
     {
@@ -251,8 +314,41 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         Object value = getValue();
 
+        if (value != null)
+        {
+            if (getBegin() > -1) 
+            {
+                throw new LocationAwareFacesException(
+                    "when 'value' attribute is set, you need 'offset' attribute instead of 'begin' attribute", this);
+            }
+            if (getEnd() > -1)
+            {
+                throw new LocationAwareFacesException(
+                    "when 'value' attribute is set, you need 'size' attribute instead of 'end' attribute");
+            }
+            if (getOffset() < 0)
+            {
+                throw new LocationAwareFacesException("'offset' attribute may not be less than 0");
+            }
+            if (getStep() < 1)
+            {
+                throw new LocationAwareFacesException("'step' attribute may not be less than 1");
+            }
+        }
+
         if (value == null)
         {
+            if (getOffset() > 0)
+            {
+                throw new LocationAwareFacesException(
+                    "when 'value' attribute is not set, you need 'begin' attribute instead of 'offset' attribute");
+            }
+            if (getSize() > -1)
+            {
+                throw new LocationAwareFacesException(
+                    "when 'value' attribute is not set, you need 'end' attribute instead of 'size' attribute");
+            }
+
             return EMPTY_MODEL;
         }
         else if (value instanceof DataModel)
