@@ -35,7 +35,7 @@
     <url>http://myfaces.apache.org/#/core23next</url>
 
     <properties>
-        <openwebbeans.version>1.6.3</openwebbeans.version>
+        <openwebbeans.version>1.7.6</openwebbeans.version>
     </properties>
 
     <build>
