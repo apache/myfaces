@@ -19,6 +19,9 @@
 package org.apache.myfaces.test.mock;
 
 
+import javax.faces.component.search.SearchExpressionHandler;
+import javax.faces.component.search.SearchKeywordResolver;
+
 /**
  * <p>Mock implementation of <code>Application</code> that includes the semantics
  * added by JavaServer Faces 2.3.</p>
@@ -29,6 +32,29 @@ package org.apache.myfaces.test.mock;
  */
 public class MockApplication extends MockApplication22
 {
- 
+    private SearchExpressionHandler searchExpressionHandler;
+    private SearchKeywordResolver searchKeywordResolver;
 
+    @Override
+    public SearchExpressionHandler getSearchExpressionHandler()
+    {
+        return searchExpressionHandler;
+    }
+
+    @Override
+    public void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler)
+    {
+        this.searchExpressionHandler = searchExpressionHandler;
+    }
+
+    @Override
+    public SearchKeywordResolver getSearchKeywordResolver()
+    {
+        return searchKeywordResolver;
+    }
+
+    public void setSearchKeywordResolver(SearchKeywordResolver searchKeywordResolver)
+    {
+        this.searchKeywordResolver = searchKeywordResolver;
+    }
 }
