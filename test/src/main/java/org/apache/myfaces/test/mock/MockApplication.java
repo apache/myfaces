@@ -24,7 +24,11 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.component.search.SearchKeywordResolver;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.*;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.ReferenceSyntaxException;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.el.VariableResolver;
 
 /**
  * <p>Mock implementation of <code>Application</code> that includes the semantics
