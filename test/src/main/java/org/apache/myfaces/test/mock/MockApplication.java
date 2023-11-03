@@ -21,12 +21,10 @@ package org.apache.myfaces.test.mock;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchKeywordResolver;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.MethodBinding;
-import jakarta.faces.el.PropertyResolver;
-import jakarta.faces.el.ReferenceSyntaxException;
-import jakarta.faces.el.ValueBinding;
-import jakarta.faces.el.VariableResolver;
+import jakarta.faces.el.*;
 
 /**
  * <p>Mock implementation of <code>Application</code> that includes the semantics
@@ -40,12 +38,38 @@ public class MockApplication extends MockApplication22
 {
     private VariableResolver variableResolver;
     private PropertyResolver propertyResolver;
-    
+    private SearchExpressionHandler searchExpressionHandler;
+    private SearchKeywordResolver searchKeywordResolver;
+
     public MockApplication()
     {
         setVariableResolver(new MockVariableResolver());
         setPropertyResolver(new MockPropertyResolver());
     }
+
+    @Override
+    public SearchExpressionHandler getSearchExpressionHandler()
+    {
+        return searchExpressionHandler;
+    }
+
+    @Override
+    public void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler)
+    {
+        this.searchExpressionHandler = searchExpressionHandler;
+    }
+
+    @Override
+    public SearchKeywordResolver getSearchKeywordResolver()
+    {
+        return searchKeywordResolver;
+    }
+
+    public void setSearchKeywordResolver(SearchKeywordResolver searchKeywordResolver)
+    {
+        this.searchKeywordResolver = searchKeywordResolver;
+    }
+
 
     @Override
     public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType)

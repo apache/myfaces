@@ -277,12 +277,8 @@ public class AjaxScriptBuilder
                     }
                 }
 
-
-
                 paramsBuilder.append(R_C_BRACE);
-                sb.append(AJAX_KEY_PARAMS);
-                sb.append(COLON);
-                sb.append(paramsBuilder);
+                appendProperty(sb, AJAX_KEY_PARAMS, paramsBuilder, false);
             }
 
         }
