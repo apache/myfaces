@@ -38,9 +38,6 @@ public class AjaxScriptBuilder
 
     private static final String AJAX_PARAM_SB = "oam.renderkit.AJAX_PARAM_SB";
 
-    private static final String QUOTE = "'";
-    private static final String BLANK = " ";
-
     private static final String AJAX_KEY_ONERROR = "onerror";
     private static final String AJAX_KEY_ONEVENT = "onevent";
     private static final String AJAX_KEY_DELAY = "delay";
@@ -49,30 +46,22 @@ public class AjaxScriptBuilder
     private static final String AJAX_VAL_THIS = "this";
     private static final String AJAX_VAL_EVENT = "event";
 
-    private static final String COLON = ":";
-    private static final String COMMA = ",";
-
-    private static final String L_PAREN = "(";
-    private static final String R_PAREN = ")";
-
-    private static final String L_C_BRACE = "{";
-    private static final String R_C_BRACE = "}";
     public static final String AJAX_KEY_PARAMS = "params";
     public static final String AJAX_VAL_NULL = "null";
     public static final String MYFACES_AB = "myfaces.ab";
 
 
     public static void build(FacesContext context,
-            StringBuilder sb,
-            UIComponent component,
-            String sourceId,
-            String eventName,
-            String execute,
-            String render,
-            Boolean resetValues,
-            String onerror,
-            String onevent,
-            List<UIParameter> uiParams)
+                             StringBuilder sb,
+                             UIComponent component,
+                             String sourceId,
+                             String eventName,
+                             String execute,
+                             String render,
+                             Boolean resetValues,
+                             String onerror,
+                             String onevent,
+                             List<UIParameter> uiParams)
     {
         build(context,
                 sb,
@@ -88,30 +77,30 @@ public class AjaxScriptBuilder
                 null,
                 uiParams);
     }
-    
+
     public static void build(FacesContext context,
-            StringBuilder sb,
-            UIComponent component,
-            String sourceId,
-            String eventName,
-            Collection<String> executeList,
-            Collection<String> renderList,
-            String delay,
-            boolean resetValues,
-            String onerror,
-            String onevent,
-            Collection<ClientBehaviorContext.Parameter> params)
+                             StringBuilder sb,
+                             UIComponent component,
+                             String sourceId,
+                             String eventName,
+                             Collection<String> executeList,
+                             Collection<String> renderList,
+                             String delay,
+                             boolean resetValues,
+                             String onerror,
+                             String onevent,
+                             Collection<ClientBehaviorContext.Parameter> params)
     {
         String execute = null;
         if (executeList != null && !executeList.isEmpty())
         {
-            execute = String.join(BLANK, executeList);
+            execute = String.join(" ", executeList);
         }
-            
+
         String render = null;
         if (renderList != null && !renderList.isEmpty())
         {
-            render = String.join(BLANK, renderList);
+            render = String.join(" ", renderList);
         }
 
         build(context,
@@ -128,27 +117,28 @@ public class AjaxScriptBuilder
                 params,
                 null);
     }
-    
+
     public static void build(FacesContext context,
-            StringBuilder sb,
-            UIComponent component,
-            String sourceId,
-            String eventName,
-            String execute,
-            String render,
-            String delay,
-            String resetValues,
-            String onerror,
-            String onevent,
-            Collection<ClientBehaviorContext.Parameter> params,
-            List<UIParameter> uiParams)
+                             StringBuilder sb,
+                             UIComponent component,
+                             String sourceId,
+                             String eventName,
+                             String execute,
+                             String render,
+                             String delay,
+                             String resetValues,
+                             String onerror,
+                             String onevent,
+                             Collection<ClientBehaviorContext.Parameter> params,
+                             List<UIParameter> uiParams)
     {
-    // CHECKSTYLE:ON
+        // CHECKSTYLE:ON
         HtmlCommandScript commandScript = (component instanceof HtmlCommandScript)
                 ? (HtmlCommandScript) component
                 : null;
-   
-        sb.append(MYFACES_AB +L_PAREN);
+
+        sb.append(MYFACES_AB);
+        sb.append('(');
 
         if (sourceId == null)
         {
@@ -156,9 +146,9 @@ public class AjaxScriptBuilder
         }
         else
         {
-            sb.append(QUOTE);
+            sb.append('\'');
             sb.append(sourceId);
-            sb.append(QUOTE);
+            sb.append('\'');
 
             if (!sourceId.trim().equals(component.getClientId(context)))
             {
@@ -181,14 +171,14 @@ public class AjaxScriptBuilder
                 }
             }
         }
-        sb.append(COMMA);
+        sb.append(',');
 
         sb.append(commandScript == null ? AJAX_VAL_EVENT : AJAX_VAL_NULL);
-        sb.append(COMMA+QUOTE);
+        sb.append(",'");
 
         sb.append(eventName);
-        sb.append(QUOTE+COMMA);
-        
+        sb.append("',");
+
         SearchExpressionHandler seHandler = null;
         SearchExpressionContext seContext = null;
         if (StringUtils.isNotBlank(execute) || StringUtils.isNotBlank(render))
@@ -200,14 +190,14 @@ public class AjaxScriptBuilder
         }
 
         appendIds(sb, execute, seHandler, seContext);
-        sb.append(COMMA);
+        sb.append(',');
 
         appendIds(sb, render, seHandler, seContext);
-        
+
         if (onevent != null || onerror != null || delay != null || resetValues != null
                 || (params != null && !params.isEmpty()) || (uiParams != null && !uiParams.isEmpty()))
         {
-            sb.append(COMMA+L_C_BRACE);
+            sb.append(",{");
             if (onevent != null)
             {
                 appendProperty(sb, AJAX_KEY_ONEVENT, onevent, false);
@@ -228,7 +218,7 @@ public class AjaxScriptBuilder
             if ((params != null && !params.isEmpty()) || (uiParams != null && !uiParams.isEmpty()))
             {
                 StringBuilder paramsBuilder = SharedStringBuilder.get(context, AJAX_PARAM_SB, 60);
-                paramsBuilder.append(L_C_BRACE);
+                paramsBuilder.append('{');
                 if (params != null && !params.isEmpty())
                 {
                     if (params instanceof RandomAccess)
@@ -257,22 +247,21 @@ public class AjaxScriptBuilder
                         appendProperty(paramsBuilder, param.getName(), param.getValue(), true);
                     }
                 }
-                paramsBuilder.append(R_C_BRACE);
-                sb.append(AJAX_KEY_PARAMS+COLON);
-                sb.append(paramsBuilder);
+                paramsBuilder.append('}');
+                appendProperty(sb, AJAX_KEY_PARAMS, paramsBuilder, false);
             }
 
-            sb.append(R_C_BRACE);
+            sb.append('}');
         }
 
-        sb.append(R_PAREN);
+        sb.append(')');
     }
-    
+
     private static void appendIds(StringBuilder sb, String expressions,
-            SearchExpressionHandler handler, SearchExpressionContext searchExpressionContext)
+                                  SearchExpressionHandler handler, SearchExpressionContext searchExpressionContext)
     {
-        sb.append(QUOTE);
-        
+        sb.append('\'');
+
         if (StringUtils.isNotBlank(expressions))
         {
             List<String> clientIds =
@@ -284,18 +273,18 @@ public class AjaxScriptBuilder
                 {
                     if (i > 0)
                     {
-                        sb.append(BLANK);
+                        sb.append(" ");
                     }
                     sb.append(clientIds.get(i));
                 }
             }
         }
-        
-        sb.append(QUOTE);
+
+        sb.append('\'');
     }
 
 
-    public static void appendProperty(StringBuilder builder, 
+    public static void appendProperty(StringBuilder builder,
                                       String name,
                                       Object value,
                                       boolean quoteValue)
@@ -306,26 +295,24 @@ public class AjaxScriptBuilder
         }
 
         char lastChar = builder.charAt(builder.length() - 1);
-        if (!COMMA.equals(String.valueOf(lastChar)) && !L_C_BRACE.equals(String.valueOf(lastChar)))
+        if (',' != lastChar && '{' != lastChar)
         {
-            builder.append(COMMA);
+            builder.append(',');
         }
 
-        builder.append(QUOTE);
+        builder.append('\'');
         builder.append(name);
-        builder.append(QUOTE);
-        
-        builder.append(COLON);
+        builder.append("':");
 
         if (value == null)
         {
-            builder.append(QUOTE+QUOTE);
+            builder.append("''");
         }
         else if (quoteValue)
         {
-            builder.append(QUOTE);
+            builder.append('\'');
             builder.append(value);
-            builder.append(QUOTE);
+            builder.append('\'');
         }
         else
         {

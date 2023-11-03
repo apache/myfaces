@@ -27,7 +27,7 @@ package org.apache.myfaces.test.mock;
  * @since 1.0.0
  *
  */
-public class MockApplication extends MockApplication22
+public class MockApplication extends MockApplication23
 {
  
 
