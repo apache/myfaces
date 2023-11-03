@@ -148,7 +148,8 @@ public class AjaxScriptBuilder
                 ? (HtmlCommandScript) component
                 : null;
    
-        sb.append(MYFACES_AB +L_PAREN);
+        sb.append(MYFACES_AB);
+        sb.append(L_PAREN);
 
         if (sourceId == null)
         {
@@ -184,10 +185,12 @@ public class AjaxScriptBuilder
         sb.append(COMMA);
 
         sb.append(commandScript == null ? AJAX_VAL_EVENT : AJAX_VAL_NULL);
-        sb.append(COMMA+QUOTE);
+        sb.append(COMMA);
+        sb.append(QUOTE);
 
         sb.append(eventName);
-        sb.append(QUOTE+COMMA);
+        sb.append(QUOTE);
+        sb.append(COMMA);
         
         SearchExpressionHandler seHandler = null;
         SearchExpressionContext seContext = null;
@@ -207,7 +210,8 @@ public class AjaxScriptBuilder
         if (onevent != null || onerror != null || delay != null || resetValues != null
                 || (params != null && !params.isEmpty()) || (uiParams != null && !uiParams.isEmpty()))
         {
-            sb.append(COMMA+L_C_BRACE);
+            sb.append(COMMA);
+            sb.append(L_C_BRACE);
             if (onevent != null)
             {
                 appendProperty(sb, AJAX_KEY_ONEVENT, onevent, false);
@@ -258,8 +262,7 @@ public class AjaxScriptBuilder
                     }
                 }
                 paramsBuilder.append(R_C_BRACE);
-                sb.append(AJAX_KEY_PARAMS+COLON);
-                sb.append(paramsBuilder);
+                appendProperty(sb, AJAX_KEY_PARAMS, paramsBuilder, false);
             }
 
             sb.append(R_C_BRACE);
@@ -319,7 +322,8 @@ public class AjaxScriptBuilder
 
         if (value == null)
         {
-            builder.append(QUOTE+QUOTE);
+            builder.append(QUOTE);
+            builder.append(QUOTE);
         }
         else if (quoteValue)
         {
