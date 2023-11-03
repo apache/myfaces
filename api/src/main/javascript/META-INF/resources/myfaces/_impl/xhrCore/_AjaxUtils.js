@@ -57,11 +57,17 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
      */
     appendIssuingItem: function (item, targetBuf) {
         // if triggered by a Button send it along
-        if (item && item.type &&
-            (item.type.toLowerCase() == "submit" ||
-             item.type.toLowerCase() == "button" )) {
-            //buttons not always have a name unlike inputs
-            targetBuf.append(item.id || item.name, item.value);
+        var type = (item || item.type || "").toLowerCase();
+
+        //MYFACES-4606 we cannot send a value on an unchecked box as issuing element
+        if(("checkbox" == type || "radio" == type) &&  !item.checked) {
+            return;
+        } else if ("checkbox" == type || "radio" == type) {
+            var value = ("undefined" == typeof item.value || null == item.value) ? true : item.value;
+            targetBuf.append(item.id || item.name, value);
+        } else {
+            var itemValue = ("undefined" == typeof item.value || null == item.value) ? "" : item.value;
+            targetBuf.append(item.id || item.name, itemValue);
         }
     },
 
