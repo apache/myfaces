@@ -57,7 +57,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
      */
     appendIssuingItem: function (item, targetBuf) {
         // if triggered by a Button send it along
-        var type = (item || item.type || "").toLowerCase();
+        var type = ((item && item.type) || "").toLowerCase();
 
         //MYFACES-4606 we cannot send a value on an unchecked box as issuing element
         if(("checkbox" == type || "radio" == type) &&  !item.checked) {
