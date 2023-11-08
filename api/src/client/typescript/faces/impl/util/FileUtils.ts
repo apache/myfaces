@@ -41,7 +41,8 @@ export function encodeFormData(formData: Config,
  */
 export function decodeEncodedValues(encoded: string): string[][] {
     const filterBlanks = item => !!(item || '').replace(/\s+/g, '');
-    const splitKeyValuePair = line => {
+    const splitKeyValuePair = _line => {
+        let line = decodeURIComponent(_line);
         let index = line.indexOf("=");
         if (index == -1) {
             return [line];
@@ -49,7 +50,7 @@ export function decodeEncodedValues(encoded: string): string[][] {
         return [line.substring(0, index), line.substring(index + 1)];
     };
 
-    let requestParamEntries = decodeURIComponent(encoded).split(/&/gi);
+    let requestParamEntries = encoded.split(/&/gi);
     return requestParamEntries.filter(filterBlanks).map(splitKeyValuePair);
 }
 
