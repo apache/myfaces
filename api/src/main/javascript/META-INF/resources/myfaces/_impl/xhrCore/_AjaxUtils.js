@@ -65,14 +65,16 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
         }
 
         //MYFACES-4606 we cannot send a value on an unchecked box as issuing element
-        if(("checkbox" == type || "radio" == type) &&  !item.checked) {
-            return;
-        } else if ("checkbox" == type || "radio" == type) {
-            var value = ("undefined" == typeof item.value || null == item.value) ? true : item.value;
-            targetBuf.append(item.id || item.name, value);
-        } else {
-            var itemValue = ("undefined" == typeof item.value || null == item.value) ? "" : item.value;
-            targetBuf.append(item.id || item.name, itemValue);
+        var isCheckboxRadio = "checkbox" == type || "radio" == type;
+        if(isCheckboxRadio && !item.checked) {
+           return;
+        } else if (isCheckboxRadio) {
+           var value = ("undefined" == typeof item.value || null == item.value) ? true : item.value;
+           targetBuf.append(identifier, value);
+           //item must have a valid value to be able to be appended, without it no dice!
+        } else if(!(("undefined" == typeof item.value) || (null == item.value))) {
+            var itemValue = item.value;
+            targetBuf.append(identifier, itemValue);
         }
     },
 
