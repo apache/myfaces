@@ -65,8 +65,8 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
         }
 
         //MYFACES-4606 we cannot send a value on an unchecked box as issuing element
-         let isCheckboxRadio = "checkbox" == type || "radio" == type;
-         if(isCheckboxRadio && !item.checked) {
+        var isCheckboxRadio = "checkbox" == type || "radio" == type;
+        if(isCheckboxRadio && !item.checked) {
             return;
         } else if (isCheckboxRadio) {
             var value = ("undefined" == typeof item.value || null == item.value) ? true : item.value;
