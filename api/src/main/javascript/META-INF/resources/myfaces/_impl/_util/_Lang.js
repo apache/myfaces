@@ -561,10 +561,16 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         //we simulate the dom level 2 form element here
         var _newCls = null;
         var bufInstance = null;
+        var _Lang = this;
         if (!this.FormDataDecoratorArray) {
             this.FormDataDecoratorArray = function (theFormData) {
                 this._valBuf = theFormData;
                 this._idx = {};
+                var _t = this;
+                _Lang.arrForEach(theFormData, function(item) {
+                    var key = item[0];
+                    _t._idx[decodeURIComponent(key)] = true;
+                });
             };
             _newCls = this.FormDataDecoratorArray;
             _newCls.prototype.append = function (key, val) {
@@ -583,6 +589,12 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
                 this._preprocessedData = theFormData;
                 this._valBuf = [];
                 this._idx = {};
+                var _t = this;
+                var keyValuePairs = theFormData.split(/\&/gi);
+                _Lang.arrForEach(keyValuePairs, function(item) {
+                    var key = _Lang.trim(item.split(/\=/gi)[0]);
+                    _t._idx[decodeURIComponent(key)] = true;
+                });
             };
             _newCls = this.FormDataDecoratorString;
             _newCls.prototype.append = function (key, val) {
@@ -591,7 +603,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             };
             //for now we check only for keys which are added subsequently otherwise we do not perform any checks
             _newCls.prototype.hasKey = function (key) {
-                return !!this._idx[key];
+                var _t = this;
+                return !!(this._idx[key]);
             };
             _newCls.prototype.makeFinal = function () {
                 if (this._preprocessedData != "") {
@@ -602,9 +615,15 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             };
         }
         if (!this.FormDataDecoratorOther) {
+            /**
+             * expected a form data object
+             * @param theFormData object of type form data or something similar
+             * @constructor
+             */
             this.FormDataDecoratorOther = function (theFormData) {
                 this._valBuf = theFormData || [];
                 this._idx = {};
+
             };
             _newCls = this.FormDataDecoratorOther;
             _newCls.prototype.append = function (key, val) {
@@ -612,7 +631,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
                 this._idx[key] = true;
             };
             _newCls.prototype.hasKey = function (key) {
-                return !!this._idx[key];
+                return !!(this._idx[key] || this._valBuf.has(key));
             };
             _newCls.prototype.makeFinal = function () {
                 return this._valBuf;
