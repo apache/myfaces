@@ -41,7 +41,7 @@ public class ExtensionHandler extends TagHandler
 {
 
     // Log warning once rather than every time the page is accessed
-    private static boolean WARNING_LOGGED = false;
+    private static boolean warned = false;
 
     private static final Logger log = Logger.getLogger(ExtensionHandler.class.getName());
     
@@ -53,10 +53,10 @@ public class ExtensionHandler extends TagHandler
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
-        if (log.isLoggable(Level.WARNING) && !WARNING_LOGGED)
+        if (log.isLoggable(Level.WARNING) && !warned)
         {
                 log.warning("The tag composite:extension is deprecated as of 4.1.");
-                WARNING_LOGGED = true;
+                warned = true;
         }
         // TODO: In theory the xml data inside this tag should be saved,
         // but the spec does not say where and how this should be done.
