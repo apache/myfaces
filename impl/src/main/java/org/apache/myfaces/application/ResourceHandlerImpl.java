@@ -31,6 +31,10 @@ import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.annotation.View;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.ResourceWrapper;
@@ -40,6 +44,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -61,6 +67,7 @@ import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.view.ViewDeclarationLanguage;
 
+import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.LocaleUtils;
@@ -1697,8 +1704,31 @@ public class ResourceHandlerImpl extends ResourceHandler
         Iterator it = new FilterInvalidSuffixViewResourceIterator(new ViewResourceIterator(facesContext, 
                     getResourceHandlerSupport(), localePrefix, contracts,
                     contractPreferred, path, maxDepth, options), facesContext, _viewSuffixes);
- 
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(it,Spliterator.DISTINCT), false);
+
+        return Stream.concat(StreamSupport.stream(Spliterators.spliteratorUnknownSize(it,Spliterator.DISTINCT),
+                                                    false), getProgrammaticViewIds(facesContext));
+    }
+
+    private Stream<String> getProgrammaticViewIds(FacesContext facesContext)
+    {
+        ArrayList<String> views = new ArrayList<String>();
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
+        if(beanManager != null)
+        {
+            for(Bean<?> bean : beanManager.getBeans(Object.class, Any.Literal.INSTANCE))
+            {
+                for(Annotation anno :bean.getBeanClass().getAnnotations())
+                {   
+                    // ensure it is of type view (avoid cast errors such as jdk.proxy4.$Proxy17)
+                    if(anno instanceof View) 
+                    {
+                        View view = (View) anno;
+                        views.add(view.value());
+                    }
+                }
+            }
+        }
+        return views.stream();
     }
     
     private Set<String> loadSuffixes(ExternalContext context)
