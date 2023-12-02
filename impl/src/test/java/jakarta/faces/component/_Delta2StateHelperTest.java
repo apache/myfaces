@@ -20,7 +20,7 @@ package jakarta.faces.component;
 
 import java.util.List;
 import java.util.Map;
-
+import java.util.Collections;
 import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseEvent;
@@ -334,7 +334,7 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Assertions.assertEquals("someValue3",listA.get(2));
         
         List listB = (List) helperB.get("somePropertyList");
-        
+        Collections.sort(listB);
         Assertions.assertEquals("someValue1",listB.get(0));
         Assertions.assertEquals("someValue2",listB.get(1));
         Assertions.assertEquals("someValue3",listB.get(2));
