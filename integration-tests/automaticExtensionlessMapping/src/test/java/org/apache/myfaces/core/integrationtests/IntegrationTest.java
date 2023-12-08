@@ -115,4 +115,17 @@ public class IntegrationTest
         // resources must NOT use exact mapping
         Assert.assertTrue(webDriver.getPageSource().contains("/jakarta.faces.resource/faces.js.xhtml?ln=jakarta.faces"));
     }
+
+
+    /*
+     * MYFACES-4644: Ensure Programmatic Views can be accesssed without extensions
+     */
+    @Test
+    public void testExtensionlessProgrammaticView()
+    {
+        webDriver.get(contextPath + "test");
+
+        Assert.assertTrue(webDriver.getPageSource().contains("Success!"));
+
+    }
 }
