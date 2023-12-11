@@ -113,7 +113,8 @@ public class FacesJSResourceLoader extends ResourceLoaderWrapper
         {
             new BufferedReader(new InputStreamReader(inputStream))
                     .lines()
-                    .forEach(line -> {
+                    .forEach(line ->
+                    {
                         // filtering out the source map for now
                         if (line.contains(SOURCE_MAP_MARKER))
                         {

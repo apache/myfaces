@@ -420,7 +420,8 @@ public class MyfacesConfig
 
     public static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_RANDOM = "random";
-    private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_DEFAULT = RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM;
+    private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_DEFAULT =
+            RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM;
 
     /**
      * Define the time in minutes where the view state is valid when
@@ -442,7 +443,8 @@ public class MyfacesConfig
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_DEFAULT = RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM;
+    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_DEFAULT =
+            RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM;
     
     /**
      * Set the default length of the random key added to the view state session token.
@@ -486,7 +488,8 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.2.0", expectedValues="secureRandom, random", defaultValue="secureRandom", group="state")
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN
             = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN";
-    private static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_DEFAULT = RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM;
+    private static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_DEFAULT =
+            RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM;
     
     /**
      * Indicates that the serialized state will be compressed before it is written to the session. By default true.
@@ -748,8 +751,10 @@ public class MyfacesConfig
      * 
      * Our faces.util.chain supports both of course.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING", since="2.3-next", defaultValue = "false")
-    public static final String RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING = "org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING";
+    @JSFWebConfigParam(name="org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING",
+            since="2.3-next", defaultValue = "false")
+    public static final String RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING
+            = "org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING";
     public static final boolean RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT = false;
     
     /**

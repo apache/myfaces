@@ -690,7 +690,8 @@ public class MockServletContext implements ServletContext
 
     public SessionCookieConfig getSessionCookieConfig()
     {
-        return new SessionCookieConfig() {
+        return new SessionCookieConfig()
+        {
             @Override public void setName(String s)
             {
 

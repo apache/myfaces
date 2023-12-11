@@ -91,6 +91,7 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
         return getFacesConfig(new ByteArrayInputStream(s.getBytes()), null);
     }
 
+    // CHECKSTYLE:OFF
     @Override
     public FacesConfigImpl getFacesConfig(InputStream in, String systemId) throws IOException, SAXException
     {

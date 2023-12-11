@@ -865,7 +865,8 @@ public final class SAXCompiler extends Compiler
                 try
                 {
                     final InputStream finalInputStream = is;
-                    AccessController.doPrivileged((PrivilegedExceptionAction) () -> {
+                    AccessController.doPrivileged((PrivilegedExceptionAction) () ->
+                    {
                         parser.parse(finalInputStream, handler);
                         return null;
                     });
