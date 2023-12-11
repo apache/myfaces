@@ -75,7 +75,7 @@ public class ValidatorException
         
         if (summary != null)
         {
-            if (detail != null)
+            if (detail != null && !detail.isEmpty())
             {
                 return summary + ": " + detail;
             }
@@ -106,7 +106,7 @@ public class ValidatorException
                 {
                     sb.append(separator);
                     sb.append(summary);
-                    if (detail != null)
+                    if (detail != null && !detail.isEmpty())
                     {
                         sb.append(": ");
                         sb.append(detail);
