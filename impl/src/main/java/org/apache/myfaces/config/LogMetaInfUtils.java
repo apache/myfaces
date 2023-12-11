@@ -51,9 +51,11 @@ class LogMetaInfUtils
      * The regexp is searching in the file name to the first - followed by a digit to split artifact name and version.
      */
     public static final String REGEX_LIBRARY
-        = "(jar|besjar|wsjar|zip)"
-        + ":(file:.*/((myfaces|tomahawk|trinidad|tobago|commons\\-el|jsp\\-api)[\\w\\-\\_]+?)"
-        + "-(\\d+.*)\\.jar)!/META-INF/MANIFEST.MF";
+        = """
+        (jar|besjar|wsjar|zip)\
+        :(file:.*/((myfaces|tomahawk|trinidad|tobago|commons\\-el|jsp\\-api)[\\w\\-\\_]+?)\
+        -(\\d+.*)\\.jar)!/META-INF/MANIFEST.MF\
+        """;
     private static final Pattern REGEX_LIBRARY_PATTERN = Pattern.compile(REGEX_LIBRARY);
 
     private static final int REGEX_LIBRARY_FILE_PATH = 2;
@@ -207,9 +209,8 @@ class LogMetaInfUtils
             {
                 return true;
             }
-            else if (o instanceof JarInfo)
+            else if (o instanceof JarInfo other)
             {
-                JarInfo other = (JarInfo) o;
                 return version.equals(other.version);
             }
             else

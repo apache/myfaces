@@ -308,9 +308,9 @@ public class MockMyFacesClient
         UIComponent parent = component.getParent();
         while ( parent != null)
         {
-            if (parent instanceof UIForm)
+            if (parent instanceof UIForm form)
             {
-                return (UIForm) parent;
+                return form;
             }
             parent = parent.getParent();
         }

@@ -32,8 +32,10 @@ import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 class _FactoryFinderProviderFactory
 {
 
-    public static final String FACTORY_FINDER_PROVIDER_FACTORY_CLASS_NAME = "org.apache.myfaces.spi" +
-            ".FactoryFinderProviderFactory";
+    public static final String FACTORY_FINDER_PROVIDER_FACTORY_CLASS_NAME = """
+            org.apache.myfaces.spi\
+            .FactoryFinderProviderFactory\
+            """;
 
     public static final String FACTORY_FINDER_PROVIDER_CLASS_NAME = "org.apache.myfaces.spi.FactoryFinderProvider";
 
@@ -160,9 +162,11 @@ class _FactoryFinderProviderFactory
                 Logger log = Logger.getLogger(_FactoryFinderProviderFactory.class.getName());
                 if (log.isLoggable(Level.WARNING))
                 {
-                    log.log(Level.WARNING, "Cannot retrieve current FactoryFinder instance from " +
-                            "FactoryFinderProviderFactory." +
-                            " Default strategy using thread context class loader will be used.", e);
+                    log.log(Level.WARNING, """
+                            Cannot retrieve current FactoryFinder instance from \
+                            FactoryFinderProviderFactory.\
+                             Default strategy using thread context class loader will be used.\
+                            """, e);
                 }
             }
         }

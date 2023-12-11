@@ -87,11 +87,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
+                <version>3.11.0</version>
+                    <configuration>
+                        <release>${java.version}</release>
+                    </configuration>
             </plugin>
             <!-- Skip deployment for this module as it's testing -->
             <plugin>
@@ -262,7 +261,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <tomcat.version>10.1.16</tomcat.version>
         <arquillian-drone.version>3.0.0-alpha.7</arquillian-drone.version>
     </properties>

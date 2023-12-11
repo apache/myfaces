@@ -47,15 +47,15 @@ public class UISelectManyTest extends AbstractJsfTestCase
         List<UIComponent> children = selectMany.getChildren();
 
         UISelectItem one = new UISelectItem();
-        one.setItemValue(new Integer(1));
+        one.setItemValue(Integer.valueOf(1));
         children.add(one);
 
         UISelectItem two = new UISelectItem();
-        two.setItemValue(new Integer(2));
+        two.setItemValue(Integer.valueOf(2));
         children.add(two);
 
         UISelectItem three = new UISelectItem();
-        three.setItemValue(new Integer(3));
+        three.setItemValue(Integer.valueOf(3));
         children.add(three);
 
         selectMany.validateValue(facesContext, null);
@@ -76,15 +76,15 @@ public class UISelectManyTest extends AbstractJsfTestCase
         List<UIComponent> children = selectMany.getChildren();
 
         UISelectItem one = new UISelectItem();
-        one.setItemValue(new Integer(1));
+        one.setItemValue(Integer.valueOf(1));
         children.add(one);
 
         UISelectItem two = new UISelectItem();
-        two.setItemValue(new Integer(2));
+        two.setItemValue(Integer.valueOf(2));
         children.add(two);
 
         UISelectItem three = new UISelectItem();
-        three.setItemValue(new Integer(3));
+        three.setItemValue(Integer.valueOf(3));
         children.add(three);
 
         selectMany.validateValue(facesContext, Collections.EMPTY_LIST);
@@ -104,15 +104,15 @@ public class UISelectManyTest extends AbstractJsfTestCase
         List<UIComponent> children = selectMany.getChildren();
 
         UISelectItem one = new UISelectItem();
-        one.setItemValue(new Integer(1));
+        one.setItemValue(Integer.valueOf(1));
         children.add(one);
 
         UISelectItem two = new UISelectItem();
-        two.setItemValue(new Integer(2));
+        two.setItemValue(Integer.valueOf(2));
         children.add(two);
 
         UISelectItem three = new UISelectItem();
-        three.setItemValue(new Integer(3));
+        three.setItemValue(Integer.valueOf(3));
         children.add(three);
 
         selectMany.validateValue(facesContext, new int[] { 2, 3 });

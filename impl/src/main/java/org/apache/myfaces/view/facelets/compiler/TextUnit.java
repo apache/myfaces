@@ -97,9 +97,9 @@ final class TextUnit extends CompilationUnit
         for (int i = 0; i < h.length; i++)
         {
             obj = this.children.get(i);
-            if (obj instanceof FaceletHandler)
+            if (obj instanceof FaceletHandler handler)
             {
-                h[i] = (FaceletHandler) obj;
+                h[i] = handler;
             }
             else
             {
@@ -564,14 +564,14 @@ final class TextUnit extends CompilationUnit
                 addrightspace = true;
             }
             
-            if (ins instanceof LiteralTextInstruction)
+            if (ins instanceof LiteralTextInstruction instruction)
             {
-                text = ((LiteralTextInstruction)ins).getText();
+                text = instruction.getText();
                 instructionType = 1;
             }
-            else if (ins instanceof LiteralNonExcapedTextInstruction)
+            else if (ins instanceof LiteralNonExcapedTextInstruction instruction)
             {
-                text = ((LiteralNonExcapedTextInstruction)ins).getText();
+                text = instruction.getText();
                 instructionType = 2;
             }
             else if (ins instanceof LiteralXMLInstruction)

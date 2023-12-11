@@ -20,7 +20,7 @@ package org.apache.myfaces.push;
 
 
 import jakarta.faces.context.ResponseWriter;
-import java.io.*;
+import java.io.PrintWriter;
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.util.lang.FastWriter;
 

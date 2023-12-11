@@ -86,9 +86,8 @@ public class NavigationCase
         {
             return true;
         }
-        else if (o instanceof NavigationCase)
+        else if (o instanceof NavigationCase c)
         {
-            NavigationCase c = (NavigationCase) o;
 
             return equals(_fromViewId, c._fromViewId) && equals(_fromAction, c._fromAction)
                     && equals(_fromOutcome, c._fromOutcome) && equals(_condition, c._condition)

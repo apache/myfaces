@@ -351,9 +351,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
             return EMPTY_MODEL;
         }
-        else if (value instanceof DataModel)
+        else if (value instanceof DataModel model)
         {
-            return (DataModel) value;
+            return model;
         }
         else
         {
@@ -364,29 +364,29 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
             if (dataModel == null)
             {
-                if (value instanceof List)
+                if (value instanceof List list)
                 {
-                    return new ListDataModel((List<?>) value);
+                    return new ListDataModel(list);
                 }
                 else if (OBJECT_ARRAY_CLASS.isAssignableFrom(value.getClass()))
                 {
                     return new ArrayDataModel((Object[]) value);
                 }
-                else if (value instanceof ResultSet)
+                else if (value instanceof ResultSet set)
                 {
-                    return new ResultSetDataModel((ResultSet) value);
+                    return new ResultSetDataModel(set);
                 }
-                else if (value instanceof Iterable)
+                else if (value instanceof Iterable iterable)
                 {
-                    return new IterableDataModel<>((Iterable<?>) value);
+                    return new IterableDataModel<>(iterable);
                 } 
-                else if (value instanceof Map) 
+                else if (value instanceof Map map) 
                 {
-                    return new IterableDataModel<>(((Map<?, ?>) value).entrySet());
+                    return new IterableDataModel<>(map.entrySet());
                 }
-                else if (value instanceof Collection)
+                else if (value instanceof Collection collection)
                 {
-                    return new CollectionDataModel((Collection) value);
+                    return new CollectionDataModel(collection);
                 }
                 else
                 {
@@ -545,14 +545,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     if (descendantStateIndex != -1 && descendantStateIndex < stateCollection.size())
                     {
                         Object[] object = stateCollection.get(descendantStateIndex);
-                        if (component instanceof EditableValueHolder)
+                        if (component instanceof EditableValueHolder holder)
                         {
                             EditableValueHolderState evhState = (EditableValueHolderState) object[0];
                             if (evhState == null)
                             {
                                 evhState = EditableValueHolderState.EMPTY;
                             }
-                            evhState.restoreState((EditableValueHolder) component);
+                            evhState.restoreState(holder);
                         }
                         // If there is descendant state to restore, call it recursively, otherwise
                         // it is safe to skip iteration.
@@ -593,14 +593,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     if (descendantStateIndex != -1 && descendantStateIndex < stateCollection.size())
                     {
                         Object[] object = stateCollection.get(descendantStateIndex);
-                        if (component instanceof EditableValueHolder)
+                        if (component instanceof EditableValueHolder holder)
                         {
                             EditableValueHolderState evhState = (EditableValueHolderState) object[0];
                             if (evhState == null)
                             {
                                 evhState = EditableValueHolderState.EMPTY;
                             }
-                            evhState.restoreState((EditableValueHolder) component);
+                            evhState.restoreState(holder);
                         }
                         // If there is descendant state to restore, call it recursively, otherwise
                         // it is safe to skip iteration.
@@ -702,7 +702,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     // of this component; the second is the state of the current
                     // child itself.
 
-                    if (child instanceof EditableValueHolder)
+                    if (child instanceof EditableValueHolder holder)
                     {
                         if (childStates == null)
                         {
@@ -718,9 +718,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         }
                     
                         childStates.add(child.getChildCount() > 0 ? 
-                                new Object[] { EditableValueHolderState.create((EditableValueHolder) child),
+                                new Object[] { EditableValueHolderState.create(holder),
                                     saveDescendantComponentStates(child, saveChildFacets, true)} :
-                                new Object[] { EditableValueHolderState.create((EditableValueHolder) child),
+                                new Object[] { EditableValueHolderState.create(holder),
                                     null});
                     }
                     else if (child.getChildCount() > 0 || (saveChildFacets && child.getFacetCount() > 0))
@@ -783,7 +783,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     // of this component; the second is the state of the current
                     // child itself.
 
-                    if (child instanceof EditableValueHolder)
+                    if (child instanceof EditableValueHolder holder)
                     {
                         if (childStates == null)
                         {
@@ -799,9 +799,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         }
                     
                         childStates.add(child.getChildCount() > 0 ? 
-                                new Object[] { EditableValueHolderState.create((EditableValueHolder) child),
+                                new Object[] { EditableValueHolderState.create(holder),
                                     saveDescendantComponentStates(child, saveChildFacets, true)} :
-                                new Object[] { EditableValueHolderState.create((EditableValueHolder) child),
+                                new Object[] { EditableValueHolderState.create(holder),
                                     null});
                     }
                     else if (child.getChildCount() > 0 || (saveChildFacets && child.getFacetCount() > 0))
@@ -1407,13 +1407,17 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         {
             if (step > 0 && (end < begin))
             {
-                throw new LocationAwareFacesException("on empty models, end cannot be less than begin " +
-                        "when the step is positive", this);
+                throw new LocationAwareFacesException("""
+                        on empty models, end cannot be less than begin \
+                        when the step is positive\
+                        """, this);
             }
             else if (step < 0 && (end > begin))
             {
-                throw new LocationAwareFacesException("on empty models, end cannot be greater than begin " +
-                        "when the step is negative", this);
+                throw new LocationAwareFacesException("""
+                        on empty models, end cannot be greater than begin \
+                        when the step is negative\
+                        """, this);
             }
             setStep(step);
         }
@@ -1967,9 +1971,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException
     {
-        if (event instanceof IndexedEvent)
+        if (event instanceof IndexedEvent idxEvent)
         {
-            IndexedEvent idxEvent = (IndexedEvent) event;
             
             // safe the current index, count aside
             final int prevIndex = _index;

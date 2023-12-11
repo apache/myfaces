@@ -61,8 +61,10 @@ public class OutcomeTargetUtils
         NavigationHandler nh = facesContext.getApplication().getNavigationHandler();
         if (!(nh instanceof ConfigurableNavigationHandler))
         {
-            throw new FacesException("NavigationHandler must be an instance of "
-                            + "ConfigurableNavigationHandler for using h:link or h:button");
+            throw new FacesException("""
+                            NavigationHandler must be an instance of \
+                            ConfigurableNavigationHandler for using h:link or h:button\
+                            """);
         }
         ConfigurableNavigationHandler navigationHandler = (ConfigurableNavigationHandler) nh;
         
@@ -246,9 +248,8 @@ public class OutcomeTargetUtils
             for (int i = 0, size = children.size(); i < size; i++)
             {
                 UIComponent child = children.get(i);
-                if (child instanceof UIParameter)
+                if (child instanceof UIParameter param)
                 {
-                    UIParameter param = (UIParameter) child;
                     // check for the disable attribute (since 2.0)
                     // and the render attribute (only if skipUnrendered is true)
                     if (param.isDisable() || (skipUnrendered && !param.isRendered()))

@@ -41,7 +41,6 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.easymock.classextension.EasyMock;
 import org.junit.jupiter.api.Test;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 public class RendererUtilsTest extends AbstractJsfTestCase {

@@ -119,7 +119,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         Map session = facesContext.getExternalContext().getSessionMap();
         Collection c = new ArrayList();
         for (int i = 0; i < 10; i++) {
-            c.add(new Character((char)('A' + i)));
+            c.add(Character.valueOf((char) ('A' + i)));
         }
         session.put("list", c);
         Map m = new HashMap();
@@ -144,7 +144,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         Map session = facesContext.getExternalContext().getSessionMap();
         Collection c = new ArrayList();
         for (int i = 0; i < 10; i++) {
-            c.add(new Character((char)('A' + i)));
+            c.add(Character.valueOf((char) ('A' + i)));
         }
         session.put("list", c);
         
@@ -182,7 +182,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         Map session = facesContext.getExternalContext().getSessionMap();
         Collection c = new ArrayList();
         for (int i = 0; i < 10; i++) {
-            c.add(new Character((char)('A' + i)));
+            c.add(Character.valueOf((char) ('A' + i)));
         }
         session.put("list", c);
         
@@ -219,7 +219,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         Map session = facesContext.getExternalContext().getSessionMap();
         Collection c = new ArrayList();
         for (int i = 0; i < 10; i++) {
-            c.add(new Character((char)('A' + i)));
+            c.add(Character.valueOf((char) ('A' + i)));
         }
         session.put("list", c);
         
@@ -266,7 +266,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         Map session = facesContext.getExternalContext().getSessionMap();
         Collection c = new ArrayList();
         for (int i = 0; i < 10; i++) {
-            c.add(new Character((char)('A' + i)));
+            c.add(Character.valueOf((char) ('A' + i)));
         }
         session.put("list", c);
         

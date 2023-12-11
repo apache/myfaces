@@ -53,9 +53,9 @@ abstract public class FaceletCompositionContext
     
     static public FaceletCompositionContext getCurrentInstance(FaceletContext ctx)
     {
-        if (ctx instanceof AbstractFaceletContext)
+        if (ctx instanceof AbstractFaceletContext context)
         {
-            return ((AbstractFaceletContext)ctx).getFaceletCompositionContext();
+            return context.getFaceletCompositionContext();
         }
         else
         {

@@ -223,9 +223,9 @@ public class NumberConverter implements Converter, PartialStateHolder
             return "";
         }
 
-        if (value instanceof String)
+        if (value instanceof String string)
         {
-            return (String) value;
+            return string;
         }
 
         NumberFormat format = getNumberFormat(facesContext);
@@ -311,9 +311,8 @@ public class NumberConverter implements Converter, PartialStateHolder
                 throw new ConverterException("Unable to get Currency instance for currencyCode " + _currencyCode);
             }
         }
-        else if (format instanceof DecimalFormat)
+        else if (format instanceof DecimalFormat dFormat)
         {
-            DecimalFormat dFormat = (DecimalFormat)format;
             DecimalFormatSymbols symbols = dFormat.getDecimalFormatSymbols();
             symbols.setCurrencySymbol(_currencySymbol);
             dFormat.setDecimalFormatSymbols(symbols);

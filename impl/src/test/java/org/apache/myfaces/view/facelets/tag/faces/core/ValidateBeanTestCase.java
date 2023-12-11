@@ -334,8 +334,10 @@ public class ValidateBeanTestCase extends FaceletTestCase
     @SuppressWarnings("unchecked")
     public void testValidateBeanValidationGroups() throws IOException
     {
-        final String validationGroups = "org.apache.myfaces.beanvalidation.Group1," +
-                "org.apache.myfaces.beanvalidation.Group2";
+        final String validationGroups = """
+                org.apache.myfaces.beanvalidation.Group1,\
+                org.apache.myfaces.beanvalidation.Group2\
+                """;
         
         // put the validationGroups on the request scope
         externalContext.getRequestMap().put("validationGroups", validationGroups);

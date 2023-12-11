@@ -661,6 +661,13 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${java.version}</release>
+                </configuration>
+            </plugin>
 
         </plugins>
 
@@ -933,104 +940,112 @@
     </profiles>
 
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.myfaces.core</groupId>
-            <artifactId>myfaces-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.myfaces.core</groupId>
-            <artifactId>myfaces-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
+ <dependencies>
+  <dependency>
+   <groupId>org.apache.myfaces.core</groupId>
+   <artifactId>myfaces-api</artifactId>
+   <version>${project.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.myfaces.core</groupId>
+   <artifactId>myfaces-test</artifactId>
+   <version>${project.version}</version>
+   <scope>test</scope>
+  </dependency>
 
-        <!-- Java EE APIs -->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-servlet-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-websocket-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-el-api</artifactId>
-        </dependency>
+  <!-- Java EE APIs -->
+  <dependency>
+   <groupId>org.apache.tomcat</groupId>
+   <artifactId>tomcat-servlet-api</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.tomcat</groupId>
+   <artifactId>tomcat-websocket-api</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.tomcat</groupId>
+   <artifactId>tomcat-el-api</artifactId>
+  </dependency>
         
-        <dependency>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>jakarta.validation-api</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.annotation</groupId>
-            <artifactId>jakarta.annotation-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.0.0-RC2</version>
-            <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
-        </dependency>
-        <dependency>
-            <groupId>jakarta.ejb</groupId>
-            <artifactId>jakarta.ejb-api</artifactId>
-            <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
-        </dependency>
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.inject</groupId>
-            <artifactId>jakarta.inject-api</artifactId>
-        </dependency>
+  <dependency>
+   <groupId>jakarta.validation</groupId>
+   <artifactId>jakarta.validation-api</artifactId>
+   <optional>true</optional>
+  </dependency>
+  <dependency>
+   <groupId>jakarta.annotation</groupId>
+   <artifactId>jakarta.annotation-api</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>jakarta.persistence</groupId>
+   <artifactId>jakarta.persistence-api</artifactId>
+   <version>3.0.0-RC2</version>
+   <optional>true</optional>
+   <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
+  </dependency>
+  <dependency>
+   <groupId>jakarta.ejb</groupId>
+   <artifactId>jakarta.ejb-api</artifactId>
+   <optional>true</optional>
+   <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
+  </dependency>
+  <dependency>
+   <groupId>jakarta.enterprise</groupId>
+   <artifactId>jakarta.enterprise.cdi-api</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>jakarta.inject</groupId>
+   <artifactId>jakarta.inject-api</artifactId>
+  </dependency>
 
-        <!-- builder-annotations like @JSFWebConfigParam -->
-        <dependency>
-            <groupId>org.apache.myfaces.buildtools</groupId>
-            <artifactId>myfaces-builder-annotations</artifactId>
-        </dependency>
+  <!-- builder-annotations like @JSFWebConfigParam -->
+  <dependency>
+   <groupId>org.apache.myfaces.buildtools</groupId>
+   <artifactId>myfaces-builder-annotations</artifactId>
+  </dependency>
 
-        <!-- tomcat 7 support (InjectionProvider) -->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-catalina</artifactId>
-        </dependency>
+  <!-- tomcat 7 support (InjectionProvider) -->
+  <dependency>
+   <groupId>org.apache.tomcat</groupId>
+   <artifactId>tomcat-catalina</artifactId>
+  </dependency>
 
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-        </dependency>
+  <dependency>
+   <groupId>org.junit.jupiter</groupId>
+   <artifactId>junit-jupiter-api</artifactId>
+  </dependency>
 
-        <!-- easymock -->
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymockclassextension</artifactId>
-        </dependency>
+  <!-- easymock -->
+  <dependency>
+   <groupId>org.easymock</groupId>
+   <artifactId>easymock</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.easymock</groupId>
+   <artifactId>easymockclassextension</artifactId>
+  </dependency>
 
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-        </dependency>
+  <dependency>
+   <groupId>org.mockito</groupId>
+   <artifactId>mockito-core</artifactId>
+  </dependency>
 
 
-        <!-- We need a real EL implementation for test ui:param tag,
+  <!-- We need a real EL implementation for test ui:param tag,
         because myfaces-test MockExpressionFactory is not designed to
         handle VariableMapper stuff (see IncludeParamTestCase).-->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jasper-el</artifactId>
-            <version>10.1.16</version>
-            <scope>test</scope>
-        </dependency>
+  <dependency>
+   <groupId>org.apache.tomcat</groupId>
+   <artifactId>tomcat-jasper-el</artifactId>
+   <version>10.1.16</version>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>org.glassfish.jaxb</groupId>
+   <artifactId>jaxb-runtime</artifactId>
+   <version>2.3.9</version>
+   <scope>test</scope>
+  </dependency>
 
         <!-- Openwebbeans for CDI Test -->
         <dependency>

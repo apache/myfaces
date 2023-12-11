@@ -26,15 +26,10 @@ import java.util.Map;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.event.PhaseId;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
-import org.apache.myfaces.test.mock.MockExternalContext20;
 import org.apache.myfaces.test.mock.MockExternalContext;
-import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.junit.jupiter.api.AfterEach;
@@ -263,17 +258,21 @@ public class FlashImplTest extends AbstractJsfTestCase
         _flash.doPrePhaseActions(facesContext);
         
         // check isRedirect();
-        Assertions.assertTrue(_flash.isRedirect(), "setRedirect(true) was called on the previous request, "
-                + " and we are in the execute portion of the lifecycle, "
-                + " thus isRedirect() must be true.");
+        Assertions.assertTrue(_flash.isRedirect(), """
+                setRedirect(true) was called on the previous request, \
+                 and we are in the execute portion of the lifecycle, \
+                 thus isRedirect() must be true.\
+                """);
         
         // simulate Faces lifecycle - Faces will immediately jump to phase 6
         facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
         
         // check isRedirect();
-        Assertions.assertFalse(_flash.isRedirect(), "setRedirect(true) was called on the previous request, "
-                + " but we are already in the render portion of the lifecycle, "
-                + " thus isRedirect() must be false.");
+        Assertions.assertFalse(_flash.isRedirect(), """
+                setRedirect(true) was called on the previous request, \
+                 but we are already in the render portion of the lifecycle, \
+                 thus isRedirect() must be false.\
+                """);
         
         // _flash.get() will ask the execute FlashMap and this one
         // must contain the key used in keep()
@@ -297,8 +296,10 @@ public class FlashImplTest extends AbstractJsfTestCase
         facesContext.setCurrentPhaseId(PhaseId.INVOKE_APPLICATION);
         
         // check isRedirect();
-        Assertions.assertFalse(_flash.isRedirect(), "setRedirect(true) was called on the pre-previous request, "
-                + " thus isRedirect() must be false again.");
+        Assertions.assertFalse(_flash.isRedirect(), """
+                setRedirect(true) was called on the pre-previous request, \
+                 thus isRedirect() must be false again.\
+                """);
         
         // _flash.get() will ask the execute FlashMap for the value
         // and this must be the render FlashMap of the previous (GET) request,
@@ -370,8 +371,10 @@ public class FlashImplTest extends AbstractJsfTestCase
         // keep messages
         _flash.setKeepMessages(true);
         
-        Assertions.assertTrue(_flash.isKeepMessages(), "setKeepMessages(true) was just called, thus isKeepMessages() "
-                + "must be true.");
+        Assertions.assertTrue(_flash.isKeepMessages(), """
+                setKeepMessages(true) was just called, thus isKeepMessages() \
+                must be true.\
+                """);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
@@ -397,8 +400,10 @@ public class FlashImplTest extends AbstractJsfTestCase
         Assertions.assertEquals(Arrays.asList(messageClientId), facesContext.getMessageList("clientId"));
         Assertions.assertEquals(Arrays.asList(messageNoClientId), facesContext.getMessageList(null));
         
-        Assertions.assertFalse(_flash.isKeepMessages(), "setKeepMessages(true) was not called on this request, thus "
-                + "isKeepMessages() must be false.");
+        Assertions.assertFalse(_flash.isKeepMessages(), """
+                setKeepMessages(true) was not called on this request, thus \
+                isKeepMessages() must be false.\
+                """);
         
         // simulate Faces lifecycle
         facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
@@ -480,8 +485,10 @@ public class FlashImplTest extends AbstractJsfTestCase
         
         // keep messages
         _flash.setKeepMessages(true);
-        Assertions.assertTrue(_flash.isKeepMessages(), "setKeepMessages(true) was just called, thus isKeepMessages() "
-                + "must be true.");
+        Assertions.assertTrue(_flash.isKeepMessages(), """
+                setKeepMessages(true) was just called, thus isKeepMessages() \
+                must be true.\
+                """);
         
         // set redirect to true, this happens by the NavigationHandler in phase 5
         _flash.setRedirect(true);
@@ -639,13 +646,17 @@ public class FlashImplTest extends AbstractJsfTestCase
         Assertions.assertEquals(Arrays.asList(messageNoClientId), facesContext.getMessageList(null));
         
         // check isKeepMessages()
-        Assertions.assertFalse(_flash.isKeepMessages(), "setKeepMessages(true) was not called on this request, thus "
-                + "isKeepMessages() must be false.");
+        Assertions.assertFalse(_flash.isKeepMessages(), """
+                setKeepMessages(true) was not called on this request, thus \
+                isKeepMessages() must be false.\
+                """);
         
         // keep messages - again
         _flash.setKeepMessages(true);
-        Assertions.assertTrue(_flash.isKeepMessages(), "setKeepMessages(true) was just called, thus isKeepMessages() "
-                + "must be true.");
+        Assertions.assertTrue(_flash.isKeepMessages(), """
+                setKeepMessages(true) was just called, thus isKeepMessages() \
+                must be true.\
+                """);
         // The redirect cause responseComplete() method to be called.
         facesContext.responseComplete();
         

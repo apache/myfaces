@@ -84,8 +84,8 @@ public final class Classpath
             conn.setUseCaches(false);
             conn.setDefaultUseCaches(false);
 
-            try (JarFile jar = (conn instanceof JarURLConnection) ? 
-                ((JarURLConnection) conn).getJarFile() : _getAlternativeJarFile(url))
+            try (JarFile jar = (conn instanceof JarURLConnection jurlc) ? 
+                jurlc.getJarFile() : _getAlternativeJarFile(url))
             {
                 if (jar != null)
                 {
@@ -172,9 +172,9 @@ public final class Classpath
                 try
                 {
                     ZipInputStream zis;
-                    if (is instanceof ZipInputStream)
+                    if (is instanceof ZipInputStream stream)
                     {
-                        zis = (ZipInputStream) is;
+                        zis = stream;
                     }
                     else
                     {

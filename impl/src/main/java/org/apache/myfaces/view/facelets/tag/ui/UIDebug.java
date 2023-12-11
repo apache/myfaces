@@ -111,9 +111,11 @@ public final class UIDebug extends UIComponentBase
         {
             sb.append("//<![CDATA[\n");
         }
-        sb.append("function faceletsDebug(URL) { day = new Date(); id = day.getTime(); eval(\"page\" + id + \" "
-                  + "= window.open(URL, '\" + id + \"', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,"
-                  + "resizable=1,width=800,height=600,left = 240,top = 212');\"); };");
+        sb.append("""
+                  function faceletsDebug(URL) { day = new Date(); id = day.getTime(); eval("page" + id + " \
+                  = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,\
+                  resizable=1,width=800,height=600,left = 240,top = 212');"); };\
+                  """);
         sb.append("var faceletsOrigKeyup = document.onkeyup; document.onkeyup = function(e) { ");
         sb.append("if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '");
         sb.append(this.getHotkey());
@@ -191,11 +193,10 @@ public final class UIDebug extends UIComponentBase
         if (id != null)
         {
             Object resp = faces.getExternalContext().getResponse();
-            if (!faces.getResponseComplete() && resp instanceof HttpServletResponse)
+            if (!faces.getResponseComplete() && resp instanceof HttpServletResponse httpResp)
             {
                 try
                 {
-                    HttpServletResponse httpResp = (HttpServletResponse) resp;
                     String page = fetchDebugOutput(faces, id);
                     if (page != null)
                     {

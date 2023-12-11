@@ -451,7 +451,7 @@ public class FacesInitializerImpl implements FacesInitializer
             }
 
             Class<?> expressionFactoryClass = cl.loadClass(expressionFactoryClassName);
-            return (ExpressionFactory) expressionFactoryClass.newInstance();
+            return (ExpressionFactory) expressionFactoryClass.getDeclaredConstructor().newInstance();
         }
         catch (Exception ex)
         {
@@ -649,8 +649,10 @@ public class FacesInitializerImpl implements FacesInitializer
                     servletContext.getAttribute(ServerContainer.class.getName());
             if (serverContainer == null)
             {
-                log.log(Level.INFO, "f:websocket support is enabled but the WebSocket ServerContainer instance "
-                        + "cannot be found in the current ServletContext.");
+                log.log(Level.INFO, """
+                        f:websocket support is enabled but the WebSocket ServerContainer instance \
+                        cannot be found in the current ServletContext.\
+                        """);
                 return;
             }
 

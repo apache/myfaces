@@ -76,7 +76,7 @@ public final class ResourceResolver extends ELResolver
     public Object getValue(final ELContext context, final Object base,
             final Object property)
     {
-        if (base != null && property != null && base instanceof ResourceHandler)
+        if (base != null && property != null && base instanceof ResourceHandler handler)
         {
             String reference = (String) property;
             int colonIndex = (reference).indexOf(':');
@@ -86,7 +86,7 @@ public final class ResourceResolver extends ELResolver
             {
                 // No library name, just create as a simple resource.
                 
-                resource = ((ResourceHandler) base).createResource (reference);
+                resource = handler.createResource (reference);
             }
             
             else
@@ -138,7 +138,7 @@ public final class ResourceResolver extends ELResolver
                         {
                             facesContext.getAttributes().put(ContractResource.CONTRACT_SELECTED, contractName);
                         }
-                        resource = ((ResourceHandler) base).createResource(reference.substring(colonIndex+1),
+                        resource = handler.createResource(reference.substring(colonIndex+1),
                                 libraryName);
                     }
                     finally

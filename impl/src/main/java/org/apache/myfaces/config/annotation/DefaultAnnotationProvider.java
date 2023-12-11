@@ -514,9 +514,9 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         conn.setDefaultUseCaches(false);
 
         JarFile jarFile;
-        if (conn instanceof JarURLConnection)
+        if (conn instanceof JarURLConnection connection)
         {
-            jarFile = ((JarURLConnection) conn).getJarFile();
+            jarFile = connection.getJarFile();
         }
         else
         {

@@ -174,9 +174,8 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
             return null;
         }
         
-        if (state[1] instanceof Object[])
-        {
-            Object[] fullState = (Object[]) state[1]; 
+        if (state[1] instanceof Object[] fullState)
+        { 
             view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent)fullState[0]);
 
             if (view != null)

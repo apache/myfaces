@@ -19,7 +19,6 @@
 package org.apache.myfaces.el.resolver;
 
 import java.beans.FeatureDescriptor;
-import static java.lang.String.format;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -193,7 +192,7 @@ public final class ImportConstantsELResolver extends ELResolver
                 }
                 catch (Exception e)
                 {
-                    throw new IllegalArgumentException(format(ERROR_FIELD_ACCESS, type, field.getName()), e);
+                    throw new IllegalArgumentException(ERROR_FIELD_ACCESS.formatted(type, field.getName()), e);
                 }
             }
         }
@@ -235,7 +234,7 @@ public final class ImportConstantsELResolver extends ELResolver
                 }
             }
 
-            throw new IllegalArgumentException(format(ERROR_MISSING_CLASS, type), e);
+            throw new IllegalArgumentException(ERROR_MISSING_CLASS.formatted(type), e);
         }
     }
 

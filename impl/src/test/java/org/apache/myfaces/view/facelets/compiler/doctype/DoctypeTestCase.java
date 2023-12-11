@@ -17,7 +17,7 @@
  * under the License.
  */
 package org.apache.myfaces.view.facelets.compiler.doctype;
-import org.apache.myfaces.view.facelets.tag.ui.*;
+import org.apache.myfaces.view.facelets.tag.ui.ComponentRef;
 
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.view.facelets.Facelet;

@@ -81,9 +81,9 @@ public class LambdaBeanELResolver extends BeanELResolver
             PropertyDescriptorWrapper pd = getPropertyDescriptor(base, property);
 
             Function<Object, Object> readFunction = null;
-            if (pd instanceof LambdaPropertyDescriptor)
+            if (pd instanceof LambdaPropertyDescriptor descriptor)
             {
-                readFunction = ((LambdaPropertyDescriptor) pd).getReadFunction();
+                readFunction = descriptor.getReadFunction();
             }
 
             if (readFunction != null)
@@ -121,9 +121,9 @@ public class LambdaBeanELResolver extends BeanELResolver
         try
         {
             BiConsumer<Object, Object> writeFunction = null;
-            if (pd instanceof LambdaPropertyDescriptor)
+            if (pd instanceof LambdaPropertyDescriptor descriptor)
             {
-                writeFunction = ((LambdaPropertyDescriptor) pd).getWriteFunction();
+                writeFunction = descriptor.getWriteFunction();
             }
 
             if (writeFunction != null)

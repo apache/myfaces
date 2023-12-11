@@ -156,7 +156,7 @@ public class WholeBeanValidator implements Validator
         Object copy = null;
         try
         {
-            copy = base.getClass().newInstance();
+            copy = base.getClass().getDeclaredConstructor().newInstance();
         }
         catch (Exception ex)
         {
@@ -267,9 +267,9 @@ public class WholeBeanValidator implements Validator
     {
         Map<String, Object> applicationMap = context.getExternalContext().getApplicationMap();
         Object attr = applicationMap.get(VALIDATOR_FACTORY_KEY);
-        if (attr instanceof ValidatorFactory)
+        if (attr instanceof ValidatorFactory factory)
         {
-            return (ValidatorFactory) attr;
+            return factory;
         }
         else
         {

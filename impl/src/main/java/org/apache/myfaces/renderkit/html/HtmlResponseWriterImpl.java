@@ -335,9 +335,9 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             Object value = _passThroughAttributesMap.get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
             if (value != null)
             {
-                if (value instanceof ValueExpression)
+                if (value instanceof ValueExpression expression)
                 {
-                    value = ((ValueExpression)value).getValue(getFacesContext().getELContext());
+                    value = expression.getValue(getFacesContext().getELContext());
                 }
                 String elementName = value.toString().trim();
                 
@@ -420,9 +420,9 @@ public class HtmlResponseWriterImpl extends ResponseWriter
                     }
                     
                     Object value = entry.getValue();
-                    if (value instanceof ValueExpression)
+                    if (value instanceof ValueExpression expression)
                     {
-                        value = ((ValueExpression)value).getValue(getFacesContext().getELContext());
+                        value = expression.getValue(getFacesContext().getELContext());
                     }
                     // encodeAndWriteURIAttribute(key, value, key);
                     // Faces 2.2 In the renderkit javadoc of jsf 2.2 spec says this 
@@ -776,9 +776,9 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             return;
         }
 
-        if (value instanceof Boolean)
+        if (value instanceof Boolean boolean1)
         {
-            if (((Boolean) value).booleanValue())
+            if (boolean1.booleanValue())
             {
                 // name as value for XHTML compatibility
                 _currentWriter.write(' ');

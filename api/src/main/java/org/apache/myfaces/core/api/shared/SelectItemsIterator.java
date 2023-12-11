@@ -98,9 +98,8 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     return false;
                 }
             }
-            if (child instanceof UISelectItem)
+            if (child instanceof UISelectItem uiSelectItem)
             {
-                UISelectItem uiSelectItem = (UISelectItem) child;
                 Object item = uiSelectItem.getValue();
                 if (item == null)
                 {
@@ -120,15 +119,15 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 _currentValue = item;
                 return true;
             }
-            else if (child instanceof UISelectItems)
+            else if (child instanceof UISelectItems items)
             {
-                _currentUISelectItems = ((UISelectItems) child);
+                _currentUISelectItems =items;
                 Object value = _currentUISelectItems.getValue();
                 _currentComponent = child;
 
-                if (value instanceof SelectItem)
+                if (value instanceof SelectItem item)
                 {
-                    _nextItem = (SelectItem) value;
+                    _nextItem = item;
                     return true;
                 }
                 else if (value != null && value.getClass().isArray())
@@ -136,30 +135,30 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     // value is any kind of array (primitive or non-primitive)
                     // --> we have to use class Array to get the values
                     int length = Array.getLength(value);
-                    Collection<Object> items = new ArrayList<>(length);
+                    Collection<Object> arrayItems = new ArrayList<>(length);
                     for (int i = 0; i < length; i++)
                     {
-                        items.add(Array.get(value, i));
+                        arrayItems.add(Array.get(value, i));
                     }
-                    _nestedItems = items.iterator();
+                    _nestedItems = arrayItems.iterator();
                     return hasNext();
                 }
-                else if (value instanceof Iterable)
+                else if (value instanceof Iterable iterable)
                 {
                     // value is Iterable --> Collection, DataModel,...
-                    _nestedItems = ((Iterable<?>) value).iterator();
+                    _nestedItems = iterable.iterator();
                     return hasNext();
                 }
-                else if (value instanceof Map)
+                else if (value instanceof Map map1)
                 {
-                    Map<Object, Object> map = ((Map<Object, Object>) value);
-                    Collection<SelectItem> items = new ArrayList<>(map.size());
+                    Map<Object, Object> map =map1;
+                    Collection<SelectItem> mapItems = new ArrayList<>(map.size());
                     for (Map.Entry<Object, Object> entry : map.entrySet())
                     {
-                        items.add(new SelectItem(entry.getValue(), entry.getKey().toString()));
+                        mapItems.add(new SelectItem(entry.getValue(), entry.getKey().toString()));
                     }
                     
-                    _nestedItems = items.iterator();
+                    _nestedItems = mapItems.iterator();
                     return hasNext();
                 }
                 else
@@ -170,9 +169,11 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     if (log.isLoggable(level))
                     {
                         ValueExpression expression = _currentUISelectItems.getValueExpression("value");
-                        log.log(level, "ValueExpression {0} of UISelectItems with component-path {1}"
-                                + " does not reference an Object of type SelectItem,"
-                                + " array, Iterable or Map, but of type: {2}",
+                        log.log(level, """
+                                ValueExpression {0} of UISelectItems with component-path {1}\
+                                 does not reference an Object of type SelectItem,\
+                                 array, Iterable or Map, but of type: {2}\
+                                """,
                                 new Object[] {
                                     (expression == null ? null : expression.getExpressionString()),
                                     ComponentUtils.getPathToComponent(child),
@@ -216,10 +217,10 @@ public class SelectItemsIterator implements Iterator<SelectItem>
 
             return VarUtils.executeInScope(_facesContext, var, item, () ->
             {
-                if (item instanceof SelectItem)
+                if (item instanceof SelectItem selectItem)
                 {
                     _currentValue = null;
-                    return SelectItemsUtil.updateSelectItem(_currentUISelectItems, (SelectItem) item);
+                    return SelectItemsUtil.updateSelectItem(_currentUISelectItems, selectItem);
                 }
                 else
                 {

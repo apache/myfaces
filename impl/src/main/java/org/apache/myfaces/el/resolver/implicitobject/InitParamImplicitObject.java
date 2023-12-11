@@ -59,8 +59,10 @@ public class InitParamImplicitObject extends ImplicitObject
     public FeatureDescriptor getDescriptor()
     {
         return makeDescriptor(NAME,
-                              "Map whose keys are a set of application initialization param names "
-                              + "and whose values are the corresponding values",
+                              """
+                              Map whose keys are a set of application initialization param names \
+                              and whose values are the corresponding values\
+                              """,
                               Map.class);
     }
 

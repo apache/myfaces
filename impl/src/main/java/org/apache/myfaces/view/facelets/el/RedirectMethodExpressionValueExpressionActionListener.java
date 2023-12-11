@@ -58,9 +58,9 @@ public class RedirectMethodExpressionValueExpressionActionListener
     private MethodExpression getMethodExpression(ELContext context)
     {
         Object meOrVe = valueExpression.getValue(context);
-        if (meOrVe instanceof MethodExpression)
+        if (meOrVe instanceof MethodExpression expression)
         {
-            return (MethodExpression) meOrVe;
+            return expression;
         }
         else if (meOrVe instanceof ValueExpression)
         {

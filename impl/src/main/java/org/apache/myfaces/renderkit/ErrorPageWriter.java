@@ -652,8 +652,10 @@ public final class ErrorPageWriter
     {
         writer.write("<table><caption>");
         writer.write(caption);
-        writer.write("</caption><thead><tr><th style=\"width: 10%; \">Name</th>"
-                     + "<th style=\"width: 90%; \">Value</th></tr></thead><tbody>");
+        writer.write("""
+                     </caption><thead><tr><th style="width: 10%; ">Name</th>\
+                     <th style="width: 90%; ">Value</th></tr></thead><tbody>\
+                     """);
         boolean written = false;
         if (!vars.isEmpty())
         {
@@ -814,13 +816,13 @@ public final class ErrorPageWriter
 
                 if (!(target instanceof UIColumn))
                 {
-                    if (parent instanceof UIColumn
+                    if (parent instanceof UIColumn column
                             && ((parent.getChildCount() > 0 && parent.getChildren().get(0) == target)
                                     ||  (facetName != null &&
                                             getVisitedFacetCount(context.getFacesContext(), parent) == 0)))
                     {
                         if (parent.getParent() instanceof UIData
-                                && isFirstUIColumn(parent.getParent(), (UIColumn) parent))
+                                && isFirstUIColumn(parent.getParent(), column))
                         {
                             writer.write("<span>Row: ");
                             int rowIndex = ((UIData) parent.getParent()).getRowIndex();
@@ -1003,18 +1005,16 @@ public final class ErrorPageWriter
                         removeVisitedFacetCount(context.getFacesContext(), parent);
 
                         // check for componentes that visit their children multiple times
-                        if (parent instanceof UIData)
+                        if (parent instanceof UIData uidata)
                         {
-                            UIData uidata = (UIData) parent;
                             if (uidata.getRowIndex() != uidata.getRowCount() - 1)
                             {
                                 // only continue if we're in the last row
                                 break;
                             }
                         }
-                        else if (parent instanceof UIRepeat)
+                        else if (parent instanceof UIRepeat uirepeat)
                         {
-                            UIRepeat uirepeat = (UIRepeat) parent;
                             if (uirepeat.getIndex() + uirepeat.getStep() < uirepeat.getRowCount())
                             {
                                 // only continue if we're in the last row
@@ -1171,9 +1171,9 @@ public final class ErrorPageWriter
                                     {
                                         continue;
                                     }
-                                    if (v instanceof Expression)
+                                    if (v instanceof Expression expression)
                                     {
-                                        str = ((Expression)v).getExpressionString();
+                                        str = expression.getExpressionString();
                                     }
                                     else
                                     {

@@ -165,9 +165,8 @@ public class SelectItemsUtil
         for (int i = 0; i < component.getChildCount(); i++)
         {
             UIComponent child = component.getChildren().get(i);
-            if (child instanceof UISelectItems)
+            if (child instanceof UISelectItems uiSelectItems)
             {
-                UISelectItems uiSelectItems = (UISelectItems) child;
                 createSelectItems(context, uiSelectItems, uiSelectItems.getValue(), SelectItem::new, items::add);
             }
             else if (child instanceof UISelectItem)
@@ -218,9 +217,8 @@ public class SelectItemsUtil
         while (iterator.hasNext())
         {
             SelectItem item = iterator.next();
-            if (item instanceof SelectItemGroup)
+            if (item instanceof SelectItemGroup itemgroup)
             {
-                SelectItemGroup itemgroup = (SelectItemGroup) item;
                 SelectItem[] selectItems = itemgroup.getSelectItems();
                 if (selectItems != null
                         && selectItems.length > 0
@@ -256,9 +254,8 @@ public class SelectItemsUtil
         while (iterator.hasNext())
         {
             SelectItem item = iterator.next();
-            if (item instanceof SelectItemGroup)
+            if (item instanceof SelectItemGroup itemgroup)
             {
-                SelectItemGroup itemgroup = (SelectItemGroup) item;
                 SelectItem[] selectItems = itemgroup.getSelectItems();
                 if (selectItems != null
                         && selectItems.length > 0
@@ -288,9 +285,9 @@ public class SelectItemsUtil
             UIComponent uiComponent, Object value, SelectItem selectItem, Converter converter)
     {
         Object itemValue = selectItem.getValue();
-        if (converter != null && itemValue instanceof String)
+        if (converter != null && itemValue instanceof String string)
         {
-            itemValue = converter.getAsObject(facesContext, uiComponent, (String) itemValue);
+            itemValue = converter.getAsObject(facesContext, uiComponent, string);
         }
         else
         {

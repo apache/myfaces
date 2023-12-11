@@ -309,9 +309,11 @@ public class FlashImpl extends Flash implements ReleasableFlash
             }
             else // redirect = false
             {
-                log.warning("Ignored call to setRedirect(false), because this "
-                        + "should only be set to true by the NavigationHandler. "
-                        + "No one else should change it.");
+                log.warning("""
+                        Ignored call to setRedirect(false), because this \
+                        should only be set to true by the NavigationHandler. \
+                        No one else should change it.\
+                        """);
             }
         }
     }
@@ -868,8 +870,10 @@ public class FlashImpl extends Flash implements ReleasableFlash
                 if (facesContext.getExternalContext().getClientWindow() == null)
                 {
                     // on a postback, we should always have a previousToken
-                    log.warning("Identifier for execute FlashMap was lost on " +
-                            "the postback, thus FlashScope information is gone.");
+                    log.warning("""
+                            Identifier for execute FlashMap was lost on \
+                            the postback, thus FlashScope information is gone.\
+                            """);
                 }
                 else
                 {
@@ -1193,9 +1197,8 @@ public class FlashImpl extends Flash implements ReleasableFlash
         cookie.setHttpOnly(true);
         Object context = externalContext.getContext();
 
-        if (context instanceof ServletContext && ExternalSpecifications.isServlet6Available())
+        if (context instanceof ServletContext servletContext && ExternalSpecifications.isServlet6Available())
         {
-            ServletContext servletContext = (ServletContext)context;
             String sameSite = servletContext.getSessionCookieConfig().getAttribute("SameSite");
             cookie.setAttribute("SameSite", Objects.toString(sameSite, "Strict"));
         }
@@ -1227,9 +1230,9 @@ public class FlashImpl extends Flash implements ReleasableFlash
     private Boolean _convertToBoolean(Object value)
     {
         Boolean booleanValue;
-        if (value instanceof Boolean)
+        if (value instanceof Boolean boolean1)
         {
-            booleanValue = (Boolean) value;
+            booleanValue = boolean1;
         }
         else
         {

@@ -413,7 +413,7 @@ public final class TagLibraryConfig
             try
             {
                 type = createClass(TagLibrary.class, faceletTagLibrary.getLibraryClass());
-                t = (TagLibrary) type.newInstance();
+                t = (TagLibrary) type.getDeclaredConstructor().newInstance();
             }
             catch (Exception ex)
             {

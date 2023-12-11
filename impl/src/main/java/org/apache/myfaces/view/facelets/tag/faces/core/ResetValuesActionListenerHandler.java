@@ -111,8 +111,10 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
         {
             if (getAttribute(ComponentAttrs.FOR_ATTR) == null)
             {
-                throw new TagException(tag, "is nested inside a composite component"
-                        + " but does not have a for attribute.");
+                throw new TagException(tag, """
+                        is nested inside a composite component\
+                         but does not have a for attribute.\
+                        """);
             }
             FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
             mctx.addAttachedObjectHandler(parent, this);
@@ -226,13 +228,13 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
             {
                 value = Collections.emptyList();
             }
-            if (value instanceof Collection)
+            if (value instanceof Collection collection)
             {
-                clientIds = (Collection) value;
+                clientIds = collection;
             }
-            else if (value instanceof String)
+            else if (value instanceof String string)
             {
-                String[] arrValue = ((String) value).split(" ");
+                String[] arrValue = string.split(" ");
                 clientIds = Arrays.asList(arrValue);
             }
             else

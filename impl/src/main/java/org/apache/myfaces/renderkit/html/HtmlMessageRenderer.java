@@ -46,9 +46,9 @@ public class HtmlMessageRenderer extends HtmlMessageRendererBase
     {
         super.encodeEnd(facesContext, component); // check for NP
 
-        if (component instanceof ClientBehaviorHolder)
+        if (component instanceof ClientBehaviorHolder holder)
         {
-            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());

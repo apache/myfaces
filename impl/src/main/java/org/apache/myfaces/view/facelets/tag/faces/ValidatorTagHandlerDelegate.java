@@ -144,8 +144,10 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
             {
                 if (getFor() == null)
                 {
-                    throw new TagException(_delegate.getTag(), "is nested inside a composite component"
-                            + " but does not have a for attribute.");
+                    throw new TagException(_delegate.getTag(), """
+                            is nested inside a composite component\
+                             but does not have a for attribute.\
+                            """);
                 }
                 mctx.addAttachedObjectHandler(parent, _delegate);
             }
@@ -167,8 +169,10 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
     {
         if (_delegate.getValidatorId(ctx) == null)
         {
-            throw new TagException(_delegate.getTag(), "Default behavior invoked of requiring " +
-                    "a validator-id passed in the constructor, must override ValidateHandler(ValidatorConfig)");
+            throw new TagException(_delegate.getTag(), """
+                    Default behavior invoked of requiring \
+                    a validator-id passed in the constructor, must override ValidateHandler(ValidatorConfig)\
+                    """);
         }
         return ctx.getFacesContext().getApplication().createValidator(_delegate.getValidatorId(ctx));
     }

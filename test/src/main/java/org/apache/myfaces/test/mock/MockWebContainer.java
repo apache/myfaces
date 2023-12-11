@@ -82,53 +82,53 @@ public class MockWebContainer
      */
     public void subscribeListener(Object listener)
     {
-        if (listener instanceof ServletContextListener)
+        if (listener instanceof ServletContextListener contextListener)
         {
             if (contextListeners == null)
             {
                 contextListeners = new ArrayList<ServletContextListener>();
             }
-            contextListeners.add((ServletContextListener)listener);
+            contextListeners.add(contextListener);
         }
-        if (listener instanceof ServletContextAttributeListener)
+        if (listener instanceof ServletContextAttributeListener attributeListener)
         {
             if (contextAttributeListeners == null)
             {
                 contextAttributeListeners = new ArrayList<ServletContextAttributeListener>();
             }
-            contextAttributeListeners.add((ServletContextAttributeListener)listener);
+            contextAttributeListeners.add(attributeListener);
         }
-        if (listener instanceof ServletRequestListener)
+        if (listener instanceof ServletRequestListener requestListener)
         {
             if (requestListeners == null)
             {
                 requestListeners = new ArrayList<ServletRequestListener>();
             }
-            requestListeners.add((ServletRequestListener)listener);
+            requestListeners.add(requestListener);
         }
-        if (listener instanceof ServletRequestAttributeListener)
+        if (listener instanceof ServletRequestAttributeListener attributeListener)
         {
             if (requestAttributeListeners == null)
             {
                 requestAttributeListeners = new ArrayList<ServletRequestAttributeListener>();
             }
-            requestAttributeListeners.add((ServletRequestAttributeListener)listener);
+            requestAttributeListeners.add(attributeListener);
         }
-        if (listener instanceof HttpSessionListener)
+        if (listener instanceof HttpSessionListener sessionListener)
         {
             if (sessionListeners == null)
             {
                 sessionListeners = new ArrayList<HttpSessionListener>();
             }
-            sessionListeners.add((HttpSessionListener)listener);
+            sessionListeners.add(sessionListener);
         }
-        if (listener instanceof HttpSessionAttributeListener)
+        if (listener instanceof HttpSessionAttributeListener attributeListener)
         {
             if (sessionAttributeListeners == null)
             {
                 sessionAttributeListeners = new ArrayList<HttpSessionAttributeListener>();
             }
-            sessionAttributeListeners.add((HttpSessionAttributeListener)listener);
+            sessionAttributeListeners.add(attributeListener);
         }
     }
     

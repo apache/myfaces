@@ -73,15 +73,8 @@ public class ResourceLoaderUtils
         try
         {
             URLConnection connection = url.openConnection();
-            if (connection instanceof JarURLConnection)
-            {
-                // The following hack is required to work-around a JDK bug.
-                // getLastModified() on a JAR entry URL delegates to the actual JAR file rather than the JAR entry.
-                // This opens internally, and does not close, an input stream to the JAR file.
-                // In turn, you cannot close it by yourself, because it's internal.
-                // The work-around is to get the modification date of the JAR file manually,
-                // and then close that connection again.
-                JarURLConnection jarUrlConnection = (JarURLConnection) connection; 
+            if (connection instanceof JarURLConnection jarUrlConnection)
+            { 
                 URL jarFileUrl = jarUrlConnection.getJarFileURL(); 
                 URLConnection jarFileConnection = jarFileUrl.openConnection();
                 is = jarFileConnection.getInputStream();

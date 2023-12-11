@@ -22,7 +22,6 @@ import static org.easymock.EasyMock.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;

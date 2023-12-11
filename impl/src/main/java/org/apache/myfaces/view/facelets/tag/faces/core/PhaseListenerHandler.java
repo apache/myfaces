@@ -79,7 +79,7 @@ public class PhaseListenerHandler extends TagHandler
             {
                 try
                 {
-                    instance = (PhaseListener) ClassUtils.forName(this.type).newInstance();
+                    instance = (PhaseListener) ClassUtils.forName(this.type).getDeclaredConstructor().newInstance();
                 }
                 catch (Exception e)
                 {

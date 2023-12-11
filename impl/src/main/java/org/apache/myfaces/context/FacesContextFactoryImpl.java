@@ -94,16 +94,20 @@ public class FacesContextFactoryImpl extends FacesContextFactory implements Rele
             // It could happen, but we can ignore it.
             if (log.isLoggable(Level.FINE))
             {
-                log.log(Level.FINE, "Cannot access field firstInstance "
-                        + "from _MyFacesExternalContextHelper ", e);
+                log.log(Level.FINE, """
+                        Cannot access field firstInstance \
+                        from _MyFacesExternalContextHelper \
+                        """, e);
             }
         }
         catch (Exception e)
         {
             if (log.isLoggable(Level.SEVERE))
             {
-                log.log(Level.SEVERE, "Cannot find field firstInstance "
-                        + "from _MyFacesExternalContextHelper ", e);
+                log.log(Level.SEVERE, """
+                        Cannot find field firstInstance \
+                        from _MyFacesExternalContextHelper \
+                        """, e);
             }
         }
         

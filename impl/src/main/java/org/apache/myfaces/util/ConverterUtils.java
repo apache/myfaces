@@ -32,15 +32,15 @@ public final class ConverterUtils
 
     public static int convertToInt(Object value)
     {
-        if (value instanceof Number)
+        if (value instanceof Number number)
         {
-            return ((Number) value).intValue();
+            return number.intValue();
         }
-        else if (value instanceof String)
+        else if (value instanceof String string)
         {
             try
             {
-                return Integer.parseInt((String) value);
+                return Integer.parseInt(string);
             }
             catch (NumberFormatException e)
             {
@@ -55,15 +55,15 @@ public final class ConverterUtils
 
     public static boolean convertToBoolean(Object value)
     {
-        if (value instanceof Boolean)
+        if (value instanceof Boolean boolean1)
         {
-            return ((Boolean) value);
+            return boolean1;
         }
-        else if (value instanceof String)
+        else if (value instanceof String string)
         {
             try
             {
-                return Boolean.parseBoolean((String) value);
+                return Boolean.parseBoolean(string);
             }
             catch (Exception e)
             {
@@ -78,15 +78,15 @@ public final class ConverterUtils
 
     public static long convertToLong(Object value)
     {
-        if (value instanceof Number)
+        if (value instanceof Number number)
         {
-            return ((Number) value).longValue();
+            return number.longValue();
         }
-        else if (value instanceof String)
+        else if (value instanceof String string)
         {
             try
             {
-                return Long.parseLong((String) value);
+                return Long.parseLong(string);
             }
             catch (NumberFormatException e)
             {
@@ -101,15 +101,15 @@ public final class ConverterUtils
 
     public static double convertToDouble(Object value)
     {
-        if (value instanceof Number)
+        if (value instanceof Number number)
         {
-            return ((Number) value).doubleValue();
+            return number.doubleValue();
         }
-        else if (value instanceof String)
+        else if (value instanceof String string)
         {
             try
             {
-                return Double.parseDouble((String) value);
+                return Double.parseDouble(string);
             }
             catch (NumberFormatException e)
             {

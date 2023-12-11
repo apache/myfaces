@@ -675,7 +675,7 @@ public final class WebConfigParamUtils
         {
             try
             {
-                return (T) ClassUtils.classForName(param).newInstance();
+                return (T) ClassUtils.classForName(param).getDeclaredConstructor().newInstance();
             }
             catch (Exception e)
             {

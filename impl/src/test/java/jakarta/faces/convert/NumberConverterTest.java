@@ -64,7 +64,7 @@ public class NumberConverterTest extends AbstractJsfTestCase
         FacesContext.getCurrentInstance().getViewRoot().setLocale(Locale.GERMANY);
         UIInput input = new UIInput();
         mock.setType("currency");
-        String stringValue = mock.getAsString(facesContext, input, new Double(12345.68d));
+        String stringValue = mock.getAsString(facesContext, input, Double.valueOf(12345.68d));
         Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12\u00a0345,68 \u20AC");
         Assertions.assertNotNull(number);
     }
@@ -172,12 +172,12 @@ public class NumberConverterTest extends AbstractJsfTestCase
         mock.setGroupingUsed(true);
         FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale("cs"));
         UIInput input = new UIInput();
-        String stringValue = mock.getAsString(facesContext, input, new Long(7000));
+        String stringValue = mock.getAsString(facesContext, input, Long.valueOf(7000));
         Assertions.assertEquals("7\u00a0000", stringValue, "must return 7&NBSP000");
         
         Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, stringValue);
         Assertions.assertNotNull(number);
-        Assertions.assertEquals(new Long(7000), number);
+        Assertions.assertEquals(Long.valueOf(7000), number);
     }
 
     @Test

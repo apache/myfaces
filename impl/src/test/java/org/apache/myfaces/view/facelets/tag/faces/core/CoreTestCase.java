@@ -219,7 +219,7 @@ public class CoreTestCase extends FaceletTestCase
 
         Assertions.assertNotNull(out1.getConverter());
 
-        Assertions.assertEquals(new Double(42.5), out1.getConverter()
+        Assertions.assertEquals(Double.valueOf(42.5), out1.getConverter()
                 .getAsObject(facesContext, out1, out1.getLocalValue().toString()));
     }
 
@@ -249,15 +249,15 @@ public class CoreTestCase extends FaceletTestCase
         Assertions.assertNotNull(out5.getConverter());
 
         Assertions.assertEquals("12", out1.getConverter().getAsString(facesContext,
-                out1, new Double(12.001)));
+                out1, Double.valueOf(12.001)));
         Assertions.assertEquals("$12.00", out2.getConverter().getAsString(
-                facesContext, out2, new Double(12.00)));
+                facesContext, out2, Double.valueOf(12.00)));
         Assertions.assertEquals("00,032", out3.getConverter().getAsString(
-                facesContext, out3, new Double(32)));
+                facesContext, out3, Double.valueOf(32)));
         Assertions.assertEquals("0.67", out4.getConverter().getAsString(
-                facesContext, out4, new Double(2.0 / 3.0)));
+                facesContext, out4, Double.valueOf(2.0 / 3.0)));
         Assertions.assertEquals("67%", out5.getConverter().getAsString(
-                facesContext, out5, new Double(0.67)));
+                facesContext, out5, Double.valueOf(0.67)));
     }
 
     @Test
@@ -320,7 +320,7 @@ public class CoreTestCase extends FaceletTestCase
 
         Validator v = input.getValidators()[0];
 
-        v.validate(facesContext, input, new Double(1.8));
+        v.validate(facesContext, input, Double.valueOf(1.8));
     }
 
     @Test
@@ -354,7 +354,7 @@ public class CoreTestCase extends FaceletTestCase
 
         Validator v = input.getValidators()[0];
 
-        v.validate(facesContext, input, new Long(2000));
+        v.validate(facesContext, input, Long.valueOf(2000));
     }
 
     @Test

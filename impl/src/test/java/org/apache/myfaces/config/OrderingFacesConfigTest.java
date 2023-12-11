@@ -917,9 +917,11 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
             {
                 if (log.isLoggable(Level.WARNING))
                 {
-                    log.warning("<ordering> element found in application faces config. " +
-                            "This description will be ignored and the actions described " +
-                            "in <absolute-ordering> element will be taken into account instead.");
+                    log.warning("""
+                            <ordering> element found in application faces config. \
+                            This description will be ignored and the actions described \
+                            in <absolute-ordering> element will be taken into account instead.\
+                            """);
                 }                
             }
             //Absolute ordering
@@ -983,9 +985,8 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     {
         for (OrderSlot slot: slots)
         {
-            if (slot instanceof FacesConfigNameSlotImpl)
+            if (slot instanceof FacesConfigNameSlotImpl nameSlot)
             {
-                FacesConfigNameSlotImpl nameSlot = (FacesConfigNameSlotImpl) slot;
                 if (name.equals(nameSlot.getName()))
                 {
                     return true;

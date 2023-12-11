@@ -222,21 +222,21 @@ public final class FactoryFinder
             catch (InvocationTargetException e)
             {
                 Throwable targetException = e.getCause();
-                if (targetException instanceof NullPointerException)
+                if (targetException instanceof NullPointerException exception)
                 {
-                    throw (NullPointerException) targetException;
+                    throw exception;
                 }
-                else if (targetException instanceof FacesException)
+                else if (targetException instanceof FacesException exception)
                 {
-                    throw (FacesException) targetException;
+                    throw exception;
                 }
-                else if (targetException instanceof IllegalArgumentException)
+                else if (targetException instanceof IllegalArgumentException exception)
                 {
-                    throw (IllegalArgumentException) targetException;
+                    throw exception;
                 }
-                else if (targetException instanceof IllegalStateException)
+                else if (targetException instanceof IllegalStateException exception)
                 {
-                    throw (IllegalStateException) targetException;
+                    throw exception;
                 }
                 else if (targetException == null)
                 {
@@ -271,18 +271,21 @@ public final class FactoryFinder
             if (factoryClassNames == null)
             {
                 String message
-                        = "No Factories configured for this Application. This happens if the faces-initialization "
-                        + "does not work at all - make sure that you properly include all configuration "
-                        + "settings necessary for a basic faces application "
-                        + "and that all the necessary libs are included. Also check the logging output of your "
-                        + "web application and your container for any exceptions!"
-                        + "\nIf you did that and find nothing, the mistake might be due to the fact "
-                        + "that you use some special web-containers which "
-                        + "do not support registering context-listeners via TLD files and "
-                        + "a context listener is not setup in your web.xml.\n"
-                        + "A typical config looks like this;\n<listener>\n"
-                        + "  <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>\n"
-                        + "</listener>\n";
+                        = """
+                        No Factories configured for this Application. This happens if the faces-initialization \
+                        does not work at all - make sure that you properly include all configuration \
+                        settings necessary for a basic faces application \
+                        and that all the necessary libs are included. Also check the logging output of your \
+                        web application and your container for any exceptions!
+                        If you did that and find nothing, the mistake might be due to the fact \
+                        that you use some special web-containers which \
+                        do not support registering context-listeners via TLD files and \
+                        a context listener is not setup in your web.xml.
+                        A typical config looks like this;
+                        <listener>
+                          <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
+                        </listener>
+                        """;
                 throw new IllegalStateException(message);
             }
 
@@ -546,17 +549,17 @@ public final class FactoryFinder
             catch (InvocationTargetException e)
             {
                 Throwable targetException = e.getCause();
-                if (targetException instanceof NullPointerException)
+                if (targetException instanceof NullPointerException exception)
                 {
-                    throw (NullPointerException) targetException;
+                    throw exception;
                 }
-                else if (targetException instanceof FacesException)
+                else if (targetException instanceof FacesException exception)
                 {
-                    throw (FacesException) targetException;
+                    throw exception;
                 }
-                else if (targetException instanceof IllegalArgumentException)
+                else if (targetException instanceof IllegalArgumentException exception)
                 {
-                    throw (IllegalArgumentException) targetException;
+                    throw exception;
                 }
                 else if (targetException == null)
                 {
@@ -628,9 +631,9 @@ public final class FactoryFinder
             catch (InvocationTargetException e)
             {
                 Throwable targetException = e.getCause();
-                if (targetException instanceof FacesException)
+                if (targetException instanceof FacesException exception)
                 {
-                    throw (FacesException) targetException;
+                    throw exception;
                 }
                 else if (targetException == null)
                 {

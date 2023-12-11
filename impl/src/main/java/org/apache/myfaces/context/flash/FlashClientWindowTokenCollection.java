@@ -42,12 +42,12 @@ class FlashClientWindowTokenCollection implements Serializable
                 ReleasableFlash rf = null;
                 while (flash != null)
                 {
-                    if (flash instanceof ReleasableFlash)
+                    if (flash instanceof ReleasableFlash releasableFlash)
                     {
-                        rf = (ReleasableFlash) flash;
+                        rf = releasableFlash;
                         break;
                     }
-                    if (flash instanceof FacesWrapper)
+                    if (flash instanceof FacesWrapper wrapper)
                     {
                         flash = ((FacesWrapper<? extends Flash>) flash).getWrapped();
                     }

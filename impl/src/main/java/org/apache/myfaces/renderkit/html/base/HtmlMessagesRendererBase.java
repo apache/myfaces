@@ -131,7 +131,7 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         if (!renderDivWhenNoMessagesAndIdSet && alwaysRenderSpan)
         {
             Object forceSpan = messages.getAttributes().get("forceSpan");
-            boolean b = forceSpan instanceof Boolean ? (Boolean) forceSpan : Boolean.valueOf(forceSpan.toString());
+            boolean b = forceSpan instanceof Boolean b1 ? b1 : Boolean.valueOf(forceSpan.toString());
             if (b)
             {
                 ResponseWriter writer = facesContext.getResponseWriter();
@@ -166,9 +166,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         writer.startElement(HTML.UL_ELEM, messages);
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (messages instanceof ClientBehaviorHolder)
+        if (messages instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) messages).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
         }
         
         if (behaviors != null && !behaviors.isEmpty())
@@ -217,9 +217,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         writer.startElement(HTML.TABLE_ELEM, messages);
         
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (messages instanceof ClientBehaviorHolder)
+        if (messages instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) messages).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
         }
         
         if (behaviors != null && !behaviors.isEmpty())
@@ -268,27 +268,27 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
     {
         String style = null;
         String styleClass = null;
-        if (messages instanceof HtmlMessages)
+        if (messages instanceof HtmlMessages htmlMessages)
         {
             if (severity == FacesMessage.SEVERITY_INFO)
             {
-                style = ((HtmlMessages)messages).getInfoStyle();
-                styleClass = ((HtmlMessages)messages).getInfoClass();
+                style = htmlMessages.getInfoStyle();
+                styleClass = htmlMessages.getInfoClass();
             }
             else if (severity == FacesMessage.SEVERITY_WARN)
             {
-                style = ((HtmlMessages)messages).getWarnStyle();
-                styleClass = ((HtmlMessages)messages).getWarnClass();
+                style = htmlMessages.getWarnStyle();
+                styleClass = htmlMessages.getWarnClass();
             }
             else if (severity == FacesMessage.SEVERITY_ERROR)
             {
-                style = ((HtmlMessages)messages).getErrorStyle();
-                styleClass = ((HtmlMessages)messages).getErrorClass();
+                style = htmlMessages.getErrorStyle();
+                styleClass = htmlMessages.getErrorClass();
             }
             else if (severity == FacesMessage.SEVERITY_FATAL)
             {
-                style = ((HtmlMessages)messages).getFatalStyle();
-                styleClass = ((HtmlMessages)messages).getFatalClass();
+                style = htmlMessages.getFatalStyle();
+                styleClass = htmlMessages.getFatalClass();
             }
         }
         else
@@ -322,9 +322,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
     protected String getComponentStyleClass(UIComponent messages)
     {
         String styleClass = null;
-        if (messages instanceof HtmlMessages)
+        if (messages instanceof HtmlMessages htmlMessages)
         {
-            styleClass = ((HtmlMessages)messages).getStyleClass();
+            styleClass = htmlMessages.getStyleClass();
         }
         else
         {
@@ -336,9 +336,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
     protected String getComponentStyle(UIComponent messages)
     {
         String style = null;
-        if (messages instanceof HtmlMessages)
+        if (messages instanceof HtmlMessages htmlMessages)
         {
-            style = ((HtmlMessages)messages).getStyle();
+            style = htmlMessages.getStyle();
         }
         else
         {
@@ -350,9 +350,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
     @Override
     protected String getTitle(UIComponent component)
     {
-        if (component instanceof HtmlMessages)
+        if (component instanceof HtmlMessages messages)
         {
-            return ((HtmlMessages)component).getTitle();
+            return messages.getTitle();
         }
         else
         {
@@ -363,9 +363,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
     @Override
     protected boolean isTooltip(UIComponent component)
     {
-        if (component instanceof HtmlMessages)
+        if (component instanceof HtmlMessages messages)
         {
-            return ((HtmlMessages)component).isTooltip();
+            return messages.isTooltip();
         }
         else
         {
@@ -376,9 +376,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
     @Override
     protected boolean isShowSummary(UIComponent component)
     {
-        if (component instanceof UIMessages)
+        if (component instanceof UIMessages messages)
         {
-            return ((UIMessages)component).isShowSummary();
+            return messages.isShowSummary();
         }
         else
         {
@@ -389,9 +389,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
     @Override
     protected boolean isShowDetail(UIComponent component)
     {
-        if (component instanceof UIMessages)
+        if (component instanceof UIMessages messages)
         {
-            return ((UIMessages)component).isShowDetail();
+            return messages.isShowDetail();
         }
         else
         {
@@ -401,9 +401,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
 
     protected boolean isGlobalOnly(UIComponent component)
     {
-        if (component instanceof UIMessages)
+        if (component instanceof UIMessages messages)
         {
-            return ((UIMessages)component).isGlobalOnly();
+            return messages.isGlobalOnly();
         }
         else
         {
@@ -413,9 +413,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
 
     protected String getLayout(UIComponent component)
     {
-        if (component instanceof HtmlMessages)
+        if (component instanceof HtmlMessages messages)
         {
-            return ((HtmlMessages)component).getLayout();
+            return messages.getLayout();
         }
         else
         {
@@ -426,9 +426,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
     @Override
     protected String getFor(UIComponent component)
     {
-        if (component instanceof UIMessages)
+        if (component instanceof UIMessages messages)
         {
-            return ((UIMessages) component).getFor();
+            return messages.getFor();
         }
  
         return (String) component.getAttributes().get(ComponentAttrs.FOR_ATTR); 
@@ -437,9 +437,9 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
     @Override
     protected boolean isRedisplay(UIComponent component)
     {
-        if (component instanceof UIMessages)
+        if (component instanceof UIMessages messages)
         {
-            return ((UIMessages) component).isRedisplay();
+            return messages.isRedisplay();
         }
 
         return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.REDISPLAY_ATTR, true);

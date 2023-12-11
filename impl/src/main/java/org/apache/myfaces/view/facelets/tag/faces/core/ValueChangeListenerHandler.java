@@ -88,7 +88,7 @@ public final class ValueChangeListenerHandler extends TagHandler
             {
                 try
                 {
-                    instance = (ValueChangeListener) ClassUtils.forName(this.type).newInstance();
+                    instance = (ValueChangeListener) ClassUtils.forName(this.type).getDeclaredConstructor().newInstance();
                 }
                 catch (Exception e)
                 {

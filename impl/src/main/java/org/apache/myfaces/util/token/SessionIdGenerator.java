@@ -214,7 +214,7 @@ public class SessionIdGenerator
             {
                 // Construct and seed a new random number generator
                 Class<?> clazz = ClassUtils.classForName(secureRandomClass);
-                result = (SecureRandom) clazz.newInstance();
+                result = (SecureRandom) clazz.getDeclaredConstructor().newInstance();
             }
             catch (Exception e)
             {

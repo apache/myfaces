@@ -75,11 +75,13 @@ public final class HtmlRendererUtils
     public static final String CLEAR_HIDDEN_FIELD_FN_NAME = "clearFormHiddenParams";
     public static final String SUBMIT_FORM_FN_NAME_JSF2 = "myfaces.oam.submitForm";
     public static final String NON_SUBMITTED_VALUE_WARNING 
-            = "There should always be a submitted value for an input if it is rendered,"
-            + " its form is submitted, and it was not originally rendered disabled or read-only."
-            + "  You cannot submit a form after disabling an input element via javascript."
-            + "  Consider setting read-only to true instead"
-            + " or resetting the disabled value back to false prior to form submission.";
+            = """
+            There should always be a submitted value for an input if it is rendered,\
+             its form is submitted, and it was not originally rendered disabled or read-only.\
+              You cannot submit a form after disabling an input element via javascript.\
+              Consider setting read-only to true instead\
+             or resetting the disabled value back to false prior to form submission.\
+            """;
 
     private HtmlRendererUtils()
     {
@@ -176,9 +178,9 @@ public final class HtmlRendererUtils
 
     private static boolean isTrue(Object obj)
     {
-        if (obj instanceof String)
+        if (obj instanceof String string)
         {
-            return Boolean.valueOf((String) obj);
+            return Boolean.valueOf(string);
         }
         if (!(obj instanceof Boolean))
         {
@@ -261,9 +263,9 @@ public final class HtmlRendererUtils
         }
         
         Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
-        if (component instanceof UISelectOne)
+        if (component instanceof UISelectOne one)
         {
-            String group = ((UISelectOne) component).getGroup();
+            String group = one.getGroup();
             if (group != null && !group.isEmpty())
             {
                 UIForm form = ComponentUtils.findClosest(UIForm.class, component);
@@ -291,7 +293,7 @@ public final class HtmlRendererUtils
                 {
                     // means input was not submitted. set to empty string so we can validate required fields
                     // if not set, a null value will skip validation -- see beginning of UIInput#validate
-                    ((EditableValueHolder)component).setSubmittedValue(RendererUtils.EMPTY_STRING);
+                    one.setSubmittedValue(RendererUtils.EMPTY_STRING);
                 } 
                 return;
             }
@@ -349,9 +351,9 @@ public final class HtmlRendererUtils
         @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
-            if (target instanceof UISelectOne)
+            if (target instanceof UISelectOne one)
             {
-                UISelectOne targetSelectOneRadio = ((UISelectOne) target);
+                UISelectOne targetSelectOneRadio =one;
                 String targetGroup = targetSelectOneRadio.getGroup();
                 if (group.equals(targetGroup))
                 {
@@ -758,7 +760,7 @@ public final class HtmlRendererUtils
         Converter converter = null;
         boolean isSelectOne = false;
 
-        if (uiComponent instanceof UISelectBoolean)
+        if (uiComponent instanceof UISelectBoolean boolean1)
         {
             converter = findUIOutputConverterFailSafe(facesContext, uiComponent);
 
@@ -766,7 +768,7 @@ public final class HtmlRendererUtils
             writeIdIfNecessary(writer, uiComponent, facesContext);
             writer.writeText(SharedRendererUtils.getConvertedStringValue(
                     facesContext, uiComponent, converter,
-                    ((UISelectBoolean) uiComponent).getValue()),
+                    boolean1.getValue()),
                     ComponentAttrs.VALUE_ATTR);
             writer.endElement(HTML.SPAN_ELEM);
 
@@ -813,9 +815,9 @@ public final class HtmlRendererUtils
         {
             SelectItem selectItem = (SelectItem) selectItemList.get(i);
 
-            if (selectItem instanceof SelectItemGroup)
+            if (selectItem instanceof SelectItemGroup group)
             {
-                SelectItem[] selectItems = ((SelectItemGroup) selectItem).getSelectItems();
+                SelectItem[] selectItems = group.getSelectItems();
                 renderSelectOptionsAsText(context, component, converter,
                         lookupSet, Arrays.asList(selectItems), isSelectOne);
             }
@@ -857,15 +859,13 @@ public final class HtmlRendererUtils
         }
         String captionClass;
         String captionStyle;
-        if (component instanceof HtmlPanelGrid)
+        if (component instanceof HtmlPanelGrid panelGrid)
         {
-            HtmlPanelGrid panelGrid = (HtmlPanelGrid) component;
             captionClass = panelGrid.getCaptionClass();
             captionStyle = panelGrid.getCaptionStyle();
         }
-        else if (component instanceof HtmlDataTable)
+        else if (component instanceof HtmlDataTable dataTable)
         {
-            HtmlDataTable dataTable = (HtmlDataTable) component;
             captionClass = dataTable.getCaptionClass();
             captionStyle = dataTable.getCaptionStyle();
         }
@@ -1109,9 +1109,9 @@ public final class HtmlRendererUtils
                     retVal = new HashMap<>(3);
                 }
 
-                if (value instanceof String)
+                if (value instanceof String string)
                 {
-                    retVal.put(name, (String) value);
+                    retVal.put(name, string);
                 }
                 else
                 {
@@ -1740,9 +1740,9 @@ public final class HtmlRendererUtils
     {
         // check hideNoSelectionOption for literal value (String) or ValueExpression (Boolean)
         Object hideNoSelectionOptionAttr = component.getAttributes().get(ComponentAttrs.HIDE_NO_SELECTION_OPTION_ATTR);
-        return ((hideNoSelectionOptionAttr instanceof String && "true"
-                .equalsIgnoreCase((String) hideNoSelectionOptionAttr)) || 
-                (hideNoSelectionOptionAttr instanceof Boolean && ((Boolean) hideNoSelectionOptionAttr)));
+        return ((hideNoSelectionOptionAttr instanceof String s && "true"
+                .equalsIgnoreCase(s)) || 
+                (hideNoSelectionOptionAttr instanceof Boolean b &&b));
     }
 
     /**

@@ -144,7 +144,7 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
         }
         _delegate.setAttributes(faceletContext, behavior);
         
-        if (behavior instanceof ClientBehavior)
+        if (behavior instanceof ClientBehavior clientBehavior)
         {
             // cast to a ClientBehaviorHolder
             ClientBehaviorHolder cvh = (ClientBehaviorHolder) parent;
@@ -172,7 +172,7 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
             }
             else
             {
-                cvh.addClientBehavior(eventName, (ClientBehavior) behavior);
+                cvh.addClientBehavior(eventName, clientBehavior);
             }
             
             AjaxHandler.registerFacesJsResource(faceletContext, parent);

@@ -99,7 +99,7 @@ public abstract class ViewHandler
     @JSFWebConfigParam(since = "2.0", alias = "facelets.BUFFER_SIZE", classType = "java.lang.Integer",
             tags = "performance", defaultValue="1024",
             desc = "Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in "
-                   + "a servlet environment to HttpServletResponse.setBufferSize()")
+                    + "a servlet environment to HttpServletResponse.setBufferSize()")
     public static final java.lang.String FACELETS_BUFFER_SIZE_PARAM_NAME = "jakarta.faces.FACELETS_BUFFER_SIZE";
     
     /**

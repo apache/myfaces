@@ -246,8 +246,10 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             // and the statefulness of the preceding call to writeState(
             // jakarta.faces.context.FacesContext, java.lang.Object) cannot be determined.
             throw new IllegalStateException(
-                "Cannot decide if the view is stateless or not, since the request is "
-                + "not postback (no preceding writeState(...)).");
+                """
+                Cannot decide if the view is stateless or not, since the request is \
+                not postback (no preceding writeState(...)).\
+                """);
         }
     }
 

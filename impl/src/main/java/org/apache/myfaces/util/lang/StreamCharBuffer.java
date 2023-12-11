@@ -516,14 +516,14 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
     public void writeTo(Writer target, boolean flushTarget, boolean emptyAfter) throws IOException
     {
 
-        if (target instanceof StreamCharBufferWriter)
+        if (target instanceof StreamCharBufferWriter bufferWriter)
         {
             if (target == writer)
             {
                 throw new IllegalArgumentException(
                         "Cannot write buffer to itself.");
             }
-            ((StreamCharBufferWriter) target).write(this);
+            bufferWriter.write(this);
             return;
         }
         writeToImpl(target, flushTarget, emptyAfter);
@@ -611,11 +611,11 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
     @Override
     public String toString()
     {
-        if (firstChunk == lastChunk && firstChunk instanceof StringChunk
+        if (firstChunk == lastChunk && firstChunk instanceof StringChunk chunk
                 && allocBuffer.charsUsed() == 0
-                && ((StringChunk) firstChunk).isSingleBuffer())
+                && chunk.isSingleBuffer())
         {
-            return ((StringChunk) firstChunk).str;
+            return chunk.str;
         }
 
         int initialReaderCount = readerCount;
@@ -689,11 +689,11 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
     public char[] toCharArray()
     {
         // check if there is a cached single charbuffer
-        if (firstChunk == lastChunk && firstChunk instanceof CharBufferChunk
+        if (firstChunk == lastChunk && firstChunk instanceof CharBufferChunk chunk
                 && allocBuffer.charsUsed() == 0
-                && ((CharBufferChunk) firstChunk).isSingleBuffer())
+                && chunk.isSingleBuffer())
         {
-            return ((CharBufferChunk) firstChunk).buffer;
+            return chunk.buffer;
         }
 
         int initialReaderCount = readerCount;
@@ -883,9 +883,8 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         {
             firstChunk = newChunk;
         }
-        if (newChunk instanceof StreamCharBufferSubChunk)
+        if (newChunk instanceof StreamCharBufferSubChunk bufSubChunk)
         {
-            StreamCharBufferSubChunk bufSubChunk = (StreamCharBufferSubChunk) newChunk;
             dynamicChunkMap.put(bufSubChunk.streamCharBuffer.bufferKey,
                     bufSubChunk);
         }
@@ -1122,19 +1121,19 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
                     {
                         int spaceLeft = allocateSpace();
                         int writeChars = Math.min(spaceLeft, charsLeft);
-                        if (csq instanceof String)
+                        if (csq instanceof String string)
                         {
-                            allocBuffer.writeString((String) csq,
+                            allocBuffer.writeString(string,
                                     currentOffset, writeChars);
                         }
-                        else if (csq instanceof StringBuffer)
+                        else if (csq instanceof StringBuffer buffer)
                         {
-                            allocBuffer.writeStringBuffer((StringBuffer) csq,
+                            allocBuffer.writeStringBuffer(buffer,
                                     currentOffset, writeChars);
                         }
-                        else if (csq instanceof StringBuilder)
+                        else if (csq instanceof StringBuilder builder)
                         {
-                            allocBuffer.writeStringBuilder((StringBuilder) csq,
+                            allocBuffer.writeStringBuilder(builder,
                                     currentOffset, writeChars);
                         }
                         charsLeft -= writeChars;
@@ -1310,7 +1309,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         /* adds support for reading and writing simultaneously in the same thread */
         private void repositionChunkReader()
         {
-            if (lastChunkReader instanceof AllocatedBufferReader)
+            if (lastChunkReader instanceof AllocatedBufferReader allocBufferReader)
             {
                 if (lastChunkReader.isValid())
                 {
@@ -1318,7 +1317,6 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
                 }
                 else
                 {
-                    AllocatedBufferReader allocBufferReader = (AllocatedBufferReader) lastChunkReader;
                     // find out what is the CharBufferChunk that was read by the AllocatedBufferReader already
                     int currentPosition = allocBufferReader.position;
                     AbstractChunk chunk = lastChunk;
@@ -1326,9 +1324,8 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
                             && chunk.writerUsedCounter >= lastChunkReader
                                     .getWriterUsedCounter())
                     {
-                        if (chunk instanceof CharBufferChunk)
+                        if (chunk instanceof CharBufferChunk charBufChunk)
                         {
-                            CharBufferChunk charBufChunk = (CharBufferChunk) chunk;
                             if (charBufChunk.allocatedBufferId == allocBufferReader.parent.id)
                             {
                                 if (currentPosition >= charBufChunk.offset

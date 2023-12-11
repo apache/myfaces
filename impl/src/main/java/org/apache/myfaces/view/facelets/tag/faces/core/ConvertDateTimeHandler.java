@@ -115,13 +115,13 @@ public final class ConvertDateTimeHandler extends ConverterHandler
             Object t = this.timeZone.getObject(ctx);
             if (t != null)
             {
-                if (t instanceof TimeZone)
+                if (t instanceof TimeZone zone)
                 {
-                    c.setTimeZone((TimeZone) t);
+                    c.setTimeZone(zone);
                 }
-                else if (t instanceof String)
+                else if (t instanceof String string)
                 {
-                    TimeZone tz = TimeZone.getTimeZone((String) t);
+                    TimeZone tz = TimeZone.getTimeZone(string);
                     c.setTimeZone(tz);
                 }
                 else

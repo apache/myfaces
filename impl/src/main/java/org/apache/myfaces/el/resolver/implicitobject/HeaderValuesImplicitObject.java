@@ -59,8 +59,10 @@ public class HeaderValuesImplicitObject extends ImplicitObject
     public FeatureDescriptor getDescriptor()
     {
         return makeDescriptor(NAME,
-                              "Map whose keys are a set of request header names and whose values are all of the "
-                              + "values (of type String[]) for each header name.",
+                              """
+                              Map whose keys are a set of request header names and whose values are all of the \
+                              values (of type String[]) for each header name.\
+                              """,
                               Map.class);
     }
 

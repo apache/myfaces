@@ -49,9 +49,9 @@ public class MockHttpSessionProxy extends MockHttpSession
     @Override
     public void setServletContext(ServletContext servletContext)
     {
-        if (servletContext instanceof MockServletContext)
+        if (servletContext instanceof MockServletContext context)
         {
-            this.servletContext = (MockServletContext) servletContext;
+            this.servletContext = context;
         }
         getWrapped().setServletContext(servletContext);
     }

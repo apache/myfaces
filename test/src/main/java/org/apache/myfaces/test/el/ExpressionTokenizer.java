@@ -48,15 +48,15 @@ class ExpressionTokenizer
                 next(pos);
                 break;
             case ']':
-                throw new IllegalStateException(String.format("Position %s: unexpected '%s'", here, c));
+                throw new IllegalStateException("Position %s: unexpected '%s'".formatted(here, c));
             case '[':
                 tokens.add(parseIndex(expr, next(pos)));
                 break;
             case '.':
                 if (sep)
                 {
-                    throw new IllegalStateException(String.format(
-                        "Position %s: expected property, index/key, or end of expression", here));
+                    throw new IllegalStateException(
+                            "Position %s: expected property, index/key, or end of expression".formatted(here));
                 }
                 sep = true;
                 next(pos);
@@ -64,8 +64,8 @@ class ExpressionTokenizer
             default:
                 if (!sep)
                 {
-                    throw new IllegalStateException(String.format(
-                        "Position %s: expected property path separator, index/key, or end of expression", here));
+                    throw new IllegalStateException(
+                            "Position %s: expected property path separator, index/key, or end of expression".formatted(here));
                 }
                 tokens.add(parseProperty(expr, pos));
             }
@@ -100,7 +100,7 @@ class ExpressionTokenizer
         {
             return expr.subSequence(start, pos.getIndex()).toString();
         }
-        throw new IllegalStateException(String.format("Position %s: expected property", start));
+        throw new IllegalStateException("Position %s: expected property".formatted(start));
     }
 
     /**
@@ -144,7 +144,7 @@ class ExpressionTokenizer
                 }
             }
         }
-        throw new IllegalStateException(String.format("Position %s: unparsable index", start));
+        throw new IllegalStateException("Position %s: unparsable index".formatted(start));
     }
 
     private static String parseQuotedString(CharSequence expr, ParsePosition pos)

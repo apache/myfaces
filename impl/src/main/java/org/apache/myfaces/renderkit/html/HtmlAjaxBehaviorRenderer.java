@@ -109,13 +109,13 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     private boolean isComponentImmediate(UIComponent component)
     {
         boolean isImmediate = false;
-        if (component instanceof EditableValueHolder)
+        if (component instanceof EditableValueHolder holder)
         {
-            isImmediate = ((EditableValueHolder)component).isImmediate();
+            isImmediate = holder.isImmediate();
         }
-        else if (component instanceof ActionSource)
+        else if (component instanceof ActionSource source)
         {
-            isImmediate = ((ActionSource)component).isImmediate();
+            isImmediate = source.isImmediate();
         }
         return isImmediate;
     }

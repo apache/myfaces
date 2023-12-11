@@ -86,9 +86,9 @@ public class UIViewAction extends UIComponentBase implements ActionSource
         UIViewRoot sourceViewRoot = null;
         do
         {
-            if (c instanceof UIViewRoot)
+            if (c instanceof UIViewRoot root)
             {
-                sourceViewRoot = (UIViewRoot) c;
+                sourceViewRoot = root;
                 break;
             }
             else
@@ -102,7 +102,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource
             return;
         }
         
-        if (event instanceof ActionEvent)
+        if (event instanceof ActionEvent actionEvent)
         {
             ActionListener defaultActionListener = context.getApplication().getActionListener();
             if (defaultActionListener != null)
@@ -119,12 +119,12 @@ public class UIViewAction extends UIComponentBase implements ActionSource
                     try
                     {
                         wrappedFacesContext.setWrapperAsCurrentFacesContext();
-                        if (event instanceof ViewActionEvent)
+                        if (event instanceof ViewActionEvent viewActionEvent)
                         {
-                            ((ViewActionEvent) event).setFacesContext(wrappedFacesContext);
+                            viewActionEvent.setFacesContext(wrappedFacesContext);
                         }
 
-                        defaultActionListener.processAction((ActionEvent) event);
+                        defaultActionListener.processAction(actionEvent);
 
                         // Decrement count
                         Integer count = (Integer) context.getAttributes().get(EVENT_COUNT_KEY);

@@ -66,13 +66,13 @@ public class DoubleRangeValidator
 
     public DoubleRangeValidator(double maximum)
     {
-        _maximum = new Double(maximum);
+        _maximum = Double.valueOf(maximum);
     }
 
     public DoubleRangeValidator(double maximum, double minimum)
     {
-        _maximum = new Double(maximum);
-        _minimum = new Double(minimum);
+        _maximum = Double.valueOf(maximum);
+        _minimum = Double.valueOf(minimum);
     }
 
     // VALIDATE
@@ -119,9 +119,9 @@ public class DoubleRangeValidator
     private double parseDoubleValue(FacesContext facesContext, UIComponent uiComponent, Object value)
         throws ValidatorException
     {
-        if (value instanceof Number)
+        if (value instanceof Number number)
         {
-            return ((Number)value).doubleValue();
+            return number.doubleValue();
         }
         
         try

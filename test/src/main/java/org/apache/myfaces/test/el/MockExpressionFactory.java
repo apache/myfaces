@@ -46,7 +46,7 @@ public class MockExpressionFactory extends ExpressionFactory
     /**
      * <p>Literal numeric value for zero.</p>
      */
-    private static final Integer ZERO = new Integer(0);
+    private static final Integer ZERO = Integer.valueOf(0);
 
     // ----------------------------------------------------- Mock Object Methods
 
@@ -90,9 +90,9 @@ public class MockExpressionFactory extends ExpressionFactory
             {
                 return coerce(ZERO, targetType);
             }
-            else if (object instanceof String)
+            else if (object instanceof String string)
             {
-                return coerce((String) object, targetType);
+                return coerce(string, targetType);
             }
             else if (isNumeric(object.getClass()))
             {
@@ -118,9 +118,9 @@ public class MockExpressionFactory extends ExpressionFactory
             {
                 return object;
             }
-            else if (object instanceof String)
+            else if (object instanceof String string)
             {
-                return Boolean.valueOf((String) object);
+                return Boolean.valueOf(string);
             }
             throw new IllegalArgumentException("Cannot convert " + object
                     + " to Boolean");
@@ -132,19 +132,19 @@ public class MockExpressionFactory extends ExpressionFactory
         {
             if (object == null)
             {
-                return new Character((char) 0);
+                return Character.valueOf((char) 0);
             }
             else if ("".equals(object))
             {
-                return new Character((char) 0);
+                return Character.valueOf((char) 0);
             }
-            else if (object instanceof String)
+            else if (object instanceof String string)
             {
-                return new Character(((String) object).charAt(0));
+                return Character.valueOf(string.charAt(0));
             }
             else if (isNumeric(object.getClass()))
             {
-                return new Character((char) ((Number) object).shortValue());
+                return Character.valueOf((char) ((Number) object).shortValue());
             }
             else if ((object instanceof Character)
                     || (object.getClass() == Character.TYPE))
@@ -241,27 +241,27 @@ public class MockExpressionFactory extends ExpressionFactory
 
         if ((type == Byte.TYPE) || (type == Byte.class))
         {
-            return new Byte(value.byteValue());
+            return Byte.valueOf(value.byteValue());
         }
         else if ((type == Double.TYPE) || (type == Double.class))
         {
-            return new Double(value.doubleValue());
+            return Double.valueOf(value.doubleValue());
         }
         else if ((type == Float.TYPE) || (type == Float.class))
         {
-            return new Float(value.floatValue());
+            return Float.valueOf(value.floatValue());
         }
         else if ((type == Integer.TYPE) || (type == Integer.class))
         {
-            return new Integer(value.intValue());
+            return Integer.valueOf(value.intValue());
         }
         else if ((type == Long.TYPE) || (type == Long.class))
         {
-            return new Long(value.longValue());
+            return Long.valueOf(value.longValue());
         }
         else if ((type == Short.TYPE) || (type == Short.class))
         {
-            return new Short(value.shortValue());
+            return Short.valueOf(value.shortValue());
         }
         else if (type == BigDecimal.class)
         {
@@ -269,9 +269,9 @@ public class MockExpressionFactory extends ExpressionFactory
             {
                 return value;
             }
-            else if (value instanceof BigInteger)
+            else if (value instanceof BigInteger integer)
             {
-                return new BigDecimal((BigInteger) value);
+                return new BigDecimal(integer);
             }
             else
             {
@@ -284,9 +284,9 @@ public class MockExpressionFactory extends ExpressionFactory
             {
                 return value;
             }
-            else if (value instanceof BigDecimal)
+            else if (value instanceof BigDecimal decimal)
             {
-                return ((BigDecimal) value).toBigInteger();
+                return decimal.toBigInteger();
             }
             else
             {

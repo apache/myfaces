@@ -177,8 +177,10 @@ public class WebsocketSessionManager
     {
         if (LOG.isLoggable(Level.FINE))
         {
-            LOG.log (Level.FINE, "WebsocketSessionManager: addOrUpdateSession for channelToken = {0}, " +
-                    "session.id = {1}", new Object[] {channelToken ,session.getId()});
+            LOG.log (Level.FINE, """
+                    WebsocketSessionManager: addOrUpdateSession for channelToken = {0}, \
+                    session.id = {1}\
+                    """, new Object[] {channelToken ,session.getId()});
         }
         
         ConcurrentLRUCache<String, Collection<Reference<Session>>> sessionMap = this.getSessionMap();
@@ -192,7 +194,7 @@ public class WebsocketSessionManager
         Optional<Reference<Session>> referenceOptional =
                 sessions.stream().filter(p -> Objects.equals(p.get(), session)).findFirst();
 
-        if (!referenceOptional.isPresent())
+        if (referenceOptional.isEmpty())
         {
             return sessions.add(new SoftReference<>(session));
         }
@@ -212,8 +214,10 @@ public class WebsocketSessionManager
     {
         if (LOG.isLoggable(Level.FINE))
         {
-            LOG.log(Level.FINE, "WebsocketSessionManager: removeSession for channelToken = {0}, " +
-                    "session.id = {1}", new Object[] {channelToken ,session.getId()});
+            LOG.log(Level.FINE, """
+                    WebsocketSessionManager: removeSession for channelToken = {0}, \
+                    session.id = {1}\
+                    """, new Object[] {channelToken ,session.getId()});
         }
         Collection<Reference<Session>> collection = getSessionMap().get(channelToken);
         Optional<Reference<Session>> referenceOptional =
@@ -292,8 +296,10 @@ public class WebsocketSessionManager
     }
 
     private final String WARNING_TOMCAT_WEB_SOCKET_BOMBED =
-            "Tomcat cannot handle concurrent push messages. A push message has been sent only after %s retries."
-            + " Consider rate limiting sending push messages. For example, once every 500ms.";    
+            """
+            Tomcat cannot handle concurrent push messages. A push message has been sent only after %s retries.\
+             Consider rate limiting sending push messages. For example, once every 500ms.\
+            """;    
     
     private void send(Session session, String text, Set<Future<Void>> results, int retries)
     {
@@ -302,7 +308,7 @@ public class WebsocketSessionManager
             results.add(session.getAsyncRemote().sendText(text));
             if (retries > 0)
             {
-                LOG.warning(String.format(WARNING_TOMCAT_WEB_SOCKET_BOMBED, retries));
+                LOG.warning(WARNING_TOMCAT_WEB_SOCKET_BOMBED.formatted(retries));
             }
         }
         catch (IllegalStateException e)

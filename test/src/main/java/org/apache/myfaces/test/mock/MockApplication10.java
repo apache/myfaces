@@ -286,7 +286,7 @@ public abstract class MockApplication10 extends Application
         try
         {
             Class clazz = Class.forName(componentClass);
-            return ((UIComponent) clazz.newInstance());
+            return ((UIComponent) clazz.getDeclaredConstructor().newInstance());
         }
         catch (Exception e)
         {
@@ -332,7 +332,7 @@ public abstract class MockApplication10 extends Application
         try
         {
             Class clazz = Class.forName(converterClass);
-            return ((Converter) clazz.newInstance());
+            return ((Converter) clazz.getDeclaredConstructor().newInstance());
         }
         catch (Exception e)
         {
@@ -353,7 +353,7 @@ public abstract class MockApplication10 extends Application
         try
         {
             Class clazz = Class.forName(converterClass);
-            return ((Converter) clazz.newInstance());
+            return ((Converter) clazz.getDeclaredConstructor().newInstance());
         }
         catch (Exception e)
         {
@@ -395,7 +395,7 @@ public abstract class MockApplication10 extends Application
         try
         {
             Class clazz = Class.forName(validatorClass);
-            return ((Validator) clazz.newInstance());
+            return ((Validator) clazz.getDeclaredConstructor().newInstance());
         }
         catch (Exception e)
         {

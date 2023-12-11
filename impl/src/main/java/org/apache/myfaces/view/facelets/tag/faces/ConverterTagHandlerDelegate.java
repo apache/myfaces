@@ -90,8 +90,10 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
         {
             if (getFor() == null)
             {
-                throw new TagException(_delegate.getTag(), "is nested inside a composite component"
-                        + " but does not have a for attribute.");
+                throw new TagException(_delegate.getTag(), """
+                        is nested inside a composite component\
+                         but does not have a for attribute.\
+                        """);
             }
             FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
             mctx.addAttachedObjectHandler(parent, _delegate);
@@ -115,8 +117,10 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
         if (_delegate.getConverterId(ctx) == null)
         {
             throw new TagException(_delegate.getTag(),
-                                    "Default behavior invoked of requiring a converter-id passed in the "
-                                    + "constructor, must override ConvertHandler(ConverterConfig)");
+                                    """
+                                    Default behavior invoked of requiring a converter-id passed in the \
+                                    constructor, must override ConvertHandler(ConverterConfig)\
+                                    """);
         }
         return ctx.getFacesContext().getApplication().createConverter(_delegate.getConverterId(ctx));
     }
@@ -159,9 +163,9 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
         vh.setConverter(c);
         Object lv = vh.getLocalValue();
         FacesContext faces = faceletContext.getFacesContext();
-        if (lv instanceof String)
+        if (lv instanceof String string)
         {
-            vh.setValue(c.getAsObject(faces, parent, (String) lv));
+            vh.setValue(c.getAsObject(faces, parent, string));
         }
     }
 

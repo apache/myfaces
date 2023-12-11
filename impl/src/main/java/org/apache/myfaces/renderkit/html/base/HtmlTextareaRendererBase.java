@@ -53,9 +53,9 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIInput.class);
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext,
@@ -81,9 +81,9 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
         writer.startElement(HTML.TEXTAREA_ELEM, uiComponent);
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 HtmlRendererUtils.writeIdAndName(writer, uiComponent, facesContext);
@@ -169,13 +169,13 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
         if (addNewLineAtStart != null)
         {
             boolean addNewLineAtStartBoolean = false;
-            if (addNewLineAtStart instanceof String)
+            if (addNewLineAtStart instanceof String string)
             {
-                addNewLineAtStartBoolean = Boolean.valueOf((String)addNewLineAtStart);
+                addNewLineAtStartBoolean = Boolean.valueOf(string);
             }
-            else if (addNewLineAtStart instanceof Boolean)
+            else if (addNewLineAtStart instanceof Boolean boolean1)
             {
-                addNewLineAtStartBoolean = (Boolean) addNewLineAtStart;
+                addNewLineAtStartBoolean = boolean1;
             }
             if (addNewLineAtStartBoolean)
             {
@@ -198,9 +198,9 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
     
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        if (uiComponent instanceof HtmlInputTextarea)
+        if (uiComponent instanceof HtmlInputTextarea textarea)
         {
-            return ((HtmlInputTextarea)uiComponent).isDisabled();
+            return textarea.isDisabled();
         }
 
         return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);

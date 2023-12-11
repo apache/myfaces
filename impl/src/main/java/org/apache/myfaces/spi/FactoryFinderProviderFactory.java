@@ -153,11 +153,13 @@ public abstract class FactoryFinderProviderFactory
                 if (log.isLoggable(Level.WARNING))
                 {
                     log.log(Level.WARNING,
-                            "Called FactoryFinderProviderFactory.setFactory after " +
-                                    "initialized FactoryFinder (first call to getFactory() or setFactory()). " +
-                                    "This method should be called before " +
-                                    "any 'web context' is initialized in the current 'classloader context'. " +
-                                    "By that reason it will not be changed.");
+                            """
+                            Called FactoryFinderProviderFactory.setFactory after \
+                            initialized FactoryFinder (first call to getFactory() or setFactory()). \
+                            This method should be called before \
+                            any 'web context' is initialized in the current 'classloader context'. \
+                            By that reason it will not be changed.\
+                            """);
                 }
             }
             else

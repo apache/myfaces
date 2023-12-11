@@ -40,9 +40,13 @@ public class TableResponseMockups
         boolean render = request.getParameter("jakarta.faces.partial.render") != null;
 
         Changes changes = new Changes(root);
-        changes.addChild(new Update(changes, "result", (!execute && !render) ? "<div " +
-                "id='result'>success</div>" : "<div " +
-                "id='result'>fail</div>"));
+        changes.addChild(new Update(changes, "result", (!execute && !render) ? """
+                <div \
+                id='result'>success</div>\
+                """ : """
+                <div \
+                id='result'>fail</div>\
+                """));
         root.addElement(changes);
         out.println(root.toString());
     }

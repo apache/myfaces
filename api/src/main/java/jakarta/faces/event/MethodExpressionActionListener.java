@@ -100,9 +100,9 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
             {
                 do
                 {
-                    if (cause instanceof AbortProcessingException)
+                    if (cause instanceof AbortProcessingException exception)
                     {
-                        ape = (AbortProcessingException) cause;
+                        ape = exception;
                         break;
                     }
                     cause = cause.getCause();

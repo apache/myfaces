@@ -64,13 +64,13 @@ public class CDIInjectionProviderImpl extends InjectionProvider
     @Override
     public void preDestroy(Object instance, Object creationMetaData) throws InjectionProviderException
     {
-        if (creationMetaData instanceof CreationalContext)
+        if (creationMetaData instanceof CreationalContext context)
         {
             AnnotatedType annoType = beanManager.createAnnotatedType(instance.getClass());
             InjectionTarget target = beanManager.getInjectionTargetFactory(annoType).createInjectionTarget(null);
             target.preDestroy(instance);
 
-            ((CreationalContext)creationMetaData).release();
+            context.release();
         }
     }
 }

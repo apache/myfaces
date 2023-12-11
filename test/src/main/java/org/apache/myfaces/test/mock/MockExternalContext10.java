@@ -102,10 +102,10 @@ public abstract class MockExternalContext10 extends ExternalContext
     public void addRequestCookieMap(Cookie cookie)
     {
         Map map = getRequestCookieMap();
-        if (request instanceof MockHttpServletRequest
+        if (request instanceof MockHttpServletRequest servletRequest
                 && map instanceof _CookieMap)
         {
-            ((MockHttpServletRequest) request).addCookie(cookie);
+            servletRequest.addCookie(cookie);
         }
         else
         {
@@ -132,10 +132,10 @@ public abstract class MockExternalContext10 extends ExternalContext
     public void addRequestParameterMap(String key, String value)
     {
         Map map = getRequestParameterMap();
-        if (request instanceof MockHttpServletRequest
+        if (request instanceof MockHttpServletRequest servletRequest
                 && map instanceof _RequestParameterMap)
         {
-            ((MockHttpServletRequest) request).addParameter(key, value);
+            servletRequest.addParameter(key, value);
         }
         else
         {
@@ -162,10 +162,10 @@ public abstract class MockExternalContext10 extends ExternalContext
     public void addRequestHeader(String key, String value)
     {
         Map map = getRequestHeaderMap();
-        if (request instanceof MockHttpServletRequest
+        if (request instanceof MockHttpServletRequest servletRequest
                 && map instanceof _RequestHeaderMap)
         {
-            ((MockHttpServletRequest) request).addHeader(key, value);
+            servletRequest.addHeader(key, value);
         }
         else
         {

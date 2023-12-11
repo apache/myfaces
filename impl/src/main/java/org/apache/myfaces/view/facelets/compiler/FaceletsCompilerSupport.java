@@ -162,7 +162,7 @@ public class FaceletsCompilerSupport
             {
                 try
                 {
-                    compiler.addTagDecorator((TagDecorator) ClassUtils.forName(decorator).newInstance());
+                    compiler.addTagDecorator((TagDecorator) ClassUtils.forName(decorator).getDeclaredConstructor().newInstance());
                     if (log.isLoggable(Level.FINE))
                     {
                         log.fine("Successfully loaded decorator: " + decorator);

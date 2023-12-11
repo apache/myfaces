@@ -73,9 +73,9 @@ public class LongConverter implements Converter
             return "";
         }
 
-        if (value instanceof String)
+        if (value instanceof String string)
         {
-            return (String)value;
+            return string;
         }
 
         try

@@ -79,11 +79,11 @@ public class EnumConverter implements Converter, PartialStateHolder
             return "";
         }
         
-        if (value instanceof String
+        if (value instanceof String string
                 && _isPassThroughStringValues(facesContext))
         {
             // pass through the String value
-            return (String) value;
+            return string;
         }
 
         // check if the value is an instance of the enum class

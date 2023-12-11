@@ -98,9 +98,8 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
     {
         if (!initialized)
         {
-            if (exceptionQueuedEvent instanceof ExceptionQueuedEvent)
+            if (exceptionQueuedEvent instanceof ExceptionQueuedEvent eqe)
             {
-                ExceptionQueuedEvent eqe = (ExceptionQueuedEvent)exceptionQueuedEvent;
                 ExceptionQueuedEventContext eqec = eqe.getContext();
                 if (eqec != null)
                 {
@@ -323,9 +322,9 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
     
     protected FacesException wrap(Throwable exception)
     {
-        if (exception instanceof FacesException)
+        if (exception instanceof FacesException facesException)
         {
-            return (FacesException) exception;
+            return facesException;
         }
         return new FacesException(exception);
     }

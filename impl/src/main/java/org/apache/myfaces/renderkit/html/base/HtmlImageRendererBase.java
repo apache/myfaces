@@ -62,9 +62,9 @@ public class HtmlImageRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter();
         
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);

@@ -123,8 +123,10 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
     {
         MyfacesConfig config = new MyfacesConfig();
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
-        request.addHeader("Accept", "image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, " +
-        		"image/pjpeg, application/x-ms-xbap, application/x-shockwave-flash, application/msword, */*"); //IE8
+        request.addHeader("Accept", """
+                image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, \
+                image/pjpeg, application/x-ms-xbap, application/x-shockwave-flash, application/msword, */*\
+                """); //IE8
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
@@ -137,8 +139,10 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
     {
         MyfacesConfig config = new MyfacesConfig();
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
-        request.addHeader("Accept", "text/html, application/xml;q=0.9, application/xhtml+xml;q=0.9, image/png, " +
-        		"image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1"); //Opera
+        request.addHeader("Accept", """
+                text/html, application/xml;q=0.9, application/xhtml+xml;q=0.9, image/png, \
+                image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1\
+                """); //Opera
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
@@ -151,12 +155,14 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
     {
         MyfacesConfig config = new MyfacesConfig();
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
-        request.addHeader("Accept", "image/gif, image/jpeg, image/pjpeg, application/x-ms-application,"+
-                "application/vnd.ms-xpsdocument, application/xaml+xml,"+
-                "application/x-ms-xbap, application/x-shockwave-flash,"+
-                "application/x-silverlight-2-b2, application/x-silverlight,"+
-                "application/vnd.ms-excel, application/vnd.ms-powerpoint,"+
-                "application/msword, */*"); //IE
+        request.addHeader("Accept", """
+                image/gif, image/jpeg, image/pjpeg, application/x-ms-application,\
+                application/vnd.ms-xpsdocument, application/xaml+xml,\
+                application/x-ms-xbap, application/x-shockwave-flash,\
+                application/x-silverlight-2-b2, application/x-silverlight,\
+                application/vnd.ms-excel, application/vnd.ms-powerpoint,\
+                application/msword, */*\
+                """); //IE
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);

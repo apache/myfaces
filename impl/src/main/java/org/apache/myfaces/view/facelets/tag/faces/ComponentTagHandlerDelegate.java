@@ -107,7 +107,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 found = true;
             }
-            else if (handler instanceof FacesWrapper)
+            else if (handler instanceof FacesWrapper wrapper)
             {
                 handler = ((FacesWrapper<? extends ComponentHandler>)handler).getWrapped();
             }
@@ -134,7 +134,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 found = true;
             }
-            else if (handler instanceof FacesWrapper)
+            else if (handler instanceof FacesWrapper wrapper)
             {
                 handler = ((FacesWrapper<? extends ComponentHandler>)handler).getWrapped();
             }
@@ -345,9 +345,9 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         c.pushComponentToEL(facesContext, c);
 
-        if (c instanceof UniqueIdVendor)
+        if (c instanceof UniqueIdVendor vendor)
         {
-            mctx.pushUniqueIdVendorToStack((UniqueIdVendor)c);
+            mctx.pushUniqueIdVendorToStack(vendor);
         }
         
         if (mctx.isDynamicComponentTopLevel())
@@ -421,11 +421,11 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
             }
             
-            if (c instanceof EditableValueHolder)
+            if (c instanceof EditableValueHolder holder)
             {
                 // add default validators here, because this feature 
                 // is only available in facelets (see MYFACES-2362 for details)
-                addEnclosingAndDefaultValidators(ctx, mctx, facesContext, (EditableValueHolder) c);
+                addEnclosingAndDefaultValidators(ctx, mctx, facesContext, holder);
             }
         }
         
@@ -737,9 +737,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         
         // special things to configure for a BeanValidator
-        if (validator instanceof BeanValidator)
+        if (validator instanceof BeanValidator beanValidator)
         {
-            BeanValidator beanValidator = (BeanValidator) validator;
             
             // check the validationGroups
             String validationGroups =  beanValidator.getValidationGroups();
@@ -847,9 +846,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 validator = context.getApplication().createValidator(validatorId);
 
                 // special things to configure for a BeanValidator
-                if (validator instanceof BeanValidator)
+                if (validator instanceof BeanValidator beanValidator)
                 {
-                    BeanValidator beanValidator = (BeanValidator) validator;
                     
                     // check the validationGroups
                     String validationGroups =  beanValidator.getValidationGroups();

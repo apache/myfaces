@@ -66,9 +66,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
 
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());
@@ -103,9 +103,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.endElement(HTML.INPUT_ELEM);
         }
-        else if (uiComponent instanceof UISelectMany)
+        else if (uiComponent instanceof UISelectMany many)
         {
-            renderCheckboxList(facesContext, (UISelectMany) uiComponent);
+            renderCheckboxList(facesContext, many);
         }
         else
         {
@@ -151,9 +151,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         }
         
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (selectMany instanceof ClientBehaviorHolder)
+        if (selectMany instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) selectMany).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
         }
         
         if (behaviors != null && !behaviors.isEmpty())
@@ -203,9 +203,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
     protected String getLayout(UISelectMany selectMany)
     {
-        if (selectMany instanceof HtmlSelectManyCheckbox)
+        if (selectMany instanceof HtmlSelectManyCheckbox checkbox)
         {
-            return ((HtmlSelectManyCheckbox) selectMany).getLayout();
+            return checkbox.getLayout();
         } 
         
         return (String) selectMany.getAttributes().get(ComponentAttrs.LAYOUT_ATTR);
@@ -395,9 +395,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof UISelectBoolean)
         {
-            if (uiComponent instanceof ClientBehaviorHolder)
+            if (uiComponent instanceof ClientBehaviorHolder holder)
             {
-                behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+                behaviors = holder.getClientBehaviors();
                 
                 if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                 {
@@ -444,9 +444,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         }
         else
         {
-            if (uiComponent instanceof ClientBehaviorHolder)
+            if (uiComponent instanceof ClientBehaviorHolder holder)
             {
-                behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+                behaviors = holder.getClientBehaviors();
                 
                 if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                 {
@@ -504,13 +504,13 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent component)
     {
-        if (component instanceof HtmlSelectBooleanCheckbox)
+        if (component instanceof HtmlSelectBooleanCheckbox checkbox)
         {
-            return ((HtmlSelectBooleanCheckbox) component).isDisabled();
+            return checkbox.isDisabled();
         }
-        else if (component instanceof HtmlSelectManyCheckbox)
+        else if (component instanceof HtmlSelectManyCheckbox checkbox)
         {
-            return ((HtmlSelectManyCheckbox) component).isDisabled();
+            return checkbox.isDisabled();
         }
 
         return AttributeUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
@@ -548,9 +548,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         {
             return submittedValue;
         }
-        else if (component instanceof UISelectMany)
+        else if (component instanceof UISelectMany many)
         {
-            return RendererUtils.getConvertedUISelectManyValue(facesContext, (UISelectMany) component, submittedValue);
+            return RendererUtils.getConvertedUISelectManyValue(facesContext, many, submittedValue);
         }
         else
         {

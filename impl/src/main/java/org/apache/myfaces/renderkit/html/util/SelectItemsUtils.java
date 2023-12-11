@@ -83,8 +83,10 @@ public class SelectItemsUtils
 
         if (anyItemSelected != null && anyItemSelected.get() == false)
         {
-            LOGGER.log(Level.WARNING, "UISelectOne[clientId={0}, value={1}] rendered without selection. "
-                    + "The first item will be displayed as selected, which could lead to unexpected behaviors.",
+            LOGGER.log(Level.WARNING, """
+                    UISelectOne[clientId={0}, value={1}] rendered without selection. \
+                    The first item will be displayed as selected, which could lead to unexpected behaviors.\
+                    """,
                     new Object[] { component.getClientId(context), ((UIInput) component).getValue() });
         }
     }
@@ -102,12 +104,12 @@ public class SelectItemsUtils
         {
             SelectItemInfo selectItemInfo = selectItemList.get(i);
             SelectItem selectItem = selectItemInfo.getItem();
-            if (selectItem instanceof SelectItemGroup)
+            if (selectItem instanceof SelectItemGroup group)
             {
                 writer.startElement(HTML.OPTGROUP_ELEM, selectItemInfo.getComponent()); // component);
                 writer.writeAttribute(HTML.LABEL_ATTR, selectItem.getLabel(), null);
 
-                SelectItem[] selectItems = ((SelectItemGroup) selectItem).getSelectItems();
+                SelectItem[] selectItems = group.getSelectItems();
                 List<SelectItemInfo> selectItemsGroupList = new ArrayList<>(selectItems.length);
                 for (SelectItem item : selectItems)
                 {
@@ -232,9 +234,9 @@ public class SelectItemsUtils
 
     private static boolean isTrue(Object obj)
     {
-        if (obj instanceof String)
+        if (obj instanceof String string)
         {
-            return Boolean.valueOf((String) obj);
+            return Boolean.valueOf(string);
         }
         if (!(obj instanceof Boolean))
         {

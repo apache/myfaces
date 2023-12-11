@@ -104,9 +104,9 @@ public class HtmlRadioRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter();
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
@@ -221,9 +221,9 @@ public class HtmlRadioRendererBase extends HtmlRenderer
 
     protected String getLayout(UIComponent selectOne)
     {
-        if (selectOne instanceof HtmlSelectOneRadio)
+        if (selectOne instanceof HtmlSelectOneRadio radio)
         {
-            return ((HtmlSelectOneRadio)selectOne).getLayout();
+            return radio.getLayout();
         }
 
         return (String)selectOne.getAttributes().get(ComponentAttrs.LAYOUT_ATTR);
@@ -232,9 +232,9 @@ public class HtmlRadioRendererBase extends HtmlRenderer
 
     protected String getStyleClass(UISelectOne selectOne)
      {
-         if (selectOne instanceof HtmlSelectOneRadio)
+         if (selectOne instanceof HtmlSelectOneRadio radio)
          {
-             return ((HtmlSelectOneRadio)selectOne).getStyleClass();
+             return radio.getStyleClass();
          }
 
          return (String)selectOne.getAttributes().get(ComponentAttrs.STYLE_CLASS_ATTR);
@@ -448,7 +448,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
         }
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_RADIO, null);
         
-        String group = uiComponent instanceof HtmlSelectOneRadio ? ((HtmlSelectOneRadio) uiComponent).getGroup() : null;
+        String group = uiComponent instanceof HtmlSelectOneRadio hsor ? hsor.getGroup() : null;
         if (group != null && !group.isEmpty())
         {
             UIForm form = ComponentUtils.findClosest(UIForm.class, uiComponent);
@@ -496,9 +496,9 @@ public class HtmlRadioRendererBase extends HtmlRenderer
         }
         
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
@@ -559,9 +559,9 @@ public class HtmlRadioRendererBase extends HtmlRenderer
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        if (uiComponent instanceof HtmlSelectOneRadio)
+        if (uiComponent instanceof HtmlSelectOneRadio radio)
         {
-            return ((HtmlSelectOneRadio)uiComponent).isDisabled();
+            return radio.isDisabled();
         }
 
         return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
@@ -613,9 +613,9 @@ public class HtmlRadioRendererBase extends HtmlRenderer
         @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
-            if (target instanceof UISelectOne)
+            if (target instanceof UISelectOne one)
             {
-                UISelectOne targetSelectOneRadio = ((UISelectOne) target);
+                UISelectOne targetSelectOneRadio =one;
                 String targetGroup = targetSelectOneRadio.getGroup();
                 if (group.equals(targetGroup))
                 {

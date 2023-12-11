@@ -308,10 +308,10 @@ public class ELText
                 ValueExpression valueExpression
                         = factory.createValueExpression(ctx, this.ve.getExpressionString(), String.class);
               
-                if (this.ve instanceof ContextAwareTagValueExpression)
+                if (this.ve instanceof ContextAwareTagValueExpression expression)
                 {
                     valueExpression = new ContextAwareTagValueExpression(
-                            ((ContextAwareTagValueExpression) this.ve).getLocation(),
+                            expression.getLocation(),
                             "expression",
                             valueExpression);
                 }

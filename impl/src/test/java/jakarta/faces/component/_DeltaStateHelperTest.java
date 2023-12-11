@@ -122,8 +122,8 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
         Assertions.assertTrue(val instanceof List);
         Assertions.assertTrue(((List) val).size() == 1);
 
-        _instance.add(KEY1, new Integer(2));
-        _instance.add(KEY2, new Integer(2));
+        _instance.add(KEY1, Integer.valueOf(2));
+        _instance.add(KEY2, Integer.valueOf(2));
 
         val = _instance.get(KEY1);
         Assertions.assertTrue(val instanceof List);
@@ -131,7 +131,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
 
         Assertions.assertTrue(((List) val).get(0).equals(VAL1));
 
-        Assertions.assertTrue(((List) val).get(1).equals(new Integer(2)));
+        Assertions.assertTrue(((List) val).get(1).equals(Integer.valueOf(2)));
 
         val = _instance.get(KEY2);
         Assertions.assertTrue(val instanceof List);

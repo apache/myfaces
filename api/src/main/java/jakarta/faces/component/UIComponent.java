@@ -751,8 +751,8 @@ public abstract class UIComponent
                         // Check if the listener points again to the component, to
                         // avoid StackoverflowException
                         boolean shouldProcessEvent = true;
-                        if (listener instanceof _EventListenerWrapper && 
-                            ((_EventListenerWrapper) listener).getListenerCapability() ==
+                        if (listener instanceof _EventListenerWrapper wrapper && 
+                            wrapper.getListenerCapability() ==
                                 _EventListenerWrapper.LISTENER_TYPE_COMPONENT)
                         {
                             shouldProcessEvent = false;
@@ -1133,17 +1133,17 @@ public abstract class UIComponent
         
         if (!loc.getVariant().isEmpty())
         {
-            list.add(String.format("%s_%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry(), loc.getVariant()));
+            list.add("%s_%s_%s_%s.properties".formatted(base, loc.getLanguage(), loc.getCountry(), loc.getVariant()));
         }
         
         if (!loc.getCountry().isEmpty())
         {
-            list.add(String.format("%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry()));
+            list.add("%s_%s_%s.properties".formatted(base, loc.getLanguage(), loc.getCountry()));
         }
         
         if (!loc.getLanguage().isEmpty())
         {
-          list.add(String.format("%s_%s.properties", base, loc.getLanguage()));
+          list.add("%s_%s.properties".formatted(base, loc.getLanguage()));
         }
         list.add(path);
         

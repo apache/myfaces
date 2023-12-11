@@ -678,9 +678,8 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
     
     protected void onAttribute(String name, Node node, Consumer<String> val)
     {
-        if (node instanceof Element)
+        if (node instanceof Element element)
         {
-            Element element = (Element) node;
             if (element.hasAttribute(name))
             {
                 val.accept(element.getAttribute(name));

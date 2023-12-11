@@ -37,34 +37,33 @@ public class CollectionUtils
                 callback.accept(Array.get(value, i));
             }
         }
-        else if (value instanceof ArrayList)
+        else if (value instanceof ArrayList arrayList)
         {
-            ArrayList<?> arrayList = (ArrayList) value;
             for (int i = 0; i < arrayList.size(); i++)
             {
                 callback.accept(arrayList.get(i));
             }
         }
-        else if (value instanceof Iterable)
+        else if (value instanceof Iterable iterable)
         {
             // value is Iterable --> Collection, DataModel,...
-            Iterator<?> iterator = ((Iterable<?>) value).iterator();
+            Iterator<?> iterator = iterable.iterator();
             while (iterator.hasNext())
             {
                 callback.accept(iterator.next());
             }
         }
-        else if (value instanceof Map)
+        else if (value instanceof Map map1)
         {
-            Map<Object, Object> map = ((Map<Object, Object>) value);
+            Map<Object, Object> map =map1;
             for (Map.Entry<Object, Object> entry : map.entrySet())
             {
                 callback.accept(entry);
             }
         }
-        else if (value instanceof Stream)
+        else if (value instanceof Stream stream)
         {
-            ((Stream<?>) value).forEach(callback);
+            stream.forEach(callback);
         }
         else
         {

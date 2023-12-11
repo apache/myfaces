@@ -100,9 +100,9 @@ public class MockHttpSession implements HttpSession
 
     protected MockWebContainer getWebContainer()
     {
-        if (this.servletContext instanceof MockServletContext)
+        if (this.servletContext instanceof MockServletContext context)
         {
-            return ((MockServletContext)this.servletContext).getWebContainer();
+            return context.getWebContainer();
         }
         return null;
     }
@@ -297,9 +297,9 @@ public class MockHttpSession implements HttpSession
             }
             HttpSessionBindingEvent event = new HttpSessionBindingEvent(this, key,
                     value);
-            if (value instanceof HttpSessionBindingListener)
+            if (value instanceof HttpSessionBindingListener listener)
             {
-                ((HttpSessionBindingListener)value).valueBound(event);
+                listener.valueBound(event);
             }
             Iterator listeners = attributeListeners.iterator();
             while (listeners.hasNext())
@@ -313,9 +313,9 @@ public class MockHttpSession implements HttpSession
         {
             HttpSessionBindingEvent event = new HttpSessionBindingEvent(this, key,
                     value);
-            if (value instanceof HttpSessionBindingListener)
+            if (value instanceof HttpSessionBindingListener listener)
             {
-                ((HttpSessionBindingListener)value).valueBound(event);
+                listener.valueBound(event);
             }            
             container.attributeAdded(event);
         }
@@ -338,9 +338,9 @@ public class MockHttpSession implements HttpSession
             }
             HttpSessionBindingEvent event = new HttpSessionBindingEvent(this, key,
                     value);
-            if (value instanceof HttpSessionBindingListener)
+            if (value instanceof HttpSessionBindingListener listener)
             {
-                ((HttpSessionBindingListener)value).valueUnbound(event);
+                listener.valueUnbound(event);
             }            
             Iterator listeners = attributeListeners.iterator();
             while (listeners.hasNext())
@@ -354,9 +354,9 @@ public class MockHttpSession implements HttpSession
         {
             HttpSessionBindingEvent event = new HttpSessionBindingEvent(this, key,
                     value);
-            if (value instanceof HttpSessionBindingListener)
+            if (value instanceof HttpSessionBindingListener listener)
             {
-                ((HttpSessionBindingListener)value).valueUnbound(event);
+                listener.valueUnbound(event);
             }
             container.attributeRemoved(event);
         }
@@ -385,9 +385,9 @@ public class MockHttpSession implements HttpSession
             }
             HttpSessionBindingEvent event = new HttpSessionBindingEvent(this, key,
                     value);
-            if (value instanceof HttpSessionBindingListener)
+            if (value instanceof HttpSessionBindingListener listener)
             {
-                ((HttpSessionBindingListener)value).valueBound(event);
+                listener.valueBound(event);
             }            
             Iterator listeners = attributeListeners.iterator();
             while (listeners.hasNext())
@@ -401,9 +401,9 @@ public class MockHttpSession implements HttpSession
         {
             HttpSessionBindingEvent event = new HttpSessionBindingEvent(this, key,
                     value);
-            if (value instanceof HttpSessionBindingListener)
+            if (value instanceof HttpSessionBindingListener listener)
             {
-                ((HttpSessionBindingListener)value).valueBound(event);
+                listener.valueBound(event);
             }
             container.attributeReplaced(event);
         }

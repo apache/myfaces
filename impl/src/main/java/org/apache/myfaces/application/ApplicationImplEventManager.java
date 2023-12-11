@@ -80,10 +80,10 @@ public class ApplicationImplEventManager
             SystemEvent event = null;
             
             // component attached listeners
-            if (source instanceof SystemEventListenerHolder)
+            if (source instanceof SystemEventListenerHolder holder)
             {
                 List<SystemEventListener> listeners =
-                        ((SystemEventListenerHolder) source).getListenersForEventClass(systemEventClass);
+                        holder.getListenersForEventClass(systemEventClass);
                 event = processComponentAttachedListeners(facesContext, listeners, systemEventClass, source, event);
             }
 

@@ -110,9 +110,9 @@ public class HtmlTableRendererBase extends HtmlRenderer
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIData.class);
 
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());
@@ -133,9 +133,9 @@ public class HtmlTableRendererBase extends HtmlRenderer
         writer.startElement(HTML.TABLE_ELEM, uiComponent);
         
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 HtmlRendererUtils.writeIdAndName(writer, uiComponent, facesContext);
@@ -250,10 +250,10 @@ public class HtmlTableRendererBase extends HtmlRenderer
     {
         String rowClasses;
         String columnClasses;
-        if(uiData instanceof HtmlDataTable) 
+        if(uiData instanceof HtmlDataTable table) 
         {
-            rowClasses = ((HtmlDataTable)uiData).getRowClasses();
-            columnClasses = ((HtmlDataTable)uiData).getColumnClasses();
+            rowClasses = table.getRowClasses();
+            columnClasses = table.getColumnClasses();
         }
         else
         {
@@ -670,9 +670,9 @@ public class HtmlTableRendererBase extends HtmlRenderer
             writer.startElement(HTML.TD_ELEM, null); // uiData);
         }
         String styleClass = null;
-        if (component instanceof HtmlColumn) 
+        if (component instanceof HtmlColumn column) 
         {
-            styleClass = ((HtmlColumn) component).getStyleClass();
+            styleClass = column.getStyleClass();
         }
         if (styles.hasColumnStyle()) 
         {
@@ -730,9 +730,9 @@ public class HtmlTableRendererBase extends HtmlRenderer
             UIData uiData, Styles styles, int rowStyleIndex) throws IOException
     {
         String rowClass = null;
-        if (uiData instanceof HtmlDataTable)
+        if (uiData instanceof HtmlDataTable table)
         {
-            rowClass = ((HtmlDataTable) uiData).getRowClass();
+            rowClass = table.getRowClass();
         }
         if (styles.hasRowStyle()) 
         {
@@ -1039,9 +1039,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
      */
     protected boolean hasFacet(boolean header, UIComponent uiComponent)
     {
-        if (uiComponent instanceof UIColumn)
+        if (uiComponent instanceof UIColumn uiColumn)
         {
-            UIColumn uiColumn = (UIColumn) uiComponent;
             return header ? uiColumn.getHeader() != null : uiColumn.getFooter() != null;
         }
         return false;
@@ -1188,16 +1187,16 @@ public class HtmlTableRendererBase extends HtmlRenderer
                 UIComponent uiComponent = component.getChildren().get(i);
                 if (uiComponent.isRendered())
                 {
-                    if (component instanceof UIData && uiComponent instanceof UIColumn)
+                    if (component instanceof UIData data && uiComponent instanceof UIColumn)
                     {
-                        beforeColumnHeaderOrFooter(facesContext, (UIData) component, header, columnIndex);
+                        beforeColumnHeaderOrFooter(facesContext, data, header, columnIndex);
                     }
                 
                     renderColumnChildHeaderOrFooterRow(facesContext, writer, uiComponent, styleClass, header);
                     
-                    if (component instanceof UIData && uiComponent instanceof UIColumn)
+                    if (component instanceof UIData data && uiComponent instanceof UIColumn)
                     {
-                        afterColumnHeaderOrFooter(facesContext, (UIData) component, header, columnIndex);
+                        afterColumnHeaderOrFooter(facesContext, data, header, columnIndex);
                     }
                 }
                 columnIndex += 1;
@@ -1236,19 +1235,18 @@ public class HtmlTableRendererBase extends HtmlRenderer
     protected void renderColumnChildHeaderOrFooterRow(FacesContext facesContext,
         ResponseWriter writer, UIComponent uiComponent, String styleClass, boolean isHeader) throws IOException
     {
-        if (uiComponent instanceof UIColumn)
+        if (uiComponent instanceof UIColumn column)
         {
             // allow column to override style class, new in Faces 1.2
-            if (uiComponent instanceof HtmlColumn)
+            if (uiComponent instanceof HtmlColumn htmlColumn)
             {
-                HtmlColumn column = (HtmlColumn)uiComponent;
-                if (isHeader && column.getHeaderClass()!=null)
+                if (isHeader && htmlColumn.getHeaderClass()!=null)
                 {
-                    styleClass = column.getHeaderClass();
+                    styleClass = htmlColumn.getHeaderClass();
                 }
-                else if (!isHeader && column.getFooterClass()!=null)
+                else if (!isHeader && htmlColumn.getFooterClass()!=null)
                 {
-                    styleClass = column.getFooterClass();
+                    styleClass = htmlColumn.getFooterClass();
                 }
             }
             else
@@ -1257,7 +1255,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
                 //has as component type jakarta.faces.Column, so as side
                 //effect it not create HtmlColumn, it create UIColumn
                 //classes.
-                UIColumn column = (UIColumn) uiComponent;                
                 if (isHeader)
                 {
                     String headerClass = (String) column.getAttributes().get("headerClass");
@@ -1279,12 +1276,12 @@ public class HtmlTableRendererBase extends HtmlRenderer
             if (isHeader)
             {
                 renderColumnHeaderCell(facesContext, writer, uiComponent,
-                    ((UIColumn) uiComponent).getHeader(), styleClass, 0);
+                    column.getHeader(), styleClass, 0);
             }
             else
             {
                 renderColumnFooterCell(facesContext, writer, uiComponent,
-                    ((UIColumn) uiComponent).getFooter(), styleClass, 0);
+                    column.getFooter(), styleClass, 0);
             }
         }
     }
@@ -1402,9 +1399,9 @@ public class HtmlTableRendererBase extends HtmlRenderer
      */
     protected static String getHeaderClass(UIComponent component)
     {
-        if (component instanceof HtmlDataTable)
+        if (component instanceof HtmlDataTable table)
         {
-            return ((HtmlDataTable) component).getHeaderClass();
+            return table.getHeaderClass();
         }
         else
         {
@@ -1419,9 +1416,9 @@ public class HtmlTableRendererBase extends HtmlRenderer
      */
     protected static String getFooterClass(UIComponent component)
     {
-        if (component instanceof HtmlDataTable)
+        if (component instanceof HtmlDataTable table)
         {
-            return ((HtmlDataTable) component).getFooterClass();
+            return table.getFooterClass();
         }
         else
         {

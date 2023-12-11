@@ -81,11 +81,15 @@ public class ResponseMockup extends HttpServlet
     public static final String TABLE_INSERT_BODY = "table_insert_body";
 
 
-    private static final String DEFAULT_RESPONSE = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-            "<partial-response><changes><update id=\"out1\"><![CDATA[<span id=\"out1\">2</span>]]></update><update id" +
-            "=\"jakarta.faces.ViewState\"><![CDATA[j_id1:j_id3]]></update></changes></partial-response>";
-    private static final String EMPTY_RESPONSE = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-            "<partial-response><changes></changes></partial-response>";
+    private static final String DEFAULT_RESPONSE = """
+            <?xml version="1.0" encoding="utf-8"?>\
+            <partial-response><changes><update id="out1"><![CDATA[<span id="out1">2</span>]]></update><update id\
+            ="jakarta.faces.ViewState"><![CDATA[j_id1:j_id3]]></update></changes></partial-response>\
+            """;
+    private static final String EMPTY_RESPONSE = """
+            <?xml version="1.0" encoding="utf-8"?>\
+            <partial-response><changes></changes></partial-response>\
+            """;
 
 
     /**
@@ -297,29 +301,33 @@ public class ResponseMockup extends HttpServlet
     {
         StringBuilder replacement = new StringBuilder();
 
-        replacement.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">" +
-                "<head>");
+        replacement.append("""
+                <html xmlns="http://www.w3.org/1999/xhtml">\
+                <head>\
+                """);
         replacement.append("    <title></title>");
         replacement.append("    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
         replacement.append("    <script type=\"text/javascript\" src=\"./myfaces/_impl/core/_Runtime.js\"></script>");
 
         replacement.append("    <script type=\"text/javascript\" src=\"./myfaces/_impl/_util/_Lang.js\"></script>");
-        replacement.append("</head>" +
-                "<body class=\"tundra\">  <div id=\"myfaces.logging\">\n" +
-                "    </div>" +
-                "    <div id = \"centerDiv\">\n" +
-                "        <h1>Selenium Test for body change done</h1>\n" +
-                "        <div id = \"testResults\">\n" +
-                "            <h3>Body replacement test  successful</h3>" +
-                "<div id='scriptreceiver'></div>\n" +
-                "        " +
-                "   <script type='text/javascript'>var b = true && true; document.getElementById" +
-                "('scriptreceiver').innerHTML=" +
-                "'hello from embedded script & in the body'; " +
-                "</script>            </div>" +
-                "    </div>" +
-                "</body>" +
-                "</html>");
+        replacement.append("""
+                </head>\
+                <body class="tundra">  <div id="myfaces.logging">
+                    </div>\
+                    <div id = "centerDiv">
+                        <h1>Selenium Test for body change done</h1>
+                        <div id = "testResults">
+                            <h3>Body replacement test  successful</h3>\
+                <div id='scriptreceiver'></div>
+                        \
+                   <script type='text/javascript'>var b = true && true; document.getElementById\
+                ('scriptreceiver').innerHTML=\
+                'hello from embedded script & in the body'; \
+                </script>            </div>\
+                    </div>\
+                </body>\
+                </html>\
+                """);
 
         Changes changes = new Changes(root);
         root.addElement(changes);
@@ -376,16 +384,22 @@ public class ResponseMockup extends HttpServlet
     {
         Changes changes = new Changes(root);
         changes.addChild(new Update(changes, "changesArea",
-                "<div id='changesArea'>update succeeded 1</div><script type='text/javascript'>" +
-                        "document.getElementById('evalarea2').innerHTML='embedded script at update succeed';" +
-                        "</script>"));
+                """
+                <div id='changesArea'>update succeeded 1</div><script type='text/javascript'>\
+                document.getElementById('evalarea2').innerHTML='embedded script at update succeed';\
+                </script>\
+                """));
         changes.addChild(new Insert2(changes, "inserted1",
-                "<div id='insertbefore'>insert2 before succeeded " +
-                "should display before test1</div><script type='text/javascript'>" +
-                        "document.getElementById('evalarea3').innerHTML='embedded script at insert succeed';" +
-                        "</script>", "changesArea", null));
-        changes.addChild(new Insert2(changes, "inserted2", "<div  id='insertafter'>insert2 after succeeded " +
-                "should display after test1</div>", null, "changesArea"));
+                """
+                <div id='insertbefore'>insert2 before succeeded \
+                should display before test1</div><script type='text/javascript'>\
+                document.getElementById('evalarea3').innerHTML='embedded script at insert succeed';\
+                </script>\
+                """, "changesArea", null));
+        changes.addChild(new Insert2(changes, "inserted2", """
+                <div  id='insertafter'>insert2 after succeeded \
+                should display after test1</div>\
+                """, null, "changesArea"));
         root.addElement(changes);
         out.println(root.toString());
     }
@@ -399,9 +413,11 @@ public class ResponseMockup extends HttpServlet
                         "document.getElementById('evalarea2').innerHTML='embedded script at update succeed';" +
                         "</script>"));
         changes.addChild(new Insert(changes, "inserted1",
-                "<div id='insertbefore'>insert before succeeded should display before test1</div>" +
-                        "<script type='text/javascript'>" +
-                        "document.getElementById('evalarea3').innerHTML='embedded script at insert succeed';</script>",
+                """
+                <div id='insertbefore'>insert before succeeded should display before test1</div>\
+                <script type='text/javascript'>\
+                document.getElementById('evalarea3').innerHTML='embedded script at insert succeed';</script>\
+                """,
                 "changesArea", null));
         changes.addChild(new Insert(changes, "inserted2",
                 "<div  id='insertafter'>insert after succeeded should display after test1</div>",

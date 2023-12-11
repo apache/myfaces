@@ -83,7 +83,6 @@ import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockWebContainer;
 import org.apache.myfaces.webapp.FacesInitializerImpl;
-import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.junit.jupiter.api.AfterAll;
 import  org.junit.jupiter.api.AfterEach;
 import  org.junit.jupiter.api.BeforeEach;
@@ -735,9 +734,8 @@ public abstract class AbstractMyFacesTestCase
     
     public void executeBeforeRender(FacesContext facesContext)
     {
-        if (lifecycle instanceof LifecycleImpl)
+        if (lifecycle instanceof LifecycleImpl lifecycleImpl)
         {
-            LifecycleImpl lifecycleImpl = (LifecycleImpl) lifecycle;
             
             Object phaseExecutor = null;
             Object phaseManager = null;
@@ -998,9 +996,8 @@ public abstract class AbstractMyFacesTestCase
     
     public void executeAfterRender(FacesContext facesContext)
     {
-        if (lifecycle instanceof LifecycleImpl)
+        if (lifecycle instanceof LifecycleImpl lifecycleImpl)
         {
-            LifecycleImpl lifecycleImpl = (LifecycleImpl) lifecycle;
             
             Object phaseExecutor = null;
             Object phaseManager = null;
@@ -1099,9 +1096,8 @@ public abstract class AbstractMyFacesTestCase
      */
     protected void executePhase(FacesContext facesContext, PhaseId phase)
     {
-        if (lifecycle instanceof LifecycleImpl)
+        if (lifecycle instanceof LifecycleImpl lifecycleImpl)
         {
-            LifecycleImpl lifecycleImpl = (LifecycleImpl) lifecycle;
             
             int phaseId = phase.equals(PhaseId.RESTORE_VIEW) ? 0 :
                           phase.equals(PhaseId.APPLY_REQUEST_VALUES) ? 1 : 

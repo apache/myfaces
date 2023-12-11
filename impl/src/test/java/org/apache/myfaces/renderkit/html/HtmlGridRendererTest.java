@@ -104,10 +104,13 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        Assertions.assertEquals("<table><tbody>"+
-                "<tr><td>col1Text</td></tr>"+
-                "<tr><td>col2Text</td></tr>"+
-                "</tbody>"+"</table>", output);
+        Assertions.assertEquals("""
+                <table><tbody>\
+                <tr><td>col1Text</td></tr>\
+                <tr><td>col2Text</td></tr>\
+                </tbody>\
+                </table>\
+                """, output);
     }
 
     @Test

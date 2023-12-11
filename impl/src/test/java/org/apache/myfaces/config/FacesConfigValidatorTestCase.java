@@ -67,17 +67,19 @@ public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
     }
     
     private static final String testFacesConfig =
-        "<?xml version='1.0' encoding='UTF-8'?>" +
-        "<!DOCTYPE faces-config PUBLIC " +
-            "\"-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN\" " +
-            "\"http://java.sun.com/dtd/web-facesconfig_1_1.dtd\">" +
-            "<faces-config>" +
-            "<navigation-rule>" +
-            "    <from-view-id>/doesNotExist.jsp</from-view-id>" +
-            "    <navigation-case>" +
-            "        <from-outcome>doesNotMatter</from-outcome>" +
-            "        <to-view-id>/doesNotExist2.jsp</to-view-id>" +
-            "    </navigation-case>" +
-            "</navigation-rule>" +
-       "</faces-config>";
+        """
+       <?xml version='1.0' encoding='UTF-8'?>\
+       <!DOCTYPE faces-config PUBLIC \
+       "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN" \
+       "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">\
+       <faces-config>\
+       <navigation-rule>\
+           <from-view-id>/doesNotExist.jsp</from-view-id>\
+           <navigation-case>\
+               <from-outcome>doesNotMatter</from-outcome>\
+               <to-view-id>/doesNotExist2.jsp</to-view-id>\
+           </navigation-case>\
+       </navigation-rule>\
+       </faces-config>\
+       """;
 }

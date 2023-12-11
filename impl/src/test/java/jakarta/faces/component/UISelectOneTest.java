@@ -41,15 +41,15 @@ public class UISelectOneTest extends AbstractJsfTestCase
         List<UIComponent> children = selectOne.getChildren();
 
         UISelectItem one = new UISelectItem();
-        one.setItemValue(new Integer(1));
+        one.setItemValue(Integer.valueOf(1));
         children.add(one);
 
         UISelectItem two = new UISelectItem();
-        two.setItemValue(new Integer(2));
+        two.setItemValue(Integer.valueOf(2));
         children.add(two);
 
         UISelectItem three = new UISelectItem();
-        three.setItemValue(new Integer(3));
+        three.setItemValue(Integer.valueOf(3));
         children.add(three);
 
         selectOne.validateValue(facesContext, null);
@@ -71,15 +71,15 @@ public class UISelectOneTest extends AbstractJsfTestCase
         List<UIComponent> children = selectOne.getChildren();
 
         UISelectItem one = new UISelectItem();
-        one.setItemValue(new Integer(1));
+        one.setItemValue(Integer.valueOf(1));
         children.add(one);
 
         UISelectItem two = new UISelectItem();
-        two.setItemValue(new Integer(2));
+        two.setItemValue(Integer.valueOf(2));
         children.add(two);
 
         UISelectItem three = new UISelectItem();
-        three.setItemValue(new Integer(3));
+        three.setItemValue(Integer.valueOf(3));
         children.add(three);
 
         selectOne.validateValue(facesContext, 1);
@@ -101,15 +101,15 @@ public class UISelectOneTest extends AbstractJsfTestCase
         List<UIComponent> children = selectOne.getChildren();
 
         UISelectItem one = new UISelectItem();
-        one.setItemValue(new Integer(1));
+        one.setItemValue(Integer.valueOf(1));
         children.add(one);
 
         UISelectItem two = new UISelectItem();
-        two.setItemValue(new Integer(2));
+        two.setItemValue(Integer.valueOf(2));
         children.add(two);
 
         UISelectItem three = new UISelectItem();
-        three.setItemValue(new Integer(3));
+        three.setItemValue(Integer.valueOf(3));
         children.add(three);
 
         selectOne.validateValue(facesContext, 4);
@@ -131,15 +131,15 @@ public class UISelectOneTest extends AbstractJsfTestCase
         List<UIComponent> children = selectOne.getChildren();
 
         UISelectItem one = new UISelectItem();
-        one.setItemValue(new Integer(1));
+        one.setItemValue(Integer.valueOf(1));
         children.add(one);
 
         UISelectItem two = new UISelectItem();
-        two.setItemValue(new Integer(2));
+        two.setItemValue(Integer.valueOf(2));
         children.add(two);
 
         UISelectItem three = new UISelectItem();
-        three.setItemValue(new Integer(3));
+        three.setItemValue(Integer.valueOf(3));
         three.setNoSelectionOption(true);
         children.add(three);
 
@@ -162,15 +162,15 @@ public class UISelectOneTest extends AbstractJsfTestCase
         List<UIComponent> children = selectOne.getChildren();
 
         UISelectItem one = new UISelectItem();
-        one.setItemValue(new Integer(1));
+        one.setItemValue(Integer.valueOf(1));
         children.add(one);
 
         UISelectItem two = new UISelectItem();
-        two.setItemValue(new Integer(2));
+        two.setItemValue(Integer.valueOf(2));
         children.add(two);
 
         UISelectItem three = new UISelectItem();
-        three.setItemValue(new Integer(3));
+        three.setItemValue(Integer.valueOf(3));
         three.setNoSelectionOption(true);
         children.add(three);
 

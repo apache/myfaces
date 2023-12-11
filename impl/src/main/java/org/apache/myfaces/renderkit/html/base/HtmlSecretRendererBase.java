@@ -56,9 +56,9 @@ public class HtmlSecretRendererBase extends HtmlRenderer
       ResponseWriter writer = facesContext.getResponseWriter();
       
       Map<String, List<ClientBehavior>> behaviors = null;
-      if (uiComponent instanceof ClientBehaviorHolder)
+      if (uiComponent instanceof ClientBehaviorHolder holder)
       {
-          behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+          behaviors = holder.getClientBehaviors();
           if (!behaviors.isEmpty())
           {
               ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
@@ -84,8 +84,8 @@ public class HtmlSecretRendererBase extends HtmlRenderer
         writer.startElement(HTML.INPUT_ELEM, uiComponent);
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_PASSWORD, null);
 
-        if (uiComponent instanceof ClientBehaviorHolder
-                && !((ClientBehaviorHolder) uiComponent).getClientBehaviors().isEmpty())
+        if (uiComponent instanceof ClientBehaviorHolder holder
+                && !holder.getClientBehaviors().isEmpty())
         {
             writer.writeAttribute(HTML.ID_ATTR, uiComponent.getClientId(facesContext), null);
         }
@@ -96,9 +96,9 @@ public class HtmlSecretRendererBase extends HtmlRenderer
         writer.writeAttribute(HTML.NAME_ATTR, uiComponent.getClientId(facesContext), null);
 
         boolean isRedisplay;
-        if (uiComponent instanceof HtmlInputSecret)
+        if (uiComponent instanceof HtmlInputSecret secret)
         {
-            isRedisplay = ((HtmlInputSecret)uiComponent).isRedisplay();
+            isRedisplay = secret.isRedisplay();
         }
         else
         {
@@ -110,9 +110,9 @@ public class HtmlSecretRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.VALUE_ATTR, strValue, ComponentAttrs.VALUE_ATTR);
         }
 
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = holder.getClientBehaviors();
             
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
@@ -191,9 +191,9 @@ public class HtmlSecretRendererBase extends HtmlRenderer
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        if (uiComponent instanceof HtmlInputSecret)
+        if (uiComponent instanceof HtmlInputSecret secret)
         {
-            return ((HtmlInputSecret)uiComponent).isDisabled();
+            return secret.isDisabled();
         }
 
         return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
@@ -204,9 +204,9 @@ public class HtmlSecretRendererBase extends HtmlRenderer
      */
     protected boolean isAutocompleteOff(FacesContext facesContext, UIComponent component)
     {
-        if (component instanceof HtmlInputSecret)
+        if (component instanceof HtmlInputSecret secret)
         {
-            String autocomplete = ((HtmlInputSecret)component).getAutocomplete();
+            String autocomplete = secret.getAutocomplete();
             if (autocomplete != null)
             {
                 return autocomplete.equals(AUTOCOMPLETE_VALUE_OFF);

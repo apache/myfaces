@@ -39,9 +39,9 @@ public class StateCacheUtils
                 {
                     return true;
                 }
-                if (rsm1 instanceof FacesWrapper)
+                if (rsm1 instanceof FacesWrapper wrapper)
                 {
-                    rsm1 = ((FacesWrapper<? extends ResponseStateManager>) rsm1).getWrapped();
+                    rsm1 = ((FacesWrapper<? extends ResponseStateManager>) wrapper).getWrapped();
                 }
                 else
                 {
@@ -54,22 +54,22 @@ public class StateCacheUtils
     
     public static MyfacesResponseStateManager getMyFacesResponseStateManager(ResponseStateManager rsm)
     {
-        if (rsm instanceof MyfacesResponseStateManager)
+        if (rsm instanceof MyfacesResponseStateManager manager)
         {
-            return (MyfacesResponseStateManager) rsm;
+            return manager;
         }
         else
         {
             ResponseStateManager rsm1 = rsm;
             while (rsm1 != null)
             {
-                if (rsm1 instanceof MyfacesResponseStateManager)
+                if (rsm1 instanceof MyfacesResponseStateManager manager)
                 {
-                    return (MyfacesResponseStateManager) rsm1;
+                    return manager;
                 }
-                if (rsm1 instanceof FacesWrapper)
+                if (rsm1 instanceof FacesWrapper wrapper)
                 {
-                    rsm1 = ((FacesWrapper<? extends ResponseStateManager>) rsm1).getWrapped();
+                    rsm1 = ((FacesWrapper<? extends ResponseStateManager>) wrapper).getWrapped();
                 }
                 else
                 {

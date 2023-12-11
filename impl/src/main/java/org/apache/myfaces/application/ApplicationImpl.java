@@ -459,9 +459,9 @@ public class ApplicationImpl extends Application
 
             UIComponent createdComponent;
 
-            if (retVal instanceof UIComponent)
+            if (retVal instanceof UIComponent component)
             {
-                createdComponent = (UIComponent) retVal;
+                createdComponent = component;
                 _handleAnnotations(facesContext, createdComponent, createdComponent);
             }
             else
@@ -675,9 +675,9 @@ public class ApplicationImpl extends Application
                     Object temp = ctx.lookup(ProjectStage.PROJECT_STAGE_JNDI_NAME);
                     if (temp != null)
                     {
-                        if (temp instanceof String)
+                        if (temp instanceof String string)
                         {
-                            stageName = (String) temp;
+                            stageName = string;
                         }
                         else
                         {
@@ -1027,9 +1027,8 @@ public class ApplicationImpl extends Application
                 FacesContext facesContext = getFacesContext();
                 _handleAttachedResourceDependencyAnnotations(facesContext, innerBehavior);
 
-                if (innerBehavior instanceof ClientBehaviorBase)
+                if (innerBehavior instanceof ClientBehaviorBase clientBehavior)
                 {
-                    ClientBehaviorBase clientBehavior = (ClientBehaviorBase) innerBehavior;
                     String renderType = clientBehavior.getRendererType();
                     if (renderType != null)
                     {
@@ -1040,13 +1039,12 @@ public class ApplicationImpl extends Application
             }
             else
             {
-                behavior = behaviorClass.newInstance();
+                behavior = behaviorClass.getDeclaredConstructor().newInstance();
                 FacesContext facesContext = getFacesContext();
                 _handleAttachedResourceDependencyAnnotations(facesContext, behavior);
 
-                if (behavior instanceof ClientBehaviorBase)
+                if (behavior instanceof ClientBehaviorBase clientBehavior)
                 {
-                    ClientBehaviorBase clientBehavior = (ClientBehaviorBase) behavior;
                     String renderType = clientBehavior.getRendererType();
                     if (renderType != null)
                     {
@@ -1179,7 +1177,7 @@ public class ApplicationImpl extends Application
                 {
                     try
                     {
-                        component = componentClass.newInstance();
+                        component = componentClass.getDeclaredConstructor().newInstance();
                     }
                     catch (InstantiationException e)
                     {
@@ -1285,7 +1283,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            UIComponent component = componentClass.newInstance();
+            UIComponent component = componentClass.getDeclaredConstructor().newInstance();
             _handleAnnotations(facesContext, component, component);
             return component;
         }
@@ -1311,7 +1309,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            UIComponent component = componentClass.newInstance();
+            UIComponent component = componentClass.getDeclaredConstructor().newInstance();
             _handleAnnotations(getFacesContext(), component, component);
             return component;
         }
@@ -1460,9 +1458,9 @@ public class ApplicationImpl extends Application
                 {
                     converterClass = (Class<? extends Converter>) converterClassOrClassName;
                 }
-                else if (converterClassOrClassName instanceof String)
+                else if (converterClassOrClassName instanceof String string)
                 {
-                    converterClass = ClassUtils.simpleClassForName((String) converterClassOrClassName);
+                    converterClass = ClassUtils.simpleClassForName(string);
                     _converterTargetClassToConverterClassMap.put(targetClass, converterClass);
                 }
                 else
@@ -1585,9 +1583,9 @@ public class ApplicationImpl extends Application
                 .getConverterConfiguration(converterClass.getName());
         
         // if the converter is a DataTimeConverter, check the init param for the default timezone (since 2.0)
-        if (converter instanceof DateTimeConverter && _dateTimeConverterDefaultTimeZoneIsSystemTimeZone)
+        if (converter instanceof DateTimeConverter timeConverter && _dateTimeConverterDefaultTimeZoneIsSystemTimeZone)
         {    
-            ((DateTimeConverter) converter).setTimeZone(TimeZone.getDefault());
+            timeConverter.setTimeZone(TimeZone.getDefault());
         }
 
         if (converterConfig != null && !converterConfig.getProperties().isEmpty())
@@ -1608,9 +1606,9 @@ public class ApplicationImpl extends Application
                         Object defaultValue;
 
                         Function<Object, Object> readFunction = null;
-                        if (pd instanceof LambdaPropertyDescriptor)
+                        if (pd instanceof LambdaPropertyDescriptor descriptor)
                         {
-                            readFunction = ((LambdaPropertyDescriptor) pd).getReadFunction();
+                            readFunction = descriptor.getReadFunction();
                         }
 
                         if (readFunction != null)
@@ -1631,9 +1629,9 @@ public class ApplicationImpl extends Application
                     Object convertedValue = ClassUtils.convertToType(property.getDefaultValue(), pd.getPropertyType());
 
                     BiConsumer<Object, Object> writeFunction = null;
-                    if (pd instanceof LambdaPropertyDescriptor)
+                    if (pd instanceof LambdaPropertyDescriptor descriptor)
                     {
-                        writeFunction = ((LambdaPropertyDescriptor) pd).getWriteFunction();
+                        writeFunction = descriptor.getWriteFunction();
                     }
 
                     if (writeFunction != null)
@@ -1979,7 +1977,7 @@ public class ApplicationImpl extends Application
         Renderer innerRenderer = inspected;
         while (innerRenderer != null)
         {
-            if (innerRenderer instanceof RendererWrapper)
+            if (innerRenderer instanceof RendererWrapper wrapper)
             {
                 Class<?> inspectedClass = innerRenderer.getClass();
                 _handleListenerForAnnotations(context, innerRenderer, inspectedClass, component, isProduction);
@@ -1987,7 +1985,7 @@ public class ApplicationImpl extends Application
                 _handleResourceDependencyAnnotations(context, inspectedClass, component, isProduction);
                 
                 // get the inner wrapper
-                innerRenderer = ((RendererWrapper)innerRenderer).getWrapped();
+                innerRenderer = wrapper.getWrapped();
             }
             else
             {
@@ -2050,7 +2048,7 @@ public class ApplicationImpl extends Application
         {
             // Determine the "target" on which to call subscribeToEvent.
             // If the class to which this annotation is attached implements ComponentSystemEventListener
-            if (inspected instanceof ComponentSystemEventListener)
+            if (inspected instanceof ComponentSystemEventListener listener)
             {
                 // If the class to which this annotation is attached is a UIComponent instance, "target" is the
                 // UIComponent instance.
@@ -2064,7 +2062,7 @@ public class ApplicationImpl extends Application
                  * to which this annotation is attached (which must implement ComponentSystemEventListener) as the
                  * second argument.
                  */
-                component.subscribeToEvent(annotation.systemEventClass(), (ComponentSystemEventListener) inspected);
+                component.subscribeToEvent(annotation.systemEventClass(), listener);
             }
             // If the class to which this annotation is attached implements SystemEventListener and does not implement
             // ComponentSystemEventListener, "target" is the Application instance.
@@ -2348,9 +2346,9 @@ public class ApplicationImpl extends Application
         {
             return (Class<? extends T>)obj;
         }
-        else if (obj instanceof String )
+        else if (obj instanceof String string )
         {
-            Class<?> clazz = ClassUtils.simpleClassForName((String)obj);
+            Class<?> clazz = ClassUtils.simpleClassForName(string);
             classMap.put(id, clazz);
             return (Class<? extends T>)clazz;
         }

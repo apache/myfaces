@@ -339,9 +339,9 @@ public class AjaxBehavior extends ClientBehaviorBase
         {
             return (Collection<String>) value;
         }
-        else if (value instanceof String)
+        else if (value instanceof String string)
         {
-            return getCollectionFromSpaceSplitString((String) value);
+            return getCollectionFromSpaceSplitString(string);
         }
         else
         {

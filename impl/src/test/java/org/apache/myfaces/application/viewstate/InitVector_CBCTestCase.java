@@ -51,9 +51,11 @@ public class InitVector_CBCTestCase extends AbstractJsfTestCase
             
             StateUtils.decrypt(sensitiveBytes, externalContext);
             
-            Assertions.fail("MyFaces should throw a meaningful " +
-                    "exception when users opt for CBC mode " +
-                    "encryption w/out an initialization vector.");
+            Assertions.fail("""
+                    MyFaces should throw a meaningful \
+                    exception when users opt for CBC mode \
+                    encryption w/out an initialization vector.\
+                    """);
             
         }catch(FacesException fe){
         }
@@ -69,9 +71,11 @@ public class InitVector_CBCTestCase extends AbstractJsfTestCase
             
             StateUtils.encrypt(sensitiveBytes, externalContext);
             
-            Assertions.fail("MyFaces should throw a meaningful " +
-                    "exception when users opt for CBC mode " +
-                    "encryption w/out an initialization vector.");
+            Assertions.fail("""
+                    MyFaces should throw a meaningful \
+                    exception when users opt for CBC mode \
+                    encryption w/out an initialization vector.\
+                    """);
             
         }catch(FacesException fe){
         }

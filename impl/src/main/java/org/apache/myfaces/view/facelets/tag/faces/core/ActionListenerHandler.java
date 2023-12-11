@@ -89,7 +89,7 @@ public final class ActionListenerHandler extends TagHandler
             {
                 try
                 {
-                    instance = (ActionListener) ClassUtils.forName(this.type).newInstance();
+                    instance = (ActionListener) ClassUtils.forName(this.type).getDeclaredConstructor().newInstance();
                 }
                 catch (Exception e)
                 {
@@ -164,8 +164,10 @@ public final class ActionListenerHandler extends TagHandler
         {
             if (getAttribute(ComponentAttrs.FOR_ATTR) == null)
             {
-                throw new TagException(tag, "is nested inside a composite component"
-                        + " but does not have a for attribute.");
+                throw new TagException(tag, """
+                        is nested inside a composite component\
+                         but does not have a for attribute.\
+                        """);
             }
             FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
             mctx.addAttachedObjectHandler(parent, this);

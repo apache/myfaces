@@ -38,8 +38,10 @@ public class SecretKeyConfigurationTest extends AbstractJsfTestCase
         
         try{
             StateUtils.encrypt("serialized objects".getBytes(), externalContext);
-            Assertions.fail("An exception should be thrown if there" +
-                    " is no SecretKey in application scope and cacheing is enabled ");
+            Assertions.fail("""
+                    An exception should be thrown if there\
+                     is no SecretKey in application scope and cacheing is enabled \
+                    """);
         }catch(Exception e){
         }
         
@@ -48,13 +50,15 @@ public class SecretKeyConfigurationTest extends AbstractJsfTestCase
     @Test
     public void testNonSecretKeyEncrypt(){
         
-        servletContext.setAttribute(StateUtils.INIT_SECRET_KEY_CACHE, new Integer(8));
+        servletContext.setAttribute(StateUtils.INIT_SECRET_KEY_CACHE, Integer.valueOf(8));
         
         try{
             
             StateUtils.encrypt("serialized objects".getBytes(), externalContext);
-            Assertions.fail("An exception should be thrown if there" +
-                    " is no SecretKey in application scope and cacheing is enabled ");
+            Assertions.fail("""
+                    An exception should be thrown if there\
+                     is no SecretKey in application scope and cacheing is enabled \
+                    """);
         }catch(Exception cce){
         }
         
@@ -71,13 +75,15 @@ public class SecretKeyConfigurationTest extends AbstractJsfTestCase
     @Test
     public void testNonSecretKeyDecrypt(){
         
-        servletContext.setAttribute(StateUtils.INIT_SECRET_KEY_CACHE, new Integer(8));
+        servletContext.setAttribute(StateUtils.INIT_SECRET_KEY_CACHE, Integer.valueOf(8));
         
         try{
             
             StateUtils.decrypt("serialized objects".getBytes(), externalContext);
-            Assertions.fail("An exception should be thrown if there" +
-                    " is no SecretKey in application scope and cacheing is enabled ");
+            Assertions.fail("""
+                    An exception should be thrown if there\
+                     is no SecretKey in application scope and cacheing is enabled \
+                    """);
         }catch(Exception cce){
         }
         

@@ -108,13 +108,15 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
                     facesContext.getPartialViewContext().isAjaxRequest()))
         {
             UIForm form = ComponentUtils.findClosest(UIForm.class, component);
-            if (form != null && form instanceof HtmlForm)
+            if (form != null && form instanceof HtmlForm htmlForm)
             {
-                String content = ((HtmlForm) form).getEnctype();
+                String content = htmlForm.getEnctype();
                 if (content == null || !content.contains("multipart/form-data"))
                 {
-                     FacesMessage message = new FacesMessage("file upload requires a form with"+
-                            " enctype equal to multipart/form-data");
+                     FacesMessage message = new FacesMessage("""
+                            file upload requires a form with\
+                             enctype equal to multipart/form-data\
+                            """);
                      facesContext.addMessage(component.getClientId(), message);
                 }
             }
@@ -128,9 +130,8 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         Assert.notNull(context, "context");
         Assert.notNull(component, "component");
 
-        if (submittedValue instanceof Part)
+        if (submittedValue instanceof Part part)
         {
-            Part part = (Part) submittedValue;
             if (isEmpty(part))
             {
                 return null;
@@ -167,9 +168,9 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_FILE, null);
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder)
+        if (component instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))

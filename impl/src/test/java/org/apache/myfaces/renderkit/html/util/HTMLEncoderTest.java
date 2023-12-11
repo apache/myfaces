@@ -363,14 +363,18 @@ public class HTMLEncoderTest extends AbstractJsfTestCase {
 			  (byte) 0xC2,(byte) 0xAF,(byte) 0xC2,(byte) 0xB0,(byte) 0xC2,(byte) 0xB1};
 	  
       String cad11 = new String(array11,"UTF-8") + ((char)(0xFF))+((char)(0x100));
-      String cad12 = "%C2%A1%C2%A2%C2%A3%C2%A4%C2%A5%C2%A6%C2%A7%C2%A8%C2%A9%C2%AA%C2%AB%C2%AC%C2%AD"+
-                     "%C2%AE%C2%AF%C2%B0%C2%B1%C3%BF%C4%80";
+      String cad12 = """
+                     %C2%A1%C2%A2%C2%A3%C2%A4%C2%A5%C2%A6%C2%A7%C2%A8%C2%A9%C2%AA%C2%AB%C2%AC%C2%AD\
+                     %C2%AE%C2%AF%C2%B0%C2%B1%C3%BF%C4%80\
+                     """;
       String cad13 = HTMLEncoder.encodeURIAttribute(new MockFacesContext(), cad11,"UTF-8");
       Assertions.assertEquals(cad12, cad13);
       
       String cad1= "?key=" + new String(array11,"UTF-8")+((char)(0xFF))+((char)(0x100));
-      String cad2 = "?key=%C2%A1%C2%A2%C2%A3%C2%A4%C2%A5%C2%A6%C2%A7%C2%A8%C2%A9%C2%AA%C2%AB%C2%AC%C2%AD"+
-                     "%C2%AE%C2%AF%C2%B0%C2%B1%C3%BF%C4%80";
+      String cad2 = """
+                     ?key=%C2%A1%C2%A2%C2%A3%C2%A4%C2%A5%C2%A6%C2%A7%C2%A8%C2%A9%C2%AA%C2%AB%C2%AC%C2%AD\
+                     %C2%AE%C2%AF%C2%B0%C2%B1%C3%BF%C4%80\
+                     """;
       String cad3 = HTMLEncoder.encodeURIAttribute(new MockFacesContext(), cad1,"UTF-8");
       Assertions.assertEquals(cad2, cad3);
             

@@ -59,8 +59,10 @@ public class ParamImplicitObject extends ImplicitObject
     public FeatureDescriptor getDescriptor()
     {
         return makeDescriptor(NAME,
-                              "Map whose keys are a set of request param names and whose values are the "
-                              + "first (or only) values for each name in the request",
+                              """
+                              Map whose keys are a set of request param names and whose values are the \
+                              first (or only) values for each name in the request\
+                              """,
                               Map.class);
     }
 

@@ -222,7 +222,7 @@ public final class TagAttributeImpl extends TagAttribute
                      (Arrays.equals(paramTypes, (Class[]) localCachedExpression[(i*3)+1])) )
                 {
                     if ((this.capabilities & EL_CC) != 0 &&
-                        localCachedExpression[(i*3)+2] instanceof LocationMethodExpression)
+                        localCachedExpression[(i*3)+2] instanceof LocationMethodExpression expression)
                     {
                         UIComponent cc = actx.getFaceletCompositionContext().getCompositeComponentFromStack();
                         if (cc != null)
@@ -231,11 +231,11 @@ public final class TagAttributeImpl extends TagAttribute
                                     CompositeComponentELUtils.LOCATION_KEY);
                             if (location != null)
                             {
-                                return ((LocationMethodExpression)localCachedExpression[(i*3)+2]).apply(
+                                return expression.apply(
                                         actx.getFaceletCompositionContext().getCompositeComponentLevel(), location);
                             }
                         }
-                        return ((LocationMethodExpression)localCachedExpression[(i*3)+2]).apply(
+                        return expression.apply(
                                 actx.getFaceletCompositionContext().getCompositeComponentLevel());
                     }
                     return (MethodExpression) localCachedExpression[(i*3)+2];
@@ -265,8 +265,10 @@ public final class TagAttributeImpl extends TagAttribute
                     // if we don't throw this exception here, another ELException will be
                     // thrown later, because #{cc.attrs.method(param)} will not work as a
                     // ValueExpression pointing to a MethodExpression
-                    throw new ELException("Cannot add parameters to a MethodExpression "
-                            + "pointing to cc.attrs");
+                    throw new ELException("""
+                            Cannot add parameters to a MethodExpression \
+                            pointing to cc.attrs\
+                            """);
                 }
                 
                 ValueExpression valueExpr = this.getValueExpression(ctx, Object.class);

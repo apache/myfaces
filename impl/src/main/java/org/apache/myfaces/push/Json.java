@@ -91,25 +91,25 @@ public final class Json
         {
             builder.append('"').append(escapeJS(object.toString(), false)).append('"');
         }
-        else if (object instanceof Date)
+        else if (object instanceof Date date)
         {
-            builder.append('"').append(formatRFC1123((Date) object)).append('"');
+            builder.append('"').append(formatRFC1123(date)).append('"');
         }
-        else if (object instanceof Collection<?>)
+        else if (object instanceof Collection<?> collection)
         {
-            encodeCollection((Collection<?>) object, builder);
+            encodeCollection(collection, builder);
         }
         else if (object.getClass().isArray())
         {
             encodeArray(object, builder);
         }
-        else if (object instanceof Map<?, ?>)
+        else if (object instanceof Map<?, ?> map)
         {
-            encodeMap((Map<?, ?>) object, builder);
+            encodeMap(map, builder);
         }
-        else if (object instanceof Class<?>)
+        else if (object instanceof Class<?> class1)
         {
-            encode(((Class<?>) object).getName(), builder);
+            encode(class1.getName(), builder);
         }
         else
         {
@@ -196,7 +196,7 @@ public final class Json
         catch (IntrospectionException e)
         {
             throw new IllegalArgumentException(
-                    String.format(ERROR_INVALID_BEAN, bean.getClass()), e);
+                    ERROR_INVALID_BEAN.formatted(bean.getClass()), e);
         }
 
         builder.append('{');
@@ -218,7 +218,7 @@ public final class Json
             catch (Exception e)
             {
                 throw new IllegalArgumentException(
-                        String.format(ERROR_INVALID_GETTER, property.getName(), bean.getClass()), e);
+                        ERROR_INVALID_GETTER.formatted(property.getName(), bean.getClass()), e);
             }
 
             if (value == null)

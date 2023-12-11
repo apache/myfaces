@@ -164,7 +164,7 @@ public abstract class Compiler
         {
             try
             {
-                return ClassUtils.forName(type).newInstance();
+                return ClassUtils.forName(type).getDeclaredConstructor().newInstance();
             }
             catch (Throwable t)
             {

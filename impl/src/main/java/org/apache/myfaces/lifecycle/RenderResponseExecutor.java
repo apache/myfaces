@@ -114,8 +114,10 @@ class RenderResponseExecutor extends PhaseExecutor
                         : Level.WARNING;
                 if (log.isLoggable(level))
                 {
-                    log.log(level, "Cicle over buildView-PreRenderViewEvent on RENDER_RESPONSE phase "
-                                   + "reaches maximal limit, please check listeners for infinite recursion.");
+                    log.log(level, """
+                                   Cicle over buildView-PreRenderViewEvent on RENDER_RESPONSE phase \
+                                   reaches maximal limit, please check listeners for infinite recursion.\
+                                   """);
                 }
             }
 

@@ -33,8 +33,10 @@ public class DynamicManagedPropertyProducerTest extends AbstractMyFacesCDIReques
 
     @Test
     public void testCDIManagedProperty() throws Exception {
-        String expectedValue = "numberManagedProperty=0textManagedProperty=zerolistManagedProperty" +
-                                   "=zerostringArrayManagedProperty=zerobean=org.apache.myfaces.cdi.bean.TestBean";
+        String expectedValue = """
+                                   numberManagedProperty=0textManagedProperty=zerolistManagedProperty\
+                                   =zerostringArrayManagedProperty=zerobean=org.apache.myfaces.cdi.bean.TestBean\
+                                   """;
         String result;
 
         startViewRequest("/CDIManagedProperty.xhtml");

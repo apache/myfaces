@@ -179,14 +179,14 @@ class StateCacheServerSide extends StateCache<Object, Object>
         {
             while (viewMap != null)
             {
-                if (viewMap instanceof ViewScopeProxyMap)
+                if (viewMap instanceof ViewScopeProxyMap map)
                 {
-                    viewScopeProxyMap = (ViewScopeProxyMap)viewMap;
+                    viewScopeProxyMap = map;
                     break;
                 }
-                else if (viewMap instanceof FacesWrapper)
+                else if (viewMap instanceof FacesWrapper wrapper)
                 {
-                    viewMap = ((FacesWrapper)viewMap).getWrapped();
+                    viewMap = wrapper.getWrapped();
                 }
             }
 
@@ -381,17 +381,17 @@ class StateCacheServerSide extends StateCache<Object, Object>
             log.finest("Entering deserializeView");
         }
 
-        if(state instanceof byte[])
+        if(state instanceof byte[] bytes)
         {
             if (log.isLoggable(Level.FINEST))
             {
                 log.finest("Processing deserializeView - deserializing serialized state. Bytes : "
-                        + ((byte[]) state).length);
+                        + bytes.length);
             }
 
             try
             {
-                ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) state);
+                ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 
                 InputStream is = bais;
                 if (is.read() == COMPRESSED_FLAG)

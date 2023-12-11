@@ -154,21 +154,21 @@ public class IterableDataModel<E> extends DataModel<E>
             _iterable = (Iterable<E>)data;
             _rowIndex = -1;
             setRowIndex(0);
-            if (data instanceof Set)
+            if (data instanceof Set set)
             {
-                _count = ((Set)data).size();
+                _count = set.size();
             }
-            else if (data instanceof List)
+            else if (data instanceof List list)
             {
-                _count = ((List)data).size();
+                _count = list.size();
             }
-            else if (data instanceof Map)
+            else if (data instanceof Map map)
             {
-                _count = ((Map)data).size();
+                _count = map.size();
             }
-            else if (data instanceof Collection)
+            else if (data instanceof Collection collection)
             {
-                _count = ((Collection)data).size();
+                _count = collection.size();
             }
             else 
             {

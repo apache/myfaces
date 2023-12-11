@@ -152,11 +152,11 @@ class _DeltaList<T> extends ArrayList<T> implements List<T>, PartialStateHolder,
             int i = 0;
             while (i < lst.length)
             {
-                if (lst[i] instanceof _AttachedDeltaWrapper)
+                if (lst[i] instanceof _AttachedDeltaWrapper wrapper)
                 {
                     //Delta
                     ((StateHolder)super.get(j)).restoreState(context,
-                            ((_AttachedDeltaWrapper) lst[i]).getWrappedStateObject());
+                            wrapper.getWrappedStateObject());
                     j++;
                 }
                 else if (lst[i] != null)
@@ -211,10 +211,8 @@ class _DeltaList<T> extends ArrayList<T> implements List<T>, PartialStateHolder,
                 for (int i = 0; i < size; i++)
                 {
                     Object value = super.get(i);
-                    if (value instanceof PartialStateHolder)
+                    if (value instanceof PartialStateHolder holder)
                     {
-                        //Delta
-                        PartialStateHolder holder = (PartialStateHolder) value;
                         if (!holder.isTransient())
                         {
                             Object attachedState = holder.saveState(context);
@@ -275,9 +273,9 @@ class _DeltaList<T> extends ArrayList<T> implements List<T>, PartialStateHolder,
             for (int i = 0; i < super.size(); i++)
             {
                 T value = super.get(i);
-                if (value instanceof PartialStateHolder)
+                if (value instanceof PartialStateHolder holder)
                 {
-                    ((PartialStateHolder)value).clearInitialState();
+                    holder.clearInitialState();
                 }
             }
         }
@@ -298,9 +296,9 @@ class _DeltaList<T> extends ArrayList<T> implements List<T>, PartialStateHolder,
         for (int i = 0; i < size; i++)
         {
             T value = super.get(i);
-            if (value instanceof PartialStateHolder)
+            if (value instanceof PartialStateHolder holder)
             {
-                ((PartialStateHolder)value).markInitialState();
+                holder.markInitialState();
             }
         }
     }

@@ -74,9 +74,9 @@ import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
               desc = "base component when all components must inherit",
               tagClass = "jakarta.faces.webapp.UIComponentELTag", configExcluded = true)
 @JSFJspProperty(name = "binding", returnType = "jakarta.faces.component.UIComponent",
-                longDesc = "Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind "
-                           + "to this component instance. This value must be an EL expression.",
-                desc = "backing bean property to bind to this component instance")
+        longDesc = "Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind "
+                + "to this component instance. This value must be an EL expression.",
+        desc = "backing bean property to bind to this component instance")
 public abstract class UIComponentBase extends UIComponent
 {
     private static Logger log = Logger.getLogger(UIComponentBase.class.getName());
@@ -336,8 +336,10 @@ public abstract class UIComponentBase extends UIComponent
         Collection<String> eventNames = getEventNames();
         if (eventNames == null)
         {
-            throw new IllegalStateException("Attempting to add a Behavior to a component, "
-                    + "that does not support any event types. getEventTypes() must return a non-null Set.");
+            throw new IllegalStateException("""
+                    Attempting to add a Behavior to a component, \
+                    that does not support any event types. getEventTypes() must return a non-null Set.\
+                    """);
         }
 
         if (eventNames.contains(eventName))
@@ -383,10 +385,10 @@ public abstract class UIComponentBase extends UIComponent
     {
         Assert.notNull(event, "event");
 
-        if (event instanceof BehaviorEvent && event.getComponent() == this)
+        if (event instanceof BehaviorEvent behaviorEvent && event.getComponent() == this)
         {
-            Behavior behavior = ((BehaviorEvent) event).getBehavior();
-            behavior.broadcast((BehaviorEvent) event);
+            Behavior behavior = behaviorEvent.getBehavior();
+            behavior.broadcast(behaviorEvent);
         }
 
         if (_facesListeners == null)
@@ -1644,9 +1646,8 @@ public abstract class UIComponentBase extends UIComponent
         }
         // StateHolder interface should take precedence over
         // List children
-        if (attachedObject instanceof StateHolder)
+        if (attachedObject instanceof StateHolder holder)
         {
-            StateHolder holder = (StateHolder) attachedObject;
             if (holder.isTransient())
             {
                 return null;
@@ -1654,7 +1655,7 @@ public abstract class UIComponentBase extends UIComponent
 
             return new _AttachedStateWrapper(attachedObject.getClass(), holder.saveState(context));
         }
-        else if (attachedObject instanceof Collection)
+        else if (attachedObject instanceof Collection collection)
         {
             if (ArrayList.class.equals(attachedObject.getClass()))
             {
@@ -1673,8 +1674,8 @@ public abstract class UIComponentBase extends UIComponent
             }
             else
             {
-                List<Object> lst = new ArrayList<>(((Collection<?>) attachedObject).size());
-                for (Object item : (Collection<?>) attachedObject)
+                List<Object> lst = new ArrayList<>(collection.size());
+                for (Object item : collection)
                 {
                     if (item != null)
                     {
@@ -1702,10 +1703,10 @@ public abstract class UIComponentBase extends UIComponent
         {
             return null;
         }
-        if (stateObj instanceof _AttachedListStateWrapper)
+        if (stateObj instanceof _AttachedListStateWrapper wrapper)
         {
             // perf: getWrappedStateList in _AttachedListStateWrapper is always ArrayList: see saveAttachedState
-            ArrayList<Object> lst = (ArrayList<Object>) ((_AttachedListStateWrapper) stateObj).getWrappedStateList();
+            ArrayList<Object> lst = (ArrayList<Object>) wrapper.getWrappedStateList();
             List<Object> restoredList = new ArrayList<Object>(lst.size());
             for (int i = 0, size = lst.size(); i < size; i++)
             {
@@ -1714,9 +1715,8 @@ public abstract class UIComponentBase extends UIComponent
             }
             return restoredList;
         }
-        else if (stateObj instanceof _AttachedCollectionStateWrapper)
-        {
-            _AttachedCollectionStateWrapper wrappedState = (_AttachedCollectionStateWrapper) stateObj; 
+        else if (stateObj instanceof _AttachedCollectionStateWrapper wrappedState)
+        { 
             Class<?> clazz = wrappedState.getClazz();
             List<Object> lst = wrappedState.getWrappedStateList();
             Collection restoredList;
@@ -1742,9 +1742,9 @@ public abstract class UIComponentBase extends UIComponent
             return restoredList;
 
         }
-        else if (stateObj instanceof _AttachedStateWrapper)
+        else if (stateObj instanceof _AttachedStateWrapper wrapper)
         {
-            Class<?> clazz = ((_AttachedStateWrapper) stateObj).getClazz();
+            Class<?> clazz = wrapper.getClazz();
             Object restoredObject;
             try
             {
@@ -1759,12 +1759,9 @@ public abstract class UIComponentBase extends UIComponent
             {
                 throw new RuntimeException(e);
             }
-            if (restoredObject instanceof StateHolder)
+            if (restoredObject instanceof StateHolder holder)
             {
-                _AttachedStateWrapper wrapper = (_AttachedStateWrapper) stateObj;
                 Object wrappedState = wrapper.getWrappedStateObject();
-
-                StateHolder holder = (StateHolder) restoredObject;
                 holder.restoreState(context, wrappedState);
             }
             return restoredObject;
@@ -1939,12 +1936,12 @@ public abstract class UIComponentBase extends UIComponent
             clearInitialState();
         }
         
-        if (values[0] instanceof _AttachedDeltaWrapper)
+        if (values[0] instanceof _AttachedDeltaWrapper wrapper)
         {
             //Delta: check for null is not necessary since _facesListener field
             //is only set once and never reset
             ((StateHolder)_facesListeners).restoreState(context,
-                    ((_AttachedDeltaWrapper) values[0]).getWrappedStateObject());
+                    wrapper.getWrappedStateObject());
         }
         else if (values[0] != null || (values.length == FULL_STATE_ARRAY_SIZE))
         {
@@ -2051,11 +2048,11 @@ public abstract class UIComponentBase extends UIComponent
             for (Map.Entry<String, Object> entry : stateMap.entrySet())
             {
                 Object savedObject = entry.getValue(); 
-                if (savedObject instanceof _AttachedDeltaWrapper)
+                if (savedObject instanceof _AttachedDeltaWrapper wrapper)
                 {
                     StateHolder holderList = (StateHolder) _behaviorsMap.get(entry.getKey());
                     holderList.restoreState(facesContext,
-                                            ((_AttachedDeltaWrapper) savedObject).getWrappedStateObject());
+                                            wrapper.getWrappedStateObject());
                 }
                 else
                 {
@@ -2150,11 +2147,11 @@ public abstract class UIComponentBase extends UIComponent
             for (Map.Entry<Class<? extends SystemEvent>, Object> entry : stateMap.entrySet())
             {
                 Object savedObject = entry.getValue(); 
-                if (savedObject instanceof _AttachedDeltaWrapper)
+                if (savedObject instanceof _AttachedDeltaWrapper wrapper)
                 {
                     StateHolder holderList = (StateHolder) _systemEventListenerClassMap.get(entry.getKey());
                     holderList.restoreState(facesContext,
-                                            ((_AttachedDeltaWrapper) savedObject).getWrappedStateObject());
+                                            wrapper.getWrappedStateObject());
                 }
                 else
                 {

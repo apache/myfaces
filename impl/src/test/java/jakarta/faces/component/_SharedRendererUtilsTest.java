@@ -75,7 +75,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         @Override
         public boolean equals(Object obj)
         {
-            return obj instanceof POJO && ((POJO) obj).id == this.id;
+            return obj instanceof POJO pojo && pojo.id == this.id;
         }
 
         @Override
@@ -94,7 +94,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         public Object getAsObject(FacesContext context, UIComponent component,
                 String value) throws ConverterException
         {
-            return new POJO(new Integer(value), value);
+            return new POJO(Integer.valueOf(value), value);
         }
 
         public String getAsString(FacesContext context, UIComponent component,
@@ -222,8 +222,8 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
         Assertions.assertTrue(target instanceof int[]);
         int[] array = (int[]) target;
-        Assertions.assertTrue(new Integer(submittedValue[0]).equals(array[0]));
-        Assertions.assertTrue(new Integer(submittedValue[0]).equals(array[0]));
+        Assertions.assertTrue(Integer.valueOf(submittedValue[0]).equals(array[0]));
+        Assertions.assertTrue(Integer.valueOf(submittedValue[0]).equals(array[0]));
         
     }
     
@@ -241,8 +241,8 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
         Assertions.assertTrue(target instanceof Float[]);
         Float[] array = (Float[]) target;
-        Assertions.assertTrue(new Float(submittedValue[0]).equals(array[0]));
-        Assertions.assertTrue(new Float(submittedValue[1]).equals(array[1]));
+        Assertions.assertTrue(Float.valueOf(submittedValue[0]).equals(array[0]));
+        Assertions.assertTrue(Float.valueOf(submittedValue[1]).equals(array[1]));
     }
     
     /**

@@ -442,9 +442,9 @@ public class FacesConfigurator
     {        
         while (instance != null)
         {
-            if (instance instanceof Purgeable)
+            if (instance instanceof Purgeable purgeable)
             {
-                ((Purgeable) instance).purge();
+                purgeable.purge();
             }
 
             if (instance instanceof FacesWrapper)
@@ -729,10 +729,12 @@ public class FacesConfigurator
             {
                 // the BeanValidator was installed via a config file,
                 // but bean validation is not available
-                log.log(Level.WARNING, "The BeanValidator was installed as a " +
-                        "default-validator from a faces-config file, but bean " +
-                        "validation is not available on the classpath, " +
-                        "thus it will not work!");
+                log.log(Level.WARNING, """
+                        The BeanValidator was installed as a \
+                        default-validator from a faces-config file, but bean \
+                        validation is not available on the classpath, \
+                        thus it will not work!\
+                        """);
             }
             else if (defaultBeanValidatorDisabled)
             {
@@ -781,9 +783,9 @@ public class FacesConfigurator
         try
         {
             //invoke the injection over the inner one first
-            if (instance instanceof FacesWrapper)
+            if (instance instanceof FacesWrapper wrapper)
             {
-                Object innerInstance = ((FacesWrapper) instance).getWrapped();
+                Object innerInstance = wrapper.getWrapped();
                 if (innerInstance != null)
                 {
                     _callInjectAndPostConstruct(innerInstance);
@@ -898,9 +900,9 @@ public class FacesConfigurator
             {
                 Class<?> clazz = ClassUtils.classForName(elResolverPredicateClass);
                 Object elResolverPredicate = ClassUtils.newInstance(clazz);
-                if (elResolverPredicate instanceof Predicate)
+                if (elResolverPredicate instanceof Predicate predicate)
                 {
-                    runtimeConfig.setELResolverPredicate((Predicate) elResolverPredicate);
+                    runtimeConfig.setELResolverPredicate(predicate);
                 }
                 else
                 {
@@ -1405,9 +1407,9 @@ public class FacesConfigurator
         while (it.hasNext())
         {
             Flow flow = it.next();
-            if (flow instanceof FlowImpl)
+            if (flow instanceof FlowImpl impl)
             {
-                ((FlowImpl) flow).freeze();
+                impl.freeze();
             }
             facesContext.getApplication().getFlowHandler().addFlow(facesContext, flow);
         }

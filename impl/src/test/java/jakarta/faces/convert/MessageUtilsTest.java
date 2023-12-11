@@ -25,7 +25,6 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class MessageUtilsTest extends AbstractJsfTestCase

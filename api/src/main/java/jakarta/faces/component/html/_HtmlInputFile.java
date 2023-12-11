@@ -134,16 +134,16 @@ abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
         {
             return true;
         }
-        else if (value instanceof String)
+        else if (value instanceof String string)
         {
-            if ( ((String)value).trim().length() <= 0 )
+            if ( string.trim().length() <= 0 )
             {
                 return true;
             }
         }
-        else if (value instanceof java.util.Collection)
+        else if (value instanceof java.util.Collection collection)
         {
-            if ( ((java.util.Collection)value).isEmpty())
+            if ( collection.isEmpty())
             {
                 return true;
             }
@@ -155,16 +155,16 @@ abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
                 return true;
             }
         }
-        else if (value instanceof java.util.Map)
+        else if (value instanceof java.util.Map map)
         {
-            if ( ((java.util.Map)value).isEmpty())
+            if ( map.isEmpty())
             {
                 return true;
             }
         }
-        else if (value instanceof jakarta.servlet.http.Part) 
+        else if (value instanceof jakarta.servlet.http.Part part) 
         {
-            if (((jakarta.servlet.http.Part)value).getSize() <= 0) 
+            if (part.getSize() <= 0) 
             {
                 return true;
             }

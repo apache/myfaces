@@ -329,10 +329,10 @@ public class ComponentUtils
 
         intBuf.append("[Class: ");
         intBuf.append(component.getClass().getName());
-        if (component instanceof UIViewRoot)
+        if (component instanceof UIViewRoot root)
         {
             intBuf.append(",ViewId: ");
-            intBuf.append(((UIViewRoot)component).getViewId());
+            intBuf.append(root.getViewId());
         }
         else
         {

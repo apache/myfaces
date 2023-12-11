@@ -21,7 +21,6 @@ package org.apache.myfaces.view.facelets.tag.faces.html;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

@@ -521,7 +521,7 @@ public class MockFlash extends Flash
         if (redirect == null)
         {
             Object response = externalContext.getResponse();
-            if (response instanceof HttpServletResponse)
+            if (response instanceof HttpServletResponse httpResponse)
             {
                 // Request values are lost after a redirect. We can create a
                 // temporal cookie to pass the params between redirect calls.
@@ -532,7 +532,6 @@ public class MockFlash extends Flash
                 if (cookie != null)
                 {
                     redirect = Boolean.TRUE;
-                    HttpServletResponse httpResponse = (HttpServletResponse) response;
                     // A redirect happened, so it is safe to remove the cookie, setting
                     // the maxAge to 0 seconds. The effect is we passed FLASH_REDIRECT param
                     // to this request object
@@ -627,7 +626,7 @@ public class MockFlash extends Flash
         if (keepMessages == null)
         {
             Object response = externalContext.getResponse();
-            if (response instanceof HttpServletResponse)
+            if (response instanceof HttpServletResponse httpResponse)
             {
                 // Request values are lost after a redirect. We can create a
                 // temporal cookie to pass the params between redirect calls.
@@ -638,7 +637,6 @@ public class MockFlash extends Flash
                 if (cookie != null)
                 {
                     keepMessages = Boolean.TRUE;
-                    HttpServletResponse httpResponse = (HttpServletResponse) response;
                     // It is safe to remove the cookie, setting
                     // the maxAge to 0 seconds. The effect is we passed FLASH_KEEP_MESSAGES param
                     // to this request object
@@ -787,9 +785,9 @@ public class MockFlash extends Flash
     private Boolean convertToBoolean(Object value)
     {
         boolean booleanValue;
-        if (value instanceof Boolean)
+        if (value instanceof Boolean boolean1)
         {
-            booleanValue = (Boolean) value;
+            booleanValue = boolean1;
         }
         else
         {

@@ -56,7 +56,6 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
 import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
-import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.apache.myfaces.test.mock.MockFacesContextFactory;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;

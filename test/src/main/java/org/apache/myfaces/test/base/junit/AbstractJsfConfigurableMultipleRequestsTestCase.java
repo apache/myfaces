@@ -268,9 +268,9 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase
             externalContext = facesContext
                     .getExternalContext();
         }
-        if (facesContext instanceof MockFacesContext)
+        if (facesContext instanceof MockFacesContext context)
         {
-            ((MockFacesContext) facesContext).setApplication(application);
+            context.setApplication(application);
         }
     }
 

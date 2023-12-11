@@ -18,7 +18,6 @@
  */
 package jakarta.faces.component.html;
 
-import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIOutput;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;

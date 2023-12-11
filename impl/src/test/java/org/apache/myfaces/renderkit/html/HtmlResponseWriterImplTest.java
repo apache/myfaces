@@ -98,14 +98,18 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.startElement("td", null);
         
         Assertions.assertTrue(getFieldBooleanValue(insideScriptField, _writer, false),
-                "We have now opened various elements inside a script element, "+
-                "but _isInsideScript should still be true.");
+                """
+                We have now opened various elements inside a script element, \
+                but _isInsideScript should still be true.\
+                """);
         
         _writer.write("column value");
         
         Assertions.assertTrue(getFieldBooleanValue(insideScriptField, _writer, false),
-                "We have now written some text inside a script element, "+
-                "but _isInsideScript should still be true.");
+                """
+                We have now written some text inside a script element, \
+                but _isInsideScript should still be true.\
+                """);
         
         _writer.endElement("td");
         _writer.endElement("tr");
@@ -113,8 +117,10 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.endElement("script");
         
         Assertions.assertFalse(getFieldBooleanValue(insideScriptField, _writer, false),
-                "We have now closed the script element, so _isInsideScript should be " +
-                "false (or null).");
+                """
+                We have now closed the script element, so _isInsideScript should be \
+                false (or null).\
+                """);
         
         _writer.endElement("head");
         _writer.endDocument();

@@ -61,9 +61,9 @@ public class HtmlBodyRendererBase extends HtmlRenderer
         super.encodeBegin(facesContext, component); //check for NP
 
         ResponseWriter writer = facesContext.getResponseWriter();
-        if (component instanceof ClientBehaviorHolder)
+        if (component instanceof ClientBehaviorHolder holder)
         {
-            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);

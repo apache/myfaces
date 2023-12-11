@@ -116,7 +116,7 @@ public class AjaxHandler extends TagHandler implements
 
     @JSFFaceletAttribute(name = "listener", className = "jakarta.el.MethodExpression",
             deferredMethodSignature = "public void m(jakarta.faces.event.AjaxBehaviorEvent evt) "
-                                      + "throws jakarta.faces.event.AbortProcessingException")
+                    + "throws jakarta.faces.event.AbortProcessingException")
     private final TagAttribute listener;
 
     @JSFFaceletAttribute(name = "onevent", className = "jakarta.el.ValueExpression",
@@ -374,9 +374,9 @@ public class AjaxHandler extends TagHandler implements
         }
 
         // remap @this to the composite targets
-        if (parent instanceof ClientBehaviorRedirectEventComponentWrapper)
+        if (parent instanceof ClientBehaviorRedirectEventComponentWrapper wrapper)
         {
-            ValueExpression targets = ((ClientBehaviorRedirectEventComponentWrapper) parent).getTargets();
+            ValueExpression targets = wrapper.getTargets();
             String targetsString = targets == null ? null : (String) targets.getValue(context.getELContext());
             String[] targetsArray = targetsString == null ? null : targetsString.trim().split(" +");
 
