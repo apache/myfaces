@@ -579,7 +579,7 @@
                             <value>COMPAT</value>
                         </property>
                     </systemProperties>
-                    <argLine>-Djava.locale.providers=COMPAT</argLine>
+                    <argLine>-Djava.locale.providers=COMPAT --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
                 </configuration>
 
                 <executions>
