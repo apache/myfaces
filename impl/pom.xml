@@ -579,7 +579,9 @@
                             <value>COMPAT</value>
                         </property>
                     </systemProperties>
-                    <argLine>-Djava.locale.providers=COMPAT --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+                    <argLine>-Djava.locale.providers=COMPAT</argLine>
+                    <!-- We need this for EasyMock :/ -->
+                    <argLine>--add-opens java.base/java.lang=ALL-UNNAME --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.text=ALL-UNNAMED</argLine>
                 </configuration>
 
                 <executions>
