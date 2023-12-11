@@ -18,7 +18,28 @@
  */
 package org.apache.myfaces.application;
 
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.annotation.View;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.application.ResourceWrapper;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.core.api.shared.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.LocaleUtils;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.resource.ContractResource;
+import org.apache.myfaces.resource.ContractResourceLoader;
+import org.apache.myfaces.resource.ResourceCachedInfo;
 import org.apache.myfaces.resource.ResourceHandlerCache;
 import org.apache.myfaces.resource.ResourceHandlerCache.ResourceValue;
 import org.apache.myfaces.resource.ResourceHandlerSupport;
@@ -26,21 +47,12 @@ import org.apache.myfaces.resource.ResourceImpl;
 import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.resource.ResourceMeta;
 import org.apache.myfaces.resource.ResourceValidationUtils;
-import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.ExternalContextUtils;
-import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.SkipMatchIterator;
+import org.apache.myfaces.util.lang.StringUtils;
 
-import jakarta.enterprise.inject.Any;
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.faces.annotation.View;
-import jakarta.faces.application.Resource;
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.ResourceWrapper;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -63,19 +75,6 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import jakarta.faces.application.ResourceVisitOption;
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.view.ViewDeclarationLanguage;
-
-import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.core.api.shared.lang.Assert;
-import org.apache.myfaces.core.api.shared.lang.LocaleUtils;
-import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
-import org.apache.myfaces.resource.ContractResource;
-import org.apache.myfaces.resource.ContractResourceLoader;
-import org.apache.myfaces.resource.ResourceCachedInfo;
-import org.apache.myfaces.util.lang.SkipMatchIterator;
 
 /**
  * DOCUMENT ME!
@@ -1713,16 +1712,14 @@ public class ResourceHandlerImpl extends ResourceHandler
     {
         ArrayList<String> views = new ArrayList<String>();
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
-        if(beanManager != null)
+        if (beanManager != null)
         {
-            for(Bean<?> bean : beanManager.getBeans(Object.class, Any.Literal.INSTANCE))
+            for (Bean<?> bean : beanManager.getBeans(Object.class, Any.Literal.INSTANCE))
             {
-                for(Annotation anno :bean.getBeanClass().getAnnotations())
-                {   
-                    // ensure it is of type view (avoid cast errors such as jdk.proxy4.$Proxy17)
-                    if(anno instanceof View) 
+                for (Annotation qualifier : bean.getQualifiers())
+                {
+                    if (qualifier instanceof View view)
                     {
-                        View view = (View) anno;
                         views.add(view.value());
                     }
                 }
