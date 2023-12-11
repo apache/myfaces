@@ -513,7 +513,7 @@
     </distributionManagement>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <siteModule.path>core40</siteModule.path>
         <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
         <siteContent.path>${user.home}/myfaces-site/site/${siteModule.path}</siteContent.path>
