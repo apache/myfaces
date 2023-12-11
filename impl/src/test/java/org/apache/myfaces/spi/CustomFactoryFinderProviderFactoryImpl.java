@@ -28,16 +28,19 @@ public class CustomFactoryFinderProviderFactoryImpl extends FactoryFinderProvide
     {
         return new FactoryFinderProvider()
         {
+            @Override
             public void setFactory(String factoryName, String implName)
             {
-                int j = 10;
+
             }
             
+            @Override
             public void releaseFactories() throws FacesException
             {
-                int j = 10;
+
             }
             
+            @Override
             public Object getFactory(String factoryName) throws FacesException
             {
                 return 1;
