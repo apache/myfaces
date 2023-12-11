@@ -691,9 +691,10 @@ public class FacesInitializerImpl implements FacesInitializer
         if (facesServletRegistration != null)
         {
             facesContext.getApplication().getViewHandler().getViews(facesContext, "/", 
-                    ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME).forEach(s -> {
-                        facesServletRegistration.addMapping(s);
-                    });
+                    ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME).forEach(s ->
+            {
+                facesServletRegistration.addMapping(s);
+            });
         }
     }
 

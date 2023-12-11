@@ -63,7 +63,9 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
                 return null;
             }
 
-            Set<Bean<?>> beans = beanManager.getBeans(Flow.class, new AnnotationLiteral<FlowDefinition>(){ });
+            Set<Bean<?>> beans = beanManager.getBeans(Flow.class, new AnnotationLiteral<FlowDefinition>()
+            {
+            });
             for (Bean bean : beans)
             {
                 // TODO we should actually remember the CC and destroy on shutdown

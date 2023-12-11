@@ -1765,9 +1765,12 @@ public final class HtmlRendererUtils
     }
 
     /**
-     * Returns <code>true</code> if the view root associated with the given faces context will be rendered with a HTML5 doctype.
+     * Returns <code>true</code> if the view root associated with the given faces context
+     * will be rendered with a HTML5 doctype.
+     *
      * @param context Involved faces context.
-     * @return <code>true</code> if the view root associated with the given faces context will be rendered with a HTML5 doctype.
+     * @return <code>true</code> if the view root associated with the given faces context
+     *      will be rendered with a HTML5 doctype.
      */
     public static boolean isOutputHtml5Doctype(FacesContext context) {
         UIViewRoot viewRoot = context.getViewRoot();
