@@ -133,4 +133,12 @@ public abstract class FacesConfigDispenser extends FacesConfigData
     public void feedSearchExpressionContextFactory(String factoryClassName)
     {
     }
+
+    /**
+     * @since 5.0
+     * @param factoryClassName
+     */
+    public void feedFacesServletFactory(String factoryClassName)
+    {
+    }
 }

@@ -19,6 +19,7 @@
 package jakarta.faces;
 
 import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.component.search.SearchExpressionContextFactory;
 import jakarta.faces.component.visit.VisitContextFactory;
 import jakarta.faces.context.ExceptionHandlerFactory;
 import jakarta.faces.context.ExternalContextFactory;
@@ -33,6 +34,10 @@ import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.TagHandlerDelegateFactory;
+import jakarta.faces.webapp.FacesServletFactory;
+import org.apache.myfaces.core.api.shared.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.ClassUtils;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -46,9 +51,6 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jakarta.faces.component.search.SearchExpressionContextFactory;
-import org.apache.myfaces.core.api.shared.lang.Assert;
-import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
@@ -71,6 +73,7 @@ public final class FactoryFinder
     public static final String CLIENT_WINDOW_FACTORY = "jakarta.faces.lifecycle.ClientWindowFactory";
     public static final String SEARCH_EXPRESSION_CONTEXT_FACTORY = 
             "jakarta.faces.component.search.SearchExpressionContextFactory";
+    public static final String FACES_SERVLET_FACTORY = "jakarta.faces.webapp.FacesServletFactory";
 
     private static final Map<String, Class<?>> FACTORY_MAPPING = new HashMap<String, Class<?>>();
     private static final ClassLoader MYFACES_CLASSLOADER;
@@ -117,6 +120,7 @@ public final class FactoryFinder
         FACTORY_MAPPING.put(FLOW_HANDLER_FACTORY, FlowHandlerFactory.class);
         FACTORY_MAPPING.put(CLIENT_WINDOW_FACTORY, ClientWindowFactory.class);
         FACTORY_MAPPING.put(SEARCH_EXPRESSION_CONTEXT_FACTORY, SearchExpressionContextFactory.class);
+        FACTORY_MAPPING.put(FACES_SERVLET_FACTORY, FacesServletFactory.class);
         try
         {
             ClassLoader classLoader;

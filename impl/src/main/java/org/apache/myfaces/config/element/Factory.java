@@ -92,4 +92,13 @@ public abstract class Factory implements Serializable
     {
         return Collections.emptyList();
     }
+
+    /**
+     * @since 5.0
+     * @return
+     */
+    public List<String> getFacesServletFactory()
+    {
+        return Collections.emptyList();
+    }
 }

@@ -108,7 +108,16 @@ public abstract class FacesConfigData implements Serializable
     public Collection<String> getSearchExpressionContextFactoryIterator()
     {
         return Collections.emptyList();
-    }    
+    }
+
+    /**
+     * @since 5.0
+     * @return
+     */
+    public Collection<String> getFacesServletFactoryIterator()
+    {
+        return Collections.emptyList();
+    }
 
     /** @return Iterator over ActionListener class names (in reverse order!) */
     public abstract Collection<String> getActionListenerIterator();

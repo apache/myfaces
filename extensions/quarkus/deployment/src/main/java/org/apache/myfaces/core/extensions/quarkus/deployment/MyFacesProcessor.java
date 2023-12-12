@@ -206,6 +206,7 @@ class MyFacesProcessor
         FactoryFinder.FLOW_HANDLER_FACTORY,
         FactoryFinder.CLIENT_WINDOW_FACTORY,
         FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY,
+        FactoryFinder.FACES_SERVLET_FACTORY,
         QuarkusExceptionHandlerFactory.class.getName()
     };
 
@@ -619,14 +620,16 @@ class MyFacesProcessor
                 "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd",
                 "org/apache/myfaces/resource/XMLSchema.dtd",
                 "org/apache/myfaces/resource/facesconfig_1_0.dtd",
+                "org/apache/myfaces/resource/web-facesconfig_1_0.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_1_1.dtd",
-                "org/apache/myfaces/resource/web-facesconfig_1_2.dtd",
-                "org/apache/myfaces/resource/web-facesconfig_2_0.dtd",
-                "org/apache/myfaces/resource/web-facesconfig_2_1.dtd",
-                "org/apache/myfaces/resource/web-facesconfig_2_2.dtd",
-                "org/apache/myfaces/resource/web-facesconfig_2_3.dtd",
-                "org/apache/myfaces/resource/web-facesconfig_3_0.dtd",
-                "org/apache/myfaces/resource/web-facesconfig_4_0.dtd",
+                "org/apache/myfaces/resource/web-facesconfig_1_2.xsd",
+                "org/apache/myfaces/resource/web-facesconfig_2_0.xsd",
+                "org/apache/myfaces/resource/web-facesconfig_2_1.xsd",
+                "org/apache/myfaces/resource/web-facesconfig_2_2.xsd",
+                "org/apache/myfaces/resource/web-facesconfig_2_3.xsd",
+                "org/apache/myfaces/resource/web-facesconfig_3_0.xsd",
+                "org/apache/myfaces/resource/web-facesconfig_4_0.xsd",
+                "org/apache/myfaces/resource/web-facesconfig_5_0.xsd",
                 "org/apache/myfaces/resource/xml.xsd"));
 
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("jakarta.faces.Messages"));
