@@ -878,9 +878,9 @@ public final class SAXCompiler extends Compiler
                     {
                         throw new FaceletException("Error Parsing " + alias + ": " + e.getMessage(), e.getCause());
                     } 
-                    else if(e instanceof IOException)
+                    else if(e instanceof IOException exception)
                     {
-                        throw (IOException)e;
+                        throw exception;
                     }
                 }
             }

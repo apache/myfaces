@@ -439,13 +439,13 @@ public abstract class AbstractTagLibrary implements TagLibrary
             catch (InvocationTargetException ite)
             {
                 Throwable t = ite.getCause();
-                if (t instanceof FacesException)
+                if (t instanceof FacesException exception)
                 {
-                    throw (FacesException) t;
+                    throw exception;
                 }
-                else if (t instanceof ELException)
+                else if (t instanceof ELException exception)
                 {
-                    throw (ELException) t;
+                    throw exception;
                 }
                 else
                 {

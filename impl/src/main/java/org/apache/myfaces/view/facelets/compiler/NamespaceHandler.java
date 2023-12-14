@@ -57,9 +57,9 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler
     {
         FunctionMapper orig = ctx.getFunctionMapper();
         ELContext elContext = ctx.getFacesContext().getELContext();
-        if (elContext instanceof FacesELContext)
+        if (elContext instanceof FacesELContext context)
         {
-            ((FacesELContext) elContext).setFunctionMapper(this);
+            context.setFunctionMapper(this);
         }
         ctx.setFunctionMapper(new CompositeFunctionMapper(this, orig));
         try

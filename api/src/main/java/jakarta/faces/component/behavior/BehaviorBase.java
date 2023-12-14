@@ -108,12 +108,12 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         {
             return;
         }
-        else if (state instanceof _AttachedDeltaWrapper)
+        else if (state instanceof _AttachedDeltaWrapper wrapper)
         {
             //Delta: check for null is not necessary since _behaviorListener field
             //is only set once and never reset
             ((StateHolder)_behaviorListeners).restoreState(context,
-                    ((_AttachedDeltaWrapper) state).getWrappedStateObject());
+                    wrapper.getWrappedStateObject());
         }
         else
         {
@@ -160,9 +160,8 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         }
         // StateHolder interface should take precedence over
         // List children
-        if (attachedObject instanceof StateHolder)
+        if (attachedObject instanceof StateHolder holder)
         {
-            StateHolder holder = (StateHolder) attachedObject;
             if (holder.isTransient())
             {
                 return null;
@@ -170,10 +169,10 @@ public class BehaviorBase implements Behavior, PartialStateHolder
 
             return new _AttachedStateWrapper(attachedObject.getClass(), holder.saveState(context));
         }        
-        else if (attachedObject instanceof List)
+        else if (attachedObject instanceof List list)
         {
-            List<Object> lst = new ArrayList<>(((List<?>) attachedObject).size());
-            for (Object item : (List<?>) attachedObject)
+            List<Object> lst = new ArrayList<>(list.size());
+            for (Object item : list)
             {
                 if (item != null)
                 {
@@ -201,9 +200,9 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         {
             return null;
         }
-        if (stateObj instanceof _AttachedListStateWrapper)
+        if (stateObj instanceof _AttachedListStateWrapper wrapper)
         {
-            List<Object> lst = ((_AttachedListStateWrapper) stateObj).getWrappedStateList();
+            List<Object> lst = wrapper.getWrappedStateList();
             List<Object> restoredList = new ArrayList<>(lst.size());
             for (Object item : lst)
             {
@@ -211,9 +210,9 @@ public class BehaviorBase implements Behavior, PartialStateHolder
             }
             return restoredList;
         }
-        else if (stateObj instanceof _AttachedStateWrapper)
+        else if (stateObj instanceof _AttachedStateWrapper wrapper)
         {
-            Class<?> clazz = ((_AttachedStateWrapper) stateObj).getClazz();
+            Class<?> clazz = wrapper.getClazz();
             Object restoredObject;
             try
             {
@@ -228,12 +227,9 @@ public class BehaviorBase implements Behavior, PartialStateHolder
             {
                 throw new RuntimeException(e);
             }
-            if (restoredObject instanceof StateHolder)
+            if (restoredObject instanceof StateHolder holder)
             {
-                _AttachedStateWrapper wrapper = (_AttachedStateWrapper) stateObj;
                 Object wrappedState = wrapper.getWrappedStateObject();
-
-                StateHolder holder = (StateHolder) restoredObject;
                 holder.restoreState(context, wrappedState);
             }
             return restoredObject;

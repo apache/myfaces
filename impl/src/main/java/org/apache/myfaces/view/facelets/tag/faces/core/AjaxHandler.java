@@ -374,9 +374,9 @@ public class AjaxHandler extends TagHandler implements
         }
 
         // remap @this to the composite targets
-        if (parent instanceof ClientBehaviorRedirectEventComponentWrapper)
+        if (parent instanceof ClientBehaviorRedirectEventComponentWrapper wrapper)
         {
-            ValueExpression targets = ((ClientBehaviorRedirectEventComponentWrapper) parent).getTargets();
+            ValueExpression targets = wrapper.getTargets();
             String targetsString = targets == null ? null : (String) targets.getValue(context.getELContext());
             String[] targetsArray = targetsString == null ? null : targetsString.trim().split(" +");
 

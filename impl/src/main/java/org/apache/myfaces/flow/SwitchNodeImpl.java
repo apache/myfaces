@@ -84,9 +84,9 @@ public class SwitchNodeImpl extends SwitchNode implements Freezable
         
         for (SwitchCase switchCase : cases)
         {
-            if (switchCase instanceof Freezable)
+            if (switchCase instanceof Freezable freezable)
             {
-                ((Freezable)switchCase).freeze();
+                freezable.freeze();
             }
         }
     }

@@ -358,13 +358,12 @@ public final class ComponentSupport
     public static Locale getLocale(FaceletContext ctx, TagAttribute attr) throws TagAttributeException
     {
         Object obj = attr.getObject(ctx);
-        if (obj instanceof Locale)
+        if (obj instanceof Locale locale)
         {
-            return (Locale) obj;
+            return locale;
         }
-        if (obj instanceof String)
+        if (obj instanceof String s)
         {
-            String s = (String) obj;
             if (s.length() == 2)
             {
                 return new Locale(s);
@@ -403,9 +402,9 @@ public final class ComponentSupport
         UIComponent c = parent;
         do
         {
-            if (c instanceof UIViewRoot)
+            if (c instanceof UIViewRoot root)
             {
-                return (UIViewRoot) c;
+                return root;
             }
             else
             {

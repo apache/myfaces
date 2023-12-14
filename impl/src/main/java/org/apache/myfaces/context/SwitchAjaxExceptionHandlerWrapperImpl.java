@@ -59,9 +59,8 @@ public class SwitchAjaxExceptionHandlerWrapperImpl extends ExceptionHandlerWrapp
     {
         if (isAjaxRequest == null)
         {
-            if (exceptionQueuedEvent instanceof ExceptionQueuedEvent)
+            if (exceptionQueuedEvent instanceof ExceptionQueuedEvent eqe)
             {
-                ExceptionQueuedEvent eqe = (ExceptionQueuedEvent)exceptionQueuedEvent;
                 ExceptionQueuedEventContext eqec = eqe.getContext();
                 if (eqec != null)
                 {

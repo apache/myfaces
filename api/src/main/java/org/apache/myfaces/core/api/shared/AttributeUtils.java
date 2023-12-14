@@ -31,9 +31,9 @@ public class AttributeUtils
             return defaultValue;
         }
 
-        if (value instanceof Boolean)
+        if (value instanceof Boolean boolean1)
         {
-            return (Boolean) value;
+            return boolean1;
         }
 
         // If the value is a String, parse it.
@@ -51,9 +51,9 @@ public class AttributeUtils
             return defaultValue;
         }
 
-        if (value instanceof Integer)
+        if (value instanceof Integer integer)
         {
-            return (Integer) value;
+            return integer;
         }
 
         // If the value is a String, parse it.

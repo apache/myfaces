@@ -237,7 +237,7 @@ class _Hex
     {
         try
         {
-            char[] charArray = object instanceof String ? ((String) object)
+            char[] charArray = object instanceof String s ? s
                     .toCharArray() : (char[]) object;
             return decodeHex(charArray);
         }
@@ -305,7 +305,7 @@ class _Hex
     {
         try
         {
-            byte[] byteArray = object instanceof String ? ((String) object)
+            byte[] byteArray = object instanceof String s ? s
                     .getBytes(getCharsetName()) : (byte[]) object;
             return encodeHex(byteArray);
         }

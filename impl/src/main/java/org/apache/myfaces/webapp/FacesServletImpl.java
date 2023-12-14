@@ -178,15 +178,15 @@ public class FacesServletImpl implements Servlet
                 // rethrow the ServletException instance.
                 throw new ServletException(e.getLocalizedMessage(), e);
             }
-            else if (cause instanceof ServletException)
+            else if (cause instanceof ServletException exception)
             {
                 // If the cause is an instance of ServletException, rethrow the cause.
-                throw (ServletException)cause;
+                throw exception;
             }
-            else if (cause instanceof IOException)
+            else if (cause instanceof IOException exception)
             {
                 // If the cause is an instance of IOException, rethrow the cause.
-                throw (IOException)cause;
+                throw exception;
             }
             else
             {

@@ -91,7 +91,7 @@ public class UISelectOne extends UIInput
                 public VisitResult visit(VisitContext visitContext, UIComponent target) 
                 {
                     // check they they are of the same group
-                    if (target instanceof UISelectOne  && ((UISelectOne) target).getGroup().equals(group)) 
+                    if (target instanceof UISelectOne one  && one.getGroup().equals(group)) 
                     {
                         // check if the is empty (see ) or if it's not valid (means this path has been taken already)
                         // See conditions listed under spec: uiselectone#processValidators
@@ -204,7 +204,7 @@ public class UISelectOne extends UIInput
                 @Override
                 public VisitResult visit(VisitContext visitContext, UIComponent target) 
                 {
-                    if (target instanceof UISelectOne  && ((UISelectOne) target).getGroup().equals(group)) 
+                    if (target instanceof UISelectOne one  && one.getGroup().equals(group)) 
                     {
                         for (Iterator<SelectItem> iter = new SelectItemsIterator(target, context); iter.hasNext();)
                         {

@@ -135,13 +135,13 @@ public class _DeltaListTest extends AbstractComponentTest
             super.restoreState(facesContext,values[0]);
             if (initialStateMarked())
             {
-                if (values[1] instanceof _AttachedDeltaWrapper)
+                if (values[1] instanceof _AttachedDeltaWrapper wrapper)
                 {
                     //Delta
                     if (_facesListeners != null)
                     {
                         ((StateHolder) _facesListeners).restoreState(facesContext,
-                                ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
+                                wrapper.getWrappedStateObject());
                     }
                 }
                 else if (values[1] != null)
@@ -239,16 +239,16 @@ public class _DeltaListTest extends AbstractComponentTest
         @Override
         public boolean equals(Object obj)
         {
-            if (obj instanceof StateFacesListener)
+            if (obj instanceof StateFacesListener listener)
             {
                 if (value == null)
                 {
-                    if (((StateFacesListener)obj).value == null)
+                    if (listener.value == null)
                     {
                         return true;
                     }
                 }
-                else if (value.equals(((StateFacesListener)obj).value))
+                else if (value.equals(listener.value))
                 {
                     return true;
                 }
@@ -298,16 +298,16 @@ public class _DeltaListTest extends AbstractComponentTest
         @Override
         public boolean equals(Object obj)
         {
-            if (obj instanceof TransientStateFacesListener)
+            if (obj instanceof TransientStateFacesListener listener)
             {
                 if (value == null)
                 {
-                    if (((TransientStateFacesListener)obj).value == null)
+                    if (listener.value == null)
                     {
                         return true;
                     }
                 }
-                else if (value.equals(((TransientStateFacesListener)obj).value))
+                else if (value.equals(listener.value))
                 {
                     return true;
                 }

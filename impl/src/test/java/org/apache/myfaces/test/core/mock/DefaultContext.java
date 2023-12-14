@@ -174,18 +174,16 @@ public class DefaultContext implements Context, Serializable
                     {
                         throw new NameNotFoundException(name);
                     }
-                    else if (obj instanceof Context && path.size() > 1)
+                    else if (obj instanceof Context subContext && path.size() > 1)
                     {
-                        Context subContext = (Context) obj;
                         obj = subContext.lookup(path.getSuffix(1));
                     }
                     return obj;
                 }
             }
         }
-        if (result instanceof LinkRef)
+        if (result instanceof LinkRef ref)
         {
-            LinkRef ref = (LinkRef) result;
             result = lookup(ref.getLinkName());
         }
         if (result instanceof Reference)
@@ -203,14 +201,14 @@ public class DefaultContext implements Context, Serializable
                 throw (NamingException) new NamingException("could not look up : " + name).initCause(e);
             }
         }
-        if (result instanceof DefaultContext)
+        if (result instanceof DefaultContext context)
         {
             String prefix = getNameInNamespace();
             if (prefix.length() > 0)
             {
                 prefix = prefix + SEPARATOR;
             }
-            result = new DefaultContext((DefaultContext) result, environment, prefix + name);
+            result = new DefaultContext(context, environment, prefix + name);
         }
         return result;
     }
@@ -246,9 +244,9 @@ public class DefaultContext implements Context, Serializable
         {
             return new DefaultContext.ListEnumeration();
         }
-        else if (o instanceof Context)
+        else if (o instanceof Context context)
         {
-            return ((Context) o).list("");
+            return context.list("");
         }
         else
         {
@@ -263,9 +261,9 @@ public class DefaultContext implements Context, Serializable
         {
             return new DefaultContext.ListBindingEnumeration();
         }
-        else if (o instanceof Context)
+        else if (o instanceof Context context)
         {
-            return ((Context) o).listBindings("");
+            return context.listBindings("");
         }
         else
         {

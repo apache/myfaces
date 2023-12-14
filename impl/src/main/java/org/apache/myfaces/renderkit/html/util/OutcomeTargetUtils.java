@@ -246,9 +246,8 @@ public class OutcomeTargetUtils
             for (int i = 0, size = children.size(); i < size; i++)
             {
                 UIComponent child = children.get(i);
-                if (child instanceof UIParameter)
+                if (child instanceof UIParameter param)
                 {
-                    UIParameter param = (UIParameter) child;
                     // check for the disable attribute (since 2.0)
                     // and the render attribute (only if skipUnrendered is true)
                     if (param.isDisable() || (skipUnrendered && !param.isRendered()))

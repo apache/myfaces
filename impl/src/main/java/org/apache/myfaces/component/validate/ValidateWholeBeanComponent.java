@@ -96,13 +96,13 @@ public class ValidateWholeBeanComponent extends UIInput
         for (int i = children.size() -1; i >=0; i--)
         {
           UIComponent c = children.get(i);
-          if (c instanceof EditableValueHolder && !(c instanceof ValidateWholeBeanComponent))
+          if (c instanceof EditableValueHolder holder && !(c instanceof ValidateWholeBeanComponent))
           {
-              Validator[] validators = ((EditableValueHolder) c).getValidators();
+              Validator[] validators = holder.getValidators();
               for (Validator v : validators)
               {
-                  if (v instanceof BeanValidator
-                      && ((BeanValidator) v).getValidationGroups().equals(this.getValidationGroups()))
+                  if (v instanceof BeanValidator validator
+                      && validator.getValidationGroups().equals(this.getValidationGroups()))
                   {
                     throw new IllegalStateException("f:validateWholeBean must be placed after all validated inputs");
                   }

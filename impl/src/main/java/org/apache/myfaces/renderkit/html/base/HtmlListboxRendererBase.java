@@ -50,9 +50,9 @@ public class HtmlListboxRendererBase
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
 
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(
@@ -66,17 +66,17 @@ public class HtmlListboxRendererBase
             size = Integer.MIN_VALUE;
         }
 
-        if (uiComponent instanceof UISelectMany)
+        if (uiComponent instanceof UISelectMany many)
         {
             renderListbox(facesContext,
-                                            (UISelectMany)uiComponent,
+                                            many,
                                             isDisabled(facesContext, uiComponent),
                                             size, getConverter(facesContext, uiComponent));
         }
-        else if (uiComponent instanceof HtmlSelectOneListbox)
+        else if (uiComponent instanceof HtmlSelectOneListbox listbox)
         {
             renderListbox(facesContext,
-                                            (UISelectOne)uiComponent,
+                                            listbox,
                                             isDisabled(facesContext, uiComponent),
                                             size, getConverter(facesContext, uiComponent));
         }
@@ -103,13 +103,13 @@ public class HtmlListboxRendererBase
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        if (uiComponent instanceof HtmlSelectManyListbox)
+        if (uiComponent instanceof HtmlSelectManyListbox listbox)
         {
-            return ((HtmlSelectManyListbox)uiComponent).isDisabled();
+            return listbox.isDisabled();
         }
-        else if (uiComponent instanceof HtmlSelectOneListbox)
+        else if (uiComponent instanceof HtmlSelectOneListbox listbox)
         {
-            return ((HtmlSelectOneListbox)uiComponent).isDisabled();
+            return listbox.isDisabled();
         }
 
         return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
@@ -144,16 +144,16 @@ public class HtmlListboxRendererBase
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
 
-        if (uiComponent instanceof UISelectMany)
+        if (uiComponent instanceof UISelectMany many)
         {
             return RendererUtils.getConvertedUISelectManyValue(facesContext,
-                                                               (UISelectMany)uiComponent,
+                                                               many,
                                                                submittedValue);
         }
-        else if (uiComponent instanceof UISelectOne)
+        else if (uiComponent instanceof UISelectOne one)
         {
             return RendererUtils.getConvertedUISelectOneValue(facesContext,
-                                                           (UISelectOne)uiComponent,
+                                                           one,
                                                            submittedValue);
         }
         else

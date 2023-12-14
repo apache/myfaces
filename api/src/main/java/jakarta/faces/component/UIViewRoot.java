@@ -808,9 +808,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         if (expression != null)
         {
             Object veLocale = expression.getValue(getFacesContext().getELContext());
-            if (veLocale instanceof Locale)
+            if (veLocale instanceof Locale locale1)
             {
-                return (Locale) veLocale;
+                return locale1;
             }
             else
             {
@@ -821,13 +821,13 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             locale = getFacesContext().getApplication().getViewHandler().calculateLocale(getFacesContext());
 
-            if (locale instanceof Locale)
+            if (locale instanceof Locale locale1)
             {
-                return (Locale)locale;
+                return locale1;
             }
-            else if (locale instanceof String)
+            else if (locale instanceof String string)
             {
-                return LocaleUtils.toLocale((String)locale);
+                return LocaleUtils.toLocale(string);
             }
         }
 
@@ -1261,9 +1261,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 AbortProcessingException ape = null;
                 do
                 {
-                    if (cause != null && cause instanceof AbortProcessingException)
+                    if (cause != null && cause instanceof AbortProcessingException exception)
                     {
-                        ape = (AbortProcessingException) cause;
+                        ape = exception;
                         break;
                     }
                     cause = cause.getCause();
@@ -1933,9 +1933,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
-            if (target instanceof EditableValueHolder)
+            if (target instanceof EditableValueHolder holder)
             {
-                ((EditableValueHolder)target).resetValue();
+                holder.resetValue();
             }
             return VisitResult.ACCEPT;
         }

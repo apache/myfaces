@@ -191,9 +191,9 @@ public final class JstlFunction
             return 0;
         }
         
-        if (obj instanceof Collection)
+        if (obj instanceof Collection collection)
         {
-            return ((Collection<?>) obj).size();
+            return collection.size();
         }
         
         if (obj.getClass().isArray())
@@ -201,14 +201,14 @@ public final class JstlFunction
             return Array.getLength(obj);
         }
         
-        if (obj instanceof String)
+        if (obj instanceof String string)
         {
-            return ((String) obj).length();
+            return string.length();
         }
         
-        if (obj instanceof Map)
+        if (obj instanceof Map map)
         {
-            return ((Map<?, ?>) obj).size();
+            return map.size();
         }
         
         throw new IllegalArgumentException("Object type not supported: " + obj.getClass().getName());

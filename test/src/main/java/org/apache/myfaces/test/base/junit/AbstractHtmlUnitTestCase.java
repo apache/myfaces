@@ -121,9 +121,9 @@ public abstract class AbstractHtmlUnitTestCase
         Iterable<HtmlElement> elements = page.getHtmlElementDescendants();
         for (HtmlElement element : elements)
         {
-            if (element instanceof HtmlBody)
+            if (element instanceof HtmlBody body)
             {
-                return ((HtmlBody) element);
+                return body;
             }
         }
         return (null);
@@ -189,9 +189,9 @@ public abstract class AbstractHtmlUnitTestCase
         Iterable<HtmlElement> elements = page.getHtmlElementDescendants();
         for (HtmlElement element : elements)
         {
-            if (element instanceof HtmlHead)
+            if (element instanceof HtmlHead head)
             {
-                return ((HtmlHead) element);
+                return head;
             }
         }
         return (null);

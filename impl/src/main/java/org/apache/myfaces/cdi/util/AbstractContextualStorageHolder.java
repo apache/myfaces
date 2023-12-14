@@ -61,12 +61,12 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
         Object context = facesContext.getExternalContext().getContext();
-        if (context instanceof ServletContext)
+        if (context instanceof ServletContext servletContext)
         {
             FacesApplicationArtifactHolder appBean = CDIUtils.get(beanManager, FacesApplicationArtifactHolder.class);
             if (appBean.getServletContext() != null)
             {
-                appBean.setServletContext((ServletContext) context);
+                appBean.setServletContext(servletContext);
             }
         }
     }

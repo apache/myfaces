@@ -54,9 +54,9 @@ public class HtmlMenuRendererBase
         RendererUtils.checkParamValidity(facesContext, component, null);
         
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder)
+        if (component instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(
@@ -64,14 +64,14 @@ public class HtmlMenuRendererBase
             }
         }
 
-        if (component instanceof UISelectMany)
+        if (component instanceof UISelectMany many)
         {
-            renderMenu(facesContext, (UISelectMany) component,
+            renderMenu(facesContext, many,
                     isDisabled(facesContext, component), getConverter(facesContext, component));
         }
-        else if (component instanceof UISelectOne)
+        else if (component instanceof UISelectOne one)
         {
-            renderMenu(facesContext, (UISelectOne) component, 
+            renderMenu(facesContext, one, 
                     isDisabled(facesContext, component), getConverter(facesContext, component));
         }
         else
@@ -94,13 +94,13 @@ public class HtmlMenuRendererBase
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        if (uiComponent instanceof HtmlSelectManyMenu)
+        if (uiComponent instanceof HtmlSelectManyMenu menu)
         {
-            return ((HtmlSelectManyMenu) uiComponent).isDisabled();
+            return menu.isDisabled();
         }
-        else if (uiComponent instanceof HtmlSelectOneMenu)
+        else if (uiComponent instanceof HtmlSelectOneMenu menu)
         {
-            return ((HtmlSelectOneMenu) uiComponent).isDisabled();
+            return menu.isDisabled();
         }
 
         return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
@@ -136,16 +136,16 @@ public class HtmlMenuRendererBase
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
 
-        if (uiComponent instanceof UISelectMany)
+        if (uiComponent instanceof UISelectMany many)
         {
             return RendererUtils.getConvertedUISelectManyValue(facesContext,
-                                                               (UISelectMany)uiComponent,
+                                                               many,
                                                                submittedValue);
         }
-        else if (uiComponent instanceof UISelectOne)
+        else if (uiComponent instanceof UISelectOne one)
         {
             return RendererUtils.getConvertedUISelectOneValue(facesContext,
-                                                           (UISelectOne)uiComponent,
+                                                           one,
                                                            submittedValue);
         }
         else

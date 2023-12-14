@@ -126,13 +126,13 @@ public class ParametrizableFacesMessage extends FacesMessage
             {
                 continue;
             }
-            else if (_args[i] instanceof ValueExpression)
+            else if (_args[i] instanceof ValueExpression expression)
             {
                 if (facesContext == null)
                 {
                     facesContext = FacesContext.getCurrentInstance();
                 }
-                _evaluatedArgs[i] = ((ValueExpression)_args[i]).getValue(facesContext.getELContext());
+                _evaluatedArgs[i] = expression.getValue(facesContext.getELContext());
             }
             else 
             {

@@ -85,9 +85,9 @@ public class HtmlGridRendererBase extends HtmlRenderer
         RendererUtils.checkParamValidity(facesContext, component, UIPanel.class);
 
         int columns;
-        if (component instanceof HtmlPanelGrid)
+        if (component instanceof HtmlPanelGrid grid)
         {
-            columns = ((HtmlPanelGrid)component).getColumns();
+            columns = grid.getColumns();
         }
         else
         {
@@ -107,9 +107,9 @@ public class HtmlGridRendererBase extends HtmlRenderer
 
         ResponseWriter writer = facesContext.getResponseWriter();
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder)
+        if (component instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
         }
 
         if (behaviors != null && !behaviors.isEmpty())
@@ -212,10 +212,10 @@ public class HtmlGridRendererBase extends HtmlRenderer
         writer.startElement(HTML.TR_ELEM, null); // component);
         writer.startElement(header ? HTML.TH_ELEM : HTML.TD_ELEM, null); // component);
 
-        String styleClass = (component instanceof HtmlPanelGrid)
+        String styleClass = (component instanceof HtmlPanelGrid hpg)
             ? (header
-                ? ((HtmlPanelGrid)component).getHeaderClass()
-                : ((HtmlPanelGrid)component).getFooterClass())
+                ? hpg.getHeaderClass()
+                : hpg.getFooterClass())
             : (header
                 ? (String)component.getAttributes().get(ComponentAttrs.HEADER_CLASS_ATTR)
                 : (String)component.getAttributes().get(ComponentAttrs.FOOTER_CLASS_ATTR));
@@ -260,10 +260,10 @@ public class HtmlGridRendererBase extends HtmlRenderer
     {
         String columnClasses;
         String rowClasses;
-        if (component instanceof HtmlPanelGrid)
+        if (component instanceof HtmlPanelGrid grid)
         {
-            columnClasses = ((HtmlPanelGrid)component).getColumnClasses();
-            rowClasses = ((HtmlPanelGrid)component).getRowClasses();
+            columnClasses = grid.getColumnClasses();
+            rowClasses = grid.getRowClasses();
         }
         else
         {
@@ -338,9 +338,9 @@ public class HtmlGridRendererBase extends HtmlRenderer
                         //start of new/next row
                         writer.startElement(HTML.TR_ELEM, null); // component);
                         String rowClass = null;
-                        if (component instanceof HtmlPanelGrid)
+                        if (component instanceof HtmlPanelGrid grid)
                         {
-                            rowClass = ((HtmlPanelGrid) component).getRowClass();
+                            rowClass = grid.getRowClass();
                         }
                         if (rowClassIndex < rowClassesCount) 
                         {

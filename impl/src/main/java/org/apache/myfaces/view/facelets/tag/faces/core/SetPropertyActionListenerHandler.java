@@ -145,9 +145,8 @@ public class SetPropertyActionListenerHandler extends TagHandler
                     Location location = null;
                     // Wrapping of ValueExpressions to org.apache.myfaces.view.facelets.el.ContextAware
                     // can be disabled:
-                    if (_value instanceof ContextAware)
+                    if (_value instanceof ContextAware contextAware)
                     {
-                        ContextAware contextAware = (ContextAware) _value;
                         location = contextAware.getLocation();
                     }
                     throw new ContextAwareELException(location, _value.getExpressionString(), "value", e);

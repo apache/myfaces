@@ -1193,9 +1193,8 @@ public class FlashImpl extends Flash implements ReleasableFlash
         cookie.setHttpOnly(true);
         Object context = externalContext.getContext();
 
-        if (context instanceof ServletContext && ExternalSpecifications.isServlet6Available())
+        if (context instanceof ServletContext servletContext && ExternalSpecifications.isServlet6Available())
         {
-            ServletContext servletContext = (ServletContext)context;
             String sameSite = servletContext.getSessionCookieConfig().getAttribute("SameSite");
             cookie.setAttribute("SameSite", Objects.toString(sameSite, "Strict"));
         }
@@ -1227,9 +1226,9 @@ public class FlashImpl extends Flash implements ReleasableFlash
     private Boolean _convertToBoolean(Object value)
     {
         Boolean booleanValue;
-        if (value instanceof Boolean)
+        if (value instanceof Boolean boolean1)
         {
-            booleanValue = (Boolean) value;
+            booleanValue = boolean1;
         }
         else
         {

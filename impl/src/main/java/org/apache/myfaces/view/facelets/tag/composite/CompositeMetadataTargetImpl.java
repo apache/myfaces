@@ -77,11 +77,11 @@ final class CompositeMetadataTargetImpl extends MetadataTarget
             if (type != null)
             {
                 type = ((ValueExpression) type).getValue(FacesContext.getCurrentInstance().getELContext());
-                if (type instanceof String)
+                if (type instanceof String string)
                 {
                     try
                     {
-                        type = ClassUtils.javaDefaultTypeToClass((String)type);
+                        type = ClassUtils.javaDefaultTypeToClass(string);
                     }
                     catch (ClassNotFoundException e)
                     {

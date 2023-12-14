@@ -59,10 +59,10 @@ final class MockSubKeyMap<V> extends AbstractMap<String, V>
         }
 
         // Optimize the scenario where we're wrapping another SubKeyMap
-        if (base instanceof MockSubKeyMap)
+        if (base instanceof MockSubKeyMap map)
         {
-            _base = ((MockSubKeyMap) base)._base;
-            _prefix = ((MockSubKeyMap) base)._prefix + prefix;
+            _base = map._base;
+            _prefix = map._prefix + prefix;
         }
         else
         {

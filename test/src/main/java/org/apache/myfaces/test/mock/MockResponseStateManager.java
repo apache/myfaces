@@ -283,9 +283,8 @@ public class MockResponseStateManager extends ResponseStateManager
         Object treeStruct = null;
         Object compStates = null;
 
-        if (state instanceof Object[])
+        if (state instanceof Object[] structureAndState)
         {
-            Object[] structureAndState = (Object[]) state;
 
             if (structureAndState.length == 2)
             {

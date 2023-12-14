@@ -260,9 +260,9 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
                 {
                     Object value = ((Map.Entry<String, V>) o).getValue();
                     
-                    if (value != null && value instanceof UIComponent)
+                    if (value != null && value instanceof UIComponent component)
                     {
-                        ((UIComponent) value).setParent(null);
+                        component.setParent(null);
                     }
                 }
                 return true;

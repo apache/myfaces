@@ -370,9 +370,8 @@ final class CompilationManager
 
         CompilationUnit unit = this.currentUnit();
 
-        if (unit instanceof TextUnit)
+        if (unit instanceof TextUnit t)
         {
-            TextUnit t = (TextUnit) unit;
             if (t.isClosed())
             {
                 this.finishUnit();
@@ -385,9 +384,8 @@ final class CompilationManager
         }
 
         unit = this.currentUnit();
-        if (unit instanceof TagUnit)
+        if (unit instanceof TagUnit t)
         {
-            TagUnit t = (TagUnit) unit;
             if (t instanceof TrimmedTagUnit)
             {
                 this.finished = true;

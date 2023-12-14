@@ -949,9 +949,9 @@ public class ResourceHandlerImpl extends ResourceHandler
             return resourceName;
         }
 
-        if (resource instanceof ResourceWrapper)
+        if (resource instanceof ResourceWrapper wrapper)
         {
-            return getWrappedResourceName(((ResourceWrapper) resource).getWrapped());
+            return getWrappedResourceName(wrapper.getWrapped());
         }
 
         return null;

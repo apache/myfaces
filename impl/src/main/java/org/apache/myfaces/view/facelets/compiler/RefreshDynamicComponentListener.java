@@ -190,18 +190,17 @@ public final class RefreshDynamicComponentListener implements ComponentSystemEve
     public void restoreState(FacesContext context, Object state)
     {
         Object[] values = (Object[]) state;
-        if (values[0] instanceof String)
+        if (values[0] instanceof String string)
         {
-            taglibURI = (String) values[0];
+            taglibURI = string;
         }
-        else if (values[0] instanceof Integer)
+        else if (values[0] instanceof Integer integer)
         {
             RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(context);
-            taglibURI = runtimeConfig.getNamespaceById().get((Integer)values[0]);
+            taglibURI = runtimeConfig.getNamespaceById().get(integer);
         }
-        else if (values[0] instanceof Object[])
+        else if (values[0] instanceof Object[] def)
         {
-            Object[] def = (Object[]) values[0];
             int index = (Integer) def[0];
             String ns;
             switch (index)
@@ -219,7 +218,7 @@ public final class RefreshDynamicComponentListener implements ComponentSystemEve
                     ns = "";
                     break;
             }
-            taglibURI = ns + ((Object[]) values[0])[1];
+            taglibURI = ns + def[1];
         }
         tagName = (String) values[1];
         attributes = (Map<String, Object>) values[2];

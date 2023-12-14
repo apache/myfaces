@@ -191,11 +191,10 @@ public final class UIDebug extends UIComponentBase
         if (id != null)
         {
             Object resp = faces.getExternalContext().getResponse();
-            if (!faces.getResponseComplete() && resp instanceof HttpServletResponse)
+            if (!faces.getResponseComplete() && resp instanceof HttpServletResponse httpResp)
             {
                 try
                 {
-                    HttpServletResponse httpResp = (HttpServletResponse) resp;
                     String page = fetchDebugOutput(faces, id);
                     if (page != null)
                     {

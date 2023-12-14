@@ -83,9 +83,9 @@ public class HtmlTextRendererBase
       RendererUtils.checkParamValidity(facesContext,component,null);
       
       Map<String, List<ClientBehavior>> behaviors = null;
-      if (component instanceof ClientBehaviorHolder)
+      if (component instanceof ClientBehaviorHolder holder)
       {
-          behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+          behaviors = holder.getClientBehaviors();
           if (!behaviors.isEmpty())
           {
               ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());
@@ -104,9 +104,9 @@ public class HtmlTextRendererBase
         RendererUtils.checkParamValidity(facesContext,component,null);
         
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder)
+        if (component instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());
@@ -136,9 +136,9 @@ public class HtmlTextRendererBase
         }
         
         boolean escape;
-        if (component instanceof HtmlOutputText)
+        if (component instanceof HtmlOutputText outputText)
         {
-            escape = ((HtmlOutputText) component).isEscape();
+            escape = outputText.isEscape();
         }
         else
         {
@@ -244,9 +244,9 @@ public class HtmlTextRendererBase
         renderValue(facesContext, component, writer);
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder)
+        if (component instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
@@ -340,9 +340,9 @@ public class HtmlTextRendererBase
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent component)
     {
-        if (component instanceof HtmlInputText)
+        if (component instanceof HtmlInputText text)
         {
-            return ((HtmlInputText)component).isDisabled();
+            return text.isDisabled();
         }
 
         return AttributeUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
@@ -353,9 +353,9 @@ public class HtmlTextRendererBase
      */
     protected boolean isAutocompleteOff(FacesContext facesContext, UIComponent component)
     {
-        if (component instanceof HtmlInputText)
+        if (component instanceof HtmlInputText text)
         {
-            String autocomplete = ((HtmlInputText)component).getAutocomplete();
+            String autocomplete = text.getAutocomplete();
             if (autocomplete != null)
             {
                 return autocomplete.equals(AUTOCOMPLETE_VALUE_OFF);
@@ -370,9 +370,9 @@ public class HtmlTextRendererBase
     {
         RendererUtils.checkParamValidity(facesContext,component,null);
 
-        if (component instanceof UIInput)
+        if (component instanceof UIInput input)
         {
-            if (!isValidLength(facesContext, (UIInput)component))
+            if (!isValidLength(facesContext, input))
             {
                 return;
             }
@@ -405,9 +405,9 @@ public class HtmlTextRendererBase
 
     protected boolean isValidLength(FacesContext facesContext, UIInput input)
     {
-        if (input instanceof HtmlInputText)
+        if (input instanceof HtmlInputText text)
         {
-            int maxlength = ((HtmlInputText)input).getMaxlength();
+            int maxlength = text.getMaxlength();
             if (maxlength >= 0)
             {
                 String clientId = input.getClientId(facesContext);
@@ -428,9 +428,9 @@ public class HtmlTextRendererBase
     protected String getInputHtmlType(FacesContext context, UIComponent component)
     {
         String type = null;
-        if (component instanceof HtmlInputText)
+        if (component instanceof HtmlInputText text)
         {
-            type = ((HtmlInputText)component).getType();
+            type = text.getType();
         }
         if (StringUtils.isEmpty(type))
         {

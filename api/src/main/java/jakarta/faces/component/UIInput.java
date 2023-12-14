@@ -497,7 +497,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      */
     private boolean isEmptyString(Object value)
     {
-        return ((value instanceof String) && (((String) value).length() == 0));
+        return ((value instanceof String s) && (s.length() == 0));
     }
 
 
@@ -759,12 +759,12 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             return renderer.getConvertedValue(context, this, submittedValue);
         }
-        else if (submittedValue instanceof String)
+        else if (submittedValue instanceof String string)
         {
             Converter converter = SharedRendererUtils.findUIOutputConverter(context, this);
             if (converter != null)
             {
-                return converter.getAsObject(context, this, (String) submittedValue);
+                return converter.getAsObject(context, this, string);
             }
         }
         return submittedValue;
@@ -1091,9 +1091,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public void markInitialState()
     {
         StateHelper helper = getStateHelper(false);
-        if (helper != null && helper instanceof _DeltaStateHelper)
+        if (helper != null && helper instanceof _DeltaStateHelper stateHelper)
         {
-            ((_DeltaStateHelper)helper).markPropertyInInitialState(INITIAL_STATE_PROPERTIES);
+            stateHelper.markPropertyInInitialState(INITIAL_STATE_PROPERTIES);
         }
         super.markInitialState();
         if (_validatorList != null)
@@ -1153,13 +1153,13 @@ public class UIInput extends UIOutput implements EditableValueHolder
         
         Object[] values = (Object[])state;
         super.restoreState(facesContext,values[0]);
-        if (values[1] instanceof _AttachedDeltaWrapper)
+        if (values[1] instanceof _AttachedDeltaWrapper wrapper)
         {
             //Delta
             if (_validatorList != null)
             {
                 ((StateHolder)_validatorList).restoreState(facesContext,
-                        ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
+                        wrapper.getWrappedStateObject());
             }
         }
         else if (values[1] != null || !initialStateMarked())
@@ -1309,16 +1309,16 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             return true;
         }
-        else if (value instanceof String)
+        else if (value instanceof String string)
         {
-            if (((String) value).trim().length() <= 0)
+            if (string.trim().length() <= 0)
             {
                 return true;
             }
         }
-        else if (value instanceof Collection)
+        else if (value instanceof Collection collection)
         {
-            if (((Collection) value).isEmpty())
+            if (collection.isEmpty())
             {
                 return true;
             }
@@ -1330,9 +1330,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 return true;
             }
         }
-        else if (value instanceof Map)
+        else if (value instanceof Map map)
         {
-            if (((Map) value).isEmpty())
+            if (map.isEmpty())
             {
                 return true;
             }

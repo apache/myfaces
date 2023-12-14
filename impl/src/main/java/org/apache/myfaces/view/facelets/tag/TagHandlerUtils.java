@@ -50,10 +50,10 @@ public final class TagHandlerUtils
         {
             return (T) nextHandler;
         }
-        else if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler)
+        else if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler faceletHandler)
         {
             for (FaceletHandler handler :
-                    ((jakarta.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+                    faceletHandler.getHandlers())
             {
                 if (type.isAssignableFrom(handler.getClass()))
                 {
@@ -80,10 +80,10 @@ public final class TagHandlerUtils
         {
             found.add((T) nextHandler);
         }
-        else if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler)
+        else if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler faceletHandler)
         {
             for (FaceletHandler handler :
-                    ((jakarta.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+                    faceletHandler.getHandlers())
             {
                 if (type.isAssignableFrom(handler.getClass()))
                 {
@@ -112,10 +112,10 @@ public final class TagHandlerUtils
         {
             found.add(nextHandler);
         }
-        else if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler)
+        else if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler faceletHandler)
         {
             for (FaceletHandler handler :
-                    ((jakarta.faces.view.facelets.CompositeFaceletHandler) nextHandler).getHandlers())
+                    faceletHandler.getHandlers())
             {
                 isAssignable = false;
                 for (int i = 0; i < type1.length && !isAssignable; i++)
@@ -139,10 +139,10 @@ public final class TagHandlerUtils
         {
             found.add(nextHandler);
         }
-        else if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler)
+        else if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler faceletHandler)
         {
             for (FaceletHandler handler :
-                    ((jakarta.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+                    faceletHandler.getHandlers())
             {
                 if (type1.isAssignableFrom(handler.getClass()) || type2.isAssignableFrom(handler.getClass()))
                 {

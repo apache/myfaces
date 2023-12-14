@@ -983,9 +983,8 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     {
         for (OrderSlot slot: slots)
         {
-            if (slot instanceof FacesConfigNameSlotImpl)
+            if (slot instanceof FacesConfigNameSlotImpl nameSlot)
             {
-                FacesConfigNameSlotImpl nameSlot = (FacesConfigNameSlotImpl) slot;
                 if (name.equals(nameSlot.getName()))
                 {
                     return true;

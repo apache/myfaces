@@ -279,9 +279,9 @@ public class MockHttpServletRequest implements HttpServletRequest
     
     protected MockWebContainer getWebContainer()
     {
-        if (this.servletContext instanceof MockServletContext)
+        if (this.servletContext instanceof MockServletContext context)
         {
-            return ((MockServletContext)this.servletContext).getWebContainer();
+            return context.getWebContainer();
         }
         return null;
     }

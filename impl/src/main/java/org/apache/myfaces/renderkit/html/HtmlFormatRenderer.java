@@ -85,9 +85,9 @@ public class HtmlFormatRenderer extends HtmlRenderer
 
         String text = getOutputFormatText(facesContext, component);
         boolean escape;
-        if (component instanceof HtmlOutputFormat)
+        if (component instanceof HtmlOutputFormat format)
         {
-            escape = ((HtmlOutputFormat) component).isEscape();
+            escape = format.isEscape();
         }
         else
         {

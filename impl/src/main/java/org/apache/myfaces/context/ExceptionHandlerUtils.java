@@ -51,16 +51,14 @@ public class ExceptionHandlerUtils
     public static String buildLocation(Throwable ex, UIComponent component)
     {
         String location = "";
-        if (ex instanceof ContextAware)
+        if (ex instanceof ContextAware caex)
         {
-            ContextAware caex = (ContextAware) ex;
             location = caex.getLocation().toString() + ", " +
                                    caex.getQName() + "=\"" +
                                    caex.getExpressionString() + '"';
         }
-        else if (ex instanceof LocationAware)
+        else if (ex instanceof LocationAware laex)
         {
-            LocationAware laex = (LocationAware) ex;
             if (laex.getLocation() != null)
             {
                 location = laex.getLocation().toString();
@@ -70,16 +68,14 @@ public class ExceptionHandlerUtils
         while (ex.getCause() != null)
         {
             ex = ex.getCause();
-            if (ex instanceof ContextAware)
+            if (ex instanceof ContextAware caex)
             {
-                ContextAware caex = (ContextAware) ex;
                 location = caex.getLocation().toString() + ", " +
                         caex.getQName() + "=\"" +
                         caex.getExpressionString() + '"';
             }
-            else if (ex instanceof LocationAware)
+            else if (ex instanceof LocationAware laex)
             {
-                LocationAware laex = (LocationAware) ex;
                 if (laex.getLocation() != null)
                 {
                     location = laex.getLocation().toString();

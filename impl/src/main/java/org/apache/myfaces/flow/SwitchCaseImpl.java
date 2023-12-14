@@ -48,9 +48,9 @@ public class SwitchCaseImpl extends SwitchCase implements Freezable
         if (conditionEL != null)
         {
             Object value = conditionEL.getValue(context.getELContext());
-            if (value instanceof String)
+            if (value instanceof String string)
             {
-                return Boolean.valueOf((String) value);
+                return Boolean.valueOf(string);
             }
             return (Boolean) value;
         }

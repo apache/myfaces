@@ -61,9 +61,9 @@ public abstract class ViewMetadata
                  {
                      result = new LinkedList<>();
                  }
-                 if (component instanceof UIViewParameter)
+                 if (component instanceof UIViewParameter parameter)
                  {
-                      result.add((UIViewParameter) component);
+                      result.add(parameter);
                  }
             }
         }
@@ -106,9 +106,9 @@ public abstract class ViewMetadata
                  {
                      result = new LinkedList<>();
                  }
-                 if (component instanceof UIViewAction)
+                 if (component instanceof UIViewAction action)
                  {
-                      result.add((UIViewAction) component);
+                      result.add(action);
                  }
             }
         }
@@ -162,9 +162,9 @@ public abstract class ViewMetadata
                  {
                      result = new LinkedList<>();
                  }
-                 if (component instanceof UIImportConstants)
+                 if (component instanceof UIImportConstants constants)
                  {
-                      result.add((UIImportConstants) component);
+                      result.add(constants);
                  }
             }
         }

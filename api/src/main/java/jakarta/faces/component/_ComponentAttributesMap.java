@@ -429,9 +429,9 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                             // We have to check for a ValueExpression and also evaluate it
                             // here, because in the PropertyDescriptor the default values are
                             // always stored as (Tag-)ValueExpressions.
-                            if (value != null && value instanceof ValueExpression)
+                            if (value != null && value instanceof ValueExpression expression)
                             {
-                                return ((ValueExpression) value).getValue(_component.getFacesContext().getELContext());
+                                return expression.getValue(_component.getFacesContext().getELContext());
                             }
                         }
                     }
@@ -646,9 +646,9 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
 
         try
         {
-            if (propertyDescriptor instanceof LambdaPropertyDescriptor)
+            if (propertyDescriptor instanceof LambdaPropertyDescriptor descriptor)
             {
-                Function<Object, Object> readFunction = ((LambdaPropertyDescriptor) propertyDescriptor).getReadFunction();
+                Function<Object, Object> readFunction = descriptor.getReadFunction();
                 if (readFunction != null)
                 {
                     return readFunction.apply(_component);
@@ -686,10 +686,10 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         try
         {
             BiConsumer<Object, Object> writeFunction = null;
-            if (propertyDescriptor instanceof LambdaPropertyDescriptor)
+            if (propertyDescriptor instanceof LambdaPropertyDescriptor descriptor)
             {
-                ((LambdaPropertyDescriptor) propertyDescriptor).getWriteFunction().accept(_component, value);
-                writeFunction = ((LambdaPropertyDescriptor) propertyDescriptor).getWriteFunction();
+                descriptor.getWriteFunction().accept(_component, value);
+                writeFunction = descriptor.getWriteFunction();
             }
 
             if (writeFunction != null)

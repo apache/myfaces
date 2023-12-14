@@ -122,9 +122,8 @@ public class MethodExpressionMethodExpression extends MethodExpression implement
     @Override
     public boolean equals(Object obj)
     {
-        if (obj instanceof MethodExpressionMethodExpression)
+        if (obj instanceof MethodExpressionMethodExpression me)
         {
-            MethodExpressionMethodExpression me = (MethodExpressionMethodExpression) obj;
             return methodExpressionOneArg.equals(me.methodExpressionOneArg) &&
                    methodExpressionZeroArg.equals(me.methodExpressionZeroArg);
         }

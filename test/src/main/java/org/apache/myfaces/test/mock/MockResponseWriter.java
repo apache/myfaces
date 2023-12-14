@@ -177,9 +177,9 @@ public class MockResponseWriter extends ResponseWriter
         }
         finish();
         writer.write("<!-- ");
-        if (comment instanceof String)
+        if (comment instanceof String string)
         {
-            writer.write((String) comment);
+            writer.write(string);
         }
         else
         {
@@ -403,7 +403,7 @@ public class MockResponseWriter extends ResponseWriter
     {
         if (value != null)
         {
-            return value instanceof String ? (String) value : value.toString();
+            return value instanceof String s ? s : value.toString();
         }
         else if (property != null)
         {
@@ -412,7 +412,7 @@ public class MockResponseWriter extends ResponseWriter
                 final Object object = component.getAttributes().get(property);
                 if (object != null)
                 {
-                    return object instanceof String ? (String) object : object
+                    return object instanceof String s ? s : object
                             .toString();
                 }
                 else

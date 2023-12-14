@@ -120,9 +120,9 @@ public class LongRangeValidator
     private long parseLongValue(FacesContext facesContext, UIComponent uiComponent, Object value)
         throws ValidatorException
     {
-        if (value instanceof Number)
+        if (value instanceof Number number)
         {
-            return ((Number)value).longValue();
+            return number.longValue();
         }
 
         try

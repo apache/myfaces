@@ -53,10 +53,10 @@ public final class SubKeyMap<V> extends AbstractMap<String, V>
         }
 
         // Optimize the scenario where we're wrapping another SubKeyMap
-        if (base instanceof SubKeyMap)
+        if (base instanceof SubKeyMap map)
         {
-            _base = ((SubKeyMap) base)._base;
-            _prefix = ((SubKeyMap) base)._prefix + prefix;
+            _base = map._base;
+            _prefix = map._prefix + prefix;
         }
         else
         {

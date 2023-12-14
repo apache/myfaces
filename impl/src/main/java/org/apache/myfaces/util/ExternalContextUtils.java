@@ -142,15 +142,15 @@ public final class ExternalContextUtils
         // unwrap the response until we find a HttpServletResponse
         while (response != null)
         {
-            if (response instanceof HttpServletResponse)
+            if (response instanceof HttpServletResponse servletResponse)
             {
                 // found
-                return (HttpServletResponse) response;
+                return servletResponse;
             }
-            if (response instanceof ServletResponseWrapper)
+            if (response instanceof ServletResponseWrapper wrapper)
             {
                 // unwrap
-                response = ((ServletResponseWrapper) response).getResponse();
+                response = wrapper.getResponse();
             }
             // no more possibilities to find a HttpServletResponse
             break;

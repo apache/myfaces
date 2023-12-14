@@ -129,10 +129,10 @@ public class UIViewParameter extends UIInput
         
         value = ve.getValue (context.getELContext());
         
-        if (value instanceof String) 
+        if (value instanceof String string) 
         {
             // No need to convert.
-            return ((String) value);
+            return string;
         }
         
         converter = getConverter();

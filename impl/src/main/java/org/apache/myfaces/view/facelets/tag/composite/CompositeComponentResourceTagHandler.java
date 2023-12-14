@@ -148,9 +148,9 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 {
                     Object value = ve.getValue (facesContext.getELContext());
                     Boolean required;
-                    if (value instanceof Boolean)
+                    if (value instanceof Boolean boolean1)
                     {
-                        required = (Boolean) value;
+                        required = boolean1;
                     }
                     else
                     {
@@ -285,24 +285,24 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         
         List<String> insertFacetList = (List<String>) beanDescriptor.getValue(InsertFacetHandler.INSERT_FACET_USED);
         
-        if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler)
+        if (nextHandler instanceof jakarta.faces.view.facelets.CompositeFaceletHandler faceletHandler)
         {
             for (FaceletHandler handler :
-                    ((jakarta.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+                    faceletHandler.getHandlers())
             {
-                if (handler instanceof jakarta.faces.view.facelets.FacetHandler)
+                if (handler instanceof jakarta.faces.view.facelets.FacetHandler facetHandler)
                 {
                     if (insertFacetList == null ||
                         !insertFacetList.contains(
-                                ((jakarta.faces.view.facelets.FacetHandler) handler).getFacetName(ctx)))
+                                facetHandler.getFacetName(ctx)))
                     {
                         handler.apply(ctx, c);
                     }
                 }
-                else if (handler instanceof InsertFacetHandler)
+                else if (handler instanceof InsertFacetHandler facetHandler)
                 {
                     if (insertFacetList == null ||
-                        !insertFacetList.contains(((InsertFacetHandler) handler).getFacetName(ctx)))
+                        !insertFacetList.contains(facetHandler.getFacetName(ctx)))
                     {
                         handler.apply(ctx, c);
                     }
@@ -324,19 +324,19 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         }
         else
         {
-            if (nextHandler instanceof jakarta.faces.view.facelets.FacetHandler)
+            if (nextHandler instanceof jakarta.faces.view.facelets.FacetHandler handler)
             {
                 if (insertFacetList == null ||
                     !insertFacetList.contains(
-                            ((jakarta.faces.view.facelets.FacetHandler) nextHandler).getFacetName(ctx)))
+                            handler.getFacetName(ctx)))
                 {
                     nextHandler.apply(ctx, c);
                 }
             }
-            else if (nextHandler instanceof InsertFacetHandler)
+            else if (nextHandler instanceof InsertFacetHandler handler)
             {
                 if (insertFacetList == null ||
-                    !insertFacetList.contains(((InsertFacetHandler) nextHandler).getFacetName(ctx)) )
+                    !insertFacetList.contains(handler.getFacetName(ctx)) )
                 {
                     nextHandler.apply(ctx, c);
                 }
@@ -528,13 +528,13 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
 
             for (FaceletHandler handler : _facetHandlers)
             {
-                if (handler instanceof jakarta.faces.view.facelets.FacetHandler )
+                if (handler instanceof jakarta.faces.view.facelets.FacetHandler facetHandler )
                 {
-                    map.put(((jakarta.faces.view.facelets.FacetHandler) handler).getFacetName(ctx), handler);
+                    map.put(facetHandler.getFacetName(ctx), handler);
                 }
-                else if (handler instanceof InsertFacetHandler)
+                else if (handler instanceof InsertFacetHandler facetHandler)
                 {
-                    map.put(((InsertFacetHandler) handler).getFacetName(ctx), handler);
+                    map.put(facetHandler.getFacetName(ctx), handler);
                 }
             }
             _facetHandlersMap = map;

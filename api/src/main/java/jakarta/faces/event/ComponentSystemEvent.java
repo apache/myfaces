@@ -56,9 +56,9 @@ public abstract class ComponentSystemEvent extends SystemEvent
         {
             super.processListener(listener);
         }
-        else if (listener instanceof ComponentSystemEventListener)
+        else if (listener instanceof ComponentSystemEventListener eventListener)
         {
-            ((ComponentSystemEventListener)listener).processEvent(this);
+            eventListener.processEvent(this);
         }
     }
 }

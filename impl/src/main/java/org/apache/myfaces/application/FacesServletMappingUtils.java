@@ -196,7 +196,7 @@ public class FacesServletMappingUtils
         else
         {
             Object context = facesContext.getExternalContext().getContext();
-            if (context instanceof ServletContext)
+            if (context instanceof ServletContext servletContext)
             {
                 if (pathInfo != null)
                 {
@@ -207,7 +207,7 @@ public class FacesServletMappingUtils
                     // as in this case the servletPath is just an empty string according
                     // to the Servlet Specification (SRV 4.4).
                     return createMappingFromServletRegistration(facesContext, 
-                            (ServletContext)context, servletPath, pathInfo, allowExactMapping);
+                            servletContext, servletPath, pathInfo, allowExactMapping);
                 }
                 else
                 {
@@ -226,7 +226,7 @@ public class FacesServletMappingUtils
                         // There is no extension in the given servletPath and therefore
                         // we assume that it's an exact match using prefix-based mapping.
                         return createMappingFromServletRegistration(facesContext, 
-                                (ServletContext)context, servletPath, pathInfo, allowExactMapping);
+                                servletContext, servletPath, pathInfo, allowExactMapping);
                     }
                 }
             }
@@ -374,10 +374,10 @@ public class FacesServletMappingUtils
         if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()))
         {
             Object context = facesContext.getExternalContext().getContext();
-            if (context instanceof ServletContext)
+            if (context instanceof ServletContext servletContext)
             {
                 ServletRegistrationInfo facesServletRegistration =
-                        getFacesServletRegistration(facesContext, (ServletContext) context);
+                        getFacesServletRegistration(facesContext, servletContext);
                 if (facesServletRegistration != null)
                 {
                     for (String mapping : facesServletRegistration.getMappings())
@@ -400,10 +400,10 @@ public class FacesServletMappingUtils
         if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()))
         {
             Object context = facesContext.getExternalContext().getContext();
-            if (context instanceof ServletContext)
+            if (context instanceof ServletContext servletContext)
             {
                 ServletRegistrationInfo facesServletRegistration =
-                        getFacesServletRegistration(facesContext, (ServletContext) context);
+                        getFacesServletRegistration(facesContext, servletContext);
                 if (facesServletRegistration != null)
                 {
                     for (String mapping : facesServletRegistration.getMappings())

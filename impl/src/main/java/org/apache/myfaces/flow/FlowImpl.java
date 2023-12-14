@@ -126,9 +126,9 @@ public class FlowImpl extends Flow implements Freezable
 
         for (MethodCallNode value : methodCallsList)
         {
-            if (value instanceof Freezable)
+            if (value instanceof Freezable freezable)
             {
-                ((Freezable)value).freeze();
+                freezable.freeze();
             }
         }
 
@@ -150,9 +150,9 @@ public class FlowImpl extends Flow implements Freezable
         
         for (ViewNode value : viewsList)
         {
-            if (value instanceof Freezable)
+            if (value instanceof Freezable freezable)
             {
-                ((Freezable)value).freeze();
+                freezable.freeze();
             }
         }
     }

@@ -274,9 +274,9 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
             {
                 for (OrderSlot slot : f.getOrdering().getBeforeList())
                 {
-                    if (slot instanceof FacesConfigNameSlot)
+                    if (slot instanceof FacesConfigNameSlot nameSlot)
                     {
-                        String name = ((FacesConfigNameSlot) slot).getName();
+                        String name = nameSlot.getName();
                         int j = DirectedAcyclicGraphVerifier.findVertex(vertexList, name);
                         Vertex<FacesConfig> v1 = vertexList.get(j);
                         if (v1 != null)
@@ -289,9 +289,9 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                 }
                 for (OrderSlot slot : f.getOrdering().getAfterList())
                 {
-                    if (slot instanceof FacesConfigNameSlot)
+                    if (slot instanceof FacesConfigNameSlot nameSlot)
                     {
-                        String name = ((FacesConfigNameSlot) slot).getName();
+                        String name = nameSlot.getName();
                         int j = DirectedAcyclicGraphVerifier.findVertex(vertexList, name);
                         Vertex<FacesConfig> v1 = vertexList.get(j);
                         if (v1 != null)
@@ -389,9 +389,9 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
             {
                 for (OrderSlot slot : resource.getOrdering().getBeforeList())
                 {
-                    if (slot instanceof FacesConfigNameSlot)
+                    if (slot instanceof FacesConfigNameSlot nameSlot)
                     {
-                        String name = ((FacesConfigNameSlot) slot).getName();
+                        String name = nameSlot.getName();
                         if (name != null && !name.isEmpty())
                         {
                             boolean founded = false;
@@ -415,9 +415,9 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                 }
                 for (OrderSlot slot : resource.getOrdering().getAfterList())
                 {
-                    if (slot instanceof FacesConfigNameSlot)
+                    if (slot instanceof FacesConfigNameSlot nameSlot)
                     {
-                        String name = ((FacesConfigNameSlot) slot).getName();
+                        String name = nameSlot.getName();
                         if (StringUtils.isNotEmpty(name))
                         {
                             boolean founded = false;
@@ -488,8 +488,8 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                         FacesConfig pointingResource = preOrderedList.get(j);
                         for (OrderSlot slot : pointingResource.getOrdering().getBeforeList())
                         {
-                            if (slot instanceof FacesConfigNameSlot &&
-                                    resource.getName().equals(((FacesConfigNameSlot)slot).getName()) )
+                            if (slot instanceof FacesConfigNameSlot nameSlot &&
+                                    resource.getName().equals(nameSlot.getName()) )
                             {
                                 referenceNode = true;
                             }
@@ -508,8 +508,8 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                         }
                         for (OrderSlot slot : pointingResource.getOrdering().getAfterList())
                         {
-                            if (slot instanceof FacesConfigNameSlot &&
-                                resource.getName().equals(((FacesConfigNameSlot)slot).getName()) )
+                            if (slot instanceof FacesConfigNameSlot nameSlot &&
+                                resource.getName().equals(nameSlot.getName()) )
                             {
                                 referenceNode = true;
                                 break;
@@ -570,9 +570,9 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
             {
                 for (OrderSlot slot : resource.getOrdering().getBeforeList())
                 {
-                    if (slot instanceof FacesConfigNameSlot)
+                    if (slot instanceof FacesConfigNameSlot nameSlot)
                     {
-                        String name = ((FacesConfigNameSlot) slot).getName();
+                        String name = nameSlot.getName();
                         if (StringUtils.isNotEmpty(name))
                         {
                             boolean founded = false;
@@ -594,9 +594,9 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                 }
                 for (OrderSlot slot : resource.getOrdering().getAfterList())
                 {
-                    if (slot instanceof FacesConfigNameSlot)
+                    if (slot instanceof FacesConfigNameSlot nameSlot)
                     {
-                        String name = ((FacesConfigNameSlot) slot).getName();
+                        String name = nameSlot.getName();
                         if (StringUtils.isNotEmpty(name))
                         {
                             boolean founded = false;
@@ -783,9 +783,9 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                 for (Iterator<OrderSlot> it =  resource.getOrdering().getBeforeList().iterator();it.hasNext();)
                 {
                     OrderSlot slot = it.next();
-                    if (slot instanceof FacesConfigNameSlot)
+                    if (slot instanceof FacesConfigNameSlot nameSlot)
                     {
-                        String name = ((FacesConfigNameSlot) slot).getName();
+                        String name = nameSlot.getName();
                         if (!availableReferences.contains(name))
                         {
                             it.remove();
@@ -795,9 +795,9 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                 for (Iterator<OrderSlot> it =  resource.getOrdering().getAfterList().iterator();it.hasNext();)
                 {
                     OrderSlot slot = it.next();
-                    if (slot instanceof FacesConfigNameSlot)
+                    if (slot instanceof FacesConfigNameSlot nameSlot)
                     {
-                        String name = ((FacesConfigNameSlot) slot).getName();
+                        String name = nameSlot.getName();
                         if (!availableReferences.contains(name))
                         {
                             it.remove();
@@ -919,9 +919,8 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
             //Deal with before restrictions first
             for (OrderSlot slot : facesConfig.getOrdering().getBeforeList())
             {
-                if (slot instanceof FacesConfigNameSlot)
+                if (slot instanceof FacesConfigNameSlot nameSlot)
                 {
-                    FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
                     //The resource pointed is not added yet?
                     boolean alreadyAdded = false;
                     for (FacesConfig res : postOrderedList)
@@ -969,9 +968,8 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
 
             for (OrderSlot slot : facesConfig.getOrdering().getAfterList())
             {
-                if (slot instanceof FacesConfigNameSlot)
+                if (slot instanceof FacesConfigNameSlot nameSlot)
                 {
-                    FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
                     //The resource pointed is not added yet?
                     boolean alreadyAdded = false;
                     for (FacesConfig res : postOrderedList)
@@ -1062,9 +1060,8 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
     {
         for (OrderSlot slot: slots)
         {
-            if (slot instanceof FacesConfigNameSlot)
+            if (slot instanceof FacesConfigNameSlot nameSlot)
             {
-                FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
                 if (name.equals(nameSlot.getName()))
                 {
                     return true;
