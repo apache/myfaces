@@ -110,6 +110,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         FACTORY_NAMES.add(FactoryFinder.VISIT_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.FACES_SERVLET_FACTORY);
     }
 
     private static final Logger log = Logger.getLogger(DefaultFacesConfigurationProvider.class.getName());

@@ -16,64 +16,42 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package jakarta.faces.webapp;
+package org.apache.myfaces.webapp;
 
+import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.FacesContextFactory;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.MultipartConfig;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @MultipartConfig
-public final class FacesServlet implements Servlet
+public class FacesServletImpl implements Servlet
 {
-    /**
-     * Comma separated list of URIs of (additional) faces config files.
-     * (e.g. /WEB-INF/my-config.xml)See Faces 1.0 PRD2, 10.3.2
-     * Attention: You do not need to put /WEB-INF/faces-config.xml in here.
-     */
-    @JSFWebConfigParam(since="1.1")
-    public static final String CONFIG_FILES_ATTR = "jakarta.faces.CONFIG_FILES";
-
-    /**
-     * Identify the Lifecycle instance to be used.
-     */
-    @JSFWebConfigParam(since="1.1")
-    public static final String LIFECYCLE_ID_ATTR = "jakarta.faces.LIFECYCLE_ID";
-    
-    /**
-     * Disable automatic FacesServlet xhtml mapping.
-     */
-    @JSFWebConfigParam(since="2.3")
-    public static final String DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME = "jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML";
-    
-    /**
-     * <p class="changed_added_4_0">
-     * The <code>ServletContext</code> init parameter consulted by the runtime to tell if the automatic mapping of
-     * the {@code FacesServlet} to the extensionless variant (without {@code *.xhtml}) should be enabled.
-     * The implementation must enable this automatic mapping if and only if the value of this parameter is equal,
-     * ignoring case, to {@code true}.
-     * </p>
-     *
-     * <p>
-     * If this parameter is not specified, this automatic mapping is not enabled.
-     * </p>
-     */
-    @JSFWebConfigParam(since="4.0")
-    public static final String AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME
-            = "jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING";
+    private static final Logger LOG = Logger.getLogger(FacesServletImpl.class.getName());
 
     private ServletConfig servletConfig;
-    private Servlet facesServlet;
+    private FacesContextFactory facesContextFactory;
+    private Lifecycle lifecycle;
 
-    public FacesServlet()
+    public FacesServletImpl()
     {
         super();
     }
@@ -81,29 +59,39 @@ public final class FacesServlet implements Servlet
     @Override
     public void init(ServletConfig servletConfig) throws ServletException
     {
+        if (LOG.isLoggable(Level.FINEST))
+        {
+            LOG.finest("init begin");
+        }
         this.servletConfig = servletConfig;
+        this.facesContextFactory = (FacesContextFactory)FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
 
-        FacesServletFactory factory = (FacesServletFactory)
-                FactoryFinder.getFactory(FactoryFinder.FACES_SERVLET_FACTORY);
-        this.facesServlet = factory.getFacesServlet(servletConfig);
-        this.facesServlet.init(servletConfig);
+        // Javadoc says: Lifecycle instance is shared across multiple simultaneous requests, it must be implemented in a
+        // thread-safe manner.
+        // So we can acquire it here once:
+        LifecycleFactory lifecycleFactory = (LifecycleFactory)FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+        this.lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
+        if (LOG.isLoggable(Level.FINEST))
+        {
+            LOG.finest("init end");
+        }
     }
+
 
     @Override
     public void destroy()
     {
-        facesServlet.destroy();
-        facesServlet = null;
+        servletConfig = null;
+        facesContextFactory = null;
+        lifecycle = null;
+        if (LOG.isLoggable(Level.FINEST))
+        {
+            LOG.finest("destroy");
+        }
     }
 
     @Override
     public void service(ServletRequest request, ServletResponse response) throws IOException, ServletException
-    {
-        facesServlet.service(request, response);
-    }
-
-    @Override
-    public String getServletInfo()
     {
         // If the request and response arguments to this method are not instances of HttpServletRequest and 
         // HttpServletResponse, respectively, the results of invoking this method are undefined.
@@ -133,7 +121,7 @@ public final class FacesServlet implements Servlet
             buffer.append("\n remote user is ").append(httpRequest.getRemoteUser());
             buffer.append("\n request URI is ").append(httpRequest.getRequestURI());
 
-            log.warning(buffer.toString());
+            LOG.warning(buffer.toString());
 
             // Why does RI return a 404 and not a 403, SC_FORBIDDEN ?
 
@@ -143,9 +131,9 @@ public final class FacesServlet implements Servlet
         
         // If none of the cases described above in the specification for this method apply to the servicing of this 
         // request, the following action must be taken to service the request:
-        if (log.isLoggable(Level.FINEST))
+        if (LOG.isLoggable(Level.FINEST))
         {
-            log.finest("service begin");
+            LOG.finest("service begin");
         }
 
         // Acquire a FacesContext instance for this request.
@@ -169,12 +157,12 @@ public final class FacesServlet implements Servlet
             else
             {
                 //Faces 2.2: attach window
-                _lifecycle.attachWindow(facesContext);
+                lifecycle.attachWindow(facesContext);
                 // If this returns false, handle as follows:
                 // call Lifecycle.execute(jakarta.faces.context.FacesContext)
-                _lifecycle.execute(facesContext);
+                lifecycle.execute(facesContext);
                 // followed by Lifecycle.render(jakarta.faces.context.FacesContext).
-                _lifecycle.render(facesContext);
+                lifecycle.render(facesContext);
             }
         }
         catch (FacesException e)
@@ -190,15 +178,15 @@ public final class FacesServlet implements Servlet
                 // rethrow the ServletException instance.
                 throw new ServletException(e.getLocalizedMessage(), e);
             }
-            else if (cause instanceof ServletException exception)
+            else if (cause instanceof ServletException)
             {
                 // If the cause is an instance of ServletException, rethrow the cause.
-                throw exception;
+                throw (ServletException)cause;
             }
-            else if (cause instanceof IOException exception)
+            else if (cause instanceof IOException)
             {
                 // If the cause is an instance of IOException, rethrow the cause.
-                throw exception;
+                throw (IOException)cause;
             }
             else
             {
@@ -212,17 +200,40 @@ public final class FacesServlet implements Servlet
             // In a finally block, FacesContext.release() must be called. 
             facesContext.release();
         }
-        if (log.isLoggable(Level.FINEST))
+        if (LOG.isLoggable(Level.FINEST))
         {
-            log.finest("service end");
+            LOG.finest("service end");
         }
-        
-        return "FacesServlet of the MyFaces API";
     }
+
 
     @Override
     public ServletConfig getServletConfig()
     {
         return servletConfig;
+    }
+
+    @Override
+    public String getServletInfo()
+    {
+        return "FacesServlet of the MyFaces Implementation";
+    }
+
+    private String getLifecycleId()
+    {
+        // 1. check for Servlet's init-param
+        // 2. check for global context parameter
+        // 3. use default Lifecycle Id, if none of them was provided
+        String serLifecycleId = servletConfig.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
+        String appLifecycleId = servletConfig.getServletContext().getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
+        appLifecycleId = serLifecycleId == null ? appLifecycleId : serLifecycleId;
+        return appLifecycleId != null ? appLifecycleId : LifecycleFactory.DEFAULT_LIFECYCLE;
+    }
+
+    private FacesContext prepareFacesContext(ServletRequest request, ServletResponse response)
+    {
+        FacesContext facesContext =
+                facesContextFactory.getFacesContext(servletConfig.getServletContext(), request, response, lifecycle);
+        return facesContext;
     }
 }

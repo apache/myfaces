@@ -18,17 +18,8 @@
  */
 package org.apache.myfaces.config.impl;
 
-import java.io.ByteArrayInputStream;
-import jakarta.faces.context.ExternalContext;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.function.Consumer;
 import jakarta.faces.FacesException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
 import org.apache.myfaces.config.impl.element.AbsoluteOrderingImpl;
@@ -73,6 +64,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<FacesConfigImpl>
 {
@@ -372,6 +373,7 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
         onChild("flash-factory", node, (n) -> { obj.addFlashFactory(getTextContent(n)); });
         onChild("flow-handler-factory", node, (n) -> { obj.addFlowHandlerFactory(getTextContent(n)); });
         onChild("client-window-factory", node, (n) -> { obj.addClientWindowFactory(getTextContent(n)); });
+        onChild("faces-servlet-factory", node, (n) -> { obj.addFacesServletFactory(getTextContent(n)); });
         
         return obj;
     }

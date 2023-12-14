@@ -60,6 +60,7 @@ public class ConfigFilesXmlValidationUtils
     private final static String FACES_CONFIG_SCHEMA_PATH_23 = "org/apache/myfaces/resource/web-facesconfig_2_3.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_30 = "org/apache/myfaces/resource/web-facesconfig_3_0.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_40 = "org/apache/myfaces/resource/web-facesconfig_4_0.xsd";
+    private final static String FACES_CONFIG_SCHEMA_PATH_50 = "org/apache/myfaces/resource/web-facesconfig_5_0.xsd";
     private final static String FACES_TAGLIB_SCHEMA_PATH = "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
 
     public static class LSInputImpl implements LSInput
@@ -278,7 +279,8 @@ public class ConfigFilesXmlValidationUtils
                             : ("2.1".equals(version) ? FACES_CONFIG_SCHEMA_PATH_21
                             : ("2.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_22
                             : ("2.3".equals(version) ? FACES_CONFIG_SCHEMA_PATH_23
-                            : ("3.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_30 : FACES_CONFIG_SCHEMA_PATH_40)))));
+                            : ("3.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_30
+                            : ("4.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_40 : FACES_CONFIG_SCHEMA_PATH_50))))));
 
         InputStream stream = ClassUtils.getResourceAsStream(xmlSchema);
 
@@ -297,7 +299,7 @@ public class ConfigFilesXmlValidationUtils
 
     public static final String getFacesConfigVersion(URL url)
     {
-        String result = "4.0";
+        String result = "5.0";
 
         try
         {
@@ -368,9 +370,13 @@ public class ConfigFilesXmlValidationUtils
             {
                 return "3.0";
             }
-            else if (handler.isVersion40OrLater())
+            else if (handler.isVersion40())
             {
                 return "4.0";
+            }
+            else if (handler.isVersion50OrLater())
+            {
+                return "5.0";
             }
         }
         catch (Throwable e)
@@ -390,7 +396,8 @@ public class ConfigFilesXmlValidationUtils
         private boolean version22;
         private boolean version23;
         private boolean version30;
-        private boolean version40OrLater;
+        private boolean version40;
+        private boolean version50OrLater;
 
         public boolean isVersion11()
         {
@@ -427,9 +434,14 @@ public class ConfigFilesXmlValidationUtils
             return this.version30;
         }
 
-        public boolean isVersion40OrLater()
+        public boolean isVersion40()
         {
-            return this.version40OrLater;
+            return this.version40;
+        }
+
+        public boolean isVersion50OrLater()
+        {
+            return this.version50OrLater;
         }
 
         protected void reset()
@@ -441,7 +453,8 @@ public class ConfigFilesXmlValidationUtils
             this.version22 = false;
             this.version23 = false;
             this.version30 = false;
-            this.version40OrLater = false;
+            this.version40 = false;
+            this.version50OrLater = false;
         }
 
         @Override
@@ -495,10 +508,15 @@ public class ConfigFilesXmlValidationUtils
                             reset();
                             this.version30 = true;
                         }
+                        else if (attributes.getValue(i).equals("4.0"))
+                        {
+                            reset();
+                            this.version40 = true;
+                        }
                         else
                         {
                             reset();
-                            this.version40OrLater = true;
+                            this.version50OrLater = true;
                         }
                     }
                 }

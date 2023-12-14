@@ -18,6 +18,32 @@
  */
 package org.apache.myfaces.config.impl;
 
+import jakarta.faces.render.RenderKitFactory;
+import org.apache.myfaces.config.FacesConfigDispenser;
+import org.apache.myfaces.config.element.Application;
+import org.apache.myfaces.config.element.Behavior;
+import org.apache.myfaces.config.element.ClientBehaviorRenderer;
+import org.apache.myfaces.config.element.Component;
+import org.apache.myfaces.config.element.ComponentTagDeclaration;
+import org.apache.myfaces.config.element.ContractMapping;
+import org.apache.myfaces.config.element.Converter;
+import org.apache.myfaces.config.element.FaceletsProcessing;
+import org.apache.myfaces.config.element.FaceletsTemplateMapping;
+import org.apache.myfaces.config.element.FacesConfig;
+import org.apache.myfaces.config.element.FacesConfigExtension;
+import org.apache.myfaces.config.element.FacesFlowDefinition;
+import org.apache.myfaces.config.element.Factory;
+import org.apache.myfaces.config.element.LocaleConfig;
+import org.apache.myfaces.config.element.NamedEvent;
+import org.apache.myfaces.config.element.NavigationRule;
+import org.apache.myfaces.config.element.RenderKit;
+import org.apache.myfaces.config.element.Renderer;
+import org.apache.myfaces.config.element.ResourceBundle;
+import org.apache.myfaces.config.element.SystemEventListener;
+import org.apache.myfaces.config.element.ViewPoolMapping;
+import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
+import org.apache.myfaces.config.impl.element.RenderKitImpl;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,33 +52,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import jakarta.faces.render.RenderKitFactory;
-
-import org.apache.myfaces.config.FacesConfigDispenser;
-import org.apache.myfaces.config.element.Behavior;
-import org.apache.myfaces.config.element.ClientBehaviorRenderer;
-import org.apache.myfaces.config.element.FaceletsProcessing;
-import org.apache.myfaces.config.element.FacesConfigExtension;
-import org.apache.myfaces.config.element.NavigationRule;
-import org.apache.myfaces.config.element.Renderer;
-import org.apache.myfaces.config.element.Application;
-import org.apache.myfaces.config.element.Component;
-import org.apache.myfaces.config.element.ComponentTagDeclaration;
-import org.apache.myfaces.config.element.ContractMapping;
-import org.apache.myfaces.config.element.Converter;
-import org.apache.myfaces.config.element.FaceletsTemplateMapping;
-import org.apache.myfaces.config.element.FacesConfig;
-import org.apache.myfaces.config.element.FacesFlowDefinition;
-import org.apache.myfaces.config.element.Factory;
-import org.apache.myfaces.config.element.LocaleConfig;
-import org.apache.myfaces.config.element.NamedEvent;
-import org.apache.myfaces.config.element.RenderKit;
-import org.apache.myfaces.config.element.ResourceBundle;
-import org.apache.myfaces.config.element.SystemEventListener;
-import org.apache.myfaces.config.element.ViewPoolMapping;
-import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
-import org.apache.myfaces.config.impl.element.RenderKitImpl;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
@@ -79,7 +78,8 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     private List<String> clientWindowFactories = new ArrayList<>();
     private List<String> flowHandlerFactories = new ArrayList<>();
     private List<String> searchExpressionContextFactories = new ArrayList<>();
-    
+    private List<String> facesServletFactories = new ArrayList<>();
+
     private String defaultRenderKitId;
     private String messageBundle;
     private String facesVersion;
@@ -149,6 +149,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     private transient List<String> umclientWindowFactories;
     private transient List<String> umflowHandlerFactories;
     private transient List<String> umsearchExpressionContextFactories;
+    private transient List<String> umfacesServletFactories;
     private transient List<Behavior> umbehaviors;
     private transient List<String> umactionListeners;
     private transient List<String> umelResolvers;
@@ -200,6 +201,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
             clientWindowFactories.addAll(factory.getClientWindowFactory());
             flowHandlerFactories.addAll(factory.getFlowHandlerFactory());
             searchExpressionContextFactories.addAll(factory.getSearchExpressionContextFactory());
+            facesServletFactories.addAll(factory.getFacesServletFactory());
         }
 
         for (Component component : config.getComponents())
@@ -1102,5 +1104,21 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
             umfaceletsTemplateMappings = Collections.unmodifiableList(faceletsTemplateMappings);
         }
         return umfaceletsTemplateMappings;
+    }
+
+    @Override
+    public void feedFacesServletFactory(String factoryClassName)
+    {
+        facesServletFactories.add(factoryClassName);
+    }
+
+    @Override
+    public Collection<String> getFacesServletFactoryIterator()
+    {
+        if (umfacesServletFactories == null)
+        {
+            umfacesServletFactories = Collections.unmodifiableList(facesServletFactories);
+        }
+        return umfacesServletFactories;
     }
 }

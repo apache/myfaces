@@ -43,6 +43,7 @@ public class FactoryImpl extends org.apache.myfaces.config.element.Factory imple
     private List<String> flashFactories;
     private List<String> clientWindowFactories;
     private List<String> searchExpressionContextFactories;
+    private List<String> facesServletFactories;
 
     public void addApplicationFactory(String factory)
     {
@@ -329,4 +330,22 @@ public class FactoryImpl extends org.apache.myfaces.config.element.Factory imple
         return searchExpressionContextFactories;
     }
 
+    public void addFacesServletFactory(String factory)
+    {
+        if (facesServletFactories == null)
+        {
+            facesServletFactories = new ArrayList<>();
+        }
+        facesServletFactories.add(factory);
+    }
+
+    @Override
+    public List<String> getFacesServletFactory()
+    {
+        if (facesServletFactories == null)
+        {
+            return Collections.emptyList();
+        }
+        return facesServletFactories;
+    }
 }

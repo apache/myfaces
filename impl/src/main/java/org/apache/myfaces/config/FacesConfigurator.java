@@ -152,6 +152,7 @@ import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.faces.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
 import org.apache.myfaces.webapp.FacesInitializerImpl;
+import org.apache.myfaces.webapp.FacesServletFactoryImpl;
 
 /**
  * Configures everything for a given context. The FacesConfigurator is independent of the concrete implementations that
@@ -186,6 +187,7 @@ public class FacesConfigurator
     private static final String DEFAULT_FLOW_FACTORY = FlowHandlerFactoryImpl.class.getName();
     private static final String DEFAULT_SEARCH_EXPRESSION_CONTEXT_FACTORY = 
             SearchExpressionContextFactoryImpl.class.getName();
+    private static final String DEFAULT_FACES_SERVLET_FACTORY = FacesServletFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
     /**
@@ -548,6 +550,9 @@ public class FacesConfigurator
         setFactories(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY, 
                 dispenser.getSearchExpressionContextFactoryIterator(),
                 DEFAULT_SEARCH_EXPRESSION_CONTEXT_FACTORY);
+        setFactories(FactoryFinder.FACES_SERVLET_FACTORY,
+                dispenser.getFacesServletFactoryIterator(),
+                DEFAULT_FACES_SERVLET_FACTORY);
     }
 
     private void setFactories(String factoryName, Collection<String> factories, String defaultFactory)
