@@ -119,9 +119,9 @@ public class DoubleRangeValidator
     private double parseDoubleValue(FacesContext facesContext, UIComponent uiComponent, Object value)
         throws ValidatorException
     {
-        if (value instanceof Number)
+        if (value instanceof Number number)
         {
-            return ((Number)value).doubleValue();
+            return number.doubleValue();
         }
         
         try

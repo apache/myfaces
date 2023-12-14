@@ -67,9 +67,9 @@ public class MethodExpressionValidator implements Validator, StateHolder
             {
                 do
                 {
-                    if (cause != null && cause instanceof ValidatorException)
+                    if (cause != null && cause instanceof ValidatorException exception)
                     {
-                        vex = (ValidatorException) cause;
+                        vex = exception;
                         break;
                     }
                     cause = cause.getCause();

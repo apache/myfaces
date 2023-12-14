@@ -87,8 +87,8 @@ public class LengthValidator
             return;
         }
 
-        int length = value instanceof String ?
-            ((String)value).length() : value.toString().length();
+        int length = value instanceof String s ?
+            s.length() : value.toString().length();
 
         if (_minimum != null)
         {

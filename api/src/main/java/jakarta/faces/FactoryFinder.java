@@ -226,21 +226,21 @@ public final class FactoryFinder
             catch (InvocationTargetException e)
             {
                 Throwable targetException = e.getCause();
-                if (targetException instanceof NullPointerException)
+                if (targetException instanceof NullPointerException exception)
                 {
-                    throw (NullPointerException) targetException;
+                    throw exception;
                 }
-                else if (targetException instanceof FacesException)
+                else if (targetException instanceof FacesException exception)
                 {
-                    throw (FacesException) targetException;
+                    throw exception;
                 }
-                else if (targetException instanceof IllegalArgumentException)
+                else if (targetException instanceof IllegalArgumentException exception)
                 {
-                    throw (IllegalArgumentException) targetException;
+                    throw exception;
                 }
-                else if (targetException instanceof IllegalStateException)
+                else if (targetException instanceof IllegalStateException exception)
                 {
-                    throw (IllegalStateException) targetException;
+                    throw exception;
                 }
                 else if (targetException == null)
                 {
@@ -550,17 +550,17 @@ public final class FactoryFinder
             catch (InvocationTargetException e)
             {
                 Throwable targetException = e.getCause();
-                if (targetException instanceof NullPointerException)
+                if (targetException instanceof NullPointerException exception)
                 {
-                    throw (NullPointerException) targetException;
+                    throw exception;
                 }
-                else if (targetException instanceof FacesException)
+                else if (targetException instanceof FacesException exception)
                 {
-                    throw (FacesException) targetException;
+                    throw exception;
                 }
-                else if (targetException instanceof IllegalArgumentException)
+                else if (targetException instanceof IllegalArgumentException exception)
                 {
-                    throw (IllegalArgumentException) targetException;
+                    throw exception;
                 }
                 else if (targetException == null)
                 {
@@ -632,9 +632,9 @@ public final class FactoryFinder
             catch (InvocationTargetException e)
             {
                 Throwable targetException = e.getCause();
-                if (targetException instanceof FacesException)
+                if (targetException instanceof FacesException exception)
                 {
-                    throw (FacesException) targetException;
+                    throw exception;
                 }
                 else if (targetException == null)
                 {

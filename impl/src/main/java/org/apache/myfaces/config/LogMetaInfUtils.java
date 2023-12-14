@@ -207,9 +207,8 @@ class LogMetaInfUtils
             {
                 return true;
             }
-            else if (o instanceof JarInfo)
+            else if (o instanceof JarInfo other)
             {
-                JarInfo other = (JarInfo) o;
                 return version.equals(other.version);
             }
             else

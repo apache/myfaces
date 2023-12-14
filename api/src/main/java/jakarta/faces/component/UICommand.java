@@ -54,7 +54,7 @@ public class UICommand extends UIComponentBase implements ActionSource
     {
         super.broadcast(event);
 
-        if (event instanceof ActionEvent)
+        if (event instanceof ActionEvent actionEvent)
         {
             FacesContext context = getFacesContext();
 
@@ -62,7 +62,7 @@ public class UICommand extends UIComponentBase implements ActionSource
                     .getActionListener();
             if (defaultActionListener != null)
             {
-                defaultActionListener.processAction((ActionEvent) event);
+                defaultActionListener.processAction(actionEvent);
             }
         }
     }
@@ -73,9 +73,9 @@ public class UICommand extends UIComponentBase implements ActionSource
         if (event != null && event instanceof ActionEvent)
         {
             UIComponent component = event.getComponent();
-            if (component instanceof ActionSource)
+            if (component instanceof ActionSource source)
             {
-                if (((ActionSource)component).isImmediate())
+                if (source.isImmediate())
                 {
                     event.setPhaseId(PhaseId.APPLY_REQUEST_VALUES);
                 }

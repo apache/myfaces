@@ -77,9 +77,9 @@ public final class RendererUtils
     {
         Object value = getObjectValue(component);
         // Try to convert to Boolean if it is a String
-        if (value instanceof String)
+        if (value instanceof String string)
         {
-            value = Boolean.valueOf((String) value);
+            value = Boolean.valueOf(string);
         }
 
         if (value == null || value instanceof Boolean)
@@ -100,9 +100,9 @@ public final class RendererUtils
                     + ComponentUtils.getPathToComponent(component) + " is not a ValueHolder");
         }
 
-        if (component instanceof EditableValueHolder)
+        if (component instanceof EditableValueHolder holder)
         {
-            Object value = ((EditableValueHolder) component).getSubmittedValue();
+            Object value = holder.getSubmittedValue();
             if (value != null)
             {
                 return value;
@@ -117,9 +117,9 @@ public final class RendererUtils
         Object value = ve.getValue(context.getELContext());
         if (value != null)
         {
-            if (value instanceof String)
+            if (value instanceof String string)
             {
-                return (String) value;
+                return string;
             }
             
             return value.toString();
@@ -136,14 +136,14 @@ public final class RendererUtils
                     + " is not a ValueHolder");
         }
 
-        if (component instanceof EditableValueHolder)
+        if (component instanceof EditableValueHolder holder)
         {
-            Object submittedValue = ((EditableValueHolder) component).getSubmittedValue();
+            Object submittedValue = holder.getSubmittedValue();
             if (submittedValue != null)
             {
-                if (submittedValue instanceof String)
+                if (submittedValue instanceof String string)
                 {
-                    return (String) submittedValue;
+                    return string;
                 }
                 
                 if (log.isLoggable(Level.FINE))
@@ -156,9 +156,8 @@ public final class RendererUtils
 
         Object value;
 
-        if (component instanceof EditableValueHolder)
+        if (component instanceof EditableValueHolder holder)
         {
-            EditableValueHolder holder = (EditableValueHolder) component;
             if (holder.isLocalValueSet())
             {
                 value = holder.getLocalValue();
@@ -204,9 +203,9 @@ public final class RendererUtils
                 return "";
             }
 
-            if (value instanceof String)
+            if (value instanceof String string)
             {
-                return (String) value;
+                return string;
             }
 
             if (log.isLoggable(Level.FINE))
@@ -236,9 +235,9 @@ public final class RendererUtils
                         + "is not a ValueHolder");
             }
 
-            if (component instanceof EditableValueHolder)
+            if (component instanceof EditableValueHolder holder)
             {
-                Object submittedValue = ((EditableValueHolder) component).getSubmittedValue();
+                Object submittedValue = holder.getSubmittedValue();
                 if (submittedValue != null)
                 {
                     if (log.isLoggable(Level.FINE))
@@ -251,9 +250,8 @@ public final class RendererUtils
 
             Object value;
 
-            if (component instanceof EditableValueHolder)
+            if (component instanceof EditableValueHolder holder)
             {
-                EditableValueHolder holder = (EditableValueHolder) component;
                 if (holder.isLocalValueSet())
                 {
                     value = holder.getLocalValue();
@@ -297,9 +295,9 @@ public final class RendererUtils
                     return null;
                 }
                 
-                if (value instanceof String)
+                if (value instanceof String string)
                 {
-                    return (String) value;
+                    return string;
                 }
 
                 if (log.isLoggable(Level.FINE))
@@ -343,35 +341,35 @@ public final class RendererUtils
         {
             return true;
         }
-        else if (value instanceof Boolean)
+        else if (value instanceof Boolean boolean1)
         {
-            return !((Boolean) value);
+            return !boolean1;
         }
         else if (value instanceof Number)
         {
-            if (value instanceof Integer)
+            if (value instanceof Integer integer)
             {
-                return ((Number) value).intValue() == Integer.MIN_VALUE;
+                return integer.intValue() == Integer.MIN_VALUE;
             }
-            else if (value instanceof Double)
+            else if (value instanceof Double double1)
             {
-                return ((Number) value).doubleValue() == Double.MIN_VALUE;
+                return double1.doubleValue() == Double.MIN_VALUE;
             }
-            else if (value instanceof Long)
+            else if (value instanceof Long long1)
             {
-                return ((Number) value).longValue() == Long.MIN_VALUE;
+                return long1.longValue() == Long.MIN_VALUE;
             }
-            else if (value instanceof Byte)
+            else if (value instanceof Byte byte1)
             {
-                return ((Number) value).byteValue() == Byte.MIN_VALUE;
+                return byte1.byteValue() == Byte.MIN_VALUE;
             }
-            else if (value instanceof Float)
+            else if (value instanceof Float float1)
             {
-                return ((Number) value).floatValue() == Float.MIN_VALUE;
+                return float1.floatValue() == Float.MIN_VALUE;
             }
-            else if (value instanceof Short)
+            else if (value instanceof Short short1)
             {
-                return ((Number) value).shortValue() == Short.MIN_VALUE;
+                return short1.shortValue() == Short.MIN_VALUE;
             }
         }
         return false;
@@ -604,10 +602,8 @@ public final class RendererUtils
         {
             return Collections.EMPTY_SET;
         }
-        else if (values instanceof Object[])
+        else if (values instanceof Object[] ar)
         {
-            //Object array
-            Object[] ar = (Object[]) values;
             if (ar.length == 0)
             {
                 return Collections.EMPTY_SET;
@@ -633,9 +629,8 @@ public final class RendererUtils
             }
             return set;
         }
-        else if (values instanceof Collection)
+        else if (values instanceof Collection col)
         {
-            Collection col = (Collection) values;
             if (col.isEmpty())
             {
                 return Collections.EMPTY_SET;
@@ -773,13 +768,13 @@ public final class RendererUtils
 
     public static boolean getBooleanValue(String attribute, Object value, boolean defaultValue)
     {
-        if (value instanceof Boolean)
+        if (value instanceof Boolean boolean1)
         {
-            return ((Boolean) value);
+            return boolean1;
         }
-        else if (value instanceof String)
+        else if (value instanceof String string)
         {
-            return Boolean.parseBoolean((String) value);
+            return Boolean.parseBoolean(string);
         }
         else if (value != null)
         {

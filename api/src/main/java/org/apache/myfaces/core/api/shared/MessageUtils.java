@@ -242,7 +242,7 @@ public class MessageUtils
         Object label = component.getAttributes().get("label");
         ValueExpression expression = null;
         if (label != null && 
-            label instanceof String && ((String)label).length() == 0 )
+            label instanceof String string && string.length() == 0 )
         {
             // Note component.getAttributes().get("label") internally try to 
             // evaluate the EL expression for the label, but in some cases, 

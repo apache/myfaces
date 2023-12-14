@@ -42,9 +42,9 @@ public final class BeanPropertyTagRule extends MetaRule
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {
         BiConsumer<Object, Object> writeFunction = null;
-        if (meta instanceof LambdaMetadataTargetImpl)
+        if (meta instanceof LambdaMetadataTargetImpl impl)
         {
-            writeFunction = ((LambdaMetadataTargetImpl) meta).getWriteFunction(name);
+            writeFunction = impl.getWriteFunction(name);
         }
 
         if (writeFunction != null)

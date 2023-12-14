@@ -241,9 +241,9 @@ public class DebugUtils
         boolean mustClose = true;
         boolean nestedObjects = false;
 
-        if (comp instanceof UICommand)
+        if (comp instanceof UICommand command)
         {
-            FacesListener[] listeners = ((UICommand)comp).getActionListeners();
+            FacesListener[] listeners = command.getActionListeners();
             if (listeners != null && listeners.length > 0)
             {
                 nestedObjects = true;
@@ -260,9 +260,9 @@ public class DebugUtils
             }
         }
 
-        if (comp instanceof UIInput)
+        if (comp instanceof UIInput input)
         {
-            FacesListener[] listeners = ((UIInput)comp).getValueChangeListeners();
+            FacesListener[] listeners = input.getValueChangeListeners();
             if (listeners != null && listeners.length > 0)
             {
                 nestedObjects = true;
@@ -278,7 +278,7 @@ public class DebugUtils
                 }
             }
 
-            Validator[] validators = ((UIInput)comp).getValidators();
+            Validator[] validators = input.getValidators();
             if (validators != null && validators.length > 0)
             {
                 nestedObjects = true;
@@ -359,15 +359,15 @@ public class DebugUtils
         stream.print("=\"");
         if (value != null)
         {
-            if (value instanceof UIComponent)
+            if (value instanceof UIComponent component)
             {
                 stream.print("[id:");
-                stream.print(((UIComponent)value).getId());
+                stream.print(component.getId());
                 stream.print(']');
             }
-            else if (value instanceof MethodExpression)
+            else if (value instanceof MethodExpression expression)
             {
-                stream.print(((MethodExpression)value).getExpressionString());
+                stream.print(expression.getExpressionString());
             }
             else
             {

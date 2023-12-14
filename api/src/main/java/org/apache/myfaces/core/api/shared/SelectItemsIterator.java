@@ -98,9 +98,8 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     return false;
                 }
             }
-            if (child instanceof UISelectItem)
+            if (child instanceof UISelectItem uiSelectItem)
             {
-                UISelectItem uiSelectItem = (UISelectItem) child;
                 Object item = uiSelectItem.getValue();
                 if (item == null)
                 {
@@ -120,15 +119,15 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 _currentValue = item;
                 return true;
             }
-            else if (child instanceof UISelectItems)
+            else if (child instanceof UISelectItems uiSelectItems)
             {
-                _currentUISelectItems = ((UISelectItems) child);
+                _currentUISelectItems =uiSelectItems;
                 Object value = _currentUISelectItems.getValue();
                 _currentComponent = child;
 
-                if (value instanceof SelectItem)
+                if (value instanceof SelectItem item)
                 {
-                    _nextItem = (SelectItem) value;
+                    _nextItem = item;
                     return true;
                 }
                 else if (value != null && value.getClass().isArray())
@@ -144,15 +143,15 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     _nestedItems = items.iterator();
                     return hasNext();
                 }
-                else if (value instanceof Iterable)
+                else if (value instanceof Iterable iterable)
                 {
                     // value is Iterable --> Collection, DataModel,...
-                    _nestedItems = ((Iterable<?>) value).iterator();
+                    _nestedItems = iterable.iterator();
                     return hasNext();
                 }
-                else if (value instanceof Map)
+                else if (value instanceof Map map1)
                 {
-                    Map<Object, Object> map = ((Map<Object, Object>) value);
+                    Map<Object, Object> map =map1;
                     Collection<SelectItem> items = new ArrayList<>(map.size());
                     for (Map.Entry<Object, Object> entry : map.entrySet())
                     {
@@ -216,10 +215,10 @@ public class SelectItemsIterator implements Iterator<SelectItem>
 
             return VarUtils.executeInScope(_facesContext, var, item, () ->
             {
-                if (item instanceof SelectItem)
+                if (item instanceof SelectItem selectItem)
                 {
                     _currentValue = null;
-                    return SelectItemsUtil.updateSelectItem(_currentUISelectItems, (SelectItem) item);
+                    return SelectItemsUtil.updateSelectItem(_currentUISelectItems, selectItem);
                 }
                 else
                 {

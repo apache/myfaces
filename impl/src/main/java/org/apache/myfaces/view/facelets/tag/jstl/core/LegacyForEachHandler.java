@@ -342,9 +342,9 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         {
             return new IndexedValueExpression(ve, i);
         }
-        else if (src instanceof Map && value instanceof Map.Entry)
+        else if (src instanceof Map && value instanceof Map.Entry entry)
         {
-            return new MappedValueExpression(ve, (Map.Entry) value);
+            return new MappedValueExpression(ve, entry);
         }
         else if (src instanceof Collection)
         {
@@ -377,13 +377,13 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         {
             return null;
         }
-        else if (src instanceof Collection)
+        else if (src instanceof Collection collection)
         {
-            return ((Collection<?>) src).iterator();
+            return collection.iterator();
         }
-        else if (src instanceof Map)
+        else if (src instanceof Map map)
         {
-            return ((Map<?, ?>) src).entrySet().iterator();
+            return map.entrySet().iterator();
         }
         else if (src.getClass().isArray())
         {

@@ -111,9 +111,8 @@ class _EventListenerWrapper implements SystemEventListener, PartialStateHolder
         {
             return true;
         }
-        else if (o instanceof _EventListenerWrapper)
+        else if (o instanceof _EventListenerWrapper other)
         {
-            _EventListenerWrapper other = (_EventListenerWrapper) o;
             return componentClass.equals(other.componentClass) && listener.equals(other.listener);
         }
         else
@@ -202,10 +201,10 @@ class _EventListenerWrapper implements SystemEventListener, PartialStateHolder
         }
         Object[] values = (Object[]) state;
         componentClass = (Class) values[0];
-        if (values[1] instanceof _AttachedDeltaWrapper)
+        if (values[1] instanceof _AttachedDeltaWrapper wrapper)
         {
             ((StateHolder) listener).restoreState(context,
-                    ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
+                    wrapper.getWrappedStateObject());
         }
         else
         {
@@ -261,9 +260,9 @@ class _EventListenerWrapper implements SystemEventListener, PartialStateHolder
                     int i = 0;
                     while (renderer != null && !renderer.getClass().equals(listener.getClass()))
                     {
-                        if (renderer instanceof RendererWrapper)
+                        if (renderer instanceof RendererWrapper wrapper)
                         {
-                            renderer = ((RendererWrapper) renderer).getWrapped();
+                            renderer = wrapper.getWrapped();
                             i++;
                         }
                         else

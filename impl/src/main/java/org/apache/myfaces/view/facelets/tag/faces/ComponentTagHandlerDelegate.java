@@ -107,9 +107,9 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 found = true;
             }
-            else if (handler instanceof FacesWrapper)
+            else if (handler instanceof FacesWrapper wrapper)
             {
-                handler = ((FacesWrapper<? extends ComponentHandler>)handler).getWrapped();
+                handler = (ComponentHandler) wrapper.getWrapped();
             }
             else
             {
@@ -134,9 +134,9 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 found = true;
             }
-            else if (handler instanceof FacesWrapper)
+            else if (handler instanceof FacesWrapper wrapper)
             {
-                handler = ((FacesWrapper<? extends ComponentHandler>)handler).getWrapped();
+                handler = (ComponentHandler) wrapper.getWrapped();
             }
             else
             {
@@ -345,9 +345,9 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         c.pushComponentToEL(facesContext, c);
 
-        if (c instanceof UniqueIdVendor)
+        if (c instanceof UniqueIdVendor vendor)
         {
-            mctx.pushUniqueIdVendorToStack((UniqueIdVendor)c);
+            mctx.pushUniqueIdVendorToStack(vendor);
         }
         
         if (mctx.isDynamicComponentTopLevel())
@@ -421,11 +421,11 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
             }
             
-            if (c instanceof EditableValueHolder)
+            if (c instanceof EditableValueHolder holder)
             {
                 // add default validators here, because this feature 
                 // is only available in facelets (see MYFACES-2362 for details)
-                addEnclosingAndDefaultValidators(ctx, mctx, facesContext, (EditableValueHolder) c);
+                addEnclosingAndDefaultValidators(ctx, mctx, facesContext, holder);
             }
         }
         
@@ -737,9 +737,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         
         // special things to configure for a BeanValidator
-        if (validator instanceof BeanValidator)
+        if (validator instanceof BeanValidator beanValidator)
         {
-            BeanValidator beanValidator = (BeanValidator) validator;
             
             // check the validationGroups
             String validationGroups =  beanValidator.getValidationGroups();
@@ -768,7 +767,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * Determine if the validator with the given validatorId should be added.
      *
      * @param validatorId The validatorId.
-     * @param facesContext The FacesContext.
+     * @param ctx The FacesContext.
      * @param mctx the AbstractFaceletContext
      * @param component The EditableValueHolder to which the validator should be added.
      * @return true if the Validator should be added, false otherwise.
@@ -847,9 +846,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 validator = context.getApplication().createValidator(validatorId);
 
                 // special things to configure for a BeanValidator
-                if (validator instanceof BeanValidator)
+                if (validator instanceof BeanValidator beanValidator)
                 {
-                    BeanValidator beanValidator = (BeanValidator) validator;
                     
                     // check the validationGroups
                     String validationGroups =  beanValidator.getValidationGroups();
@@ -885,9 +883,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * The difference here with shouldAddEnclosingValidator is the inner one has
      * precedence over the outer one, so a disable="true" over the same outer 
      * validator, the inner one should ignore this condition. 
-     * 
-     * @param mctx
-     * @param facesContext
+     *
      * @param component
      * @param validatorId
      * @return

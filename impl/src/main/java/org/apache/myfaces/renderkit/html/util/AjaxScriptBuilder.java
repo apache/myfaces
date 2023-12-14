@@ -133,8 +133,8 @@ public class AjaxScriptBuilder
                              List<UIParameter> uiParams)
     {
         // CHECKSTYLE:ON
-        HtmlCommandScript commandScript = (component instanceof HtmlCommandScript)
-                ? (HtmlCommandScript) component
+        HtmlCommandScript commandScript = (component instanceof HtmlCommandScript hcs)
+                ? hcs
                 : null;
 
         sb.append(MYFACES_AB);

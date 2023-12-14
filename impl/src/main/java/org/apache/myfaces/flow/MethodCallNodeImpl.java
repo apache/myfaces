@@ -86,9 +86,9 @@ public class MethodCallNodeImpl extends MethodCallNode implements Freezable
         
         for (Parameter value : parameters)
         {
-            if (value instanceof Freezable)
+            if (value instanceof Freezable freezable)
             {
-                ((Freezable)value).freeze();
+                freezable.freeze();
             }
         }
     }

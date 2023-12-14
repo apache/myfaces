@@ -47,8 +47,8 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.startElement(HTML.SELECT_ELEM, uiComponent);
-        if (uiComponent instanceof ClientBehaviorHolder
-                && !((ClientBehaviorHolder) uiComponent).getClientBehaviors().isEmpty())
+        if (uiComponent instanceof ClientBehaviorHolder holder
+                && !holder.getClientBehaviors().isEmpty())
         {
             writer.writeAttribute(HTML.ID_ATTR, uiComponent.getClientId(facesContext), null);
         }
@@ -82,9 +82,9 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         }
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {

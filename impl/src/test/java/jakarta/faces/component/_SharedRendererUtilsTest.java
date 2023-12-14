@@ -75,7 +75,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         @Override
         public boolean equals(Object obj)
         {
-            return obj instanceof POJO && ((POJO) obj).id == this.id;
+            return obj instanceof POJO pojo && pojo.id == this.id;
         }
 
         @Override

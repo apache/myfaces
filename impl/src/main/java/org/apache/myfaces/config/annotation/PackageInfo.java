@@ -99,10 +99,8 @@ class PackageInfo
                 throw new ClassNotFoundException(pckgname + " does not appear to be a valid package", e);
             }
 
-            if (connection instanceof JarURLConnection)
+            if (connection instanceof JarURLConnection juc)
             {
-                // iterate trhough all the entries in the jar
-                JarURLConnection juc = (JarURLConnection) connection;
                 JarFile jarFile = null;
                 try
                 {

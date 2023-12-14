@@ -290,7 +290,7 @@ public abstract class MockApplication20 extends MockApplication12
         {
             // Determine the "target" on which to call subscribeToEvent.
             // If the class to which this annotation is attached implements ComponentSystemEventListener
-            if (inspected instanceof ComponentSystemEventListener)
+            if (inspected instanceof ComponentSystemEventListener listener)
             {
                 // If the class to which this annotation is attached is a UIComponent instance, "target" is the
                 // UIComponent instance.
@@ -304,7 +304,7 @@ public abstract class MockApplication20 extends MockApplication12
                  * to which this annotation is attached (which must implement ComponentSystemEventListener) as the
                  * second argument.
                  */
-                component.subscribeToEvent(annotation.systemEventClass(), (ComponentSystemEventListener) inspected);
+                component.subscribeToEvent(annotation.systemEventClass(), listener);
             }
             // If the class to which this annotation is attached implements SystemEventListener and does not implement
             // ComponentSystemEventListener, "target" is the Application instance.
@@ -588,9 +588,8 @@ public abstract class MockApplication20 extends MockApplication12
         try
         {
             SystemEvent event = null;
-            if (source instanceof SystemEventListenerHolder)
+            if (source instanceof SystemEventListenerHolder holder)
             {
-                SystemEventListenerHolder holder = (SystemEventListenerHolder) source;
 
                 // If the source argument implements SystemEventListenerHolder, call 
                 // SystemEventListenerHolder.getListenersForEventClass(java.lang.Class) on it, 
@@ -840,9 +839,9 @@ public abstract class MockApplication20 extends MockApplication12
 
             UIComponent createdComponent;
 
-            if (retVal instanceof UIComponent)
+            if (retVal instanceof UIComponent component)
             {
-                createdComponent = (UIComponent) retVal;
+                createdComponent = component;
                 _handleAnnotations(facesContext, createdComponent, createdComponent);
             }
             else

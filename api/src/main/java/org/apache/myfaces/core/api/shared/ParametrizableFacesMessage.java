@@ -123,13 +123,13 @@ public class ParametrizableFacesMessage extends FacesMessage
                 continue;
             }
 
-            if (args[i] instanceof ValueExpression)
+            if (args[i] instanceof ValueExpression expression)
             {
                 if (facesContext == null)
                 {
                     facesContext = FacesContext.getCurrentInstance();
                 }
-                evaluatedArgs[i] = ((ValueExpression) args[i]).getValue(facesContext.getELContext());
+                evaluatedArgs[i] = expression.getValue(facesContext.getELContext());
             }
             else 
             {

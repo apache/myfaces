@@ -185,9 +185,9 @@ public abstract class HtmlMessageRendererBase
     throws IOException
     {
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (message instanceof ClientBehaviorHolder)
+        if (message instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
         }
         boolean wrapSpan = (message.getId() != null && !message.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX)) 
             || (behaviors != null && !behaviors.isEmpty());
@@ -241,9 +241,9 @@ public abstract class HtmlMessageRendererBase
         boolean span = false;
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (message instanceof ClientBehaviorHolder)
+        if (message instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             // If there is a behavior registered, force wrapSpan
             wrapSpan = wrapSpan || !behaviors.isEmpty();
         }
@@ -263,9 +263,9 @@ public abstract class HtmlMessageRendererBase
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, message, facesContext);
             }
-            if (message instanceof ClientBehaviorHolder)
+            if (message instanceof ClientBehaviorHolder holder)
             {
-                behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
+                behaviors = holder.getClientBehaviors();
                 if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                 {
                     CommonHtmlAttributesUtil.renderEventProperties(writer, 
@@ -345,37 +345,37 @@ public abstract class HtmlMessageRendererBase
     {
         String style = null;
         String styleClass = null;
-        if (message instanceof HtmlMessage)
+        if (message instanceof HtmlMessage htmlMessage)
         {
             if (severity == FacesMessage.SEVERITY_INFO)
             {
-                style = ((HtmlMessage) message).getInfoStyle();
-                styleClass = ((HtmlMessage) message).getInfoClass();
+                style = htmlMessage.getInfoStyle();
+                styleClass = htmlMessage.getInfoClass();
             }
             else if (severity == FacesMessage.SEVERITY_WARN)
             {
-                style = ((HtmlMessage) message).getWarnStyle();
-                styleClass = ((HtmlMessage) message).getWarnClass();
+                style = htmlMessage.getWarnStyle();
+                styleClass = htmlMessage.getWarnClass();
             }
             else if (severity == FacesMessage.SEVERITY_ERROR)
             {
-                style = ((HtmlMessage) message).getErrorStyle();
-                styleClass = ((HtmlMessage) message).getErrorClass();
+                style = htmlMessage.getErrorStyle();
+                styleClass = htmlMessage.getErrorClass();
             }
             else if (severity == FacesMessage.SEVERITY_FATAL)
             {
-                style = ((HtmlMessage) message).getFatalStyle();
-                styleClass = ((HtmlMessage) message).getFatalClass();
+                style = htmlMessage.getFatalStyle();
+                styleClass = htmlMessage.getFatalClass();
             }
 
             if (style == null)
             {
-                style = ((HtmlMessage) message).getStyle();
+                style = htmlMessage.getStyle();
             }
 
             if (styleClass == null)
             {
-                styleClass = ((HtmlMessage) message).getStyleClass();
+                styleClass = htmlMessage.getStyleClass();
             }
         }
         else
@@ -418,9 +418,9 @@ public abstract class HtmlMessageRendererBase
 
     protected String getFor(UIComponent component)
     {
-        if (component instanceof UIMessage)
+        if (component instanceof UIMessage message)
         {
-            return ((UIMessage) component).getFor();
+            return message.getFor();
         }
  
         return (String) component.getAttributes().get(ComponentAttrs.FOR_ATTR);
@@ -429,9 +429,9 @@ public abstract class HtmlMessageRendererBase
 
     protected String getTitle(UIComponent component)
     {
-        if (component instanceof HtmlMessage)
+        if (component instanceof HtmlMessage message)
         {
-            return ((HtmlMessage) component).getTitle();
+            return message.getTitle();
         }
 
         return (String) component.getAttributes().get(ComponentAttrs.TITLE_ATTR);
@@ -440,9 +440,9 @@ public abstract class HtmlMessageRendererBase
 
     protected boolean isTooltip(UIComponent component)
     {
-        if (component instanceof HtmlMessage)
+        if (component instanceof HtmlMessage message)
         {
-            return ((HtmlMessage) component).isTooltip();
+            return message.isTooltip();
         }
 
         return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.TOOLTIP_ATTR, false);
@@ -450,9 +450,9 @@ public abstract class HtmlMessageRendererBase
 
     protected boolean isShowSummary(UIComponent component)
     {
-        if (component instanceof UIMessage)
+        if (component instanceof UIMessage message)
         {
-            return ((UIMessage) component).isShowSummary();
+            return message.isShowSummary();
         }
 
         return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.SHOW_SUMMARY_ATTR, false);
@@ -460,9 +460,9 @@ public abstract class HtmlMessageRendererBase
 
     protected boolean isShowDetail(UIComponent component)
     {
-        if (component instanceof UIMessage)
+        if (component instanceof UIMessage message)
         {
-            return ((UIMessage) component).isShowDetail();
+            return message.isShowDetail();
         }
 
         return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.SHOW_DETAIL_ATTR, false);
@@ -470,9 +470,9 @@ public abstract class HtmlMessageRendererBase
     
     protected boolean isRedisplay(UIComponent component)
     {
-        if (component instanceof UIMessage)
+        if (component instanceof UIMessage message)
         {
-            return ((UIMessage) component).isRedisplay();
+            return message.isRedisplay();
         }
 
         return AttributeUtils.getBooleanAttribute(component, ComponentAttrs.REDISPLAY_ATTR, true);

@@ -79,8 +79,8 @@ public final class CompositeComponentELResolver extends ELResolver
     {
         if (base != null
                 && property != null
-                && base instanceof CompositeComponentAttributesMapWrapper
-                && property instanceof String)
+                && base instanceof CompositeComponentAttributesMapWrapper evalMap
+                && property instanceof String string)
         {
             FacesContext facesContext = facesContext(context);
             if (facesContext == null)
@@ -99,15 +99,13 @@ public final class CompositeComponentELResolver extends ELResolver
                 // the same contributor, whose ICLA is on file
                 Class<?> exprType = null;
                 Class<?> metaType = null;
-
-                CompositeComponentAttributesMapWrapper evalMap = (CompositeComponentAttributesMapWrapper) base;
-                ValueExpression ve = evalMap.getExpression((String) property);
+                ValueExpression ve = evalMap.getExpression(string);
                 if (ve != null)
                 {
                     exprType = ve.getType(context);
                 }
 
-                if (StringUtils.isNotBlank((String) property))
+                if (StringUtils.isNotBlank(string))
                 {
                     if (evalMap.propertyDescriptors != null)
                     {
@@ -147,11 +145,11 @@ public final class CompositeComponentELResolver extends ELResolver
             if (type != null)
             {
                 type = ((ValueExpression)type).getValue(context);
-                if (type instanceof String)
+                if (type instanceof String string)
                 {
                     try
                     {
-                        type = ClassUtils.javaDefaultTypeToClass((String)type);
+                        type = ClassUtils.javaDefaultTypeToClass(string);
                     }
                     catch (ClassNotFoundException e)
                     {
@@ -173,12 +171,11 @@ public final class CompositeComponentELResolver extends ELResolver
         // component.  Property must be a String.
 
         if (base != null
-                && base instanceof UIComponent
+                && base instanceof UIComponent baseComponent
                 && property != null
-                && UIComponent.isCompositeComponent((UIComponent) base))
+                && UIComponent.isCompositeComponent(baseComponent))
         {
             String propName = property.toString();
-            UIComponent baseComponent = (UIComponent) base;
 
             if (propName.equals(ATTRIBUTES_MAP))
             {
@@ -283,8 +280,8 @@ public final class CompositeComponentELResolver extends ELResolver
             this.originalMap = component.getAttributes();
             this.beanInfo = (BeanInfo) originalMap.get(UIComponent.BEANINFO_KEY);
             this.propertyDescriptors = beanInfo.getPropertyDescriptors();
-            this.ccBeanInfo = beanInfo instanceof CompositeComponentBeanInfo
-                    ? (CompositeComponentBeanInfo) beanInfo
+            this.ccBeanInfo = beanInfo instanceof CompositeComponentBeanInfo ccbi
+                    ? ccbi
                     : null;
         }
 
@@ -383,9 +380,9 @@ public final class CompositeComponentELResolver extends ELResolver
             // We have to check for a ValueExpression and also evaluate it
             // here, because in the PropertyDescriptor the default values are
             // always stored as (Tag-)ValueExpressions.
-            if (obj != null && obj instanceof ValueExpression)
+            if (obj != null && obj instanceof ValueExpression expression)
             {
-                return ((ValueExpression) obj).getValue(FacesContext.getCurrentInstance().getELContext());
+                return expression.getValue(FacesContext.getCurrentInstance().getELContext());
             }
 
             return obj;

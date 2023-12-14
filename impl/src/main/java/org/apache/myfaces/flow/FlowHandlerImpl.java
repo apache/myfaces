@@ -538,7 +538,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
                     }
                     String currentLastDisplayedViewId = flowHandler.getLastDisplayedViewId(context);
                     FlowNode node = currentFlow.getNode(fromOutcome);
-                    if (node instanceof ReturnNode)
+                    if (node instanceof ReturnNode returnNode)
                     {
                         if (targetFlows == null)
                         {
@@ -552,7 +552,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
                         i++;
                         
                         NavigationCase navCase = nh.getNavigationCase(context, null, 
-                            ((ReturnNode) node).getFromOutcome(context), FlowHandler.NULL_FLOW);
+                            returnNode.getFromOutcome(context), FlowHandler.NULL_FLOW);
 
                         if (navCase == null)
                         {
@@ -650,9 +650,9 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
                     for (Flow activeFlow : activeFlows)
                     {
                         node = activeFlow != null ? activeFlow.getNode(flowIdRequestParam) : null;
-                        if (node != null && node instanceof FlowCallNode)
+                        if (node != null && node instanceof FlowCallNode callNode)
                         {
-                            outboundCallNode = (FlowCallNode) node;
+                            outboundCallNode = callNode;
 
                             String calledFlowDocumentId = outboundCallNode.getCalledFlowDocumentId(context);
                             if (calledFlowDocumentId == null)
@@ -710,9 +710,9 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
                         {
                             currentFlow = flowHandler.getCurrentFlow(context);
                             node = currentFlow.getNode(navCase.getFromOutcome());
-                            if (node != null && node instanceof FlowCallNode)
+                            if (node != null && node instanceof FlowCallNode callNode)
                             {
-                                outboundCallNode = (FlowCallNode) node;
+                                outboundCallNode = callNode;
                                 
                                 String calledFlowDocumentId = outboundCallNode.getCalledFlowDocumentId(context);
                                 if (calledFlowDocumentId == null)
@@ -768,13 +768,13 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
 
     private void invokeInspectFlow(FacesContext context, NavigationHandler navHandler, Flow toAdd)
     {
-        if (navHandler instanceof ConfigurableNavigationHandler)
+        if (navHandler instanceof ConfigurableNavigationHandler handler)
         {
-            ((ConfigurableNavigationHandler)navHandler).inspectFlow(context, toAdd);
+            handler.inspectFlow(context, toAdd);
         }
-        else if (navHandler instanceof NavigationHandlerWrapper)
+        else if (navHandler instanceof NavigationHandlerWrapper wrapper)
         {
-            invokeInspectFlow(context, ((NavigationHandlerWrapper)navHandler).getWrapped(), toAdd);
+            invokeInspectFlow(context, wrapper.getWrapped(), toAdd);
         }
     }
     

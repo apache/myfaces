@@ -159,9 +159,9 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
         vh.setConverter(c);
         Object lv = vh.getLocalValue();
         FacesContext faces = faceletContext.getFacesContext();
-        if (lv instanceof String)
+        if (lv instanceof String string)
         {
-            vh.setValue(c.getAsObject(faces, parent, (String) lv));
+            vh.setValue(c.getAsObject(faces, parent, string));
         }
     }
 

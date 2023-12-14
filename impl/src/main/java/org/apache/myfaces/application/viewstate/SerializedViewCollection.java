@@ -79,10 +79,10 @@ class SerializedViewCollection implements Serializable
         {
             state = EMPTY_STATES;
         }
-        else if (state instanceof Object[] &&
-            ((Object[])state).length == 2 &&
-            ((Object[])state)[0] == null &&
-            ((Object[])state)[1] == null)
+        else if (state instanceof Object[] objects &&
+            objects.length == 2 &&
+            objects[0] == null &&
+            objects[1] == null)
         {
             // The generated state can be considered zero, set it as null
             // into the map.
@@ -289,10 +289,10 @@ class SerializedViewCollection implements Serializable
                 return EMPTY_STATES;
             }
         }
-        else if (value instanceof Object[] &&
-            ((Object[])value).length == 2 &&
-            ((Object[])value)[0] == null &&
-            ((Object[])value)[1] == null)
+        else if (value instanceof Object[] objects &&
+            objects.length == 2 &&
+            objects[0] == null &&
+            objects[1] == null)
         {
             // Remember inside the state map null is stored as an empty array.
             return null;

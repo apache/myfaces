@@ -72,9 +72,9 @@ public class HtmlFormRendererBase extends HtmlRenderer
         String method = getMethod(facesContext, htmlForm);
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder)
+        if (component instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
@@ -93,9 +93,9 @@ public class HtmlFormRendererBase extends HtmlRenderer
         String encodedActionURL = facesContext.getExternalContext().encodeActionURL(actionURL);
         writer.writeURIAttribute(HTML.ACTION_ATTR, encodedActionURL, null);
         
-        if (htmlForm instanceof ClientBehaviorHolder)
+        if (htmlForm instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) htmlForm).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonHtmlAttributesUtil.renderEventProperties(writer, 

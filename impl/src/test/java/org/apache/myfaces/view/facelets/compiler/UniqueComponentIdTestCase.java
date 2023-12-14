@@ -113,9 +113,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     Assertions.fail();
                 }
                 componentIdSet.add(componentId);
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         componentBid = componentId;
                         tagBId = id;
@@ -228,9 +228,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     Assertions.fail();
                 }
                 componentIdSet.add(componentId);
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         componentBid = componentId;
                         tagBId = id;
@@ -276,9 +276,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 {
                     Assertions.fail();
                 }
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         restoredB = true;
                     }
@@ -365,9 +365,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     Assertions.fail();
                 }
                 componentIdSet.add(componentId);
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         componentBid = componentId;
                         tagBId = id;
@@ -481,9 +481,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     Assertions.fail();
                 }
                 componentIdSet.add(componentId);
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         componentBid = componentId;
                         tagBId = id;
@@ -609,9 +609,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     Assertions.fail();
                 }
                 componentIdSet.add(componentId);
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         componentBid = componentId;
                         tagBId = id;
@@ -658,9 +658,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 {
                     Assertions.fail();
                 }
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         restoredB = true;
                         Assertions.assertNotNull(child.getAttributes().get("test"));
@@ -758,9 +758,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     Assertions.fail();
                 }
                 componentIdSet.add(componentId);
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         componentBid = componentId;
                         tagBId = id;
@@ -807,9 +807,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 {
                     Assertions.fail();
                 }
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         restoredB = true;
                         Assertions.assertNotNull(child.getAttributes().get("test"));
@@ -834,9 +834,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             {
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 String componentId = child.getId();
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         restoredB = true;
                         //Check if the B component is not the same as before. 
@@ -904,14 +904,14 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     Assertions.fail();
                 }
                 componentIdSet.add(componentId);
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         componentBid = componentId;
                         tagBId = id;
                     }
-                    if ("-D-".equals(((UIOutput)child).getValue()))
+                    if ("-D-".equals(output.getValue()))
                     {
                         componentDid = componentId;
                         tagDId = id;
@@ -953,9 +953,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             {
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 String componentId = child.getId();
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-C-".equals(((UIOutput)child).getValue()))
+                    if ("-C-".equals(output.getValue()))
                     {
                         //This is a different C, because it the template is different
                         //the final component id could be the same or different, but the
@@ -1036,14 +1036,14 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     Assertions.fail();
                 }
                 componentIdSet.add(componentId);
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         componentBid = componentId;
                         tagBId = id;
                     }
-                    if ("-D-".equals(((UIOutput)child).getValue()))
+                    if ("-D-".equals(output.getValue()))
                     {
                         componentDid = componentId;
                         tagDId = id;
@@ -1085,11 +1085,11 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             {
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 String componentId = child.getId();
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-C-".equals(((UIOutput)child).getValue()) ||
-                        "-B-".equals(((UIOutput)child).getValue()) ||
-                        "-D-".equals(((UIOutput)child).getValue()))
+                    if ("-C-".equals(output.getValue()) ||
+                        "-B-".equals(output.getValue()) ||
+                        "-D-".equals(output.getValue()))
                     {
                         //This is a different C,B or D, because it the template is different
                         //the final component id could be the same or different, but the
@@ -1169,9 +1169,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     Assertions.fail();
                 }
                 componentIdSet.add(componentId);
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         componentBid = componentId;
                         tagBId = id;
@@ -1219,9 +1219,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 {
                     Assertions.fail();
                 }
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         restoredB = true;
                         Assertions.assertNotNull(child.getAttributes().get("test"));
@@ -1244,8 +1244,8 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             {
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 String componentId = child.getId();
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput
-                        && "-C-".equals(((UIOutput)child).getValue()))
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output
+                        && "-C-".equals(output.getValue()))
                 {
                     //This is a different C, because it the template is different
                     //the final component id could be the same or different, but the
@@ -1304,9 +1304,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     Assertions.fail();
                 }
                 componentIdSet.add(componentId);
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-C-".equals(((UIOutput)child).getValue()))
+                    if ("-C-".equals(output.getValue()))
                     {
                         componentBid = componentId;
                         tagBId = id;
@@ -1402,9 +1402,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                     Assertions.fail();
                 }
                 componentIdSet.add(componentId);
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         componentBid = componentId;
                         tagBId = id;
@@ -1450,9 +1450,9 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
                 {
                     Assertions.fail();
                 }
-                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput)
+                if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
-                    if ("-B-".equals(((UIOutput)child).getValue()))
+                    if ("-B-".equals(output.getValue()))
                     {
                         restoredB = true;
                     }

@@ -57,10 +57,10 @@ public class ExternalContextFactoryImpl extends ExternalContextFactory
         Assert.notNull(request, "request");
         Assert.notNull(response, "response");
 
-        if (context instanceof ServletContext)
+        if (context instanceof ServletContext servletContext)
         {
             ExternalContext externalContext = new ServletExternalContextImpl(
-                    (ServletContext) context, (ServletRequest) request, (ServletResponse) response,
+                    servletContext, (ServletRequest) request, (ServletResponse) response,
                     _flashFactory);
             
             externalContext.getRequestMap().put(EXTERNAL_CONTEXT_KEY, externalContext);

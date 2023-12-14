@@ -304,9 +304,9 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
     
     protected FacesException wrap(Throwable exception)
     {
-        if (exception instanceof FacesException)
+        if (exception instanceof FacesException facesException)
         {
-            return (FacesException) exception;
+            return facesException;
         }
         return new FacesException(exception);
     }

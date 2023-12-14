@@ -61,13 +61,12 @@ public class RequiredValidator implements Validator
 
         //Check if the value is empty like UIInput.validateValue
         boolean empty = value == null
-                || (value instanceof String && ((String) value).length() == 0);
+                || (value instanceof String s && s.length() == 0);
 
         if (empty)
         {
-            if (uiComponent instanceof UIInput)
+            if (uiComponent instanceof UIInput uiInput)
             {
-                UIInput uiInput = (UIInput) uiComponent;
                 if (uiInput.getRequiredMessage() != null)
                 {
                     String requiredMessage = uiInput.getRequiredMessage();

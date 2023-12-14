@@ -58,8 +58,8 @@ public class ValueExpressionFilterInputStream extends InputStream
         this.delegate = new DynamicPushbackInputStream(in,300);
         this.libraryName = resource.getLibraryName();
         this.resourceName = resource.getResourceName();
-        this.contractName = (resource instanceof ContractResource)
-                ? ((ContractResource)resource).getContractName()
+        this.contractName = (resource instanceof ContractResource cr)
+                ? cr.getContractName()
                 : null;
     }
 

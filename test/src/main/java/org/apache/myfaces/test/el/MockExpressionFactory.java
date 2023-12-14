@@ -90,9 +90,9 @@ public class MockExpressionFactory extends ExpressionFactory
             {
                 return coerce(ZERO, targetType);
             }
-            else if (object instanceof String)
+            else if (object instanceof String string)
             {
-                return coerce((String) object, targetType);
+                return coerce(string, targetType);
             }
             else if (isNumeric(object.getClass()))
             {
@@ -118,9 +118,9 @@ public class MockExpressionFactory extends ExpressionFactory
             {
                 return object;
             }
-            else if (object instanceof String)
+            else if (object instanceof String string)
             {
-                return Boolean.valueOf((String) object);
+                return Boolean.valueOf(string);
             }
             throw new IllegalArgumentException("Cannot convert " + object
                     + " to Boolean");
@@ -138,9 +138,9 @@ public class MockExpressionFactory extends ExpressionFactory
             {
                 return new Character((char) 0);
             }
-            else if (object instanceof String)
+            else if (object instanceof String string)
             {
-                return new Character(((String) object).charAt(0));
+                return new Character(string.charAt(0));
             }
             else if (isNumeric(object.getClass()))
             {
@@ -269,9 +269,9 @@ public class MockExpressionFactory extends ExpressionFactory
             {
                 return value;
             }
-            else if (value instanceof BigInteger)
+            else if (value instanceof BigInteger integer)
             {
-                return new BigDecimal((BigInteger) value);
+                return new BigDecimal(integer);
             }
             else
             {
@@ -284,9 +284,9 @@ public class MockExpressionFactory extends ExpressionFactory
             {
                 return value;
             }
-            else if (value instanceof BigDecimal)
+            else if (value instanceof BigDecimal decimal)
             {
-                return ((BigDecimal) value).toBigInteger();
+                return decimal.toBigInteger();
             }
             else
             {

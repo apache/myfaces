@@ -76,9 +76,9 @@ public class BigDecimalConverter implements Converter
             return "";
         }
 
-        if (value instanceof String)
+        if (value instanceof String string)
         {
-            return (String) value;
+            return string;
         }
         
         try

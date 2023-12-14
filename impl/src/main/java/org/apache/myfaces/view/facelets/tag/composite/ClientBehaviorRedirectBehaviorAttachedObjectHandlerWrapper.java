@@ -60,9 +60,9 @@ public class ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper
     
     public String getWrappedEventName()
     {
-        if (_delegate instanceof ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper)
+        if (_delegate instanceof ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper wrapper)
         {
-            return ((ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper) _delegate).getWrappedEventName();
+            return wrapper.getWrappedEventName();
         }
         else
         {

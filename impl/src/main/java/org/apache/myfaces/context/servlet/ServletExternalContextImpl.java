@@ -396,9 +396,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         {
             Object request = getRequest();
             boolean pushSupported = false;
-            if (request instanceof HttpServletRequest)
+            if (request instanceof HttpServletRequest servletRequest)
             {
-                HttpServletRequest servletRequest = (HttpServletRequest) request;
                 pushBuilder = servletRequest.newPushBuilder();
                 pushSupported = pushBuilder != null;
             }
@@ -596,9 +595,9 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             writer.endDocument();
             facesContext.responseComplete();
         }
-        else if (_servletResponse instanceof HttpServletResponse)
+        else if (_servletResponse instanceof HttpServletResponse response)
         {
-            ((HttpServletResponse) _servletResponse).sendRedirect(url);
+            response.sendRedirect(url);
             facesContext.responseComplete();
         }
         else

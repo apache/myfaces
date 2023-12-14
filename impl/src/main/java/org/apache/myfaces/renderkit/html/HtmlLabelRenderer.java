@@ -87,9 +87,9 @@ public class HtmlLabelRenderer extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter();
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
@@ -185,9 +185,9 @@ public class HtmlLabelRenderer extends HtmlRenderer
             if (text != null)
             {
                 boolean escape;
-                if (uiComponent instanceof HtmlOutputLabel)
+                if (uiComponent instanceof HtmlOutputLabel label)
                 {
-                    escape = ((HtmlOutputLabel) uiComponent).isEscape();
+                    escape = label.isEscape();
                 }
                 else
                 {
@@ -222,9 +222,9 @@ public class HtmlLabelRenderer extends HtmlRenderer
 
     protected String getFor(UIComponent component)
     {
-        if (component instanceof HtmlOutputLabel)
+        if (component instanceof HtmlOutputLabel label)
         {
-            return ((HtmlOutputLabel)component).getFor();
+            return label.getFor();
         }
 
         return (String) component.getAttributes().get(ComponentAttrs.FOR_ATTR);

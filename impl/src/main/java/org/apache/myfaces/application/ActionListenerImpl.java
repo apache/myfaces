@@ -54,10 +54,10 @@ public class ActionListenerImpl implements ActionListener
         String fromAction = null;
         String outcome = null;
         
-        if (component instanceof ActionSource)
+        if (component instanceof ActionSource source)
         {
             // Must be an instance of ActionSource, so don't look on action if the actionExpression is set 
-            methodExpression = ((ActionSource) component).getActionExpression();            
+            methodExpression = source.getActionExpression();            
         }
 
         if (methodExpression != null)
@@ -82,9 +82,9 @@ public class ActionListenerImpl implements ActionListener
                     || PhaseId.APPLY_REQUEST_VALUES.equals(facesContext.getCurrentPhaseId())))
         {
             NavigationHandler navigationHandler = application.getNavigationHandler();
-            if (navigationHandler instanceof ConfigurableNavigationHandler)
+            if (navigationHandler instanceof ConfigurableNavigationHandler handler)
             {
-                NavigationCase navigationCase = ((ConfigurableNavigationHandler) navigationHandler).
+                NavigationCase navigationCase = handler.
                     getNavigationCase(facesContext, fromAction, outcome);
                 if (navigationCase != null)
                 {

@@ -88,16 +88,16 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         @Override
         public boolean equals(Object obj)
         {
-            if (obj instanceof StateFacesListener)
+            if (obj instanceof StateFacesListener listener)
             {
                 if (value == null)
                 {
-                    if (((StateFacesListener)obj).value == null)
+                    if (listener.value == null)
                     {
                         return true;
                     }
                 }
-                else if (value.equals(((StateFacesListener)obj).value))
+                else if (value.equals(listener.value))
                 {
                     return true;
                 }

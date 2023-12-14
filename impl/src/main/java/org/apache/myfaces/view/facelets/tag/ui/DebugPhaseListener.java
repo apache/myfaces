@@ -163,9 +163,8 @@ public class DebugPhaseListener implements PhaseListener
         @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
-            if (target instanceof EditableValueHolder)
+            if (target instanceof EditableValueHolder evh)
             {
-                EditableValueHolder evh = (EditableValueHolder) target;
                 final String clientId = target.getClientId(context.getFacesContext());
                 Map<String, Object> requestMap = context.getFacesContext()
                         .getExternalContext().getRequestMap();

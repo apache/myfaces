@@ -805,9 +805,8 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
         }
         // StateHolder interface should take precedence over
         // List children
-        if (attachedObject instanceof StateHolder)
+        if (attachedObject instanceof StateHolder holder)
         {
-            StateHolder holder = (StateHolder) attachedObject;
             if (holder.isTransient())
             {
                 return null;
@@ -815,10 +814,10 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
 
             return new _AttachedStateWrapper(attachedObject.getClass(), holder.saveState(context));
         }        
-        else if (attachedObject instanceof List)
+        else if (attachedObject instanceof List list)
         {
-            List<Object> lst = new ArrayList<Object>(((List<?>) attachedObject).size());
-            for (Object item : (List<?>) attachedObject)
+            List<Object> lst = new ArrayList<Object>(list.size());
+            for (Object item : list)
             {
                 if (item != null)
                 {
@@ -846,9 +845,9 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
         {
             return null;
         }
-        if (stateObj instanceof _AttachedListStateWrapper)
+        if (stateObj instanceof _AttachedListStateWrapper wrapper)
         {
-            List<Object> lst = ((_AttachedListStateWrapper) stateObj).getWrappedStateList();
+            List<Object> lst = wrapper.getWrappedStateList();
             List<Object> restoredList = new ArrayList<Object>(lst.size());
             for (Object item : lst)
             {
@@ -856,9 +855,9 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
             }
             return restoredList;
         }
-        else if (stateObj instanceof _AttachedStateWrapper)
+        else if (stateObj instanceof _AttachedStateWrapper wrapper)
         {
-            Class<?> clazz = ((_AttachedStateWrapper) stateObj).getClazz();
+            Class<?> clazz = wrapper.getClazz();
             Object restoredObject;
             try
             {
@@ -873,12 +872,9 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
             {
                 throw new RuntimeException(e);
             }
-            if (restoredObject instanceof StateHolder)
+            if (restoredObject instanceof StateHolder holder)
             {
-                _AttachedStateWrapper wrapper = (_AttachedStateWrapper) stateObj;
                 Object wrappedState = wrapper.getWrappedStateObject();
-
-                StateHolder holder = (StateHolder) restoredObject;
                 holder.restoreState(context, wrappedState);
             }
             return restoredObject;

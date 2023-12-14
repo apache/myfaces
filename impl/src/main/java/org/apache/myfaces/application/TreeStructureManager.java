@@ -95,9 +95,9 @@ public class TreeStructureManager
 
     public static UIViewRoot restoreTreeStructure(Object treeStructRoot)
     {
-        if (treeStructRoot instanceof TreeStructComponent)
+        if (treeStructRoot instanceof TreeStructComponent component)
         {
-            return (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent) treeStructRoot, true);
+            return (UIViewRoot) internalRestoreTreeStructure(component, true);
         }
         
         throw new IllegalArgumentException("TreeStructure of type " + treeStructRoot.getClass().getName() + 
@@ -111,9 +111,9 @@ public class TreeStructureManager
         UIComponent component = (UIComponent)ClassUtils.newInstance(compClass);
         component.setId(compId);
 
-        if (checkViewRoot && component instanceof UIViewRoot)
+        if (checkViewRoot && component instanceof UIViewRoot root)
         {
-            FacesContext.getCurrentInstance().setViewRoot((UIViewRoot) component);
+            FacesContext.getCurrentInstance().setViewRoot(root);
         }
 
         //children

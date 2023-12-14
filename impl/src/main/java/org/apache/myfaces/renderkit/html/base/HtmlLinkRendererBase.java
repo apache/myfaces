@@ -127,30 +127,30 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
     {
         super.encodeBegin(facesContext, component);  //check for NP
 
-        if (component instanceof ClientBehaviorHolder)
+        if (component instanceof ClientBehaviorHolder holder)
         {
-            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());
             }
         }
         
-        if (component instanceof UICommand)
+        if (component instanceof UICommand command)
         {
             renderCommandLinkStart(facesContext, component,
                                    component.getClientId(facesContext),
-                                   ((UICommand) component).getValue(),
+                                   command.getValue(),
                                    getStyle(facesContext, component),
                                    getStyleClass(facesContext, component));
         }
-        else if (component instanceof UIOutcomeTarget)
+        else if (component instanceof UIOutcomeTarget target)
         {
-            renderOutcomeLinkStart(facesContext, (UIOutcomeTarget)component);
+            renderOutcomeLinkStart(facesContext, target);
         }        
-        else if (component instanceof UIOutput)
+        else if (component instanceof UIOutput output)
         {
-            renderOutputLinkStart(facesContext, (UIOutput)component);
+            renderOutputLinkStart(facesContext, output);
         }
         else
         {
@@ -164,9 +164,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
      */
     protected String getStyle(FacesContext facesContext, UIComponent link)
     {
-        if (link instanceof HtmlCommandLink)
+        if (link instanceof HtmlCommandLink commandLink)
         {
-            return ((HtmlCommandLink)link).getStyle();
+            return commandLink.getStyle();
         }
 
         return (String)link.getAttributes().get(HTML.STYLE_ATTR);
@@ -178,9 +178,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
      */
     protected String getStyleClass(FacesContext facesContext, UIComponent link)
     {
-        if (link instanceof HtmlCommandLink)
+        if (link instanceof HtmlCommandLink commandLink)
         {
-            return ((HtmlCommandLink)link).getStyleClass();
+            return commandLink.getStyleClass();
         }
 
         return (String)link.getAttributes().get(HTML.STYLE_CLASS_ATTR);
@@ -241,9 +241,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         if (disabled || form == null)
         {
             writer.startElement(HTML.SPAN_ELEM, component);
-            if (component instanceof ClientBehaviorHolder)
+            if (component instanceof ClientBehaviorHolder holder)
             {
-                behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+                behaviors = holder.getClientBehaviors();
                 if (!behaviors.isEmpty())
                 {
                     HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
@@ -343,9 +343,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         }
         else
         {
-            if (component instanceof ClientBehaviorHolder)
+            if (component instanceof ClientBehaviorHolder holder)
             {
-                behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+                behaviors = holder.getClientBehaviors();
                 renderBehaviorizedJavaScriptAnchorStart(
                         facesContext, writer, component, clientId, behaviors, form);
                 if (!behaviors.isEmpty())
@@ -359,9 +359,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                     // id/name rendering. It is possible to do something else in that case and 
                     // do not render the script using faces.util.chain, but for now it is ok.
                     String commandOnclick;
-                    if (component instanceof HtmlCommandLink)
+                    if (component instanceof HtmlCommandLink link)
                     {
-                        commandOnclick = ((HtmlCommandLink)component).getOnclick();
+                        commandOnclick = link.getOnclick();
                     }
                     else
                     {
@@ -450,9 +450,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         StringBuilder onClick = SharedStringBuilder.get(facesContext, SB_BUILD_ONCLICK);
 
         String commandOnclick;
-        if (component instanceof HtmlCommandLink)
+        if (component instanceof HtmlCommandLink link)
         {
-            commandOnclick = ((HtmlCommandLink)component).getOnclick();
+            commandOnclick = link.getOnclick();
         }
         else
         {
@@ -506,9 +506,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             UIComponent formInfo) throws IOException
     {
         String commandOnclick;
-        if (component instanceof HtmlCommandLink)
+        if (component instanceof HtmlCommandLink link)
         {
-            commandOnclick = ((HtmlCommandLink)component).getOnclick();
+            commandOnclick = link.getOnclick();
         }
         else
         {
@@ -616,9 +616,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
     {
         // for performance reason: double check for the target attribute
         String target;
-        if (component instanceof HtmlCommandLink)
+        if (component instanceof HtmlCommandLink link)
         {
-            target = ((HtmlCommandLink) component).getTarget();
+            target = link.getTarget();
         }
         else
         {
@@ -725,9 +725,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         if (HtmlRendererUtils.isDisabled(output))
         {
             writer.startElement(HTML.SPAN_ELEM, output);
-            if (output instanceof ClientBehaviorHolder)
+            if (output instanceof ClientBehaviorHolder holder)
             {
-                behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
+                behaviors = holder.getClientBehaviors();
                 if (!behaviors.isEmpty())
                 {
                     HtmlRendererUtils.writeIdAndName(writer, output, facesContext);
@@ -816,9 +816,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             }
             // check for the fragement attribute
             String fragmentAttr = null;
-            if (output instanceof HtmlOutputLink)
+            if (output instanceof HtmlOutputLink link)
             {
-                fragmentAttr = ((HtmlOutputLink) output).getFragment();
+                fragmentAttr = link.getFragment();
             }
             else
             {
@@ -837,9 +837,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             //write anchor
             writer.startElement(HTML.ANCHOR_ELEM, output);
             writer.writeURIAttribute(HTML.HREF_ATTR, href, null);
-            if (output instanceof ClientBehaviorHolder)
+            if (output instanceof ClientBehaviorHolder holder)
             {
-                behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
+                behaviors = holder.getClientBehaviors();
                 if (!behaviors.isEmpty())
                 {
                     HtmlRendererUtils.writeIdAndName(writer, output, facesContext);
@@ -921,9 +921,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             //to just put this flag on FacesContext attribute map
             facesContext.getAttributes().put(END_LINK_OUTCOME_AS_SPAN, Boolean.TRUE);
             writer.startElement(HTML.SPAN_ELEM, output);
-            if (output instanceof ClientBehaviorHolder)
+            if (output instanceof ClientBehaviorHolder holder)
             {
-                behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
+                behaviors = holder.getClientBehaviors();
                 if (!behaviors.isEmpty())
                 {
                     HtmlRendererUtils.writeIdAndName(writer, output, facesContext);
@@ -998,9 +998,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             //write anchor
             writer.startElement(HTML.ANCHOR_ELEM, output);
             writer.writeURIAttribute(HTML.HREF_ATTR, targetHref, null);
-            if (output instanceof ClientBehaviorHolder)
+            if (output instanceof ClientBehaviorHolder holder)
             {
-                behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
+                behaviors = holder.getClientBehaviors();
                 if (!behaviors.isEmpty())
                 {
                     HtmlRendererUtils.writeIdAndName(writer, output, facesContext);

@@ -329,9 +329,9 @@ public class SharedRendererUtils
                     {
                         SelectItem item = iterator.next();
 
-                        if (item instanceof SelectItemGroup)
+                        if (item instanceof SelectItemGroup group)
                         {
-                            for (SelectItem itemFromGroup : ((SelectItemGroup) item).getSelectItems()) 
+                            for (SelectItem itemFromGroup : group.getSelectItems()) 
                             {
                                 String keyString = getConvertedStringValue(
                                     facesContext, component, converter, itemFromGroup); // converter retreived earlier
@@ -374,17 +374,17 @@ public class SharedRendererUtils
         
         // if there is a value, it must be a ...
         // ... a ValueExpression that evaluates to a String or a Class
-        if (attribute instanceof ValueExpression)
+        if (attribute instanceof ValueExpression expression)
         {
             // get the value of the ValueExpression
-            attribute = ((ValueExpression) attribute).getValue(facesContext.getELContext());
+            attribute = expression.getValue(facesContext.getELContext());
         }
         // ... String that is a fully qualified Java class name
-        if (attribute instanceof String)
+        if (attribute instanceof String string)
         {
             try
             {
-                type = ClassUtils.forName((String) attribute);
+                type = ClassUtils.forName(string);
             }
             catch (ClassNotFoundException cnfe)
             {
@@ -394,9 +394,9 @@ public class SharedRendererUtils
             }
         }
         // ... a Class object
-        else if (attribute instanceof Class)
+        else if (attribute instanceof Class class1)
         {
-            type = (Class<?>) attribute;
+            type = class1;
         }
         
         return type;
@@ -465,10 +465,10 @@ public class SharedRendererUtils
         while (converter == null && iterator.hasNext())
         {
             SelectItem item = iterator.next();
-            if (item instanceof SelectItemGroup)
+            if (item instanceof SelectItemGroup group)
             {
                 Iterator<SelectItem> groupIterator = Arrays.asList(
-                        ((SelectItemGroup) item).getSelectItems()).iterator();
+                        group.getSelectItems()).iterator();
                 converter = getSelectItemsValueConverter(groupIterator, facesContext);
             }
             else
@@ -521,9 +521,9 @@ public class SharedRendererUtils
             {
                 return "";
             }
-            else if (value instanceof String)
+            else if (value instanceof String string)
             {
-                return (String) value;
+                return string;
             }
             else
             {

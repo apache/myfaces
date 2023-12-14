@@ -647,16 +647,14 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                         {
                             checkNavCase = true;
                             // Note: Node Ordering changed in MYFACES-4553
-                            if (!complete && flowNode instanceof ViewNode)
+                            if (!complete && flowNode instanceof ViewNode viewNode)
                             {
-                                ViewNode viewNode = (ViewNode) flowNode;
                                 navigationCase = createNavigationCase(viewId, flowNode.getId(), 
                                     viewNode.getVdlDocumentId());
                                 complete = true;
                             }
-                            if (!complete && flowNode instanceof ReturnNode)
+                            if (!complete && flowNode instanceof ReturnNode returnNode)
                             {
-                                ReturnNode returnNode = (ReturnNode) flowNode;
                                 String fromOutcome = returnNode.getFromOutcome(facesContext);
                                 actionToGo = currentFlow.getId();
                                 Flow sourceFlow = currentFlow;
@@ -711,10 +709,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                                 facesContext.getAttributes().put(STARTED_FLOW_TRANSITION, true);
                                 continue;
                             }
-                            if (!complete && flowNode instanceof FlowCallNode)
+                            if (!complete && flowNode instanceof FlowCallNode flowCallNode)
                             {
-                                // "... If the node is a FlowCallNode, save it aside as facesFlowCallNode. ..."
-                                FlowCallNode flowCallNode = (FlowCallNode) flowNode;
                                 targetFlow = calculateFlowCallTargetFlow(facesContext, 
                                     flowHandler, flowCallNode, currentFlow);
                                 if (targetFlow != null)
@@ -730,17 +726,16 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                                     complete = true;
                                 }
                             }
-                            if (!complete && flowNode instanceof SwitchNode)
+                            if (!complete && flowNode instanceof SwitchNode node)
                             {
-                                outcomeToGo = calculateSwitchOutcome(facesContext, (SwitchNode) flowNode);
+                                outcomeToGo = calculateSwitchOutcome(facesContext, node);
                                 // Start over again checking if the node exists.
                                 actionToGo = currentFlow.getId();
                                 flowNode = currentFlow.getNode(outcomeToGo);
                                 continue;
                             }
-                            if (!complete && flowNode instanceof MethodCallNode)
+                            if (!complete && flowNode instanceof MethodCallNode methodCallNode)
                             {
-                                MethodCallNode methodCallNode = (MethodCallNode) flowNode;
                                 String vdlViewIdentifier = calculateVdlViewIdentifier(facesContext, methodCallNode);
                                 // note a vdlViewIdentifier could be a flow node too
                                 if (vdlViewIdentifier != null)

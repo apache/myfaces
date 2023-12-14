@@ -141,13 +141,13 @@ public class UISelectMany extends UIInput
         }
         else
         {
-            if (previous instanceof Object[] && value instanceof Object[])
+            if (previous instanceof Object[] prevObjects && value instanceof Object[] currentObjects)
             {
-                return compareObjectArrays((Object[]) previous, (Object[]) value);
+                return compareObjectArrays(prevObjects, currentObjects);
             }
-            else if (previous instanceof Collection && value instanceof Collection)
+            else if (previous instanceof Collection prevCol && value instanceof Collection currentCol)
             {
-                return compareCollections((Collection<?>) previous, (Collection<?>) value);
+                return compareCollections(prevCol, currentCol);
             }
             else if (previous.getClass().isArray() && value.getClass().isArray())
             {
@@ -357,9 +357,9 @@ public class UISelectMany extends UIInput
         {
             return null;
         }
-        else if (submittedValue instanceof String[])
+        else if (submittedValue instanceof String[] strings)
         {
-            return SharedRendererUtils.getConvertedUISelectManyValue(context, this, (String[]) submittedValue);
+            return SharedRendererUtils.getConvertedUISelectManyValue(context, this, strings);
         }
         return submittedValue;
     }
@@ -377,14 +377,12 @@ public class UISelectMany extends UIInput
             {
                 return new _PrimitiveArrayIterator(convertedValue);
             }
-            else if (convertedValue instanceof Object[])
+            else if (convertedValue instanceof Object[] values)
             {
-                Object[] values = (Object[]) convertedValue;
                 return Arrays.asList(values).iterator();
             }
-            else if (convertedValue instanceof Collection)
+            else if (convertedValue instanceof Collection values)
             {
-                Collection<?> values = (Collection<?>) convertedValue;
                 return values.iterator();
             }
             else

@@ -71,12 +71,12 @@ public class FlashELResolver extends ELResolver
             throw new PropertyNotWritableException();
         }
 
-        if (base instanceof Flash)
+        if (base instanceof Flash flash)
         {
             context.setPropertyResolved(true);
             try
             {
-                ((Flash) base).put(strProperty, value);
+                flash.put(strProperty, value);
             }
             catch (UnsupportedOperationException e)
             {
@@ -157,7 +157,7 @@ public class FlashELResolver extends ELResolver
                 return flash;
             }
         }
-        else if (base instanceof Flash)
+        else if (base instanceof Flash flash)
         {
             FacesContext facesContext = facesContext(elContext);
             if (facesContext == null)
@@ -169,7 +169,6 @@ public class FlashELResolver extends ELResolver
             {
                 return null;
             }
-            Flash flash = (Flash) base;
             if (KEEP.equals(strProperty))
             {
                 setDoKeepPromotion(true, facesContext);
@@ -276,10 +275,10 @@ public class FlashELResolver extends ELResolver
         {
             context.setPropertyResolved(true);
         }
-        else if (base instanceof Flash)
+        else if (base instanceof Flash flash)
         {
             context.setPropertyResolved(true);
-            Object obj = ((Flash) base).get(property);
+            Object obj = flash.get(property);
             return (obj != null) ? obj.getClass() : null;
         }
 
@@ -294,9 +293,9 @@ public class FlashELResolver extends ELResolver
         descriptors.add(makeDescriptor(FLASH,
                 "Represents the current flash scope", Object.class));
 
-        if (base instanceof Flash)
+        if (base instanceof Flash flash)
         {
-            Iterator itr = ((Flash) base).keySet().iterator();
+            Iterator itr = flash.keySet().iterator();
             Object key;
             FeatureDescriptor desc;
             while (itr.hasNext())

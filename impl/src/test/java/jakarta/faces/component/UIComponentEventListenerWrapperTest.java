@@ -389,9 +389,9 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         @Override
         public boolean equals(Object obj)
         {
-            if (obj instanceof MyStateHolderListener)
+            if (obj instanceof MyStateHolderListener listener)
             {
-                return (this.i == ((MyStateHolderListener)obj).i); 
+                return (this.i == listener.i); 
             }
             return false;
         }
@@ -524,9 +524,9 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         @Override
         public boolean equals(Object obj)
         {
-            if (obj instanceof MyPartialStateHolderListener)
+            if (obj instanceof MyPartialStateHolderListener listener)
             {
-                return (this.i == ((MyPartialStateHolderListener)obj).i); 
+                return (this.i == listener.i); 
             }
             return false;
         }

@@ -132,9 +132,9 @@ public class UIOutput extends UIComponentBase implements ValueHolder
     {
         super.markInitialState();
         if (_converter != null && 
-            _converter instanceof PartialStateHolder)
+            _converter instanceof PartialStateHolder holder)
         {
-            ((PartialStateHolder)_converter).markInitialState();
+            holder.markInitialState();
         }
     }
     
@@ -145,9 +145,9 @@ public class UIOutput extends UIComponentBase implements ValueHolder
         {
             super.clearInitialState();
             if (_converter != null && 
-                _converter instanceof PartialStateHolder)
+                _converter instanceof PartialStateHolder holder)
             {
-                ((PartialStateHolder)_converter).clearInitialState();
+                holder.clearInitialState();
             }
         }
     }
@@ -168,10 +168,8 @@ public class UIOutput extends UIComponentBase implements ValueHolder
             boolean nullDelta = true;
             if (!_isSetConverter()
                     && _converter != null
-                    && _converter instanceof PartialStateHolder)
+                    && _converter instanceof PartialStateHolder holder)
             {
-                //Delta
-                StateHolder holder = (StateHolder) _converter;
                 if (!holder.isTransient())
                 {
                     Object attachedState = holder.saveState(facesContext);
@@ -248,11 +246,11 @@ public class UIOutput extends UIComponentBase implements ValueHolder
         // if UIOutput does not have any more StateHolder properties!.
         if (values.length == 2)
         {
-            if (values[1] instanceof _AttachedDeltaWrapper)
+            if (values[1] instanceof _AttachedDeltaWrapper wrapper)
             {
                 //Delta
                 ((StateHolder)_converter).restoreState(facesContext,
-                        ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
+                        wrapper.getWrappedStateObject());
             }
             else
             {

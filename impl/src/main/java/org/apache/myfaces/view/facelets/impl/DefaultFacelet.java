@@ -158,9 +158,9 @@ final class DefaultFacelet extends AbstractFacelet
                     myFaceletContext.setUniqueIdsIterator(uniqueIdList.iterator());
                 }
             }
-            if (parent instanceof UIViewRoot)
+            if (parent instanceof UIViewRoot root)
             {
-                myFaceletContext.setViewRoot((UIViewRoot) parent);
+                myFaceletContext.setViewRoot(root);
                 ComponentSupport.setCachedFacesContext(parent, facesContext);
             }
         }
@@ -178,23 +178,23 @@ final class DefaultFacelet extends AbstractFacelet
             // push the parent as a UniqueIdVendor to the stack here,
             // if there is no UniqueIdVendor on the stack yet
             boolean pushedUniqueIdVendor = false;
-            if (parent instanceof UniqueIdVendor
+            if (parent instanceof UniqueIdVendor vendor
                 && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
             {
-                ctx.getFaceletCompositionContext().pushUniqueIdVendorToStack((UniqueIdVendor) parent);
+                ctx.getFaceletCompositionContext().pushUniqueIdVendorToStack(vendor);
                 pushedUniqueIdVendor = true;
             }
             
-            if (parent instanceof UIViewRoot)
+            if (parent instanceof UIViewRoot root)
             {
-                ((UIViewRoot) parent).setDoctype(getDoctype());
+                root.setDoctype(getDoctype());
             }
 
             this.refresh(parent);
             myFaceletContext.markForDeletion(parent);
             _root.apply(ctx, parent);
             if (faceletCompositionContextInitialized &&
-                parent instanceof UIViewRoot)
+                parent instanceof UIViewRoot root)
             {
                 UIComponent metadataFacet = parent.getFacet(UIViewRoot.METADATA_FACET_NAME);
                 if (metadataFacet != null)
@@ -207,7 +207,7 @@ final class DefaultFacelet extends AbstractFacelet
                 }
                 if (myFaceletContext.isRefreshingTransientBuild())
                 {
-                    myFaceletContext.finalizeRelocatableResourcesForDeletion((UIViewRoot) parent);
+                    myFaceletContext.finalizeRelocatableResourcesForDeletion(root);
                 }
             }
             myFaceletContext.finalizeForDeletion(parent);
@@ -287,10 +287,10 @@ final class DefaultFacelet extends AbstractFacelet
             // push the parent as a UniqueIdVendor to the stack here,
             // if there is no UniqueIdVendor on the stack yet
             boolean pushedUniqueIdVendor = false;
-            if (parent instanceof UniqueIdVendor
+            if (parent instanceof UniqueIdVendor vendor
                 && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
             {
-                ctx.getFaceletCompositionContext().pushUniqueIdVendorToStack((UniqueIdVendor) parent);
+                ctx.getFaceletCompositionContext().pushUniqueIdVendorToStack(vendor);
                 pushedUniqueIdVendor = true;
             }
 
@@ -598,10 +598,10 @@ final class DefaultFacelet extends AbstractFacelet
             // if there is no UniqueIdVendor on the stack yet
             boolean pushedUniqueIdVendor = false;
             FaceletCompositionContext mctx = ctx.getFaceletCompositionContext();
-            if (parent instanceof UniqueIdVendor
+            if (parent instanceof UniqueIdVendor vendor
                 && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
             {
-                mctx.pushUniqueIdVendorToStack((UniqueIdVendor) parent);
+                mctx.pushUniqueIdVendorToStack(vendor);
                 pushedUniqueIdVendor = true;
             }
             

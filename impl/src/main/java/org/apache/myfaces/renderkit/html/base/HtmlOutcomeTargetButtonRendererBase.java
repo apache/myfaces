@@ -58,9 +58,9 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter();
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());
@@ -184,9 +184,9 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
 
     private String getImage(UIComponent uiComponent)
     {
-        if (uiComponent instanceof HtmlOutcomeTargetButton)
+        if (uiComponent instanceof HtmlOutcomeTargetButton button)
         {
-            return ((HtmlOutcomeTargetButton) uiComponent).getImage();
+            return button.getImage();
         }
         return (String) uiComponent.getAttributes().get(ComponentAttrs.IMAGE_ATTR);
     }

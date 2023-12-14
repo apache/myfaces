@@ -85,9 +85,9 @@ public final class DefaultVariableMapper extends VariableMapperBase
                     {
                         if (returnValue instanceof CacheableValueExpression)
                         {
-                            if (returnValue instanceof CacheableValueExpressionWrapper)
+                            if (returnValue instanceof CacheableValueExpressionWrapper wrapper)
                             {
-                                returnValue = ((CacheableValueExpressionWrapper)returnValue).getWrapped();
+                                returnValue = wrapper.getWrapped();
                             }
                         }
                         else

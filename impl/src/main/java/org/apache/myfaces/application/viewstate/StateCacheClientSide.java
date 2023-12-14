@@ -101,10 +101,10 @@ class StateCacheClientSide extends StateCache<Object, Object>
         else
         {
             Object serializedView = state[STATE_PARAM];
-            if (serializedView instanceof Object[]
-                    && ((Object[])serializedView).length == 2
-                    && ((Object[])serializedView)[0] == null
-                    && ((Object[])serializedView)[1] == null)
+            if (serializedView instanceof Object[] objects
+                    && objects.length == 2
+                    && objects[0] == null
+                    && objects[1] == null)
             {
                 // Remember inside the state null is stored as an empty array.
                 return null;
@@ -133,10 +133,10 @@ class StateCacheClientSide extends StateCache<Object, Object>
         {
             state[STATE_PARAM] = EMPTY_STATES;
         }
-        else if (serializedView instanceof Object[]
-                && ((Object[])serializedView).length == 2
-                && ((Object[])serializedView)[0] == null
-                && ((Object[])serializedView)[1] == null)
+        else if (serializedView instanceof Object[] objects
+                && objects.length == 2
+                && objects[0] == null
+                && objects[1] == null)
         {
             // The generated state can be considered zero, set it as null
             // into the map.

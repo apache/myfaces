@@ -280,9 +280,9 @@ public class MockPartialViewContext extends PartialViewContext
             }
             // It is possible that the RenderKit return a PartialResponseWriter instance when 
             // createResponseWriter,  so we should cast here for it and prevent double wrapping.
-            if (responseWriter instanceof PartialResponseWriter)
+            if (responseWriter instanceof PartialResponseWriter writer)
             {
-                _partialResponseWriter = (PartialResponseWriter) responseWriter;
+                _partialResponseWriter = writer;
             }
             else
             {

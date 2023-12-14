@@ -218,20 +218,20 @@ public class DateTimeConverter
         {
             return "";
         }
-        if (value instanceof String)
+        if (value instanceof String string)
         {
-            return (String)value;
+            return string;
         }
 
         if (isJava8DateTimeFormatter())
         {
             DateTimeFormatter format = getDateTimeFormatter();
             
-            if (value instanceof TemporalAccessor)
+            if (value instanceof TemporalAccessor accessor)
             {
                 try
                 {
-                    return format.format((TemporalAccessor) value);
+                    return format.format(accessor);
                 }
                 catch (Exception e)
                 {

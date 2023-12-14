@@ -102,20 +102,17 @@ public class ClientConfig implements Serializable
         if (facesContext != null)
         {
             Object r = facesContext.getExternalContext().getResponse();
-            if (r instanceof HttpServletResponse)
+            if (r instanceof HttpServletResponse response)
             {
                 Cookie cookie = new Cookie(COOKIE_NAME_NOSCRIPT_ENABLED, "" + javaScriptEnabled);
                 cookie.setPath("/"); // for all the server
                 Object context = facesContext.getExternalContext().getContext();
 
-                if (context instanceof ServletContext && ExternalSpecifications.isServlet6Available())
+                if (context instanceof ServletContext servletContext && ExternalSpecifications.isServlet6Available())
                 {
-                    ServletContext servletContext = (ServletContext)context;
                     String sameSite = servletContext.getSessionCookieConfig().getAttribute("SameSite");
                     cookie.setAttribute("SameSite", Objects.toString(sameSite, "Strict"));
                 }
-
-                HttpServletResponse response = (HttpServletResponse) r;
                 response.addCookie(cookie);
             }
         }

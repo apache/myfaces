@@ -847,11 +847,11 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         }
                     }
                 }
-                else if ((currentTarget instanceof BehaviorHolderAttachedObjectTarget &&
-                        currentHandler instanceof BehaviorHolderAttachedObjectHandler))
+                else if ((currentTarget instanceof BehaviorHolderAttachedObjectTarget target &&
+                        currentHandler instanceof BehaviorHolderAttachedObjectHandler handler))
                 {
-                    String eventName = ((BehaviorHolderAttachedObjectHandler) currentHandler).getEventName();
-                    boolean isDefaultEvent = ((BehaviorHolderAttachedObjectTarget) currentTarget).isDefaultEvent();
+                    String eventName = handler.getEventName();
+                    boolean isDefaultEvent = target.isDefaultEvent();
 
                     if ((eventName != null && eventName.equals(currentTarget.getName())) ||
                             (eventName == null && isDefaultEvent))
@@ -866,12 +866,12 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                             // its tag handler is applied.
                             if (UIComponent.isCompositeComponent(component))
                             {
-                                if (currentTarget instanceof ClientBehaviorAttachedObjectTarget)
+                                if (currentTarget instanceof ClientBehaviorAttachedObjectTarget clientTarget)
                                 {
                                     mctx.addAttachedObjectHandler(component,
                                             new ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper(
                                                     (BehaviorHolderAttachedObjectHandler) currentHandler,
-                                                    ((ClientBehaviorAttachedObjectTarget) currentTarget).getEvent()));
+                                                    clientTarget.getEvent()));
                                 }
                                 else
                                 {
@@ -887,10 +887,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                             else
                             {
                                 if (currentHandler instanceof
-                                        ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper)
+                                        ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper wrapper)
                                 {
-                                    ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper wrapper =
-                                            (ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper) currentHandler;
                                     currentHandler.applyAttachedObject(context,
                                             new ClientBehaviorRedirectEventComponentWrapper(
                                                 topLevelComponent,
@@ -1029,9 +1027,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                             {
                                 Object requiredValue = ve.getValue(elContext);
                                 Boolean required;
-                                if (requiredValue instanceof Boolean)
+                                if (requiredValue instanceof Boolean boolean1)
                                 {
-                                    required = (Boolean) requiredValue;
+                                    required = boolean1;
                                 }
                                 else
                                 {
@@ -1650,19 +1648,19 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private MethodExpression reWrapMethodExpression(MethodExpression createdMethodExpression,
                                                     ValueExpression originalValueExpression)
     {
-        if (originalValueExpression instanceof LocationValueExpression)
+        if (originalValueExpression instanceof LocationValueExpression expression)
         {
             return new LocationMethodExpression(
-                    ((LocationValueExpression) originalValueExpression).getLocation(),
+                    expression.getLocation(),
                     reWrapMethodExpression(createdMethodExpression,
-                            ((LocationValueExpression) originalValueExpression).getWrapped()),
-                    ((LocationValueExpression) originalValueExpression).getCCLevel());
+                            expression.getWrapped()),
+                    expression.getCCLevel());
         }
-        else if (originalValueExpression instanceof FacesWrapper &&
-                ((FacesWrapper) originalValueExpression).getWrapped() instanceof ValueExpression)
+        else if (originalValueExpression instanceof FacesWrapper wrapper &&
+                wrapper.getWrapped() instanceof ValueExpression)
         {
             return reWrapMethodExpression(createdMethodExpression,
-                    (ValueExpression) ((FacesWrapper) originalValueExpression).getWrapped());
+                    (ValueExpression) wrapper.getWrapped());
         }
         else
         {
@@ -2225,13 +2223,13 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             throws IOException, ELException, FacesException
     {
         // rethrow the Exception to be handled by the ExceptionHandler
-        if (e instanceof RuntimeException)
+        if (e instanceof RuntimeException exception)
         {
-            throw (RuntimeException) e;
+            throw exception;
         }
-        else if (e instanceof IOException)
+        else if (e instanceof IOException exception)
         {
-            throw (IOException) e;
+            throw exception;
         }
         else
         {

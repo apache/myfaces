@@ -125,13 +125,13 @@ public class ResourceUtils
     {
         while (resource != null)
         {
-            if (resource instanceof ContractResource)
+            if (resource instanceof ContractResource contractResource)
             {
-                return ((ContractResource)resource).getContractName();
+                return contractResource.getContractName();
             }
-            else if (resource instanceof FacesWrapper)
+            else if (resource instanceof FacesWrapper wrapper)
             {
-                resource = (Resource) ((FacesWrapper)resource).getWrapped();
+                resource = (Resource) wrapper.getWrapped();
             }
             else
             {

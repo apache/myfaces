@@ -127,9 +127,9 @@ public class HtmlButtonRendererBase extends HtmlRenderer
         boolean button = isButton(uiComponent);
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder)
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
@@ -412,9 +412,9 @@ public class HtmlButtonRendererBase extends HtmlRenderer
     {
         // for performance reason: double check for the target attribute
         String target;
-        if (component instanceof HtmlCommandLink)
+        if (component instanceof HtmlCommandLink link)
         {
-            target = ((HtmlCommandLink) component).getTarget();
+            target = link.getTarget();
         }
         else
         {
@@ -486,9 +486,9 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        if (uiComponent instanceof HtmlCommandButton)
+        if (uiComponent instanceof HtmlCommandButton button)
         {
-            return ((HtmlCommandButton) uiComponent).isDisabled();
+            return button.isDisabled();
         }
 
         return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
@@ -496,9 +496,9 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
     protected boolean isReadonly(FacesContext facesContext, UIComponent uiComponent)
     {
-        if (uiComponent instanceof HtmlCommandButton)
+        if (uiComponent instanceof HtmlCommandButton button)
         {
-            return ((HtmlCommandButton)uiComponent).isReadonly();
+            return button.isReadonly();
         }
         return AttributeUtils.getBooleanAttribute(
                 uiComponent, HTML.READONLY_ATTR, false);
@@ -506,18 +506,18 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
     private String getType(UIComponent uiComponent)
     {
-        if (uiComponent instanceof HtmlCommandButton)
+        if (uiComponent instanceof HtmlCommandButton button)
         {
-            return ((HtmlCommandButton)uiComponent).getType();
+            return button.getType();
         }
         return (String)uiComponent.getAttributes().get(ComponentAttrs.TYPE_ATTR);
     }
 
     private Object getValue(UIComponent uiComponent)
     {
-        if (uiComponent instanceof ValueHolder)
+        if (uiComponent instanceof ValueHolder holder)
         {
-            return ((ValueHolder)uiComponent).getValue();
+            return holder.getValue();
         }
         return uiComponent.getAttributes().get(ComponentAttrs.VALUE_ATTR);
     }
