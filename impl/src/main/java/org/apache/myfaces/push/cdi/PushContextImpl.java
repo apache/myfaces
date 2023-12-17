@@ -131,6 +131,12 @@ public class PushContextImpl implements PushContext
         for (S user : users)
         {
             Set<String> channelTokenSet = sessionManager.getChannelTokensForUser(user, channel);
+            if (channelTokenSet == null)
+            {
+                // no channel opened for this user
+                continue;
+            }
+
             Set<Future<Void>> results = new HashSet<>(channelTokenSet.size());
 
             for (String channelToken : channelTokenSet)
