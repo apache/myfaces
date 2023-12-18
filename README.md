@@ -3,6 +3,7 @@
 </div>
 <br>
 
+![Maven Central](https://img.shields.io/maven-central/v/org.apache.myfaces.core/myfaces-impl)
 [![Build Status](https://github.com/apache/myfaces/workflows/MyFaces%20CI/badge.svg)](https://github.com/apache/myfaces/actions/workflows/myfaces-ci.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Build Status ASF](https://ci-builds.apache.org/buildStatus/icon?subject=ASF-Build&job=MyFaces%2FMyFaces+Pipeline%2Fmain)](https://ci-builds.apache.org/job/MyFaces/job/MyFaces%20Pipeline/job/main/)
@@ -20,23 +21,23 @@ Jakarta Faces 5.0 implementation
 Jakarta Faces 4.1 implementation  
 
 ### 4.0.x
-
+![4.0.x](https://img.shields.io/maven-central/v/org.apache.myfaces.core/myfaces-impl?versionPrefix=4.0&color=cyan)
 Jakarta Faces 4.0 implementation  
 Based on the refactored 2.3-next codebase
 
 ### 3.0.x
-
+![3.0.x](https://img.shields.io/maven-central/v/org.apache.myfaces.core/myfaces-impl?versionPrefix=3.0&color=cyan)
 Jakarta Faces 3.0 implementation  
 It's equals to JSF 2.3 but with "jakarta.faces" packages and constants instead of "javax.faces"
 
 ### 2.3-next
-
+![2.3-next](https://img.shields.io/maven-central/v/org.apache.myfaces.core/myfaces-impl?versionPrefix=2.3-next&color=cyan)
 (Almost) JavaServer Faces 2.3 implementation  
 Completely refactored codebase compared to 2.3, also providing a Quarkus extension  
 2.3-next equals the JSF 2.3 API but delegates @ManagedBeans to CDI; ManagedBeans configured via XML are completely ignored. The implementation of the old FacesEL (javax.faces.el.*) also has been completely removed.
 
 ### 2.3.x
-
+![2.3](https://img.shields.io/maven-central/v/org.apache.myfaces.core/myfaces-impl?versionPrefix=2.3&color=cyan)
 JavaServer Faces 2.3 implementation
 
 
