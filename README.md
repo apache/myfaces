@@ -25,11 +25,6 @@ Jakarta Faces 4.1 implementation
 Jakarta Faces 4.0 implementation  
 Based on the refactored 2.3-next codebase
 
-### 3.0.x
-![3.0.x](https://img.shields.io/maven-central/v/org.apache.myfaces.core/myfaces-impl?versionPrefix=3.0&color=cyan)
-Jakarta Faces 3.0 implementation  
-It's equals to JSF 2.3 but with "jakarta.faces" packages and constants instead of "javax.faces"
-
 ### 2.3-next
 ![2.3-next](https://img.shields.io/maven-central/v/org.apache.myfaces.core/myfaces-impl?versionPrefix=2.3-next&color=cyan)
 (Almost) JavaServer Faces 2.3 implementation  
