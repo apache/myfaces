@@ -45,8 +45,6 @@ JavaServer Faces 2.3 implementation
 - JSTL 3.0+ (optional)
 - BV 3.0+ (optional)
 
-Servlet 4.0 will enable JSF to serve resources via HTTP/2 push.
-
 ## Installation
 
 mvn clean install
@@ -58,26 +56,26 @@ mvn clean install
 <dependency>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-api</artifactId>
-    <version>2.3-next-M7</version>
+    <version>5.0.0-SNAPSHOT</version>
 </dependency>
 <dependency>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-impl</artifactId>
-    <version>2.3-next-M7</version>
+    <version>5.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
 ### web.xml
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-         version="3.1">
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
 
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
@@ -91,8 +89,8 @@ mvn clean install
 ```xml
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:f="http://xmlns.jcp.org/jsf/core"
-  xmlns:h="http://xmlns.jcp.org/jsf/html">
+  xmlns:f="jakarta.faces.core"
+  xmlns:h="jakarta.faces.html">
 
   <h:head>
 
