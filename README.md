@@ -36,14 +36,14 @@ Completely refactored codebase compared to 2.3, also providing a Quarkus extensi
 JavaServer Faces 2.3 implementation
 
 
-## Minimum Requirements (main / 2.3-next)
+## Minimum Requirements (main)
 
-- Java 1.8
-- Servlet 3.0
-- EL 2.2
-- CDI 1.2
-- JSTL 1.2 (optional)
-- BV 1.1 (optional)
+- Java 17+
+- Servlet 5.0+
+- EL 5.0+
+- CDI 4.0+
+- JSTL 3.0+ (optional)
+- BV 3.0+ (optional)
 
 Servlet 4.0 will enable JSF to serve resources via HTTP/2 push.
 
