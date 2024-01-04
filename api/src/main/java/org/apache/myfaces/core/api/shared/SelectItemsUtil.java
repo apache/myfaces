@@ -285,7 +285,12 @@ public class SelectItemsUtil
             UIComponent uiComponent, Object value, SelectItem selectItem, Converter converter)
     {
         Object itemValue = selectItem.getValue();
-        if (converter != null && itemValue instanceof String string)
+        if (itemValue == null && value == null)
+        {
+            return null;
+        }
+
+        if (converter != null && !(value instanceof String) && itemValue instanceof String string)
         {
             itemValue = converter.getAsObject(facesContext, uiComponent, string);
         }
