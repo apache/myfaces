@@ -22,6 +22,7 @@ package org.apache.myfaces.cdi.util;
 
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.PassivationCapable;
 import java.io.Serializable;
@@ -40,6 +41,7 @@ public class ContextualStorage implements Serializable
     private static final long serialVersionUID = 1L;
 
     protected Map<Object, ContextualInstanceInfo<?>> contextualInstances;
+    protected Map<String, Object> beanNameToKeyMapping;
     protected BeanManager beanManager;
     protected boolean concurrent;
     protected boolean passivating;
@@ -49,7 +51,7 @@ public class ContextualStorage implements Serializable
     {
         this.activated = true;
     }
-    
+
     /**
      * @param beanManager is needed for serialisation
      * @param concurrent whether the ContextualStorage might get accessed concurrently by different threads
@@ -63,10 +65,12 @@ public class ContextualStorage implements Serializable
         if (concurrent)
         {
             contextualInstances = new ConcurrentHashMap<>();
+            beanNameToKeyMapping = new ConcurrentHashMap<>();
         }
         else
         {
             contextualInstances = new HashMap<>();
+            beanNameToKeyMapping = new HashMap<>();
         }
         this.activated = true;
     }
@@ -77,6 +81,12 @@ public class ContextualStorage implements Serializable
     public Map<Object, ContextualInstanceInfo<?>> getStorage()
     {
         return contextualInstances;
+    }
+
+    public void clear()
+    {
+        contextualInstances.clear();
+        beanNameToKeyMapping.clear();
     }
 
     /**
@@ -103,10 +113,10 @@ public class ContextualStorage implements Serializable
             ContextualInstanceInfo<T> instanceInfo = new ContextualInstanceInfo<>();
 
             ConcurrentMap<Object, ContextualInstanceInfo<?>> concurrentMap
-                = (ConcurrentHashMap<Object, ContextualInstanceInfo<?>>) contextualInstances;
+                    = (ConcurrentHashMap<Object, ContextualInstanceInfo<?>>) contextualInstances;
 
             ContextualInstanceInfo<T> oldInstanceInfo
-                = (ContextualInstanceInfo<T>) concurrentMap.putIfAbsent(beanKey, instanceInfo);
+                    = (ContextualInstanceInfo<T>) concurrentMap.putIfAbsent(beanKey, instanceInfo);
 
             if (oldInstanceInfo != null)
             {
@@ -121,6 +131,15 @@ public class ContextualStorage implements Serializable
                     instance = bean.create(creationalContext);
                     instanceInfo.setContextualInstance(instance);
                     instanceInfo.setCreationalContext(creationalContext);
+
+                    if (bean instanceof Bean)
+                    {
+                        String name = ((Bean<T>) bean).getName();
+                        if (name != null)
+                        {
+                            beanNameToKeyMapping.put(name, beanKey);
+                        }
+                    }
                 }
 
                 return instance;
@@ -136,6 +155,15 @@ public class ContextualStorage implements Serializable
 
             contextualInstances.put(beanKey, instanceInfo);
 
+            if (bean instanceof Bean)
+            {
+                String name = ((Bean<T>) bean).getName();
+                if (name != null)
+                {
+                    beanNameToKeyMapping.put(name, beanKey);
+                }
+            }
+
             return instanceInfo.getContextualInstance();
         }
     }
@@ -145,7 +173,7 @@ public class ContextualStorage implements Serializable
      * Otherwise we use the bean directly, this is mainly for Quarkus.
      *
      * @param bean
-     * 
+     *
      * @return the key to use in the context map
      */
     public <T> Object getBeanKey(Contextual<T> bean)
@@ -194,5 +222,10 @@ public class ContextualStorage implements Serializable
     public void deactivate()
     {
         activated = false;
+    }
+
+    public Map<String, Object> getBeanNameToKeyMapping()
+    {
+        return beanNameToKeyMapping;
     }
 }

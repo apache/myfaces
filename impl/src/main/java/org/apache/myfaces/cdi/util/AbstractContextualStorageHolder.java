@@ -27,25 +27,27 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContext;
+import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
+import org.apache.myfaces.cdi.NonContextualKey;
+import org.apache.myfaces.context.ExceptionHandlerImpl;
+import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
-import org.apache.myfaces.context.ExceptionHandlerImpl;
-import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
-import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 
 public abstract class AbstractContextualStorageHolder<T extends ContextualStorage> implements Serializable
 {
     @Inject
     protected FacesApplicationArtifactHolder applicationContextBean;
-    
+
     @Inject
     protected BeanManager beanManager;
-    
+
     protected Map<String, T> storageMap;
-    
+
     protected boolean passivating;
 
     public AbstractContextualStorageHolder()
@@ -91,12 +93,12 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
     {
         return storageMap;
     }
-    
+
     public T getContextualStorage(String slotId)
     {
         return getContextualStorage(slotId, true);
     }
-    
+
     public T getContextualStorage(String slotId, boolean create)
     {
         if (storageMap == null)
@@ -105,7 +107,7 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
             {
                 return null;
             }
-            
+
             storageMap = new ConcurrentHashMap<>();
         }
 
@@ -119,7 +121,7 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
     }
 
     protected abstract T newContextualStorage(String slotId);
-    
+
     @PreDestroy
     public void preDestroy()
     {
@@ -128,7 +130,7 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
         // 2. use a HttpServletListener in tomcat + owb does not work, because
         //    CDI listener is executed first.
         // So we need a mixed approach using both a listener and @PreDestroy annotations.
-        // When the first one in being called replace the storages with a new map 
+        // When the first one in being called replace the storages with a new map
         // and call PreDestroy, when the second one is called, it founds an empty map
         // and the process stops. A hack to get ServletContext from CDI is required to
         // provide a valid FacesContext instance.
@@ -143,7 +145,7 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
                     ServletContext servletContext = applicationContextBean.getServletContext();
                     ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
                     ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
-                    facesContext = new StartupFacesContextImpl(externalContext, 
+                    facesContext = new StartupFacesContextImpl(externalContext,
                             externalContext, exceptionHandler, false);
                     for (T contextualStorage : oldContextStorages.values())
                     {
@@ -194,7 +196,7 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
         {
             facesContext = FacesContext.getCurrentInstance();
         }
-        
+
         boolean tempFacesContext = false;
         if (facesContext == null && applicationContextBean.getServletContext() != null)
         {
@@ -210,25 +212,26 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
             Map<Object, ContextualInstanceInfo<?>> contextMap = contextualStorage.getStorage();
 
             for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
-            {  
-                boolean skip = isSkipDestroy(entry);
-                if (!skip)
+            {
+                boolean skip = entry.getKey() instanceof NonContextualKey || isSkipDestroy(entry);
+                if (skip)
                 {
-                    Contextual bean = contextualStorage.getBean(entry.getKey());
-                    if (bean != null)
+                    continue;
+                }
+
+                Contextual bean = contextualStorage.getBean(entry.getKey());
+                if (bean != null)
+                {
+                    ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
+                    if (contextualInstanceInfo != null)
                     {
-                        ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
-                        if (contextualInstanceInfo != null)
-                        {
-                            bean.destroy(contextualInstanceInfo.getContextualInstance(), 
+                        bean.destroy(contextualInstanceInfo.getContextualInstance(),
                                 contextualInstanceInfo.getCreationalContext());
-                        }
                     }
                 }
             }
 
-            contextMap.clear();
-
+            contextualStorage.clear();
             contextualStorage.deactivate();
         }
         finally
@@ -239,7 +242,7 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
             }
         }
     }
-    
+
     protected boolean isSkipDestroy(Map.Entry<Object, ContextualInstanceInfo<?>> entry)
     {
         return false;
@@ -257,13 +260,14 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
     }
 
     protected static <T extends AbstractContextualStorageHolder> T getInstance(FacesContext facesContext,
-            Class<T> contextManagerClass)
+                                                                               Class<T> contextManagerClass)
     {
         return getInstance(facesContext, contextManagerClass, false);
     }
-    
+
     protected static <T extends AbstractContextualStorageHolder> T getInstance(FacesContext facesContext,
-            Class<T> contextManagerClass, boolean create)
+                                                                               Class<T> contextManagerClass,
+                                                                               boolean create)
     {
         if (facesContext == null
                 || facesContext.getExternalContext() == null
