@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.faces.FacesException;
 import jakarta.faces.push.PushContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
@@ -92,7 +91,8 @@ public class PushContextImpl implements PushContext
         }
         else
         {
-            throw new FacesException("CDI bean not found for push message");
+            // No channelToken has been opened
+            return Collections.emptySet();
         }
         
         //2. send the message
