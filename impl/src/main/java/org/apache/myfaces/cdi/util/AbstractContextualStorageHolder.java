@@ -27,14 +27,16 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContext;
+import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
+import org.apache.myfaces.cdi.NonContextualKey;
+import org.apache.myfaces.context.ExceptionHandlerImpl;
+import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
-import org.apache.myfaces.context.ExceptionHandlerImpl;
-import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
-import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 
 public abstract class AbstractContextualStorageHolder<T extends ContextualStorage> implements Serializable
 {
@@ -210,25 +212,26 @@ public abstract class AbstractContextualStorageHolder<T extends ContextualStorag
             Map<Object, ContextualInstanceInfo<?>> contextMap = contextualStorage.getStorage();
 
             for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
-            {  
-                boolean skip = isSkipDestroy(entry);
-                if (!skip)
+            {
+                boolean skip = entry.getKey() instanceof NonContextualKey || isSkipDestroy(entry);
+                if (skip)
                 {
-                    Contextual bean = contextualStorage.getBean(entry.getKey());
-                    if (bean != null)
+                    continue;
+                }
+
+                Contextual bean = contextualStorage.getBean(entry.getKey());
+                if (bean != null)
+                {
+                    ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
+                    if (contextualInstanceInfo != null)
                     {
-                        ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
-                        if (contextualInstanceInfo != null)
-                        {
-                            bean.destroy(contextualInstanceInfo.getContextualInstance(), 
-                                contextualInstanceInfo.getCreationalContext());
-                        }
+                        bean.destroy(contextualInstanceInfo.getContextualInstance(),
+                            contextualInstanceInfo.getCreationalContext());
                     }
                 }
             }
 
-            contextMap.clear();
-
+            contextualStorage.clear();
             contextualStorage.deactivate();
         }
         finally
