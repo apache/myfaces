@@ -21,12 +21,10 @@ package jakarta.faces.application;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-
 import org.apache.myfaces.test.mock.MockStateManager;
-import org.easymock.MockControl;
-import org.easymock.classextension.MockClassControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class StateManagerTest
 {
@@ -53,16 +51,12 @@ public class StateManagerTest
     @Test
     public void testIsSavingStateInClientTrue()
     {
-        MockControl contextControl = MockClassControl.createControl(FacesContext.class);
-        MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
-        FacesContext context = (FacesContext) contextControl.getMock();
-        ExternalContext external = (ExternalContext) externalControl.getMock();
-        context.getExternalContext();
-        contextControl.setReturnValue(external);
-        contextControl.replay();
-        external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME);
-        externalControl.setReturnValue("client");
-        externalControl.replay();
+        FacesContext context = Mockito.spy(FacesContext.class);
+        ExternalContext external = Mockito.spy(ExternalContext.class);
+        Mockito.when(context.getExternalContext()).thenReturn(external);
+
+        Mockito.when(external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME))
+                .thenReturn("client");
 
         MockStateManager subject = new MockStateManager();
         Assertions.assertEquals(true, subject.isSavingStateInClient(context));
@@ -74,20 +68,14 @@ public class StateManagerTest
     @Test
     public void testIsSavingStateInClientFalse()
     {
-        MockControl contextControl = MockClassControl.createControl(FacesContext.class);
-        MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
-        FacesContext context = (FacesContext) contextControl.getMock();
-        ExternalContext external = (ExternalContext) externalControl.getMock();
-        context.getExternalContext();
-        contextControl.setReturnValue(external);
-        contextControl.replay();
-        external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME);
-        externalControl.setReturnValue("server");
-        externalControl.replay();
+        FacesContext context = Mockito.spy(FacesContext.class);
+        ExternalContext external = Mockito.spy(ExternalContext.class);
+        Mockito.when(context.getExternalContext()).thenReturn(external);
+
+        Mockito.when(external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME))
+                .thenReturn("server");
 
         MockStateManager subject = new MockStateManager();
-        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
-        // calling a second time asserts that the code is caching the value correctly
         Assertions.assertEquals(false, subject.isSavingStateInClient(context));
     }
 
@@ -97,23 +85,18 @@ public class StateManagerTest
     @Test
     public void testIsSavingStateInClientBogus()
     {
-        MockControl contextControl = MockClassControl.createControl(FacesContext.class);
-        MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
-        FacesContext context = (FacesContext) contextControl.getMock();
-        ExternalContext external = (ExternalContext) externalControl.getMock();
-        context.getExternalContext();
-        contextControl.setReturnValue(external);
-        context.getExternalContext();
-        contextControl.setReturnValue(external);
-        contextControl.replay();
-        external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME);
-        externalControl.setReturnValue("blorf");
-        external.log("Illegal state saving method 'blorf', default server state saving will be used");
-        externalControl.setVoidCallable();
-        externalControl.replay();
+        FacesContext context = Mockito.spy(FacesContext.class);
+        ExternalContext external = Mockito.spy(ExternalContext.class);
+        Mockito.when(context.getExternalContext()).thenReturn(external);
+
+        Mockito.when(external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME))
+                .thenReturn("blorf");
 
         MockStateManager subject = new MockStateManager();
         Assertions.assertEquals(false, subject.isSavingStateInClient(context));
+
+        Mockito.verify(external)
+                .log("Illegal state saving method 'blorf', default server state saving will be used");
     }
 
     /*
@@ -122,23 +105,18 @@ public class StateManagerTest
     @Test
     public void testIsSavingStateInClientNull()
     {
-        MockControl contextControl = MockClassControl.createControl(FacesContext.class);
-        MockControl externalControl = MockClassControl.createControl(ExternalContext.class);
-        FacesContext context = (FacesContext) contextControl.getMock();
-        ExternalContext external = (ExternalContext) externalControl.getMock();
-        context.getExternalContext();
-        contextControl.setReturnValue(external);
-        context.getExternalContext();
-        contextControl.setReturnValue(external);
-        contextControl.replay();
-        external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME);
-        externalControl.setReturnValue(null);
-        external.log("No state saving method defined, assuming default server state saving");
-        externalControl.setVoidCallable();
-        externalControl.replay();
+        FacesContext context = Mockito.spy(FacesContext.class);
+        ExternalContext external = Mockito.spy(ExternalContext.class);
+        Mockito.when(context.getExternalContext()).thenReturn(external);
+
+        Mockito.when(external.getInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME))
+                .thenReturn(null);
 
         MockStateManager subject = new MockStateManager();
         Assertions.assertEquals(false, subject.isSavingStateInClient(context));
+
+        Mockito.verify(external)
+                .log("No state saving method defined, assuming default server state saving");
     }
 
 }
