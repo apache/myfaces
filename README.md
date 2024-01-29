@@ -17,7 +17,7 @@ Apache's implementation of the JavaServer Faces (JSF) and Jakarta Faces specific
 Jakarta Faces 5.0 implementation  
 
 ### 4.1.x
-
+![4.1.x](https://img.shields.io/maven-central/v/org.apache.myfaces.core/myfaces-impl?versionPrefix=4.1&color=cyan)
 Jakarta Faces 4.1 implementation  
 
 ### 4.0.x
