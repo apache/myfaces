@@ -28,6 +28,7 @@ import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
+import org.w3c.dom.Attr;
 import org.xml.sax.SAXException;
 
 import jakarta.faces.FacesException;
@@ -476,11 +477,11 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             try
             {
                 factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+                factory.setXIncludeAware(false);
+                factory.setExpandEntityReferences(false);
                 factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
                 factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
                 factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-                factory.setXIncludeAware(false);
-                factory.setExpandEntityReferences(false);
             }
             catch (Throwable e)
             {
@@ -495,7 +496,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             }
             catch (ParserConfigurationException ex)
             {
-                log.log(Level.SEVERE, "Cannot create dom document builder, skipping it", ex);
+                log.log(Level.SEVERE, "Cannot create DOM document builder, skipping it", ex);
             }
             
             if (builder != null)
@@ -508,8 +509,11 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     // instance, configured to be in the XML namespace of the
                     // application configuration resource format. ..."
                     Document document = domImpl.createDocument(
-                        "http://java.sun.com/xml/ns/javaee", "faces-config", null);
-                    //Document document = builder.newDocument();
+                        "https://jakarta.ee/xml/ns/jakartaee", "faces-config", null);
+                    Attr versionAttribute = document.createAttribute("version");
+                    versionAttribute.setValue("4.0");
+                    document.getDocumentElement().getAttributes().setNamedItem(versionAttribute);
+
                     populator.populateApplicationConfiguration(document);
                     documentList.add(document);
                 }
