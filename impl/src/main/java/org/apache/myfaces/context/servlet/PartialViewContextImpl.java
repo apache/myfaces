@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewParameter;
 import jakarta.faces.component.UIViewRoot;
@@ -77,6 +78,11 @@ public class PartialViewContextImpl extends PartialViewContext
     
     // unrendered have to be skipped, transient definitely must be added to our list!
     private static final  Set<VisitHint> PARTIAL_RENDER_HINTS = 
+            Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
+
+    private static final VisitCallback RESET_VALUES_CALLBACK = new ResetValuesCallback();
+
+    private static final  Set<VisitHint> RESET_VALUES_HINTS =
             Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
 
     private FacesContext _facesContext = null;
@@ -481,7 +487,9 @@ public class PartialViewContextImpl extends PartialViewContext
             
             if (isResetValues())
             {
-                viewRoot.resetValues(_facesContext, getRenderIds());
+                VisitContext visitContext = VisitContext.createVisitContext(_facesContext, getRenderIds(),
+                        RESET_VALUES_HINTS);
+                viewRoot.visitTree(visitContext, RESET_VALUES_CALLBACK);
             }
 
             if (pvc.isRenderAll())
@@ -613,7 +621,20 @@ public class PartialViewContextImpl extends PartialViewContext
         }
 
     }
-    
+
+    // same like UIViewRoot#ResetValuesCallback
+    private static class ResetValuesCallback implements VisitCallback
+    {
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            if (target instanceof EditableValueHolder)
+            {
+                ((EditableValueHolder)target).resetValue();
+            }
+            return VisitResult.ACCEPT;
+        }
+    }
+
     private void processRenderResource(FacesContext facesContext, PartialResponseWriter writer, RequestViewContext rvc, 
             List<UIComponent> updatedComponents, String target) throws IOException
     {
