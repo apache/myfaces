@@ -19,25 +19,28 @@
 package org.apache.myfaces.view;
 
 import jakarta.enterprise.inject.spi.BeanManager;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PreDestroyViewMapEvent;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.cdi.view.ViewScopeContextualStorageHolder;
 import org.apache.myfaces.cdi.view.ViewScopeCDIMap;
+import org.apache.myfaces.cdi.view.ViewScopeContextualStorageHolder;
 import org.apache.myfaces.util.ExternalSpecifications;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This wrapper has these objectives:
- * 
+ *
  * - Isolate the part that needs to be saved with the view (viewScopeId) from
  *   the part that should remain into session (bean map). This class will be
  *   serialized when UIViewRoot.saveState() is called.
- * - Decouple the way how the view scope map is stored. For example, in 
+ * - Decouple the way how the view scope map is stored. For example, in
  *   CDI view scope a session scope bean is used, and in default view scope
  *   the same session map is used but using a prefix.
  *
@@ -45,49 +48,78 @@ import org.apache.myfaces.util.ExternalSpecifications;
  */
 public class ViewScopeProxyMap extends HashMap<String, Object> implements StateHolder
 {
+    private static final String NON_CDI_SCOPE_MAP = "oam.ViewScope";
+
+    private static Random randomGenerator;
+
     private String viewScopeId;
     private transient Map<String, Object> delegate;
 
     public ViewScopeProxyMap()
     {
     }
-    
+
     public String getViewScopeId()
     {
         return viewScopeId;
     }
-    
+
     public void forceDelegateCreation(FacesContext facesContext)
     {
         getDelegate();
     }
-    
+
     public Map<String, Object> getDelegate()
     {
         if (delegate == null)
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            
-            // for non-CDI environments or unittests
-            if (facesContext == null || !ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
+
+            // unittests
+            if (facesContext == null)
             {
                 delegate = new HashMap<>();
             }
             else
             {
-                if (viewScopeId == null)
+                // CDI environment
+                if (ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
                 {
-                    BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
-                    ViewScopeContextualStorageHolder beanHolder =
-                            CDIUtils.get(beanManager, ViewScopeContextualStorageHolder.class);
-                    viewScopeId = beanHolder.generateUniqueViewScopeId();
+                    if (viewScopeId == null)
+                    {
+                        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
+                        ViewScopeContextualStorageHolder beanHolder =
+                                CDIUtils.get(beanManager, ViewScopeContextualStorageHolder.class);
+                        viewScopeId = beanHolder.generateUniqueViewScopeId();
+                    }
+                    delegate = new ViewScopeCDIMap(viewScopeId);
                 }
-                delegate = new ViewScopeCDIMap(viewScopeId);
+                // non-CDI (probably spring) environment
+                else
+                {
+                    Map<String, Map<String, Object>> viewScopeMap = (Map<String, Map<String, Object>>)
+                            facesContext.getExternalContext().getSessionMap()
+                                    .computeIfAbsent(NON_CDI_SCOPE_MAP, key -> new ConcurrentHashMap<>());
+                    if (viewScopeId == null)
+                    {
+                        if (randomGenerator == null)
+                        {
+                            randomGenerator = new Random();
+                        }
+
+                        do
+                        {
+                            viewScopeId = Integer.toString(randomGenerator.nextInt());
+                        } while (viewScopeMap.containsKey(viewScopeId));
+                    }
+
+                    delegate = viewScopeMap.computeIfAbsent(viewScopeId, key -> new ConcurrentHashMap<>());
+                }
             }
         }
         return delegate;
     }
-    
+
     @Override
     public int size()
     {
@@ -145,10 +177,21 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
          * ViewMapDestroyedEvent.class as the first argument and this UIViewRoot instance as the second argument.
          */
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        facesContext.getApplication().publishEvent(facesContext, 
+        facesContext.getApplication().publishEvent(facesContext,
                 PreDestroyViewMapEvent.class, facesContext.getViewRoot());
-        
+
         getDelegate().clear();
+
+        // non-CDI (probably spring) environment
+        if (!ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
+        {
+            Map<String, Map<String, Object>> viewScopeMap = (Map<String, Map<String, Object>>)
+                    facesContext.getExternalContext().getSessionMap().get(NON_CDI_SCOPE_MAP);
+            if (viewScopeMap != null)
+            {
+                viewScopeMap.remove(viewScopeId);
+            }
+        }
     }
 
     @Override
@@ -191,5 +234,5 @@ public class ViewScopeProxyMap extends HashMap<String, Object> implements StateH
     public void setTransient(boolean newTransientValue)
     {
     }
-    
+
 }
