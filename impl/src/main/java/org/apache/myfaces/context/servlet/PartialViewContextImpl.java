@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FactoryFinder;
+import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
@@ -71,6 +72,11 @@ public class PartialViewContextImpl extends PartialViewContext
     
     private static final Set<VisitHint> PARTIAL_EXECUTE_HINTS = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.EXECUTE_LIFECYCLE, VisitHint.SKIP_UNRENDERED));
+
+    private static final VisitCallback RESET_VALUES_CALLBACK = new ResetValuesCallback();
+
+    private static final  Set<VisitHint> RESET_VALUES_HINTS =
+            Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
 
     private FacesContext context = null;
     private boolean _released = false;
@@ -441,7 +447,9 @@ public class PartialViewContextImpl extends PartialViewContext
             
             if (isResetValues())
             {
-                viewRoot.resetValues(context, getRenderIds());
+                VisitContext visitContext = VisitContext.createVisitContext(context, getRenderIds(),
+                        RESET_VALUES_HINTS);
+                viewRoot.visitTree(visitContext, RESET_VALUES_CALLBACK);
             }
 
             if (pvc.isRenderAll())
@@ -563,7 +571,20 @@ public class PartialViewContextImpl extends PartialViewContext
         }
 
     }
-    
+
+    // same like UIViewRoot#ResetValuesCallback
+    private static class ResetValuesCallback implements VisitCallback
+    {
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            if (target instanceof EditableValueHolder)
+            {
+                ((EditableValueHolder)target).resetValue();
+            }
+            return VisitResult.ACCEPT;
+        }
+    }
+
     private void processRenderResource(FacesContext facesContext, PartialResponseWriter writer, RequestViewContext rvc, 
             List<UIComponent> updatedComponents, String target) throws IOException
     {
