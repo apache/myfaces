@@ -18,18 +18,15 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.myfaces.application.ResourceHandlerImpl;
+import org.apache.myfaces.context.PartialResponseWriterImpl;
+import org.apache.myfaces.context.RequestViewContext;
+import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
+import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.StringUtils;
 
 import javax.faces.FactoryFinder;
+import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
@@ -49,13 +46,16 @@ import javax.faces.lifecycle.ClientWindow;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewMetadata;
-import org.apache.myfaces.application.ResourceHandlerImpl;
-
-import org.apache.myfaces.context.PartialResponseWriterImpl;
-import org.apache.myfaces.context.RequestViewContext;
-import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
-import org.apache.myfaces.shared.renderkit.JSFAttr;
-import org.apache.myfaces.shared.util.StringUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PartialViewContextImpl extends PartialViewContext
 {
@@ -77,6 +77,11 @@ public class PartialViewContextImpl extends PartialViewContext
     
     // unrendered have to be skipped, transient definitely must be added to our list!
     private static final  Set<VisitHint> PARTIAL_RENDER_HINTS = 
+            Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
+
+    private static final VisitCallback RESET_VALUES_CALLBACK = new ResetValuesCallback();
+
+    private static final  Set<VisitHint> RESET_VALUES_HINTS =
             Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
 
     private FacesContext _facesContext = null;
@@ -481,7 +486,9 @@ public class PartialViewContextImpl extends PartialViewContext
             
             if (isResetValues())
             {
-                viewRoot.resetValues(_facesContext, getRenderIds());
+                VisitContext visitContext = VisitContext.createVisitContext(_facesContext, getRenderIds(),
+                        RESET_VALUES_HINTS);
+                viewRoot.visitTree(visitContext, RESET_VALUES_CALLBACK);
             }
 
             if (pvc.isRenderAll())
@@ -613,7 +620,20 @@ public class PartialViewContextImpl extends PartialViewContext
         }
 
     }
-    
+
+    // same like UIViewRoot#ResetValuesCallback
+    private static class ResetValuesCallback implements VisitCallback
+    {
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            if (target instanceof EditableValueHolder)
+            {
+                ((EditableValueHolder)target).resetValue();
+            }
+            return VisitResult.ACCEPT;
+        }
+    }
+
     private void processRenderResource(FacesContext facesContext, PartialResponseWriter writer, RequestViewContext rvc, 
             List<UIComponent> updatedComponents, String target) throws IOException
     {
