@@ -58,6 +58,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource
         setRendererType(null);
     }
 
+    @JSFProperty(jspName="if") // Faces 4.1 : https://github.com/jakartaee/faces/issues/1811
     @Override
     public boolean isRendered() 
     {
