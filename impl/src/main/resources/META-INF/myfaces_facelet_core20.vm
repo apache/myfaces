@@ -42,7 +42,13 @@ $baseContent
    <tag>
       <description><![CDATA[$component.longDescription]]></description>
       <name>$utils.getTagName($component.name)</name>
+
+#if ($component.tagClass)
       <tag-class>$component.tagClass</tag-class>
+#else
+      <tag-class>None</tag-class>
+#end
+
 #if ($component.bodyContent)
       <body-content>$component.bodyContent</body-content>
 #else
