@@ -1220,12 +1220,19 @@ public class MyfacesConfig
         {
             Logger.getLogger(MyfacesConfig.class.getName()).warning(
                 "The configuration 'jakarta.faces.PARTIAL_STATE_SAVING' is deprecated " +
-                    "as of Faces 4.1 and should not longer be used.");
+                    "as of Faces 4.1");
         }
 
         cfg.fullStateSavingViewIds = StringUtils.splitShortString(
                 getString(extCtx, StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, null),
                 ',');
+
+        if (cfg.fullStateSavingViewIds.length > 0)
+        {
+            Logger.getLogger(MyfacesConfig.class.getName()).warning(
+                "The configuration 'jakarta.faces.FULL_STATE_SAVING_VIEW_IDS' is deprecated " +
+                    "as of Faces 4.1");
+        }
         
         cfg.faceletsBufferSize = getInt(extCtx, ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME,
                 1024);
