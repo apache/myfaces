@@ -96,8 +96,7 @@ public abstract class ViewHandler
      * Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a
      * servlet environment to HttpServletResponse.setBufferSize().
      */
-    @JSFWebConfigParam(since = "2.0", alias = "facelets.BUFFER_SIZE", classType = "java.lang.Integer",
-            tags = "performance", defaultValue="1024",
+    @JSFWebConfigParam(since = "2.0", classType = "java.lang.Integer", tags = "performance", defaultValue="1024",
             desc = "Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in "
                    + "a servlet environment to HttpServletResponse.setBufferSize()")
     public static final java.lang.String FACELETS_BUFFER_SIZE_PARAM_NAME = "jakarta.faces.FACELETS_BUFFER_SIZE";
@@ -106,28 +105,27 @@ public abstract class ViewHandler
      * Set of class names, separated by ';', implementing TagDecorator interface, used to transform
      * a view definition in a facelet abstract syntax tree, that is used later to generate a component tree.
      */
-    @JSFWebConfigParam(since = "2.0", alias = "facelets.DECORATORS")
+    @JSFWebConfigParam(since = "2.0")
     public static final java.lang.String FACELETS_DECORATORS_PARAM_NAME = "jakarta.faces.FACELETS_DECORATORS";
     
     /**
      * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
      */
     @JSFWebConfigParam(since = "2.0",
-            desc = "Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
-            alias = "facelets.LIBRARIES")
+            desc = "Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.")
     public static final java.lang.String FACELETS_LIBRARIES_PARAM_NAME = "jakarta.faces.FACELETS_LIBRARIES";
     
     /**
      * Define the period used to refresh the facelet abstract syntax tree from the view definition file. 
      */
-    @JSFWebConfigParam(since = "2.0", defaultValue = "0, -1 in Production", alias = "facelets.REFRESH_PERIOD",
-            classType = "java.lang.Long", tags = "performance")
+    @JSFWebConfigParam(since = "2.0", defaultValue = "0, -1 in Production", classType = "java.lang.Long",
+            tags = "performance")
     public static final java.lang.String FACELETS_REFRESH_PERIOD_PARAM_NAME = "jakarta.faces.FACELETS_REFRESH_PERIOD";
 
     /**
      * Skip comments found on a facelet file.
      */
-    @JSFWebConfigParam(since = "2.0", alias = "facelets.SKIP_COMMENTS")
+    @JSFWebConfigParam(since = "2.0")
     public static final java.lang.String FACELETS_SKIP_COMMENTS_PARAM_NAME = "jakarta.faces.FACELETS_SKIP_COMMENTS";
     
     /**
