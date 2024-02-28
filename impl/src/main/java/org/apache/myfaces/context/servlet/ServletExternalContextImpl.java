@@ -18,6 +18,31 @@
  */
 package org.apache.myfaces.context.servlet;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.context.FlashFactory;
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.context.flash.FlashImpl;
+import org.apache.myfaces.core.api.shared.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
+import org.apache.myfaces.util.lang.EnumerationIterator;
+import org.apache.myfaces.util.lang.StringUtils;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -38,32 +63,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import jakarta.faces.FacesException;
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.Flash;
-import jakarta.faces.context.FlashFactory;
-import jakarta.faces.context.PartialResponseWriter;
-import jakarta.faces.context.PartialViewContext;
-import jakarta.faces.lifecycle.ClientWindow;
-import jakarta.faces.render.ResponseStateManager;
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
-import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.context.flash.FlashImpl;
-import org.apache.myfaces.core.api.shared.lang.Assert;
-import org.apache.myfaces.util.lang.EnumerationIterator;
-import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
-import org.apache.myfaces.util.lang.StringUtils;
-
 /**
  * Implements the external context for servlet request. Faces 1.2, 6.1.3
  *
@@ -75,10 +74,6 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 {
     private static final Logger log = Logger.getLogger(ServletExternalContextImpl.class.getName());
 
-    private static final String URL_PARAM_SEPERATOR="&";
-    private static final char URL_QUERY_SEPERATOR='?';
-    private static final char URL_FRAGMENT_SEPERATOR='#';
-    private static final String URL_NAME_VALUE_PAIR_SEPERATOR="=";
     private static final String PUSHED_RESOURCE_URLS = "oam.PUSHED_RESOURCE_URLS";
     private static final String PUSH_SUPPORTED = "oam.PUSH_SUPPORTED";
     private static final String SB_ENCODE_URL = ServletExternalContextImpl.class.getName() + "#encodeURL";
@@ -875,23 +870,23 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         Map<String, List<String>> paramMap = null;
 
         //extract any URL fragment
-        int index = baseUrl.indexOf(URL_FRAGMENT_SEPERATOR);
+        int index = baseUrl.indexOf('#');
         if (index != -1)
         {
-            fragment = baseUrl.substring(index+1);
-            baseUrl = baseUrl.substring(0,index);
+            fragment = baseUrl.substring(index + 1);
+            baseUrl = baseUrl.substring(0, index);
         }
 
         //extract the current query string and add the params to the paramMap
-        index = baseUrl.indexOf(URL_QUERY_SEPERATOR);
+        index = baseUrl.indexOf('?');
         if (index != -1)
         {
             queryString = baseUrl.substring(index + 1);
             baseUrl = baseUrl.substring(0, index);
-            String[] nameValuePairs = queryString.split(URL_PARAM_SEPERATOR);
+            String[] nameValuePairs = queryString.split("&");
             for (int i = 0; i < nameValuePairs.length; i++)
             {
-                String[] currentPair = nameValuePairs[i].split(URL_NAME_VALUE_PAIR_SEPERATOR);
+                String[] currentPair = nameValuePairs[i].split("=");
                 String currentName = currentPair[0];
 
                 if (paramMap == null)
@@ -985,16 +980,16 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                     
                     if (!isFirstPair)
                     {
-                        newUrl.append(URL_PARAM_SEPERATOR);
+                        newUrl.append('&');
                     }
                     else
                     {
-                        newUrl.append(URL_QUERY_SEPERATOR);
+                        newUrl.append('?');
                         isFirstPair = false;
                     }
 
                     newUrl.append(pair.getKey());
-                    newUrl.append(URL_NAME_VALUE_PAIR_SEPERATOR);
+                    newUrl.append('=');
                     if (value != null)
                     {
                         try
@@ -1015,7 +1010,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         //add the fragment back on (if any)
         if (fragment != null)
         {
-            newUrl.append(URL_FRAGMENT_SEPERATOR);
+            newUrl.append('#');
             newUrl.append(fragment);
         }
 
