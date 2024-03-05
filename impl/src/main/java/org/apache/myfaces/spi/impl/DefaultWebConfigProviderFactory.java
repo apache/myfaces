@@ -19,14 +19,10 @@
 package org.apache.myfaces.spi.impl;
 
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.util.lang.ClassUtils;
@@ -58,36 +54,24 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
     @Override
     public WebConfigProvider getWebConfigProvider(ExternalContext externalContext)
     {
-        WebConfigProvider returnValue = null;
-        final ExternalContext extContext = externalContext;
+        WebConfigProvider instance = null;
+
         try
         {
-            if (System.getSecurityManager() != null)
-            {
-                returnValue = (WebConfigProvider) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> resolveWebXmlProviderFromService(extContext));
-            }
-            else
-            {
-                returnValue = resolveWebXmlProviderFromService(extContext);
-            }
+            instance = resolveWebXmlProviderFromService(externalContext);
         }
         catch (ClassNotFoundException | NoClassDefFoundError | InstantiationException | IllegalAccessException
                 | InvocationTargetException e)
         {
             getLogger().log(Level.SEVERE, "", e);
         }
-        catch (PrivilegedActionException e)
-        {
-            throw new FacesException(e);
-        }
 
-        if (returnValue == null)
+        if (instance == null)
         {
-            returnValue = new DefaultWebConfigProvider();
+            instance = new DefaultWebConfigProvider();
         }
  
-        return returnValue;
+        return instance;
     }
 
     private WebConfigProvider resolveWebXmlProviderFromService(
@@ -95,8 +79,7 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
             NoClassDefFoundError,
             InstantiationException,
             IllegalAccessException,
-            InvocationTargetException,
-            PrivilegedActionException
+            InvocationTargetException
     {
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(WEB_CONFIG_PROVIDER_LIST);
         if (classList == null)

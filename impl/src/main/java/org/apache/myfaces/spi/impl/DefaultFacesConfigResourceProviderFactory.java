@@ -24,12 +24,8 @@ import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,19 +49,11 @@ public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResour
     @Override
     public FacesConfigResourceProvider createFacesConfigResourceProvider(ExternalContext externalContext)
     {
-        FacesConfigResourceProvider returnValue = null;
-        final ExternalContext extContext = externalContext;
+        FacesConfigResourceProvider instance = null;
+
         try
         {
-            if (System.getSecurityManager() != null)
-            {
-                returnValue = (FacesConfigResourceProvider) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> resolveFacesConfigResourceProviderFromService(extContext));
-            }
-            else
-            {
-                returnValue = resolveFacesConfigResourceProviderFromService(extContext);
-            }
+            instance = resolveFacesConfigResourceProviderFromService(externalContext);
         }
         catch (ClassNotFoundException | NoClassDefFoundError e)
         {
@@ -75,11 +63,8 @@ public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResour
         {
             getLogger().log(Level.SEVERE, "", e);
         }
-        catch (PrivilegedActionException e)
-        {
-            throw new FacesException(e);
-        }
-        return returnValue;
+
+        return instance;
     }
     
     private FacesConfigResourceProvider resolveFacesConfigResourceProviderFromService(
@@ -87,8 +72,7 @@ public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResour
             NoClassDefFoundError,
             InstantiationException,
             IllegalAccessException,
-            InvocationTargetException,
-            PrivilegedActionException
+            InvocationTargetException
     {
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(FACES_CONFIG_PROVIDER_LIST);
         if (classList == null)
