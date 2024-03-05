@@ -22,14 +22,10 @@ package org.apache.myfaces.test.mock.resource;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.context.FacesContext;
@@ -349,23 +345,7 @@ public class MockResourceHandler extends ResourceHandler
      */
     static ClassLoader getContextClassLoader()
     {
-        if (System.getSecurityManager() != null)
-        {
-            try
-            {
-                ClassLoader cl = AccessController.doPrivileged(
-                        (PrivilegedExceptionAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
-                return cl;
-            }
-            catch (PrivilegedActionException pae)
-            {
-                throw new FacesException(pae);
-            }
-        }
-        else
-        {
-            return Thread.currentThread().getContextClassLoader();
-        }
+        return Thread.currentThread().getContextClassLoader();
     }
 
     public MockResourceHandlerSupport getResourceHandlerSupport()

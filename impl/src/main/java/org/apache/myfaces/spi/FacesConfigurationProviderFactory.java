@@ -18,11 +18,6 @@
  */
 package org.apache.myfaces.spi;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationProviderFactory;
@@ -41,51 +36,33 @@ public abstract class FacesConfigurationProviderFactory
 
     public static FacesConfigurationProviderFactory getFacesConfigurationProviderFactory(ExternalContext ctx)
     {
-        FacesConfigurationProviderFactory factory
+        FacesConfigurationProviderFactory instance
                 = (FacesConfigurationProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
-        if (factory != null)
+
+        if (instance != null)
         {
             // use cached instance
-            return factory;
+            return instance;
         }
 
         // create new instance from service entry
-        try
-        {
+        instance = (FacesConfigurationProviderFactory)
+                 SpiUtils.build(ctx, FacesConfigurationProviderFactory.class,
+                        DefaultFacesConfigurationProviderFactory.class);
 
-            if (System.getSecurityManager() != null)
-            {
-                final ExternalContext ectx = ctx;
-                factory = (FacesConfigurationProviderFactory) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
-                                FacesConfigurationProviderFactory.class,
-                                DefaultFacesConfigurationProviderFactory.class));
-            }
-            else
-            {
-                factory = (FacesConfigurationProviderFactory)
-                        SpiUtils.build(ctx, FacesConfigurationProviderFactory.class,
-                                DefaultFacesConfigurationProviderFactory.class);
-            }
-        }
-        catch (PrivilegedActionException pae)
-        {
-            throw new FacesException(pae);
-        }
-
-        if (factory != null)
+        if (instance != null)
         {
             // cache instance on ApplicationMap
-            setFacesConfigurationProviderFactory(ctx, factory);
+            setFacesConfigurationProviderFactory(ctx, instance);
         }
 
-        return factory;
+        return instance;
     }
 
     public static void setFacesConfigurationProviderFactory(ExternalContext ctx,
-                                                            FacesConfigurationProviderFactory factory)
+                                                            FacesConfigurationProviderFactory instance)
     {
-        ctx.getApplicationMap().put(FACTORY_KEY, factory);
+        ctx.getApplicationMap().put(FACTORY_KEY, instance);
     }
 
     public abstract FacesConfigurationProvider getFacesConfigurationProvider(ExternalContext externalContext);

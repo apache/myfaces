@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -202,15 +200,7 @@ public class WebXmlParser
                 return null;
             }
 
-            if (System.getSecurityManager() != null)
-            {
-                is = AccessController.doPrivileged(
-                        (PrivilegedExceptionAction<InputStream>) () -> url.openStream());
-            }
-            else
-            {
-                is = url.openStream();
-            }
+            is = url.openStream();
 
             if (is == null)
             {

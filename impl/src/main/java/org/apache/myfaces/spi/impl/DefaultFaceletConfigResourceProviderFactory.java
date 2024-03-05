@@ -24,12 +24,8 @@ import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.view.facelets.compiler.DefaultFaceletConfigResourceProvider;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,19 +49,11 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
     @Override
     public FaceletConfigResourceProvider createFaceletConfigResourceProvider(ExternalContext externalContext)
     {
-        FaceletConfigResourceProvider returnValue = null;
-        final ExternalContext extContext = externalContext;
+        FaceletConfigResourceProvider instance = null;
+
         try
         {
-            if (System.getSecurityManager() != null)
-            {
-                returnValue = (FaceletConfigResourceProvider) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> resolveFaceletConfigResourceProviderFromService(extContext));
-            }
-            else
-            {
-                returnValue = resolveFaceletConfigResourceProviderFromService(extContext);
-            }
+            instance = resolveFaceletConfigResourceProviderFromService(externalContext);
         }
         catch (ClassNotFoundException | NoClassDefFoundError e)
         {
@@ -75,11 +63,8 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
         {
             getLogger().log(Level.SEVERE, "", e);
         }
-        catch (PrivilegedActionException e)
-        {
-            throw new FacesException(e);
-        }
-        return returnValue;
+
+        return instance;
     }
     
     private FaceletConfigResourceProvider resolveFaceletConfigResourceProviderFromService(
@@ -87,8 +72,7 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
             NoClassDefFoundError,
             InstantiationException,
             IllegalAccessException,
-            InvocationTargetException,
-            PrivilegedActionException
+            InvocationTargetException
     {
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(FACELET_CONFIG_PROVIDER_LIST);
         if (classList == null)

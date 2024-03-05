@@ -28,9 +28,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -399,21 +396,10 @@ class StateCacheServerSide extends StateCache<Object, Object>
                     is = new GZIPInputStream(is);
                 }
 
-                ObjectInputStream ois = null;
+                ObjectInputStream ois = new MyFacesObjectInputStream(is);
                 try
                 {
-                    final ObjectInputStream in = new MyFacesObjectInputStream(is);
-                    ois = in;
-                    Object object = null;
-                    if (System.getSecurityManager() != null) 
-                    {
-                        object = AccessController.doPrivileged((PrivilegedExceptionAction) () -> in.readObject());
-                    }
-                    else
-                    {
-                        object = in.readObject();
-                    }
-                    return object;
+                    return ois.readObject();
                 }
                 finally
                 {
@@ -424,7 +410,7 @@ class StateCacheServerSide extends StateCache<Object, Object>
                     }
                 }
             }
-            catch (PrivilegedActionException | IOException | ClassNotFoundException e) 
+            catch (IOException | ClassNotFoundException e) 
             {
                 log.log(Level.SEVERE, "Exiting deserializeView - Could not deserialize state: " + e.getMessage(), e);
                 return null;

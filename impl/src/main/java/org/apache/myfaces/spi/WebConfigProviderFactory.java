@@ -18,11 +18,6 @@
  */
 package org.apache.myfaces.spi;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
@@ -42,49 +37,31 @@ public abstract class WebConfigProviderFactory
 
     public static WebConfigProviderFactory getWebConfigProviderFactory(ExternalContext ctx)
     {
-        WebConfigProviderFactory factory = (WebConfigProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
-        if (factory != null)
+        WebConfigProviderFactory instance = (WebConfigProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+
+        if (instance != null)
         {
             // use cached instance
-            return factory;
+            return instance;
         }
 
         // create new instance from service entry
-        try
-        {
+        instance = (WebConfigProviderFactory)
+                SpiUtils.build(ctx, WebConfigProviderFactory.class,
+                        DefaultWebConfigProviderFactory.class);
 
-            if (System.getSecurityManager() != null)
-            {
-                final ExternalContext ectx = ctx;
-                factory = (WebConfigProviderFactory) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
-                                WebConfigProviderFactory.class,
-                                DefaultWebConfigProviderFactory.class));
-            }
-            else
-            {
-                factory = (WebConfigProviderFactory)
-                        SpiUtils.build(ctx, WebConfigProviderFactory.class,
-                                DefaultWebConfigProviderFactory.class);
-            }
-        }
-        catch (PrivilegedActionException pae)
-        {
-            throw new FacesException(pae);
-        }
-
-        if (factory != null)
+        if (instance != null)
         {
             // cache instance on ApplicationMap
-            setWebConfigProviderFactory(ctx, factory);
+            setWebConfigProviderFactory(ctx, instance);
         }
 
-        return factory;
+        return instance;
     }
 
-    public static void setWebConfigProviderFactory(ExternalContext ctx, WebConfigProviderFactory factory)
+    public static void setWebConfigProviderFactory(ExternalContext ctx, WebConfigProviderFactory instance)
     {
-        ctx.getApplicationMap().put(FACTORY_KEY, factory);
+        ctx.getApplicationMap().put(FACTORY_KEY, instance);
     }
 
     public abstract WebConfigProvider getWebConfigProvider(ExternalContext externalContext);
