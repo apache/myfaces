@@ -118,11 +118,6 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
         else
         {
-            // Note that FaceletCache.setMemberFactories method is protected, and this is the place where call
-            // this method has sense, because DefaultFaceletFactory is the responsible to create Facelet instances.
-            // The only way to do it is using reflection, and it has sense, because in this way it is possible to
-            // setup a java SecurityManager that prevents call this method (because it is protected, and to do that
-            // the code first check for "suppressAccessChecks" permission).
             try
             {
                 _faceletCache.setCacheFactories(faceletFactory, viewMetadataFaceletFactory);
