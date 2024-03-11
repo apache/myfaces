@@ -57,20 +57,21 @@ public class ServiceProviderFinderFactory
      */
     public static ServiceProviderFinder getServiceProviderFinder(ExternalContext ectx)
     {
-        ServiceProviderFinder slp = (ServiceProviderFinder) ectx.getApplicationMap().get(SERVICE_PROVIDER_KEY);
-        if (slp == null)
-        {
-            slp = _getServiceProviderFinderFromInitParam(ectx);
+        ServiceProviderFinder instance = (ServiceProviderFinder) ectx.getApplicationMap().get(SERVICE_PROVIDER_KEY);
 
-            if (slp == null)
+        if (instance == null)
+        {
+            instance = _getServiceProviderFinderFromInitParam(ectx);
+
+            if (instance == null)
             {
-                slp = new DefaultServiceProviderFinder();
+                instance = new DefaultServiceProviderFinder();
             }
 
             // cache on ApplicationMap
-            setServiceProviderFinder(ectx, slp);
+            setServiceProviderFinder(ectx, instance);
         }
-        return slp;
+        return instance;
     }
 
     
@@ -85,14 +86,14 @@ public class ServiceProviderFinderFactory
      * @param ectx
      * @param slp
      */
-    public static void setServiceProviderFinder(ExternalContext ectx, ServiceProviderFinder slp)
+    public static void setServiceProviderFinder(ExternalContext ectx, ServiceProviderFinder instance)
     {
-        ectx.getApplicationMap().put(SERVICE_PROVIDER_KEY, slp);
+        ectx.getApplicationMap().put(SERVICE_PROVIDER_KEY, instance);
     }
     
-    public static void setServiceProviderFinder(ServletContext ctx, ServiceProviderFinder slp)
+    public static void setServiceProviderFinder(ServletContext ctx, ServiceProviderFinder instance)
     {
-        ctx.setAttribute(SERVICE_PROVIDER_KEY, slp);
+        ctx.setAttribute(SERVICE_PROVIDER_KEY, instance);
     }
 
     /**

@@ -18,12 +18,8 @@
  */
 package org.apache.myfaces.spi;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Map;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.spi.impl.DefaultInjectionProviderFactory;
@@ -43,39 +39,24 @@ public abstract class InjectionProviderFactory
     public static InjectionProviderFactory getInjectionProviderFactory(ExternalContext ctx)
     {
         Map<String, Object> applicationMap = ctx.getApplicationMap();
+
         InjectionProviderFactory instance = 
             (InjectionProviderFactory) applicationMap.get(FACTORY_KEY);
+
         if (instance != null)
         {
             return instance;
         }
-        InjectionProviderFactory lpf = null;
-        try
-        {
 
-            if (System.getSecurityManager() != null)
-            {
-                final ExternalContext ectx = ctx; 
-                lpf = (InjectionProviderFactory) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
-                                InjectionProviderFactory.class, DefaultInjectionProviderFactory.class));
-            }
-            else
-            {
-                lpf = (InjectionProviderFactory) SpiUtils.build(ctx, 
-                    InjectionProviderFactory.class,
-                    DefaultInjectionProviderFactory.class);
-            }
-        }
-        catch (PrivilegedActionException pae)
+        instance = (InjectionProviderFactory) SpiUtils.build(ctx,
+                InjectionProviderFactory.class,
+                DefaultInjectionProviderFactory.class);
+
+        if (instance != null)
         {
-            throw new FacesException(pae);
+            applicationMap.put(FACTORY_KEY, instance);
         }
-        if (lpf != null)
-        {
-            applicationMap.put(FACTORY_KEY, lpf);
-        }
-        return lpf;
+        return instance;
     }
 
 

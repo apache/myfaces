@@ -24,9 +24,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import org.apache.myfaces.util.lang.FastByteArrayInputStream;
 
 public abstract class SerialFactory
@@ -44,18 +41,13 @@ public abstract class SerialFactory
             }
         }
     }
-    
-    public Object toObject(byte[] bytes) throws IOException, PrivilegedActionException, ClassNotFoundException
+
+    public Object toObject(byte[] bytes) throws IOException, ClassNotFoundException
     {
         try (InputStream bias = new FastByteArrayInputStream(bytes))
         {
             try (ObjectInputStream ois = getObjectInputStream(bias))
             {
-                if (System.getSecurityManager() != null)
-                {
-                    return AccessController.doPrivileged((PrivilegedExceptionAction) () -> ois.readObject());
-                }
-
                 return ois.readObject();
             }
         }

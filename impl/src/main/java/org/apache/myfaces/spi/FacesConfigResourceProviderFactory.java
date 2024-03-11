@@ -18,11 +18,6 @@
  */
 package org.apache.myfaces.spi;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.spi.impl.DefaultFacesConfigResourceProviderFactory;
@@ -42,38 +37,22 @@ public abstract class FacesConfigResourceProviderFactory
     {
         FacesConfigResourceProviderFactory instance
                 = (FacesConfigResourceProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+
         if (instance != null)
         {
             return instance;
         }
-        FacesConfigResourceProviderFactory lpf = null;
-        try
-        {
 
-            if (System.getSecurityManager() != null)
-            {
-                final ExternalContext ectx = ctx;
-                lpf = (FacesConfigResourceProviderFactory) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
-                                FacesConfigResourceProviderFactory.class,
-                                DefaultFacesConfigResourceProviderFactory.class));
-            }
-            else
-            {
-                lpf = (FacesConfigResourceProviderFactory)
-                        SpiUtils.build(ctx, FacesConfigResourceProviderFactory.class,
-                                DefaultFacesConfigResourceProviderFactory.class);
-            }
-        }
-        catch (PrivilegedActionException pae)
+        instance = (FacesConfigResourceProviderFactory)
+                SpiUtils.build(ctx, FacesConfigResourceProviderFactory.class,
+                        DefaultFacesConfigResourceProviderFactory.class);
+
+        if (instance != null)
         {
-            throw new FacesException(pae);
+            setFacesConfigResourceProviderFactory(ctx, instance);
         }
-        if (lpf != null)
-        {
-            setFacesConfigResourceProviderFactory(ctx, lpf);
-        }
-        return lpf;
+
+        return instance;
     }
 
     public static void setFacesConfigResourceProviderFactory(ExternalContext ctx,

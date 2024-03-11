@@ -24,9 +24,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
-import java.security.PrivilegedActionException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -859,35 +856,8 @@ public final class SAXCompiler extends Compiler
             encoding = getXmlDecl(is, mngr);
             final ViewMetadataHandler handler = new ViewMetadataHandler(mngr, alias);
             final SAXParser parser = this.createSAXParser(handler);
-            
-            if (System.getSecurityManager() != null)
-            {
-                try
-                {
-                    final InputStream finalInputStream = is;
-                    AccessController.doPrivileged((PrivilegedExceptionAction) () ->
-                    {
-                        parser.parse(finalInputStream, handler);
-                        return null;
-                    });
-                }
-                catch (PrivilegedActionException pae)
-                {
-                    Exception e = pae.getException();
-                    if(e instanceof SAXException)
-                    {
-                        throw new FaceletException("Error Parsing " + alias + ": " + e.getMessage(), e.getCause());
-                    } 
-                    else if(e instanceof IOException exception)
-                    {
-                        throw exception;
-                    }
-                }
-            }
-            else
-            {
-                parser.parse(is, handler);
-            }
+
+            parser.parse(is, handler);
         }
         catch (SAXException e)
         {

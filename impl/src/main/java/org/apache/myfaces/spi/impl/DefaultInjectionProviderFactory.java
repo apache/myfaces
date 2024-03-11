@@ -19,14 +19,10 @@
 package org.apache.myfaces.spi.impl;
 
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import javax.naming.Context;
@@ -58,45 +54,45 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
     @Override
     public InjectionProvider getInjectionProvider(ExternalContext externalContext)
     {
-        InjectionProvider injectionProvider = null;
+        InjectionProvider instance = null;
         if (externalContext == null)
         {
             // Really in jsf 2.0, this will not happen, because a Startup/Shutdown
             // FacesContext and ExternalContext are provided on initialization and shutdown,
             // and in other scenarios the real FacesContext/ExternalContext is provided.
             log.info("No ExternalContext using fallback InjectionProvider.");
-            injectionProvider = resolveFallbackInjectionProvider();
+            instance = resolveFallbackInjectionProvider();
         }
         else
         {
-            injectionProvider = (InjectionProvider)
+            instance = (InjectionProvider)
                     externalContext.getApplicationMap().get(INJECTION_PROVIDER_INSTANCE_KEY);
         }
-        if (injectionProvider == null)
+        if (instance == null)
         {
             if (!resolveInjectionProviderFromExternalContext(externalContext))
             {
                 if (!resolveInjectionProviderFromService(externalContext))
                 {
-                    injectionProvider = resolveFallbackInjectionProvider();
-                    externalContext.getApplicationMap().put(INJECTION_PROVIDER_INSTANCE_KEY, injectionProvider);
+                    instance = resolveFallbackInjectionProvider();
+                    externalContext.getApplicationMap().put(INJECTION_PROVIDER_INSTANCE_KEY, instance);
                 }
                 else
                 {
                     //Retrieve it because it was resolved
-                    injectionProvider = (InjectionProvider)
+                    instance = (InjectionProvider)
                             externalContext.getApplicationMap().get(INJECTION_PROVIDER_INSTANCE_KEY);
                 }
             }
             else
             {
                 //Retrieve it because it was resolved
-                injectionProvider = (InjectionProvider)
+                instance = (InjectionProvider)
                         externalContext.getApplicationMap().get(INJECTION_PROVIDER_INSTANCE_KEY);
             }
-            log.fine("Using InjectionProvider " + injectionProvider.getClass().getName());
+            log.fine("Using InjectionProvider " + instance.getClass().getName());
         }
-        return injectionProvider;
+        return instance;
     }
 
     @Override
@@ -133,49 +129,22 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
 
     private boolean resolveInjectionProviderFromService(ExternalContext externalContext)
     {
-        boolean returnValue = false;
-        final ExternalContext extContext = externalContext;
         try
         {
-            if (System.getSecurityManager() != null)
+            List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).
+                    getServiceProviderList(MyfacesConfig.INJECTION_PROVIDER);
+
+            for (String className : classList)
             {
-                returnValue = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () ->
+                Object obj = createClass(className,externalContext);
+                if (InjectionProvider.class.isAssignableFrom(obj.getClass()))
                 {
-                    List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(extContext).
-                            getServiceProviderList(MyfacesConfig.INJECTION_PROVIDER);
-                    for (String className : classList)
+                    InjectionProvider discoverableInjectionProvider = (InjectionProvider) obj;
+                    if (discoverableInjectionProvider.isAvailable())
                     {
-                        Object obj = createClass(className,extContext);
-                        if (InjectionProvider.class.isAssignableFrom(obj.getClass()))
-                        {
-                            InjectionProvider discoverableInjectionProvider = (InjectionProvider) obj;
-                            if (discoverableInjectionProvider.isAvailable())
-                            {
-                                extContext.getApplicationMap().put(INJECTION_PROVIDER_INSTANCE_KEY,
-                                        discoverableInjectionProvider);
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                });
-            }
-            else
-            {
-                List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(extContext).
-                        getServiceProviderList(MyfacesConfig.INJECTION_PROVIDER);
-                for (String className : classList)
-                {
-                    Object obj = createClass(className,extContext);
-                    if (InjectionProvider.class.isAssignableFrom(obj.getClass()))
-                    {
-                        InjectionProvider discoverableInjectionProvider = (InjectionProvider) obj;
-                        if (discoverableInjectionProvider.isAvailable())
-                        {
-                            extContext.getApplicationMap().put(INJECTION_PROVIDER_INSTANCE_KEY,
-                                                               discoverableInjectionProvider);
-                            return true;
-                        }
+                        externalContext.getApplicationMap().put(INJECTION_PROVIDER_INSTANCE_KEY,
+                                                           discoverableInjectionProvider);
+                        return true;
                     }
                 }
             }
@@ -188,11 +157,7 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
         {
             log.log(Level.SEVERE, "", e);
         }
-        catch (PrivilegedActionException e)
-        {
-            throw new FacesException(e);
-        }
-        return returnValue;
+        return false;
     }
 
     private Object createClass(String className, ExternalContext externalContext)

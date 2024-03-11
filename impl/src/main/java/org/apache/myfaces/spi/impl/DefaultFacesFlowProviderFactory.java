@@ -43,36 +43,36 @@ public class DefaultFacesFlowProviderFactory extends FacesFlowProviderFactory
     public FacesFlowProvider getFacesFlowProvider(ExternalContext externalContext)
     {
         // check for cached instance
-        FacesFlowProvider returnValue = (FacesFlowProvider)
+        FacesFlowProvider instance = (FacesFlowProvider)
                 externalContext.getApplicationMap().get(FACES_FLOW_PROVIDER_INSTANCE_KEY);
 
-        if (returnValue == null)
+        if (instance == null)
         {
             try
             {
-                returnValue = resolveFacesFlowProviderFromService(externalContext);
+                instance = resolveFacesFlowProviderFromService(externalContext);
             }
             catch (Exception e)
             {
                 getLogger().log(Level.SEVERE, "", e);
             }
 
-            if (returnValue == null)
+            if (instance == null)
             {
                 if (ExternalSpecifications.isCDIAvailable(externalContext))
                 {
-                    returnValue = new DefaultCDIFacesFlowProvider();
+                    instance = new DefaultCDIFacesFlowProvider();
                 }
                 else
                 {
-                    returnValue = new DefaultFacesFlowProvider();
+                    instance = new DefaultFacesFlowProvider();
                 }
             }
 
-            externalContext.getApplicationMap().put(FACES_FLOW_PROVIDER_INSTANCE_KEY, returnValue);
+            externalContext.getApplicationMap().put(FACES_FLOW_PROVIDER_INSTANCE_KEY, instance);
         }
 
-        return returnValue;
+        return instance;
     }
 
     

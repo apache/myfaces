@@ -24,12 +24,8 @@ import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,42 +53,30 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
     @Override
     public FacesConfigurationProvider getFacesConfigurationProvider(ExternalContext externalContext)
     {
-        FacesConfigurationProvider returnValue = (FacesConfigurationProvider)
+        FacesConfigurationProvider instance = (FacesConfigurationProvider)
                 externalContext.getApplicationMap().get(FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY);
-        if (returnValue == null)
+
+        if (instance == null)
         {
-            final ExternalContext extContext = externalContext;
             try
             {
-                if (System.getSecurityManager() != null)
-                {
-                    returnValue = (FacesConfigurationProvider) AccessController.doPrivileged(
-                            (PrivilegedExceptionAction) () -> resolveFacesConfigurationProviderFromService(extContext));
-                }
-                else
-                {
-                    returnValue = resolveFacesConfigurationProviderFromService(extContext);
-                }
+                instance = resolveFacesConfigurationProviderFromService(externalContext);
             }
             catch (ClassNotFoundException | NoClassDefFoundError | InstantiationException | IllegalAccessException
                     | InvocationTargetException e)
             {
                 getLogger().log(Level.SEVERE, "", e);
             }
-            catch (PrivilegedActionException e)
-            {
-                throw new FacesException(e);
-            }
         }
         
-        if (returnValue == null)
+        if (instance == null)
         {
-            returnValue = new DefaultFacesConfigurationProvider();
+            instance = new DefaultFacesConfigurationProvider();
         }
 
-        externalContext.getApplicationMap().put(FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY, returnValue);
+        externalContext.getApplicationMap().put(FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY, instance);
 
-        return returnValue;
+        return instance;
     }
 
     private FacesConfigurationProvider resolveFacesConfigurationProviderFromService(
@@ -100,8 +84,7 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
             NoClassDefFoundError,
             InstantiationException,
             IllegalAccessException,
-            InvocationTargetException,
-            PrivilegedActionException
+            InvocationTargetException
     {
         List<String> classList = (List<String>)
                 externalContext.getApplicationMap().get(FACES_CONFIGURATION_PROVIDER_LIST);

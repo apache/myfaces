@@ -18,11 +18,6 @@
  */
 package org.apache.myfaces.spi;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.spi.impl.DefaultAnnotationProviderFactory;
@@ -41,36 +36,21 @@ public abstract class AnnotationProviderFactory
     public static AnnotationProviderFactory getAnnotationProviderFactory(ExternalContext ctx)
     {
         AnnotationProviderFactory instance = (AnnotationProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+
         if (instance != null)
         {
             return instance;
         }
-        AnnotationProviderFactory lpf = null;
-        try
-        {
 
-            if (System.getSecurityManager() != null)
-            {
-                final ExternalContext ectx = ctx;
-                lpf = (AnnotationProviderFactory) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
-                                AnnotationProviderFactory.class, DefaultAnnotationProviderFactory.class));
-            }
-            else
-            {
-                lpf = (AnnotationProviderFactory) SpiUtils.build(ctx, AnnotationProviderFactory.class,
-                        DefaultAnnotationProviderFactory.class);
-            }
-        }
-        catch (PrivilegedActionException pae)
+        instance = (AnnotationProviderFactory) SpiUtils.build(ctx, AnnotationProviderFactory.class,
+                DefaultAnnotationProviderFactory.class);
+
+        if (instance != null)
         {
-            throw new FacesException(pae);
+            setAnnotationProviderFactory(ctx, instance);
         }
-        if (lpf != null)
-        {
-            setAnnotationProviderFactory(ctx, lpf);
-        }
-        return lpf;
+
+        return instance;
     }
 
     public static void setAnnotationProviderFactory(ExternalContext ctx, AnnotationProviderFactory instance)

@@ -52,7 +52,7 @@ public class MockPrincipal implements Principal
     // ------------------------------------------------------ Instance Variables
 
     /**
-     * <p>The name for this Principal intance.</p>
+     * <p>The name for this Principal instance.</p>
      */
     private String name = null;
 

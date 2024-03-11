@@ -18,11 +18,6 @@
  */
 package org.apache.myfaces.spi;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.spi.impl.DefaultFaceletConfigResourceProviderFactory;
@@ -42,38 +37,22 @@ public abstract class FaceletConfigResourceProviderFactory
     {
         FaceletConfigResourceProviderFactory instance
                 = (FaceletConfigResourceProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+
         if (instance != null)
         {
             return instance;
         }
-        FaceletConfigResourceProviderFactory lpf = null;
-        try
-        {
 
-            if (System.getSecurityManager() != null)
-            {
-                final ExternalContext ectx = ctx;
-                lpf = (FaceletConfigResourceProviderFactory) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
-                                FaceletConfigResourceProviderFactory.class,
-                                DefaultFaceletConfigResourceProviderFactory.class));
-            }
-            else
-            {
-                lpf = (FaceletConfigResourceProviderFactory)
-                        SpiUtils.build(ctx, FaceletConfigResourceProviderFactory.class,
-                                DefaultFaceletConfigResourceProviderFactory.class);
-            }
-        }
-        catch (PrivilegedActionException pae)
+        instance = (FaceletConfigResourceProviderFactory)
+                SpiUtils.build(ctx, FaceletConfigResourceProviderFactory.class,
+                        DefaultFaceletConfigResourceProviderFactory.class);
+
+        if (instance != null)
         {
-            throw new FacesException(pae);
+            setFaceletConfigResourceProviderFactory(ctx, instance);
         }
-        if (lpf != null)
-        {
-            setFaceletConfigResourceProviderFactory(ctx, lpf);
-        }
-        return lpf;
+
+        return instance;
     }
 
     public static void setFaceletConfigResourceProviderFactory(ExternalContext ctx,

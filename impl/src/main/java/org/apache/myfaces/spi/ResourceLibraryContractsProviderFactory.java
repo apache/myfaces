@@ -18,11 +18,6 @@
  */
 package org.apache.myfaces.spi;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.spi.impl.DefaultResourceLibraryContractsProviderFactory;
@@ -42,38 +37,22 @@ public abstract class ResourceLibraryContractsProviderFactory
     {
         ResourceLibraryContractsProviderFactory instance
                 = (ResourceLibraryContractsProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+
         if (instance != null)
         {
             return instance;
         }
-        ResourceLibraryContractsProviderFactory lpf = null;
-        try
-        {
 
-            if (System.getSecurityManager() != null)
-            {
-                final ExternalContext ectx = ctx;
-                lpf = (ResourceLibraryContractsProviderFactory)
-                        AccessController.doPrivileged((PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
-                                ResourceLibraryContractsProviderFactory.class,
-                                DefaultResourceLibraryContractsProviderFactory.class));
-            }
-            else
-            {
-                lpf = (ResourceLibraryContractsProviderFactory)
-                        SpiUtils.build(ctx, ResourceLibraryContractsProviderFactory.class,
-                                DefaultResourceLibraryContractsProviderFactory.class);
-            }
-        }
-        catch (PrivilegedActionException pae)
+        instance = (ResourceLibraryContractsProviderFactory)
+                SpiUtils.build(ctx, ResourceLibraryContractsProviderFactory.class,
+                        DefaultResourceLibraryContractsProviderFactory.class);
+
+        if (instance != null)
         {
-            throw new FacesException(pae);
+            setResourceLibraryContractsProviderFactory(ctx, instance);
         }
-        if (lpf != null)
-        {
-            setResourceLibraryContractsProviderFactory(ctx, lpf);
-        }
-        return lpf;
+
+        return instance;
     }
 
     public static void setResourceLibraryContractsProviderFactory(ExternalContext ctx,
