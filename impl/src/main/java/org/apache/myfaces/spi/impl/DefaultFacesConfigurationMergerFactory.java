@@ -24,12 +24,8 @@ import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,26 +43,17 @@ public class DefaultFacesConfigurationMergerFactory extends FacesConfigurationMe
     public FacesConfigurationMerger getFacesConfigurationMerger(ExternalContext externalContext)
     {
         // check for cached instance
-        FacesConfigurationMerger returnValue = (FacesConfigurationMerger)
+        FacesConfigurationMerger instance = (FacesConfigurationMerger)
                 externalContext.getApplicationMap().get(FACES_CONFIGURATION_MERGER_INSTANCE_KEY);
 
-        if (returnValue == null)
+        if (instance == null)
         {
-            final ExternalContext extContext = externalContext;
             try
             {
-                if (System.getSecurityManager() != null)
-                {
-                    returnValue = (FacesConfigurationMerger) AccessController.doPrivileged(
-                            (PrivilegedExceptionAction) () -> resolveFacesConfigurationMergerFromService(extContext));
-                }
-                else
-                {
-                    returnValue = resolveFacesConfigurationMergerFromService(extContext);
-                }
+                instance = resolveFacesConfigurationMergerFromService(externalContext);
 
                 // cache the result on the ApplicationMap
-                externalContext.getApplicationMap().put(FACES_CONFIGURATION_MERGER_INSTANCE_KEY, returnValue);
+                externalContext.getApplicationMap().put(FACES_CONFIGURATION_MERGER_INSTANCE_KEY, instance);
             }
             catch (ClassNotFoundException | NoClassDefFoundError e)
             {
@@ -76,13 +63,9 @@ public class DefaultFacesConfigurationMergerFactory extends FacesConfigurationMe
             {
                 getLogger().log(Level.SEVERE, "", e);
             }
-            catch (PrivilegedActionException e)
-            {
-                throw new FacesException(e);
-            }
         }
 
-        return returnValue;
+        return instance;
     }
 
     private FacesConfigurationMerger resolveFacesConfigurationMergerFromService(ExternalContext externalContext)
@@ -90,8 +73,7 @@ public class DefaultFacesConfigurationMergerFactory extends FacesConfigurationMe
                    NoClassDefFoundError,
                    InstantiationException,
                    IllegalAccessException,
-                   InvocationTargetException,
-                   PrivilegedActionException
+                   InvocationTargetException
     {
         // get all fitting SPI implementations (no need to cache this since it's only called once per Faces-app)
         List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext)

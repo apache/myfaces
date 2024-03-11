@@ -19,13 +19,9 @@
 package org.apache.myfaces.spi.impl;
 
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.application.viewstate.StateCacheProviderImpl;
 import org.apache.myfaces.util.lang.ClassUtils;
@@ -61,19 +57,11 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
     public StateCacheProvider createStateCacheProvider(
             ExternalContext externalContext)
     {
-        StateCacheProvider returnValue = null;
-        final ExternalContext extContext = externalContext;
+        StateCacheProvider instance = null;
+
         try
         {
-            if (System.getSecurityManager() != null)
-            {
-                returnValue = (StateCacheProvider) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> resolveStateCacheProviderFromService(extContext));
-            }
-            else
-            {
-                returnValue = resolveStateCacheProviderFromService(extContext);
-            }
+            instance = resolveStateCacheProviderFromService(externalContext);
         }
         catch (ClassNotFoundException | NoClassDefFoundError e)
         {
@@ -83,11 +71,8 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
         {
             getLogger().log(Level.SEVERE, "", e);
         }
-        catch (PrivilegedActionException e)
-        {
-            throw new FacesException(e);
-        }
-        return returnValue;
+
+        return instance;
     }
     
     private StateCacheProvider resolveStateCacheProviderFromService(
@@ -95,8 +80,7 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
             NoClassDefFoundError,
             InstantiationException,
             IllegalAccessException,
-            InvocationTargetException,
-            PrivilegedActionException
+            InvocationTargetException
     {
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(STATE_CACHE_PROVIDER_LIST);
         if (classList == null)

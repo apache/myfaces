@@ -18,10 +18,6 @@
  */
 package org.apache.myfaces.spi;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import jakarta.faces.FacesException;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.spi.impl.DefaultStateCacheProviderFactory;
@@ -38,38 +34,22 @@ public abstract class StateCacheProviderFactory implements FacesWrapper<StateCac
     {
         StateCacheProviderFactory instance
                 = (StateCacheProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+
         if (instance != null)
         {
             return instance;
         }
-        StateCacheProviderFactory lpf = null;
-        try
-        {
 
-            if (System.getSecurityManager() != null)
-            {
-                final ExternalContext ectx = ctx;
-                lpf = (StateCacheProviderFactory) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
-                                StateCacheProviderFactory.class,
-                                DefaultStateCacheProviderFactory.class));
-            }
-            else
-            {
-                lpf = (StateCacheProviderFactory)
-                        SpiUtils.build(ctx, StateCacheProviderFactory.class,
-                                DefaultStateCacheProviderFactory.class);
-            }
-        }
-        catch (PrivilegedActionException pae)
+        instance = (StateCacheProviderFactory)
+                SpiUtils.build(ctx, StateCacheProviderFactory.class,
+                        DefaultStateCacheProviderFactory.class);
+
+        if (instance != null)
         {
-            throw new FacesException(pae);
+            setStateCacheProviderFactory(ctx, instance);
         }
-        if (lpf != null)
-        {
-            setStateCacheProviderFactory(ctx, lpf);
-        }
-        return lpf;
+
+        return instance;
     }
 
     public static void setStateCacheProviderFactory(ExternalContext ctx,

@@ -24,12 +24,8 @@ import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
 import org.apache.myfaces.spi.ResourceLibraryContractsProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,20 +49,11 @@ public class DefaultResourceLibraryContractsProviderFactory extends ResourceLibr
     @Override
     public ResourceLibraryContractsProvider createResourceLibraryContractsProvider(ExternalContext externalContext)
     {
-        ResourceLibraryContractsProvider returnValue = null;
-        final ExternalContext extContext = externalContext;
+        ResourceLibraryContractsProvider instance = null;
+
         try
         {
-            if (System.getSecurityManager() != null)
-            {
-                returnValue = (ResourceLibraryContractsProvider) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () ->
-                                resolveResourceLibraryContractsProviderFromService(extContext));
-            }
-            else
-            {
-                returnValue = resolveResourceLibraryContractsProviderFromService(extContext);
-            }
+            instance = resolveResourceLibraryContractsProviderFromService(externalContext);
         }
         catch (ClassNotFoundException | NoClassDefFoundError e)
         {
@@ -76,11 +63,8 @@ public class DefaultResourceLibraryContractsProviderFactory extends ResourceLibr
         {
             getLogger().log(Level.SEVERE, "", e);
         }
-        catch (PrivilegedActionException e)
-        {
-            throw new FacesException(e);
-        }
-        return returnValue;
+
+        return instance;
     }
     
     private ResourceLibraryContractsProvider resolveResourceLibraryContractsProviderFromService(
@@ -88,8 +72,7 @@ public class DefaultResourceLibraryContractsProviderFactory extends ResourceLibr
             NoClassDefFoundError,
             InstantiationException,
             IllegalAccessException,
-            InvocationTargetException,
-            PrivilegedActionException
+            InvocationTargetException
     {
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(CONTRACTS_PROVIDER_LIST);
         if (classList == null)

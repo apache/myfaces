@@ -36,8 +36,6 @@ import jakarta.faces.view.facelets.TagHandlerDelegateFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -119,16 +117,7 @@ public final class FactoryFinder
         FACTORY_MAPPING.put(SEARCH_EXPRESSION_CONTEXT_FACTORY, SearchExpressionContextFactory.class);
         try
         {
-            ClassLoader classLoader;
-            if (System.getSecurityManager() != null)
-            {
-                classLoader = (ClassLoader) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> FactoryFinder.class.getClassLoader());
-            }
-            else
-            {
-                classLoader = FactoryFinder.class.getClassLoader();
-            }
+            ClassLoader classLoader = FactoryFinder.class.getClassLoader();
 
             if (classLoader == null)
             {

@@ -23,9 +23,6 @@ import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -474,21 +471,8 @@ public class ClassUtils
      */
     public static ClassLoader getContextClassLoader()
     {
-        if (System.getSecurityManager() != null)
-        {
-            try
-            {
-                return (ClassLoader) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
-            }
-            catch (PrivilegedActionException pae)
-            {
-                throw new FacesException(pae);
-            }
-        }
-
         return Thread.currentThread().getContextClassLoader();
-    }   
+    }
     
     public static Class<?> forNamePrimitive(String name)
     {

@@ -24,12 +24,8 @@ import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,19 +64,11 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
     @Override
     public AnnotationProvider createAnnotationProvider(ExternalContext externalContext)
     {
-        AnnotationProvider returnValue = null;
-        final ExternalContext extContext = externalContext;
+        AnnotationProvider instance = null;
+
         try
         {
-            if (System.getSecurityManager() != null)
-            {
-                returnValue = (AnnotationProvider) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> resolveAnnotationProviderFromService(extContext));
-            }
-            else
-            {
-                returnValue = resolveAnnotationProviderFromService(extContext);
-            }
+            instance = resolveAnnotationProviderFromService(externalContext);
         }
         catch (ClassNotFoundException | NoClassDefFoundError e)
         {
@@ -90,11 +78,8 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
         {
             getLogger().log(Level.SEVERE, "", e);
         }
-        catch (PrivilegedActionException e)
-        {
-            throw new FacesException(e);
-        }
-        return returnValue;
+
+        return instance;
     }
     
     private AnnotationProvider resolveAnnotationProviderFromService(
@@ -102,8 +87,7 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
             NoClassDefFoundError,
             InstantiationException,
             IllegalAccessException,
-            InvocationTargetException,
-            PrivilegedActionException
+            InvocationTargetException
     {
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(ANNOTATION_PROVIDER_LIST);
         if (classList == null)

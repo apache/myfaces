@@ -21,10 +21,7 @@ package org.apache.myfaces.spi;
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationMergerFactory;
 import org.apache.myfaces.spi.impl.SpiUtils;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 
 /**
  * SPI to provide a FacesConfigurationMergerFactory implementation and thus
@@ -39,52 +36,33 @@ public abstract class FacesConfigurationMergerFactory
 
     public static FacesConfigurationMergerFactory getFacesConfigurationMergerFactory(ExternalContext ctx)
     {
-        FacesConfigurationMergerFactory factory
+        FacesConfigurationMergerFactory instance
                 = (FacesConfigurationMergerFactory) ctx.getApplicationMap().get(FACTORY_KEY);
-        
-        if (factory != null)
+
+        if (instance != null)
         {
             // use cached instance
-            return factory;
+            return instance;
         }
 
         // create new instance from service entry
-        try
-        {
+        instance = (FacesConfigurationMergerFactory) SpiUtils
+                .build(ctx, FacesConfigurationMergerFactory.class,
+                        DefaultFacesConfigurationMergerFactory.class);
 
-            if (System.getSecurityManager() != null)
-            {
-                final ExternalContext ectx = ctx;
-                factory = (FacesConfigurationMergerFactory) AccessController.doPrivileged(
-                        (java.security.PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
-                                FacesConfigurationMergerFactory.class,
-                                DefaultFacesConfigurationMergerFactory.class));
-            }
-            else
-            {
-                factory = (FacesConfigurationMergerFactory) SpiUtils
-                        .build(ctx, FacesConfigurationMergerFactory.class,
-                                DefaultFacesConfigurationMergerFactory.class);
-            }
-        }
-        catch (PrivilegedActionException pae)
-        {
-            throw new FacesException(pae);
-        }
-
-        if (factory != null)
+        if (instance != null)
         {
             // cache instance on ApplicationMap
-            setFacesConfigurationMergerFactory(ctx, factory);
+            setFacesConfigurationMergerFactory(ctx, instance);
         }
 
-        return factory;
+        return instance;
     }
 
     public static void setFacesConfigurationMergerFactory(ExternalContext ctx,
-                                                          FacesConfigurationMergerFactory factory)
+                                                          FacesConfigurationMergerFactory instance)
     {
-        ctx.getApplicationMap().put(FACTORY_KEY, factory);
+        ctx.getApplicationMap().put(FACTORY_KEY, instance);
     }
 
     public abstract FacesConfigurationMerger getFacesConfigurationMerger(ExternalContext externalContext);
