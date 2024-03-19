@@ -39,7 +39,7 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
     }.getType();
 
     private transient Validator delegate;
-    
+
     private String validatorId;
     private boolean _transient;
     private boolean _initialStateMarked = false;
@@ -72,10 +72,19 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
             {
                 delegate = CDIUtils.get(bm, Validator.class, true, literal);
             }
+            if (delegate == null)
+            {
+                literal = FacesValidator.Literal.of("", false, true);
+                delegate = CDIUtils.get(bm, VALIDATOR_TYPE, true, validatorId, literal);
+            }
+            if (delegate == null)
+            {
+                delegate = CDIUtils.get(bm, Validator.class, true, validatorId, literal);
+            }
         }
         return delegate;
     }
-    
+
     @Override
     public Object saveState(FacesContext context)
     {
