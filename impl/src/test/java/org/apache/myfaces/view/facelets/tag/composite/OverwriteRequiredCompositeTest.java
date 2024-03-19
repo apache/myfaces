@@ -23,10 +23,9 @@ import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UICommand;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
+// test for MYFACES-4656
 public class OverwriteRequiredCompositeTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Override

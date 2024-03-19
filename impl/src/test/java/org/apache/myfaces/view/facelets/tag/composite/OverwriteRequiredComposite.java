@@ -54,4 +54,10 @@ public class OverwriteRequiredComposite extends UIInput implements NamingContain
         return (Boolean) getStateHelper().eval("required", false);
     }
 
+    @Override
+    public void setRequired(boolean required)
+    {
+        getStateHelper().put("required", required );
+    }
+
 }
