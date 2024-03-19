@@ -131,7 +131,7 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
         
         // Only apply if we are building composite component metadata,
         // in other words we are calling ViewDeclarationLanguage.getComponentMetadata
-        if ( actx.isBuildingCompositeComponentMetadata() )
+        if (actx.isBuildingCompositeComponentMetadata())
         {
             CompositeComponentBeanInfo tempBeanInfo = 
                 (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
