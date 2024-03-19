@@ -18,21 +18,24 @@
  */
 package org.apache.myfaces.cdi.util;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Set;
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.context.spi.Context;
-
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.myfaces.webapp.FacesInitializerImpl;
 
 /**
@@ -65,7 +68,7 @@ public class CDIUtils
         }
         return resolveInstance(bm, beans, clazz);
     }
-    
+
     private static <T> T resolveInstance(BeanManager bm, Set<Bean<?>> beans, Type type)
     {
         Bean<?> bean = bm.resolve(beans);
@@ -74,7 +77,7 @@ public class CDIUtils
         return instance;
 
     }
-    
+
     @SuppressWarnings("unchecked")
     public static <T> Bean<T> get(BeanManager beanManager, Class<T> beanClass, Annotation... qualifiers)
     {
@@ -107,9 +110,21 @@ public class CDIUtils
 
     public static <T> T get(BeanManager beanManager, Type type, boolean create, Annotation... qualifiers)
     {
+        return get(beanManager, type, create, null, qualifiers);
+    }
+
+    public static <T> T get(BeanManager beanManager, Type type, boolean create,
+            String beanName, Annotation... qualifiers)
+    {
         try
         {
             Set<Bean<?>> beans = beanManager.getBeans(type, qualifiers);
+            if (beanName != null)
+            {
+                beans = beans.stream()
+                        .filter(bean -> Objects.equals(beanName, getBeanName(bean)))
+                        .collect(Collectors.toSet());
+            }
             Bean<T> bean = (Bean<T>) beanManager.resolve(beans);
 
             return bean == null ? null : get(beanManager, bean, type, create);
@@ -118,6 +133,17 @@ public class CDIUtils
         {
             return null;
         }
+    }
+
+    private static String getBeanName(Bean<?> bean)
+    {
+        String name = bean.getName();
+        if (name != null)
+        {
+            return name;
+        }
+        String className = bean.getBeanClass().getSimpleName();
+        return Character.toLowerCase(className.charAt(0)) + className.substring(1);
     }
 
     public static <T> T get(BeanManager beanManager, Bean<T> bean, Type type, boolean create)
@@ -133,7 +159,7 @@ public class CDIUtils
             return context.get(bean);
         }
     }
-    
+
     public static boolean isSessionScopeActive(BeanManager beanManager)
     {
         try 
@@ -153,7 +179,7 @@ public class CDIUtils
         }
         return false;
     }
-    
+
     public static boolean isRequestScopeActive(BeanManager beanManager)
     {
         try 
@@ -171,7 +197,7 @@ public class CDIUtils
         }
         return false;
     }
-    
+
     public static boolean isViewScopeActive(BeanManager beanManager)
     {
         try 
@@ -191,5 +217,5 @@ public class CDIUtils
         }
         return false;
     }
-        
+   
 }
