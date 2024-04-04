@@ -219,13 +219,14 @@ export module Implementation {
         // by passing a boolean as return value into the onElem call
         // we can stop early at the first false, just like the spec requests
 
-        let ret;
+        let ret = true;
         funcs.every(func => {
             let returnVal = resolveAndExecute(source, event, func);
-            if(returnVal !== false) {
-                ret = returnVal;
+            if(returnVal === false) {
+                ret = false;
             }
-            return returnVal !== false;
+            //we short circuit in case of false and break the every loop
+            return ret;
         });
         return ret;
 
@@ -659,13 +660,14 @@ export module Implementation {
     }
 
     /**
-     * transforms the user values to the expected one
-     * with the proper none all form and this handling
-     * (note we also could use a simple string replace, but then
-     * we would have had double entries under some circumstances)
+     * transforms the user values to the expected values
+     *  handling '@none', '@all', '@form', and '@this' appropriately.
+     * (Note: Although we could employ a simple string replacement method,
+     * it could result in duplicate entries under certain conditions.)
      *
-     * there are several standardized constants which need a special treatment
-     * like @all, @none, @form, @this
+     * Specific standardized constants such as
+     * '@all', '@none', '@form', and '@this'
+     * require special treatment.
      *
      * @param targetConfig the target configuration receiving the final values
      * @param targetKey the target key
@@ -764,15 +766,14 @@ export module Implementation {
     }
 
     /**
-     * Filter the options given with a blacklist, so that only
-     * the values required for params-through are processed in the ajax request
+     * Filters the provided options using a blacklist to ensure
+     * only pass-through parameters are processed for the Ajax request.
      *
-     * Note this is a bug carried over from the old implementation
-     * the spec conform behavior is to use params for pass - through values
-     * this will be removed soon, after it is cleared up whether removing
-     * it breaks any legacy code
+     * Note that this issue is leftover from a previous implementation.
+     * The specification-conforming behavior is to use parameters for pass-through values.
+     * This will be addressed soon, after confirming that removal won't break any legacy code.
      *
-     * @param {Context} mappedOpts the options to be filtered
+     * @param {Context} mappedOpts - The options to be filtered.
      */
     function extractLegacyParams(mappedOpts: Options): {[key: string]: any} {
         //we now can use the full code reduction given by our stream api
@@ -783,8 +784,9 @@ export module Implementation {
     }
 
     /**
-     * extracts the myfaces config parameters which provide extra functionality
-     * on top of JSF
+     * Extracts the MyFaces configuration parameters
+     * that augment JSF with additional functionality.
+     *
      * @param mappedOpts
      * @private
      */
@@ -795,6 +797,7 @@ export module Implementation {
             .filter((item => (item[0] == "myfaces")))
             .reduce(collectAssoc, {})?.[MYFACES];
     }
+
 
     function remapArrayToAssocArr(arrayedParams: [[string, any]] | {[key: string]: any}): {[key: string]: any} {
         if(Array.isArray(arrayedParams)) {
