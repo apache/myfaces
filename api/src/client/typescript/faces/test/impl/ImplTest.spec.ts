@@ -140,6 +140,91 @@ describe('faces.ajax.request test suite', () => {
     });
 
 
+    it("chain must handle the true false return values correctly", function () {
+        let func1 = () => {
+            return true;
+        }
+        let func2 = () => {
+            return false;
+        }
+
+        let func3 = () => {
+            return undefined;
+        }
+
+        let func4 = () => {
+            return null;
+        }
+
+        let ret =  faces.util.chain(this, {}, func1);
+        expect(ret).to.be.true;
+
+        ret =  faces.util.chain(this, {}, func2);
+        expect(ret).to.be.false;
+
+        ret =  faces.util.chain(this, {}, func3);
+        expect(ret).to.be.true;
+
+        ret =  faces.util.chain(this, {}, func4);
+        expect(ret).to.be.true;
+
+    })
+
+    it("sidebehavior chain on undefined must not break the chain only a dedicated false does", function() {
+        let called = {};
+        window.called = called;
+
+        let func1 = () => {
+            called["func1"] = true;
+            return true;
+        }
+
+        let func2 = `function func2(called) {
+            called["func2"] = true;
+            return true;
+        }`;
+
+        let func3 = () => {
+            called["func3"] = true;
+            return null;
+        }
+
+        let func4 = `return (function func4(called) {
+            called["func4"] = true;
+            return undefined;
+        })(event)`;
+
+        let func5 = `return (function func4(called) {
+            called["func5"] = true;
+            return false;
+        })(event)`;
+
+
+
+        let func6 = () => {
+            called["func6"] = true;
+            return false;
+        };
+        delete Array.prototype["flatMap"];
+        faces.util.chain(this, called, func1, func2, func3, func4, func5, func6);
+
+        expect(called["func1"]).to.be.true;
+        expect(called["func2"]).to.be.true;
+        expect(!!called["func3"]).to.be.true;
+        expect(!!called["func4"]).to.be.true;
+        expect(!!called["func5"]).to.be.true;
+        expect(!!called["func6"]).to.be.false;
+
+        /*called = {};
+        faces.util.chain(this, called, func1, func2, func4, func5, func6);
+        expect(called["func1"]).to.be.true;
+        expect(called["func2"]).to.be.true;
+        expect(!!called["func4"]).to.be.true;
+        expect(!!called["func5"]).to.be.false;*/
+    });
+
+
+
 
 
 });
