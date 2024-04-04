@@ -75,6 +75,10 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
 
     private xhrObject = new XMLHttpRequest();
 
+    static readonly TYPE_CHECKBOX = "checkbox";
+    static readonly TYPE_RADIO = "radio";
+
+
     /**
      * Required Parameters
      *
@@ -412,9 +416,9 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
 
             //Checkbox and radio only value pass if checked is set, otherwise they should not show
             //up at all, and if checked is set, they either can have a value or simply being boolean
-            if((type == "checkbox" || type == "radio") && !issuingItem.checked) {
+            if((type == XhrRequest.TYPE_CHECKBOX || type == XhrRequest.TYPE_RADIO) && !issuingItem.checked) {
                 return;
-            } else if((type == "checkbox" || type == "radio")) {
+            } else if((type == XhrRequest.TYPE_CHECKBOX || type == XhrRequest.TYPE_RADIO)) {
                 arr.assign(issuingItemId).value = itemValue.orElse(true).value;
             } else if (itemValue.isPresent()) {
                 arr.assign(issuingItemId).value = itemValue.value;
