@@ -56,10 +56,10 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     private static final String SESSION_TOKEN = "oam.rsm.SESSION_TOKEN";
     
     /**
-     * Add autocomplete="off" to the view state hidden field. Enabled by default.
+     * Add autocomplete="off" to the view state hidden field. Disabled by default.
      */
     @JSFWebConfigParam(since="2.2.8, 2.1.18, 2.0.24", expectedValues="true, false", 
-           defaultValue="true", group="state")
+           defaultValue="false", group="state")
     public static final String INIT_PARAM_AUTOCOMPLETE_OFF_VIEW_STATE = 
             "org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE";
             
@@ -349,7 +349,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         if (_autoCompleteOffViewState == null)
         {
             _autoCompleteOffViewState = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                    INIT_PARAM_AUTOCOMPLETE_OFF_VIEW_STATE, true);
+                    INIT_PARAM_AUTOCOMPLETE_OFF_VIEW_STATE, false);
         }
         return _autoCompleteOffViewState;
     }
