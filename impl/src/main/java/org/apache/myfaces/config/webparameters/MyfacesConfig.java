@@ -517,10 +517,10 @@ public class MyfacesConfig
      * Add autocomplete="off" to the view state hidden field. Enabled by default.
      */
     @JSFWebConfigParam(since="2.2.8, 2.1.18, 2.0.24", expectedValues="true, false", 
-           defaultValue="true", group="state")
+           defaultValue="false", group="state")
     public static final String AUTOCOMPLETE_OFF_VIEW_STATE = 
             "org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE";
-    private static final boolean AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT = true;
+    private static final boolean AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT = false;
     
     /**
      * Set the max time in miliseconds set on the "Expires" header for a resource rendered by 
