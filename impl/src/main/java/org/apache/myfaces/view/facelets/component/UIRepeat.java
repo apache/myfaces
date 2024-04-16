@@ -2122,7 +2122,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             if (context.getCurrentPhaseId() != null && 
                 !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
-                if (parentSaved == null /*&&_rowDeltaStates.isEmpty()*/ && _rowStates.isEmpty())
+                if (parentSaved == null &&_rowDeltaStates.isEmpty() && _rowStates.isEmpty())
                 {
                     return null;
                 }
@@ -2156,17 +2156,18 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             if (context.getCurrentPhaseId() != null && 
                 !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
-                Object[] values = new Object[3];
+                Object[] values = new Object[4];
                 values[0] = super.saveState(context);
-                values[1] = null;
+                values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
                 values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+                values[3] = UIComponentBase.saveAttachedState(context, _rowTransientStates);
                 return values; 
             }
             else
             {
                 Object[] values = new Object[2];
                 values[0] = super.saveState(context);
-                values[1] = null;
+                values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
                 return values;
             }
         }
