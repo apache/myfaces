@@ -103,5 +103,9 @@
       <converter-for-class>java.lang.Short</converter-for-class>
       <converter-class>jakarta.faces.convert.ShortConverter</converter-class>
    </converter>
+   <converter>
+      <converter-for-class>java.util.UUID</converter-for-class>
+      <converter-class>jakarta.faces.convert.UUIDConverter</converter-class>
+   </converter>
 
 </faces-config>
