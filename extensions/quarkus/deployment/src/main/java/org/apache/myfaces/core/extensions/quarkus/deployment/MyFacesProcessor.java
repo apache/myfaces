@@ -111,6 +111,7 @@ import org.apache.myfaces.util.lang.ThreadsafeXorShiftRandom;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
 import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
+import org.apache.myfaces.view.facelets.component.RepeatStatus;
 import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
 import org.apache.myfaces.view.facelets.tag.MethodRule;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
@@ -559,7 +560,8 @@ class MyFacesProcessor
                 FacesInitializerImpl.class,
                 FactoryFinderProviderFactory.class,
                 JstlFunction.class,
-                QuarkusFactoryFinderProvider.class));
+                QuarkusFactoryFinderProvider.class,
+                RepeatStatus.class));
 
         reflectiveClass.produce(
                 ReflectiveClassBuildItem.builder(classNames.toArray(new String[0])).methods(true).build());
