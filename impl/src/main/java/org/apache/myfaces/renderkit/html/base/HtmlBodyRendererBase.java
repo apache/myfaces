@@ -77,7 +77,10 @@ public class HtmlBodyRendererBase extends HtmlRenderer
             }
             else
             {
-                HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+                if (HtmlRendererUtils.isOutputHtml5Doctype(facesContext))
+                {
+                    HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+                }
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
