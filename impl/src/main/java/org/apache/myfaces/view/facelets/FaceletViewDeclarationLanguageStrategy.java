@@ -18,14 +18,20 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
+import org.apache.myfaces.webapp.MyFacesContainerInitializer;
 
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewDeclarationLanguage;
-
-import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRegistration;
 
 /**
  * @author Simon Lessard (latest modification by $Author$)
@@ -36,6 +42,7 @@ import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLanguageStrategy
 {
     private Pattern _acceptPatterns;
+    private Pattern _servletMappingPatterns;
     private String _extension;
 
     private ViewDeclarationLanguage _language;
@@ -46,6 +53,8 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
         ExternalContext eContext = context.getExternalContext();
 
         _acceptPatterns = loadAcceptPattern(eContext);
+
+        _servletMappingPatterns = loadServletMappingPatterns(eContext);
 
         _extension = loadFaceletExtension(eContext);
 
@@ -73,7 +82,12 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
         }
 
         // Otherwise, try to match the view identifier with the facelet mappings
-        return _acceptPatterns != null && _acceptPatterns.matcher(viewId).matches();
+        boolean matchFound =  _acceptPatterns != null && _acceptPatterns.matcher(viewId).matches();
+
+        boolean servletMappingFound =  _servletMappingPatterns != null 
+                                            && _servletMappingPatterns.matcher(viewId).matches();
+
+        return matchFound || servletMappingFound;
     }
 
     /**
@@ -106,6 +120,30 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
         }
 
         return Pattern.compile(toRegex(mappings));
+    }
+
+    private Pattern loadServletMappingPatterns(ExternalContext context)
+    {
+        assert context != null;
+
+        ServletRegistration facesServletRegistration = (ServletRegistration)
+        ((ServletContext)context.getContext()).getAttribute(
+            MyFacesContainerInitializer.FACES_SERVLET_SERVLETREGISTRATION);
+
+        Collection<String> servletMappings = Collections.emptyList();
+
+        if(facesServletRegistration != null)
+        {
+            servletMappings = facesServletRegistration.getMappings();
+        }
+        String joinedMappings = servletMappings.stream().collect(Collectors.joining(";"));
+
+        if(joinedMappings.length() == 0)
+        {
+            return null;
+        }
+            
+        return Pattern.compile(toRegex(joinedMappings));
     }
 
     private String loadFaceletExtension(ExternalContext context)
