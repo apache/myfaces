@@ -61,7 +61,10 @@ public class HtmlHeadRenderer extends Renderer
 
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.startElement(HTML.HEAD_ELEM, component);
-        HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+        if (HtmlRendererUtils.isOutputHtml5Doctype(facesContext))
+        {
+            HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+        }
         HtmlRendererUtils.renderHTMLAttributes(writer, component, HEAD_PASSTHROUGH_ATTRIBUTES);
         HtmlRendererUtils.renderHTMLAttribute(writer, component, HTML.XMLNS_ATTR , HTML.XMLNS_ATTR);
     }
