@@ -23,6 +23,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
+import java.lang.reflect.RecordComponent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -31,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 
 /**
  * A simple JSON encoder.
@@ -44,9 +46,12 @@ import java.util.TimeZone;
  */
 public final class Json
 {
+
+    
     // Constants ------------------------------------------------------------------------------------------------------
     private static final String ERROR_INVALID_BEAN = "Cannot introspect object of type '%s' as bean.";
     private static final String ERROR_INVALID_GETTER = "Cannot invoke getter of property '%s' of bean '%s'.";
+    private static final Logger LOG = Logger.getLogger(Json.class.getName());
 
     // Constructors ---------------------------------------------------------------------------------------------------
     private Json()
@@ -111,10 +116,47 @@ public final class Json
         {
             encode(((Class<?>) object).getName(), builder);
         }
+        else if (object instanceof Record)
+        {
+            encodeRecord(object, builder);
+        }
         else
         {
             encodeBean(object, builder);
         }
+    }
+
+    private static void encodeRecord(Object recordObject, StringBuilder builder)
+    {
+
+        builder.append('{');
+        boolean fieldsFound = false;
+
+
+        for (RecordComponent component : recordObject.getClass().getRecordComponents())
+        {
+            fieldsFound = true;
+            String name = component.getName();
+            builder.append(name);
+            builder.append(':');
+            try 
+            {
+                encode(component.getAccessor().invoke(recordObject), builder);
+            } 
+            catch (Exception e) 
+            {
+                LOG.warning("Failed to access RecordComponent for " + recordObject + " Message: " + e.getMessage());
+            }
+            builder.append(',');
+        }
+
+        if(fieldsFound)
+        {
+            builder.deleteCharAt(builder.length()-1); // remove last comma
+        }
+
+        builder.append('}');
+       
     }
 
     /**
