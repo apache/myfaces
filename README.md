@@ -112,6 +112,8 @@ Since 2.3-next a Quarkus extension is available. A sample project can be found h
 - Quarkus Uber-JARs are not supported
 - Quarkus does not support session replication / passivation / clustering
 - Quarkus beans are not serializable and therefore session passivation would never work anyway
+- Quarkus does not implement @ConversationScoped
+- Quarkus does not support injection in normal objects, therefore injection in JSF artifacts like NavigationHandler etc. is not supported
 
 ### Differences to a normal servlet container while developing
 - You need to put your views under src/main/resources/META-INF/resources as Quarkus doesn't create a WAR and src/main/webapp is ignored!
