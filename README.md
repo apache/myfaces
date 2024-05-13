@@ -109,7 +109,7 @@ mvn clean install
 Since 2.3-next a Quarkus extension is available. A sample project can be found here: https://github.com/apache/myfaces/blob/main/extensions/quarkus/showcase/
 
 ### Not supported features:
-- Quarkus Uber-JARs are not supported
+- Quarkus Uber-JARs are not supported (See: https://issues.apache.org/jira/browse/MYFACES-4427)
 - Quarkus does not support session replication / passivation / clustering
 - Quarkus beans are not serializable and therefore session passivation would never work anyway
 - Quarkus does not implement @ConversationScoped
