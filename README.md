@@ -108,8 +108,11 @@ mvn clean install
 
 Since 2.3-next a Quarkus extension is available. A sample project can be found here: https://github.com/apache/myfaces/blob/main/extensions/quarkus/showcase/
 
-Uber-JARs are not supported by design
+### Not supported features:
+    - Quarkus Uber-JARs are not supported
+    - Quarkus does not support session replication / passivation / clustering
+    - Quarkus beans are not serializable and therefore session passivation would never work anyway
 
-### Differences to a normal servlet container
+### Differences to a normal servlet container while developing
 - You need to put your views under src/main/resources/META-INF/resources as Quarkus doesn't create a WAR and src/main/webapp is ignored!
-- Session replication / passivation / clustering is not supported yet by Quarkus
+
