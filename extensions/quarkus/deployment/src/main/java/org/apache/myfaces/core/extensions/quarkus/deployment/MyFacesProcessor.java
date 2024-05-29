@@ -34,6 +34,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import jakarta.el.ELResolver;
 import jakarta.enterprise.inject.Produces;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.annotation.View;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.FacesComponent;
@@ -187,7 +188,8 @@ class MyFacesProcessor
             NamedEvent.class.getName(),
             FacesBehaviorRenderer.class.getName(),
             FaceletHandler.class.getName(),
-            FlowDefinition.class.getName()
+            FlowDefinition.class.getName(),
+            View.class.getName()
     };
 
     private static final String[] FACTORIES =
