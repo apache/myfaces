@@ -153,7 +153,7 @@ export module PushImpl {
         }
 
         onerror(event: any) {
-            let message = JSON.parse(event.data === undefined ? null : event.data);
+            let message = JSON.parse(event?.data ?? null);
             //TODO replace this with a more readable Stream code
             for (let i = clientIdsByTokens[this.channelToken].length - 1; i >= 0; i--) {
                 let socketClientId = clientIdsByTokens[this.channelToken][i];
