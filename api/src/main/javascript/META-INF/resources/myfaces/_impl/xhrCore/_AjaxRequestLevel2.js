@@ -30,16 +30,26 @@ _MF_CLS(_PFX_XHR + "_MultipartAjaxRequestLevel2", myfaces._impl.xhrCore._AjaxReq
     },
 
     getFormData:function () {
-        var ret;
-        //in case of a multipart form post we savely can use the FormData object
-        if (this._context._mfInternal.xhrOp === "multipartQueuedPost") {
-            ret = new FormData(this._sourceForm);
-            this._AJAXUTIL.appendIssuingItem(this._source, ret);
+        // MYFACES-4672 start
+        var _AJAXUTIL = this._AJAXUTIL, myfacesOptions = this._context.myfaces, ret = null;
+
+        //now this is less performant but we have to call it to allow viewstate decoration
+        if (!this._partialIdsArray || !this._partialIdsArray.length) {
+            ret = new FormData();
+            _AJAXUTIL.encodeSubmittableFields(ret, this._sourceForm);
+            //just in case the source item is outside of the form
+            //only if the form override is set we have to append the issuing item
+            //otherwise it is an element of the parent form
+            if (this._source && myfacesOptions && myfacesOptions.form)
+                _AJAXUTIL.appendIssuingItem(this._source, ret);
         } else {
-            //we switch back to the encode submittable fields system
-            this._AJAXUTIL.encodeSubmittableFields(ret, this._sourceForm, null);
-            this._AJAXUTIL.appendIssuingItem(this._source, ret);
+            ret = new FormData();
+            _AJAXUTIL.encodeSubmittableFields(ret, this._sourceForm, this._partialIdsArray);
+            if (this._source && myfacesOptions && myfacesOptions.form)
+                _AJAXUTIL.appendIssuingItem(this._source, ret);
+
         }
+        // MYFACES-4672 end
         return ret;
     },
 
