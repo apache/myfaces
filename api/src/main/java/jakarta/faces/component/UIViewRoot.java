@@ -18,6 +18,7 @@
  */
 package jakarta.faces.component;
 
+import jakarta.faces.component.visit.VisitHint;
 import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.core.api.shared.lang.LocaleUtils;
@@ -33,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -1465,6 +1467,18 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     }
 
     /**
+     * @since 5.0
+     * @param context
+     * @param clientIds
+     * @param hints
+     */
+    public void resetValues(FacesContext context, java.util.Collection<java.lang.String> clientIds, Set<VisitHint> hints)
+    {
+        VisitContext visitContext = VisitContext.createVisitContext(context, clientIds, hints);
+        this.visitTree(visitContext, ResetValuesCallback.INSTANCE);
+    }
+
+    /**
      * Indicates if the component is created when facelets builds the view and
      * is caused by the presence of a ResourceDependency annotation.
      * 
@@ -1696,7 +1710,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * @param context
      * @param phaseId
      * @param processor
-     * @param broadcast
      *
      * @return
      */

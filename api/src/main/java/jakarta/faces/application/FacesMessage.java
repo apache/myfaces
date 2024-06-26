@@ -74,6 +74,7 @@ public class FacesMessage implements Serializable
 
     /**
      * Message severity level indicating an success message rather than an error.
+     * @since 5.0
      */
     public static final FacesMessage.Severity SEVERITY_SUCCESS = new Severity("SUCCESS", 1);
 

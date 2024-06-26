@@ -30,7 +30,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewParameter;
 import jakarta.faces.component.UIViewRoot;
@@ -72,8 +71,6 @@ public class PartialViewContextImpl extends PartialViewContext
     
     private static final Set<VisitHint> PARTIAL_EXECUTE_HINTS = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.EXECUTE_LIFECYCLE, VisitHint.SKIP_UNRENDERED));
-
-    private static final VisitCallback RESET_VALUES_CALLBACK = new ResetValuesCallback();
 
     private static final  Set<VisitHint> RESET_VALUES_HINTS =
             Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
@@ -445,9 +442,7 @@ public class PartialViewContextImpl extends PartialViewContext
             
             if (isResetValues())
             {
-                VisitContext visitContext = VisitContext.createVisitContext(context, getRenderIds(),
-                        RESET_VALUES_HINTS);
-                viewRoot.visitTree(visitContext, RESET_VALUES_CALLBACK);
+                viewRoot.resetValues(context, getRenderIds(), RESET_VALUES_HINTS);
             }
 
             if (pvc.isRenderAll())
@@ -568,19 +563,6 @@ public class PartialViewContextImpl extends PartialViewContext
             context.setResponseWriter(oldWriter);
         }
 
-    }
-
-    // same like UIViewRoot#ResetValuesCallback
-    private static class ResetValuesCallback implements VisitCallback
-    {
-        public VisitResult visit(VisitContext context, UIComponent target)
-        {
-            if (target instanceof EditableValueHolder)
-            {
-                ((EditableValueHolder)target).resetValue();
-            }
-            return VisitResult.ACCEPT;
-        }
     }
 
     private void processRenderResource(FacesContext facesContext, PartialResponseWriter writer, RequestViewContext rvc, 
