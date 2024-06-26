@@ -101,6 +101,12 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>4.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>graal-sdk</artifactId>
+            <version>23.1.2</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
