@@ -73,19 +73,24 @@ public class FacesMessage implements Serializable
     public static final FacesMessage.Severity SEVERITY_INFO = new Severity("INFO", 0);
 
     /**
+     * Message severity level indicating an success message rather than an error.
+     */
+    public static final FacesMessage.Severity SEVERITY_SUCCESS = new Severity("SUCCESS", 1);
+
+    /**
      * Message severity level indicating that an error might have occurred.
      */
-    public static final FacesMessage.Severity SEVERITY_WARN = new Severity("WARN", 1);
+    public static final FacesMessage.Severity SEVERITY_WARN = new Severity("WARN", 2);
 
     /**
      * Message severity level indicating that an error has occurred.
      */
-    public static final FacesMessage.Severity SEVERITY_ERROR = new Severity("ERROR", 2);
+    public static final FacesMessage.Severity SEVERITY_ERROR = new Severity("ERROR", 3);
 
     /**
      * Message severity level indicating that a serious error has occurred.
      */
-    public static final FacesMessage.Severity SEVERITY_FATAL = new Severity("FATAL", 3);
+    public static final FacesMessage.Severity SEVERITY_FATAL = new Severity("FATAL", 4);
 
     /**
      * Immutable <code>Lis</code> of valid {@link FacesMessage.Severity}instances, in ascending order of their ordinal
@@ -102,6 +107,7 @@ public class FacesMessage implements Serializable
     {
         Map<String, FacesMessage.Severity> map = new HashMap<>(7);
         map.put(SEVERITY_INFO.toString(), SEVERITY_INFO);
+        map.put(SEVERITY_SUCCESS.toString(), SEVERITY_SUCCESS);
         map.put(SEVERITY_WARN.toString(), SEVERITY_WARN);
         map.put(SEVERITY_ERROR.toString(), SEVERITY_ERROR);
         map.put(SEVERITY_FATAL.toString(), SEVERITY_FATAL);
