@@ -18,8 +18,8 @@
 #
 
 ---
-name: "MyFaces"
-description: "MyFaces is a JSF / Faces implementation which also provides a Quarkus integration."
+name: "Apache MyFaces"
+description: "Apache MyFaces is a JSF / Faces implementation."
 metadata:
   keywords:
   - "JSF"
