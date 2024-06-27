@@ -25,10 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import jakarta.faces.FacesWrapper;
-import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.application.NavigationHandlerWrapper;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
@@ -512,8 +510,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
             }
             
             FlowHandler flowHandler = context.getApplication().getFlowHandler();
-            ConfigurableNavigationHandler nh = 
-                (ConfigurableNavigationHandler) context.getApplication().getNavigationHandler();
+            NavigationHandler nh = context.getApplication().getNavigationHandler();
             
             if (FlowHandler.NULL_FLOW.equals(flowDocumentIdRequestParam))
             {
@@ -768,14 +765,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
 
     private void invokeInspectFlow(FacesContext context, NavigationHandler navHandler, Flow toAdd)
     {
-        if (navHandler instanceof ConfigurableNavigationHandler handler)
-        {
-            handler.inspectFlow(context, toAdd);
-        }
-        else if (navHandler instanceof NavigationHandlerWrapper wrapper)
-        {
-            invokeInspectFlow(context, wrapper.getWrapped(), toAdd);
-        }
+        navHandler.inspectFlow(context, toAdd);
     }
     
     private _FlowContextualInfo getCurrentFlowReference(FacesContext context, ClientWindow clientWindow)

@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jakarta.faces.FacesException;
-import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ProjectStage;
@@ -58,14 +56,8 @@ public class OutcomeTargetUtils
         outcome = ((outcome == null) ? RendererUtils.EMPTY_STRING : outcome.trim());
 
         // Get the correct URL for the outcome.
-        NavigationHandler nh = facesContext.getApplication().getNavigationHandler();
-        if (!(nh instanceof ConfigurableNavigationHandler))
-        {
-            throw new FacesException("NavigationHandler must be an instance of "
-                            + "ConfigurableNavigationHandler for using h:link or h:button");
-        }
-        ConfigurableNavigationHandler navigationHandler = (ConfigurableNavigationHandler) nh;
-        
+        NavigationHandler navigationHandler = facesContext.getApplication().getNavigationHandler();
+
         // handle faces flow 
         // 1. check to-flow-document-id
         String toFlowDocumentId = (String) component.getAttributes().get(ComponentAttrs.TO_FLOW_DOCUMENT_ID_ATTR);

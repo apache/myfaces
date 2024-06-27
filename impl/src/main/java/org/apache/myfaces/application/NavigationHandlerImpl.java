@@ -36,9 +36,9 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
-import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIComponent;
@@ -81,7 +81,7 @@ import org.apache.myfaces.view.facelets.tag.faces.PreDisposeViewEvent;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class NavigationHandlerImpl extends ConfigurableNavigationHandler
+public class NavigationHandlerImpl extends NavigationHandler
 {
     private static final Logger log = Logger.getLogger(NavigationHandlerImpl.class.getName());
 
@@ -977,7 +977,9 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
     /**
      * Derive a NavigationCase from a flow node. 
      * 
-     * @param flowNode
+     * @param fromViewId
+     * @param outcome
+     * @param toViewId
      * @return 
      */
     private NavigationCase createNavigationCase(String fromViewId, String outcome, String toViewId)

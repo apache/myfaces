@@ -19,8 +19,8 @@
 package org.apache.myfaces.application.flow;
 
 import jakarta.enterprise.context.ContextNotActiveException;
-import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UICommand;
 import jakarta.faces.flow.Flow;
@@ -61,7 +61,7 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         startViewRequest("/flow1_1.xhtml");
         processLifecycleExecute();
         
-        ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
+        NavigationHandler handler = facesContext.getApplication().getNavigationHandler();
         
         NavigationCase navCase = handler.getNavigationCase(facesContext, null, "flow1");
         
@@ -102,7 +102,7 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         startViewRequest("/flow1_2.xhtml");
         processLifecycleExecute();
         
-        ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
+        NavigationHandler handler =facesContext.getApplication().getNavigationHandler();
         
         NavigationCase navCase = handler.getNavigationCase(facesContext, null, "flow1");
         
@@ -219,7 +219,7 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         startViewRequest("/flow_base.xhtml");
         processLifecycleExecute();
         
-        ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
+        NavigationHandler handler =facesContext.getApplication().getNavigationHandler();
         
         renderResponse();
        
@@ -267,7 +267,7 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         startViewRequest("/flow_base.xhtml");
         processLifecycleExecute();
         
-        ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
+        NavigationHandler handler =facesContext.getApplication().getNavigationHandler();
         
         renderResponse();
        
@@ -377,7 +377,7 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         startViewRequest("/flow_base.xhtml");
         processLifecycleExecute();
         
-        ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
+        NavigationHandler handler =facesContext.getApplication().getNavigationHandler();
         
         renderResponse();
        

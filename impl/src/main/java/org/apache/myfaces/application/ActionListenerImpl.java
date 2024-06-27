@@ -20,7 +20,6 @@ package org.apache.myfaces.application;
 
 import jakarta.el.MethodExpression;
 import jakarta.faces.application.Application;
-import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.component.ActionSource;
@@ -82,27 +81,24 @@ public class ActionListenerImpl implements ActionListener
                     || PhaseId.APPLY_REQUEST_VALUES.equals(facesContext.getCurrentPhaseId())))
         {
             NavigationHandler navigationHandler = application.getNavigationHandler();
-            if (navigationHandler instanceof ConfigurableNavigationHandler handler)
+            NavigationCase navigationCase = navigationHandler.
+                getNavigationCase(facesContext, fromAction, outcome);
+            if (navigationCase != null)
             {
-                NavigationCase navigationCase = handler.
-                    getNavigationCase(facesContext, fromAction, outcome);
-                if (navigationCase != null)
+                // Deferred invoke navigation. The first one wins
+                if (!facesContext.getAttributes().containsKey(ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION))
                 {
-                    // Deferred invoke navigation. The first one wins
-                    if (!facesContext.getAttributes().containsKey(ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION))
+                    String toFlowDocumentId = (component != null) ?
+                        (String) component.getAttributes().get(ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME) : null;
+                    if (toFlowDocumentId != null)
                     {
-                        String toFlowDocumentId = (component != null) ? 
-                            (String) component.getAttributes().get(ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME) : null;
-                        if (toFlowDocumentId != null)
-                        {
-                            facesContext.getAttributes().put(ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION, 
-                                    new Object[]{fromAction, outcome, toFlowDocumentId});
-                        }
-                        else
-                        {
-                            facesContext.getAttributes().put(ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION, 
-                                    new Object[]{fromAction, outcome});
-                        }
+                        facesContext.getAttributes().put(ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION,
+                                new Object[]{fromAction, outcome, toFlowDocumentId});
+                    }
+                    else
+                    {
+                        facesContext.getAttributes().put(ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION,
+                                new Object[]{fromAction, outcome});
                     }
                 }
             }

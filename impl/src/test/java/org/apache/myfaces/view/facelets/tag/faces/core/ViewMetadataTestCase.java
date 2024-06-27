@@ -25,8 +25,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.component.UIViewParameter;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -44,10 +44,10 @@ import org.junit.jupiter.api.Test;
 public class ViewMetadataTestCase extends FaceletTestCase
 {
     
-    protected ConfigurableNavigationHandler navigationHandler;
+    protected NavigationHandler navigationHandler;
     
     public static class MockViewNavigationHandlerNavigationHandler
-        extends ConfigurableNavigationHandler
+        extends NavigationHandler
     {
         
         Map<String, Set<NavigationCase>> cases = new HashMap<String, Set<NavigationCase>>(); 

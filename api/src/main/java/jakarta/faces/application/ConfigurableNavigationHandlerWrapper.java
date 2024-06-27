@@ -18,16 +18,13 @@
  */
 package jakarta.faces.application;
 
-import java.util.Map;
-import java.util.Set;
 import jakarta.faces.FacesWrapper;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.flow.Flow;
 
 /**
  *
  * @since 2.2
  */
+@Deprecated
 public abstract class ConfigurableNavigationHandlerWrapper extends ConfigurableNavigationHandler
     implements FacesWrapper<ConfigurableNavigationHandler>
 {
@@ -41,43 +38,6 @@ public abstract class ConfigurableNavigationHandlerWrapper extends ConfigurableN
     public ConfigurableNavigationHandlerWrapper(ConfigurableNavigationHandler delegate)
     {
         this.delegate = delegate;
-    }
-
-    @Override
-    public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome)
-    {
-        return getWrapped().getNavigationCase(context, fromAction, outcome);
-    }
-
-    @Override
-    public Map<String, Set<NavigationCase>> getNavigationCases()
-    {
-        return getWrapped().getNavigationCases();
-    }
-
-    @Override
-    public void handleNavigation(FacesContext context, String fromAction, String outcome)
-    {
-        getWrapped().handleNavigation(context, fromAction, outcome);
-    }
-
-    @Override
-    public void performNavigation(String outcome)
-    {
-        getWrapped().performNavigation(outcome);
-    }
-
-    @Override
-    public void inspectFlow(FacesContext context, Flow flow)
-    {
-        getWrapped().inspectFlow(context, flow);
-    }
-
-    @Override
-    public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome, 
-            String toFlowDocumentId)
-    {
-        return getWrapped().getNavigationCase(context, fromAction, outcome, toFlowDocumentId);
     }
 
     @Override

@@ -20,6 +20,10 @@ package jakarta.faces.application;
 
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -55,7 +59,39 @@ public abstract class NavigationHandlerWrapper extends NavigationHandler
     {
         getWrapped().handleNavigation(context, fromAction, outcome, toFlowDocumentId);
     }
-    
+
+
+    @Override
+    public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome)
+    {
+        return getWrapped().getNavigationCase(context, fromAction, outcome);
+    }
+
+    @Override
+    public Map<String, Set<NavigationCase>> getNavigationCases()
+    {
+        return getWrapped().getNavigationCases();
+    }
+
+    @Override
+    public void performNavigation(String outcome)
+    {
+        getWrapped().performNavigation(outcome);
+    }
+
+    @Override
+    public void inspectFlow(FacesContext context, Flow flow)
+    {
+        getWrapped().inspectFlow(context, flow);
+    }
+
+    @Override
+    public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome,
+                                            String toFlowDocumentId)
+    {
+        return getWrapped().getNavigationCase(context, fromAction, outcome, toFlowDocumentId);
+    }
+
     @Override
     public NavigationHandler getWrapped()
     {

@@ -21,7 +21,9 @@ package org.apache.myfaces.test.mock;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
@@ -91,6 +93,18 @@ public class MockNavigationHandler extends NavigationHandler
             context.setViewRoot(view);
         }
 
+    }
+
+    @Override
+    public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome)
+    {
+        return null;
+    }
+
+    @Override
+    public Map<String, Set<NavigationCase>> getNavigationCases()
+    {
+        return Map.of();
     }
 
     // --------------------------------------------------------- Private Methods

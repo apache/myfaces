@@ -42,7 +42,6 @@ import jakarta.faces.FacesWrapper;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
-import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
@@ -72,7 +71,6 @@ import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
-import org.apache.myfaces.application.BackwardsCompatibleNavigationHandlerWrapper;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ClientBehaviorRenderer;
@@ -595,18 +593,11 @@ public class FacesConfigurator
         
         // First build the object
         NavigationHandler navigationHandler = ClassUtils.buildApplicationObject(NavigationHandler.class,
-                ConfigurableNavigationHandler.class, null,
+                null, null,
                 dispenser.getNavigationHandlerIterator(),
                 application.getNavigationHandler());
         // Invoke inject and post construct
         _callInjectAndPostConstruct(navigationHandler);
-        // Finally wrap the object with the BackwardsCompatibleNavigationHandlerWrapper if it is not assignable
-        // from ConfigurableNavigationHandler
-        navigationHandler = ClassUtils.wrapBackwardCompatible(NavigationHandler.class,
-                ConfigurableNavigationHandler.class,
-                BackwardsCompatibleNavigationHandlerWrapper.class,
-                application.getNavigationHandler(),
-                navigationHandler);
         application.setNavigationHandler(navigationHandler);
 
         StateManager stateManager = ClassUtils.buildApplicationObject(StateManager.class,

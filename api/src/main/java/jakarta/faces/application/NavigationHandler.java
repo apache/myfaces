@@ -19,6 +19,10 @@
 package jakarta.faces.application;
 
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
@@ -42,5 +46,39 @@ public abstract class NavigationHandler
                                  String toFlowDocumentId)
     {
         this.handleNavigation(context, fromAction, outcome);
+    }
+
+    public abstract NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome);
+
+    public abstract Map<String, Set<NavigationCase>> getNavigationCases();
+
+    public void performNavigation(String outcome)
+    {
+        handleNavigation(FacesContext.getCurrentInstance(), null, outcome);
+    }
+
+    /**
+     * @since 2.2
+     * @param context
+     * @param flow
+     */
+    public void inspectFlow(FacesContext context, Flow flow)
+    {
+    }
+
+    /**
+     * @since 2.2
+     * @param context
+     * @param fromAction
+     * @param outcome
+     * @param toFlowDocumentId
+     * @return
+     */
+    public NavigationCase getNavigationCase(FacesContext context,
+                                            java.lang.String fromAction,
+                                            java.lang.String outcome,
+                                            java.lang.String toFlowDocumentId)
+    {
+        return getNavigationCase(context, fromAction, outcome);
     }
 }

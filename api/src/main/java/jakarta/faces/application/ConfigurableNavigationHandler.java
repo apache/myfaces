@@ -18,53 +18,14 @@
  */
 package jakarta.faces.application;
 
-import java.util.Map;
-import java.util.Set;
-
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.flow.Flow;
-
 /**
  * @since 2.0
  */
+@Deprecated
 public abstract class ConfigurableNavigationHandler extends NavigationHandler
 {
 
     public ConfigurableNavigationHandler()
     {
-    }
-
-    public abstract NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome);
-
-    public abstract Map<String,Set<NavigationCase>> getNavigationCases();
-
-    public void performNavigation(String outcome)
-    {
-        handleNavigation(FacesContext.getCurrentInstance(), null, outcome);
-    }
-    
-    /**
-     * @since 2.2
-     * @param context
-     * @param flow 
-     */
-    public void inspectFlow(FacesContext context, Flow flow)
-    {
-    }
-    
-    /**
-     * @since 2.2
-     * @param context
-     * @param fromAction
-     * @param outcome
-     * @param toFlowDocumentId
-     * @return 
-     */
-    public NavigationCase getNavigationCase(FacesContext context,
-                                        java.lang.String fromAction,
-                                        java.lang.String outcome,
-                                        java.lang.String toFlowDocumentId)
-    {
-        return getNavigationCase(context, fromAction, outcome);
     }
 }
