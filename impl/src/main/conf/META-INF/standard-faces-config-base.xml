@@ -36,6 +36,32 @@
           NOTE that the BeanValidator will be registered programmatically in
           FacesConfigurator.configureApplication() if bean validation is available.
       -->
+
+      <system-event-listener>
+         <system-event-listener-class>org.apache.myfaces.cdi.SystemEventBroadcaster</system-event-listener-class>
+         <system-event-class>jakarta.faces.event.ExceptionQueuedEvent</system-event-class>
+      </system-event-listener>
+      <system-event-listener>
+         <system-event-listener-class>org.apache.myfaces.cdi.SystemEventBroadcaster</system-event-listener-class>
+         <system-event-class>jakarta.faces.event.PostConstructApplicationEvent</system-event-class>
+      </system-event-listener>
+      <system-event-listener>
+         <system-event-listener-class>org.apache.myfaces.cdi.SystemEventBroadcaster</system-event-listener-class>
+         <system-event-class>jakarta.faces.event.PreDestroyApplicationEvent</system-event-class>
+      </system-event-listener>
+
+      <system-event-listener>
+         <system-event-listener-class>org.apache.myfaces.cdi.ViewEventBroadcaster</system-event-listener-class>
+         <system-event-class>jakarta.faces.event.PreRenderViewEvent</system-event-class>
+      </system-event-listener>
+      <system-event-listener>
+         <system-event-listener-class>org.apache.myfaces.cdi.ViewEventBroadcaster</system-event-listener-class>
+         <system-event-class>jakarta.faces.event.PostConstructViewMapEvent</system-event-class>
+      </system-event-listener>
+      <system-event-listener>
+         <system-event-listener-class>org.apache.myfaces.cdi.ViewEventBroadcaster</system-event-listener-class>
+         <system-event-class>jakarta.faces.event.PreDestroyViewMapEvent</system-event-class>
+      </system-event-listener>
    </application>
    <factory>
       <application-factory>org.apache.myfaces.application.ApplicationFactoryImpl</application-factory>
