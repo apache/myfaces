@@ -42,6 +42,7 @@ import jakarta.faces.FacesWrapper;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
@@ -593,7 +594,7 @@ public class FacesConfigurator
         
         // First build the object
         NavigationHandler navigationHandler = ClassUtils.buildApplicationObject(NavigationHandler.class,
-                null, null,
+                ConfigurableNavigationHandler.class, null,
                 dispenser.getNavigationHandlerIterator(),
                 application.getNavigationHandler());
         // Invoke inject and post construct
