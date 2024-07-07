@@ -18,88 +18,53 @@
  */
 package jakarta.faces.event;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import jakarta.faces.FacesException;
 import org.apache.myfaces.core.api.shared.lang.Assert;
+
+import java.util.List;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
-public class PhaseId implements Comparable
+public enum PhaseId
 {
-    // FIELDS
-    public static final PhaseId ANY_PHASE;
-    public static final PhaseId APPLY_REQUEST_VALUES;
-    public static final PhaseId INVOKE_APPLICATION;
-    public static final PhaseId PROCESS_VALIDATIONS;
-    public static final PhaseId RENDER_RESPONSE;
-    public static final PhaseId RESTORE_VIEW;
-    public static final PhaseId UPDATE_MODEL_VALUES;
+    ANY_PHASE,
+    APPLY_REQUEST_VALUES,
+    INVOKE_APPLICATION,
+    PROCESS_VALIDATIONS,
+    RENDER_RESPONSE,
+    RESTORE_VIEW,
+    UPDATE_MODEL_VALUES;
+
     public static final List<PhaseId> VALUES;
 
     static
     {
-        int i = 0;
-        ArrayList<PhaseId> list = new ArrayList<PhaseId>(6);
-
-        ANY_PHASE = new PhaseId("ANY_PHASE", i++);
-        list.add(ANY_PHASE);
-        RESTORE_VIEW = new PhaseId("RESTORE_VIEW", i++);
-        list.add(RESTORE_VIEW);
-        APPLY_REQUEST_VALUES = new PhaseId("APPLY_REQUEST_VALUES", i++);
-        list.add(APPLY_REQUEST_VALUES);
-        PROCESS_VALIDATIONS = new PhaseId("PROCESS_VALIDATIONS", i++);
-        list.add(PROCESS_VALIDATIONS);
-        UPDATE_MODEL_VALUES = new PhaseId("UPDATE_MODEL_VALUES", i++);
-        list.add(UPDATE_MODEL_VALUES);
-        INVOKE_APPLICATION = new PhaseId("INVOKE_APPLICATION", i++);
-        list.add(INVOKE_APPLICATION);
-        RENDER_RESPONSE = new PhaseId("RENDER_RESPONSE", i++);
-        list.add(RENDER_RESPONSE);
-        VALUES = Collections.unmodifiableList(list);
-    }
-
-    private final String _name;
-    private final int _ordinal;
-
-    // CONSTRUCTORS
-    private PhaseId(String name, int ordinal)
-    {
-        this._name = name;
-        this._ordinal = ordinal;
-    }
-
-    // METHODS
-    public int compareTo(Object other)
-    {
-        return _ordinal - ((PhaseId) other)._ordinal;
+        VALUES = List.of(PhaseId.values());
     }
 
     public int getOrdinal()
     {
-        return _ordinal;
+        return ordinal();
     }
 
-    @Override
-    public String toString()
-    {
-        return _name + '(' + _ordinal + ')';
-    }
-    
     /*
      * @since 2.2
      */
     public String getName()
     {
-        return this._name;
+        return name();
+    }
+
+    @Override
+    public String toString()
+    {
+        return getName() + '(' + getOrdinal() + ')';
     }
 
     public static PhaseId phaseIdValueOf(String phase)
     {
         Assert.notNull(phase, "phase");
-        
         for (int i = 0; i < VALUES.size(); i++)
         {
             PhaseId phaseId = VALUES.get(i);
@@ -108,6 +73,6 @@ public class PhaseId implements Comparable
                 return phaseId;
             }
         }
-        throw new FacesException("Phase "+phase+" is invalid");
+        throw new FacesException("Phase " + phase + " is invalid");
     }
 }

@@ -29,13 +29,13 @@ public class FacesArtifactProducerExtension implements Extension
 {
     void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanManager)
     {
-            AnnotatedType<FacesArtifactProducer> jsfArtifactProducer =
-                            beanManager.createAnnotatedType(FacesArtifactProducer.class);
-            event.addAnnotatedType(jsfArtifactProducer, jsfArtifactProducer.getJavaClass().getName());
+        AnnotatedType<FacesArtifactProducer> jsfArtifactProducer =
+                beanManager.createAnnotatedType(FacesArtifactProducer.class);
+        event.addAnnotatedType(jsfArtifactProducer, jsfArtifactProducer.getJavaClass().getName());
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-            afterBeanDiscovery.addBean(new FacesArtifactFlowMapProducer(beanManager));
+        afterBeanDiscovery.addBean(new FacesArtifactFlowMapProducer(beanManager));
     }
 }

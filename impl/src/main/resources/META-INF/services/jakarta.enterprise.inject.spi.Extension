@@ -11,3 +11,4 @@ org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension
 org.apache.myfaces.push.cdi.PushCDIExtension
 org.apache.myfaces.flow.cdi.FlowScopeExtension
 org.apache.myfaces.cdi.clientwindow.ClientWindowScopeExtension
+org.apache.myfaces.cdi.PhaseEventBroadcasterExtension

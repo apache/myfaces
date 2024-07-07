@@ -23,13 +23,18 @@ import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
+import jakarta.faces.event.AfterPhase;
+import jakarta.faces.event.BeforePhase;
 
-public class FacesApplicationArtifactHolderExtension implements Extension
+public class PhaseEventBroadcasterExtension implements Extension
 {
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
-        AnnotatedType<FacesApplicationArtifactHolder> annotatedType =
-                beanManager.createAnnotatedType(FacesApplicationArtifactHolder.class);
+        event.addQualifier(AfterPhase.class);
+        event.addQualifier(BeforePhase.class);
+
+        AnnotatedType<PhaseEventBroadcasterPhaseListener.PhaseEventBroadcaster> annotatedType =
+                beanManager.createAnnotatedType(PhaseEventBroadcasterPhaseListener.PhaseEventBroadcaster.class);
         event.addAnnotatedType(annotatedType, annotatedType.getJavaClass().getName());
     }
 }

@@ -76,7 +76,11 @@
       <tag-handler-delegate-factory>org.apache.myfaces.view.facelets.tag.faces.TagHandlerDelegateFactoryImpl</tag-handler-delegate-factory>
       <client-window-factory>org.apache.myfaces.lifecycle.clientwindow.ClientWindowFactoryImpl</client-window-factory>
    </factory>
-   
+
+   <lifecycle>
+      <phase-listener>org.apache.myfaces.cdi.PhaseEventBroadcasterPhaseListener</phase-listener>
+   </lifecycle>
+
    <!-- behaviors by id -->
    <behavior>
       <behavior-id>jakarta.faces.behavior.Ajax</behavior-id>
