@@ -131,7 +131,7 @@ public abstract class ViewHandler
         {
             String tempEnc = contentType.substring(indexOf); // charset=UTF-8
             encoding = tempEnc.substring(tempEnc.indexOf('=') + 1); // UTF-8
-            if (encoding.length() == 0)
+            if (encoding.isEmpty())
             {
                 encoding = null;
             }
