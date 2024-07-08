@@ -849,7 +849,7 @@ public class MyfacesConfig
     private String[] fullStateSavingViewIds;
     private int faceletsBufferSize = 1024;
     private boolean markInitialStateWhenApplyBuildView = MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW_DEFAULT;
-    private String[] viewSuffix = new String[] { ViewHandler.DEFAULT_SUFFIX };
+    private String[] viewSuffix = new String[] { ViewHandler.DEFAULT_FACELETS_SUFFIX };
     private String[] faceletsViewMappings = new String[] {};
     private String faceletsViewSuffix = ViewHandler.DEFAULT_FACELETS_SUFFIX;
     private ELExpressionCacheMode elExpressionCacheMode;
@@ -1241,7 +1241,7 @@ public class MyfacesConfig
                 MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW_DEFAULT);
 
         cfg.viewSuffix = StringUtils.splitShortString(
-                getString(extCtx, ViewHandler.DEFAULT_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_SUFFIX),
+                getString(extCtx, ViewHandler.FACELETS_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_FACELETS_SUFFIX),
                 ' ');
         
         cfg.faceletsViewMappings = StringUtils.splitShortString(
