@@ -130,7 +130,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
+     * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Enum)}.
      */
     @Test
     public void testGetAsString()
@@ -142,7 +142,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
+     * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Enum)}.
      */
     @Test
     public void testGetAsStringNull()
@@ -154,26 +154,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
-     */
-    @Test
-    public void testGetAsStringNoEnum()
-    {
-        UIInput input = new UIInput();
-        try
-        {
-            String convertedStr = converter.getAsString(FacesContext.getCurrentInstance(), input, "HALLO");
-            Assertions.fail("Converter exception should be thrown");
-        }
-        catch (ConverterException e)
-        {
-            // should be thrown
-        }
-    }
-
-    /**
-     * Test method for
-     * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Object)}.
+     * {@link jakarta.faces.convert.EnumConverter#getAsString(FacesContext, jakarta.faces.component.UIComponent, Enum)}.
      */
     @Test
     public void testGetAsStringNoClassSet()

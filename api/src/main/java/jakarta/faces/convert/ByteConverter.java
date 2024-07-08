@@ -20,7 +20,6 @@ package jakarta.faces.convert;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
 import org.apache.myfaces.core.api.shared.MessageUtils;
 import org.apache.myfaces.core.api.shared.lang.Assert;
@@ -29,7 +28,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @JSFConverter
-public class ByteConverter implements Converter
+public class ByteConverter implements Converter<Byte>
 {
     public static final String CONVERTER_ID = "jakarta.faces.Byte";
     public static final String STRING_ID = "jakarta.faces.converter.STRING";
@@ -40,7 +39,7 @@ public class ByteConverter implements Converter
     }
 
     @Override
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
+    public Byte getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
@@ -63,7 +62,7 @@ public class ByteConverter implements Converter
     }
 
     @Override
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
+    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Byte value)
     {
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
@@ -73,11 +72,6 @@ public class ByteConverter implements Converter
             return "";
         }
 
-        if (value instanceof String string)
-        {
-            return string;
-        }
-        
         try
         {
             return Byte.toString(((Number)value).byteValue());

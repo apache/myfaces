@@ -52,7 +52,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
     name="binding", 
     returnType = "jakarta.faces.convert.NumberConverter",
     longDesc = "A ValueExpression that evaluates to a NumberConverter.")
-public class NumberConverter implements Converter, PartialStateHolder
+public class NumberConverter implements Converter<Number>, PartialStateHolder
 {
     public static final String CONVERTER_ID = "jakarta.faces.Number";
     public static final String STRING_ID = "jakarta.faces.converter.STRING";
@@ -84,7 +84,7 @@ public class NumberConverter implements Converter, PartialStateHolder
     }
 
     @Override
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
+    public Number getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
@@ -178,10 +178,10 @@ public class NumberConverter implements Converter, PartialStateHolder
         return null;
     }
 
-    private Object parse(String value, NumberFormat format, Class<?> destType)
+    private Number parse(String value, NumberFormat format, Class<?> destType)
         throws ParseException
     {
-        Object parsed = null;
+        Number parsed = null;
         
         ParsePosition parsePosition = new ParsePosition(0);
         if (destType == BigInteger.class)
@@ -213,7 +213,7 @@ public class NumberConverter implements Converter, PartialStateHolder
     }
 
     @Override
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
+    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Number value)
     {
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
@@ -221,11 +221,6 @@ public class NumberConverter implements Converter, PartialStateHolder
         if (value == null)
         {
             return "";
-        }
-
-        if (value instanceof String string)
-        {
-            return string;
         }
 
         NumberFormat format = getNumberFormat(facesContext);

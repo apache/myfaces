@@ -29,7 +29,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @JSFConverter
-public class FloatConverter implements Converter
+public class FloatConverter implements Converter<Float>
 {
     public static final String CONVERTER_ID = "jakarta.faces.Float";
     public static final String STRING_ID = "jakarta.faces.converter.STRING";
@@ -40,7 +40,7 @@ public class FloatConverter implements Converter
     }
 
     @Override
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
+    public Float getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
@@ -63,7 +63,7 @@ public class FloatConverter implements Converter
     }
 
     @Override
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
+    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Float value)
     {
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
@@ -73,14 +73,9 @@ public class FloatConverter implements Converter
             return "";
         }
 
-        if (value instanceof String string)
-        {
-            return string;
-        }
-
         try
         {
-            return Float.toString(((Number) value).floatValue());
+            return Float.toString(value);
         }
         catch (Exception e)
         {

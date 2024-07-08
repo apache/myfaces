@@ -20,7 +20,6 @@ package jakarta.faces.convert;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
 import org.apache.myfaces.core.api.shared.MessageUtils;
 import org.apache.myfaces.core.api.shared.lang.Assert;
@@ -29,7 +28,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @JSFConverter
-public class ShortConverter implements Converter
+public class ShortConverter implements Converter<Short>
 {
     public static final String CONVERTER_ID = "jakarta.faces.Short";
     public static final String STRING_ID = "jakarta.faces.converter.STRING";
@@ -40,7 +39,7 @@ public class ShortConverter implements Converter
     }
 
     @Override
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
+    public Short getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
@@ -63,7 +62,7 @@ public class ShortConverter implements Converter
     }
 
     @Override
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
+    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Short value)
     {
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
@@ -73,14 +72,9 @@ public class ShortConverter implements Converter
             return "";
         }
 
-        if (value instanceof String string)
-        {
-            return string;
-        }
-
         try
         {
-            return Short.toString(((Number) value).shortValue());
+            return Short.toString(value);
         }
         catch (Exception e)
         {

@@ -58,7 +58,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
     returnType = "jakarta.faces.convert.DateTimeConverter",
     longDesc = "A ValueExpression that evaluates to a DateTimeConverter.")
 public class DateTimeConverter
-        implements Converter, PartialStateHolder
+        implements Converter<Object>, PartialStateHolder
 {
 
     // API field
