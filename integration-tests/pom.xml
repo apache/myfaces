@@ -263,7 +263,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
-        <tomcat.version>10.1.19</tomcat.version>
+        <tomcat.version>10.1.25</tomcat.version>
         <arquillian-drone.version>3.0.0-alpha.7</arquillian-drone.version>
     </properties>
 </project>
