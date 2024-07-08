@@ -74,6 +74,7 @@ import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.FacesApplicationArtifactHolder;
 import org.apache.myfaces.cdi.FacesArtifactProducer;
 import org.apache.myfaces.cdi.FacesScoped;
+import org.apache.myfaces.cdi.PhaseEventBroadcasterPhaseListener;
 import org.apache.myfaces.cdi.clientwindow.ClientWindowScopeContextualStorageHolder;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
@@ -174,7 +175,8 @@ class MyFacesProcessor
             WebsocketSessionManager.class,
             WebsocketScopeManager.class,
             ClientWindowScopeContextualStorageHolder.class,
-            FlowScopeContextualStorageHolder.class
+            FlowScopeContextualStorageHolder.class,
+            PhaseEventBroadcasterPhaseListener.PhaseEventBroadcaster.class
     };
 
     private static final String[] BEAN_DEFINING_ANNOTATION_CLASSES =
