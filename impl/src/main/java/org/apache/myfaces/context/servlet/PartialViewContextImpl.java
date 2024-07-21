@@ -579,6 +579,11 @@ public class PartialViewContextImpl extends PartialViewContext
             {
                 ((EditableValueHolder)target).resetValue();
             }
+            else if (!VisitContext.ALL_IDS.equals(context.getIdsToVisit()))
+            {
+                // Render ID didn't specifically point an EditableValueHolder. Visit all children as well.
+                target.visitTree(VisitContext.createVisitContext(FacesContext.getCurrentInstance(), null, context.getHints()), this);
+            }
             return VisitResult.ACCEPT;
         }
     }
