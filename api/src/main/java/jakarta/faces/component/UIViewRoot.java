@@ -1950,6 +1950,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             {
                 holder.resetValue();
             }
+            else if (!VisitContext.ALL_IDS.equals(context.getIdsToVisit()))
+            {
+                // Render ID didn't specifically point an EditableValueHolder. Visit all children as well.
+                target.visitTree(VisitContext.createVisitContext(FacesContext.getCurrentInstance(), null, context.getHints()), this);
+            }
             return VisitResult.ACCEPT;
         }
     }
