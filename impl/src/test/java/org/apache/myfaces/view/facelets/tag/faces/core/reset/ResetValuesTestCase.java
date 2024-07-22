@@ -198,4 +198,44 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         Assertions.assertEquals(1, field2.getValue());
 
     }
+
+    @Test
+    public void testResetValuesActionListenerHandler4() throws Exception
+    {
+        startViewRequest("/resetValuesActionListener_4.xhtml");
+
+        processLifecycleExecute();
+        
+        ResetValuesBean bean = facesContext.getApplication().evaluateExpressionGet(facesContext, 
+            "#{bean}", ResetValuesBean.class);
+        
+        bean.setField1("Hello");
+        bean.setField2(1);
+        
+        executeBuildViewCycle(facesContext);
+                
+        UIComponent submitButton = facesContext.getViewRoot().findComponent("mainForm:submit:button");
+        
+        UIInput field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
+        UIInput field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        client.inputText(field1, "xxx");
+        client.inputText(field2, "2");
+        
+        client.submit(submitButton);
+        
+        processLifecycleExecute();
+        renderResponse();
+
+        submitButton = facesContext.getViewRoot().findComponent("mainForm:submit:button");
+        field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
+        field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
+
+        Assertions.assertEquals("Hello", field1.getValue());
+        Assertions.assertEquals(1, field2.getValue());
+
+    }
 }
