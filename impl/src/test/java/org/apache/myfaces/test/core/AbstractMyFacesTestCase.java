@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.test.core;
 
+import jakarta.servlet.ServletContextListener;
 import org.apache.myfaces.test.core.mock.MockMyFacesViewDeclarationLanguageFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -82,6 +83,7 @@ import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockWebContainer;
+import org.apache.myfaces.webapp.FacesInitializer;
 import org.apache.myfaces.webapp.FacesInitializerImpl;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.junit.jupiter.api.AfterAll;
@@ -151,13 +153,13 @@ public abstract class AbstractMyFacesTestCase
     {
         // Set up a new thread context class loader
         setUpClassloader();
-        
+
         jsfConfiguration = sharedConfiguration.get(getTestJavaClass().getName());
         if (jsfConfiguration == null)
         {
             jsfConfiguration = new SharedFacesConfiguration();
         }
-        
+
         TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
         boolean enableJNDI = (testConfig != null) ? testConfig.enableJNDI() : true;
         if (enableJNDI)
@@ -1231,7 +1233,7 @@ public abstract class AbstractMyFacesTestCase
     private static Map<String, SharedFacesConfiguration> sharedConfiguration =
         new ConcurrentHashMap<String, SharedFacesConfiguration>();
     private SharedFacesConfiguration jsfConfiguration;
-    
+
     protected Class<?> getTestJavaClass()
     {
         return this.getClass();
@@ -1444,108 +1446,98 @@ public abstract class AbstractMyFacesTestCase
         private FacesConfig metaInfServicesFacesConfig;
         private List<FacesConfig> contextSpecifiedFacesConfig;
 
-        /**
-         * @return the annotationFacesConfig
-         */
         public FacesConfig getAnnotationsFacesConfig()
         {
             return annotationFacesConfig;
         }
 
-        /**
-         * @param annotationFacesConfig the annotationFacesConfig to set
-         */
         public void setAnnotationFacesConfig(FacesConfig annotationFacesConfig)
         {
             this.annotationFacesConfig = annotationFacesConfig;
         }
 
-        /**
-         * @return the annotationFacesConfig
-         */
         public FacesConfig getAnnotationFacesConfig()
         {
             return annotationFacesConfig;
         }
 
-        /**
-         * @return the faceletTaglibFacesConfig
-         */
         public List<FacesConfig> getFaceletTaglibFacesConfig()
         {
             return faceletTaglibFacesConfig;
         }
 
-        /**
-         * @param faceletTaglibFacesConfig the faceletTaglibFacesConfig to set
-         */
         public void setFaceletTaglibFacesConfig(List<FacesConfig> faceletTaglibFacesConfig)
         {
             this.faceletTaglibFacesConfig = faceletTaglibFacesConfig;
         }
 
-        /**
-         * @return the facesFlowFacesConfig
-         */
         public List<FacesConfig> getFacesFlowFacesConfig()
         {
             return facesFlowFacesConfig;
         }
 
-        /**
-         * @param facesFlowFacesConfig the facesFlowFacesConfig to set
-         */
         public void setFacesFlowFacesConfig(List<FacesConfig> facesFlowFacesConfig)
         {
             this.facesFlowFacesConfig = facesFlowFacesConfig;
         }
 
-        /**
-         * @return the metaInfServicesFacesConfig
-         */
         public FacesConfig getMetaInfServicesFacesConfig()
         {
             return metaInfServicesFacesConfig;
         }
 
-        /**
-         * @param metaInfServicesFacesConfig the metaInfServicesFacesConfig to set
-         */
         public void setMetaInfServicesFacesConfig(FacesConfig metaInfServicesFacesConfig)
         {
             this.metaInfServicesFacesConfig = metaInfServicesFacesConfig;
         }
 
-        /**
-         * @return the contextSpecifiedFacesConfig
-         */
         public List<FacesConfig> getContextSpecifiedFacesConfig()
         {
             return contextSpecifiedFacesConfig;
         }
 
-        /**
-         * @param contextSpecifiedFacesConfig the contextSpecifiedFacesConfig to set
-         */
         public void setContextSpecifiedFacesConfig(List<FacesConfig> contextSpecifiedFacesConfig)
         {
             this.contextSpecifiedFacesConfig = contextSpecifiedFacesConfig;
         }
 
-        /**
-         * @return the classloaderFacesConfigList
-         */
         public List<FacesConfig> getClassloaderFacesConfig()
         {
             return classloaderFacesConfig;
         }
 
-        /**
-         * @param classloaderFacesConfigList the classloaderFacesConfigList to set
-         */
         public void setClassloaderFacesConfig(List<FacesConfig> classloaderFacesConfigList)
         {
             this.classloaderFacesConfig = classloaderFacesConfigList;
         }
     }
+
+    private static class TestStartupServletContextListener implements ServletContextListener
+    {
+        private FacesInitializer facesInitializer;
+
+        public TestStartupServletContextListener(FacesInitializer facesInitializer)
+        {
+            this.facesInitializer = facesInitializer;
+        }
+
+        @Override
+        public void contextInitialized(ServletContextEvent event)
+        {
+            if (facesInitializer != null)
+            {
+                facesInitializer.initFaces(event.getServletContext());
+            }
+        }
+
+        @Override
+        public void contextDestroyed(ServletContextEvent event)
+        {
+            if (facesInitializer != null)
+            {
+                facesInitializer.destroyFaces(event.getServletContext());
+            }
+        }
+    }
+
 }

@@ -72,7 +72,7 @@ public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFace
         Assertions.assertTrue(defaultContracts.contains("red"));
         
         processLifecycleExecute();
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
         Assertions.assertTrue(contractsList.contains("yellow"));

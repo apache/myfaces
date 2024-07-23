@@ -57,15 +57,15 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         bean.setField1("Hello");
         bean.setField2(1);
         
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
                 
         UIComponent submitButton = facesContext.getViewRoot().findComponent("mainForm:submit");
         
         UIInput field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         UIInput field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         // The lenght validator for field1 force a minimum of
         // 4 digits, but the entered text has only 3 charactes.
@@ -171,15 +171,15 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         bean.setField1("Hello");
         bean.setField2(1);
         
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
                 
         UIComponent submitButton = facesContext.getViewRoot().findComponent("mainForm:submit:button");
         
         UIInput field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         UIInput field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.inputText(field1, "xxx");
         client.inputText(field2, "2");
@@ -211,15 +211,15 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         bean.setField1("Hello");
         bean.setField2(1);
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
 
         UIComponent submitButton = facesContext.getViewRoot().findComponent("mainForm:submit");
 
         UIInput field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         UIInput field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
 
         // The lenght validator for field1 force a minimum of
         // 4 digits, but the entered text has only 3 charactes.
@@ -322,15 +322,15 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         bean.setField1("Hello");
         bean.setField2(1);
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
 
         UIComponent submitButton = facesContext.getViewRoot().findComponent("mainForm:submit");
 
         UIInput field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         UIInput field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
 
         // The lenght validator for field1 force a minimum of
         // 4 digits, but the entered text has only 3 charactes.

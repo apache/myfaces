@@ -75,13 +75,13 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         Assertions.assertTrue(externalContextContracts.contains("red"));
         
         processLifecycleExecute();
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
         Assertions.assertTrue(contractsList == null || contractsList.isEmpty());
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         endRequest();
     }
@@ -92,13 +92,13 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         startViewRequest("/view_1.xhtml");
         
         processLifecycleExecute();
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
         Assertions.assertTrue(contractsList.contains("yellow"));
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         client.submit(submitButton);
@@ -114,13 +114,13 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
     {
         startViewRequest("/view_2.xhtml");
         processLifecycleExecute();
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
         Assertions.assertTrue(contractsList.contains("blue"));
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         client.submit(submitButton);
@@ -136,13 +136,13 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
     {
         startViewRequest("/view_3.xhtml");
         processLifecycleExecute();
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
         Assertions.assertTrue(contractsList.contains("red"));
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         client.submit(submitButton);
@@ -158,13 +158,13 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
     {
         startViewRequest("/view_1.xhtml");
         processLifecycleExecute();
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
         Assertions.assertTrue(contractsList.contains("yellow"));
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();        
         String content1 = new String(writer1.content());
@@ -174,18 +174,18 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         
         startViewRequest("/view_3.xhtml");
         processLifecycleExecute();
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         contractsList = facesContext.getResourceLibraryContracts();
         Assertions.assertTrue(contractsList.contains("red"));
         
-        executeViewHandlerRender(facesContext);
+        executeViewHandlerRender();
 
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
         Assertions.assertTrue(content2.contains("header_red"));
         
-        executeAfterRender(facesContext);
+        executeAfterRender();
         
         endRequest();
     }    

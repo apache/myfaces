@@ -76,7 +76,7 @@ public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFac
         Assertions.assertFalse(defaultContracts.contains("red"));
         
         processLifecycleExecute();
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
         Assertions.assertFalse(contractsList.contains("yellow"));

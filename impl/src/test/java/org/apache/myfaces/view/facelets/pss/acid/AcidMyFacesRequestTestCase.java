@@ -765,8 +765,8 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         startViewRequest("/resourceDependency1.xhtml");
         processLifecycleExecute();
 
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         UIPanel headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
         Assertions.assertNotNull(headPanel);
@@ -774,8 +774,8 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         
         String nextUniqueId = facesContext.getViewRoot().createUniqueId(facesContext, null);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
@@ -786,16 +786,16 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
             facesContext, "#{resourceDependencyBean}", ResourceDependencyBean.class);
         bean.setIncludeContent(true);
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
         Assertions.assertNotNull(headPanel);
         Assertions.assertEquals(1, headPanel.getChildCount());
         Assertions.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
     }
 
     @Test
@@ -804,16 +804,16 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         startViewRequest("/resourceDependency2.xhtml");
         processLifecycleExecute();
 
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         UIPanel headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
         Assertions.assertNull(headPanel);
         
         String nextUniqueId = facesContext.getViewRoot().createUniqueId(facesContext, null);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
@@ -824,16 +824,16 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
             facesContext, "#{resourceDependencyBean}", ResourceDependencyBean.class);
         bean.setIncludeContent(true);
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
         Assertions.assertNotNull(headPanel);
         Assertions.assertTrue(1 >= headPanel.getChildCount());
         Assertions.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button2);
@@ -844,16 +844,16 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
             facesContext, "#{resourceDependencyBean}", ResourceDependencyBean.class);
         bean.setIncludeContent(false);
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
         Assertions.assertNotNull(headPanel);
         Assertions.assertTrue(1 >= headPanel.getChildCount());
         //Assertions.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);    
+        executeViewHandlerRender();
+        executeAfterRender();    
         
         UICommand button3 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button3);
@@ -864,16 +864,16 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
             facesContext, "#{resourceDependencyBean}", ResourceDependencyBean.class);
         bean.setIncludeContent(true);
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
         Assertions.assertNotNull(headPanel);
         Assertions.assertTrue(1 >= headPanel.getChildCount());
         //Assertions.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UICommand button4 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button4);
@@ -884,16 +884,16 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
             facesContext, "#{resourceDependencyBean}", ResourceDependencyBean.class);
         bean.setIncludeContent(false);
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
         Assertions.assertNotNull(headPanel);
         Assertions.assertTrue(1 >= headPanel.getChildCount());
         //Assertions.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
     }
 
     @Test
@@ -2032,8 +2032,8 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         startViewRequest("/forEach1.xhtml");
         processLifecycleExecute();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         UIOutput itemA_1 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_a");
         Assertions.assertNotNull(itemA_1);
@@ -2048,7 +2048,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         Assertions.assertEquals("c", itemC_1.getValue());
         itemC_1.getAttributes().put("prop", "c");
         
-        executeViewHandlerRender(facesContext);
+        executeViewHandlerRender();
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
@@ -2074,8 +2074,8 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         bean.addMiddle();
         bean.removeLast();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         UIOutput itemA_3 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_a");
         Assertions.assertNotNull(itemA_3);
@@ -2096,7 +2096,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         Assertions.assertEquals("x", itemX_3.getValue());
         Assertions.assertNull(itemX_3.getAttributes().get("prop"));
         
-        executeViewHandlerRender(facesContext);
+        executeViewHandlerRender();
 
         UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button2);

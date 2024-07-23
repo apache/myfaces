@@ -115,18 +115,18 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
+        executeViewHandlerRender();
+        executeAfterRender();
         
         endRequest();
 
         startViewRequest("/staticPageNoForm.xhtml");
         processLifecycleExecute();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
@@ -150,8 +150,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         UIOutput testjs1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
         Assertions.assertNotNull(testjs1_1);
@@ -164,16 +164,16 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
             comp.getAttributes().put("param2", "value2");
         }
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         endRequest();
 
         startViewRequest("/staticPageNoForm2.xhtml");
         processLifecycleExecute();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
@@ -230,8 +230,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         // Add a component in order to trigger a dynamic update
         UIOutput testComponent = (UIOutput) application.createComponent(UIOutput.COMPONENT_TYPE);
@@ -240,8 +240,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         UIForm form = (UIForm) facesContext.getViewRoot().findComponent("mainForm");
         form.getChildren().add(testComponent);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -270,8 +270,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         // Add a component in order to trigger a dynamic update
         UIOutput testComponent = (UIOutput) application.createComponent(UIOutput.COMPONENT_TYPE);
@@ -280,8 +280,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         UIForm form = (UIForm) facesContext.getViewRoot().findComponent("mainForm");
         form.getChildren().add(testComponent);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -311,8 +311,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         // Now let's try to remove some component programatically
         // that invalidates the view to be reused without a refresh,
@@ -320,8 +320,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         UIForm form = (UIForm) facesContext.getViewRoot().findComponent("mainForm");
         form.getChildren().remove(0);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -344,8 +344,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         // Now let's try to remove some component programatically
         // that invalidates the view to be reused without a refresh,
@@ -355,8 +355,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         // Add it again
         form.getChildren().add(panel);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -378,23 +378,23 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         // Use view scope
         facesContext.getViewRoot().getViewMap().put("someKey", "someValue");
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
 
         processLifecycleExecute();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         //Check if the view scope value is preserved
         Assertions.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
@@ -403,23 +403,23 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
 
         processLifecycleExecute();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         //Check if the view scope value is preserved
         Assertions.assertEquals("someValue2", facesContext.getViewRoot().getViewMap().get("someKey"));
         
         Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -444,8 +444,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         locale = facesContext.getViewRoot().getLocale();
         facesContext.getViewRoot().getViewMap().put("keyBeforeView", "someBeforeValue");
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         // Use view scope
         Assertions.assertEquals("someBeforeValue", facesContext.getViewRoot().getViewMap().get("keyBeforeView"));
@@ -453,15 +453,15 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
 
         processLifecycleExecute();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         //Check if the view scope value is preserved
         Assertions.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
@@ -470,23 +470,23 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
 
         processLifecycleExecute();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         //Check if the view scope value is preserved
         Assertions.assertEquals("someValue2", facesContext.getViewRoot().getViewMap().get("someKey"));
         
         Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -510,15 +510,15 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         // Use view scope
         facesContext.getViewRoot().getViewMap().put("someKey", "someValue");
         //Assertions.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
 
         startViewRequest("/staticPage3.xhtml");
         request.addParameter("id", "someId");
@@ -530,8 +530,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         Assertions.assertNotNull(paramComponent);
         Assertions.assertEquals("someId", paramComponent.getValue());
 
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         paramComponent = ViewMetadata.getViewParameters(facesContext.getViewRoot()).iterator().next();
         Assertions.assertNotNull(paramComponent);
@@ -544,8 +544,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         endRequest();
     }        
@@ -558,8 +558,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         UIOutput testjs1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
         Assertions.assertNotNull(testjs1_1);
@@ -574,15 +574,15 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
 
         processLifecycleExecute();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
@@ -618,17 +618,17 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         facesContext.getViewRoot().getViewMap(true).put("viewItem", "someValue");
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         endRequest();
         
         startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         // Check the ViewMap value is not passed to the view
         Assertions.assertNull(facesContext.getViewRoot().getViewMap(false));
@@ -652,10 +652,10 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         facesContext.getViewRoot().getViewMap(true).put("viewItem", "someValue");
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -679,11 +679,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         locale = facesContext.getViewRoot().getLocale();
         facesContext.getViewRoot().getViewMap(true).put("viewItem", "someValue");
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -735,7 +735,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         UIOutput outParam1_1 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:paramOut_1");
         Assertions.assertNotNull(outParam1_1);
@@ -745,19 +745,19 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         Assertions.assertNotNull(outParam1_2);
         Assertions.assertEquals("hello_2", outParam1_2.getValue());
         
-        executeViewHandlerRender(facesContext);
+        executeViewHandlerRender();
         
         //MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
         //String content1 = new String(writer1.content());
         
-        executeAfterRender(facesContext);
+        executeAfterRender();
         
         endRequest();
         
         startViewRequest("/staticUIParamPage1.xhtml");
         processLifecycleExecute();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         UIOutput outParam2_1 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:paramOut_1");
         Assertions.assertNotNull(outParam2_1);
@@ -777,12 +777,12 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assertions.assertNull(entry2);
         
-        executeViewHandlerRender(facesContext);
+        executeViewHandlerRender();
         
         //MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         //String content2 = new String(writer2.content());
         
-        executeAfterRender(facesContext);
+        executeAfterRender();
     }
         
     @Test
@@ -815,22 +815,22 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         UIOutput testId1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testId");
         Assertions.assertNotNull(testId1_1);
         testId1_1.getAttributes().put("param1", "value1");
         
-        executeViewHandlerRender(facesContext);
+        executeViewHandlerRender();
         
-        executeAfterRender(facesContext);
+        executeAfterRender();
         
         endRequest();
         
         startViewRequest("/staticViewParamPage1.xhtml");
         processLifecycleExecute();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         UIOutput testId2_1 = (UIOutput) facesContext.getViewRoot().findComponent("testId");
         Assertions.assertNotNull(testId2_1);
@@ -846,9 +846,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assertions.assertNull(entry2);
         
-        executeViewHandlerRender(facesContext);
+        executeViewHandlerRender();
         
-        executeAfterRender(facesContext);
+        executeAfterRender();
     }
 
     @Test
@@ -859,7 +859,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         UIOutput testId1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testId");
         Assertions.assertNotNull(testId1_1);
@@ -869,9 +869,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         
-        executeViewHandlerRender(facesContext);
+        executeViewHandlerRender();
         
-        executeAfterRender(facesContext);
+        executeAfterRender();
 
         client.submit(submitButton);
         
@@ -882,7 +882,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         // Check the state is correctly restored. 
         Assertions.assertEquals("value1", testId2_1.getAttributes().get("param1"));
         
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         UIOutput testId3_1 = (UIOutput) facesContext.getViewRoot().findComponent("testId");
         Assertions.assertNotNull(testId3_1);
@@ -899,9 +899,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assertions.assertNull(entry2);
         
-        executeViewHandlerRender(facesContext);
+        executeViewHandlerRender();
         
-        executeAfterRender(facesContext);
+        executeAfterRender();
     }
     
     @Test
@@ -912,14 +912,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         FaceletState faceletState = (FaceletState) facesContext.getViewRoot().getAttributes().get(
             ComponentSupport.FACELET_STATE_INSTANCE);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -941,8 +941,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/dynPage1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         // Add a component in order to trigger a dynamic update
         UIOutput testComponent = (UIOutput) application.createComponent(UIOutput.COMPONENT_TYPE);
@@ -954,8 +954,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         FaceletState faceletState = (FaceletState) facesContext.getViewRoot().getAttributes().get(
             ComponentSupport.FACELET_STATE_INSTANCE);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -986,11 +986,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         locale = facesContext.getViewRoot().getLocale();
         facesContext.getViewRoot().getViewMap(true).put("viewItem", "someValue");
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
         
@@ -1023,14 +1023,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         Locale locale = null;
         startViewRequest("/staticPageLocale1.xhtml");
         processLifecycleExecute();
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         locale = facesContext.getViewRoot().getLocale();
         Assertions.assertEquals(Locale.US, locale);
         
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1054,16 +1054,16 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         locale = facesContext.getViewRoot().getLocale();
         Assertions.assertEquals(Locale.US, locale);
         
-        executeBuildViewCycle(facesContext);
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeBuildViewCycle();
+        executeViewHandlerRender();
+        executeAfterRender();
         
         endRequest();
         
         startViewRequest("/staticPageLocale1.xhtml");
         processLifecycleExecute();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         // Check the view was used
         UIViewRoot root = new UIViewRoot();
@@ -1090,9 +1090,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         locale = facesContext.getViewRoot().getLocale();
         Assertions.assertEquals(Locale.US, locale);
         
-        executeBuildViewCycle(facesContext);
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeBuildViewCycle();
+        executeViewHandlerRender();
+        executeAfterRender();
         
         DynamicBean bean = facesContext.getApplication().evaluateExpressionGet(
             facesContext, "#{dynamicBean}", DynamicBean.class);
@@ -1104,7 +1104,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         Assertions.assertEquals(Locale.UK, locale);
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         // Check the view with Locale.US was not used
         UIViewRoot root = new UIViewRoot();
@@ -1123,12 +1123,12 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         Locale locale = null;
         startViewRequest("/staticPageContract1.xhtml");
         processLifecycleExecute();
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1151,16 +1151,16 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBuildViewCycle(facesContext);
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeBuildViewCycle();
+        executeViewHandlerRender();
+        executeAfterRender();
         
         endRequest();
         
         startViewRequest("/staticPageContract1.xhtml");
         processLifecycleExecute();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         // Check the view was used
         UIViewRoot root = new UIViewRoot();
@@ -1186,9 +1186,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBuildViewCycle(facesContext);
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeBuildViewCycle();
+        executeViewHandlerRender();
+        executeAfterRender();
         
         DynamicBean bean = facesContext.getApplication().evaluateExpressionGet(
             facesContext, "#{dynamicBean}", DynamicBean.class);
@@ -1199,7 +1199,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/staticPageContract1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         // Check the view with blue contract was not used
         List<String> contracts = new ArrayList<String>();
@@ -1223,14 +1223,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         FaceletState faceletState = (FaceletState) facesContext.getViewRoot().getAttributes().get(
             ComponentSupport.FACELET_STATE_INSTANCE);
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1250,8 +1250,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         UIOutput testjs1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
         Assertions.assertNotNull(testjs1_1);
@@ -1266,15 +1266,15 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
 
         processLifecycleExecute();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         Assertions.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
@@ -1311,11 +1311,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
 
         DynamicBean bean = facesContext.getApplication().evaluateExpressionGet(
             facesContext, "#{dynamicBean}", DynamicBean.class);
@@ -1327,8 +1327,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         UIOutput testjs1_1 = (UIOutput) facesContext.getViewRoot().findComponent("testjs");
         Assertions.assertNotNull(testjs1_1);
@@ -1345,8 +1345,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         bean.setResource1(false);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
 
@@ -1366,8 +1366,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
             Assertions.assertEquals("value2", comp.getAttributes().get("param2"));
         } */       
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1388,14 +1388,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/staticPageBinding1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         UIPanel panel1 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel1");
         Assertions.assertNotNull(panel1);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1418,14 +1418,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
         UIPanel panel1 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel1");
         Assertions.assertNotNull(panel1);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
         
@@ -1460,8 +1460,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         UIPanel panel1_2 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel2");
         Assertions.assertNotNull(panel1_2);
@@ -1469,8 +1469,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         Assertions.assertEquals("added component through binding", 
             panel1_2.getChildren().get(0).getAttributes().get("value"));
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1493,7 +1493,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         UIPanel panel1_2 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel2");
         Assertions.assertNotNull(panel1_2);
@@ -1503,8 +1503,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
         
@@ -1541,8 +1541,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         UIPanel panel1_3 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel3");
         Assertions.assertNotNull(panel1_3);
@@ -1550,8 +1550,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         Assertions.assertEquals("added component through binding", 
             panel1_3.getChildren().get(0).getAttributes().get("value"));
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1574,7 +1574,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         UIPanel panel1_3 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel3");
         Assertions.assertNotNull(panel1_3);
@@ -1584,8 +1584,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
         
@@ -1622,15 +1622,15 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
         UIPanel panel1_4 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel4");
         Assertions.assertNotNull(panel1_4);
         Assertions.assertEquals(1, panel1_4.getChildCount());
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1653,7 +1653,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         UIPanel panel1_4 = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel4");
         Assertions.assertNotNull(panel1_4);
@@ -1661,8 +1661,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
         
@@ -1696,11 +1696,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/staticPageBindingValidator1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1723,11 +1723,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
         
@@ -1765,11 +1765,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/staticPageStateHolderConverter1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1792,11 +1792,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
         
@@ -1834,11 +1834,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         startViewRequest("/staticPageStateHolderConverter2.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1861,11 +1861,11 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
         
@@ -1897,8 +1897,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
-        executeBeforeRender(facesContext);
-        executeBuildViewCycle(facesContext);
+        executeBeforeRender();
+        executeBuildViewCycle();
         
         // Now let's try to remove some component programatically
         // that invalidates the view to be reused without a refresh,
@@ -1907,8 +1907,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         panel.getParent().getChildren().remove(panel);
         
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -1931,7 +1931,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         // Now let's try to remove some component programatically
         // that invalidates the view to be reused without a refresh,
@@ -1941,8 +1941,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
 
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
         
@@ -1974,7 +1974,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
-        executeBuildViewCycle(facesContext);
+        executeBuildViewCycle();
         
         // Now let's try to remove some component programatically
         // that invalidates the view to be reused without a refresh,
@@ -1986,8 +1986,8 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
 
-        executeViewHandlerRender(facesContext);
-        executeAfterRender(facesContext);
+        executeViewHandlerRender();
+        executeAfterRender();
         
         client.submit(submitButton);
         
