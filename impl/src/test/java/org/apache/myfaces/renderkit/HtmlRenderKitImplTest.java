@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Test;
 
-public class HtmlRenderKitImplTest extends AbstractJsfTestCase
+public class HtmlRenderKitImplTest extends AbstractFacesTestCase
 {
 
     @Test

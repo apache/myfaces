@@ -22,7 +22,7 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.junit.jupiter.api.Test;
 
-public class BrokenTestCase extends FaceletTestCase {
+public class BrokenTestCase extends AbstractFaceletTestCase {
 
     @Test
     public void testBroken() throws Exception {

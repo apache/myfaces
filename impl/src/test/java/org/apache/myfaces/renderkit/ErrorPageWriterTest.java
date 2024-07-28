@@ -31,7 +31,7 @@ import jakarta.faces.component.html.HtmlOutputText;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.spi.impl.DefaultSerialFactory;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.AfterEach;
@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author: struberg $)
  * @version $Revision: 1188235 $ $Date: 2011-10-24 13:09:33 -0400 (Mon, 24 Oct 2011) $
  */
-public class ErrorPageWriterTest extends AbstractJsfTestCase
+public class ErrorPageWriterTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlOutputText outputText;

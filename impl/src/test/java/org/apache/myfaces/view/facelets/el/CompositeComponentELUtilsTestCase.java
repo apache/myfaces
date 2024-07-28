@@ -19,7 +19,7 @@
 package org.apache.myfaces.view.facelets.el;
 
 import jakarta.el.ExpressionFactory;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author Leonardo Uribe
  */
-public class CompositeComponentELUtilsTestCase extends FaceletTestCase
+public class CompositeComponentELUtilsTestCase extends AbstractFaceletTestCase
 {
     
     @Override

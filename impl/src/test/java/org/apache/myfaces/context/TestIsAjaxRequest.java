@@ -21,7 +21,7 @@ import java.util.Map;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  * @author Werner Punz(latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class TestIsAjaxRequest extends AbstractJsfTestCase {
+public class TestIsAjaxRequest extends AbstractFacesTestCase {
     Map<String, String> requestParameterMap = null;
     FacesContext context = null;
 

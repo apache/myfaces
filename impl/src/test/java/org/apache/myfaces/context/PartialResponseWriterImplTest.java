@@ -31,7 +31,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +47,7 @@ import org.xml.sax.InputSource;
  * @version $Revision$ $Date$
  */
 
-public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
+public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
 
     static Logger _log = Logger.getLogger(PartialResponseWriterImplTest.class.getName());
 

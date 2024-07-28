@@ -18,7 +18,7 @@
  */
 package jakarta.faces.convert;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Test;
 
 import jakarta.faces.component.UIInput;
@@ -31,7 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 /**
  * Test the {@link DoubleConverter}.
  */
-public class DoubleConverterTest extends AbstractJsfTestCase {
+public class DoubleConverterTest extends AbstractFacesTestCase {
 
     private DoubleConverter mock;
 

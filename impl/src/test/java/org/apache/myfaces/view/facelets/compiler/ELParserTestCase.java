@@ -26,12 +26,12 @@ import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ELParserTestCase extends FaceletTestCase {
+public class ELParserTestCase extends AbstractFaceletTestCase {
 
     private UIComponent target;
 

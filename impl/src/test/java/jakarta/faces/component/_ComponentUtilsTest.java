@@ -21,11 +21,11 @@ package jakarta.faces.component;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.test.mock.MockRenderedValueExpression;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class _ComponentUtilsTest extends AbstractJsfTestCase {
+public class _ComponentUtilsTest extends AbstractFacesTestCase {
 
     @Test
     public void testIsRendered() {

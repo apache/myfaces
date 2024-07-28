@@ -32,6 +32,7 @@ public class MockInitialContextFactory implements InitialContextFactory
 
     private static ThreadLocal<Context> currentInstance = new ThreadLocal<Context>();
 
+    @Override
     public Context getInitialContext(Hashtable<?, ?> environment)
         throws NamingException
     {

@@ -27,7 +27,7 @@ import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +37,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class PartialVisitContextTest extends AbstractJsfConfigurableMockTestCase {
+public class PartialVisitContextTest extends AbstractFacesConfigurableMockTestCase {
 
     @Test
     public void test() {

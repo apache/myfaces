@@ -81,7 +81,7 @@ import  org.junit.jupiter.api.BeforeEach;
  * @since 1.0.3
  */
 
-public abstract class AbstractJsfConfigurableMultipleRequestsTestCase
+public abstract class AbstractFacesConfigurableMultipleRequestsTestCase
 {
 
     // ------------------------------------------------------------ Constructors
@@ -89,7 +89,7 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase
     /**
      * <p>Construct a new instance of this test case.</p>
      */
-    public AbstractJsfConfigurableMultipleRequestsTestCase()
+    public AbstractFacesConfigurableMultipleRequestsTestCase()
     {
     }
 

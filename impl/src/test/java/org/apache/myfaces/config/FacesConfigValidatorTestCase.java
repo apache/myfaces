@@ -25,12 +25,12 @@ import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.FacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.impl.element.FacesConfigImpl;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
+public class FacesConfigValidatorTestCase extends AbstractFacesTestCase
 {
     private FacesConfigDispenser dispenser;
     private FacesConfigUnmarshaller<FacesConfigImpl> unmarshaller;

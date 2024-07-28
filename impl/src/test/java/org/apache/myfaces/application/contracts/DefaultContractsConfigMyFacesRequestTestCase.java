@@ -32,12 +32,6 @@ public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFace
 {
 
     @Override
-    protected boolean isScanAnnotations()
-    {
-        return true;
-    }
-
-    @Override
     protected void setUpWebConfigParams() throws Exception
     {
         super.setUpWebConfigParams();

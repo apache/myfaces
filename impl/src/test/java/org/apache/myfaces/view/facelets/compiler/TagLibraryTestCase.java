@@ -22,14 +22,14 @@ import java.io.File;
 import java.net.URL;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
-public class TagLibraryTestCase extends FaceletTestCase
+public class TagLibraryTestCase extends AbstractFaceletTestCase
 {
     public final static String TAGLIB_SCHEMA_PATH = "/org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
     

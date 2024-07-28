@@ -32,13 +32,6 @@ import org.junit.jupiter.api.Test;
  */
 public class StatelessTest extends AbstractMyFacesRequestTestCase
 {
-
-    @Override
-    protected boolean isScanAnnotations()
-    {
-        return true;
-    }
-
     @Override
     protected void setUpWebConfigParams() throws Exception
     {
@@ -71,7 +64,7 @@ public class StatelessTest extends AbstractMyFacesRequestTestCase
             // this will cause an exception without the fix in MYFACES-4267
             restoreView();
         } catch (Exception e) {
-            Assertions.fail("caught an exception trying to restore a stateless view: " + e.getMessage());
+            Assertions.fail("caught an exception trying to restore a stateless view", e);
             endRequest();
             return;
         }

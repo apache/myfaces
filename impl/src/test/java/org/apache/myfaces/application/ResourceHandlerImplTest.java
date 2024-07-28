@@ -20,7 +20,7 @@ package org.apache.myfaces.application;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +44,7 @@ import org.mockito.Mockito;
  *
  * @author Jakob Korherr
  */
-public class ResourceHandlerImplTest extends AbstractJsfTestCase
+public class ResourceHandlerImplTest extends AbstractFacesTestCase
 {
 
     private ResourceHandlerImpl resourceHandler;

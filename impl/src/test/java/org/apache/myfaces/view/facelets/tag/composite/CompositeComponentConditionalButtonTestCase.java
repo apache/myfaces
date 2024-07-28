@@ -25,12 +25,12 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentConditionalButtonTestCase extends FaceletTestCase
+public class CompositeComponentConditionalButtonTestCase extends AbstractFaceletTestCase
 {
 
     @Override

@@ -17,14 +17,14 @@
 
 package org.apache.myfaces.application.viewstate;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 
 import javax.crypto.SecretKey;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SecretKeyCacheTest extends AbstractJsfTestCase
+public class SecretKeyCacheTest extends AbstractFacesTestCase
 {
     @Override
     @BeforeEach

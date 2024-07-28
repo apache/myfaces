@@ -29,7 +29,7 @@ import jakarta.servlet.ServletResponseWrapper;
 import jakarta.servlet.WriteListener;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
  * @author Werner Punz(latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
+public class ResponseWrapperSwitchTest extends AbstractFacesTestCase {
 
     @Override
     @BeforeEach

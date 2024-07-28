@@ -43,13 +43,13 @@ import jakarta.faces.event.ValueChangeEvent;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.DummyBean;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentAttributeTestCase extends FaceletTestCase
+public class CompositeComponentAttributeTestCase extends AbstractFaceletTestCase
 {
 
     @Override

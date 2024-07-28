@@ -18,24 +18,6 @@
  */
 package org.apache.myfaces.test.core;
 
-import jakarta.servlet.ServletContextListener;
-import org.apache.myfaces.test.core.mock.MockMyFacesViewDeclarationLanguageFactory;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -51,17 +33,15 @@ import jakarta.faces.context.Flash;
 import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
-import jakarta.faces.event.PhaseListener;
 import jakarta.faces.event.PreRenderViewEvent;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.webapp.FacesServlet;
-import javax.naming.Context;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.myfaces.config.ConfigFilesXmlValidationUtils;
 import org.apache.myfaces.config.DefaultFacesConfigurationProvider;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -69,15 +49,16 @@ import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.impl.element.FactoryImpl;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
+import org.apache.myfaces.lifecycle.PhaseExecutor;
+import org.apache.myfaces.lifecycle.PhaseListenerManager;
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
-import org.apache.myfaces.test.core.annotation.DeclareFacesConfig;
-import org.apache.myfaces.test.core.annotation.TestConfig;
-import org.apache.myfaces.test.core.mock.DefaultContext;
-import org.apache.myfaces.test.core.mock.MockInitialContextFactory;
-import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationProviderFactory;
 import org.apache.myfaces.spi.impl.NoInjectionAnnotationInjectionProvider;
+import org.apache.myfaces.test.core.annotation.DeclareFacesConfig;
+import org.apache.myfaces.test.core.mock.DefaultContext;
+import org.apache.myfaces.test.core.mock.MockInitialContextFactory;
+import org.apache.myfaces.test.core.mock.MockMyFacesViewDeclarationLanguageFactory;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.test.mock.MockServletConfig;
@@ -85,11 +66,23 @@ import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockWebContainer;
 import org.apache.myfaces.webapp.FacesInitializer;
 import org.apache.myfaces.webapp.FacesInitializerImpl;
-import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.junit.jupiter.api.AfterAll;
-import  org.junit.jupiter.api.AfterEach;
-import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.xml.sax.SAXException;
+
+import javax.naming.Context;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>Abstract JUnit test case base class, which sets up MyFaces Core environment
@@ -102,26 +95,6 @@ import org.xml.sax.SAXException;
  */
 public abstract class AbstractMyFacesTestCase
 {
-    private static final Class<?> PHASE_EXECUTOR_CLASS;
-    private static final Class<?> PHASE_MANAGER_CLASS;
-    
-    static 
-    {
-        Class<?> phaseExecutorClass = null;
-        Class<?> phaseManagerClass = null;
-        try
-        {
-            phaseExecutorClass = Class.forName("org.apache.myfaces.lifecycle.PhaseExecutor");
-            phaseManagerClass = Class.forName("org.apache.myfaces.lifecycle.PhaseListenerManager");
-        }
-        catch (ClassNotFoundException e)
-        {
-            //No op
-        }
-        PHASE_EXECUTOR_CLASS = phaseExecutorClass;
-        PHASE_MANAGER_CLASS = phaseManagerClass;
-    }
-    
     public static final String PHASE_MANAGER_INSTANCE = "org.apache.myfaces.test.PHASE_MANAGER_INSTANCE";
     
     public static final String LAST_PHASE_PROCESSED = "oam.LAST_PHASE_PROCESSED";
@@ -160,14 +133,10 @@ public abstract class AbstractMyFacesTestCase
             jsfConfiguration = new SharedFacesConfiguration();
         }
 
-        TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
-        boolean enableJNDI = (testConfig != null) ? testConfig.enableJNDI() : true;
-        if (enableJNDI)
-        {
-            System.setProperty(Context.INITIAL_CONTEXT_FACTORY, MockInitialContextFactory.class.getName());
-            jndiContext = new DefaultContext();
-            MockInitialContextFactory.setCurrentContext(jndiContext);
-        }
+        //JNDI
+        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, MockInitialContextFactory.class.getName());
+        jndiContext = new DefaultContext();
+        MockInitialContextFactory.setCurrentContext(jndiContext);
 
         // Set up Servlet API Objects
         setUpServletObjects();
@@ -283,12 +252,6 @@ public abstract class AbstractMyFacesTestCase
      */
     protected String getWebappResourcePath()
     {
-        TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
-        if (testConfig != null && testConfig.webappResourcePath() != null &&
-            !"testClassResourcePackage".equals(testConfig.webappResourcePath()))
-        {
-            return testConfig.webappResourcePath();
-        }
         return this.getClass().getName().substring(0,
                 this.getClass().getName().lastIndexOf('.')).replace('.', '/')
                 + "/";
@@ -302,13 +265,6 @@ public abstract class AbstractMyFacesTestCase
      */
     protected ExpressionFactory createExpressionFactory()
     {
-        TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
-        if (testConfig != null && testConfig.expressionFactory() != null &&
-            testConfig.expressionFactory().length() > 0)
-        {
-            return (ExpressionFactory) ClassUtils.newInstance(
-                testConfig.expressionFactory(), ExpressionFactory.class);
-        }
         return new MockExpressionFactory();
     }
     
@@ -331,11 +287,7 @@ public abstract class AbstractMyFacesTestCase
     {
         setUpMyFaces();
     }
-    
-    /**
-     * 
-     * @return
-     */
+
     protected FacesConfigurationProvider createFacesConfigurationProvider()
     {
         return new MyFacesMockFacesConfigurationProvider(this); 
@@ -718,120 +670,36 @@ public abstract class AbstractMyFacesTestCase
             }
         }
     }
-    
-    /**
-     * Indicate if annotation scanning should be done over the classpath. 
-     * By default it is set to false.
-     * 
-     * @return
-     */
-    protected boolean isScanAnnotations()
-    {
-        TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
-        if (testConfig != null)
-        {
-            return testConfig.scanAnnotations();
-        }
-        return false;
-    }
-    
+
     public void executeBeforeRender(FacesContext facesContext)
     {
+        if (facesContext.getResponseComplete())
+        {
+            return;
+        }
+
         if (lifecycle instanceof LifecycleImpl lifecycleImpl)
         {
-            
-            Object phaseExecutor = null;
-            Object phaseManager = null;
-            try
+            PhaseListenerManager phaseManager = (PhaseListenerManager) facesContext.getAttributes().get(PHASE_MANAGER_INSTANCE);
+            if (phaseManager == null)
             {
-                Field renderExecutorField = lifecycleImpl.getClass().getDeclaredField("renderExecutor");
-                if (!renderExecutorField.isAccessible())
-                {
-                    renderExecutorField.setAccessible(true);
-                }
-                phaseExecutor = renderExecutorField.get(lifecycleImpl);
+                phaseManager = new PhaseListenerManager(lifecycle, facesContext, lifecycleImpl.getPhaseListeners());
+                facesContext.getAttributes().put(PHASE_MANAGER_INSTANCE, phaseManager);
+            }
 
-                if (facesContext.getResponseComplete())
-                {
-                    return;
-                }
-
-                phaseManager = facesContext.getAttributes().get(PHASE_MANAGER_INSTANCE);
-                if (phaseManager == null)
-                {
-                    Method getPhaseListenersMethod = lifecycleImpl.getClass().getDeclaredMethod("getPhaseListeners");
-                    if (!getPhaseListenersMethod.isAccessible())
-                    {
-                        getPhaseListenersMethod.setAccessible(true);
-                    }
-
-                    Constructor<?> plmc = PHASE_MANAGER_CLASS.getDeclaredConstructor(
-                            Lifecycle.class, FacesContext.class, PhaseListener[].class);
-                    if (!plmc.isAccessible())
-                    {
-                        plmc.setAccessible(true);
-                    }
-                    phaseManager = plmc.newInstance(lifecycle, facesContext, getPhaseListenersMethod.invoke(
-                        lifecycleImpl, null));
-                    facesContext.getAttributes().put(PHASE_MANAGER_INSTANCE, phaseManager);
-                }
-            }
-            catch (NoSuchFieldException ex)
-            {
-                throw new IllegalStateException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (SecurityException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (IllegalArgumentException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (IllegalAccessException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (NoSuchMethodException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (InvocationTargetException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (InstantiationException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            
             Flash flash = facesContext.getExternalContext().getFlash();
-            
             try
             {
                 facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
                 
                 flash.doPrePhaseActions(facesContext);
-                
+
+                PhaseExecutor phaseExecutor = lifecycleImpl.getPhaseExecutor(PhaseId.RENDER_RESPONSE);
+
                 // let the PhaseExecutor do some pre-phase actions
-                
-                //renderExecutor.doPrePhaseActions(facesContext);
-                Method doPrePhaseActionsMethod = phaseExecutor.getClass().getMethod("doPrePhaseActions", 
-                    FacesContext.class);
-                if(!(doPrePhaseActionsMethod.isAccessible()))
-                {
-                    doPrePhaseActionsMethod.setAccessible(true);
-                }
-                doPrePhaseActionsMethod.invoke(phaseExecutor, facesContext);
-                
-                //phaseListenerMgr.informPhaseListenersBefore(PhaseId.RENDER_RESPONSE);
-                Method informPhaseListenersBeforeMethod = phaseManager.getClass().getDeclaredMethod(
-                    "informPhaseListenersBefore", PhaseId.class);
-                if(!(informPhaseListenersBeforeMethod.isAccessible()))
-                {
-                    informPhaseListenersBeforeMethod.setAccessible(true);
-                }
-                informPhaseListenersBeforeMethod.invoke(phaseManager, PhaseId.RENDER_RESPONSE);
+                phaseExecutor.doPrePhaseActions(facesContext);
+
+                phaseManager.informPhaseListenersBefore(PhaseId.RENDER_RESPONSE);
                 
                 // also possible that one of the listeners completed the response
                 if (facesContext.getResponseComplete())
@@ -1001,78 +869,23 @@ public abstract class AbstractMyFacesTestCase
     {
         if (lifecycle instanceof LifecycleImpl lifecycleImpl)
         {
-            
-            Object phaseExecutor = null;
-            Object phaseManager = null;
-            Method informPhaseListenersAfterMethod = null;
+            PhaseListenerManager phaseManager;
             try
             {
-                Field renderExecutorField = lifecycleImpl.getClass().getDeclaredField("renderExecutor");
-                if (!renderExecutorField.isAccessible())
-                {
-                    renderExecutorField.setAccessible(true);
-                }
-                phaseExecutor = renderExecutorField.get(lifecycleImpl);
-            
-                phaseManager = facesContext.getAttributes().get(PHASE_MANAGER_INSTANCE);
+                phaseManager = (PhaseListenerManager) facesContext.getAttributes().get(PHASE_MANAGER_INSTANCE);
                 if (phaseManager == null)
                 {
-                    Method getPhaseListenersMethod = lifecycleImpl.getClass().getDeclaredMethod("getPhaseListeners");
-                    if (!getPhaseListenersMethod.isAccessible())
-                    {
-                        getPhaseListenersMethod.setAccessible(true);
-                    }
-
-                    Constructor<?> plmc = PHASE_MANAGER_CLASS.getDeclaredConstructor(
-                            Lifecycle.class, FacesContext.class, PhaseListener[].class);
-                    if (!plmc.isAccessible())
-                    {
-                        plmc.setAccessible(true);
-                    }
-                    phaseManager = plmc.newInstance(lifecycle, facesContext, getPhaseListenersMethod.invoke(
-                        lifecycleImpl, null));
+                    phaseManager = new PhaseListenerManager(lifecycle, facesContext, lifecycleImpl.getPhaseListeners());
                     facesContext.getAttributes().put(PHASE_MANAGER_INSTANCE, phaseManager);
                 }
 
-                //phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
-                informPhaseListenersAfterMethod = phaseManager.getClass().getDeclaredMethod(
-                    "informPhaseListenersAfter", PhaseId.class);
-                if(!(informPhaseListenersAfterMethod.isAccessible()))
-                {
-                    informPhaseListenersAfterMethod.setAccessible(true);
-                }
-                
-                informPhaseListenersAfterMethod.invoke(phaseManager, PhaseId.RENDER_RESPONSE);
+                phaseManager.informPhaseListenersAfter(PhaseId.RENDER_RESPONSE);
             }
-            catch (NoSuchFieldException ex)
-            {
-                throw new IllegalStateException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (SecurityException ex)
+            catch (SecurityException | IllegalArgumentException ex)
             {
                 throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
             }
-            catch (IllegalArgumentException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (IllegalAccessException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (NoSuchMethodException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (InvocationTargetException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (InstantiationException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            
+
             Flash flash = facesContext.getExternalContext().getFlash();
             
             flash.doPostPhaseActions(facesContext);
@@ -1101,106 +914,14 @@ public abstract class AbstractMyFacesTestCase
     {
         if (lifecycle instanceof LifecycleImpl lifecycleImpl)
         {
-            
-            int phaseId = phase.equals(PhaseId.RESTORE_VIEW) ? 0 :
-                          phase.equals(PhaseId.APPLY_REQUEST_VALUES) ? 1 : 
-                          phase.equals(PhaseId.PROCESS_VALIDATIONS) ? 2 :
-                          phase.equals(PhaseId.UPDATE_MODEL_VALUES) ? 3 : 
-                          phase.equals(PhaseId.INVOKE_APPLICATION) ? 4 : 5 ;
-            
-            Method executePhaseMethod = null;
-            Object phaseManager = null;
-            Object phaseExecutor = null;
-            try
-            {
-                if (phaseId < 5)
-                {
-                    Field lifecycleExecutorsField;
-                        lifecycleExecutorsField = lifecycleImpl.getClass().getDeclaredField("lifecycleExecutors");
-                        if (!lifecycleExecutorsField.isAccessible())
-                        {
-                            lifecycleExecutorsField.setAccessible(true);
-                        }
-                        phaseExecutor = ((Object[])lifecycleExecutorsField.get(lifecycleImpl))[phaseId];
-                }
-                else
-                {
-                    Field renderExecutorField = lifecycleImpl.getClass().getDeclaredField("renderExecutor");
-                    if (!renderExecutorField.isAccessible())
-                    {
-                        renderExecutorField.setAccessible(true);
-                    }
-                    phaseExecutor = renderExecutorField.get(lifecycleImpl);
-                }
-
-                phaseManager = facesContext.getAttributes().get(PHASE_MANAGER_INSTANCE);
-                if (phaseManager == null)
-                {
-                    Method getPhaseListenersMethod = lifecycleImpl.getClass().getDeclaredMethod("getPhaseListeners");
-                    if (!getPhaseListenersMethod.isAccessible())
-                    {
-                        getPhaseListenersMethod.setAccessible(true);
-                    }
-
-                    Constructor<?> plmc = PHASE_MANAGER_CLASS.getDeclaredConstructor(
-                            Lifecycle.class, FacesContext.class, PhaseListener[].class);
-                    if (!plmc.isAccessible())
-                    {
-                        plmc.setAccessible(true);
-                    }
-                    phaseManager = plmc.newInstance(lifecycle, facesContext, 
-                        getPhaseListenersMethod.invoke(lifecycleImpl, null));
-                    facesContext.getAttributes().put(PHASE_MANAGER_INSTANCE, phaseManager);
-                }
-
-                executePhaseMethod = lifecycleImpl.getClass().getDeclaredMethod("executePhase", FacesContext.class, PHASE_EXECUTOR_CLASS, PHASE_MANAGER_CLASS);
-                if (!executePhaseMethod.isAccessible())
-                {
-                    executePhaseMethod.setAccessible(true);
-                }
-                
-                executePhaseMethod.invoke(lifecycleImpl, facesContext, phaseExecutor, phaseManager);
-            }
-            catch (NoSuchFieldException ex)
-            {
-                throw new IllegalStateException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (SecurityException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (IllegalArgumentException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (IllegalAccessException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (NoSuchMethodException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (InvocationTargetException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }
-            catch (InstantiationException ex)
-            {
-                throw new UnsupportedOperationException("Cannot get executors from LifecycleImpl", ex);
-            }            
-            
-            if (phase.equals(PhaseId.RENDER_RESPONSE))
-            {
-                facesContext.getAttributes().remove(PHASE_MANAGER_INSTANCE);
-            }
+            lifecycleImpl.executePhase(facesContext, phase);
         }
         else
         {
             throw new UnsupportedOperationException("Cannot execute phase on custom lifecycle instances");
         }
     }
-    
+
     protected String getRenderedContent(FacesContext facesContext) throws IOException
     {
         MockPrintWriter writer1 = (MockPrintWriter) 
@@ -1230,8 +951,7 @@ public abstract class AbstractMyFacesTestCase
     protected Lifecycle lifecycle;
 
     private static FacesConfig standardFacesConfig;
-    private static Map<String, SharedFacesConfiguration> sharedConfiguration =
-        new ConcurrentHashMap<String, SharedFacesConfiguration>();
+    private static Map<String, SharedFacesConfiguration> sharedConfiguration = new ConcurrentHashMap<>();
     private SharedFacesConfiguration jsfConfiguration;
 
     protected Class<?> getTestJavaClass()
@@ -1276,18 +996,13 @@ public abstract class AbstractMyFacesTestCase
         }
 
         @Override
-        public FacesConfig getAnnotationsFacesConfig(ExternalContext ectx,
-                boolean metadataComplete)
+        public FacesConfig getAnnotationsFacesConfig(ExternalContext ectx, boolean metadataComplete)
         {
-            FacesConfig facesConfig = jsfConfiguration.getAnnotationsFacesConfig();
+            FacesConfig facesConfig = jsfConfiguration.annotationFacesConfig;
             if (facesConfig == null)
             {
-                if (isScanAnnotations())
-                {
-                    facesConfig = super.getAnnotationsFacesConfig(ectx, metadataComplete); 
-                }
-
-                jsfConfiguration.setAnnotationFacesConfig(facesConfig);
+                facesConfig = super.getAnnotationsFacesConfig(ectx, metadataComplete);
+                jsfConfiguration.annotationFacesConfig = facesConfig;
             }
             return facesConfig;
         }
@@ -1295,11 +1010,11 @@ public abstract class AbstractMyFacesTestCase
         @Override
         public List<FacesConfig> getClassloaderFacesConfig(ExternalContext ectx)
         {
-            List<FacesConfig> list = jsfConfiguration.getClassloaderFacesConfig();
+            List<FacesConfig> list = jsfConfiguration.classloaderFacesConfig;
             if (list == null)
             {
                 list = super.getClassloaderFacesConfig(ectx);
-                jsfConfiguration.setClassloaderFacesConfig(list);
+                jsfConfiguration.classloaderFacesConfig = list;
             }
             return list;
         }
@@ -1307,11 +1022,11 @@ public abstract class AbstractMyFacesTestCase
         @Override
         public List<FacesConfig> getFaceletTaglibFacesConfig(ExternalContext externalContext)
         {
-            List<FacesConfig> list = jsfConfiguration.getFaceletTaglibFacesConfig();
+            List<FacesConfig> list = jsfConfiguration.faceletTaglibFacesConfig;
             if (list == null)
             {
                 list = super.getFaceletTaglibFacesConfig(externalContext);
-                jsfConfiguration.setFaceletTaglibFacesConfig(list);
+                jsfConfiguration.faceletTaglibFacesConfig = list;
             }
             return list;
         }
@@ -1319,11 +1034,11 @@ public abstract class AbstractMyFacesTestCase
         @Override
         public List<FacesConfig> getFacesFlowFacesConfig(ExternalContext ectx)
         {
-            List<FacesConfig> list = jsfConfiguration.getFacesFlowFacesConfig();
+            List<FacesConfig> list = jsfConfiguration.facesFlowFacesConfig;
             if (list == null)
             {
                 list = super.getFacesFlowFacesConfig(ectx);
-                jsfConfiguration.setFacesFlowFacesConfig(list);
+                jsfConfiguration.facesFlowFacesConfig = list;
             }
             return list;
         }
@@ -1331,10 +1046,11 @@ public abstract class AbstractMyFacesTestCase
         @Override
         public FacesConfig getMetaInfServicesFacesConfig(ExternalContext ectx)
         {
-            FacesConfig facesConfig = jsfConfiguration.getMetaInfServicesFacesConfig();
+            FacesConfig facesConfig = jsfConfiguration.metaInfServicesFacesConfig;
             if (facesConfig == null)
             {
                 facesConfig = super.getMetaInfServicesFacesConfig(ectx);
+                jsfConfiguration.metaInfServicesFacesConfig = facesConfig;
             }
             return facesConfig;
         }
@@ -1436,83 +1152,18 @@ public abstract class AbstractMyFacesTestCase
         }
         
     }
-    
+
     protected static class SharedFacesConfiguration
     {
-        private List<FacesConfig> classloaderFacesConfig;
-        private FacesConfig annotationFacesConfig;
-        private List<FacesConfig> faceletTaglibFacesConfig;
-        private List<FacesConfig> facesFlowFacesConfig;
-        private FacesConfig metaInfServicesFacesConfig;
-        private List<FacesConfig> contextSpecifiedFacesConfig;
-
-        public FacesConfig getAnnotationsFacesConfig()
-        {
-            return annotationFacesConfig;
-        }
-
-        public void setAnnotationFacesConfig(FacesConfig annotationFacesConfig)
-        {
-            this.annotationFacesConfig = annotationFacesConfig;
-        }
-
-        public FacesConfig getAnnotationFacesConfig()
-        {
-            return annotationFacesConfig;
-        }
-
-        public List<FacesConfig> getFaceletTaglibFacesConfig()
-        {
-            return faceletTaglibFacesConfig;
-        }
-
-        public void setFaceletTaglibFacesConfig(List<FacesConfig> faceletTaglibFacesConfig)
-        {
-            this.faceletTaglibFacesConfig = faceletTaglibFacesConfig;
-        }
-
-        public List<FacesConfig> getFacesFlowFacesConfig()
-        {
-            return facesFlowFacesConfig;
-        }
-
-        public void setFacesFlowFacesConfig(List<FacesConfig> facesFlowFacesConfig)
-        {
-            this.facesFlowFacesConfig = facesFlowFacesConfig;
-        }
-
-        public FacesConfig getMetaInfServicesFacesConfig()
-        {
-            return metaInfServicesFacesConfig;
-        }
-
-        public void setMetaInfServicesFacesConfig(FacesConfig metaInfServicesFacesConfig)
-        {
-            this.metaInfServicesFacesConfig = metaInfServicesFacesConfig;
-        }
-
-        public List<FacesConfig> getContextSpecifiedFacesConfig()
-        {
-            return contextSpecifiedFacesConfig;
-        }
-
-        public void setContextSpecifiedFacesConfig(List<FacesConfig> contextSpecifiedFacesConfig)
-        {
-            this.contextSpecifiedFacesConfig = contextSpecifiedFacesConfig;
-        }
-
-        public List<FacesConfig> getClassloaderFacesConfig()
-        {
-            return classloaderFacesConfig;
-        }
-
-        public void setClassloaderFacesConfig(List<FacesConfig> classloaderFacesConfigList)
-        {
-            this.classloaderFacesConfig = classloaderFacesConfigList;
-        }
+        protected List<FacesConfig> classloaderFacesConfig;
+        protected FacesConfig annotationFacesConfig;
+        protected List<FacesConfig> faceletTaglibFacesConfig;
+        protected List<FacesConfig> facesFlowFacesConfig;
+        protected FacesConfig metaInfServicesFacesConfig;
+        protected List<FacesConfig> contextSpecifiedFacesConfig;
     }
 
-    private static class TestStartupServletContextListener implements ServletContextListener
+    protected static class TestStartupServletContextListener implements ServletContextListener
     {
         private FacesInitializer facesInitializer;
 

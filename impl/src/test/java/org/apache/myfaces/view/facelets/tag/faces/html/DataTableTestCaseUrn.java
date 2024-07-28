@@ -31,12 +31,12 @@ import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.renderkit.html.HtmlTableRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Example;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.jupiter.api.Test;
 
-public class DataTableTestCaseUrn extends FaceletTestCase
+public class DataTableTestCaseUrn extends AbstractFaceletTestCase
 {
 
     @Override

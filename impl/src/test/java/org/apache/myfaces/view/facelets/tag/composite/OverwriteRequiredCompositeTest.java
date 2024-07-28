@@ -29,12 +29,6 @@ import org.junit.jupiter.api.Test;
 public class OverwriteRequiredCompositeTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
-    protected boolean isScanAnnotations()
-    {
-        return true;
-    }
-    
-    @Override
     protected void setUpServletObjects() throws Exception
     {
         super.setUpServletObjects();

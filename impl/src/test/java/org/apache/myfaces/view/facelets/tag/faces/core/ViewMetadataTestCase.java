@@ -34,14 +34,14 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.view.ViewMetadata;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ViewMetadataTestCase extends FaceletTestCase
+public class ViewMetadataTestCase extends AbstractFaceletTestCase
 {
     
     protected NavigationHandler navigationHandler;

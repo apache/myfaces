@@ -24,11 +24,11 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class DecorateTestCase extends FaceletTestCase {
+public class DecorateTestCase extends AbstractFaceletTestCase {
 
     @Override
     protected void setUpServletObjects() throws Exception

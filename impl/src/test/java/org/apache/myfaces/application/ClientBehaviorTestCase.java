@@ -34,13 +34,13 @@ import jakarta.faces.component.behavior.FacesBehavior;
 
 import org.apache.myfaces.component.ComponentResourceContainer;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ClientBehaviorTestCase extends AbstractJsfConfigurableMockTestCase
+public class ClientBehaviorTestCase extends AbstractFacesConfigurableMockTestCase
 {
 
     public ClientBehaviorTestCase()

@@ -34,10 +34,10 @@ import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
 import org.apache.myfaces.renderkit.html.HtmlMessagesRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Test;
 
-public class SelectTestCase extends FaceletTestCase
+public class SelectTestCase extends AbstractFaceletTestCase
 {
 
     @Override

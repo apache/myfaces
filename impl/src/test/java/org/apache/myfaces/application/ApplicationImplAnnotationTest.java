@@ -43,16 +43,15 @@ import jakarta.faces.render.RendererWrapper;
 import org.apache.myfaces.component.ComponentResourceContainer;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.renderkit.html.HtmlScriptRenderer;
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
-import org.apache.myfaces.test.mock.MockServletContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTestCase
+public class ApplicationImplAnnotationTest extends AbstractFacesConfigurableMockTestCase
 {
     //TODO: need mock objects for VDL/VDLFactory
     //remove from excludes list in pom.xml after complete

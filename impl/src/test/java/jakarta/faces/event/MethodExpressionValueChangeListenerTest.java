@@ -25,7 +25,7 @@ import jakarta.el.MethodExpression;
 import jakarta.el.MethodNotFoundException;
 import jakarta.faces.component.UICommand;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.easymock.classextension.EasyMock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for {@link MethodExpressionValueChangeListener}
  */
-public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase 
+public class MethodExpressionValueChangeListenerTest extends AbstractFacesTestCase
 {
 
     private MethodExpression methodExpressionOneArg;

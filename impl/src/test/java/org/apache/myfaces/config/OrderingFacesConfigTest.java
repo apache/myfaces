@@ -21,7 +21,7 @@ import org.apache.myfaces.config.impl.element.AbsoluteOrderingImpl;
 import org.apache.myfaces.config.impl.element.ConfigOthersSlotImpl;
 import org.apache.myfaces.config.impl.element.FacesConfigNameSlotImpl;
 import org.apache.myfaces.config.impl.element.OrderingImpl;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 
 import jakarta.faces.FacesException;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class OrderingFacesConfigTest extends AbstractJsfTestCase
+public class OrderingFacesConfigTest extends AbstractFacesTestCase
 {
     private static final Logger log = Logger.getLogger(OrderingFacesConfigTest.class.getName());
     

@@ -22,12 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import jakarta.faces.render.ResponseStateManager;
-import org.apache.myfaces.test.FacesTestCase;
+import org.apache.myfaces.test.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class HtmlResponseStateManagerTest extends FacesTestCase
+public class HtmlResponseStateManagerTest extends AbstractFacesTestCase
 {
     @Test
     public void testIsPostback()

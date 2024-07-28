@@ -25,7 +25,7 @@ import jakarta.faces.component.html.HtmlInputTextarea;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.AfterEach;
@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlTextareaRendererTest extends AbstractJsfTestCase
+public class HtmlTextareaRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlInputTextarea inputTextarea;

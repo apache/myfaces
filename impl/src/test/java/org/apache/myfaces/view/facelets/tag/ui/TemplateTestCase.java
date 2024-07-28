@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.tag.ui;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ResponseWriter;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class TemplateTestCase extends FaceletTestCase
+public class TemplateTestCase extends AbstractFaceletTestCase
 {
     private FastWriter _writer;
 

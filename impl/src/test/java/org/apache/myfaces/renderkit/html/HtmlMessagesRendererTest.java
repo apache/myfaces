@@ -26,7 +26,7 @@ import jakarta.faces.component.html.HtmlMessages;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.AfterEach;
@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlMessagesRendererTest extends AbstractJsfConfigurableMockTestCase
+public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestCase
 {
     private static final String ERROR_CLASS = "errorClass";
     private static final String WARN_CLASS = "warnClass";

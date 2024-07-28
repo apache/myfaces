@@ -27,12 +27,12 @@ import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
 import jakarta.faces.view.Location;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SerializableELExpressionsTestCase extends FaceletTestCase
+public class SerializableELExpressionsTestCase extends AbstractFaceletTestCase
 {
    
     @Override

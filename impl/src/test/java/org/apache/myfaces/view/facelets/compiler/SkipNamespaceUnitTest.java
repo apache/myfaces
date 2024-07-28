@@ -30,7 +30,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
-import org.apache.myfaces.view.facelets.FaceletMultipleRequestsTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletMultipleRequestsTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class SkipNamespaceUnitTest extends FaceletMultipleRequestsTestCase 
+public class SkipNamespaceUnitTest extends AbstractFaceletMultipleRequestsTestCase
 {
     private Boolean isWellFormed = Boolean.FALSE;
 

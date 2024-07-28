@@ -27,7 +27,7 @@ import jakarta.faces.el.CompositeComponentExpressionHolder;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.el.resolver.CompositeComponentELResolver;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class CompositeComponentBeanValidationTest extends FaceletTestCase
+public class CompositeComponentBeanValidationTest extends AbstractFaceletTestCase
 {
 
     /**

@@ -29,14 +29,14 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class _SharedRendererUtilsTest extends AbstractJsfTestCase
+public class _SharedRendererUtilsTest extends AbstractFacesTestCase
 {
     /**
      * A POJO used for testing. 

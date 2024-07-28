@@ -24,10 +24,10 @@ import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.model.ListDataModel;
 import jakarta.faces.render.Renderer;
 import org.junit.jupiter.api.Assertions;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Test;
 
-public class UIDataRowStateTest extends AbstractJsfTestCase
+public class UIDataRowStateTest extends AbstractFacesTestCase
 {
     
     public static class Item

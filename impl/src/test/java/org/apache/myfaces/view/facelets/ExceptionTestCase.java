@@ -44,7 +44,7 @@ import org.easymock.classextension.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ExceptionTestCase extends FaceletTestCase
+public class ExceptionTestCase extends AbstractFaceletTestCase
 {
     
     @Override

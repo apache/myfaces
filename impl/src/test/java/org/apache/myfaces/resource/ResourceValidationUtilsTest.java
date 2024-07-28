@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.resource;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ResourceValidationUtilsTest extends AbstractJsfTestCase
+public class ResourceValidationUtilsTest extends AbstractFacesTestCase
 {
     @Test
     public void testLocaleNames() throws Exception

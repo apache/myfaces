@@ -20,10 +20,10 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.LongConverter;
 import org.junit.jupiter.api.Assertions;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Test;
 
-public class UIOutputPSSTest extends AbstractJsfTestCase
+public class UIOutputPSSTest extends AbstractFacesTestCase
 {
     
     /**

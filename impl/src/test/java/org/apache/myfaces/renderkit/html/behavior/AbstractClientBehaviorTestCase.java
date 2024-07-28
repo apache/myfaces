@@ -27,7 +27,7 @@ import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
+public abstract class AbstractClientBehaviorTestCase extends AbstractFaceletTestCase
 {
     protected ResponseWriter writer;
     protected FastWriter outputWriter; 

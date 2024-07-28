@@ -19,7 +19,7 @@ import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
  * <code>HTMLEncoderTest</code> tests
  * <code>org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder</code>.
  */
-public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
+public class HTMLEncoderWriterTest extends AbstractFacesTestCase {
 
     private String stringNoSpecialChars = "Hello, this is MyFaces speaking!";
     private String stringNoSpecialCharsEncoded = "Hello, this is MyFaces speaking!";

@@ -27,7 +27,7 @@ import jakarta.faces.component.html.HtmlOutcomeTargetButton;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase 
+public class HtmlOutcomeTargetButtonRendererTest extends AbstractFacesTestCase
 {
 
     private MockResponseWriter writer;

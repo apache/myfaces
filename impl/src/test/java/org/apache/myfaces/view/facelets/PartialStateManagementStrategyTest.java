@@ -46,7 +46,7 @@ import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.view.ViewMetadataBase;
 import org.junit.jupiter.api.AfterEach;
@@ -55,7 +55,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class PartialStateManagementStrategyTest extends
-        AbstractJsfConfigurableMockTestCase
+        AbstractFacesConfigurableMockTestCase
 {
 
     public PartialStateManagementStrategyTest()

@@ -23,21 +23,17 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
 
-/**
- *
- */
 public interface ServletMockContainer
 {
+    MockHttpServletRequest getRequest();
     
-    public MockHttpServletRequest getRequest();
+    MockHttpServletResponse getResponse();
     
-    public MockHttpServletResponse getResponse();
-    
-    public FacesContext getFacesContext();
+    FacesContext getFacesContext();
 
-    public void processRemainingPhases();
+    void processRemainingPhases();
 
-    public void endRequest();
+    void endRequest();
 
-    public void startViewRequest(String viewId);
+    void startViewRequest(String viewId);
 }

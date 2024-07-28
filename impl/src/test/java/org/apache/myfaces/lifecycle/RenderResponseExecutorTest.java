@@ -22,10 +22,10 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.junit.jupiter.api.Assertions;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Test;
 
-public class RenderResponseExecutorTest extends AbstractJsfTestCase
+public class RenderResponseExecutorTest extends AbstractFacesTestCase
 {
 
     @Test

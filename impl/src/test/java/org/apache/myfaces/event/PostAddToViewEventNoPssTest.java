@@ -20,7 +20,7 @@ package org.apache.myfaces.event;
 
 import jakarta.faces.application.StateManager;
 
-public class PostAddToViewEventNoPssTestCase extends PostAddToViewEventTestCase
+public class PostAddToViewEventNoPssTest extends PostAddToViewEventTest
 {
     
     

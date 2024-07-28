@@ -25,7 +25,7 @@ import jakarta.faces.component.UIViewRoot;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class CacheELExpressionsTestCase extends FaceletTestCase
+public class CacheELExpressionsTestCase extends AbstractFaceletTestCase
 {
     @Override
     protected ExpressionFactory createExpressionFactory()

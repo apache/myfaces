@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.util.HashMap;
 import java.util.Map;
 import jakarta.faces.component.UIComponent;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.faces.html.HtmlLibrary;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class DynamicComponentFaceletTestCase extends FaceletTestCase
+public class DynamicComponentFaceletTestCase extends AbstractFaceletTestCase
 {
     
     @Test

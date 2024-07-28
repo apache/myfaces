@@ -23,12 +23,12 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ResponseWriter;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CsetTestCase extends FaceletTestCase {
+public class CsetTestCase extends AbstractFaceletTestCase {
 
     
     @Override

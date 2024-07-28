@@ -32,8 +32,6 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
-import org.apache.myfaces.test.MyFacesAsserts;
-import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
@@ -170,14 +168,8 @@ public class ViewHandlerTest
         _externalContext.setRequestCharacterEncoding(eq("xxx"));
         expectLastCall().andThrow(new UnsupportedEncodingException());
         _mocksControl.replay();
-        MyFacesAsserts.assertException(FacesException.class, new TestRunner()
-        {
-            @Override
-            public void run() throws Throwable
-            {
-                handler.initView(_facesContext);
-            }
-        });
+        Assertions.assertThrows(FacesException.class,
+                () -> handler.initView(_facesContext));
         _mocksControl.verify();
     }
 

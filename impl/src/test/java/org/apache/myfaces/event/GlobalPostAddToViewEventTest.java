@@ -26,12 +26,12 @@ import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import org.apache.myfaces.application.ApplicationImplEventManager;
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMockTestCase
+public class GlobalPostAddToViewEventTest extends AbstractFacesConfigurableMockTestCase
 {
     public class HeadResourceListener implements SystemEventListener
     {

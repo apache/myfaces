@@ -35,7 +35,7 @@ import org.easymock.IAnswer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
+public class PostAddToViewEventTest extends AbstractMyFacesRequestTestCase
 {
     
     

@@ -17,10 +17,10 @@ package org.apache.myfaces.renderkit.html.util;
 
 import java.io.StringWriter;
 import org.junit.jupiter.api.Assertions;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Test;
 
-public class UnicodeEncoderTest extends AbstractJsfTestCase
+public class UnicodeEncoderTest extends AbstractFacesTestCase
 {
 
     @Test

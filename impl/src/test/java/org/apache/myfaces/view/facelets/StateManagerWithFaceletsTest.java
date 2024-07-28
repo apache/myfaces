@@ -35,7 +35,7 @@ import org.apache.myfaces.test.mock.MockRenderKit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class StateManagerWithFaceletsTest extends FaceletMultipleRequestsTestCase
+public class StateManagerWithFaceletsTest extends AbstractFaceletMultipleRequestsTestCase
 {
 
     @Override

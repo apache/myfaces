@@ -23,7 +23,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.PartialViewContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
  * @author Werner Punz(latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RenderPhaseClientIdsTest extends AbstractJsfTestCase {
+public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
 
     @Override
     @BeforeEach

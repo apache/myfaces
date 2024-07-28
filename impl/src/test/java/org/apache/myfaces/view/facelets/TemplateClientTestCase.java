@@ -24,7 +24,7 @@ import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.Test;
 
-public class TemplateClientTestCase extends FaceletTestCase {
+public class TemplateClientTestCase extends AbstractFaceletTestCase {
 
     @Override
     protected void setupComponents() throws Exception

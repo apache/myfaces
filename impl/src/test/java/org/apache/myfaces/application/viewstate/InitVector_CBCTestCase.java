@@ -17,14 +17,14 @@
 
 package org.apache.myfaces.application.viewstate;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 
 import jakarta.faces.FacesException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class InitVector_CBCTestCase extends AbstractJsfTestCase
+public class InitVector_CBCTestCase extends AbstractFacesTestCase
 {
     @Override
     @BeforeEach

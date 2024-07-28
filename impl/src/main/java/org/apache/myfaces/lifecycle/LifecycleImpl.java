@@ -19,6 +19,8 @@
 package org.apache.myfaces.lifecycle;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,6 +63,7 @@ public class LifecycleImpl extends Lifecycle
     private final PhaseExecutor renderExecutor;
     private final ClientWindowFactory clientWindowFactory;
     private final List<PhaseListener> phaseListeners;
+    private final Map<PhaseId, PhaseExecutor> phaseIdExecutorMapping;
 
     /**
      * This variable should be marked as volatile to ensure all threads can see it
@@ -79,6 +82,15 @@ public class LifecycleImpl extends Lifecycle
                 new ProcessValidationsExecutor(), new UpdateModelValuesExecutor(), new InvokeApplicationExecutor() };
 
         renderExecutor = new RenderResponseExecutor();
+
+        phaseIdExecutorMapping = new ConcurrentHashMap<>();
+        phaseIdExecutorMapping.put(PhaseId.RESTORE_VIEW, lifecycleExecutors[0]);
+        phaseIdExecutorMapping.put(PhaseId.APPLY_REQUEST_VALUES, lifecycleExecutors[1]);
+        phaseIdExecutorMapping.put(PhaseId.PROCESS_VALIDATIONS, lifecycleExecutors[2]);
+        phaseIdExecutorMapping.put(PhaseId.UPDATE_MODEL_VALUES, lifecycleExecutors[3]);
+        phaseIdExecutorMapping.put(PhaseId.INVOKE_APPLICATION, lifecycleExecutors[4]);
+        phaseIdExecutorMapping.put(PhaseId.RENDER_RESPONSE, renderExecutor);
+
         clientWindowFactory = (ClientWindowFactory) FactoryFinder.getFactory(FactoryFinder.CLIENT_WINDOW_FACTORY);
         phaseListeners = new CopyOnWriteArrayList<>();
     }
@@ -129,7 +141,18 @@ public class LifecycleImpl extends Lifecycle
         }
     }
 
-    private boolean executePhase(FacesContext context, PhaseExecutor executor, PhaseListenerManager phaseListenerMgr)
+    public PhaseExecutor getPhaseExecutor(PhaseId phaseId)
+    {
+        return phaseIdExecutorMapping.get(phaseId);
+    }
+
+    public boolean executePhase(FacesContext facesContext, PhaseId phaseId)
+    {
+        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
+        return executePhase(facesContext, getPhaseExecutor(phaseId), phaseListenerMgr);
+    }
+
+    boolean executePhase(FacesContext context, PhaseExecutor executor, PhaseListenerManager phaseListenerMgr)
         throws FacesException
     {
         boolean skipFurtherProcessing = false;

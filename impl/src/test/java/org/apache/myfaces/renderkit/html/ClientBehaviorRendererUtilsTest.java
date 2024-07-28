@@ -22,11 +22,10 @@ import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorBase;
-import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.html.HtmlInputText;
@@ -38,7 +37,7 @@ import org.apache.myfaces.test.mock.MockFacesContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
+public class ClientBehaviorRendererUtilsTest extends AbstractFacesTestCase
 {
 
     @Override

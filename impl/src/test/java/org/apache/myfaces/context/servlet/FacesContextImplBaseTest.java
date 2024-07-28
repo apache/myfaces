@@ -18,16 +18,14 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
 import jakarta.faces.component.UIViewRoot;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
 /**
@@ -36,7 +34,7 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
  * @author Bill Lucy (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class FacesContextImplBaseTest extends FaceletTestCase {
+public class FacesContextImplBaseTest extends AbstractFaceletTestCase {
 
     /**
      * Verify that the Map returned by UIViewRoot.getViewMap() is cleared when a new view root is set,

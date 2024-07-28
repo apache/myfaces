@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.myfaces.config.impl.digister;
+package org.apache.myfaces.config.impl;
 
 import java.util.List;
 
-import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.element.Application;
 import org.apache.myfaces.config.element.ContractMapping;
 import org.apache.myfaces.config.element.FacesConfig;

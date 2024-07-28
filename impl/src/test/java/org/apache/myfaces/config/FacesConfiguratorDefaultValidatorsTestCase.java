@@ -29,7 +29,7 @@ import jakarta.faces.validator.RequiredValidator;
 import jakarta.faces.webapp.FacesServlet;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.util.lang.Lazy;
@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Test;
  * @version $Revision$ $Date$
  * @since 2.0
  */
-public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfConfigurableMockTestCase
+public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractFacesConfigurableMockTestCase
 {
     private FacesConfigurator facesConfigurator;
 

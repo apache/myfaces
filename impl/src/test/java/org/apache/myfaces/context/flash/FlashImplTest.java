@@ -26,15 +26,10 @@ import java.util.Map;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.event.PhaseId;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 
-import org.apache.myfaces.test.mock.MockExternalContext20;
 import org.apache.myfaces.test.mock.MockExternalContext;
-import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.junit.jupiter.api.AfterEach;
@@ -45,7 +40,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for FlashImpl.
  */
-public class FlashImplTest extends AbstractJsfTestCase
+public class FlashImplTest extends AbstractFacesTestCase
 {
     
     private FlashImpl _flash;

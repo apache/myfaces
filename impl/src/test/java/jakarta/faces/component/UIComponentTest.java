@@ -18,8 +18,9 @@
  */
 package jakarta.faces.component;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.same;
+import jakarta.faces.context.FacesContext;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,11 +28,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.test.MyFacesAsserts;
-import org.apache.myfaces.test.TestRunner;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.same;
 
 public class UIComponentTest extends UIComponentTestBase
 {
@@ -75,13 +73,8 @@ public class UIComponentTest extends UIComponentTestBase
                 .size()]));
         _mocksControl.checkOrder(true);
 
-        MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
-        {
-            public void run() throws Throwable
-            {
-                testimpl.getContainerClientId(null);
-            }
-        });
+        Assertions.assertThrows(NullPointerException.class,
+                () ->  testimpl.getContainerClientId(null));
 
         expect(testimpl.getClientId(same(_facesContext))).andReturn("xyz");
         _mocksControl.replay();

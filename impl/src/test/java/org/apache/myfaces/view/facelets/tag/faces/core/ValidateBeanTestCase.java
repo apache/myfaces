@@ -28,7 +28,7 @@ import jakarta.faces.validator.Validator;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.util.lang.Lazy;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ValidateBeanTestCase extends FaceletTestCase
+public class ValidateBeanTestCase extends AbstractFaceletTestCase
 {
     
     @Override

@@ -19,7 +19,7 @@ package org.apache.myfaces.renderkit.html.util;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 /**
  * <code>HTMLEncoderTest</code> tests <code>org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder</code>.
  */
-public class HTMLEncoderTest extends AbstractJsfTestCase {
+public class HTMLEncoderTest extends AbstractFacesTestCase {
   private String stringNoSpecialChars = "Hello, this is MyFaces speaking!";
   private String stringNoSpecialCharsEncoded = "Hello, this is MyFaces speaking!";
   private String stringNoSpecialCharsEncodedPartial = "lo, this is MyFaces speakin";

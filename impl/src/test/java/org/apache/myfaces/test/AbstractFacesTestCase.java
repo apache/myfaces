@@ -32,7 +32,7 @@ import org.mockito.Mockito;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class FacesTestCase
+public abstract class AbstractFacesTestCase
 {
     protected FacesContext _facesContext;
     protected ExternalContext _externalContext;

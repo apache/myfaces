@@ -37,11 +37,9 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.RenderKitFactory;
-import java.io.IOException;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ViewHandlerImpl;
-import org.apache.myfaces.component.search.SearchExpressionContextFactoryImpl;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -56,16 +54,17 @@ import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMultipleRequestsTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
-import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.mock.MockFacesContext;
+import org.apache.myfaces.test.mock.MockFacesContextFactory;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.tag.faces.TagHandlerDelegateFactoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 
-public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCase
+public abstract class AbstractFaceletMultipleRequestsTestCase extends AbstractFacesConfigurableMultipleRequestsTestCase
 {
     private final String filePath = this.getDirectory();
     protected FacesConfigDispenser dispenser = null;
@@ -73,11 +72,10 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
 
 
     @Override
-    protected void setUpServletObjects() throws Exception
+    protected void setUpServletContextAndSession() throws Exception
     {
+        super.setUpServletContextAndSession();
         URI context = this.getContext();
-        super.setUpServletObjects();
-        request.setPathElements(context.getPath(), null, context.getPath(), context.getQuery());
         servletContext.setDocumentRoot(new File(context));
         
         //This params are optional
@@ -90,6 +88,14 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, "UnitTest");
     }
     
+    @Override
+    protected void setUpServletRequestAndResponse() throws Exception
+    {
+        super.setUpServletRequestAndResponse();
+        URI context = this.getContext();
+        request.setPathElements(context.getPath(), null, context.getPath(), context.getQuery());
+    }
+
     protected URI getContext()
     {
         try
@@ -124,7 +130,7 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         return url;
     }
 
-    protected String getDirectory()
+    private String getDirectory()
     {
         return this.getClass().getName().substring(0,
                 this.getClass().getName().lastIndexOf('.')).replace('.', '/')
@@ -155,22 +161,13 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
                 MockVisitContextFactory.class.getName());
         FactoryFinder.setFactory(FactoryFinder.FACELET_CACHE_FACTORY,
                 FaceletCacheFactoryImpl.class.getName());
-        FactoryFinder.setFactory(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY,
-                SearchExpressionContextFactoryImpl.class.getName());
     }
     
     @Override
     protected void setUpExternalContext() throws Exception
     {
         super.setUpExternalContext();
-        
-        // Note if MyFaces ApplicationImpl instance is used (see on setFactories method),
-        // the ELResolver hierarchy will be set on ApplicationImpl.getELResolver() method
-        //RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
-        //        new MockPropertyResolver());
-        //RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
-        //        new MockVariableResolver());
-        
+
         RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
                 createExpressionFactory());
     }
@@ -181,6 +178,17 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
     }
     
     @Override
+    protected void setUpFacesContext() throws Exception
+    {
+        super.setUpFacesContext();
+
+        //Finally set the ResponseWriter
+        ResponseWriter rw = renderKit.createResponseWriter(
+                new StringWriter(), null, null);
+        facesContext.setResponseWriter(rw);
+    }
+
+    @Override
     protected void setUpRenderKit() throws Exception
     {
         super.setUpRenderKit();
@@ -188,11 +196,6 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         setupConvertersAndValidators();
         setupBehaviors();
         setupRenderers();
-
-        //Finally set the ResponseWriter
-        ResponseWriter rw = facesContext.getRenderKit().createResponseWriter(
-                new StringWriter(), null, null);
-        facesContext.setResponseWriter(rw);
     }
 
     @Override
@@ -207,9 +210,22 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
     @Override
     protected void setUpApplication() throws Exception
     {
+        FactoryFinder.setFactory(FactoryFinder.FACES_CONTEXT_FACTORY,
+            "org.apache.myfaces.test.mock.MockFacesContextFactory");
+        facesContextFactory = (MockFacesContextFactory) FactoryFinder
+            .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
+        facesContext = facesContextFactory.getFacesContext(
+                servletContext, request, response, lifecycle);
+        if (facesContext.getExternalContext() != null)
+        {
+            externalContext = facesContext.getExternalContext();
+        }
+
         super.setUpApplication();
         
-        ViewHandlerImpl viewHandler = (ViewHandlerImpl) facesContext.getApplication().getViewHandler();
+        ((MockFacesContext) facesContext).setApplication(application);
+        
+        ViewHandlerImpl viewHandler = (ViewHandlerImpl) application.getViewHandler();
         viewHandler.setViewIdSupport(new ViewIdSupport(facesContext){
 
             @Override
@@ -239,8 +255,8 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         //    setResourceHandlerSupport(new MockResourceHandlerSupport(this.getClass()));
     }
     
-    @BeforeEach
     @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
         super.setUp();
@@ -259,11 +275,19 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
                 runtimeConfig.addFaceletTagLibrary(lib);
             }
         }
-
+        
         vdl = (MockFaceletViewDeclarationLanguage) application.getViewHandler().
             getViewDeclarationLanguage(facesContext,"/test");
-
+        
+        externalContext = null;
+        facesContext = null;
     }
+    
+    /*@Override
+    public void tearDown() throws Exception
+    {
+        super.tearDown();
+    }*/
 
     protected void loadStandardFacesConfig() throws Exception
     {
@@ -402,15 +426,4 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         }
     }
 
-    protected String render(UIViewRoot root) throws IOException
-    {
-        StringWriter sw = new StringWriter();
-        MockResponseWriter mrw = new MockResponseWriter(sw);
-        facesContext.setResponseWriter(mrw);
-        
-        root.encodeAll(facesContext);
-        sw.flush();
-        
-        return sw.toString();
-    }
 }

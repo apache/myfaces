@@ -20,11 +20,11 @@ package org.apache.myfaces.util;
 
 import java.io.IOException;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CommentUtilsTest extends AbstractJsfTestCase
+public class CommentUtilsTest extends AbstractFacesTestCase
 {
     @Test
     public void testIsStartMatchWithCommentedCDATA() throws IOException

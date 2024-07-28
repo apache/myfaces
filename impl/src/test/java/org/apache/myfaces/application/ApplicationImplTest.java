@@ -18,16 +18,6 @@
  */
 package org.apache.myfaces.application;
 
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-
-import java.util.ListResourceBundle;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
@@ -38,15 +28,19 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.convert.EnumConverter;
-
-import org.apache.myfaces.test.MyFacesAsserts;
-import org.apache.myfaces.test.TestRunner;
-
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.junit.jupiter.api.Assertions;
-import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ListResourceBundle;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import static org.easymock.EasyMock.*;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -74,20 +68,11 @@ public class ApplicationImplTest
     @Test
     public void testGetResourceBundleNPE()
     {
-        MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
-        {
-            public void run()
-            {
-                application.getResourceBundle(null, "xxx");
-            }
-        });
-        MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
-        {
-            public void run()
-            {
-                application.getResourceBundle(facesContext, null);
-            }
-        });
+        Assertions.assertThrows(NullPointerException.class,
+                () ->  application.getResourceBundle(null, "xxx"));
+
+        Assertions.assertThrows(NullPointerException.class,
+                () ->  application.getResourceBundle(facesContext, null));
     }
 
     /**
@@ -108,13 +93,9 @@ public class ApplicationImplTest
                 return "bundleName";
             }
         };
-        MyFacesAsserts.assertException(FacesException.class, new TestRunner()
-        {
-            public void run()
-            {
-                myApp.getResourceBundle(facesContext, "xxx");
-            }
-        });
+
+        Assertions.assertThrows(FacesException.class,
+                () ->  myApp.getResourceBundle(facesContext, "xxx"));
     }
 
     /**

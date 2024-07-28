@@ -22,10 +22,10 @@ package org.apache.myfaces.view.facelets.tag.ui;
 import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Test;
 
-public class ELExprTemplateTestCase extends FaceletTestCase {
+public class ELExprTemplateTestCase extends AbstractFaceletTestCase {
 
     
     

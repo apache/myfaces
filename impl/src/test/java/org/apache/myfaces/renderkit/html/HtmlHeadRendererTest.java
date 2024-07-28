@@ -22,7 +22,7 @@ import java.io.StringWriter;
 
 import jakarta.faces.component.html.HtmlHead;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Leonardo Uribe
  */
-public class HtmlHeadRendererTest extends AbstractJsfTestCase
+public class HtmlHeadRendererTest extends AbstractFacesTestCase
 {
 
     private MockResponseWriter writer ;

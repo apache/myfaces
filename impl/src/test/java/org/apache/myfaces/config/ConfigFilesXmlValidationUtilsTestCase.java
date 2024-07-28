@@ -20,7 +20,7 @@
 package org.apache.myfaces.config;
 
 import java.net.URL;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
  *
  * @author lu4242
  */
-public class ConfigFilesXmlValidationUtilsTestCase extends AbstractJsfTestCase
+public class ConfigFilesXmlValidationUtilsTestCase extends AbstractFacesTestCase
 {
 
     @Test

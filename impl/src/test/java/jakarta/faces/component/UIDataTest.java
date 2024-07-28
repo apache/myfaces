@@ -18,19 +18,6 @@
  */
 package jakarta.faces.component;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.AbstractCollection;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
-
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.html.HtmlPanelGroup;
 import jakarta.faces.component.visit.VisitCallback;
@@ -42,11 +29,8 @@ import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.FacesEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.Renderer;
-
-import org.apache.myfaces.test.MyFacesAsserts;
-import org.apache.myfaces.test.TestRunner;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderedValueExpression;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.visit.MockVisitContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
@@ -54,7 +38,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class UIDataTest extends AbstractJsfTestCase
+import java.io.*;
+import java.util.*;
+
+public class UIDataTest extends AbstractFacesTestCase
 {
     private IMocksControl _mocksControl;
     private UIData _testImpl;
@@ -81,13 +68,8 @@ public class UIDataTest extends AbstractJsfTestCase
 
     private void assertSetValueExpressionException(Class<? extends Throwable> expected, final String name)
     {
-        MyFacesAsserts.assertException(expected, new TestRunner()
-        {
-            public void run() throws Throwable
-            {
-                _testImpl.setValueExpression(name, null);
-            }
-        });
+        Assertions.assertThrows(expected,
+                () -> _testImpl.setValueExpression(name, null));
     }
 
     /**

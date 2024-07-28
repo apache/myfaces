@@ -76,7 +76,7 @@ import  org.junit.jupiter.api.BeforeEach;
  * @since 1.0.0
  */
 
-public abstract class AbstractJsfTestCase
+public abstract class AbstractFacesTestCase
 {
 
     // ------------------------------------------------------------ Constructors
@@ -84,7 +84,7 @@ public abstract class AbstractJsfTestCase
     /**
      * <p>Construct a new instance of this test case.</p>
      */
-    public AbstractJsfTestCase()
+    public AbstractFacesTestCase()
     {
     }
 

@@ -26,7 +26,7 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.RenderKitFactory;
 import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class ViewPoolFaceletsTestCase extends FaceletTestCase
+public class ViewPoolFaceletsTestCase extends AbstractFaceletTestCase
 {
     
     @Override

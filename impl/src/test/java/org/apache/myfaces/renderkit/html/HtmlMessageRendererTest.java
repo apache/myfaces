@@ -28,14 +28,14 @@ import jakarta.faces.component.html.HtmlMessage;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCase
+public class HtmlMessageRendererTest extends AbstractFacesConfigurableMockTestCase
 {
     private static final String ERROR_CLASS = "errorClass";
     private static final String WARN_CLASS = "warnClass";

@@ -22,11 +22,11 @@ import java.io.PrintWriter;
 
 import jakarta.faces.component.UIViewRoot;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.Test;
 
-public class MockNbsp extends FaceletTestCase
+public class MockNbsp extends AbstractFaceletTestCase
 {
 
     @Override

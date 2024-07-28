@@ -45,7 +45,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.test.mock.MockRenderedValueExpression;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.test.mock.visit.MockVisitCallback;
 import org.junit.jupiter.api.AfterEach;
@@ -53,7 +53,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class UIInputTest extends AbstractJsfTestCase
+public class UIInputTest extends AbstractFacesTestCase
 {
 
     private Converter mockConverter;

@@ -56,11 +56,11 @@ import org.apache.myfaces.renderkit.html.HtmlImageRenderer;
 import org.apache.myfaces.renderkit.html.HtmlLinkRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTableRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CoreTestCase extends FaceletTestCase
+public class CoreTestCase extends AbstractFaceletTestCase
 {
 
     @Override

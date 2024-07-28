@@ -30,7 +30,7 @@ import jakarta.faces.flow.ViewNode;
 import jakarta.faces.flow.builder.FlowBuilder;
 import jakarta.faces.flow.builder.SwitchCaseBuilder;
 import org.apache.myfaces.flow.builder.FlowBuilderImpl;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class FlowBuilderTestCase extends AbstractJsfTestCase
+public class FlowBuilderTest extends AbstractFacesTestCase
 {
     
     @Test

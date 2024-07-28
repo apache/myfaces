@@ -25,7 +25,7 @@ import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.jupiter.api.Test;
 
-public class InstructionsTestCase extends FaceletTestCase
+public class InstructionsTestCase extends AbstractFaceletTestCase
 {
 
     @Override

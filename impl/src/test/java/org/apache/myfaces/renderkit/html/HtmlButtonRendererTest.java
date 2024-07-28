@@ -26,7 +26,7 @@ import jakarta.faces.component.html.HtmlCommandButton;
 import jakarta.faces.component.html.HtmlForm;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class HtmlButtonRendererTest extends AbstractJsfTestCase {
+public class HtmlButtonRendererTest extends AbstractFacesTestCase {
 
     private MockResponseWriter writer;
     private HtmlCommandButton commandButton;

@@ -18,22 +18,19 @@
  */
 package org.apache.myfaces.application;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import jakarta.faces.FacesException;
-
-import org.apache.myfaces.test.MyFacesAsserts;
-import org.apache.myfaces.test.FacesTestCase;
-import org.apache.myfaces.test.TestRunner;
+import org.apache.myfaces.test.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class ViewIdSupportMockTest extends FacesTestCase
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ViewIdSupportMockTest extends AbstractFacesTestCase
 {
     private ViewIdSupport viewIdSupport;
 
@@ -102,13 +99,7 @@ public class ViewIdSupportMockTest extends FacesTestCase
         Mockito.when(_externalContext.getRequestPathInfo()).thenReturn(null);
         Mockito.when(_externalContext.getRequestServletPath()).thenReturn(null);
 
-        MyFacesAsserts.assertException(FacesException.class, new TestRunner()
-        {
-            @Override
-            public void run() throws Throwable
-            {
-                viewIdSupport.calculateViewId(_facesContext);
-            }
-        });
+        Assertions.assertThrows(FacesException.class,
+                () -> viewIdSupport.calculateViewId(_facesContext));
     }
 }

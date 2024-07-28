@@ -18,24 +18,22 @@
  */
 package jakarta.faces.component;
 
+import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import jakarta.faces.context.FacesContext;
-
-import org.apache.myfaces.test.MyFacesAsserts;
-import org.apache.myfaces.test.TestRunner;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 /**
      * Tests for {@link UIComponent#encodeAll(jakarta.faces.context.FacesContext)}.
  */
-public class UIComponentEncodeAllTest extends AbstractJsfTestCase
+public class UIComponentEncodeAllTest extends AbstractFacesTestCase
 {
     protected IMocksControl _mocksControl;
     private UIComponent _testimpl;
@@ -66,13 +64,8 @@ public class UIComponentEncodeAllTest extends AbstractJsfTestCase
     @Test
     public void testEncodeAllNullContext() throws Exception
     {
-        MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
-        {
-            public void run() throws Throwable
-            {
-                _testimpl.encodeAll(null);
-            }
-        });
+        Assertions.assertThrows(NullPointerException.class,
+                () ->  _testimpl.encodeAll(null));
     }
 
     @Test

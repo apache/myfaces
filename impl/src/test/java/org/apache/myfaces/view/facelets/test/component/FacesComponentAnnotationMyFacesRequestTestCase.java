@@ -28,13 +28,6 @@ import org.junit.jupiter.api.Test;
 
 public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
 {
-
-    @Override
-    protected boolean isScanAnnotations()
-    {
-        return true;
-    }
-
     @Override
     protected void setUpWebConfigParams() throws Exception
     {

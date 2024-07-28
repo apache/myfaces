@@ -26,7 +26,7 @@ import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.html.HtmlOutputLabel;
 
 
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
+public class HtmlLabelRendererTest extends AbstractFacesConfigurableMockTestCase
 {
     private MockResponseWriter writer;
     private HtmlOutputLabel label;

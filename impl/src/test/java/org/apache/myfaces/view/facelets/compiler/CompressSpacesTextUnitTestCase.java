@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.faces.context.ResponseWriter;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class CompressSpacesTextUnitTestCase extends FaceletTestCase
+public class CompressSpacesTextUnitTestCase extends AbstractFaceletTestCase
 {
     
     @Test

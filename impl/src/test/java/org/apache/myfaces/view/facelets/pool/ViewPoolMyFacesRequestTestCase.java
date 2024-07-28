@@ -44,13 +44,6 @@ import org.junit.jupiter.api.Test;
 
 public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
-
-    @Override
-    protected boolean isScanAnnotations()
-    {
-        return true;
-    }
-
     protected ExpressionFactory createExpressionFactory()
     {
         return new org.apache.el.ExpressionFactoryImpl();

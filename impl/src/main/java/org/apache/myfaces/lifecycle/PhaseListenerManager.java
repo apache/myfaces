@@ -35,7 +35,7 @@ import jakarta.faces.lifecycle.Lifecycle;
  * 
  * @author Stan Silvert
  */
-class PhaseListenerManager
+public class PhaseListenerManager
 {
     private Lifecycle lifecycle;
     private FacesContext facesContext;
@@ -46,7 +46,7 @@ class PhaseListenerManager
     // an exception should not have its afterPhase called
     private Map<PhaseId, boolean[]> listenerSuccessMap;
 
-    PhaseListenerManager(Lifecycle lifecycle, FacesContext facesContext, PhaseListener[] phaseListeners)
+    public PhaseListenerManager(Lifecycle lifecycle, FacesContext facesContext, PhaseListener[] phaseListeners)
     {
         this.lifecycle = lifecycle;
         this.facesContext = facesContext;
@@ -61,7 +61,7 @@ class PhaseListenerManager
         return (listenerPhaseId == PhaseId.ANY_PHASE.getOrdinal() || listenerPhaseId == phaseId.getOrdinal());
     }
 
-    void informPhaseListenersBefore(PhaseId phaseId)
+    public void informPhaseListenersBefore(PhaseId phaseId)
     {
         boolean[] beforePhaseSuccess = new boolean[phaseListeners.length];
         listenerSuccessMap.put(phaseId, beforePhaseSuccess);
@@ -92,7 +92,7 @@ class PhaseListenerManager
         }
     }
 
-    void informPhaseListenersAfter(PhaseId phaseId)
+    public void informPhaseListenersAfter(PhaseId phaseId)
     {
         boolean[] beforePhaseSuccess = listenerSuccessMap.get(phaseId);
         

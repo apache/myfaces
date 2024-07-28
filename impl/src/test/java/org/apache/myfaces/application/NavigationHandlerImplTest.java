@@ -34,14 +34,14 @@ import jakarta.faces.application.NavigationCase;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-public class NavigationHandlerImplTest extends AbstractJsfTestCase
+public class NavigationHandlerImplTest extends AbstractFacesTestCase
 {
     private FacesConfigUnmarshallerImpl _facesConfigUnmarshaller;
 

@@ -24,11 +24,11 @@ import jakarta.faces.component.UIInput;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentValidatorTestCase extends FaceletTestCase
+public class CompositeComponentValidatorTestCase extends AbstractFaceletTestCase
 {
     @Override
     protected void setupComponents() throws Exception

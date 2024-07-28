@@ -36,15 +36,14 @@ import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.easymock.classextension.EasyMock;
 import org.junit.jupiter.api.Test;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-public class RendererUtilsTest extends AbstractJsfTestCase {
+public class RendererUtilsTest extends AbstractFacesTestCase {
 
     private MockResponseWriter writer;
 

@@ -21,11 +21,11 @@ package org.apache.myfaces.view.facelets.impl;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SectionUniqueIdCounterTest extends AbstractJsfTestCase
+public class SectionUniqueIdCounterTest extends AbstractFacesTestCase
 {
     @Test
     public void testSimpleCounter()

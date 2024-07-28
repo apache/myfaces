@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import io.quarkus.logging.Log;
 import jakarta.faces.FacesException;
 
 import org.apache.myfaces.spi.FactoryFinderProvider;
@@ -53,7 +54,7 @@ public class QuarkusFactoryFinderProvider implements FactoryFinderProvider
                 Iterator<String> implsIterator = impls.iterator();
                 while (implsIterator.hasNext())
                 {
-                    Class implClass = ClassUtils.classForName(implsIterator.next());
+                    Class<?> implClass = ClassUtils.classForName(implsIterator.next());
 
                     for (Constructor<?> constructor : implClass.getConstructors())
                     {
@@ -79,7 +80,7 @@ public class QuarkusFactoryFinderProvider implements FactoryFinderProvider
             }
             catch (Exception ex)
             {
-                ex.printStackTrace();
+                Log.error("Could not initialize factory " + factoryName, ex);
             }
         }
 

@@ -25,7 +25,7 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.application.ViewIdSupport;
 
-import org.apache.myfaces.test.FacesTestCase;
+import org.apache.myfaces.test.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ import org.mockito.Mockito;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RestoreViewExecutorTest extends FacesTestCase
+public class RestoreViewExecutorTest extends AbstractFacesTestCase
 {
     private RestoreViewExecutor _testimpl;
     private ViewHandler _viewHandler;

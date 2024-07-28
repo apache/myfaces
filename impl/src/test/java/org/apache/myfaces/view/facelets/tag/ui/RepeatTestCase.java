@@ -37,7 +37,7 @@ import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Company;
 import org.apache.myfaces.view.facelets.bean.Example;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
@@ -51,7 +51,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RepeatTestCase extends FaceletTestCase 
+public class RepeatTestCase extends AbstractFaceletTestCase
 {
 
     @Test

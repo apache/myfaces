@@ -16,24 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.test.core.annotation;
+package org.apache.myfaces.lifecycle;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- *
+ * This class test 
  */
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(value =
+public class RedirectTest extends AbstractMyFacesRequestTestCase
 {
-    ElementType.TYPE
-})
-@Inherited
-public @interface TestServletListeners
-{
-    String[] value() default {};
+    @Test
+    public void testRedirect1() throws Exception
+    {
+        startViewRequest("/redirect1.xhtml");
+        processLifecycleExecute();
+        renderResponse();
+        client.submit("mainForm:submit");
+        processLifecycleExecuteAndRender();
+        client.processRedirect();
+        processLifecycleExecuteAndRender();
+        String redirectedContent = getRenderedContent();
+        Assertions.assertTrue(redirectedContent.contains("Redirected Page"));
+    }
 }

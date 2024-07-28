@@ -28,7 +28,7 @@ import jakarta.faces.component.html.HtmlOutcomeTargetLink;
 import jakarta.faces.component.html.HtmlOutputLink;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlLinkRendererTest extends AbstractJsfTestCase
+public class HtmlLinkRendererTest extends AbstractFacesTestCase
 {
 
     private MockResponseWriter writer;

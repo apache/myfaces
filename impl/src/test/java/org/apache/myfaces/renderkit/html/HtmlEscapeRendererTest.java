@@ -32,14 +32,14 @@ import jakarta.faces.component.html.HtmlSelectOneMenu;
 import jakarta.faces.component.html.HtmlSelectOneRadio;
 import jakarta.faces.model.SelectItem;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class HtmlEscapeRendererTest extends AbstractJsfTestCase
+public class HtmlEscapeRendererTest extends AbstractFacesTestCase
 {
     
     private static String ISO_8859_1 = "ISO-8859-1";

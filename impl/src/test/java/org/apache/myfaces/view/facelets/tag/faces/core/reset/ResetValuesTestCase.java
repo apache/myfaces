@@ -30,13 +30,6 @@ import org.junit.jupiter.api.Test;
  */
 public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
 {
-    
-    @Override
-    protected boolean isScanAnnotations()
-    {
-        return true;
-    }
-    
     @Override
     protected void setUpWebConfigParams() throws Exception
     {

@@ -30,13 +30,13 @@ import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.renderkit.html.HtmlCompositeComponentRenderer;
 import org.apache.myfaces.renderkit.html.HtmlCompositeFacetRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class IncludeParamTestCase extends FaceletTestCase
+public class IncludeParamTestCase extends AbstractFaceletTestCase
 {
 
     @Override

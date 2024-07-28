@@ -39,12 +39,12 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.spi.impl.DefaultSerialFactory;
 import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;
-import org.apache.myfaces.view.facelets.FaceletMultipleRequestsTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletMultipleRequestsTestCase;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
+public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTestCase
 {
 
     @Override

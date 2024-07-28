@@ -16,12 +16,12 @@
 package org.apache.myfaces.application.viewstate;
 
 import jakarta.faces.FacesException;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SecretKeyConfigurationTest extends AbstractJsfTestCase
+public class SecretKeyConfigurationTest extends AbstractFacesTestCase
 {
     @Override
     @BeforeEach

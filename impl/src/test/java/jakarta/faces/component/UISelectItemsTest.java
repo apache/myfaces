@@ -24,7 +24,7 @@ import java.util.List;
 
 import jakarta.el.ValueExpression;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for UISelectItems.
  */
-public class UISelectItemsTest extends AbstractJsfTestCase
+public class UISelectItemsTest extends AbstractFacesTestCase
 {
 
     @Test

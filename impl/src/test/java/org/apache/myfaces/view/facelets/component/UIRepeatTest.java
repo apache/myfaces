@@ -18,6 +18,17 @@
  */
 package org.apache.myfaces.view.facelets.component;
 
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.*;
+import jakarta.faces.component.UIDataTest.RowData;
+import jakarta.faces.event.PhaseId;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -25,25 +36,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.faces.application.StateManager;
-import jakarta.faces.component.UIColumn;
-import jakarta.faces.component.UIData;
-import jakarta.faces.component.UIDataTest.RowData;
-import jakarta.faces.component.UIInput;
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.event.PhaseId;
-
-import org.apache.myfaces.test.MyFacesAsserts;
-import org.apache.myfaces.test.TestRunner;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-public class UIRepeatTest extends AbstractJsfTestCase
+public class UIRepeatTest extends AbstractFacesTestCase
 {
 
     public UIRepeatTest()
@@ -76,13 +69,8 @@ public class UIRepeatTest extends AbstractJsfTestCase
 
     private void assertSetValueExpressionException(Class<? extends Throwable> expected, final String name)
     {
-        MyFacesAsserts.assertException(expected, new TestRunner()
-        {
-            public void run() throws Throwable
-            {
-                _testImpl.setValueExpression(name, null);
-            }
-        });
+        Assertions.assertThrows(expected,
+                () -> _testImpl.setValueExpression(name, null));
     }
 
     /*

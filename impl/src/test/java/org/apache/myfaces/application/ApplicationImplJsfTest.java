@@ -29,7 +29,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revisio$ $Date$
  */
-public class ApplicationImplJsfTest extends AbstractJsfTestCase
+public class ApplicationImplJsfTest extends AbstractFacesTestCase
 {
     
     private static final String RESOURCE_MSG = "The Resource must be stored in the component's attribute " +

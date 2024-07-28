@@ -20,8 +20,7 @@ import jakarta.faces.component.UIComponentMock;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.component.search.*;
-import org.apache.myfaces.core.api.shared.lang.Assert;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockApplication;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class AjaxScriptBuilderTest extends AbstractJsfTestCase
+public class AjaxScriptBuilderTest extends AbstractFacesTestCase
 {
     @BeforeEach
     @Override

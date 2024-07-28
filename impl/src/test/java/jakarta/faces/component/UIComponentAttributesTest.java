@@ -20,12 +20,12 @@ package jakarta.faces.component;
 
 import jakarta.faces.component.html.HtmlInputText;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class UIComponentAttributesTest extends AbstractJsfTestCase
+public class UIComponentAttributesTest extends AbstractFacesTestCase
 {
     private HtmlInputText input;
 

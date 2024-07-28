@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.renderkit;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ContentTypeUtilsTest extends AbstractJsfTestCase
+public class ContentTypeUtilsTest extends AbstractFacesTestCase
 {
 
     @Test

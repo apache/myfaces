@@ -15,14 +15,14 @@
  */
 package org.apache.myfaces.application;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author lu4242
  */
-public class ResourceHandlerImplContractTest extends FaceletTestCase
+public class ResourceHandlerImplContractTest extends AbstractFaceletTestCase
 {
     
     @Test

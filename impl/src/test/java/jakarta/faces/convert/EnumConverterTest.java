@@ -22,7 +22,7 @@ package jakarta.faces.convert;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 /**
  * This testcase test <code>jakarta.faces.convert.EnumConverter</code>.
  */
-public class EnumConverterTest extends AbstractJsfTestCase
+public class EnumConverterTest extends AbstractFacesTestCase
 {
     private enum testEnum
     {

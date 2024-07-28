@@ -26,7 +26,7 @@ import jakarta.el.ELResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ import org.mockito.Mockito;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ResolverBuilderBaseTest extends AbstractJsfTestCase
+public class ResolverBuilderBaseTest extends AbstractFacesTestCase
 {
     private RuntimeConfig runtimeConfig;
     private MyfacesConfig myfacesConfig;

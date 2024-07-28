@@ -23,12 +23,12 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ViewIdSupportTest extends AbstractJsfTestCase
+public class ViewIdSupportTest extends AbstractFacesTestCase
 {
     private final String filePath = this.getDirectory();
     private ViewIdSupport viewHandlerSupport;

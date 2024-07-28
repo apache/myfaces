@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ServletExternalContextImplTest extends AbstractJsfTestCase
+public class ServletExternalContextImplTest extends AbstractFacesTestCase
 {
 
     private ServletExternalContextImpl _testExternalContext;

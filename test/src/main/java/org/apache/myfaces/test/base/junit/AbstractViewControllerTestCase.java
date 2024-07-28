@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Assertions;
  * @since 1.0.0
  */
 public abstract class AbstractViewControllerTestCase extends
-        AbstractJsfTestCase
+        AbstractFacesTestCase
 {
 
     // ------------------------------------------------------------ Constructors

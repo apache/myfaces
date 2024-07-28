@@ -33,7 +33,7 @@ import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class RemoveTestCase extends FaceletTestCase
+public class RemoveTestCase extends AbstractFaceletTestCase
 {
     @Override
     protected void setupComponents() throws Exception

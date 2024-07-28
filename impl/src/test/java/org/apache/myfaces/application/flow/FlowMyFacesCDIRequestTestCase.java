@@ -36,13 +36,6 @@ import org.junit.jupiter.api.Test;
  */
 public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
-
-    @Override
-    protected boolean isScanAnnotations()
-    {
-        return true;
-    }
-
     @Override
     protected void setUpWebConfigParams() throws Exception
     {

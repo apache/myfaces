@@ -18,7 +18,7 @@
  */
 package jakarta.faces.component;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
  * 
  * @since 2.0
  */
-public class UIViewParameterTest extends AbstractJsfTestCase
+public class UIViewParameterTest extends AbstractFacesTestCase
 {
     
     private UIViewParameter viewParameter = null;

@@ -24,11 +24,11 @@ import jakarta.faces.view.facelets.Facelet;
 
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class DoctypeTestCase extends FaceletTestCase
+public class DoctypeTestCase extends AbstractFaceletTestCase
 {
 
     @Override

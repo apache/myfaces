@@ -21,7 +21,7 @@ package org.apache.myfaces.application.viewstate;
  */
 
 import org.apache.myfaces.spi.impl.DefaultSerialFactory;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase implements Serializable
+public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase implements Serializable
 {
     protected String sensitiveString;
     private static final String TEST_DATA = "This is the test data.";

@@ -27,7 +27,7 @@ import jakarta.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.util.lang.ClassUtils;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.AfterEach;
@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author martin.haimberger
  */
-public class OwnRenderkitTest extends AbstractJsfTestCase {
+public class OwnRenderkitTest extends AbstractFacesTestCase {
     private MockResponseWriter writer;
     private HtmlInputText inputText;
 

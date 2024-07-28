@@ -34,7 +34,7 @@ import org.apache.myfaces.view.facelets.bean.ViewBean;
  *
  * @author Jakob Korherr
  */
-public class FaceletViewDeclarationLanguageTest extends FaceletTestCase
+public class FaceletViewDeclarationLanguageTest extends AbstractFaceletTestCase
 {
 
     /**

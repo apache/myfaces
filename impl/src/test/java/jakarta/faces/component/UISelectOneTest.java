@@ -21,11 +21,11 @@ package jakarta.faces.component;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UISelectOneTest extends AbstractJsfTestCase
+public class UISelectOneTest extends AbstractFacesTestCase
 {
     
     @Test

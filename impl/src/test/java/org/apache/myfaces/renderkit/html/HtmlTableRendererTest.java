@@ -28,7 +28,7 @@ import jakarta.faces.component.html.HtmlDataTable;
 import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.model.ListDataModel;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlTableRendererTest extends AbstractJsfTestCase
+public class HtmlTableRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlDataTable dataTable;

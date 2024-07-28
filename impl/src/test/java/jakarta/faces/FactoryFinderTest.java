@@ -23,8 +23,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.myfaces.test.mock.api.Mock2ApplicationFactory;
-import org.apache.myfaces.test.mock.api.MockApplicationFactory;
+import org.apache.myfaces.test.mock.MockApplicationFactory;
 import  org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
@@ -233,14 +232,14 @@ public class FactoryFinderTest
             Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
             Assertions.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
-                Mock2ApplicationFactory.class.getName()));
+                    MockApplicationFactory2.class.getName()));
             // getFactory should cause setFactory to stop changing the
             // registered classes
             FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
             // this should essentially be a no-op
-            FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, Mock2ApplicationFactory.class.getName());
+            FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory2.class.getName());
             Assertions.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
-                Mock2ApplicationFactory.class.getName()));
+                    MockApplicationFactory2.class.getName()));
             Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
         }
@@ -263,10 +262,10 @@ public class FactoryFinderTest
             Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
             Assertions.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
-                Mock2ApplicationFactory.class.getName()));
-            FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, Mock2ApplicationFactory.class.getName());
+                    MockApplicationFactory2.class.getName()));
+            FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory2.class.getName());
             Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
-                Mock2ApplicationFactory.class.getName()));
+                    MockApplicationFactory2.class.getName()));
             Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
         }
@@ -284,4 +283,6 @@ public class FactoryFinderTest
     {
 
     }
+
+    public class MockApplicationFactory2 extends MockApplicationFactory { }
 }

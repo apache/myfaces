@@ -28,7 +28,7 @@ import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.Test;
 
-public class EncodingTestCase extends FaceletTestCase
+public class EncodingTestCase extends AbstractFaceletTestCase
 {
 
     @Override

@@ -28,11 +28,11 @@ import jakarta.faces.component.UIViewRoot;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentNestedCCTestCase extends FaceletTestCase
+public class CompositeComponentNestedCCTestCase extends AbstractFaceletTestCase
 {
 
     @Override

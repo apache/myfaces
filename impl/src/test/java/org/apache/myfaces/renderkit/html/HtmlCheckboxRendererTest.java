@@ -25,7 +25,7 @@ import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.html.HtmlSelectBooleanCheckbox;
 import jakarta.faces.component.html.HtmlSelectManyCheckbox;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlCheckboxRendererTest extends AbstractJsfTestCase
+public class HtmlCheckboxRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlSelectManyCheckbox selectManyCheckbox;

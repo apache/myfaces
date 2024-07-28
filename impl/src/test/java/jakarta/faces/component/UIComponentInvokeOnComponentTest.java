@@ -18,26 +18,24 @@
  */
 package jakarta.faces.component;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
-
-import org.apache.myfaces.test.TestRunner;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.jupiter.api.Assertions;
-import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
      * Tests for
  * {@link UIComponent#invokeOnComponent(jakarta.faces.context.FacesContext, String, ContextCallback)}.
  */
-public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
+public class UIComponentInvokeOnComponentTest extends AbstractFacesTestCase
 {
     protected IMocksControl _mocksControl;
     private UIComponent _testimpl;
@@ -82,15 +80,9 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
         _contextCallback.invokeContextCallback(EasyMock.same(facesContext), EasyMock.same(testimpl));
         EasyMock.expectLastCall().andThrow(new RuntimeException());
         _mocksControl.replay();
-        
-        org.apache.myfaces.test.MyFacesAsserts.assertException(FacesException.class, new TestRunner()
-        {
-            @Override
-            public void run() throws Throwable
-            {
-                Assertions.assertTrue(testimpl.invokeOnComponent(facesContext, "xxxId", _contextCallback));
-            }
-        });
+
+        Assertions.assertThrows(FacesException.class,
+                () ->  testimpl.invokeOnComponent(facesContext, "xxxId", _contextCallback));
     }
 
     @Test
@@ -128,28 +120,13 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
     @Test
     public void testInvokeOnComponentExceptions() throws Exception
     {
-        org.apache.myfaces.test.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
-        {
-            @Override
-            public void run() throws Throwable
-            {
-                _testimpl.invokeOnComponent(null, "xxx", _contextCallback);
-            }
-        });
-        org.apache.myfaces.test.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
-        {
-            @Override
-            public void run() throws Throwable
-            {
-                _testimpl.invokeOnComponent(facesContext, null, _contextCallback);
-            }
-        });
-        org.apache.myfaces.test.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
-        {
-            public void run() throws Throwable
-            {
-                _testimpl.invokeOnComponent(facesContext, "xxx", null);
-            }
-        });
+        Assertions.assertThrows(NullPointerException.class,
+                () -> _testimpl.invokeOnComponent(null, "xxx", _contextCallback));
+
+        Assertions.assertThrows(NullPointerException.class,
+                () -> _testimpl.invokeOnComponent(facesContext, null, _contextCallback));
+
+        Assertions.assertThrows(NullPointerException.class,
+                () ->  _testimpl.invokeOnComponent(facesContext, "xxx", null));
     }
 }

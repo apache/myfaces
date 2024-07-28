@@ -70,12 +70,12 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
         super.tearDown();
     }
 
-    protected void setupRequest()
+    private void setupRequest()
     {
         setupRequest(null);
     }
 
-    protected void setupRequest(String pathInfo)
+    private void setupRequest(String pathInfo)
     {
         if (pathInfo == null)
         {
@@ -142,7 +142,7 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
     /**
      * This method call startViewRequest(viewId) and doRequestInitialized()
      */
-    public final void startViewRequest(String viewId)
+    public void startViewRequest(String viewId)
     {
         setupRequest(viewId);
         doRequestInitialized();
@@ -151,7 +151,7 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
     /**
      * This method call startViewRequest(null) and doRequestInitialized()
      */
-    public final void startRequest()
+    private void startRequest()
     {
         startViewRequest(null);
         doRequestInitialized();

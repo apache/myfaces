@@ -26,14 +26,14 @@ import java.util.stream.Collectors;
 import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import org.apache.myfaces.core.api.shared.SelectItemsUtil;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import  org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class _SelectItemsUtilTest extends AbstractJsfTestCase
+public class _SelectItemsUtilTest extends AbstractFacesTestCase
 {
 
     private static final String NO_SELECTION_ITEM_VALUE = "1.0";

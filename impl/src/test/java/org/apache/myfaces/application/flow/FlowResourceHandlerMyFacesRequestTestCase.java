@@ -35,12 +35,6 @@ public class FlowResourceHandlerMyFacesRequestTestCase extends AbstractMyFacesRe
 {
 
     @Override
-    protected boolean isScanAnnotations()
-    {
-        return true;
-    }
-
-    @Override
     protected void setUpWebConfigParams() throws Exception
     {
         super.setUpWebConfigParams();

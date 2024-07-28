@@ -25,11 +25,11 @@ import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.ValueChangeEvent;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentValueChangeListenerTestCase extends FaceletTestCase
+public class CompositeComponentValueChangeListenerTestCase extends AbstractFaceletTestCase
 {
     @Override
     protected void setupComponents() throws Exception

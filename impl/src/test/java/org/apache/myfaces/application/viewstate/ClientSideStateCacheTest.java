@@ -21,7 +21,7 @@ package org.apache.myfaces.application.viewstate;
 import jakarta.faces.application.StateManager;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMultipleRequestsTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMultipleRequestsTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class ClientSideStateCacheTest extends AbstractJsfConfigurableMultipleRequestsTestCase
+public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleRequestsTestCase
 {
     
     private static final int TIMESTAMP_PARAM = 2;

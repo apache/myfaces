@@ -24,14 +24,14 @@ import java.util.Locale;
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-public class NumberConverterTest extends AbstractJsfTestCase
+public class NumberConverterTest extends AbstractFacesTestCase
 {
     private NumberConverter mock;
 

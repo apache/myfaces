@@ -43,12 +43,6 @@ import org.junit.jupiter.api.Test;
 public class SearchExpressionImplTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
-    protected boolean isScanAnnotations()
-    {
-        return true;
-    }
-
-    @Override
     protected void setUpWebConfigParams() throws Exception
     {
         super.setUpWebConfigParams();

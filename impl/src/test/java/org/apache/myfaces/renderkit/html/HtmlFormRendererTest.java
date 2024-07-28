@@ -25,7 +25,7 @@ import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.html.HtmlForm;
 
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class HtmlFormRendererTest extends AbstractJsfTestCase
+public class HtmlFormRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlForm form;

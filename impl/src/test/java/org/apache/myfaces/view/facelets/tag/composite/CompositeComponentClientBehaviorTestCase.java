@@ -23,12 +23,12 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
+public class CompositeComponentClientBehaviorTestCase extends AbstractFaceletTestCase
 {
     @Test
     public void testSimpleClientBehavior() throws Exception

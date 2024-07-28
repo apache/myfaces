@@ -33,13 +33,6 @@ import org.junit.jupiter.api.Test;
 
 public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
 {
-
-    @Override
-    protected boolean isScanAnnotations()
-    {
-        return true;
-    }
-
     @Override
     protected void setUpWebConfigParams() throws Exception
     {

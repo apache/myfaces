@@ -19,14 +19,14 @@ package org.apache.myfaces.application.viewstate;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
+public class SerializedViewCollectionTestCase extends AbstractFacesTestCase
 {
     
     @Test

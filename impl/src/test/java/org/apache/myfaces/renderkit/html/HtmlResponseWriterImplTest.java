@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 
 import org.apache.myfaces.util.CommentUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test class for HtmlResponseWriterImpl.
  */
-public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
+public class HtmlResponseWriterImplTest extends AbstractFacesTestCase
 {
     
     private static final String COMMENT_START = "<!--";

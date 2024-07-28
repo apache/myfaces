@@ -26,11 +26,11 @@ import java.util.Map;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMultipleRequestsTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMultipleRequestsTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleRequestsTestCase
+public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleRequestsTestCase
 {
 
     @Test

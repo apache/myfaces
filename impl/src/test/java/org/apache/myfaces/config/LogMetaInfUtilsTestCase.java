@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.config;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class LogMetaInfUtilsTestCase extends AbstractJsfTestCase
+public class LogMetaInfUtilsTestCase extends AbstractFacesTestCase
 {
     @Test
     public void testVersionNumber() throws Exception

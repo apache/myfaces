@@ -47,8 +47,7 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.webapp.FacesServlet;
 
-import org.apache.myfaces.test.TestRunner;
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
@@ -56,8 +55,9 @@ import  org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
-public class UIViewRootTest extends AbstractJsfTestCase
+public class UIViewRootTest extends AbstractFacesTestCase
 {
     private Map<PhaseId, Class<? extends PhaseListener>> phaseListenerClasses;
     private IMocksControl _mocksControl;
@@ -164,20 +164,15 @@ public class UIViewRootTest extends AbstractJsfTestCase
 // Disabled until Myfaces test issues are resolved..
 //    /**
 //     * Test method for {@link jakarta.faces.component.UIViewRoot#processDecodes(jakarta.faces.context.FacesContext)}.
-//     * 
+//     *
 //     * @throws Throwable
 //     */
 //    @Test
 //    public void testProcessDecodes() throws Throwable
-//    {
-//        testProcessXXX(new TestRunner()
-//        {
-//            public void run() throws Throwable
-//            {
-//                _testimpl.processDecodes(_facesContext);
-//            }
-//        }, PhaseId.APPLY_REQUEST_VALUES, false, true, true);
-//    }
+//   {
+//       testProcessXXX(() -> _testimpl.processDecodes(_facesContext), PhaseId.APPLY_REQUEST_VALUES, false, true, true);
+//   }
+//
 //
 //    /**
 //     * Test method for {@link jakarta.faces.component.UIViewRoot#processValidators(jakarta.faces.context.FacesContext)}.
@@ -187,13 +182,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 //    @Test
 //    public void testProcessValidators() throws Throwable
 //    {
-//        testProcessXXX(new TestRunner()
-//        {
-//            public void run() throws Throwable
-//            {
-//                _testimpl.processValidators(_facesContext);
-//            }
-//        }, PhaseId.PROCESS_VALIDATIONS, false, true, true);
+//        testProcessXXX(() -> _testimpl.processValidators(_facesContext), PhaseId.PROCESS_VALIDATIONS, false, true, true);
 //    }
 //
 //    /**
@@ -204,13 +193,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 //    @Test
 //    public void testProcessUpdates() throws Throwable
 //    {
-//        testProcessXXX(new TestRunner()
-//        {
-//            public void run() throws Throwable
-//            {
-//                _testimpl.processUpdates(_facesContext);
-//            }
-//        }, PhaseId.UPDATE_MODEL_VALUES, false, true, true);
+//        testProcessXXX(() -> _testimpl.processUpdates(_facesContext), PhaseId.UPDATE_MODEL_VALUES, false, true, true);
 //    }
 //
 //    /**
@@ -221,13 +204,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 //    @Test
 //    public void testProcessApplication() throws Throwable
 //    {
-//        testProcessXXX(new TestRunner()
-//        {
-//            public void run() throws Throwable
-//            {
-//                _testimpl.processApplication(_facesContext);
-//            }
-//        }, PhaseId.INVOKE_APPLICATION, false, true, true);
+//        testProcessXXX(() -> _testimpl.processApplication(_facesContext), PhaseId.INVOKE_APPLICATION, false, true, true);
 //    }
 //
 //    /**
@@ -238,13 +215,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 //    @Test
 //    public void testEncodeBegin() throws Throwable
 //    {
-//        testProcessXXX(new TestRunner()
-//        {
-//            public void run() throws Throwable
-//            {
-//                _testimpl.encodeBegin(_facesContext);
-//            }
-//        }, PhaseId.RENDER_RESPONSE, false, true, false);
+//        testProcessXXX(() -> _testimpl.encodeBegin(_facesContext), PhaseId.RENDER_RESPONSE, false, true, false);
 //    }
 //
 //    /**
@@ -255,13 +226,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 //    @Test
 //    public void testEncodeEnd() throws Throwable
 //    {
-//        testProcessXXX(new TestRunner()
-//        {
-//            public void run() throws Throwable
-//            {
-//                _testimpl.encodeEnd(_facesContext);
-//            }
-//        }, PhaseId.RENDER_RESPONSE, false, false, true);
+//        testProcessXXX(() -> _testimpl.encodeEnd(_facesContext), PhaseId.RENDER_RESPONSE, false, false, true);
 //    }
 //
 //    @Test
@@ -429,8 +394,8 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // }
     //
 
-    private void testProcessXXX(TestRunner runner, PhaseId phaseId, boolean expectSuperCall, boolean checkBefore,
-            boolean checkAfter) throws Throwable
+    private void testProcessXXX(Executable executable, PhaseId phaseId, boolean expectSuperCall, boolean checkBefore,
+                                boolean checkAfter) throws Throwable
     {
         expect(_lifecycleFactory.getLifecycle(eq(LifecycleFactory.DEFAULT_LIFECYCLE))).andReturn(_lifecycle);
         expect(_externalContext.getInitParameter(eq(FacesServlet.LIFECYCLE_ID_ATTR))).andReturn(null).anyTimes();
@@ -486,11 +451,11 @@ public class UIViewRootTest extends AbstractJsfTestCase
         }
 
         _mocksControl.replay();
-        runner.run();
+        executable.execute();
         _mocksControl.verify();
     }
 
-    private final class ActionListenerImplementation implements ActionListener
+    private static final class ActionListenerImplementation implements ActionListener
     {
         public int invocationCount = 0;
         
@@ -498,13 +463,12 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
         public ActionListenerImplementation(UICommand otherUiCommand)
         {
-            // from spec: Queue one or more additional events, from the same source component
-            // or a DIFFERENT one
+            // from spec: Queue one or more additional events, from the same source component or a DIFFERENT one
             newActionEventFromListener = new ActionEvent(otherUiCommand);
         }
 
-        public void processAction(ActionEvent actionEvent)
-                throws AbortProcessingException
+         @Override
+        public void processAction(ActionEvent actionEvent) throws AbortProcessingException
         {
             invocationCount++;
               
@@ -517,7 +481,6 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
     public static class MockLifeCycleFactory extends LifecycleFactory
     {
-
         @Override
         public void addLifecycle(String lifecycleId, Lifecycle lifecycle)
         {
@@ -540,6 +503,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
     public static abstract class ApplyRequesValuesPhaseListener implements PhaseListener
     {
+        @Override
         public PhaseId getPhaseId()
         {
             return PhaseId.APPLY_REQUEST_VALUES;
@@ -548,6 +512,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
     public static abstract class ProcessValidationsPhaseListener implements PhaseListener
     {
+        @Override
         public PhaseId getPhaseId()
         {
             return PhaseId.PROCESS_VALIDATIONS;
@@ -556,6 +521,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
     public static abstract class UpdateModelValuesPhaseListener implements PhaseListener
     {
+        @Override
         public PhaseId getPhaseId()
         {
             return PhaseId.UPDATE_MODEL_VALUES;
@@ -564,6 +530,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
     public static abstract class InvokeApplicationPhaseListener implements PhaseListener
     {
+        @Override
         public PhaseId getPhaseId()
         {
             return PhaseId.INVOKE_APPLICATION;
@@ -572,6 +539,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
     public static abstract class AnyPhasePhaseListener implements PhaseListener
     {
+        @Override
         public PhaseId getPhaseId()
         {
             return PhaseId.ANY_PHASE;
@@ -588,6 +556,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
 
     public static abstract class RenderResponsePhaseListener implements PhaseListener
     {
+        @Override
         public PhaseId getPhaseId()
         {
             return PhaseId.RENDER_RESPONSE;

@@ -26,12 +26,12 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentCCRefTestCase extends FaceletTestCase
+public class CompositeComponentCCRefTestCase extends AbstractFaceletTestCase
 {
 
     @Override

@@ -35,7 +35,7 @@ import jakarta.faces.view.ViewMetadata;
 
 import org.junit.jupiter.api.Assertions;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
@@ -50,7 +50,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ViewHandlerImplTest extends AbstractJsfTestCase
+public class ViewHandlerImplTest extends AbstractFacesTestCase
 {
     
     private ViewHandlerImpl _viewHandler;

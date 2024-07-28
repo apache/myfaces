@@ -21,11 +21,11 @@ package jakarta.faces.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase
+public class UIComponentBaseGetChildrenTest extends AbstractFacesTestCase
 {
     @Test
     public void testGetChildrenAddAll()

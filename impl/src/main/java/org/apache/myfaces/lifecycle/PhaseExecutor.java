@@ -27,7 +27,7 @@ import jakarta.faces.event.PhaseId;
  * @author Nikolay Petrov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-abstract class PhaseExecutor
+public abstract class PhaseExecutor
 {
 
     /**

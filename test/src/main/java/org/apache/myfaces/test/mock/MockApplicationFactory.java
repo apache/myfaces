@@ -19,8 +19,6 @@
 
 package org.apache.myfaces.test.mock;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 
@@ -59,18 +57,9 @@ public class MockApplicationFactory extends ApplicationFactory
     @Override
     public Application getApplication()
     {
-
         if (this.application == null)
         {
-            Class clazz = MockApplication.class;
-            try
-            {
-                this.application = (Application) clazz.newInstance();
-            }
-            catch (InstantiationException | IllegalAccessException ex)
-            {
-                Logger.getLogger(MockApplicationFactory.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            this.application = new MockApplication();
         }
         return this.application;
 

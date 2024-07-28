@@ -26,12 +26,12 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CifTestCase extends FaceletTestCase
+public class CifTestCase extends AbstractFaceletTestCase
 {
 
     protected void setUpServletObjects() throws Exception

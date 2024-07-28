@@ -52,7 +52,7 @@ import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
 import org.apache.myfaces.view.facelets.tag.faces.JsfLibrary;
@@ -63,7 +63,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author Leonardo Uribe
  */
-public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
+public class DefaultHtmlDecoratorTestCase extends AbstractFaceletTestCase
 {
     
     @Override

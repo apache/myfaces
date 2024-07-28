@@ -28,10 +28,12 @@ import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.spi.impl.CDIAnnotationDelegateInjectionProvider;
 import org.apache.myfaces.webapp.FacesInitializerImpl;
 
+import java.util.EventListener;
+
 public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTestCase
 {
 
-    private Object owbListener;
+    private EventListener cdiStartupListener;
     protected InjectionProvider injectionProvider;
     
     @Override
@@ -45,16 +47,35 @@ public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTes
     @Override
     protected void setUpServletListeners() throws Exception
     {
-        Class listenerClass = ClassUtils.classForName("org.apache.webbeans.servlet.WebBeansConfigurationListener");
+        Class<EventListener> listenerClass = null;
+
+        try
+        {
+            listenerClass = ClassUtils.classForName("org.apache.webbeans.servlet.WebBeansConfigurationListener");
+        }
+        catch (ClassNotFoundException e)
+        {
+            // ignore
+        }
+
         if (listenerClass == null)
         {
-            listenerClass = ClassUtils.classForName("org.jboss.weld.environment.servlet.Listener");
+            try
+            {
+                listenerClass = ClassUtils.classForName("org.jboss.weld.environment.servlet.Listener");
+            }
+            catch (ClassNotFoundException e)
+            {
+                // ignore
+            }
         }
+
         if (listenerClass != null)
         {
-            owbListener = ClassUtils.newInstance(listenerClass);
-            webContainer.subscribeListener(owbListener);
+            cdiStartupListener = ClassUtils.newInstance(listenerClass);
+            webContainer.subscribeListener(cdiStartupListener);
         }
+
         super.setUpServletListeners();
     }
 
@@ -62,7 +83,7 @@ public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTes
     protected void tearDownServletListeners() throws Exception
     {
         super.tearDownServletListeners();
-        owbListener = null;
+        cdiStartupListener = null;
     }
 
     @Override
@@ -112,7 +133,5 @@ public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTes
             }
             super.destroyFaces(servletContext);
         }
-        
-        
     }
 }

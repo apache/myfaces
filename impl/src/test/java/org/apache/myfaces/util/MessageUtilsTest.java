@@ -20,14 +20,14 @@ import java.util.ResourceBundle;
 
 import jakarta.faces.application.FacesMessage;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * TestCase for MessageUtils
  */
-public class MessageUtilsTest extends AbstractJsfTestCase
+public class MessageUtilsTest extends AbstractFacesTestCase
 {
     private static final String DEFAULT_BUNDLE = "jakarta.faces.Messages";
 

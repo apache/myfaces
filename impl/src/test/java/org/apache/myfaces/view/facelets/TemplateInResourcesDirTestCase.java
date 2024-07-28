@@ -32,13 +32,6 @@ import org.junit.jupiter.api.Test;
 
 public class TemplateInResourcesDirTestCase extends AbstractMyFacesRequestTestCase
 {
-
-    @Override
-    protected boolean isScanAnnotations()
-    {
-        return true;
-    }
-
     @Override
     protected void setUpWebConfigParams() throws Exception
     {

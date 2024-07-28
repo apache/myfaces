@@ -23,11 +23,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UISelectManyTest extends AbstractJsfTestCase
+public class UISelectManyTest extends AbstractFacesTestCase
 {
 
     public UISelectManyTest()
