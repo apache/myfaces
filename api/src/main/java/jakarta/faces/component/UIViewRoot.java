@@ -18,6 +18,7 @@
  */
 package jakarta.faces.component;
 
+import org.apache.myfaces.core.api.shared.ResetValuesUtils;
 import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.core.api.shared.lang.LocaleUtils;
@@ -1462,38 +1463,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public void resetValues(FacesContext context, java.util.Collection<java.lang.String> clientIds)
     {
-        if (clientIds == null || clientIds.isEmpty())
-        {
-            return;
-        }
-
-        VisitContext visitContext = null;
-        ResetInputContextCallback contextCallback = null;
-
-        for (String clientId : clientIds)
-        {
-            if (clientId == null || clientId.isBlank() || "@none".equals(clientId))
-            {
-                continue;
-            }
-
-            // lazy init
-            if (visitContext == null) {
-                visitContext = VisitContext.createVisitContext(context, null, null);
-            }
-
-            if ("@all".equals(clientId) || PartialResponseWriter.RENDER_ALL_MARKER.equals(clientId)) {
-                this.visitTree(visitContext, ResetInputVisitCallback.INSTANCE);
-            }
-            else {
-                // lazy init
-                if (contextCallback == null) {
-                    contextCallback = new ResetInputContextCallback(visitContext);
-                }
-
-                this.invokeOnComponent(context, clientId, contextCallback);
-            }
-        }
+        ResetValuesUtils.resetValues(context, this, clientIds);
     }
 
     /**
@@ -1958,52 +1928,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
     }
 
-    public static class ResetInputContextCallback implements ContextCallback {
 
-        private VisitContext visitContext;
-
-        /**
-         * Constructs a new ResetInputContextCallback with the given {@link VisitContext}.
-         *
-         * @param visitContext the visit context to be used for visiting component trees
-         */
-        public ResetInputContextCallback(VisitContext visitContext) {
-            this.visitContext = visitContext;
-        }
-
-        /**
-         * Invokes the context callback on the given component. If the component is an instance
-         * of {@link EditableValueHolder}, its value is reset. Otherwise, the component's tree
-         * is visited using the {@link ResetInputVisitCallback} instance.
-         *
-         * @param fc the current {@link FacesContext}
-         * @param component the component on which to invoke the context callback
-         */
-        @Override
-        public void invokeContextCallback(FacesContext fc, UIComponent component) {
-            if (component instanceof EditableValueHolder) {
-                ((EditableValueHolder) component).resetValue();
-            }
-            else {
-                component.visitTree(visitContext, ResetInputVisitCallback.INSTANCE);
-            }
-        }
-    }
-
-    public static class ResetInputVisitCallback implements VisitCallback {
-
-        public static final ResetInputVisitCallback INSTANCE = new ResetInputVisitCallback();
-
-        @Override
-        public VisitResult visit(VisitContext context, UIComponent target) {
-            if (target instanceof EditableValueHolder) {
-                EditableValueHolder input = (EditableValueHolder) target;
-                input.resetValue();
-            }
-
-            return VisitResult.ACCEPT;
-        }
-    }
 
     private void publishException(FacesContext facesContext, Throwable e, PhaseId phaseId, String key)
     {
