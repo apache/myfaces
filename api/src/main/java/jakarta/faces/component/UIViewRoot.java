@@ -1461,18 +1461,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * @param context
      * @param clientIds
      */
-    public void resetValues(FacesContext context, java.util.Collection<java.lang.String> clientIds)
-    {
-        resetValues(context, clientIds, null);
-    }
-
-    /**
-     * @since 5.0
-     * @param context
-     * @param clientIds
-     * @param hints
-     */
-    public void resetValues(FacesContext context, java.util.Collection<java.lang.String> clientIds, Set<VisitHint> hints)
+    public void resetValues(FacesContext context, java.util.Collection<java.lang.String> clientIds, VisitHint... visitHints)
     {
         if (clientIds == null || clientIds.isEmpty())
         {
@@ -1491,7 +1480,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
             // lazy init
             if (visitContext == null) {
-                visitContext = VisitContext.createVisitContext(context, null, hints);
+                visitContext = VisitContext.createVisitContext(context, null, visitHints.length == 0 ? null : Set.of(visitHints));
             }
 
             if ("@all".equals(clientId) || PartialResponseWriter.RENDER_ALL_MARKER.equals(clientId)) {

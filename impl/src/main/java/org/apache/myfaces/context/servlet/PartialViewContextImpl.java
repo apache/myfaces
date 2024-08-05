@@ -72,8 +72,7 @@ public class PartialViewContextImpl extends PartialViewContext
     private static final Set<VisitHint> PARTIAL_EXECUTE_HINTS = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.EXECUTE_LIFECYCLE, VisitHint.SKIP_UNRENDERED));
 
-    private static final  Set<VisitHint> RESET_VALUES_HINTS =
-            Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
+    private static final VisitHint[] RESET_VALUES_HINTS = new VisitHint[] { VisitHint.SKIP_UNRENDERED };
 
     private FacesContext context = null;
     private boolean _released = false;
