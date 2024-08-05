@@ -67,7 +67,7 @@ import org.apache.myfaces.core.api.shared.lang.ClassUtils;
         name = "binding",
         returnType = "jakarta.faces.validator.BeanValidator",
         longDesc = "A ValueExpression that evaluates to a BeanValidator.")
-public class BeanValidator implements Validator, PartialStateHolder
+public class BeanValidator implements Validator<Object>, PartialStateHolder
 {
 
     private static final Logger log = Logger.getLogger(BeanValidator.class.getName());

@@ -76,7 +76,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
     name="binding",
     returnType = "jakarta.faces.validator.RegexValidator",
     longDesc = "A ValueExpression that evaluates to a RegexValidator.")
-public class RegexValidator implements Validator, PartialStateHolder
+public class RegexValidator implements Validator<String>, PartialStateHolder
 {
 
     /**
@@ -112,7 +112,7 @@ public class RegexValidator implements Validator, PartialStateHolder
     // VALIDATE
     /** {@inheritDoc} */
     @Override
-    public void validate(FacesContext context, UIComponent component, Object value)
+    public void validate(FacesContext context, UIComponent component, String value)
     {
         Assert.notNull(context, "context");
         Assert.notNull(component, "component");
@@ -132,8 +132,6 @@ public class RegexValidator implements Validator, PartialStateHolder
             throw new ValidatorException(MessageUtils.getErrorMessage(context, "jakarta.faces.converter.STRING", args));
         }
 
-        CharSequence charSequence = (CharSequence) value;
-
         Pattern thePattern;
         if (pattern == null || pattern.equals(EMPTY_STRING))
         {
@@ -149,7 +147,7 @@ public class RegexValidator implements Validator, PartialStateHolder
             throw new ValidatorException(MessageUtils.getErrorMessage(context, MATCH_EXCEPTION_MESSAGE_ID, null));
         }
 
-        if (!thePattern.matcher(charSequence).matches())
+        if (!thePattern.matcher(value).matches())
         {
             Object[] args = {thePattern, MessageUtils.getLabel(context, component)};
             throw new ValidatorException(MessageUtils.getErrorMessage(context, NOT_MATCHED_MESSAGE_ID, args));

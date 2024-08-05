@@ -40,7 +40,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
 @JSFJspProperty(name = "binding", 
         returnType = "jakarta.faces.validator.RequiredValidator",
         longDesc = "A ValueExpression that evaluates to a RequiredValidator.")
-public class RequiredValidator implements Validator
+public class RequiredValidator implements Validator<Object>
 {
 
     // FIELDS

@@ -46,7 +46,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
     returnType = "jakarta.faces.validator.LengthValidator",
     longDesc = "A ValueExpression that evaluates to a LengthValidator.")
 public class LengthValidator
-        implements Validator, PartialStateHolder
+        implements Validator<Object>, PartialStateHolder
 {
     // FIELDS
     public static final String     MAXIMUM_MESSAGE_ID = "jakarta.faces.validator.LengthValidator.MAXIMUM";

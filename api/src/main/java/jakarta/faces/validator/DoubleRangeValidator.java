@@ -45,7 +45,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
     returnType = "jakarta.faces.validator.DoubleRangeValidator",
     longDesc = "A ValueExpression that evaluates to a DoubleRangeValidator.")
 public class DoubleRangeValidator
-        implements Validator, PartialStateHolder
+        implements Validator<Object>, PartialStateHolder
 {
     // FIELDS
     public static final String VALIDATOR_ID       = "jakarta.faces.DoubleRange";

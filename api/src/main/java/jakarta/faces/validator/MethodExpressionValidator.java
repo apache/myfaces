@@ -29,7 +29,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
-public class MethodExpressionValidator implements Validator, StateHolder
+public class MethodExpressionValidator implements Validator<Object>, StateHolder
 {
 
     private MethodExpression methodExpression;
