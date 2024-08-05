@@ -59,7 +59,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  */
 public class FacesMessage implements Serializable
 {
-    private static final long serialVersionUID = 4851488727794169661L;
+    private static final long serialVersionUID = 4851488727794169611L;
 
     /**
      * <code>ResourceBundle</code> identifier for messages whose message identifiers are defined in the JavaServer Faces
@@ -70,28 +70,26 @@ public class FacesMessage implements Serializable
     /**
      * Message severity level indicating an informational message rather than an error.
      */
-    public static final FacesMessage.Severity SEVERITY_INFO = new Severity("INFO", 0);
-
-    /**
-     * Message severity level indicating an success message rather than an error.
-     * @since 5.0
-     */
-    public static final FacesMessage.Severity SEVERITY_SUCCESS = new Severity("SUCCESS", 1);
+    @Deprecated(since = "5.0", forRemoval = true)
+    public static final FacesMessage.Severity SEVERITY_INFO = Severity.INFO;
 
     /**
      * Message severity level indicating that an error might have occurred.
      */
-    public static final FacesMessage.Severity SEVERITY_WARN = new Severity("WARN", 2);
+    @Deprecated(since = "5.0", forRemoval = true)
+    public static final FacesMessage.Severity SEVERITY_WARN = Severity.WARN;
 
     /**
      * Message severity level indicating that an error has occurred.
      */
-    public static final FacesMessage.Severity SEVERITY_ERROR = new Severity("ERROR", 3);
+    @Deprecated(since = "5.0", forRemoval = true)
+    public static final FacesMessage.Severity SEVERITY_ERROR = Severity.ERROR;
 
     /**
      * Message severity level indicating that a serious error has occurred.
      */
-    public static final FacesMessage.Severity SEVERITY_FATAL = new Severity("FATAL", 4);
+    @Deprecated(since = "5.0", forRemoval = true)
+    public static final FacesMessage.Severity SEVERITY_FATAL = Severity.FATAL;
 
     /**
      * Immutable <code>Lis</code> of valid {@link FacesMessage.Severity}instances, in ascending order of their ordinal
@@ -107,11 +105,11 @@ public class FacesMessage implements Serializable
     static
     {
         Map<String, FacesMessage.Severity> map = new HashMap<>(7);
-        map.put(SEVERITY_INFO.toString(), SEVERITY_INFO);
-        map.put(SEVERITY_SUCCESS.toString(), SEVERITY_SUCCESS);
-        map.put(SEVERITY_WARN.toString(), SEVERITY_WARN);
-        map.put(SEVERITY_ERROR.toString(), SEVERITY_ERROR);
-        map.put(SEVERITY_FATAL.toString(), SEVERITY_FATAL);
+        map.put(Severity.INFO.toString(), Severity.INFO);
+        map.put(Severity.SUCCESS.toString(), Severity.SUCCESS);
+        map.put(Severity.WARN.toString(), Severity.WARN);
+        map.put(Severity.ERROR.toString(), Severity.ERROR);
+        map.put(Severity.FATAL.toString(), Severity.FATAL);
         VALUES_MAP = Collections.unmodifiableMap(map);
 
         List<FacesMessage.Severity> severityList = new ArrayList<>(map.values());
@@ -291,7 +289,7 @@ public class FacesMessage implements Serializable
     private void writeObject(ObjectOutputStream out) throws IOException
     {
         out.defaultWriteObject();  // write summary, detail, rendered
-        out.writeInt(this.severity.ordinal);  // FacesMessage.Severity is not Serializable, write ordinal only
+        out.writeInt(this.severity.ordinal());  // FacesMessage.Severity is not Serializable, write ordinal only
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
@@ -300,35 +298,83 @@ public class FacesMessage implements Serializable
 
         // FacesMessage.Severity is not Serializable, read ordinal and get related FacesMessage.Severity
         int severityOrdinal = in.readInt();
-        this.severity = (Severity) VALUES.get(severityOrdinal);
+        this.severity = VALUES.get(severityOrdinal);
     }
 
-    public static class Severity implements Comparable
+    /**
+     * <p>
+     * <span class="changed_modified_5_0">Enum</span> used to represent message severity levels.
+     * </p>
+     */
+    public enum Severity
     {
-        private String name;
-        private int ordinal;
+        /**
+         * <p>
+         * Message severity level indicating an informational message rather than an error.
+         * </p>
+         * <p>
+         * Historically, this was a constant class known as FacesMessage.SEVERITY_INFO.
+         * </p>
+         * @since 5.0
+         */
+        INFO,
 
-        private Severity(String name, int ordinal)
-        {
-            this.name = name;
-            this.ordinal = ordinal;
-        }
+        /**
+         * <p>
+         * Message severity level indicating an success message rather than an error.
+         * </p>
+         * @since 5.0
+         */
+        SUCCESS,
 
-        public int getOrdinal()
-        {
-            return this.ordinal;
-        }
+        /**
+         * <p>
+         * Message severity level indicating that an error might have occurred.
+         * </p>
+         * <p>
+         * Historically, this was a constant class known as FacesMessage.SEVERITY_WARN.
+         * </p>
+         * @since 5.0
+         */
+        WARN,
 
+        /**
+         * <p>
+         * Message severity level indicating that an error has occurred.
+         * </p>
+         * <p>
+         * Historically, this was a constant class known as FacesMessage.SEVERITY_ERROR.
+         * </p>
+         * @since 5.0
+         */
+        ERROR,
+
+        /**
+         * <p>
+         * Message severity level indicating that a serious error has occurred.
+         * </p>
+         * <p>
+         * Historically, this was a constant class known as FacesMessage.SEVERITY_FATAL.
+         * </p>
+         * @since 5.0
+         */
+        FATAL;
+
+        /**
+         * <p>
+         * Return a String representation of this {@link FacesMessage.Severity} instance.
+         * </p>
+         */
         @Override
         public String toString()
         {
-            return this.name;
+            return name() + ' ' + ordinal();
         }
 
-        @Override
-        public int compareTo(Object o)
+        // backward compatibility
+        public int getOrdinal()
         {
-            return getOrdinal() - ((Severity)o).getOrdinal();
+            return ordinal();
         }
     }
 
