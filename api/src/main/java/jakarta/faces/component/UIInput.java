@@ -411,7 +411,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             
             // Create a FacesMessage with the id UPDATE_MESSAGE_ID
             FacesMessage facesMessage = MessageUtils.getMessage(context,
-                    context.getViewRoot().getLocale(), FacesMessage.SEVERITY_ERROR, UPDATE_MESSAGE_ID,
+                    context.getViewRoot().getLocale(), FacesMessage.Severity.ERROR, UPDATE_MESSAGE_ID,
                     new Object[] { MessageUtils.getLabel(context, this) });
             
             // create an UpdateModelException and enqueue it since 
@@ -446,7 +446,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             if (getRequiredMessage() != null)
             {
                 String requiredMessage = getRequiredMessage();
-                context.addMessage(this.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                context.addMessage(this.getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR,
                     requiredMessage, requiredMessage));
             }
             else
@@ -688,7 +688,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             String converterMessage = getConverterMessage();
             if (converterMessage != null)
             {
-                context.addMessage(getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                context.addMessage(getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR,
                         converterMessage, converterMessage));
             }
             else

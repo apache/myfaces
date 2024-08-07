@@ -110,7 +110,7 @@ abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
             {
                 String requiredMessage = getRequiredMessage();
                 context.addMessage(this.getClientId(context), new jakarta.faces.application.FacesMessage(
-                        jakarta.faces.application.FacesMessage.SEVERITY_ERROR,
+                        jakarta.faces.application.FacesMessage.Severity.ERROR,
                     requiredMessage, requiredMessage));
             }
             else

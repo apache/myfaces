@@ -71,13 +71,13 @@ public class RequiredValidator implements Validator<Object>
                 {
                     String requiredMessage = uiInput.getRequiredMessage();
                     throw new ValidatorException(new FacesMessage(
-                            FacesMessage.SEVERITY_ERROR, requiredMessage,
+                            FacesMessage.Severity.ERROR, requiredMessage,
                             requiredMessage));
                 }
             }
             throw new ValidatorException(MessageUtils.getMessage(facesContext,
                     facesContext.getViewRoot().getLocale(),
-                    FacesMessage.SEVERITY_ERROR, UIInput.REQUIRED_MESSAGE_ID,
+                    FacesMessage.Severity.ERROR, UIInput.REQUIRED_MESSAGE_ID,
                     new Object[] { MessageUtils.getLabel(facesContext,
                             uiComponent) }));
         }

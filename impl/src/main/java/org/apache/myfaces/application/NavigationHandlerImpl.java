@@ -801,7 +801,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         {
             final FacesMessage facesMessage = new FacesMessage("No navigation case match for viewId " + viewId + 
                     ",  action " + fromAction + " and outcome " + outcome);
-            facesMessage.setSeverity(FacesMessage.SEVERITY_WARN);
+            facesMessage.setSeverity(FacesMessage.Severity.WARN);
             facesContext.addMessage(null, facesMessage);
         }
         if (navigationCase != null)

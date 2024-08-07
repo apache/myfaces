@@ -107,6 +107,9 @@ public interface ComponentAttrs
     String INFO_STYLE_ATTR             = "infoStyle";
     String WARN_CLASS_ATTR             = "warnClass";
     String WARN_STYLE_ATTR             = "warnStyle";
+    String SUCCESS_CLASS_ATTR          = "successClass";
+    String SUCCESS_STYLE_ATTR          = "successStyle";
+
     String TITLE_ATTR                  = "title";
     String TOOLTIP_ATTR                = "tooltip";
     

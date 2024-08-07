@@ -292,7 +292,7 @@ public class UISelectMany extends UIInput
             if (getRequiredMessage() != null)
             {
                 String requiredMessage = getRequiredMessage();
-                context.addMessage(this.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                context.addMessage(this.getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR,
                     requiredMessage, requiredMessage));
             }
             else

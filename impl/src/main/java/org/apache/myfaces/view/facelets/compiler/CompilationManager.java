@@ -344,7 +344,7 @@ final class CompilationManager
                 }
                 if (isPrefixed)
                 {
-                    unit.addMessage(FacesMessage.SEVERITY_WARN,
+                    unit.addMessage(FacesMessage.Severity.WARN,
                             "Warning: The page "+alias+" declares namespace "+qname[0]+ 
                             " and uses the tag " + qName + " , but no TagLibrary associated to namespace.", 
                             "Warning: The page "+alias+" declares namespace "+qname[0]+ 

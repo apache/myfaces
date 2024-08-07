@@ -835,7 +835,7 @@ public final class RendererUtils
                     }
                     facesContext.addMessage(
                             component.getClientId(facesContext),
-                            new FacesMessage(FacesMessage.SEVERITY_WARN,
+                            new FacesMessage(FacesMessage.Severity.WARN,
                                     summary, summary));
                 }
 

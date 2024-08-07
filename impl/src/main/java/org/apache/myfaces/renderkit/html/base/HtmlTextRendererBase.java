@@ -445,7 +445,7 @@ public class HtmlTextRendererBase
             {
                 String message = "<h:inputText type=\"" + type + "\"> is discommended, you should instead use " +
                     recommendedComponent;
-                context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_WARN,
+                context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.Severity.WARN,
                     message, message));
             }
         }

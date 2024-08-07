@@ -191,14 +191,14 @@ public class UIViewParameter extends UIInput
             
             if (required != null) 
             {
-                message = new FacesMessage (FacesMessage.SEVERITY_ERROR, required, required);
+                message = new FacesMessage(FacesMessage.Severity.ERROR, required, required);
             }
             else 
             {
                 Object label = MessageUtils.getLabel(context, this);
                 
                 message = MessageUtils.getMessage(context, context.getViewRoot().getLocale(),
-                     FacesMessage.SEVERITY_ERROR, REQUIRED_MESSAGE_ID, new Object[] { label });
+                        FacesMessage.Severity.ERROR, REQUIRED_MESSAGE_ID, new Object[] { label });
             }
             
             setValid (false);

@@ -252,7 +252,7 @@ public class ComponentUtils
                 if (validatorMessage != null)
                 {
                     context.addMessage(input.getClientId(context),
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, validatorMessage, validatorMessage));
+                            new FacesMessage(FacesMessage.Severity.ERROR, validatorMessage, validatorMessage));
                 }
                 else
                 {

@@ -1619,7 +1619,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         for (int i = 0, size = messageList.size(); i < size;  i++)
         {
             FacesMessage message = messageList.get(i);
-            if (FacesMessage.SEVERITY_ERROR.compareTo(message.getSeverity()) <= 0)
+            if (message.getSeverity() == FacesMessage.Severity.ERROR ||
+                    message.getSeverity() == FacesMessage.Severity.FATAL)
             {
                 return true;
             }

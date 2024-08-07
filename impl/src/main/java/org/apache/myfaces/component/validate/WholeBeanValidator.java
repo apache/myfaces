@@ -143,7 +143,7 @@ public class WholeBeanValidator implements Validator
                 {
                     String message = constraintViolation.getMessage();
                     Object[] args = new Object[]{ message, MessageUtils.getLabel(context, component) };
-                    FacesMessage msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR, MESSAGE_ID, args, context);
+                    FacesMessage msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR, MESSAGE_ID, args, context);
                     messages.add(msg);
                 }
                 throw new ValidatorException(messages);

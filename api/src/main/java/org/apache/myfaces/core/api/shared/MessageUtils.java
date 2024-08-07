@@ -39,7 +39,7 @@ public class MessageUtils
         facesContext.addMessage(component.getClientId(facesContext),
                                 getMessage(facesContext,
                                            facesContext.getViewRoot().getLocale(),
-                                           FacesMessage.SEVERITY_ERROR,
+                                           FacesMessage.Severity.ERROR,
                                            messageId,
                                            null));
     }
@@ -51,7 +51,7 @@ public class MessageUtils
         facesContext.addMessage(component.getClientId(facesContext),
                                 getMessage(facesContext,
                                            facesContext.getViewRoot().getLocale(),
-                                           FacesMessage.SEVERITY_ERROR,
+                                           FacesMessage.Severity.ERROR,
                                            messageId,
                                            args));
     }
@@ -60,7 +60,7 @@ public class MessageUtils
             UIComponent component, Throwable cause)
     {
         facesContext.addMessage(component.getClientId(facesContext),
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, cause
+                new FacesMessage(FacesMessage.Severity.ERROR, cause
                         .getLocalizedMessage(), cause.getLocalizedMessage()));
     }
     
@@ -70,7 +70,7 @@ public class MessageUtils
     {
         return getMessage(facesContext,
                           facesContext.getViewRoot().getLocale(),
-                          FacesMessage.SEVERITY_ERROR,
+                          FacesMessage.Severity.ERROR,
                           messageId,
                           args);
     }

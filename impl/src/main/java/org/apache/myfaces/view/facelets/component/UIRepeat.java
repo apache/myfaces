@@ -2198,10 +2198,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     private boolean hasErrorMessages(FacesContext context)
     {
-        for (Iterator<FacesMessage> iter = context.getMessages(); iter.hasNext();)
+        // perf: getMessageList() return a RandomAccess instance.
+        // See org.apache.myfaces.context.servlet.FacesContextImpl.addMessage
+        List<FacesMessage> messageList = context.getMessageList();
+        for (int i = 0, size = messageList.size(); i < size;  i++)
         {
-            FacesMessage message = iter.next();
-            if (FacesMessage.SEVERITY_ERROR.compareTo(message.getSeverity()) <= 0)
+            FacesMessage message = messageList.get(i);
+            if (message.getSeverity() == FacesMessage.Severity.ERROR ||
+                    message.getSeverity() == FacesMessage.Severity.FATAL)
             {
                 return true;
             }

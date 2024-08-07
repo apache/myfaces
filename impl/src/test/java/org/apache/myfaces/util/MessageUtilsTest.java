@@ -39,13 +39,13 @@ public class MessageUtilsTest extends AbstractFacesTestCase
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
-        FacesMessage msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
+        FacesMessage msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
         Assertions.assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
-        msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
+        msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION",
                 "blubb");
         Assertions.assertEquals("blubb: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
@@ -59,13 +59,13 @@ public class MessageUtilsTest extends AbstractFacesTestCase
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
-        FacesMessage msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
+        FacesMessage msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
         Assertions.assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
-        msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
+        msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION", null);
         Assertions.assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
@@ -78,13 +78,13 @@ public class MessageUtilsTest extends AbstractFacesTestCase
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
-        FacesMessage msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
+        FacesMessage msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION", null, facesContext);
         Assertions.assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
-        msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
+        msg = MessageUtils.getMessage(FacesMessage.Severity.ERROR,
                 "jakarta.faces.component.UIInput.CONVERSION", null,
                 facesContext);
         Assertions.assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());

@@ -117,8 +117,8 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
             new HtmlRenderedAttr("warnStyle", "warnStyle", "style=\"warnStyle\"",2)
         };
         
-        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
-        facesContext.addMessage("test2", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary2", "detailWarnSummary2"));        
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSumary", "detailWarnSummary"));
+        facesContext.addMessage("test2", new FacesMessage(FacesMessage.Severity.WARN, "warnSumary2", "detailWarnSummary2"));        
 
         messages.setErrorClass(ERROR_CLASS);
         messages.setWarnClass(WARN_CLASS);
@@ -139,7 +139,7 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
     @Test
     public void testRenderSpanOnlyWhenNecessary1() throws Exception
     {
-        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSumary", "detailWarnSummary"));
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
@@ -150,7 +150,7 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
     @Test
     public void testRenderSpanOnlyWhenNecessary2() throws Exception
     {
-        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSumary", "detailWarnSummary"));
         messages.setLayout("table");
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
@@ -162,7 +162,7 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
     @Test
     public void testRenderSpanOnlyWhenNecessary3() throws Exception
     {
-        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSumary", "detailWarnSummary"));
         messages.setId("msgPanel");
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
@@ -178,7 +178,7 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
     @Test
     public void testRenderSpanOnlyWhenNecessary4() throws Exception
     {
-        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_FATAL, "fatalSumary", "detailFatalSummary"));
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.FATAL, "fatalSumary", "detailFatalSummary"));
         messages.setId("msgPanel");
         messages.setFatalClass("fatalClass");
         messages.encodeEnd(facesContext);
@@ -196,7 +196,7 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
     @Test
     public void testRenderSpanOnlyWhenNecessary5() throws Exception
     {
-        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_FATAL, "fatalSumary", "detailFatalSummary"));
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.FATAL, "fatalSumary", "detailFatalSummary"));
         messages.setId("msgPanel");
         messages.setLayout("table");
         messages.setFatalClass("fatalClass");
@@ -213,7 +213,7 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
         
-        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSumary", "detailWarnSummary"));
 
         messages.setErrorClass(ERROR_CLASS);
         messages.setWarnClass(WARN_CLASS);

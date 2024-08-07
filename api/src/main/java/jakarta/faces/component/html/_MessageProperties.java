@@ -65,6 +65,20 @@ interface _MessageProperties
     public abstract String getInfoStyle();
 
     /**
+     * CSS class to be used for messages with severity "SUCCESS".
+     *
+     */
+    @JSFProperty
+    public abstract String getSuccessClass();
+
+    /**
+     * CSS style to be used for messages with severity "SUCCESS".
+     *
+     */
+    @JSFProperty
+    public abstract String getSuccessStyle();
+
+    /**
      * If true, the message summary will be rendered as a tooltip (i.e. HTML title attribute).
      * 
      */
