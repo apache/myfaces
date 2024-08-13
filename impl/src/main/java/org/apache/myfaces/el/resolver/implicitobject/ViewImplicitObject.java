@@ -18,9 +18,7 @@
  */
 package org.apache.myfaces.el.resolver.implicitobject;
 
-import java.beans.FeatureDescriptor;
 import jakarta.el.ELContext;
-import jakarta.faces.component.UIViewRoot;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
@@ -53,12 +51,6 @@ public class ViewImplicitObject extends ImplicitObject
     public Class<?> getType()
     {
         return null;
-    }
-
-    @Override
-    public FeatureDescriptor getDescriptor()
-    {
-        return makeDescriptor(NAME, "The root object of a Faces component tree", UIViewRoot.class);
     }
 
 }

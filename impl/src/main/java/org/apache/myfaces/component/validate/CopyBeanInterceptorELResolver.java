@@ -19,8 +19,6 @@
 
 package org.apache.myfaces.component.validate;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 
@@ -72,12 +70,6 @@ public class CopyBeanInterceptorELResolver extends ELResolver
     public boolean isReadOnly(final ELContext ctx, final Object base, final Object property)
     {
         return resolver.isReadOnly(ctx, base, property);
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext ctx, final Object base)
-    {
-        return resolver.getFeatureDescriptors(ctx, base);
     }
 
     @Override

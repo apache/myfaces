@@ -18,21 +18,20 @@
  */
 package org.apache.myfaces.test.el;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotWritableException;
+
 import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import jakarta.el.ELContext;
-import jakarta.el.PropertyNotWritableException;
 
 /**
  * {@code ELResolver} for reserved words.
  */
-public class ReservedWordsELResolver extends AbstractELResolver
+public class ReservedWordsELResolver extends ELResolver
 {
 
     private static final Map<String, Object> VALUES;
@@ -91,26 +90,6 @@ public class ReservedWordsELResolver extends AbstractELResolver
             return true;
         }
         return false;
-    }
-
-    @Override
-    public synchronized Iterator<FeatureDescriptor> getFeatureDescriptors(
-        ELContext context, Object base)
-    {
-        if (featureDescriptors == null)
-        {
-            featureDescriptors = new ArrayList<FeatureDescriptor>();
-            for (Map.Entry<String, Object> e : VALUES.entrySet())
-            {
-                final Class<?> type
-                    = e.getValue() == null ? null : e.getValue().getClass();
-                featureDescriptors.add(descriptor(e.getKey(), e.getKey(),
-                    e.getKey(), false, false, true, type, true));
-            }
-            featureDescriptors
-                = Collections.unmodifiableList(featureDescriptors);
-        }
-        return featureDescriptors.iterator();
     }
 
     @Override

@@ -19,8 +19,6 @@
 package org.apache.myfaces.el.resolver.implicitobject;
 
 import jakarta.el.ELContext;
-import java.beans.FeatureDescriptor;
-import java.util.Map;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
@@ -53,12 +51,6 @@ public class ApplicationScopeImplicitObject extends ImplicitObject
     public Class<?> getType()
     {
         return null;
-    }
-
-    @Override
-    public FeatureDescriptor getDescriptor()
-    {
-        return makeDescriptor(NAME, "Application scope attributes", Map.class);
     }
 
 }
