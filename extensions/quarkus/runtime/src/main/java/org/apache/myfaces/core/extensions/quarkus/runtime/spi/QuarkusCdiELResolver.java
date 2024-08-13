@@ -18,13 +18,6 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.runtime.spi;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -34,6 +27,11 @@ import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FacesException;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Custom {@link ELResolver} for CDI as {@link BeanManager#getELResolver} is not supported on Quarkus.
@@ -52,12 +50,6 @@ public class QuarkusCdiELResolver extends ELResolver
 
     @Override
     public Class<?> getCommonPropertyType(ELContext arg0, Object arg1)
-    {
-        return null;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext arg0, Object arg1)
     {
         return null;
     }
