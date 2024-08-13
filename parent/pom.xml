@@ -381,7 +381,7 @@
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-el-api</artifactId>
-                <version>10.1.16</version>
+                <version>11.0.0-M24</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

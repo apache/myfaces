@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.el.resolver.implicitobject;
 
-import java.beans.FeatureDescriptor;
 import jakarta.el.ELContext;
 
 /**
@@ -54,9 +53,4 @@ public class ApplicationImplicitObject extends ImplicitObject
         return null;
     }
 
-    @Override
-    public FeatureDescriptor getDescriptor()
-    {
-        return makeDescriptor(NAME, "Represents the application environment", Object.class);
-    }
 }

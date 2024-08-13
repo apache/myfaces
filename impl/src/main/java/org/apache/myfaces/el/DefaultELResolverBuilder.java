@@ -18,18 +18,20 @@
  */
 package org.apache.myfaces.el;
 
-import org.apache.myfaces.el.resolver.FlashELResolver;
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELResolver;
 import jakarta.el.ListELResolver;
 import jakarta.el.MapELResolver;
+import jakarta.el.OptionalELResolver;
+import jakarta.el.RecordELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.StaticFieldELResolver;
+import org.apache.myfaces.el.resolver.FlashELResolver;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
@@ -126,7 +128,7 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
  
         try
         {
-            ELResolver streamElResolver = (ELResolver) runtimeConfig.getExpressionFactory().getStreamELResolver();
+            ELResolver streamElResolver = runtimeConfig.getExpressionFactory().getStreamELResolver();
             if (streamElResolver != null)
             {
                 list.add(streamElResolver);
@@ -149,6 +151,17 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         list.add(new MapELResolver());
         list.add(new ListELResolver());
         list.add(new ArrayELResolver());
+
+        try
+        {
+            list.add(new OptionalELResolver());
+            list.add(new RecordELResolver());
+        }
+        catch (Throwable ex)
+        {
+            LOG.log(Level.WARNING, "Could not add OptionalELResolver / RecordELResolver!", ex);
+        }
+
         if (PropertyDescriptorUtils.isUseLambdaMetafactory(facesContext.getExternalContext()))
         {
             list.add(new LambdaBeanELResolver());

@@ -18,27 +18,24 @@
  */
 package org.apache.myfaces.el.resolver;
 
-import java.beans.BeanInfo;
-import java.beans.FeatureDescriptor;
-import java.beans.PropertyDescriptor;
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.CompositeComponentExpressionHolder;
-
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentBeanInfo;
+
+import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
+import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 /**
  * Composite component attribute EL resolver.  See Faces spec, section 5.6.2.2.
@@ -65,13 +62,6 @@ public final class CompositeComponentELResolver extends ELResolver
     {
         // Per the spec, return String.class.
         return String.class;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
-    {
-        // Per the spec, do nothing.
-        return null;
     }
 
     @Override

@@ -18,9 +18,6 @@
  */
 package org.apache.myfaces.el.resolver;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -32,7 +29,6 @@ import jakarta.faces.view.Location;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.resource.ContractResource;
 import org.apache.myfaces.resource.ResourceELUtils;
-
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 
 /**
@@ -56,13 +52,6 @@ public final class ResourceResolver extends ELResolver
             final Object base)
     {
         return base == null ? Object.class : null;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(
-            final ELContext context, final Object base)
-    {
-        return null;
     }
 
     @Override

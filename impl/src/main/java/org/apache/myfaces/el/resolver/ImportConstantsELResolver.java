@@ -18,18 +18,6 @@
  */
 package org.apache.myfaces.el.resolver;
 
-import java.beans.FeatureDescriptor;
-import static java.lang.String.format;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import static java.util.logging.Level.FINE;
-import java.util.logging.Logger;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -41,6 +29,18 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewMetadata;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
+
+import static java.lang.String.format;
+import static java.util.logging.Level.FINE;
 
 /**
  *
@@ -152,12 +152,6 @@ public final class ImportConstantsELResolver extends ELResolver
             throws NullPointerException, PropertyNotFoundException, ELException
     {
         return false;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base)
-    {
-        return null;
     }
 
     @Override

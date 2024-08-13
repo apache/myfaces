@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.el.resolver.implicitobject;
 
-import java.beans.FeatureDescriptor;
 import jakarta.el.ELContext;
 
 /**
@@ -52,12 +51,6 @@ public class RequestImplicitObject extends ImplicitObject
     public Class<?> getType()
     {
         return null;
-    }
-
-    @Override
-    public FeatureDescriptor getDescriptor()
-    {
-        return makeDescriptor(NAME, "Environment-specific object instance for the current request", Object.class);
     }
 
 }

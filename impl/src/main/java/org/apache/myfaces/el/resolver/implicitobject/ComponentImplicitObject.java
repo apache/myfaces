@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.el.resolver.implicitobject;
 
-import java.beans.FeatureDescriptor;
-
 import jakarta.el.ELContext;
 import jakarta.faces.component.UIComponent;
 
@@ -57,10 +55,4 @@ public class ComponentImplicitObject extends ImplicitObject
         return null;
     }
 
-    @Override
-    public FeatureDescriptor getDescriptor()
-    {
-        return makeDescriptor(NAME, "Represents the component most recently pushed using UIComponent.pushComponentToEL",
-                              UIComponent.class);
-    }
 }

@@ -18,11 +18,6 @@
  */
 package org.apache.myfaces.el.resolver;
 
-import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.ResourceBundle;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -30,8 +25,9 @@ import jakarta.el.PropertyNotFoundException;
 import jakarta.el.PropertyNotWritableException;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
-
 import org.apache.myfaces.config.RuntimeConfig;
+
+import java.util.ResourceBundle;
 
 /**
  * See Faces 1.2 spec section 5.6.1.4
@@ -167,26 +163,6 @@ public final class ResourceBundleResolver extends ELResolver
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base)
-    {
-        if (base != null)
-        {
-            return null;
-        }
-
-        final Map<String, org.apache.myfaces.config.element.ResourceBundle> resourceBundles =
-                runtimeConfig(context).getResourceBundles();
-        
-        final ArrayList<FeatureDescriptor> descriptors = new ArrayList<>(resourceBundles.size());
-        for (org.apache.myfaces.config.element.ResourceBundle resourceBundle : resourceBundles.values())
-        {
-            descriptors.add(makeDescriptor(resourceBundle));
-        }
-
-        return descriptors.iterator();
-    }
-
-    @Override
     public Class<?> getCommonPropertyType(final ELContext context, final Object base)
     {
         if (base != null)
@@ -228,17 +204,4 @@ public final class ResourceBundleResolver extends ELResolver
         return runtimeConfig;
     }
 
-    private static FeatureDescriptor makeDescriptor(org.apache.myfaces.config.element.ResourceBundle bundle)
-    {
-        final FeatureDescriptor fd = new FeatureDescriptor();
-        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
-        fd.setName(bundle.getVar());
-        fd.setDisplayName(bundle.getDisplayName());
-        fd.setValue(ELResolver.TYPE, ResourceBundle.class);
-        fd.setShortDescription("");
-        fd.setExpert(false);
-        fd.setHidden(false);
-        fd.setPreferred(true);
-        return fd;
-    }
 }

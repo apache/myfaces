@@ -23,10 +23,8 @@ import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.PropertyNotWritableException;
-import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -229,24 +227,6 @@ public class ImplicitObjectResolver extends ELResolver
         }
 
         return null;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
-    {
-        if (base != null)
-        {
-            return null;
-        }
-
-        ArrayList<FeatureDescriptor> descriptors = new ArrayList<>(implicitObjects.size());
-
-        for (ImplicitObject obj : implicitObjects.values())
-        {
-            descriptors.add(obj.getDescriptor());
-        }
-
-        return descriptors.iterator();
     }
 
     @Override

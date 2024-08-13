@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.el.resolver;
 
-import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -28,10 +26,8 @@ import jakarta.el.PropertyNotWritableException;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
+
 import java.util.Map;
 
 /**
@@ -132,24 +128,6 @@ public class ScopedAttributeResolver extends ELResolver
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base)
-    {
-
-        if (base != null)
-        {
-            return null;
-        }
-
-        final List<FeatureDescriptor> descriptorList = new ArrayList<FeatureDescriptor>();
-        final ExternalContext extContext = externalContext(context);
-        addDescriptorsToList(descriptorList, extContext.getRequestMap());
-        addDescriptorsToList(descriptorList, extContext.getSessionMap());
-        addDescriptorsToList(descriptorList, extContext.getApplicationMap());
-
-        return descriptorList.iterator();
-    }
-
-    @Override
     public Class<?> getCommonPropertyType(final ELContext context, final Object base)
     {
 
@@ -159,32 +137,6 @@ public class ScopedAttributeResolver extends ELResolver
         }
 
         return String.class;
-    }
-
-    // side effect: modifies the list
-    private static void addDescriptorsToList(final List<FeatureDescriptor> descriptorList,
-                                             final Map<String, Object> scopeMap)
-    {
-        for (Object name : scopeMap.keySet())
-        {
-            String strName = (String)name;
-            Class<?> runtimeType = scopeMap.get(strName).getClass();
-            descriptorList.add(makeDescriptor(strName, runtimeType));
-        }
-    }
-
-    private static FeatureDescriptor makeDescriptor(final String name, final Class<?> runtimeType)
-    {
-        FeatureDescriptor fd = new FeatureDescriptor();
-        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
-        fd.setValue(ELResolver.TYPE, runtimeType);
-        fd.setName(name);
-        fd.setDisplayName(name);
-        fd.setShortDescription(name);
-        fd.setExpert(false);
-        fd.setHidden(false);
-        fd.setPreferred(true);
-        return fd;
     }
 
     // returns null if not found

@@ -19,14 +19,8 @@
 
 package org.apache.myfaces.test.el;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -38,14 +32,15 @@ import jakarta.faces.context.FacesContext;
  *
  * @since 1.0.0
  */
-public class FacesScopedAttributeELResolver extends AbstractELResolver
+public class FacesScopedAttributeELResolver extends ELResolver
 {
 
     /**
      * <p>Return the most general type this resolver accepts for the
      * <code>property</code> argument.</p>
      */
-    public Class getCommonPropertyType(ELContext context, Object base)
+    @Override
+    public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
 
         if (base != null)
@@ -60,73 +55,6 @@ public class FacesScopedAttributeELResolver extends AbstractELResolver
     }
 
     /**
-     * <p>Return an <code>Iterator</code> over the attributes that this
-     * resolver knows how to deal with.</p>
-     *
-     * @param context <code>ELContext</code> for evaluating this value
-     * @param base Base object against which this evaluation occurs
-     */
-    public Iterator getFeatureDescriptors(ELContext context, Object base)
-    {
-
-        if (base != null)
-        {
-            return null;
-        }
-
-        // Create the variables we will need
-        FacesContext fcontext = (FacesContext) context
-                .getContext(FacesContext.class);
-        ExternalContext econtext = fcontext.getExternalContext();
-        List descriptors = new ArrayList();
-        Map map = null;
-        Set set = null;
-        Iterator items = null;
-        String key = null;
-        Object value = null;
-
-        // Add feature descriptors for request scoped attributes
-        set = econtext.getRequestMap().entrySet();
-        items = set.iterator();
-        while (items.hasNext())
-        {
-            Entry item = (Entry) items.next();
-            key = (String) item.getKey();
-            value = item.getValue();
-            descriptors.add(descriptor(key, key, "Request Scope Attribute "
-                    + key, false, false, true, value.getClass(), true));
-        }
-
-        // Add feature descriptors for session scoped attributes
-        set = econtext.getSessionMap().entrySet();
-        items = set.iterator();
-        while (items.hasNext())
-        {
-            Entry item = (Entry) items.next();
-            key = (String) item.getKey();
-            value = item.getValue();
-            descriptors.add(descriptor(key, key, "Session Scope Attribute "
-                    + key, false, false, true, value.getClass(), true));
-        }
-
-        // Add feature descriptors for application scoped attributes
-        set = econtext.getApplicationMap().entrySet();
-        items = set.iterator();
-        while (items.hasNext())
-        {
-            Entry item = (Entry) items.next();
-            key = (String) item.getKey();
-            value = item.getValue();
-            descriptors.add(descriptor(key, key, "Application Scope Attribute "
-                    + key, false, false, true, value.getClass(), true));
-        }
-
-        // Return the accumulated descriptors
-        return descriptors.iterator();
-
-    }
-
-    /**
      * <p>Return the Java type of the specified property.</p>
      *
      * @param context <code>ELContext</code> for evaluating this value
@@ -134,7 +62,8 @@ public class FacesScopedAttributeELResolver extends AbstractELResolver
      *  (must be null because we are evaluating a top level variable)
      * @param property Property name to be accessed
      */
-    public Class getType(ELContext context, Object base, Object property)
+    @Override
+    public Class<?> getType(ELContext context, Object base, Object property)
     {
 
         if (base != null)
@@ -159,6 +88,7 @@ public class FacesScopedAttributeELResolver extends AbstractELResolver
      *  (must be null because we are evaluating a top level variable)
      * @param property Property name to be accessed
      */
+    @Override
     public Object getValue(ELContext context, Object base, Object property)
     {
 
@@ -206,6 +136,7 @@ public class FacesScopedAttributeELResolver extends AbstractELResolver
      *  (must be null because we are evaluating a top level variable)
      * @param property Property name to be accessed
      */
+    @Override
     public boolean isReadOnly(ELContext context, Object base, Object property)
     {
 
@@ -227,6 +158,7 @@ public class FacesScopedAttributeELResolver extends AbstractELResolver
      * @param property Property name to be accessed
      * @param value New value to be set
      */
+    @Override
     public void setValue(ELContext context, Object base, Object property,
             Object value)
     {

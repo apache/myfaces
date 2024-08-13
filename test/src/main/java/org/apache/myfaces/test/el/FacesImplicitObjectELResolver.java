@@ -19,17 +19,15 @@
 
 package org.apache.myfaces.test.el;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.PropertyNotWritableException;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+
+import java.util.Map;
 
 /**
  * <p><code>ELResolver</code> implementation that accesses implicit objects
@@ -38,7 +36,7 @@ import jakarta.faces.context.FacesContext;
  *
  * @since 1.0.0
  */
-public class FacesImplicitObjectELResolver extends AbstractELResolver
+public class FacesImplicitObjectELResolver extends ELResolver
 {
 
     /**
@@ -52,7 +50,7 @@ public class FacesImplicitObjectELResolver extends AbstractELResolver
     /**
      * <p>The property types corresponding to the implicit object names.</p>
      */
-    private static final Class[] TYPES = { Object.class, Map.class, Map.class,
+    private static final Class<?>[] TYPES = { Object.class, Map.class, Map.class,
             FacesContext.class, Map.class, Map.class, Map.class, Map.class,
             Map.class, Object.class, Map.class, Object.class, Map.class,
             UIViewRoot.class };
@@ -61,7 +59,7 @@ public class FacesImplicitObjectELResolver extends AbstractELResolver
      * <p>The settable value types corresponding to the implicit
      * object names.</p>
      */
-    private static final Class[] VALUES = { null, Object.class, null, null,
+    private static final Class<?>[] VALUES = { null, Object.class, null, null,
             null, null, null, null, null, null, Object.class, null,
             Object.class, null };
 
@@ -69,7 +67,8 @@ public class FacesImplicitObjectELResolver extends AbstractELResolver
      * <p>Return the most general type this resolver accepts for the
      * <code>property</code> argument.</p>
      */
-    public Class getCommonPropertyType(ELContext context, Object base)
+    @Override
+    public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
 
         if (base != null)
@@ -84,38 +83,6 @@ public class FacesImplicitObjectELResolver extends AbstractELResolver
     }
 
     /**
-     * <p>Return an <code>Iterator</code> over the attributes that this
-     * resolver knows how to deal with.</p>
-     *
-     * @param context <code>ELContext</code> for evaluating this value
-     * @param base Base object against which this evaluation occurs
-     */
-    public Iterator getFeatureDescriptors(ELContext context, Object base)
-    {
-
-        if (base != null)
-        {
-            return null;
-        }
-
-        // Create the variables we will need
-        FacesContext fcontext = (FacesContext) context
-                .getContext(FacesContext.class);
-        List descriptors = new ArrayList();
-
-        // Add feature descriptors for each implicit object
-        for (int i = 0; i < NAMES.length; i++)
-        {
-            descriptors.add(descriptor(NAMES[i], NAMES[i], NAMES[i], false,
-                    false, true, TYPES[i], true));
-        }
-
-        // Return the accumulated descriptors
-        return descriptors.iterator();
-
-    }
-
-    /**
      * <p>Return the Java type of the specified property.</p>
      *
      * @param context <code>ELContext</code> for evaluating this value
@@ -123,7 +90,8 @@ public class FacesImplicitObjectELResolver extends AbstractELResolver
      *  (must be null because we are evaluating a top level variable)
      * @param property Property name to be accessed
      */
-    public Class getType(ELContext context, Object base, Object property)
+    @Override
+    public Class<?> getType(ELContext context, Object base, Object property)
     {
 
         if (base != null)
@@ -156,6 +124,7 @@ public class FacesImplicitObjectELResolver extends AbstractELResolver
      *  (must be null because we are evaluating a top level variable)
      * @param property Property name to be accessed
      */
+    @Override
     public Object getValue(ELContext context, Object base, Object property)
     {
 
@@ -256,6 +225,7 @@ public class FacesImplicitObjectELResolver extends AbstractELResolver
      *  (must be null because we are evaluating a top level variable)
      * @param property Property name to be accessed
      */
+    @Override
     public boolean isReadOnly(ELContext context, Object base, Object property)
     {
 
@@ -289,6 +259,7 @@ public class FacesImplicitObjectELResolver extends AbstractELResolver
      * @param property Property name to be accessed
      * @param value New value to be set
      */
+    @Override
     public void setValue(ELContext context, Object base, Object property,
             Object value)
     {

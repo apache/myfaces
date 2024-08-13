@@ -26,9 +26,6 @@ import jakarta.el.PropertyNotWritableException;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.Flash;
-import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Resolver for Flash object 
@@ -283,44 +280,6 @@ public class FlashELResolver extends ELResolver
         }
 
         return null;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
-    {
-        ArrayList<FeatureDescriptor> descriptors = new ArrayList<>(1);
-
-        descriptors.add(makeDescriptor(FLASH,
-                "Represents the current flash scope", Object.class));
-
-        if (base instanceof Flash flash)
-        {
-            Iterator itr = flash.keySet().iterator();
-            Object key;
-            FeatureDescriptor desc;
-            while (itr.hasNext())
-            {
-                key = itr.next();
-                desc = makeDescriptor(key.toString(), key.toString(), key.getClass());
-                descriptors.add(desc);
-            }
-        }
-        return descriptors.iterator();
-    }
-
-    protected FeatureDescriptor makeDescriptor(String name, String description,
-            Class<?> elResolverType)
-    {
-        FeatureDescriptor fd = new FeatureDescriptor();
-        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
-        fd.setValue(ELResolver.TYPE, elResolverType);
-        fd.setName(name);
-        fd.setDisplayName(name);
-        fd.setShortDescription(description);
-        fd.setExpert(false);
-        fd.setHidden(false);
-        fd.setPreferred(true);
-        return fd;
     }
 
     @Override
