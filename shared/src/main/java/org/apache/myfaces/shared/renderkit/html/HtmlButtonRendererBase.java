@@ -96,6 +96,18 @@ public class HtmlButtonRendererBase
     {
         String clientId = uiComponent.getClientId(facesContext);
         Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
+
+        // MYFACES-4679
+        if(facesContext.getPartialViewContext().isPartialRequest())
+        {
+            String event =  (String) paramMap.get("javax.faces.behavior.event");
+            if("click".equals(event))
+            {
+                return true;
+            }
+            return false;
+        }
+
         FormInfo formInfo = _ComponentUtils.findNestingForm(uiComponent, facesContext);
         String hiddenLink = null;
          
