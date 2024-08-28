@@ -90,7 +90,7 @@ export const RESPONSE_TEXT = "responseText";
 export const RESPONSE_XML = "responseXML";
 
 /*ajax errors spec 14.4.2*/
-export const HTTPERROR = "httpError";
+export const HTTP_ERROR = "httpError";
 export const EMPTY_RESPONSE = "emptyResponse";
 export const MALFORMEDXML = "malformedXML";
 export const SERVER_ERROR = "serverError";
