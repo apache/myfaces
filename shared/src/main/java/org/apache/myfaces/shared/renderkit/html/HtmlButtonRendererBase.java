@@ -100,8 +100,7 @@ public class HtmlButtonRendererBase
         // MYFACES-4679
         if(facesContext.getPartialViewContext().isPartialRequest())
         {
-            String event =  (String) paramMap.get("javax.faces.behavior.event");
-            if("click".equals(event))
+            if(HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId))
             {
                 return true;
             }
