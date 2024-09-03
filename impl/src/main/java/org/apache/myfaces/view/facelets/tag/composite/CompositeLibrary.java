@@ -41,9 +41,7 @@ public class CompositeLibrary extends AbstractTagLibrary
         addTagHandler("clientBehavior", ClientBehaviorHandler.class);
         
         addTagHandler("editableValueHolder", EditableValueHolderHandler.class);
-        
-        addTagHandler("extension", ExtensionHandler.class);
-        
+
         addTagHandler("facet", FacetHandler.class);
         
         addTagHandler("implementation", ImplementationHandler.class);

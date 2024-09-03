@@ -51,7 +51,6 @@ import jakarta.faces.view.AttachedObjectTarget;
  *    composite:valueHolder
  *    composite:editableValueHolder
  *    composite:actionSource
- *    composite:extension
  *    
  *    must deal with this class, so it is expected methods that manipulate
  *    data here are called from their tag handlers.
