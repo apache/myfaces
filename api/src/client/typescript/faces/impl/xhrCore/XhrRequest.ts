@@ -456,7 +456,8 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
 
         //to avoid sideffects with buttons we only can append the issuing item if no behavior event is set
         //MYFACES-4679!
-        const isBehaviorEvent = !!formData.getIf($nsp(P_BEHAVIOR_EVENT)).value;
+        const eventType = formData.getIf($nsp(P_BEHAVIOR_EVENT)).value?.[0] ?? null;
+        const isBehaviorEvent = (!!eventType) && eventType != 'click';
 
         //not encoded
         if(issuingItemId && formData.getIf(issuingItemId).isAbsent() && !isBehaviorEvent) {
