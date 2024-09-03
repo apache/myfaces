@@ -19,10 +19,11 @@
 
 package jakarta.faces.convert;
 
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
 import org.apache.myfaces.core.api.shared.MessageUtils;
 import org.apache.myfaces.core.api.shared.lang.Assert;
@@ -37,7 +38,7 @@ public class EnumConverter implements Converter<Enum>, PartialStateHolder
     public static final String ENUM_ID = "jakarta.faces.converter.EnumConverter.ENUM";
     public static final String ENUM_NO_CLASS_ID = "jakarta.faces.converter.EnumConverter.ENUM_NO_CLASS";
 
-    private Class targetClass;
+    private Class<? extends Enum> targetClass;
 
     private boolean isTransient = false;
 
@@ -45,7 +46,7 @@ public class EnumConverter implements Converter<Enum>, PartialStateHolder
     {
     }
 
-    public EnumConverter(Class targetClass)
+    public EnumConverter(Class<? extends Enum> targetClass)
     {
         if (!targetClass.isEnum())
         {
@@ -55,10 +56,10 @@ public class EnumConverter implements Converter<Enum>, PartialStateHolder
     }
 
     @Override
-    public Enum<?> getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
+    public Enum<?> getAsObject(FacesContext facesContext, UIComponent component, String value)
     {
         Assert.notNull(facesContext, "facesContext");
-        Assert.notNull(uiComponent, "uiComponent");
+        Assert.notNull(component, "uiComponent");
 
         if (value == null)
         {
@@ -69,7 +70,13 @@ public class EnumConverter implements Converter<Enum>, PartialStateHolder
         {
             return null;
         }
-        checkTargetClass(facesContext, uiComponent, value);
+
+        if (targetClass == null)
+        {
+            targetClass = tryToExtractEnumClassFromValueBinding(facesContext, component);
+        }
+
+        checkTargetClass(facesContext, component, value);
 
         // we know targetClass and value can't be null, so we can use Enum.valueOf
         // instead of the hokey looping called for in the javadoc
@@ -80,23 +87,30 @@ public class EnumConverter implements Converter<Enum>, PartialStateHolder
         catch (IllegalArgumentException e)
         {
             Object[] params =
-                    new Object[] { value, firstConstantOfEnum(), MessageUtils.getLabel(facesContext, uiComponent) };
+                    new Object[] { value, firstConstantOfEnum(), MessageUtils.getLabel(facesContext, component) };
 
             throw new ConverterException(MessageUtils.getErrorMessage(facesContext, ENUM_ID, params));
         }
     }
 
     @Override
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Enum value)
+    public String getAsString(FacesContext facesContext, UIComponent component, Enum value)
     {
         Assert.notNull(facesContext, "facesContext");
-        Assert.notNull(uiComponent, "uiComponent");
+        Assert.notNull(component, "uiComponent");
 
-        checkTargetClass(facesContext, uiComponent, value);
+        checkTargetClass(facesContext, component, value);
 
         if (value == null)
         {
             return "";
+        }
+
+        if (targetClass == null)
+        {
+            targetClass = value != null
+                    ? value.getDeclaringClass()
+                    : tryToExtractEnumClassFromValueBinding(facesContext, component);
         }
 
         // check if the value is an instance of the enum class
@@ -106,17 +120,17 @@ public class EnumConverter implements Converter<Enum>, PartialStateHolder
         }
         
         Object[] params =
-            new Object[] { value, firstConstantOfEnum(), MessageUtils.getLabel(facesContext, uiComponent) };
+            new Object[] { value, firstConstantOfEnum(), MessageUtils.getLabel(facesContext, component) };
 
         throw new ConverterException(MessageUtils.getErrorMessage(facesContext, ENUM_ID, params));
     }
 
 
-    private void checkTargetClass(FacesContext facesContext, UIComponent uiComponent, Object value)
+    private void checkTargetClass(FacesContext facesContext, UIComponent component, Object value)
     {
         if (targetClass == null)
         {
-            Object[] params = new Object[] { value, MessageUtils.getLabel(facesContext, uiComponent) };
+            Object[] params = new Object[] { value, MessageUtils.getLabel(facesContext, component) };
             throw new ConverterException(MessageUtils.getErrorMessage(facesContext, ENUM_NO_CLASS_ID, params));
         }
     }
@@ -139,7 +153,7 @@ public class EnumConverter implements Converter<Enum>, PartialStateHolder
     {
         if (state != null)
         {
-            targetClass = (Class<?>)state;
+            targetClass = (Class<? extends Enum>)state;
         }
     }
 
@@ -185,4 +199,33 @@ public class EnumConverter implements Converter<Enum>, PartialStateHolder
         _initialStateMarked = true;
     }
 
+    static <T extends Enum> Class<T> tryToExtractEnumClassFromValueBinding(FacesContext context, UIComponent component)
+    {
+        ValueExpression ve = component.getValueExpression("value");
+
+        // no ValueExpression defined... skip
+        if (ve == null)
+        {
+            return null;
+        }
+
+        // try getExpectedType first, likely returns Object.class
+        Class<?> type = ve.getExpectedType();
+
+        // fallback to getType
+        if (type == null || type == Object.class)
+        {
+            try
+            {
+                type = ve.getType(context.getELContext());
+            }
+            catch (ELException e)
+            {
+                // fails if the ValueExpression is actually a MethodExpression
+                type = null;
+            }
+        }
+
+        return (Class<T>) type;
+    }
 }
