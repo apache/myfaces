@@ -23,6 +23,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+import java.util.Map;
+
+import jakarta.enterprise.util.TypeLiteral;
 import jakarta.inject.Qualifier;
 
 /**
@@ -33,6 +36,11 @@ import jakarta.inject.Qualifier;
 @Target(value={ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 public @interface RequestCookieMap
 {
+    public static final TypeLiteral<Map<String, Object>> TYPE = new TypeLiteral<>()
+    {
+        private static final long serialVersionUID = 1L;
+    };
+
     public static final class Literal extends AnnotationLiteral<RequestCookieMap> implements RequestCookieMap
     {
         private static final long serialVersionUID = 1L;
