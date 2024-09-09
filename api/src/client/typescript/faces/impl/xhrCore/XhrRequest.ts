@@ -48,9 +48,8 @@ import {
     CTX_PARAM_SRC_FRM_ID,
     CTX_PARAM_SRC_CTL_ID,
     CTX_PARAM_PPS,
-    P_AJAX_SOURCE,
-    RESPONSE_TEXT,
-    RESPONSE_XML, STATUS, EMPTY_RESPONSE, HTTP_ERROR, UNKNOWN, SERVER_ERROR, EMPTY_STR
+    EMPTY_RESPONSE, HTTP_ERROR,
+    EMPTY_STR, $nsp, P_BEHAVIOR_EVENT
 } from "../core/Const";
 import {
     resolveFinalUrl,
@@ -454,8 +453,14 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
 
     private appendIssuingItem(formData: XhrFormData) {
         const issuingItemId = this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value;
+
+        //to avoid sideffects with buttons we only can append the issuing item if no behavior event is set
+        //MYFACES-4679!
+        const eventType = formData.getIf($nsp(P_BEHAVIOR_EVENT)).value?.[0] ?? null;
+        const isBehaviorEvent = (!!eventType) && eventType != 'click';
+
         //not encoded
-        if(issuingItemId && formData.getIf(issuingItemId).isAbsent()) {
+        if(issuingItemId && formData.getIf(issuingItemId).isAbsent() && !isBehaviorEvent) {
             const issuingItem = DQ.byId(issuingItemId);
             const itemValue = issuingItem.inputValue;
             const arr = new ExtConfig({});
