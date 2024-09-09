@@ -66,14 +66,8 @@ public class PushContextImpl implements PushContext
             }
         }
 
-        if (applicationScope == null)
-        {
-            // No base bean to push message
-            return Collections.emptySet();
-        }
-        
         List<String> channelTokens;
-        
+
         if (viewScope != null && viewScope.isChannelAvailable(channel))
         {
             // Use view scope for context
@@ -84,7 +78,7 @@ public class PushContextImpl implements PushContext
             // Use session scope for context
             channelTokens = sessionScope.getChannelTokens(channel);
         }
-        else if (applicationScope.isChannelAvailable(channel))
+        else if (applicationScope != null && applicationScope.isChannelAvailable(channel))
         {
             // Use application scope for context
             channelTokens = applicationScope.getChannelTokens(channel);
