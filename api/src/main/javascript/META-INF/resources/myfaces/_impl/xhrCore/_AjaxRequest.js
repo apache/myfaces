@@ -295,10 +295,16 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             var _AJAXUTIL = this._AJAXUTIL, myfacesOptions = this._context.myfaces;
             return this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
         } else {
+            // we need to check for
+            /*
+             *  const eventType = formData.getIf($nsp(P_BEHAVIOR_EVENT)).value?.[0]
+             *  const isBehaviorEvent = (!!eventType) && eventType != 'click';
+             */
+
             //now this is less performant but we have to call it to allow viewstate decoration
             ret = this._Lang.createFormDataDecorator(new Array());
             _AJAXUTIL.encodeSubmittableFields(ret, this._sourceForm, this._partialIdsArray);
-            if (this._source && myfacesOptions && myfacesOptions.form)
+            if (this._source && myfacesOptions && myfacesOptions.form && !this._isBehaviorEvent())
                 _AJAXUTIL.appendIssuingItem(this._source, ret);
 
         }
@@ -306,7 +312,11 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
 
     },
 
-
+    _isBehaviorEvent: function() {
+        var eventType = this._passThrough[this.attr("impl").P_BEHAVIOR_EVENT] || null;
+        var isBehaviorEvent = (!!eventType) && eventType != 'click';
+        return isBehaviorEvent;
+    },
 
     /**
      * Client error handlers which also in the long run route into our error queue
