@@ -233,7 +233,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequestQuirks", myfaces._impl.xhrCore._AjaxRequest, /**
      */
     getFormData:function () {
         var formDataDecorator = this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
-        if(!this._isBehaviorEvent()) {
+        if(this._source && !this._isBehaviorEvent()) {
             this._AJAXUTIL.appendIssuingItem(this._source, formDataDecorator);
         }
         return formDataDecorator;

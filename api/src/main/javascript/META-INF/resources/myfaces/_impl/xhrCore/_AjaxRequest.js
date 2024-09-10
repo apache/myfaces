@@ -304,9 +304,9 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             //now this is less performant but we have to call it to allow viewstate decoration
             ret = this._Lang.createFormDataDecorator(new Array());
             _AJAXUTIL.encodeSubmittableFields(ret, this._sourceForm, this._partialIdsArray);
-            if (this._source && myfacesOptions && myfacesOptions.form && !this._isBehaviorEvent())
+            if (this._source && !this._isBehaviorEvent()) {
                 _AJAXUTIL.appendIssuingItem(this._source, ret);
-
+            }
         }
         return ret;
 
