@@ -34,11 +34,15 @@ _MF_CLS(_PFX_XHR + "_MultipartAjaxRequestLevel2", myfaces._impl.xhrCore._AjaxReq
         //in case of a multipart form post we savely can use the FormData object
         if (this._context._mfInternal.xhrOp === "multipartQueuedPost") {
             ret = new FormData(this._sourceForm);
-            this._AJAXUTIL.appendIssuingItem(this._source, ret);
+            if(this._source && !this._isBehaviorEvent()) {
+                this._AJAXUTIL.appendIssuingItem(this._source, ret);
+            }
         } else {
             //we switch back to the encode submittable fields system
             this._AJAXUTIL.encodeSubmittableFields(ret, this._sourceForm, null);
-            this._AJAXUTIL.appendIssuingItem(this._source, ret);
+            if(this._source && !this._isBehaviorEvent()) {
+                this._AJAXUTIL.appendIssuingItem(this._source, ret);
+            }
         }
         return ret;
     },
