@@ -39,6 +39,9 @@ _MF_CLS(_PFX_XHR+"_AjaxRequestLevel2", myfaces._impl.xhrCore._AjaxRequest, {
             ret = new FormData(this._sourceForm);
             this._AJAXUTIL.encodeSubmittableFields(ret, this._xhr, this._context, this._source,
                     this._sourceForm, this._partialIdsArray);
+            if(this._source && !this._isBehaviorEvent()) {
+                this._AJAXUTIL.appendIssuingItem(this._source, ret);
+            }
         }
         return ret;
     },
