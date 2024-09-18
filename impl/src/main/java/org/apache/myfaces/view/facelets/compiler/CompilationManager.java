@@ -145,6 +145,12 @@ final class CompilationManager
 
         DoctypeUnit unit = new DoctypeUnit(this.alias, this.nextTagId(),
             name, publicId, systemId, faceletsProcessingInstructions.isHtml5Doctype());
+        if(faceletsProcessingInstructions.isHtml5Doctype())
+        {
+            // MYFACES-4681: if facelet processing is HTML5 (default) then these should be null
+            publicId = null;
+            systemId = null;
+        }
         this.doctype = new DoctypeImpl(name, publicId, systemId);
         this.startUnit(unit);
     }
