@@ -1479,7 +1479,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             // script execution order by relative pos in their dom tree
             scriptElements.asArray
                 .flatMap(item => [...item.values])
-                .sort((node1, node2) => node1.compareDocumentPosition(node2) - 3) // preceding 2, following == 4)
+                .sort((node1, node2) => node2.compareDocumentPosition(node1) - 3) // preceding 2, following == 4)
                 .forEach(item => execScript(item));
 
             evalCollectedScripts(finalScripts);
