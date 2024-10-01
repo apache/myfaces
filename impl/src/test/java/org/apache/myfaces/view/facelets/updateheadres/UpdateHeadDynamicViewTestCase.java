@@ -97,7 +97,8 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         // the inclusion should trigger update head
         Assertions.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
         Assertions.assertTrue(text.contains("alert(\"script3\");"));
-        Assertions.assertTrue(text.contains("link rel=\"stylesheet\" type=\"text/css\" href=\"/test/faces/jakarta.faces.resource/style3.css\""));
+         // MYFACES-4681 - HTML5 is default output mode, so the type attribute is unnecessary
+        Assertions.assertTrue(text.contains("link rel=\"stylesheet\" href=\"/test/faces/jakarta.faces.resource/style3.css\""));
         //System.out.println(text);
         endRequest();
     }
