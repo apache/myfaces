@@ -68,8 +68,9 @@ public class DoctypeTestCase extends FaceletTestCase
         
         Assertions.assertNotNull(((AbstractFacelet) f).getDoctype());
         Assertions.assertEquals("html", ((AbstractFacelet) f).getDoctype().getRootElement());
-        Assertions.assertEquals("-//W3C//DTD XHTML 1.0 Transitional//EN", ((AbstractFacelet) f).getDoctype().getPublic());
-        Assertions.assertEquals("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", ((AbstractFacelet) f).getDoctype().getSystem());
+        // MYFACES-4681 - Simplified to <!DOCTYPE html> as HTML5 is default
+        Assertions.assertEquals(null, ((AbstractFacelet) f).getDoctype().getPublic());
+        Assertions.assertEquals(null, ((AbstractFacelet) f).getDoctype().getSystem());
     }
     
     @Test
@@ -92,7 +93,8 @@ public class DoctypeTestCase extends FaceletTestCase
 
         Assertions.assertNotNull(root.getDoctype());
         Assertions.assertEquals("html", root.getDoctype().getRootElement());
-        Assertions.assertEquals("-//W3C//DTD XHTML 1.0 Transitional//EN", root.getDoctype().getPublic());
-        Assertions.assertEquals("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", root.getDoctype().getSystem());
+        // MYFACES-4681 - Simplified to <!DOCTYPE html> as HTML5 is default
+        Assertions.assertEquals(null, root.getDoctype().getPublic()); 
+        Assertions.assertEquals(null, root.getDoctype().getSystem());
     }
 }
