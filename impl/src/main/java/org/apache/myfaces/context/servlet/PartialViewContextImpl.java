@@ -30,7 +30,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewParameter;
 import jakarta.faces.component.UIViewRoot;
