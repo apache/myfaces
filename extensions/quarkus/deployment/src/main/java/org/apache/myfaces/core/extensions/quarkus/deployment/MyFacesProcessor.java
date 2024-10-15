@@ -162,21 +162,24 @@ import io.quarkus.undertow.deployment.WebMetadataBuildItem;
 class MyFacesProcessor
 {
 
-    private static final Class[] BEAN_CLASSES =
+    private static final Class<?>[] BEAN_CLASSES =
     {
+            CdiAnnotationProviderExtension.class,
+            ClientWindowScopeContextualStorageHolder.class,
             FacesApplicationArtifactHolder.class,
             FacesArtifactProducer.class,
             FacesConfigBeanHolder.class,
             FacesDataModelManager.class,
+            FlowScopeContextualStorageHolder.class,
+            PhaseEventBroadcasterPhaseListener.PhaseEventBroadcaster.class,
             ViewScopeContextualStorageHolder.class,
             ViewScopeEventListenerBridge.class,
-            CdiAnnotationProviderExtension.class,
             WebsocketChannelTokenBuilder.class,
-            WebsocketSessionManager.class,
+            WebsocketScopeManager.ApplicationScope.class,
+            WebsocketScopeManager.SessionScope.class,
+            WebsocketScopeManager.ViewScope.class,
             WebsocketScopeManager.class,
-            ClientWindowScopeContextualStorageHolder.class,
-            FlowScopeContextualStorageHolder.class,
-            PhaseEventBroadcasterPhaseListener.PhaseEventBroadcaster.class
+            WebsocketSessionManager.class,
     };
 
     private static final String[] BEAN_DEFINING_ANNOTATION_CLASSES =
