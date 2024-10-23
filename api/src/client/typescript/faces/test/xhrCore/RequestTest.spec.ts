@@ -501,9 +501,9 @@ describe('Tests after core when it hits response', function () {
                 },
                 onerror: (error: any) => {
                     expect(error.type).to.eq("error");
-                    expect(error.status).to.eq(null);
-                    expect(!!error.errorMessage).to.eq(true);
-                    expect(!!error.source).to.eq(true);
+                    expect(error.status).to.eq(EMPTY_STR);
+                    expect(!!error.message).to.eq(true);
+                    expect(!!error.source?.id).to.eq(true);
                     expect(!!error.responseCode).to.eq(true);
                     expect(!!error.responseText).to.eq(true);
                     expect(!error.responseXML).to.eq(true);
