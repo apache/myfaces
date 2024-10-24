@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import jakarta.el.ELResolver;
+import jakarta.el.Expression;
+import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.Produces;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.annotation.View;
@@ -117,6 +119,7 @@ import org.apache.myfaces.view.facelets.component.RepeatStatus;
 import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
 import org.apache.myfaces.view.facelets.tag.MethodRule;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFunction;
 import org.apache.myfaces.webapp.FacesInitializerImpl;
 import org.apache.myfaces.webapp.MyFacesContainerInitializer;
@@ -337,9 +340,8 @@ class MyFacesProcessor
     {
         // user config
         Config config = ConfigProvider.getConfig();
-
-        Optional<String> projectStage = resolveProjectStage(config);
-        initParam.produce(new ServletInitParamBuildItem(ProjectStage.PROJECT_STAGE_PARAM_NAME, projectStage.get()));
+        String projectStage = resolveProjectStage(config);
+        initParam.produce(new ServletInitParamBuildItem(ProjectStage.PROJECT_STAGE_PARAM_NAME, projectStage));
     }
 
     @BuildStep
@@ -361,7 +363,7 @@ class MyFacesProcessor
         }
     }
 
-    private Optional<String> resolveProjectStage(Config config)
+    private String resolveProjectStage(Config config)
     {
         Optional<String> projectStage = config.getOptionalValue(ProjectStage.PROJECT_STAGE_PARAM_NAME,
                 String.class);
@@ -377,7 +379,7 @@ class MyFacesProcessor
                 projectStage = Optional.of(ProjectStage.SystemTest.name());
             }
         }
-        return projectStage;
+        return projectStage.orElse(ProjectStage.Production.name());
     }
 
     @BuildStep
@@ -442,7 +444,6 @@ class MyFacesProcessor
 
         classNames.addAll(collectSubclasses(combinedIndex, Renderer.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ClientBehaviorRenderer.class.getName()));
-        classNames.addAll(collectSubclasses(combinedIndex, jakarta.el.ValueExpression.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, SystemEvent.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, FacesContext.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, Application.class.getName()));
@@ -495,12 +496,6 @@ class MyFacesProcessor
             classNames.addAll(collectSubclasses(combinedIndex, factory));
         }
 
-        classNames.addAll(Arrays.asList(
-            "jakarta.faces.component._DeltaStateHelper",
-            "jakarta.faces.component._DeltaStateHelper$InternalMap",
-            "jakarta.validation.groups.Default",
-            "jakarta.validation.Validation"));
-
         List<Class<?>> classes = new ArrayList<>(Arrays.asList(ApplicationImplEventManager.class,
                 DefaultWebConfigProviderFactory.class,
                 ErrorPageWriter.class,
@@ -529,29 +524,41 @@ class MyFacesProcessor
         List<String> classNames = new ArrayList<>();
         List<Class<?>> classes = new ArrayList<>();
 
-        classNames.add("jakarta.faces._FactoryFinderProviderFactory");
+        // Java Core
+        classNames.add("java.util.Collections$EmptySet");
         classNames.addAll(collectImplementors(combinedIndex, java.util.Collection.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, java.time.temporal.TemporalAccessor.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, java.util.Map.Entry.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, java.lang.Number.class.getName()));
-        classNames.add(java.util.Date.class.getName());
-        classNames.add(java.util.Calendar.class.getName());
         classNames.add(java.lang.Iterable.class.getName());
-        classNames.add(java.lang.Throwable.class.getName());
         classNames.add(java.lang.String.class.getName());
+        classNames.add(java.lang.StringBuffer.class.getName());
+        classNames.add(java.lang.Throwable.class.getName());
+        classNames.add(java.util.Calendar.class.getName());
+        classNames.add(java.util.Date.class.getName());
 
-        classNames.addAll(collectSubclasses(combinedIndex, TagHandler.class.getName()));
-        classNames.addAll(collectSubclasses(combinedIndex, ConverterHandler.class.getName()));
-        classNames.addAll(collectSubclasses(combinedIndex, ComponentHandler.class.getName()));
-        classNames.addAll(collectSubclasses(combinedIndex, ValidatorHandler.class.getName()));
-        classNames.addAll(collectSubclasses(combinedIndex, UIComponent.class.getName()));
-        classNames.addAll(collectSubclasses(combinedIndex, ELResolver.class.getName()));
-        classNames.addAll(collectSubclasses(combinedIndex, MethodRule.class.getName()));
-        classNames.addAll(collectSubclasses(combinedIndex, MetaRuleset.class.getName()));
-
+        // Jakarta Faces
+        classNames.add("jakarta.faces._FactoryFinderProviderFactory");
+        classNames.add("jakarta.faces.component._AttachedStateWrapper");
+        classNames.add("jakarta.faces.component._DeltaStateHelper");
+        classNames.add("jakarta.faces.component._DeltaStateHelper$InternalMap");
+        classNames.add("jakarta.faces.context._MyFacesExternalContextHelper");
+        classNames.add("jakarta.validation.Validation");
+        classNames.add("jakarta.validation.groups.Default");
+        classNames.add(jakarta.faces.view.Location.class.getName());
+        classNames.addAll(collectImplementors(combinedIndex, Behavior.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, Converter.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, Validator.class.getName()));
-        classNames.addAll(collectImplementors(combinedIndex, Behavior.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, ComponentHandler.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, ConverterHandler.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, ELResolver.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, Expression.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, MetaRuleset.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, MethodRule.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, TagHandler.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, UIComponent.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, ValidatorHandler.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, ValueExpression.class.getName()));
 
         // Register CDI produced servlet objects for EL #{session} and #{request}
         classes.addAll(Arrays.asList(
@@ -559,12 +566,14 @@ class MyFacesProcessor
                 io.undertow.servlet.spec.HttpServletResponseImpl.class,
                 io.undertow.servlet.spec.HttpSessionImpl.class));
 
+        // MyFaces
         classes.addAll(Arrays.asList(
                 BeanEntry.class,
                 ClassUtils.class,
                 ComponentSupport.class,
                 DefaultELResolverBuilder.class,
                 ExternalContextUtils.class,
+                FaceletState.class,
                 FacesInitializerImpl.class,
                 FactoryFinderProviderFactory.class,
                 JstlFunction.class,
@@ -572,19 +581,11 @@ class MyFacesProcessor
                 RepeatStatus.class));
 
         reflectiveClass.produce(
-                ReflectiveClassBuildItem.builder(classNames.toArray(new String[0])).methods(true).build());
+                ReflectiveClassBuildItem.builder(classNames.toArray(new String[0]))
+                        .methods().fields().serialization().build());
         reflectiveClass.produce(
-                ReflectiveClassBuildItem.builder(classes.toArray(new Class[0])).methods(true).build());
-    }
-
-    @BuildStep
-    @Record(ExecutionTime.STATIC_INIT)
-    void registerForFieldReflection(MyFacesRecorder recorder,
-                               BuildProducer<ReflectiveClassBuildItem> reflectiveClass)
-    {
-        reflectiveClass.produce(
-                ReflectiveClassBuildItem.builder("jakarta.faces.context._MyFacesExternalContextHelper")
-                        .methods(true).fields(true).build());
+                ReflectiveClassBuildItem.builder(classes.toArray(new Class[0]))
+                        .methods().fields().serialization().build());
     }
 
     @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
@@ -787,7 +788,7 @@ class MyFacesProcessor
         types.removeIf(Objects::isNull);
 
         // collect all public types from getters and fields
-        List<ClassInfo> temp = new ArrayList();
+        List<ClassInfo> temp = new ArrayList<>();
         types.forEach(ci -> collectPublicTypes(ci, temp, combinedIndex));
         types.addAll(temp);
 
