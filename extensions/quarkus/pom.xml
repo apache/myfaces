@@ -41,7 +41,8 @@
     </modules>
 
     <properties>
-        <quarkus.version>3.8.5</quarkus.version>
+        <quarkus.version>3.15.1</quarkus.version>
+        <xml-combiner.version>3.0.0</xml-combiner.version>
     </properties>
 
     <build>
