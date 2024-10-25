@@ -504,8 +504,6 @@ class MyFacesProcessor
                 FacesConfigurator.class,
                 FacesInitializerImpl.class,
                 TagLibraryConfig.class,
-                String.class,
-                ViewScopeProxyMap.class,
                 SAXCompiler.class,
                 StateUtils.class,
                 ExpressionFactoryImpl.class));
@@ -578,7 +576,8 @@ class MyFacesProcessor
                 FactoryFinderProviderFactory.class,
                 JstlFunction.class,
                 QuarkusFactoryFinderProvider.class,
-                RepeatStatus.class));
+                RepeatStatus.class,
+                ViewScopeProxyMap.class));
 
         reflectiveClass.produce(
                 ReflectiveClassBuildItem.builder(classNames.toArray(new String[0]))
