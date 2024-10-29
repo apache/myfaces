@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -63,19 +65,20 @@ public class FacesUberJarProcessor
     void uberJarServiceLoaders(BuildProducer<UberJarMergedResourceBuildItem> producer)
     {
         List<String> serviceFiles = List.of(
-                "jakarta.el.ExpressionFactory",
-                "jakarta.enterprise.inject.spi.Extension",
-                "jakarta.json.spi.JsonProvider",
-                "jakarta.servlet.ServletContainerInitializer",
-                "jakarta.websocket.ContainerProvider",
-                "jakarta.websocket.server.ServerEndpointConfig$Configurator",
-                "org.apache.myfaces.spi.AnnotationProvider",
-                "org.apache.myfaces.spi.InjectionProvider"
+                "licenses/facelets-LICENSE.txt",
+                "services/jakarta.el.ExpressionFactory",
+                "services/jakarta.enterprise.inject.spi.Extension",
+                "services/jakarta.json.spi.JsonProvider",
+                "services/jakarta.servlet.ServletContainerInitializer",
+                "services/jakarta.websocket.ContainerProvider",
+                "services/jakarta.websocket.server.ServerEndpointConfig$Configurator",
+                "services/org.apache.myfaces.spi.AnnotationProvider",
+                "services/org.apache.myfaces.spi.InjectionProvider"
         );
 
         for (String serviceFile : serviceFiles)
         {
-            producer.produce(new UberJarMergedResourceBuildItem("META-INF/services/" + serviceFile));
+            producer.produce(new UberJarMergedResourceBuildItem("META-INF/" + serviceFile));
         }
     }
 
@@ -113,11 +116,14 @@ public class FacesUberJarProcessor
         {
             XmlCombiner combiner = new XmlCombiner();
             // Retrieve all instances of the specified file in the resources
-            List<URL> resources = Collections.list(getClass().getClassLoader().getResources(filename));
+            Set<URL> resources = new LinkedHashSet<>();
+            resources.addAll(Collections.list(getClass().getClassLoader().getResources(filename)));
+            resources.addAll(Collections.list(Thread.currentThread().getContextClassLoader().getResources(filename)));
 
             // Combine each resource file found
             for (URL resource : resources)
             {
+                log.debugf("XML Combine: %s", resource);
                 try (InputStream is = resource.openStream())
                 {
                     combiner.combine(is);
