@@ -22,7 +22,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
 
-    <factory>
+    <factory combine.children='append'>
         <application-factory>org.apache.myfaces.core.extensions.quarkus.runtime.application.QuarkusApplicationFactory</application-factory>
         <exception-handler-factory>org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory</exception-handler-factory>
     </factory>
