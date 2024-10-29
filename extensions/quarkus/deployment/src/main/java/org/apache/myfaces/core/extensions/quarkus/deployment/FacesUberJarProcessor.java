@@ -63,19 +63,20 @@ public class FacesUberJarProcessor
     void uberJarServiceLoaders(BuildProducer<UberJarMergedResourceBuildItem> producer)
     {
         List<String> serviceFiles = List.of(
-                "jakarta.el.ExpressionFactory",
-                "jakarta.enterprise.inject.spi.Extension",
-                "jakarta.json.spi.JsonProvider",
-                "jakarta.servlet.ServletContainerInitializer",
-                "jakarta.websocket.ContainerProvider",
-                "jakarta.websocket.server.ServerEndpointConfig$Configurator",
-                "org.apache.myfaces.spi.AnnotationProvider",
-                "org.apache.myfaces.spi.InjectionProvider"
+                "myfaces-metadata.xml",
+                "services/jakarta.el.ExpressionFactory",
+                "services/jakarta.enterprise.inject.spi.Extension",
+                "services/jakarta.json.spi.JsonProvider",
+                "services/jakarta.servlet.ServletContainerInitializer",
+                "services/jakarta.websocket.ContainerProvider",
+                "services/jakarta.websocket.server.ServerEndpointConfig$Configurator",
+                "services/org.apache.myfaces.spi.AnnotationProvider",
+                "services/org.apache.myfaces.spi.InjectionProvider"
         );
 
         for (String serviceFile : serviceFiles)
         {
-            producer.produce(new UberJarMergedResourceBuildItem("META-INF/services/" + serviceFile));
+            producer.produce(new UberJarMergedResourceBuildItem("META-INF/" + serviceFile));
         }
     }
 
