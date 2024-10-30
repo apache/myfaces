@@ -542,7 +542,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         //we have to work around an xml parsing bug in Webkit
         //see https://issues.apache.org/jira/browse/MYFACES-3061
         if (!isWebkit) {
-            doc = (arguments.length > 3) ? arguments[3] : _Lang.parseXML(newData);
+            doc = _Lang.parseXML(newData);
         }
 
         if (!isWebkit && _Lang.isXMLParseError(doc)) {
