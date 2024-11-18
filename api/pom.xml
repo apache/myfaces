@@ -138,6 +138,9 @@
                 <artifactId>myfaces-builder-plugin</artifactId>
                 <executions>
                     <execution>
+                        <configuration>
+                            <excludes>**/src/main/java/jakarta/faces/component/ActionSource.java</excludes>
+                        </configuration>
                         <goals>
                             <goal>build-metadata</goal>
                         </goals>
@@ -147,6 +150,7 @@
                         <configuration>
                             <jsfVersion>20</jsfVersion>
                             <templateComponentName>componentClass20.vm</templateComponentName>
+                            <excludes>**/src/main/java/jakarta/faces/component/ActionSource.java</excludes>
                         </configuration>
                         <goals>
                             <goal>make-components</goal>

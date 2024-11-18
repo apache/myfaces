@@ -169,6 +169,7 @@
                         <configuration>
                             <jsfVersion>20</jsfVersion>
                             <templateComponentName>componentClass20.vm</templateComponentName>
+                            <excludes>**/package.html</excludes>
                         </configuration>
                         <goals>
                             <goal>make-components</goal>
