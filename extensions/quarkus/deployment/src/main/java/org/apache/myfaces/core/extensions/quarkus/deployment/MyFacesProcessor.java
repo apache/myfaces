@@ -534,6 +534,7 @@ class MyFacesProcessor
         // Jakarta Faces
         classNames.add("jakarta.faces._FactoryFinderProviderFactory");
         classNames.add("jakarta.faces.component._AttachedStateWrapper");
+        classNames.add("jakarta.faces.component._AttachedDeltaWrapper");
         classNames.add("jakarta.faces.component._DeltaStateHelper");
         classNames.add("jakarta.faces.component._DeltaStateHelper$InternalMap");
         classNames.add("jakarta.faces.context._MyFacesExternalContextHelper");
