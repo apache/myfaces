@@ -62,6 +62,10 @@ public class ConfigFilesXmlValidationUtils
     private final static String FACES_CONFIG_SCHEMA_PATH_40 = "org/apache/myfaces/resource/web-facesconfig_4_0.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_50 = "org/apache/myfaces/resource/web-facesconfig_5_0.xsd";
     private final static String FACES_TAGLIB_SCHEMA_PATH = "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
+    private final static String FACES_TAGLIB_SCHEMA_PATH_20 = 
+                                                        "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
+    private final static String FACES_TAGLIB_SCHEMA_PATH_41 = 
+                                                        "org/apache/myfaces/resource/web-facelettaglibrary_4_1.xsd";
 
     public static class LSInputImpl implements LSInput
     {
@@ -211,6 +215,11 @@ public class ConfigFilesXmlValidationUtils
                  {
                      return new LSInputImpl(publicId, systemId, baseURI,
                              ClassUtils.getResourceAsStream("org/apache/myfaces/resource/jakartaee_10.xsd"));
+                 }
+                 if ("jakartaee_11.xsd".equals(systemId))
+                 {
+                     return new LSInputImpl(publicId, systemId, baseURI,
+                             ClassUtils.getResourceAsStream("org/apache/myfaces/resource/jakartaee_11.xsd"));
                  }
              }
             if ("http://www.w3.org/XML/1998/namespace".equals(namespaceURI))
@@ -374,6 +383,10 @@ public class ConfigFilesXmlValidationUtils
             {
                 return "4.0";
             }
+            else if (handler.isVersion41())
+            {
+                return "4.1";
+            }
             else if (handler.isVersion50OrLater())
             {
                 return "5.0";
@@ -397,6 +410,7 @@ public class ConfigFilesXmlValidationUtils
         private boolean version23;
         private boolean version30;
         private boolean version40;
+        private boolean version41;
         private boolean version50OrLater;
 
         public boolean isVersion11()
@@ -439,6 +453,11 @@ public class ConfigFilesXmlValidationUtils
             return this.version40;
         }
 
+        public boolean isVersion41()
+        {
+            return this.version41;
+        }
+
         public boolean isVersion50OrLater()
         {
             return this.version50OrLater;
@@ -454,6 +473,7 @@ public class ConfigFilesXmlValidationUtils
             this.version23 = false;
             this.version30 = false;
             this.version40 = false;
+            this.version41 = false;
             this.version50OrLater = false;
         }
 
@@ -513,6 +533,11 @@ public class ConfigFilesXmlValidationUtils
                             reset();
                             this.version40 = true;
                         }
+                        else if (attributes.getValue(i).equals("4.1"))
+                        {
+                            reset();
+                            this.version41 = true;
+                        }
                         else
                         {
                             reset();
@@ -550,11 +575,11 @@ public class ConfigFilesXmlValidationUtils
 
     private static Source getFaceletSchemaFileAsSource(ExternalContext externalContext)
     {
-        InputStream stream = ClassUtils.getResourceAsStream(FACES_TAGLIB_SCHEMA_PATH);
+        InputStream stream = ClassUtils.getResourceAsStream(FACES_TAGLIB_SCHEMA_PATH_41);
 
         if (stream == null)
         {
-           stream = externalContext.getResourceAsStream(FACES_TAGLIB_SCHEMA_PATH);
+           stream = externalContext.getResourceAsStream(FACES_TAGLIB_SCHEMA_PATH_41);
         }
 
         if (stream == null)
