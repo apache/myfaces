@@ -535,8 +535,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             // At this point if the algorithm hasn't returned and the topExpression does not have any separator char
             // we need to do the search backward using findComponent.
             if (target == null 
-                    && searchExpressionContext.getSource() == previous 
-                    && (topExpression.indexOf(separatorChar) == -1) )
+                    && searchExpressionContext.getSource() == previous
+                    && (topExpression.indexOf(separatorChar + "@") == -1) ) // updated for MYFACES-4695
             {
                 UIComponent baseNC = previous.getNamingContainer();
                 if (baseNC != null && baseNC.getParent() != null)
