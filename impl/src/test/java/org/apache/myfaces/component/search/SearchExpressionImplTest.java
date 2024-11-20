@@ -410,6 +410,24 @@ public class SearchExpressionImplTest extends AbstractMyFacesCDIRequestTestCase
         Assert.assertFalse(handler.isPassthroughExpression(searchContextWithAjaxResolve, "@form:@child(0)"));
     }
 
+    @Test
+    public void testMyFaces4695() throws Exception
+    {
+        startViewRequest("/search2.xhtml");
+        processLifecycleExecute();
+        executeBeforeRender();
+        executeBuildViewCycle();
+
+        SearchExpressionContext searchContext = 
+                SearchExpressionContext.createSearchExpressionContext(facesContext, facesContext.getViewRoot().findComponent("form2:submit"));
+
+        SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
+
+        Assertions.assertEquals("form1:one", handler.resolveClientId(searchContext, "form1:one"));
+
+        processRemainingPhases();
+    }
+
     /*
     @Test
     public void testCompositeComponentExpression() throws Exception
