@@ -19,11 +19,15 @@
 
 package jakarta.faces.component;
 
+import jakarta.el.MethodExpression;
+
 /**
  * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
 @Deprecated(since = "4.1", forRemoval = true)
 public interface ActionSource2 extends ActionSource
 {
+    MethodExpression getActionExpression();
 
+    void setActionExpression(MethodExpression action);
 }

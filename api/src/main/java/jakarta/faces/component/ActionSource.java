@@ -35,7 +35,13 @@ public interface ActionSource
 
     public void removeActionListener(jakarta.faces.event.ActionListener listener);
 
-    public MethodExpression getActionExpression();
+    default MethodExpression getActionExpression()
+    {
+        throw new UnsupportedOperationException();
+    }
 
-    public void setActionExpression(MethodExpression action);
+    default void setActionExpression(MethodExpression action)
+    {
+        throw new UnsupportedOperationException();
+    }
 }
