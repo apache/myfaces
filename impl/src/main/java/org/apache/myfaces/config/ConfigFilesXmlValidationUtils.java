@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -539,12 +540,12 @@ public class ConfigFilesXmlValidationUtils
         }
     }
 
-    public static void validateFaceletTagLibFile(URL xmlFile, ExternalContext externalContext, String version)
+    public static void validateFaceletTagLibFile(URL xmlFile, ExternalContext externalContext, Double version)
         throws SAXException, IOException, ParserConfigurationException
     {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
-        Source schemaFile = getFaceletSchemaFileAsSource(externalContext);
+        Source schemaFile = getFaceletSchemaFileAsSource(externalContext, version);
         if (schemaFile == null)
         {
             throw new IOException("Could not find schema file for validation.");
@@ -563,13 +564,24 @@ public class ConfigFilesXmlValidationUtils
         }
     }
 
-    private static Source getFaceletSchemaFileAsSource(ExternalContext externalContext)
+    private static Source getFaceletSchemaFileAsSource(ExternalContext externalContext, Double version)
     {
-        InputStream stream = ClassUtils.getResourceAsStream(FACES_TAGLIB_SCHEMA_PATH_41);
+        String tagLibraryPath = "";
+
+        if(version == 4.1)
+        {
+            tagLibraryPath = FACES_TAGLIB_SCHEMA_PATH_41;
+        } 
+        else 
+        {
+            tagLibraryPath = FACES_TAGLIB_SCHEMA_PATH_20;
+        }
+
+        InputStream stream = ClassUtils.getResourceAsStream(tagLibraryPath);
 
         if (stream == null)
         {
-           stream = externalContext.getResourceAsStream(FACES_TAGLIB_SCHEMA_PATH_41);
+           stream = externalContext.getResourceAsStream(tagLibraryPath);
         }
 
         if (stream == null)
@@ -577,30 +589,20 @@ public class ConfigFilesXmlValidationUtils
             return null;
         }
 
+        System.out.println("USING: "  + tagLibraryPath);
+
         return new StreamSource(stream);
     }
 
-    public static final String getFaceletTagLibVersion(URL url)
+    public static Double getTagLibVersion(URL url)
     {
-        if (isTaglibDocument20OrLater(url))
-        {
-            return "2.0";
-        }
-        else
-        {
-            return "1.0";
-        }
-    }
-
-    private static boolean isTaglibDocument20OrLater(URL url)
-    {
+        TagLibVersionHandler handler = new TagLibVersionHandler();
         try
         {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser;
-            VersionCheckHandler handler = new VersionCheckHandler();
-
-            // We need to create a non-validating, non-namespace aware parser used to simply check
+            // We need to create a non-validating, non-namespace aware parser used to simply
+            // check
             // which version of the facelets taglib document we are dealing with.
             factory.setNamespaceAware(false);
             factory.setFeature("http://xml.org/sax/features/validation", false);
@@ -612,7 +614,7 @@ public class ConfigFilesXmlValidationUtils
                 factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
                 factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
                 factory.setXIncludeAware(false);
-            }
+            } 
             catch (Throwable e)
             {
                 log.log(Level.WARNING, "SAXParserFactory#setFeature not implemented. Skipping...", e);
@@ -623,9 +625,9 @@ public class ConfigFilesXmlValidationUtils
             conn.setUseCaches(false);
             try (InputStream input = conn.getInputStream())
             {
-                try
+                try 
                 {
-                    parser.parse (input, handler);
+                    parser.parse(input, handler);
                 }
                 catch (SAXException e)
                 {
@@ -633,29 +635,57 @@ public class ConfigFilesXmlValidationUtils
                 }
             }
 
-            return handler.isVersion20OrLater();
-        }
+            return handler.getVersion();
+        } 
         catch (Throwable e)
         {
             // Most likely a result of our aborted parse, so ignore.
         }
 
-        return false;
+        return handler.getDefaultVersion();
     }
 
-
     /*
-     * We need this class to do a quick check on a facelets taglib document to see if it's
-     * a pre-2.0 document.  If it is, we really need to construct a DTD validating, non-namespace
-     * aware parser. Otherwise, we have to construct a schema validating, namespace-aware parser.
+     * We need this class to do a quick check on a facelets taglib document to see
+     * if it's
+     * a pre-2.0 document. If it is, we really need to construct a DTD validating,
+     * non-namespace
+     * aware parser. Otherwise, we have to construct a schema validating,
+     * namespace-aware parser.
      */
-    private static class VersionCheckHandler extends DefaultHandler
+    private static class TagLibVersionHandler extends DefaultHandler
     {
-        private boolean version20OrLater;
+        private double version;
+        private double defaultVersion = 1.0;
+        private ArrayList<Double> acceptedVersions;
 
-        public boolean isVersion20OrLater()
+        public TagLibVersionHandler()
         {
-            return this.version20OrLater;
+            acceptedVersions = new ArrayList<Double>();
+            // 1.0/1.1 isn't necessary as the version attribute wasn't required prior to 2.0
+            acceptedVersions.add(2.0);
+            acceptedVersions.add(2.2);
+            acceptedVersions.add(2.3);
+            acceptedVersions.add(3.0);
+            acceptedVersions.add(4.0);
+            acceptedVersions.add(4.1);
+        }
+
+        public Double getVersion()
+        {
+            if (acceptedVersions.contains(this.version))
+            {
+                return this.version;
+            }
+            else
+            {
+                return getDefaultVersion();
+            }
+        }
+
+        public Double getDefaultVersion()
+        {
+            return defaultVersion;
         }
 
         @Override
@@ -673,17 +703,24 @@ public class ConfigFilesXmlValidationUtils
                             : attributes.getQName(i);
                     if (attrName.equals("version"))
                     {
-                        // This document has a "version" attribute in the <facelet-taglib> element, so
-                        // it must be a 2.0 or later document as this attribute was never required before.
-                        this.version20OrLater = true;
+                        try
+                        {
+                            this.version = Double.parseDouble(attributes.getValue(i));
+                        }
+                        catch (Exception e)
+                        {
+                           this.version = getDefaultVersion();
+                        }
                     }
                 }
 
-                // Throw a dummy parsing exception to terminate parsing as there really isn't any need to go any
+                // Throw a dummy parsing exception to terminate parsing as there really isn't
+                // any need to go any
                 // further.
-                // -= Leonardo Uribe =- THIS IS NOT GOOD PRACTICE! It is better to let the checker continue that
+                // -= Leonardo Uribe =- THIS IS NOT GOOD PRACTICE! It is better to let the
+                // checker continue that
                 // throw an exception, and run this one only when project stage != production.
-                //throw new SAXException();
+                // throw new SAXException();
             }
         }
     }
