@@ -71,10 +71,10 @@ public class TagLibraryConfigUnmarshallerImpl
             // validate XML
             if (MyfacesConfig.getCurrentInstance(externalContext).isValidateXML())
             {
-                String version = ConfigFilesXmlValidationUtils.getFaceletTagLibVersion(url);
-                schemaValidating = "2.0".equals(version);
-                if (schemaValidating)
+                Double version = ConfigFilesXmlValidationUtils.getTagLibVersion(url);
+                if (version >= 2.0)
                 {
+                    schemaValidating = true;
                     ConfigFilesXmlValidationUtils.validateFaceletTagLibFile(url, externalContext, version);
                 }
             }
