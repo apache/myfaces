@@ -453,7 +453,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     {
         String version = ConfigFilesXmlValidationUtils.getFacesConfigVersion(url);
         if ("1.2".equals(version) || "2.0".equals(version) || "2.1".equals(version) 
-            || "2.2".equals(version) || "2.3".equals(version))
+            || "2.2".equals(version) || "2.3".equals(version) || "3.0".equals(version)
+            || "4.0".equals(version) || "4.1".equals(version))
         {
             ConfigFilesXmlValidationUtils.validateFacesConfigFile(url, ectx, version);
         }
