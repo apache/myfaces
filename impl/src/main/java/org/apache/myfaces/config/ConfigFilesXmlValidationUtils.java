@@ -66,6 +66,14 @@ public class ConfigFilesXmlValidationUtils
     private final static String FACES_TAGLIB_SCHEMA_PATH = "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
     private final static String FACES_TAGLIB_SCHEMA_PATH_20 = 
                                                         "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
+    private final static String FACES_TAGLIB_SCHEMA_PATH_22 = 
+                                                        "org/apache/myfaces/resource/web-facelettaglibrary_2_2.xsd";
+    private final static String FACES_TAGLIB_SCHEMA_PATH_23 = 
+                                                        "org/apache/myfaces/resource/web-facelettaglibrary_2_3.xsd";
+    private final static String FACES_TAGLIB_SCHEMA_PATH_30 = 
+                                                        "org/apache/myfaces/resource/web-facelettaglibrary_3_0.xsd";
+    private final static String FACES_TAGLIB_SCHEMA_PATH_40 = 
+                                                        "org/apache/myfaces/resource/web-facelettaglibrary_4_0.xsd";
     private final static String FACES_TAGLIB_SCHEMA_PATH_41 = 
                                                         "org/apache/myfaces/resource/web-facelettaglibrary_4_1.xsd";
 
@@ -205,6 +213,18 @@ public class ConfigFilesXmlValidationUtils
                      return new LSInputImpl(publicId, systemId, baseURI,
                              ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_7.xsd"));
                  }
+                 if ("javaee_8.xsd".equals(systemId))
+                 {
+                     return new LSInputImpl(publicId, systemId, baseURI,
+                             ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_8.xsd"));
+                 }
+                 if ("javaee_web_services_client_1_4.xsd".equals(systemId))
+                 {
+                    String location = "org/apache/myfaces/resource/javaee_web_services_client_1_4.xsd";
+                    return new LSInputImpl(publicId, systemId, baseURI,
+                            ClassUtils.getResourceAsStream(location));
+                 }
+
              }
              if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespaceURI))
              {
@@ -591,7 +611,23 @@ public class ConfigFilesXmlValidationUtils
         {
             tagLibraryPath = FACES_TAGLIB_SCHEMA_PATH_41;
         } 
-        else 
+        else if(version == 4.0)
+        {
+            tagLibraryPath = FACES_TAGLIB_SCHEMA_PATH_40;
+        }
+        else if(version == 3.0)
+        {
+            tagLibraryPath = FACES_TAGLIB_SCHEMA_PATH_30;
+        }
+        else if(version == 2.3)
+        {
+            tagLibraryPath = FACES_TAGLIB_SCHEMA_PATH_23;
+        }
+        else if(version == 2.2)
+        {
+            tagLibraryPath = FACES_TAGLIB_SCHEMA_PATH_22;
+        }
+        else
         {
             tagLibraryPath = FACES_TAGLIB_SCHEMA_PATH_20;
         }
@@ -607,8 +643,6 @@ public class ConfigFilesXmlValidationUtils
         {
             return null;
         }
-
-        System.out.println("USING: "  + tagLibraryPath);
 
         return new StreamSource(stream);
     }
