@@ -60,6 +60,7 @@ public class ConfigFilesXmlValidationUtils
     private final static String FACES_CONFIG_SCHEMA_PATH_23 = "org/apache/myfaces/resource/web-facesconfig_2_3.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_30 = "org/apache/myfaces/resource/web-facesconfig_3_0.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_40 = "org/apache/myfaces/resource/web-facesconfig_4_0.xsd";
+    private final static String FACES_CONFIG_SCHEMA_PATH_41 = "org/apache/myfaces/resource/web-facesconfig_4_1.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_50 = "org/apache/myfaces/resource/web-facesconfig_5_0.xsd";
     private final static String FACES_TAGLIB_SCHEMA_PATH = "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
     private final static String FACES_TAGLIB_SCHEMA_PATH_20 = 
@@ -221,12 +222,19 @@ public class ConfigFilesXmlValidationUtils
                      return new LSInputImpl(publicId, systemId, baseURI,
                              ClassUtils.getResourceAsStream("org/apache/myfaces/resource/jakartaee_11.xsd"));
                  }
+                 if ("jakartaee_web_services_client_2_0.xsd".equals(systemId))
+                 {
+                    String location = "org/apache/myfaces/resource/jakartaee_web_services_client_2_0.xsd";
+                    return new LSInputImpl(publicId, systemId, baseURI,
+                            ClassUtils.getResourceAsStream(location));
+                 }
              }
             if ("http://www.w3.org/XML/1998/namespace".equals(namespaceURI))
             {
                 return new LSInputImpl(publicId, systemId, baseURI,
                         ClassUtils.getResourceAsStream("org/apache/myfaces/resource/xml.xsd"));
             }
+            
             return null;
         }
 
@@ -289,7 +297,8 @@ public class ConfigFilesXmlValidationUtils
                             : ("2.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_22
                             : ("2.3".equals(version) ? FACES_CONFIG_SCHEMA_PATH_23
                             : ("3.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_30
-                            : ("4.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_40 : FACES_CONFIG_SCHEMA_PATH_50))))));
+                            : ("4.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_40
+                            : ("4.1".equals(version) ? FACES_CONFIG_SCHEMA_PATH_41 : FACES_CONFIG_SCHEMA_PATH_50)))))));
 
         InputStream stream = ClassUtils.getResourceAsStream(xmlSchema);
 
