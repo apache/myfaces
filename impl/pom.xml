@@ -92,6 +92,16 @@
                         -->
                         <exclude>src/main/resources/org/apache/myfaces/resource/javaee_5.xsd</exclude>
                         <exclude>src/main/resources/org/apache/myfaces/resource/javaee_web_services_client_1_2.xsd</exclude>
+                        <exclude>src/main/resources/org/apache/myfaces/resource/jakartaee_11.xsd</exclude>
+                        <exclude>src/main/resources/org/apache/myfaces/resource/web-facesconfig_4_1.xsd</exclude>
+                        <exclude>src/main/resources/org/apache/myfaces/resource/web-facelettaglibrary_4_1.xsd</exclude>
+                        <exclude>src/main/resources/org/apache/myfaces/resource/jakartaee_web_services_client_2_0.xsd</exclude>
+                        <exclude>src/main/resources/org/apache/myfaces/resource/javaee_8.xsd</exclude>
+                        <exclude>src/main/resources/org/apache/myfaces/resource/web-facelettaglibrary_3_0.xsd</exclude>
+                        <exclude>src/main/resources/org/apache/myfaces/resource/web-facelettaglibrary_4_0.xsd</exclude>
+                        <exclude>src/main/resources/org/apache/myfaces/resource/web-facelettaglibrary_2_3.xsd</exclude>
+                        <exclude>src/main/resources/org/apache/myfaces/resource/javaee_web_services_client_1_4.xsd</exclude>
+                        <exclude>src/main/resources/org/apache/myfaces/resource/web-facelettaglibrary_2_2.xsd</exclude>
 
                         <!-- This file probably needs a license, but I don't know if it's safe to put it in there -->
                         <exclude>src/test/resources/org/apache/myfaces/context/nestedScriptCDATA.xml</exclude>
