@@ -34,7 +34,7 @@
         This project is the home of the MyFaces implementation of the Jakarta Faces 4.1 specification, and
         consists of an API module (jakarta.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
-    <version>4.1.0-RC4-SNAPSHOT</version>
+    <version>4.1.0</version>
     <url>https://myfaces.apache.org/#/core41</url>
 
     <issueManagement>
@@ -46,7 +46,7 @@
         <connection>scm:git:https://gitbox.apache.org/repos/asf/myfaces.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/myfaces.git</developerConnection>
         <url>https://gitbox.apache.org/repos/asf?p=myfaces.git</url>
-        <tag>HEAD</tag>
+        <tag>myfaces-core-module-4.1.0</tag>
     </scm>
   
     <modules>
