@@ -626,7 +626,9 @@ class MyFacesProcessor
                 "org/apache/myfaces/resource/javaee_5.xsd",
                 "org/apache/myfaces/resource/jakartaee_9.xsd",
                 "org/apache/myfaces/resource/jakartaee_10.xsd",
+                "org/apache/myfaces/resource/jakartaee_11.xsd",
                 "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd",
+                "org/apache/myfaces/resource/web-facelettaglibrary_4_1.xsd",
                 "org/apache/myfaces/resource/XMLSchema.dtd",
                 "org/apache/myfaces/resource/facesconfig_1_0.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_1_0.dtd",
@@ -638,6 +640,7 @@ class MyFacesProcessor
                 "org/apache/myfaces/resource/web-facesconfig_2_3.xsd",
                 "org/apache/myfaces/resource/web-facesconfig_3_0.xsd",
                 "org/apache/myfaces/resource/web-facesconfig_4_0.xsd",
+                "org/apache/myfaces/resource/web-facesconfig_4_1.dtd",
                 "org/apache/myfaces/resource/web-facesconfig_5_0.xsd",
                 "org/apache/myfaces/resource/xml.xsd"));
 
