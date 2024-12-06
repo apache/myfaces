@@ -20,7 +20,7 @@ export class EventData implements IEventData{
     type: string;
     status: string;
     source: any;
-    responseCode: string;
+    responseCode: number;
     responseText: string;
     responseXML: Document;
 
@@ -40,7 +40,7 @@ export class EventData implements IEventData{
         }
 
         if (name !== BEGIN) {
-            eventData.responseCode = request?.status?.toString();
+            eventData.responseCode = request?.status;
             eventData.responseText = request?.responseText;
             eventData.responseXML = request?.responseXML;
         }

@@ -62,7 +62,7 @@ declare global {
         serverErrorName: string;
         serverErrorMessage: string;
         source: any;
-        responseCode: string;
+        responseCode: number;
         responseText: string;
         responseXML: string;
     }
