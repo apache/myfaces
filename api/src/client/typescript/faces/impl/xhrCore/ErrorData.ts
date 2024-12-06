@@ -23,7 +23,7 @@ import {
     STATUS,
     UNKNOWN
 } from "../core/Const";
-import {Config, Optional, XMLQuery} from "mona-dish";
+import {Config, DQ, Optional, XMLQuery} from "mona-dish";
 
 import {EventData} from "./EventData";
 import {ExtLang} from "../util/Lang";
@@ -49,7 +49,7 @@ export enum ErrorType {
 export class ErrorData extends EventData implements IErrorData {
 
     type: string = "error";
-    source: string;
+    source: string | Element;
 
     errorName: string;
     errorMessage: string;
@@ -64,9 +64,12 @@ export class ErrorData extends EventData implements IErrorData {
     serverErrorMessage: string;
     description: string;
 
-    constructor(source: string, errorName: string, errorMessage: string, responseText: string = null, responseXML: Document = null, responseCode: number = -1, statusOverride: string = null,  type = ErrorType.CLIENT_ERROR) {
+    constructor(source: string | Element, errorName: string, errorMessage: string, responseText: string = null, responseXML: Document = null, responseCode: number = -1, statusOverride: string = null,  type = ErrorType.CLIENT_ERROR) {
         super();
-        this.source = source;
+
+        ///MYFACES-4676 error payload expects an element if possible
+        //this code remaps the string in an element and if not existing just passes as is what comes in
+        this.source = DQ.byId(source).value.orElse(source).value;
         this.type = ERROR;
         this.errorName = errorName;
 

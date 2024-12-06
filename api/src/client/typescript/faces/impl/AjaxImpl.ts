@@ -55,7 +55,12 @@ import {
     NAMING_CONTAINER_ID,
     CTX_PARAM_PPS,
     MYFACES_OPTION_PPS,
-    $nsp
+    $nsp,
+    CTX_PARAM_UPLOAD_ON_PROGRESS,
+    CTX_PARAM_UPLOAD_PREINIT,
+    CTX_PARAM_UPLOAD_LOADSTART,
+    CTX_PARAM_UPLOAD_LOADEND,
+    CTX_PARAM_UPLOAD_LOAD, CTX_PARAM_UPLOAD_ERROR, CTX_PARAM_UPLOAD_ABORT, CTX_PARAM_UPLOAD_TIMEOUT
 } from "./core/Const";
 import {
     resolveDefaults,
@@ -337,6 +342,19 @@ export module Implementation {
         // additional meta information to speed things up, note internal non jsf
         // pass through options are stored under _mfInternal in the context
         internalCtx.assign(CTX_PARAM_SRC_FRM_ID).value = formId;
+
+        /**
+         * special myfaces only internal parameter for onProgress until we have an official api
+         * that way we can track the progress of a xhr request (useful for file uploads)
+         */
+        internalCtx.assign(CTX_PARAM_UPLOAD_PREINIT).value = options.value?.myfaces?.upload?.preinit;
+        internalCtx.assign(CTX_PARAM_UPLOAD_LOADSTART).value = options.value?.myfaces?.upload?.loadstart;
+        internalCtx.assign(CTX_PARAM_UPLOAD_ON_PROGRESS).value = options.value?.myfaces?.upload?.progress;
+        internalCtx.assign(CTX_PARAM_UPLOAD_LOADEND).value = options.value?.myfaces?.upload?.loadend;
+        internalCtx.assign(CTX_PARAM_UPLOAD_LOAD).value = options.value?.myfaces?.upload?.load;
+        internalCtx.assign(CTX_PARAM_UPLOAD_ERROR).value = options.value?.myfaces?.upload?.error;
+        internalCtx.assign(CTX_PARAM_UPLOAD_ABORT).value = options.value?.myfaces?.upload?.abort;
+        internalCtx.assign(CTX_PARAM_UPLOAD_TIMEOUT).value = options.value?.myfaces?.upload?.timeout;
 
         // mojarra compatibility, mojarra is sending the form id as well
         // this is not documented behavior but can be determined by running
@@ -725,7 +743,7 @@ export module Implementation {
             // and no prepend (aka tobago testcase "must handle ':' in IDs properly", scenario 3,
             // in this case we return the component id, and be happy
             // we can roll a dom check here
-            return (!!document.getElementById(finalIdentifier)) ? finalIdentifier : componentIdToTransform;
+            return DQ.byId(finalIdentifier).isPresent() ? finalIdentifier : componentIdToTransform;
         };
 
         // in this case we do not use lazy stream because it won´t bring any code reduction
