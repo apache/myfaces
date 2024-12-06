@@ -90,7 +90,7 @@ export const RESPONSE_TEXT = "responseText";
 export const RESPONSE_XML = "responseXML";
 
 /*ajax errors spec 14.4.2*/
-export const HTTPERROR = "httpError";
+export const HTTP_ERROR = "httpError";
 export const EMPTY_RESPONSE = "emptyResponse";
 export const MALFORMEDXML = "malformedXML";
 export const SERVER_ERROR = "serverError";
@@ -106,6 +106,14 @@ export const CTX_OPTIONS_EXECUTE = "execute";
 
 export const CTX_PARAM_MF_INTERNAL = "myfaces.internal";
 export const CTX_PARAM_SRC_FRM_ID = "myfaces.source.formId";
+export const CTX_PARAM_UPLOAD_ON_PROGRESS = "myfaces.upload.progress";
+export const CTX_PARAM_UPLOAD_PREINIT = "myfaces.upload.preinit";
+export const CTX_PARAM_UPLOAD_LOADSTART = "myfaces.upload.loadstart";
+export const CTX_PARAM_UPLOAD_LOADEND = "myfaces.upload.loadend";
+export const CTX_PARAM_UPLOAD_LOAD = "myfaces.upload.load";
+export const CTX_PARAM_UPLOAD_ERROR = "myfaces.upload.error";
+export const CTX_PARAM_UPLOAD_ABORT = "myfaces.upload.abort";
+export const CTX_PARAM_UPLOAD_TIMEOUT = "myfaces.upload.timeout";
 export const CTX_PARAM_SRC_CTL_ID = "myfaces.source.controlId";
 export const CTX_PARAM_REQ_PASS_THR = "myfaces.request.passThrough";
 export const CTX_PARAM_PPS = "myfaces.request.pps";
