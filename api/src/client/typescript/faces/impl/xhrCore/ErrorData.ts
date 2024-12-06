@@ -75,7 +75,7 @@ export class ErrorData extends EventData implements IErrorData {
 
         //tck requires that the type is prefixed to the message itself (jsdoc also) in case of a server error
         this.errorMessage = errorMessage;
-        this.responseCode = `${responseCode}`;
+        this.responseCode = responseCode;
         this.responseText = responseText;
         this.responseXML = responseXML;
 
