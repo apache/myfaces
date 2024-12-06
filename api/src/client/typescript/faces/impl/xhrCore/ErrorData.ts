@@ -16,14 +16,14 @@
 import {
     EMPTY_STR, ERROR,
     ERROR_MESSAGE,
-    ERROR_NAME,
+    ERROR_NAME, HTTP_ERROR,
     RESPONSE_TEXT,
     RESPONSE_XML, SERVER_ERROR,
     SOURCE,
     STATUS,
     UNKNOWN
 } from "../core/Const";
-import {Config} from "mona-dish";
+import {Config, DQ, Optional, XMLQuery} from "mona-dish";
 
 import {EventData} from "./EventData";
 import {ExtLang} from "../util/Lang";
@@ -49,8 +49,8 @@ export enum ErrorType {
 export class ErrorData extends EventData implements IErrorData {
 
     type: string = "error";
-    source: HTMLElement;
-    sourceId: string;
+    source: string | Element;
+
     errorName: string;
     errorMessage: string;
 
@@ -62,19 +62,27 @@ export class ErrorData extends EventData implements IErrorData {
 
     serverErrorName: string;
     serverErrorMessage: string;
-    message: string;
+    description: string;
 
-    constructor(source: string, errorName: string, errorMessage: string, responseText: string = null, responseXML: any = null, responseCode: string = "200", status: string = "", type = ErrorType.CLIENT_ERROR) {
+    constructor(source: string | Element, errorName: string, errorMessage: string, responseText: string = null, responseXML: Document = null, responseCode: number = -1, statusOverride: string = null,  type = ErrorType.CLIENT_ERROR) {
         super();
-        this.source = document.getElementById(source);
-        this.sourceId = source;
+
+        ///MYFACES-4676 error payload expects an element if possible
+        //this code remaps the string in an element and if not existing just passes as is what comes in
+        this.source = DQ.byId(source).value.orElse(source).value;
         this.type = ERROR;
         this.errorName = errorName;
+
         //tck requires that the type is prefixed to the message itself (jsdoc also) in case of a server error
-        this.message = this.errorMessage = (type == SERVER_ERROR) ? type + ": " + errorMessage : errorMessage;
-        this.responseCode = responseCode;
+        this.errorMessage = errorMessage;
+        this.responseCode = `${responseCode}`;
         this.responseText = responseText;
-        this.status = status;
+        this.responseXML = responseXML;
+
+        this.status = statusOverride;
+
+        this.description = `Status: ${this.status}\nResponse Code: ${this.responseCode}\nError Message: ${this.errorMessage}`;
+
         this.typeDetails = type;
 
         if (type == ErrorType.SERVER_ERROR) {
@@ -87,8 +95,8 @@ export class ErrorData extends EventData implements IErrorData {
         return new ErrorData((e as any)?.source ?? "client", e?.name ?? EMPTY_STR, e?.message ?? EMPTY_STR, e?.stack ?? EMPTY_STR);
     }
 
-    static fromHttpConnection(source: any, name: string, message: string, responseText, responseCode: number, status: string = EMPTY_STR): ErrorData {
-        return new ErrorData(source, name, message, responseText, responseCode, `${responseCode}`, status, ErrorType.HTTP_ERROR);
+    static fromHttpConnection(source: any, name: string, message: string, responseText: string, responseXML: Document, responseCode: number, status: string = EMPTY_STR): ErrorData {
+        return new ErrorData(source, name, message, responseText, responseXML, responseCode, status, ErrorType.HTTP_ERROR);
     }
 
     static fromGeneric(context: Config, errorCode: number, errorType: ErrorType = ErrorType.SERVER_ERROR): ErrorData {
@@ -100,10 +108,10 @@ export class ErrorData extends EventData implements IErrorData {
         let errorMessage = getMsg(context, ERROR_MESSAGE);
         let status = getMsg(context, STATUS);
         let responseText = getMsg(context, RESPONSE_TEXT);
-        let responseXML = getMsg(context, RESPONSE_XML);
+        let responseXML: Document = context.getIf(RESPONSE_XML).value;
 
 
-        return new ErrorData(source, errorName, errorMessage, responseText, responseXML, errorCode + EMPTY_STR, status, errorType);
+        return new ErrorData(source, errorName, errorMessage, responseText, responseXML, errorCode, status, errorType);
     }
 
     private static getMsg(context, param) {

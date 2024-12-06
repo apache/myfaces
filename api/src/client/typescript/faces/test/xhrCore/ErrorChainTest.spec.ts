@@ -24,6 +24,7 @@ import {expect} from "chai";
 import {Implementation} from "../../impl/AjaxImpl";
 import errorChainPage = StandardInits.errorChainPage;
 import {DQ} from "mona-dish";
+import {ErrorData} from "../../impl/xhrCore/ErrorData";
 
 /**
  * Tests for error recover if an error is triggered mid chain
@@ -131,6 +132,16 @@ describe('Tests of the various aspects of the response protocol functionality', 
         expect(DQ.byId("errorCalled").innerHTML).to.eq("1");
         expect(DQ.byId("form1:out1").innerHTML).to.eq("5");
         done();
+    });
+
+    it('must have correct source element within the error Data Object', () => {
+        const errorData = new ErrorData("form1:button1", "errorName", "errorMessage");
+        expect((<Element>errorData.source).id).to.eq("form1:button1");
+    })
+
+    it('should have correct source id string within the error Data Object if element not existing', () => {
+        const errorData = new ErrorData("form1:button1:booga", "errorName", "errorMessage");
+        expect(errorData.source).to.eq("form1:button1:booga");
     })
 });
 

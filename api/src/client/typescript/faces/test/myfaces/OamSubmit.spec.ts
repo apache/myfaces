@@ -24,7 +24,7 @@ import setHiddenInput = oam.setHiddenInput;
 import {DomQuery} from "mona-dish";
 import clearHiddenInput = oam.clearHiddenInput;
 import submitForm = oam.submitForm;
-import Sinon from "sinon";
+import Sinon, {spy} from "sinon";
 
 
 declare var myfaces: any;
@@ -38,28 +38,28 @@ describe('Tests on the xhr core when it starts to call the request', function ()
         return defaultMyFaces();
     })
 
-    it('namespace must exist', function() {
+    it('namespace must exist', function () {
         expect(!!myfaces?.oam).to.eq(true);
         expect(!!myfaces?.oam?.setHiddenInput).to.eq(true);
         expect(!!myfaces?.oam?.clearHiddenInput).to.eq(true);
         expect(!!myfaces?.oam?.submitForm).to.eq(true);
     });
 
-    it('hidden input setting must work', function() {
+    it('hidden input setting must work', function () {
         let FORM_ID = "blarg";
         setHiddenInput(FORM_ID, "new_hidden", "hiddenvalue");
         expect(DomQuery.byId(FORM_ID).querySelectorAll("input[name='new_hidden']").isPresent());
         expect(DomQuery.byId(FORM_ID).querySelectorAll("input[name='new_hidden']").inputValue.value).to.eq("hiddenvalue");
     })
 
-    it('resetting the hidden input must work', function() {
+    it('resetting the hidden input must work', function () {
         let FORM_ID = "blarg";
         setHiddenInput(FORM_ID, "new_hidden", "hiddenvalue");
         clearHiddenInput(FORM_ID, "new_hidden");
         expect(DomQuery.byId(FORM_ID).querySelectorAll("input[name='new_hidden']").isAbsent()).to.eq(true);
     })
 
-    it('submit form must work', function() {
+    it('submit form must work', function () {
         let FORM_ID = "blarg";
         let form = DomQuery.byId(FORM_ID);
         const submit_spy = Sinon.spy(() => {
@@ -90,7 +90,7 @@ describe('Tests on the xhr core when it starts to call the request', function ()
 
     })
 
-    it('onsubmit form must work', function() {
+    it('onsubmit form must work', function () {
         let FORM_ID = "blarg";
         let form = DomQuery.byId(FORM_ID);
         const onsumbit = () => {
@@ -107,7 +107,9 @@ describe('Tests on the xhr core when it starts to call the request', function ()
             return false;
         }
         const os_spy = Sinon.spy(onsumbit);
-        const submit_spy = Sinon.spy(() => {});
+        const submit_spy = Sinon.spy(() => {
+        });
+
         (form.value.value as any).onsubmit = os_spy;
         (form.value.value as any).submit = submit_spy;
 
@@ -125,7 +127,7 @@ describe('Tests on the xhr core when it starts to call the request', function ()
         expect(form.querySelectorAll('input[name=\'booga1\']').isAbsent()).to.eq(true);
         expect(form.querySelectorAll('input[name=\'booga2\']').isAbsent()).to.eq(true);
         expect(form.querySelectorAll(`input[name='${FORM_ID}:_idcl']`).isAbsent()).to.eq(true);
-        // expect(submit_spy.called).to.eq(true);
+
     })
 
     // further tests will follow if needed, for now the namespace must be restored

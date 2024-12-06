@@ -15,7 +15,7 @@
  */
 
 import {AsyncRunnable, IAsyncRunnable} from "../util/AsyncRunnable";
-import {Config, DQ} from "mona-dish";
+import {Config, DQ, XMLQuery} from "mona-dish";
 import {Implementation} from "../AjaxImpl";
 
 import {XhrFormData} from "./XhrFormData";
@@ -34,10 +34,12 @@ import {
     MALFORMEDXML,
     NO_TIMEOUT,
     ON_ERROR,
-    ON_EVENT, P_EXECUTE,
+    ON_EVENT,
+    P_EXECUTE,
     REQ_ACCEPT,
     REQ_TYPE_GET,
-    REQ_TYPE_POST, SOURCE,
+    REQ_TYPE_POST,
+    SOURCE,
     STATE_EVT_TIMEOUT,
     STD_ACCEPT,
     URL_ENCODED,
@@ -46,8 +48,19 @@ import {
     CTX_PARAM_SRC_FRM_ID,
     CTX_PARAM_SRC_CTL_ID,
     CTX_PARAM_PPS,
+    EMPTY_RESPONSE,
+    HTTP_ERROR,
+    EMPTY_STR,
     $nsp,
-    P_BEHAVIOR_EVENT
+    P_BEHAVIOR_EVENT,
+    CTX_PARAM_UPLOAD_ON_PROGRESS,
+    CTX_PARAM_UPLOAD_LOAD,
+    CTX_PARAM_UPLOAD_LOADSTART,
+    CTX_PARAM_UPLOAD_LOADEND,
+    CTX_PARAM_UPLOAD_ABORT,
+    CTX_PARAM_UPLOAD_TIMEOUT,
+    CTX_PARAM_UPLOAD_ERROR,
+    CTX_PARAM_UPLOAD_PREINIT
 } from "../core/Const";
 import {
     resolveFinalUrl,
@@ -115,6 +128,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
         let xhrObject = this.xhrObject;
         let sourceForm = DQ.byId(this.internalContext.getIf(CTX_PARAM_SRC_FRM_ID).value)
 
+
         let executesArr = () => {
             return this.requestContext.getIf(CTX_PARAM_REQ_PASS_THR, P_EXECUTE).get(IDENT_NONE).value.split(/\s+/gi);
         };
@@ -135,7 +149,6 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
                 resoveNamingContainerMapper(this.internalContext),
                 executes, partialIdsArray
             );
-
 
             this.contentType = formData.isMultipartRequest ? "undefined" : this.contentType;
 
@@ -238,6 +251,36 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
         xhrObject.onloadend = () => {
             this.onResponseProcessed(this.xhrObject, resolve);
         };
+
+        if(xhrObject?.upload) {
+            //this is an  extension so that we can send the upload object of the current
+            //request before any operation
+            this.internalContext.getIf(CTX_PARAM_UPLOAD_PREINIT).value?.(xhrObject.upload);
+            //now we hook in the upload events
+            xhrObject.upload.addEventListener("progress", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_ON_PROGRESS).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("load", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_LOAD).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("loadstart", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_LOADSTART).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("loadend", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_LOADEND).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("abort", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_ABORT).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("timeout", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_TIMEOUT).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("error", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_ERROR).value?.(xhrObject.upload, event);
+            });
+
+        }
+
         xhrObject.onerror = (errorData: any) => {
             // Safari in rare cases triggers an error when cancelling a request internally, or when
             // in this case we simply ignore the request and clear up the queue, because
@@ -289,7 +332,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
         // reject means clear queue, in this case we abort entirely the processing
         // does not happen yet, we have to probably rethink this strategy in the future
         // when we introduce cancel functionality
-        this.handleGenericError(reject);
+        this.handleHttpError(reject);
     }
 
     /**
@@ -303,7 +346,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
         // timeout also means we we probably should clear the queue,
         // the state is unsafe for the next requests
         this.sendEvent(STATE_EVT_TIMEOUT);
-        this.handleGenericError(resolve);
+        this.handleHttpError(resolve);
     }
 
     /**
@@ -317,27 +360,66 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
     private onResponseReceived(resolve: Consumer<any>) {
 
         this.sendEvent(COMPLETE);
-        /*
-         * second on error path
-         */
-        if ((this.xhrObject?.status ?? 0) >= 300 || !this?.xhrObject?.responseXML) {
-            // all errors from the server are resolved without interfering in the queue
-            this.handleGenericError(resolve);
-            return;
-        }
 
-        $faces().ajax.response(this.xhrObject, this.responseContext.value ?? {});
+        //request error resolution as per spec:
+        if(!this.processRequestErrors(resolve)) {
+            $faces().ajax.response(this.xhrObject, this.responseContext.value ?? {});
+        }
     }
 
-    private handleGenericError(resolveOrReject: Function) {
+    private processRequestErrors(resolve: Consumer<any>): boolean {
+        const responseXML = new XMLQuery(this.xhrObject?.responseXML);
+        const responseCode = this.xhrObject?.status ?? -1;
+        if(responseXML.isXMLParserError()) {
+            // invalid response
+            const errorName = "Invalid Response";
+            const errorMessage = "The response xml is invalid";
+
+            this.handleGenericResponseError(errorName, errorMessage, MALFORMEDXML, resolve);
+            return true;
+        } else if(responseXML.isAbsent()) {
+            // empty response
+            const errorName = "Empty Response";
+            const errorMessage = "The response has provided no data";
+
+            this.handleGenericResponseError(errorName, errorMessage, EMPTY_RESPONSE, resolve);
+            return true;
+        } else if (responseCode >= 300  || responseCode < 200) {
+            // other server errors
+            // all errors from the server are resolved without interfering in the queue
+            this.handleHttpError(resolve);
+            return true;
+        }
+        //additional errors are application errors and must be handled within the response
+        return false;
+    }
+    private handleGenericResponseError(errorName: string, errorMessage: string, responseStatus: string, resolve: (s?: any) => void) {
+        const errorData: ErrorData = new ErrorData(
+            this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value,
+            errorName, errorMessage,
+            this.xhrObject?.responseText ?? "",
+            this.xhrObject?.responseXML ?? null,
+            this.xhrObject.status,
+            responseStatus
+        );
+        this.finalizeError(errorData, resolve);
+    }
+
+    private handleHttpError(resolveOrReject: Function, errorMessage: string = "Generic HTTP Serror") {
         this.stopProgress = true;
-        const errorData = {
-            type: ERROR,
-            status: MALFORMEDXML,
-            responseCode: this.xhrObject?.status ?? 400,
-            responseText: this.xhrObject?.responseText ?? "Error",
-            source: this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value
-        };
+
+        const errorData = new ErrorData(
+            this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value,
+            HTTP_ERROR, errorMessage,
+            this.xhrObject?.responseText ?? "",
+            this.xhrObject?.responseXML ?? null,
+            this.xhrObject?.status ?? -1,
+            HTTP_ERROR
+        )
+        this.finalizeError(errorData, resolveOrReject);
+    }
+
+    private finalizeError(errorData: ErrorData, resolveOrReject: Function) {
         try {
             this.handleError(errorData, true);
         } finally {
@@ -345,8 +427,8 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
             // reject would clean up the queue
             // resolve would trigger the next element in the queue to be processed
             resolveOrReject(errorData);
+            this.stopProgress = true;
         }
-        // non blocking non clearing
     }
 
     /**
@@ -405,7 +487,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
     }
 
     private handleError(exception, responseFormatError: boolean = false) {
-        const errorData = (responseFormatError) ? ErrorData.fromHttpConnection(exception.source, exception.type, exception.status, exception.responseText, exception.responseCode, exception.status) : ErrorData.fromClient(exception);
+        const errorData = (responseFormatError) ? ErrorData.fromHttpConnection(exception.source, exception.type, exception.message ?? EMPTY_STR, exception.responseText, exception.responseXML, exception.responseCode, exception.status) : ErrorData.fromClient(exception);
         const eventHandler = resolveHandlerFunc(this.requestContext, this.responseContext, ON_ERROR);
 
         Implementation.sendError(errorData, eventHandler);
