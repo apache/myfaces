@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import {Config, IValueHolder, Optional, DomQuery, DQ, Es2019Array, ValueEmbedder} from "mona-dish";
-import {$nsp, P_WINDOW_ID} from "../core/Const";
+import {$faces, $nsp, P_WINDOW_ID} from "../core/Const";
 
 
 /**
@@ -234,8 +234,13 @@ export class ExtDomQuery extends DQ {
      * @param deep whether the search should go into embedded shadow dom elements
      * @return a DomQuery containing the found elements
      */
-    static byId(selector: string | DomQuery | Element, deep = false): ExtDomQuery {
+    static byId(selector: DomQuery | Element | string, deep = false): ExtDomQuery {
         const ret = DomQuery.byId(selector, deep);
+        if($faces().getProjectStage().toLowerCase() == "development" &&
+            window?.console && ret.isAbsent() && selector) {
+            let identifier = (<DomQuery>selector)?.id?.value ?? (<Element>selector)?.id ?? selector.toString();
+            console.error("Element  " + identifier + "not found");
+        }
         return new ExtDomQuery(ret);
     }
 

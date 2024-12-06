@@ -48,8 +48,19 @@ import {
     CTX_PARAM_SRC_FRM_ID,
     CTX_PARAM_SRC_CTL_ID,
     CTX_PARAM_PPS,
-    EMPTY_RESPONSE, HTTP_ERROR,
-    EMPTY_STR, $nsp, P_BEHAVIOR_EVENT
+    EMPTY_RESPONSE,
+    HTTP_ERROR,
+    EMPTY_STR,
+    $nsp,
+    P_BEHAVIOR_EVENT,
+    CTX_PARAM_UPLOAD_ON_PROGRESS,
+    CTX_PARAM_UPLOAD_LOAD,
+    CTX_PARAM_UPLOAD_LOADSTART,
+    CTX_PARAM_UPLOAD_LOADEND,
+    CTX_PARAM_UPLOAD_ABORT,
+    CTX_PARAM_UPLOAD_TIMEOUT,
+    CTX_PARAM_UPLOAD_ERROR,
+    CTX_PARAM_UPLOAD_PREINIT
 } from "../core/Const";
 import {
     resolveFinalUrl,
@@ -116,6 +127,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
         let ignoreErr = failSaveExecute;
         let xhrObject = this.xhrObject;
         let sourceForm = DQ.byId(this.internalContext.getIf(CTX_PARAM_SRC_FRM_ID).value)
+
 
         let executesArr = () => {
             return this.requestContext.getIf(CTX_PARAM_REQ_PASS_THR, P_EXECUTE).get(IDENT_NONE).value.split(/\s+/gi);
@@ -239,6 +251,36 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
         xhrObject.onloadend = () => {
             this.onResponseProcessed(this.xhrObject, resolve);
         };
+
+        if(xhrObject?.upload) {
+            //this is an  extension so that we can send the upload object of the current
+            //request before any operation
+            this.internalContext.getIf(CTX_PARAM_UPLOAD_PREINIT).value?.(xhrObject.upload);
+            //now we hook in the upload events
+            xhrObject.upload.addEventListener("progress", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_ON_PROGRESS).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("load", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_LOAD).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("loadstart", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_LOADSTART).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("loadend", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_LOADEND).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("abort", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_ABORT).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("timeout", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_TIMEOUT).value?.(xhrObject.upload, event);
+            });
+            xhrObject.upload.addEventListener("error", (event: ProgressEvent) => {
+                this.internalContext.getIf(CTX_PARAM_UPLOAD_ERROR).value?.(xhrObject.upload, event);
+            });
+
+        }
+
         xhrObject.onerror = (errorData: any) => {
             // Safari in rare cases triggers an error when cancelling a request internally, or when
             // in this case we simply ignore the request and clear up the queue, because

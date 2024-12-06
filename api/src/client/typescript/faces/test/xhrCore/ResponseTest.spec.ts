@@ -740,7 +740,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
             faces.ajax.addOnError((error) => {
                 expect(error.errorName).to.eq("jakarta.faces.application.ViewExpiredException");
                 expect(error.errorMessage).to.eq("View \"/testhmtl.xhtml\" could not be restored.");
-                expect(error.source).to.eq("form1x:button");
+                expect(error.source.id).to.eq("form1x:button");
                 errorCalled++;
             });
 
