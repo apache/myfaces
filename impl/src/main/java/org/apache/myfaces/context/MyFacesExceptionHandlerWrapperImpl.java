@@ -243,8 +243,6 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
                         
                         // and call getException() on the returned result
                         Throwable exception = context.getException();
-                        
-                        ExceptionHandlerUtils.logException(context, log);
 
                         // Upon encountering the first such Exception that is not an instance of
                         // jakarta.faces.event.AbortProcessingException
@@ -257,6 +255,9 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
                             
                             throwableList.add(rootCause == null ? exception : rootCause);
                             components.add(event.getContext().getComponent());
+
+                            ExceptionHandlerUtils.logException(rootCause == null ? exception : rootCause,
+                                    context.getComponent(), context.getContext(), log);
                         }
                     }
                     finally

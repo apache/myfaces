@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.config.webparameters;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -790,6 +792,10 @@ public class MyfacesConfig
     public static final String EL_RESOLVER_TRACING = "org.apache.myfaces.EL_RESOLVER_TRACING";
     public static final boolean EL_RESOLVER_TRACING_DEFAULT = false;
 
+    @JSFWebConfigParam(name="org.apache.myfaces.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING", since="4.0.3, 4.1.1, 5.0", defaultValue = "")
+    public static final String EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING =
+            "org.apache.myfaces.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING";
+
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
     private boolean strictJsf2AllowSlashLibraryName;
@@ -869,6 +875,7 @@ public class MyfacesConfig
     private ResourceBundle.Control resourceBundleControl;
     private boolean automaticExtensionlessMapping = AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT;
     private boolean elResolverTracing = EL_RESOLVER_TRACING_DEFAULT;
+    private List<String> exceptionTypesToIgnoreInLogging = new ArrayList<>();
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -960,7 +967,7 @@ public class MyfacesConfig
         cfg.delegateFacesServlet = getString(extCtx, DELEGATE_FACES_SERVLET,
                 null);
         
-        String refreshTransientBuildOnPSS = getString(extCtx, REFRESH_TRANSIENT_BUILD_ON_PSS, 
+        String refreshTransientBuildOnPSS = getString(extCtx, REFRESH_TRANSIENT_BUILD_ON_PSS,
                 REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT);
         if (refreshTransientBuildOnPSS == null)
         {
@@ -1228,7 +1235,7 @@ public class MyfacesConfig
         cfg.fullStateSavingViewIds = StringUtils.splitShortString(
                 getString(extCtx, StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, null),
                 ',');
-        
+
         cfg.faceletsBufferSize = getInt(extCtx, ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME,
                 1024);
         
@@ -1309,7 +1316,18 @@ public class MyfacesConfig
 
         cfg.elResolverTracing = getBoolean(extCtx, EL_RESOLVER_TRACING,
                 EL_RESOLVER_TRACING_DEFAULT);
-        
+
+        String[] exceptionTypesToIgnoreInLogging = StringUtils.splitShortString(
+                getString(extCtx, EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING, ""),
+                ',');
+        for (String exceptionTypeToIgnoreInLogging : exceptionTypesToIgnoreInLogging)
+        {
+            if (StringUtils.isNotBlank(exceptionTypeToIgnoreInLogging))
+            {
+                cfg.exceptionTypesToIgnoreInLogging.add(exceptionTypeToIgnoreInLogging);
+            }
+        }
+
         return cfg;
     }
 
@@ -1773,6 +1791,11 @@ public class MyfacesConfig
     public boolean isElResolverTracing()
     {
         return elResolverTracing;
+    }
+
+    public List<String> getExceptionTypesToIgnoreInLogging()
+    {
+        return exceptionTypesToIgnoreInLogging;
     }
 }
 
