@@ -125,13 +125,13 @@ public class ExceptionHandlerImpl extends ExceptionHandler
                     
                     // and call getException() on the returned result
                     Throwable exception = context.getException();
-                    
-                    ExceptionHandlerUtils.logException(context, log);
 
                     // Upon encountering the first such Exception that is not an instance of
                     // jakarta.faces.event.AbortProcessingException
                     if (!shouldSkip(exception))
                     {
+                        Throwable rootCause = getRootCause(exception);
+
                         // set handledAndThrown so that getHandledExceptionQueuedEvent() returns this event
                         handledAndThrown = event;
 
@@ -139,7 +139,11 @@ public class ExceptionHandlerImpl extends ExceptionHandler
                         // and throw it
                         // FIXME: The spec says to NOT use a FacesException to propagate the exception, but I see
                         //        no other way as ServletException is not a RuntimeException
-                        toThrow = wrap(getRethrownException(exception));
+                        toThrow = wrap(rootCause == null ? exception : rootCause);
+
+                        ExceptionHandlerUtils.logException(rootCause == null ? exception : rootCause,
+                                context.getComponent(), context.getContext(), log);
+
                         break;
                     }
                 }
@@ -188,20 +192,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler
         
         unhandled.add((ExceptionQueuedEvent)exceptionQueuedEvent);
     }
-    
-    protected Throwable getRethrownException(Throwable exception)
-    {
-        // Let toRethrow be either the result of calling getRootCause() on the Exception, 
-        // or the Exception itself, whichever is non-null
-        Throwable toRethrow = getRootCause(exception);
-        if (toRethrow == null)
-        {
-            toRethrow = exception;
-        }
-        
-        return toRethrow;
-    }
-    
+
     protected FacesException wrap(Throwable exception)
     {
         if (exception instanceof FacesException)
