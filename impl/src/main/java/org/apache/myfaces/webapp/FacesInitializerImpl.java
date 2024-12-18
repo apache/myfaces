@@ -180,6 +180,8 @@ public class FacesInitializerImpl implements FacesInitializer
             initContainerIntegration(servletContext, externalContext);
 
             // log environment integrations
+            ExternalSpecifications.isServlet6Available();
+            ExternalSpecifications.isEL6Available();
             ExternalSpecifications.isCDIAvailable(externalContext);
             ExternalSpecifications.isBeanValidationAvailable();
 

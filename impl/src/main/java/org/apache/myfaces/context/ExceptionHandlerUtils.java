@@ -18,34 +18,93 @@
  */
 package org.apache.myfaces.context;
 
+import jakarta.el.ELException;
+import jakarta.faces.FacesException;
 import jakarta.faces.FacesWrapper;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ViewExpiredException;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.event.ExceptionQueuedEventContext;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.LocationAware;
 import org.apache.myfaces.view.facelets.el.ContextAware;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class ExceptionHandlerUtils
 {
-
-    public static void logException(ExceptionQueuedEventContext event, Logger logger)
+    protected static boolean isLogStacktrace(FacesContext context, Throwable exception)
     {
-        // unwrap to strip location aware stacktraces
-        Throwable exception = event.getException();
-        while (exception instanceof FacesWrapper)
+        if (context.isProjectStage(ProjectStage.Production))
         {
-            exception = (Throwable) ((FacesWrapper) exception).getWrapped();
+            if (exception instanceof ViewExpiredException)
+            {
+                return false;
+            }
         }
 
-        String msg = exception.getClass().getName() + " occurred while processing " + event.getPhaseId().getName();
-        String location = buildLocation(event.getException(), event.getComponent());
+        return true;
+    }
+
+    protected static boolean isLogException(FacesContext context, Throwable exception)
+    {
+        if (context.isProjectStage(ProjectStage.Production))
+        {
+            if (exception != null)
+            {
+                MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(context);
+                for (String ignore : myfacesConfig.getExceptionTypesToIgnoreInLogging())
+                {
+                    if (ignore.trim().equals(exception.getClass().getName()))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public static void logException(Throwable exception, UIComponent component, FacesContext context, Logger logger)
+    {
+        while (exception instanceof FacesWrapper ||
+                (exception.getClass().equals(FacesException.class) || exception.getClass().equals(ELException.class)))
+        {
+            if (exception instanceof FacesWrapper)
+            {
+                exception = (Throwable) ((FacesWrapper) exception).getWrapped();
+            }
+            else if (exception.getClass().equals(FacesException.class)
+                    || exception.getClass().equals(ELException.class))
+            {
+                exception = exception.getCause();
+            }
+        }
+
+        if (!isLogException(context, exception))
+        {
+            return;
+        }
+
+        String msg = exception.getClass().getName() + " occurred while processing "
+                + context.getCurrentPhaseId().getName();
+
+        String location = buildLocation(exception, component);
         if (location != null)
         {
             msg += " [Location=" + location + "]";
         }
 
-        logger.log(Level.SEVERE, msg, exception);
+        if (isLogStacktrace(context, exception))
+        {
+            logger.log(Level.SEVERE, msg, exception);
+        }
+        else
+        {
+            logger.log(Level.SEVERE, msg);
+        }
     }
 
     public static String buildLocation(Throwable ex, UIComponent component)
@@ -65,6 +124,7 @@ public class ExceptionHandlerUtils
             }
         }
 
+        // unwrap to strip location aware stacktraces
         while (ex.getCause() != null)
         {
             ex = ex.getCause();

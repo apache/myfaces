@@ -165,15 +165,16 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
                     // jakarta.faces.event.AbortProcessingException
                     if (!shouldSkip(exception))
                     {
+                        Throwable rootCause = getRootCause(exception);
+
                         // set handledAndThrown so that getHandledExceptionQueuedEvent() returns this event
                         handledAndThrown = event;
-                        
-                        Throwable rootCause = getRootCause(exception);
-                        
-                        throwableList.add(rootCause == null ? exception : rootCause);
-                    }
 
-                    ExceptionHandlerUtils.logException(context, log);
+                        throwableList.add(rootCause == null ? exception : rootCause);
+
+                        ExceptionHandlerUtils.logException(rootCause == null ? exception : rootCause,
+                                context.getComponent(), context.getContext(), log);
+                    }
                 }
                 finally
                 {

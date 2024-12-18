@@ -52,6 +52,7 @@ import org.apache.myfaces.el.resolver.implicitobject.ImplicitObjectResolver;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.el.resolver.EmptyStringToNullELResolver;
 import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  * Create the el resolver for faces. see 1.2 spec section 5.6.2
@@ -152,14 +153,17 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         list.add(new ListELResolver());
         list.add(new ArrayELResolver());
 
-        try
+        if (ExternalSpecifications.isEL6Available())
         {
-            list.add(new OptionalELResolver());
-            list.add(new RecordELResolver());
-        }
-        catch (Throwable ex)
-        {
-            LOG.log(Level.WARNING, "Could not add OptionalELResolver / RecordELResolver!", ex);
+            try
+            {
+                list.add(new OptionalELResolver());
+                list.add(new RecordELResolver());
+            }
+            catch (Throwable ex)
+            {
+                LOG.log(Level.WARNING, "Could not add OptionalELResolver / RecordELResolver!", ex);
+            }
         }
 
         if (PropertyDescriptorUtils.isUseLambdaMetafactory(facesContext.getExternalContext()))
