@@ -786,8 +786,7 @@ public class MyfacesConfig
     public static final String EL_RESOLVER_TRACING = "org.apache.myfaces.EL_RESOLVER_TRACING";
     public static final boolean EL_RESOLVER_TRACING_DEFAULT = false;
 
-    @JSFWebConfigParam(name="org.apache.myfaces.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING", since="4.0.3, 4.1.1, 5.0",
-            defaultValue = "")
+    @JSFWebConfigParam(name="org.apache.myfaces.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING", since="4.0.3, 4.1.1, 5.0")
     public static final String EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING =
             "org.apache.myfaces.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING";
 
