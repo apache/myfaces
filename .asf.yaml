@@ -1,0 +1,20 @@
+# see https://github.com/apache/infrastructure-asfyaml
+github:
+  description: "Apache MyFaces Core"
+  homepage: https://myfaces.apache.org
+  labels:
+    - java
+    - web-framework
+    - javaee
+    - myfaces
+  enabled_merge_buttons:
+    squash: true
+    merge: true
+    rebase: true
+  autolink_jira:
+    - MYFACES
+notifications:
+  commits: commits@myfaces.apache.org
+  issues: dev@myfaces.apache.org
+  pullrequests: dev@myfaces.apache.org
+  jira_options: link label
