@@ -304,11 +304,8 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
                     {
                         // Note this case falls when contentTypeListStringFromAccept == null and 
                         // contentTypeListString != null, but since this not an ajax request, 
-                        // contentTypeListString should be taken strictly and throw IllegalArgumentException
-                        throw new IllegalArgumentException(
-                                "ContentTypeList does not contain a supported content type: "
-                                        + ((contentTypeListString != null) ? 
-                                                contentTypeListString : contentTypeListStringFromAccept) );
+                        // contentTypeListString should fall back to default (MYFACES-4703)
+                        selectedContentType = myfacesConfig.getDefaultResponseWriterContentTypeMode();
                     }
                 }
             }

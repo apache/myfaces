@@ -101,21 +101,14 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
     @Test
     public void testCreateResponseWriterContentType6()
     {
-        try
-        {
-            MyfacesConfig config = new MyfacesConfig();
-            facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
-            request.addHeader("Accept", "image/png"); //Webkit
-            HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
-            StringWriter writer = new StringWriter();
-            HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-            
-            Assertions.fail();
-        }
-        catch (IllegalArgumentException e)
-        {
-            // expected
-        }
+        MyfacesConfig config = new MyfacesConfig();
+        facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
+        request.addHeader("Accept", "text/plain"); //Invalid Type falls back to default
+        HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
+        StringWriter writer = new StringWriter();
+        HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
     
     @Test
