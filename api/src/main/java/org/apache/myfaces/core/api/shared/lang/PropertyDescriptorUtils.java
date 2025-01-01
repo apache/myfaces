@@ -18,6 +18,10 @@
  */
 package org.apache.myfaces.core.api.shared.lang;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -28,9 +32,10 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
@@ -38,39 +43,25 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.ObjLongConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jakarta.faces.FacesException;
-import jakarta.faces.context.ExternalContext;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 public class PropertyDescriptorUtils
 {
     private static final Logger LOG = Logger.getLogger(PropertyDescriptorUtils.class.getName());
 
     /**
-     * Defines if Lambda expressions (via LambdaMetafactory) are used for getter/setter instead of Reflection.
+     * Defines if Lambdas should be used over reflection whenever possible to access getter/setter.
      */
-    @JSFWebConfigParam(since="2.3-next", defaultValue="false", expectedValues="true,false", tags="performance")
-    public static final String USE_LAMBDA_METAFACTORY = "org.apache.myfaces.USE_LAMBDA_METAFACTORY";
+    @JSFWebConfigParam(since="4.1.1", defaultValue="false", expectedValues="true,false", tags="performance")
+    public static final String USE_LAMBDAS_OVER_REFLECTION
+            = "org.apache.myfaces.USE_LAMBDAS_OVER_REFLECTION";
 
     private static final String CACHE_KEY = PropertyDescriptorUtils.class.getName() + ".CACHE";
 
-    private static Method privateLookupIn;
+    private static Map<Module, List<Module>> moduleAccessCache = new ConcurrentHashMap<>();
 
-    static
-    {
-        try
-        {
-            privateLookupIn = MethodHandles.class.getMethod("privateLookupIn", Class.class,
-                    MethodHandles.Lookup.class);
-        }
-        catch (Exception e)
-        {
-        }
-    }
-    
     private static Map<String, Map<String, ? extends PropertyDescriptorWrapper>> getCache(ExternalContext ec)
     {
-        Map<String, Map<String, ? extends PropertyDescriptorWrapper>> cache = 
+        Map<String, Map<String, ? extends PropertyDescriptorWrapper>> cache =
                 (Map<String, Map<String, ? extends PropertyDescriptorWrapper>>) ec.getApplicationMap().get(CACHE_KEY);
         if (cache == null)
         {
@@ -82,64 +73,88 @@ public class PropertyDescriptorUtils
     }
 
     public static Map<String, ? extends PropertyDescriptorWrapper> getCachedPropertyDescriptors(ExternalContext ec,
-            Class<?> target)
+                                                                                                Class<?> caller,
+                                                                                                Class<?> target)
     {
         Map<String, ? extends PropertyDescriptorWrapper> cache = getCache(ec).get(target.getName());
         if (cache == null)
         {
-            cache = getCache(ec).computeIfAbsent(target.getName(), k -> getPropertyDescriptors(ec, target));
+            final Class<?> realTarget = target;
+            cache = getCache(ec).computeIfAbsent(target.getName(), k -> getPropertyDescriptors(ec, caller, target));
         }
 
         return cache;
     }
 
-    public static boolean isUseLambdaMetafactory(ExternalContext ec)
+    public static boolean isUseLambdas(ExternalContext ec)
     {
-        if (privateLookupIn == null)
-        {
-            return false;
-        }
-        
         // disabled per default
-        String useMethodHandles = ec.getInitParameter(USE_LAMBDA_METAFACTORY);
+        String useMethodHandles = ec.getInitParameter(USE_LAMBDAS_OVER_REFLECTION);
         return useMethodHandles != null && useMethodHandles.contains("true");
     }
 
-    public static Map<String, ? extends PropertyDescriptorWrapper> getPropertyDescriptors(ExternalContext ec,
+    protected static Map<String, ? extends PropertyDescriptorWrapper> getPropertyDescriptors(
+            ExternalContext ec,
+            Class<?> caller,
             Class<?> target)
     {
-        if (isUseLambdaMetafactory(ec))
-        {
-            try
-            {
-                return getLambdaPropertyDescriptors(target);
-            }
-            catch (IllegalAccessException e)
-            {
-                LOG.log(Level.FINEST, 
-                        "Could not generate LambdaPropertyDescriptor for "
-                                + target.getName() + ". Use PropertyDescriptor...");
-            }
-            catch (Throwable e)
-            {
-                LOG.log(Level.INFO, 
-                        "Could not generate LambdaPropertyDescriptor for "
-                                + target.getName() + ". Use PropertyDescriptor...",
-                        e);
-            }
-        }
-
         try
         {
             PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(target).getPropertyDescriptors();
-            
+
             Map<String, PropertyDescriptorWrapper> map = new ConcurrentHashMap<>(propertyDescriptors.length);
 
             for (int i = 0; i < propertyDescriptors.length; i++)
             {
                 PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
-                map.put(propertyDescriptor.getName(),
-                        new PropertyDescriptorWrapper(target, propertyDescriptor));
+
+                LambdaPropertyDescriptor lambdaPropertyDescriptor = null;
+
+                if (isUseLambdas(ec))
+                {
+                    List<Module> cache = moduleAccessCache.computeIfAbsent(caller.getModule(),
+                            (k) -> new CopyOnWriteArrayList<>());
+                    if (!cache.contains(target.getModule()))
+                    {
+                        if (!caller.getModule().canRead(target.getModule()))
+                        {
+                            caller.getModule().addReads(target.getModule());
+                        }
+                        cache.add(target.getModule());
+                    }
+
+                    try
+                    {
+                        lambdaPropertyDescriptor =
+                                createLambdaPropertyDescriptor(caller, target, propertyDescriptor);
+                        if (lambdaPropertyDescriptor == null)
+                        {
+                            LOG.log(Level.SEVERE,
+                                    "Could not generate LambdaPropertyDescriptor for "
+                                            + target.getName() + "#" + propertyDescriptor.getName()
+                                            + ". Use PropertyDescriptor...");
+                        }
+                    }
+                    catch (Throwable e)
+                    {
+                        e.printStackTrace();
+                        LOG.log(Level.SEVERE,
+                                "Could not generate LambdaPropertyDescriptor for "
+                                        + target.getName() + "#" + propertyDescriptor.getName()
+                                        + ". Use PropertyDescriptor...",
+                                e);
+                    }
+                }
+
+                if (lambdaPropertyDescriptor == null)
+                {
+                    map.put(propertyDescriptor.getName(),
+                            new PropertyDescriptorWrapper(target, propertyDescriptor));
+                }
+                else
+                {
+                    map.put(propertyDescriptor.getName(), lambdaPropertyDescriptor);
+                }
             }
 
             return map;
@@ -149,38 +164,11 @@ public class PropertyDescriptorUtils
             throw new FacesException(e);
         }
     }
-    
-    public static LambdaPropertyDescriptor getLambdaPropertyDescriptor(Class<?> target, String name)
-    {
-        try
-        {
-            PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(target).getPropertyDescriptors();
-            if (propertyDescriptors == null || propertyDescriptors.length == 0)
-            {
-                return null;
-            }
-            
-            for (PropertyDescriptor pd : propertyDescriptors)
-            {
-                if (name.equals(pd.getName()))
-                {
-                    MethodHandles.Lookup lookup = (MethodHandles.Lookup) privateLookupIn.invoke(null, target,
-                            MethodHandles.lookup());
-                    return createLambdaPropertyDescriptor(target, pd, lookup);
-                }
-            }
 
-            throw new FacesException("Property \"" + name + "\" not found on \"" + target.getName() + "\"");
-        }
-        catch (Throwable e)
-        {
-            throw new FacesException(e);
-        }
-    }
-    
-  
-    public static LambdaPropertyDescriptor createLambdaPropertyDescriptor(Class<?> target, PropertyDescriptor pd,
-            MethodHandles.Lookup lookup) throws Throwable
+    public static LambdaPropertyDescriptor createLambdaPropertyDescriptor(
+            Class<?> caller,
+            Class<?> target,
+            PropertyDescriptor pd) throws Throwable
     {
         if (pd.getPropertyType() == null)
         {
@@ -188,6 +176,9 @@ public class PropertyDescriptorUtils
         }
 
         LambdaPropertyDescriptor lpd = new LambdaPropertyDescriptor(target, pd);
+
+        MethodHandles.Lookup lookup =
+                MethodHandles.privateLookupIn(PropertyDescriptorUtils.class, MethodHandles.lookup());
 
         Method readMethod = pd.getReadMethod();
         if (readMethod != null)
@@ -211,35 +202,10 @@ public class PropertyDescriptorUtils
 
         return lpd;
     }
-    
-    public static Map<String, PropertyDescriptorWrapper> getLambdaPropertyDescriptors(Class<?> target) throws Throwable
-    {
-        PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(target).getPropertyDescriptors();
-        if (propertyDescriptors == null || propertyDescriptors.length == 0)
-        {
-            return Collections.emptyMap();
-        }
-
-        Map<String, PropertyDescriptorWrapper> properties = new ConcurrentHashMap<>(propertyDescriptors.length);
-
-        MethodHandles.Lookup lookup = (MethodHandles.Lookup)
-                privateLookupIn.invoke(null, target, MethodHandles.lookup());
-        for (PropertyDescriptor pd : Introspector.getBeanInfo(target).getPropertyDescriptors())
-        {
-            PropertyDescriptorWrapper wrapped = createLambdaPropertyDescriptor(target, pd, lookup);
-            if (wrapped == null)
-            {
-                wrapped = new PropertyDescriptorWrapper(target, pd);
-            }
-            properties.put(pd.getName(), wrapped);
-        }
-
-        return properties;
-    }
 
     @SuppressWarnings("unchecked")
     protected static BiConsumer createSetter(MethodHandles.Lookup lookup, LambdaPropertyDescriptor propertyInfo,
-            MethodHandle setterHandle)
+                                             MethodHandle setterHandle)
             throws LambdaConversionException, Throwable
     {
         Class<?> propertyType = propertyInfo.getPropertyType();
@@ -307,7 +273,7 @@ public class PropertyDescriptorUtils
     }
 
     protected static CallSite createSetterCallSite(MethodHandles.Lookup lookup, MethodHandle setter,
-            Class<?> interfaceType, Class<?> valueType)
+                                                   Class<?> interfaceType, Class<?> valueType)
             throws LambdaConversionException
     {
         return LambdaMetafactory.metafactory(lookup,

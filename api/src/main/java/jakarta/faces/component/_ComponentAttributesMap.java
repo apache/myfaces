@@ -618,7 +618,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         if (_propertyDescriptorMap == null)
         {
             _propertyDescriptorMap = PropertyDescriptorUtils.getCachedPropertyDescriptors(
-                    _component.getFacesContext().getExternalContext(), 
+                    _component.getFacesContext().getExternalContext(),
+                    this.getClass(),
                     _component.getClass());
         }
         return _propertyDescriptorMap.get(key);

@@ -173,6 +173,7 @@ public class LambdaBeanELResolver extends BeanELResolver
         {
             beanCache = PropertyDescriptorUtils.getCachedPropertyDescriptors(
                     FacesContext.getCurrentInstance().getExternalContext(),
+                    this.getClass(),
                     base.getClass());
             cache.put(base.getClass().getName(), beanCache);
         }

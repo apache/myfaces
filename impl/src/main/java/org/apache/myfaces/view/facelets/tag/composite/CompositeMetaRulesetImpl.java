@@ -214,7 +214,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         {
             try
             {
-                if (PropertyDescriptorUtils.isUseLambdaMetafactory(
+                if (PropertyDescriptorUtils.isUseLambdas(
                         FacesContext.getCurrentInstance().getExternalContext()))
                 {
                     meta = new LambdaMetadataTargetImpl(_type);

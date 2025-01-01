@@ -1592,6 +1592,7 @@ public class ApplicationImpl extends Application
         {
             Map<String, ? extends PropertyDescriptorWrapper> pds = PropertyDescriptorUtils.getCachedPropertyDescriptors(
                     FacesContext.getCurrentInstance().getExternalContext(),
+                    this.getClass(),
                     converterClass);
 
             for (int i = 0; i < converterConfig.getProperties().size(); i++)

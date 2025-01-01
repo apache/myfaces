@@ -166,7 +166,7 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
             }
         }
 
-        if (PropertyDescriptorUtils.isUseLambdaMetafactory(facesContext.getExternalContext()))
+        if (PropertyDescriptorUtils.isUseLambdas(facesContext.getExternalContext()))
         {
             list.add(new LambdaBeanELResolver());
         }

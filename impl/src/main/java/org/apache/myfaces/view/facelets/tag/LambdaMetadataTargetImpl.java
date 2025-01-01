@@ -40,6 +40,7 @@ public class LambdaMetadataTargetImpl extends MetadataTarget
         this.type = type;
         this.propertyDescriptors = PropertyDescriptorUtils.getCachedPropertyDescriptors(
                 FacesContext.getCurrentInstance().getExternalContext(),
+                this.getClass(),
                 type);
     }
 
