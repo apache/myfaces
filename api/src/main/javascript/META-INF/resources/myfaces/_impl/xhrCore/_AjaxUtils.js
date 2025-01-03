@@ -194,7 +194,10 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
         form = this._Dom.byId(form);
         var _t = this;
         var foundNames = this._Dom.findAll(form, function(node) {
-            var name = node.getAttribute("name");
+            var name = null;
+            if(node.getAttribute && node.getAttribute("name")) {
+                name = node.getAttribute("name");
+            }
             if(!name || name.indexOf(_t.P_VIEWSTATE)) {
                 return false;
             }
