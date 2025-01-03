@@ -566,7 +566,6 @@ public class ApplicationImpl extends Application
     public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,
                              Class<?> sourceBaseType, Object source)
     {
-        checkNull(facesContext, "facesContext");
         checkNull(systemEventClass, "systemEventClass");
         checkNull(source, "source");
         
@@ -623,7 +622,6 @@ public class ApplicationImpl extends Application
     @Override
     public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass, Object source)
     {
-        checkNull(source, "source");
         publishEvent(facesContext, systemEventClass, source.getClass(), source);
     }
 
