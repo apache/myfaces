@@ -18,19 +18,24 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.deployment;
 
+import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import io.quarkus.bootstrap.classloading.ClassPathElement;
+import io.quarkus.bootstrap.classloading.QuarkusClassLoader;
+import io.quarkus.paths.PathVisitor;
 import jakarta.el.ELResolver;
 import jakarta.el.Expression;
 import jakarta.el.ValueExpression;
@@ -423,6 +428,40 @@ class MyFacesProcessor
                         flowId.asString());
             }
         }
+    }
+
+    @BuildStep
+    @Record(ExecutionTime.STATIC_INIT)
+    void collectTopLevelViews(MyFacesRecorder recorder) throws IOException
+    {
+        visitRuntimeMetaInfResources(visit ->
+        {
+            if (Files.isDirectory(visit.getPath()))
+            {
+                // only root directory
+                if (visit.getRelativePath().contains("META-INF/resources/META-INF")
+                        || visit.getRelativePath().contains("META-INF/resources/WEB-INF")
+                        || visit.getRelativePath().contains("META-INF/resources/resources"))
+                {
+                    visit.stopWalking();
+                }
+            }
+            else if (!Files.isDirectory(visit.getPath()))
+            {
+                // only .xhtml
+                if (!visit.getRelativePath().endsWith(".xhtml"))
+                {
+                    return;
+                }
+
+                String viewId = visit.getRelativePath().toString()
+                        .replace("META-INF/resources/", "");
+
+                System.err.println("add: " + viewId);
+
+                recorder.registerTopLevelView(viewId);
+            }
+        });
     }
 
     @BuildStep
@@ -882,4 +921,28 @@ class MyFacesProcessor
         return watchedFiles;
     }
 
+    /**
+     * Visits all {@code META-INF/resources} directories and their content found on the runtime classpath
+     *
+     * @param visitor visitor implementation
+     */
+    private static void visitRuntimeMetaInfResources(PathVisitor visitor)
+    {
+        List<ClassPathElement> elements = QuarkusClassLoader.getElements("META-INF/resources",
+                false);
+        if (!elements.isEmpty())
+        {
+            for (var element : elements)
+            {
+                if (element.isRuntime())
+                {
+                    element.apply(tree ->
+                    {
+                        tree.walkIfContains("META-INF/resources", visitor);
+                        return null;
+                    });
+                }
+            }
+        }
+    }
 }

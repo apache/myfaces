@@ -27,4 +27,8 @@
         <exception-handler-factory>org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory</exception-handler-factory>
     </factory>
 
+    <application combine.children='append'>
+        <resource-handler>org.apache.myfaces.core.extensions.quarkus.runtime.application.QuarkusResourceHandler</resource-handler>
+    </application>
+
 </faces-config>

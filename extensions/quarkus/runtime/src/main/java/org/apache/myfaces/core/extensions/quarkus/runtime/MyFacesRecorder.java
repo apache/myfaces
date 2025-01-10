@@ -18,6 +18,11 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.runtime;
 
+import io.quarkus.runtime.annotations.Recorder;
+import jakarta.faces.model.DataModel;
+import org.apache.myfaces.flow.FlowReference;
+import org.apache.myfaces.util.lang.ClassUtils;
+
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -25,19 +30,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import jakarta.faces.model.DataModel;
-
-import org.apache.myfaces.flow.FlowReference;
-import org.apache.myfaces.util.lang.ClassUtils;
-
-import io.quarkus.runtime.annotations.Recorder;
-
 @Recorder
 public class MyFacesRecorder
 {
     public static final Map<Class<? extends Annotation>, Set<Class<?>>> ANNOTATED_CLASSES = new LinkedHashMap<>();
     public static final Map<Class<? extends DataModel>, Class<?>> FACES_DATA_MODELS = new LinkedHashMap<>();
     public static final Map<Class, FlowReference> FLOW_REFERENCES = new ConcurrentHashMap<Class, FlowReference>();
+
+    public static final Set<String> TOP_LEVEL_VIEWS = new HashSet<>();
 
     @SuppressWarnings("unchecked") //cast to (Class<? extends Annotation>)
     public void registerAnnotatedClass(String annotationName, String clazzName)
@@ -64,5 +64,10 @@ public class MyFacesRecorder
         Class<?> clazz = ClassUtils.simpleClassForName(clazzName);
 
         FLOW_REFERENCES.put(clazz, new FlowReference(definingDocumentId, flowId));
+    }
+
+    public void registerTopLevelView(String view)
+    {
+        TOP_LEVEL_VIEWS.add(view);
     }
 }
