@@ -613,7 +613,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 }
             }
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             if (isConnectionAbort(e))
             {
@@ -636,10 +636,31 @@ public class ResourceHandlerImpl extends ResourceHandler
         }
     }
 
-    private static boolean isConnectionAbort(IOException e)
+    private static boolean isConnectionAbort(Exception e)
     {
-        return e.getClass().getCanonicalName().equals("org.apache.catalina.connector.ClientAbortException")
-                || e.getClass().getCanonicalName().equals("org.eclipse.jetty.io.EofException");
+        String exceptionName = e.getClass().getCanonicalName();
+
+        // Tomcat
+        if ("org.apache.catalina.connector.ClientAbortException".equals(exceptionName))
+        {
+            return true;
+        }
+
+        // Jetty
+        if ("org.eclipse.jetty.io.EofException".equals(exceptionName))
+        {
+            return true;
+        }
+
+        // Undertow / Quarkus
+        if (e instanceof IOException
+                && e.getCause() instanceof IllegalStateException
+                && e.getCause().getMessage().contains("UT000127"))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     /**
