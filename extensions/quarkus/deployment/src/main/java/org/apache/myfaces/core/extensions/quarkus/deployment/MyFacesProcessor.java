@@ -456,9 +456,6 @@ class MyFacesProcessor
 
                 String viewId = visit.getRelativePath().toString()
                         .replace("META-INF/resources/", "");
-
-                System.err.println("add: " + viewId);
-
                 recorder.registerTopLevelView(viewId);
             }
         });
