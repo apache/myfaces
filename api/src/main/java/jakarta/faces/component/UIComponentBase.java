@@ -2218,7 +2218,7 @@ public abstract class UIComponentBase extends UIComponent
     
     /**
      * @param string
-     *            the component id, that should be a vaild one.
+     *            the component id, that should be a valid one.
      */
     private void isIdValid(String string)
     {

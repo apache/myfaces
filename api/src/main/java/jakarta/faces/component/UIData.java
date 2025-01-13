@@ -378,7 +378,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     try
                     {
                         //The conversion is safe, because its already checked on the
-                        //regular expresion
+                        //regular expression
                         this.setRowIndex(Integer.parseInt(clientRow));
                         
                         // check, if the row is available
