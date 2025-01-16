@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.deployment;
 
-import static io.quarkus.deployment.pkg.PackageConfig.JarConfig.JarType.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,16 +30,17 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import io.quarkus.deployment.IsNormal;
-import io.quarkus.deployment.pkg.builditem.UberJarMergedResourceBuildItem;
 import org.atteo.xmlcombiner.XmlCombiner;
 import org.jboss.logging.Logger;
 import org.xml.sax.SAXException;
 
+import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.pkg.PackageConfig;
+import io.quarkus.deployment.pkg.builditem.UberJarMergedResourceBuildItem;
+
 
 /**
  * This class processes the faces configuration and web fragment XML files in an Uber JAR.
@@ -93,7 +92,7 @@ public class FacesUberJarProcessor
     void uberJarXmlFiles(BuildProducer<GeneratedResourceBuildItem> generatedResourcesProducer,
                          PackageConfig packageConfig)
     {
-        if (packageConfig.jar().type() == UBER_JAR)
+        if (packageConfig.isUberJar())
         {
             mergeAndGenerateResource("META-INF/myfaces-metadata.xml", generatedResourcesProducer);
             mergeAndGenerateResource("META-INF/web-fragment.xml", generatedResourcesProducer);
