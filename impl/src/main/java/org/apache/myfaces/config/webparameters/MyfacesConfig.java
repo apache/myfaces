@@ -528,9 +528,9 @@ public class MyfacesConfig
     private static final boolean AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT = false;
     
     /**
-     * Set the max time in miliseconds set on the "Expires" header for a resource rendered by 
+     * Set the max time in milliseconds set on the "Expires" header for a resource rendered by
      * the default ResourceHandler.
-     * (default to one week in miliseconds or 604800000) 
+     * (default to one week in milliseconds or 604800000)
      */
     @JSFWebConfigParam(since="2.0", defaultValue="604800000", group="resources", tags="performance")
     public static final String RESOURCE_MAX_TIME_EXPIRES = "org.apache.myfaces.RESOURCE_MAX_TIME_EXPIRES";

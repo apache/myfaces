@@ -1427,7 +1427,7 @@
         <div class="changed_added_2_2">
         
         <p>When used in a <code>&lt;switch&gt;</code> within a flow, if the
-        expresion returns <code>true</code>, the
+        expression returns <code>true</code>, the
         <code>&lt;from-outcome&gt;</code> sibling element's outcome is used as
         the id of the node in the flow graph to which control must be
         passed.</p>

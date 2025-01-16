@@ -74,7 +74,7 @@ export class ExpiringCrypto implements Crypto {
     private lastCall = 0;
 
     /**
-     * @param timeout timeout in miliseconds until a message is expired
+     * @param timeout timeout in milliseconds until a message is expired
      * @param parentCrypto the embedded decorated crypto algorithm
      * @param hashSum hashshum implementation to generate a hash
      */
