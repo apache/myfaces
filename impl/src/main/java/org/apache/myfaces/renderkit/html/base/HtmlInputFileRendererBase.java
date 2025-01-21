@@ -56,8 +56,6 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
 public class HtmlInputFileRendererBase extends HtmlRenderer
 {
     private static final Logger log = Logger.getLogger(HtmlInputFileRendererBase.class.getName());
-    
-    private static final String AUTOCOMPLETE_VALUE_OFF = "off";
 
     @Override
     public void decode(FacesContext facesContext, UIComponent component)
@@ -237,11 +235,6 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         if (inputFile.isMultiple())
         {
             writer.writeAttribute(HTML.MULTIPLE_ATTR, HTML.MULTIPLE_ATTR, null);
-        }
-
-        if (AUTOCOMPLETE_VALUE_OFF.equals(inputFile.getAutocomplete()))
-        {
-            writer.writeAttribute(HTML.AUTOCOMPLETE_ATTR, AUTOCOMPLETE_VALUE_OFF, HTML.AUTOCOMPLETE_ATTR);
         }
 
         if (inputFile.getAccept() != null)
