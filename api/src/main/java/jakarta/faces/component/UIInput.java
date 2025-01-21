@@ -65,7 +65,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
  * <p>
  */
 @JSFComponent(defaultRendererType = "jakarta.faces.Text")
-public class UIInput extends UIOutput implements EditableValueHolder
+public class    UIInput extends UIOutput implements EditableValueHolder
 {
     public static final String COMPONENT_TYPE = "jakarta.faces.Input";
     public static final String COMPONENT_FAMILY = "jakarta.faces.Input";
@@ -121,7 +121,37 @@ public class UIInput extends UIOutput implements EditableValueHolder
     private final static String BEAN_BEFORE_JSF_PROPERTY = "oam.beanBeforeJsf";
 
     private static final Validator[] EMPTY_VALIDATOR_ARRAY = new Validator[0];
-    
+
+    /**
+     * <p class="changed_added_5_0">
+     * Allowed values for the initialization parameter named by the {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} constant.
+     * </p>
+     *
+     * @since 5.0
+     */
+    public enum ValidateEmptyFields {
+        /**
+         * <p>
+         * Indicates that empty fields should only be validated when Bean Validation is present.
+         * </p>
+         */
+        AUTO,
+
+        /**
+         * <p>
+         * Indicates that empty fields should always be validated.
+         * </p>
+         */
+        TRUE,
+
+        /**
+         * <p>
+         * Indicates that empty fields should never be validated.
+         * </p>
+         */
+        FALSE;
+    }
+
     private _DeltaList<Validator> _validatorList;
 
     /**
@@ -521,11 +551,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
                  param = param.toLowerCase();
              }
 
-             if (param.equals("auto") && ExternalSpecifications.isBeanValidationAvailable())
+             if (ValidateEmptyFields.AUTO.name().equalsIgnoreCase(param) && ExternalSpecifications.isBeanValidationAvailable())
              {
                  validateEmptyFields = true;
              }
-             else if (param.equals("true"))
+             else if (ValidateEmptyFields.TRUE.name().equalsIgnoreCase(param))
              {
                  validateEmptyFields = true;
              }

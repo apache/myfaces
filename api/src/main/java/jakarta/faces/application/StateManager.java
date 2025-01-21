@@ -78,7 +78,9 @@ public abstract class StateManager
             desc="Define the state method to be used. There are two different options "
                  + "defined by the specification: 'client' and 'server' state.")
     public static final String STATE_SAVING_METHOD_PARAM_NAME = "jakarta.faces.STATE_SAVING_METHOD";
+    @Deprecated(since = "5.0", forRemoval = true)
     public static final String STATE_SAVING_METHOD_CLIENT = "client";
+    @Deprecated(since = "5.0", forRemoval = true)
     public static final String STATE_SAVING_METHOD_SERVER = "server";
     
     /**
@@ -120,6 +122,32 @@ public abstract class StateManager
     @JSFWebConfigParam(since="2.2", group="state", tags="performance", 
             defaultValue="false", expectedValues="true,false")
     public static final java.lang.String SERIALIZE_SERVER_STATE_PARAM_NAME = "jakarta.faces.SERIALIZE_SERVER_STATE";
+
+
+    /**
+     * <p class="changed_added_5_0">
+     * Allowed values for the initialization parameter named by the
+     * {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME}.
+     * </p>
+     *
+     * @since 5.0
+     */
+    public enum StateSavingMethod
+    {
+        /**
+         * <p>
+         * Indicates that state saving should take place on the client.
+         * </p>
+         */
+        CLIENT,
+
+        /**
+         * <p>
+         * Indicates that state saving should take place on the server.
+         * </p>
+         */
+        SERVER;
+    }
 
     /**
      * This method should be called from somewhere when ajax response is created to update the state saving param
@@ -173,11 +201,11 @@ public abstract class StateManager
             _savingStateInClient = Boolean.FALSE; // Specs 10.1.3: default server saving
             context.getExternalContext().log("No state saving method defined, assuming default server state saving");
         }
-        else if (stateSavingMethod.equalsIgnoreCase(STATE_SAVING_METHOD_CLIENT))
+        else if (StateSavingMethod.CLIENT.name().equalsIgnoreCase(stateSavingMethod))
         {
             _savingStateInClient = Boolean.TRUE;
         }
-        else if (stateSavingMethod.equalsIgnoreCase(STATE_SAVING_METHOD_SERVER))
+        else if (StateSavingMethod.SERVER.name().equalsIgnoreCase(stateSavingMethod))
         {
             _savingStateInClient = Boolean.FALSE;
         }

@@ -43,7 +43,7 @@ public class PostAddToViewEventTest extends AbstractMyFacesRequestTestCase
     protected void setUpWebConfigParams() throws Exception
     {
         super.setUpWebConfigParams();
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.CLIENT.name());
         servletContext.addInitParameter("org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS", "true");
         servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
     }

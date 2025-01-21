@@ -80,7 +80,7 @@ public abstract class AbstractFaceletMultipleRequestsTestCase extends AbstractFa
         
         //This params are optional
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME,
-                StateManager.STATE_SAVING_METHOD_CLIENT);
+                StateManager.StateSavingMethod.CLIENT.name());
         servletContext.addInitParameter("org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON","false");
         servletContext.addInitParameter("org.apache.myfaces.RENDER_VIEWSTATE_ID","true");
         servletContext.addInitParameter("org.apache.myfaces.STRICT_XHTML_LINKS","true");

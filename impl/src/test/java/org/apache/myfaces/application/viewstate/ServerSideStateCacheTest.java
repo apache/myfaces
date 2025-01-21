@@ -36,7 +36,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     @Test
     public void testNumberOfSequentialViewsInSession() throws Exception
     {
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
         servletContext.addInitParameter(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, "true");
@@ -112,7 +112,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     @Test
     public void testSaveRestoreStateWrongViewId() throws Exception
     {
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
 
         // Initialization
         setupRequest();
@@ -171,7 +171,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     @Test
     public void testNonExistingViewId() throws Exception
     {
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
 
@@ -235,7 +235,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     @Test
     public void testStateKeySerialization1() throws Exception
     {
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
         servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.Production.toString());
@@ -246,7 +246,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     @Test
     public void testStateKeySerialization2() throws Exception
     {
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
         servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.Production.toString());
@@ -258,7 +258,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     @Test
     public void testStateKeySerialization3() throws Exception
     {
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
         servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.Development.toString());

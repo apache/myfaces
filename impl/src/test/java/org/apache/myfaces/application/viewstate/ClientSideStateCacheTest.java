@@ -37,7 +37,7 @@ public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     @Test
     public void testSaveRestoreState() throws Exception
     {
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.CLIENT.name());
 
         // Initialization
         setupRequest();
@@ -109,7 +109,7 @@ public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     @Test
     public void testSaveRestoreStateWrongViewId() throws Exception
     {
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.CLIENT.name());
 
         // Initialization
         setupRequest();
@@ -168,7 +168,7 @@ public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     @Test
     public void testSaveRestoreStateClientTimeout() throws Exception
     {
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.CLIENT.name());
         servletContext.addInitParameter(MyfacesConfig.CLIENT_VIEW_STATE_TIMEOUT, "2");
 
         // Initialization

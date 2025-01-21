@@ -414,11 +414,11 @@ public class UISelectMany extends UIInput
                  param = param.toLowerCase();
              }
 
-             if (param.equals("auto") && ExternalSpecifications.isBeanValidationAvailable())
+             if (ValidateEmptyFields.AUTO.name().equalsIgnoreCase(param) && ExternalSpecifications.isBeanValidationAvailable())
              {
                  validateEmptyFields = true;
              }
-             else if (param.equals("true"))
+             else if (ValidateEmptyFields.TRUE.name().equalsIgnoreCase(param))
              {
                  validateEmptyFields = true;
              }
