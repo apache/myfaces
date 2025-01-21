@@ -175,11 +175,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     }
 
     /**
-     * Iteration will only process every step items of the collection, starting with the first one.
-     * If the <code>step</code> attribute is less than <code>1</code>: a <code>FacesException</code> must be thrown.
-     * 
+     * Iteration will process every <code>step</code>th item of the collection, starting with the first item.
+     * If the <code>step</code> attribute is equal to <code>0</code>, a <code>FacesException</code> must be thrown.
+     * If the <code>step</code> value is less than <code>0</code>, the iteration will traverse the collection 
+     * in reverse order.
+     *
      * @return the step
      */
+
     @JSFProperty
     public int getStep()
     {
@@ -330,9 +333,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             {
                 throw new LocationAwareFacesException("'offset' attribute may not be less than 0");
             }
-            if (getStep() < 1)
+            if (getStep() == 0)
             {
-                throw new LocationAwareFacesException("'step' attribute may not be less than 1");
+                throw new LocationAwareFacesException("'step' attribute may not be 0");
             }
         }
 
@@ -454,7 +457,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             begin = getOffset();
         }
         
-        return new RepeatStatus(_count == 0, _index + getStep() >= getRowCount(),
+        return new RepeatStatus(_count == 0, _index + Math.abs(getStep()) >= getRowCount(),
             _count, _index, begin, _end, getStep());
         
     }
@@ -863,7 +866,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         if (_emptyModel) // empty model
         {
-            return (getEnd() - getBegin())/(getStep() <= 0 ? 1 : getStep());
+            int step = Math.abs(getStep());
+            return (getEnd() - getBegin()) / (step == 0 ? 1 : step);
         }
         else 
         {
@@ -1352,7 +1356,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
      */
     private int _calculateCountForIndex(int index)
     {
-        return (index - getOffset()) / getStep();
+        return (index - getOffset()) / Math.abs(getStep());
     }
 
     private void _validateAttributes() throws FacesException
@@ -1803,11 +1807,23 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                             int i = getOffset();
                             int end = getSize();
                             int step = getStep();
-                            end = (end >= 0) ? i + end : Integer.MAX_VALUE - 1;
                             _count = 0;
-
+                            
+                            // Determine if iterating forwards or backwards
+                            if (step < 0)
+                            {
+                                // Adjust for backward iteration
+                                end = (end >= 0) ? i - end : Integer.MIN_VALUE + 1; // backwards, so decrement end
+                                step = Math.abs(step); // Use the absolute value of step for incrementing
+                            }
+                            else
+                            {
+                                // Forward iteration
+                                end = (end >= 0) ? i + end : Integer.MAX_VALUE - 1;
+                            }
+                            
                             setRowIndex(i);
-                            while (i < end && _isIndexAvailable())
+                            while (((step > 0 && i < end) || (step < 0 && i > end)) && _isIndexAvailable()) // Check direction
                             {
                                 for (int j = 0, childCount = getChildCount(); j < childCount; j++)
                                 {
@@ -1817,10 +1833,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                                         return true;
                                     }
                                 }
-
+                            
                                 _count++;
-                                i += step;
-
+                                i += (step > 0 ? step : -step); // Move in the appropriate direction
                                 setRowIndex(i);
                             }
                         }

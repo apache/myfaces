@@ -100,11 +100,6 @@ public final class RepeatStatus implements Serializable
 
     public Integer getStep()
     {
-        if (step == -1)
-        {
-            return null;
-        }
-        
         return step;
     }
 
