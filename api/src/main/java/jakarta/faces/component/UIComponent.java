@@ -138,12 +138,6 @@ public abstract class UIComponent
      */
     private boolean _initialStateMarked = false;
 
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    protected Map<String, ValueExpression> bindings;
-
     public UIComponent()
     {
     }
@@ -338,7 +332,7 @@ public abstract class UIComponent
 
         if (expression == null)
         {
-            getStateHelper().remove(PropertyKeys.bindings, name);
+            getStateHelper().remove(PropertyKeys.valueExpressions, name);
         }
         else
         {
@@ -356,7 +350,7 @@ public abstract class UIComponent
                 }
             }
 
-            getStateHelper().put(PropertyKeys.bindings, name, expression);
+            getStateHelper().put(PropertyKeys.valueExpressions, name, expression);
         }
     }
 
@@ -614,10 +608,11 @@ public abstract class UIComponent
     {
         Assert.notNull(name, "name");
 
-        Map<String, Object> bindings = (Map<String, Object>) getStateHelper().get(PropertyKeys.bindings);
-        if (bindings != null)
+        Map<String, Object> valueExpressions = (Map<String, Object>)
+                getStateHelper().get(PropertyKeys.valueExpressions);
+        if (valueExpressions != null)
         {
-            return (ValueExpression) bindings.get(name);
+            return (ValueExpression) valueExpressions.get(name);
         }
 
         return null;
@@ -950,7 +945,7 @@ public abstract class UIComponent
         rendered,
         rendererType,
         attributesMap,
-        bindings,
+        valueExpressions,
         facesListeners,
         passThroughAttributesMap
     }
