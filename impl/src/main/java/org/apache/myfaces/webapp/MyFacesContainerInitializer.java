@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.annotation.FacesConfig; 
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
 import jakarta.faces.component.FacesComponent;
@@ -72,6 +73,7 @@ import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
         FacesBehavior.class,
         FacesBehaviorRenderer.class,
         FacesComponent.class,
+        FacesConfig.class,
         FacesConverter.class,
         FacesRenderer.class,
         FacesValidator.class,
