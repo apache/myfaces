@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.annotation.FacesConfig;
 import javax.faces.application.ResourceDependencies;
 import javax.faces.application.ResourceDependency;
 import javax.faces.bean.ApplicationScoped;
@@ -86,6 +87,7 @@ import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
         FacesBehavior.class,
         FacesBehaviorRenderer.class,
         FacesComponent.class,
+        FacesConfig.class,
         FacesConverter.class,
         FacesRenderer.class,
         FacesValidator.class,
