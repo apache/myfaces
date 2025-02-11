@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
 import jakarta.faces.bean.ApplicationScoped;
@@ -85,6 +86,7 @@ import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
         CustomScoped.class,
         FacesBehavior.class,
         FacesBehaviorRenderer.class,
+        FacesConfig.class,
         FacesComponent.class,
         FacesConverter.class,
         FacesRenderer.class,
