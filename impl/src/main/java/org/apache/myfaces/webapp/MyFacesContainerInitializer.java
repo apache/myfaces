@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.annotation.FacesConfig;
 import javax.faces.application.ResourceDependencies;
 import javax.faces.application.ResourceDependency;
 import javax.faces.component.FacesComponent;
@@ -73,6 +74,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
         FacesBehavior.class,
         FacesBehaviorRenderer.class,
         FacesComponent.class,
+        FacesConfig.class, // MYFACES-4709
         FacesConverter.class,
         FacesRenderer.class,
         FacesValidator.class,
