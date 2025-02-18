@@ -28,7 +28,11 @@ import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.webapp.MyFacesServlet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class FacesServletMappingUtils
 {
