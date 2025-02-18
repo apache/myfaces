@@ -19,20 +19,16 @@
 
 package org.apache.myfaces.application;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRegistration;
-
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
-import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.ExternalContextUtils;
+import org.apache.myfaces.webapp.MyFacesServlet;
+
+import java.util.*;
 
 public class FacesServletMappingUtils
 {
@@ -168,18 +164,9 @@ public class FacesServletMappingUtils
 
     public static boolean isFacesServlet(String servletClassName)
     {
-        // shortcut to avoid class lookup
-        if (FacesServlet.class.getName().equals(servletClassName))
-        {
-            return true;
-        }
-
-        Class servletClass = ClassUtils.simpleClassForName(servletClassName, false, true);
-        if (servletClass != null)
-        {
-            return FacesServlet.class.isAssignableFrom(servletClass);
-        }
-        return false;
+        // lets skip inheritance check, currently not possible; see
+        return FacesServlet.class.getName().equals(servletClassName)
+                || MyFacesServlet.class.getName().equals(servletClassName);
     }
     
     
