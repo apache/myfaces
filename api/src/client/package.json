@@ -25,7 +25,7 @@
     "jsdom": "^21.1.1",
     "jsdom-global": "^3.0.2",
     "jsf.js_next_gen": "4.0.4-beta.5",
-    "mocha": "^10.2.0",
+    "mocha": "^10.8.2",
     "npm-check-updates": "^16.10.8",
     "nyc": "^15.1.0",
     "replace-in-file": "^6.3.5",
