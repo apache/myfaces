@@ -78,7 +78,7 @@ public final class ExternalSpecifications
             available = false;
         }
 
-        log.info("MyFaces Core Bean Validation support " + (available ? "enabled" : "disabled"));
+        log.info("MyFaces Core: Bean Validation support " + (available ? "enabled" : "disabled"));
 
         return available;
     });
@@ -96,8 +96,6 @@ public final class ExternalSpecifications
             available = false;
         }
 
-        log.info("MyFaces Core CDI support " + (available ? "enabled" : "disabled"));
- 
         return available;
     });
 
@@ -113,7 +111,7 @@ public final class ExternalSpecifications
         {
             available = false;
         }
-        log.info("MyFaces Core Servlet 6.0 support " + (available ? "enabled" : "disabled"));
+        log.info("MyFaces Core: Servlet 6.0 support " + (available ? "enabled" : "disabled"));
 
         return available;
     });
@@ -129,7 +127,7 @@ public final class ExternalSpecifications
         {
             available = false;
         }
-        log.info("MyFaces Core EL 6.0 support " + (available ? "enabled" : "disabled"));
+        log.info("MyFaces Core: EL 6.0 support " + (available ? "enabled" : "disabled"));
 
         return available;
     });

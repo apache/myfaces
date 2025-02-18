@@ -175,15 +175,15 @@ public class FacesInitializerImpl implements FacesInitializer
                 }
             }
 
-            initCDIIntegration(servletContext, externalContext);
-
-            initContainerIntegration(servletContext, externalContext);
-
             // log environment integrations
             ExternalSpecifications.isServlet6Available();
             ExternalSpecifications.isEL6Available();
             ExternalSpecifications.isCDIAvailable(externalContext);
             ExternalSpecifications.isBeanValidationAvailable();
+
+            initCDIIntegration(servletContext, externalContext);
+
+            initContainerIntegration(servletContext, externalContext);
 
             String useEncryption = servletContext.getInitParameter(StateUtils.USE_ENCRYPTION);
             if ("false".equals(useEncryption))
@@ -550,6 +550,8 @@ public class FacesInitializerImpl implements FacesInitializer
         {
             externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE, beanManager);
         }
+
+        log.info("MyFaces Core: CDI support " + (beanManager == null ? "disabled" : "enabled"));
     }
 
     /**
