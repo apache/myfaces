@@ -32,6 +32,9 @@
                 <p:autoUpdate />
             </p:growl>
 
+            <h:inputText id="called" value="#{eventController.called}" />
+            <h:inputText id="calledForView" value="#{eventController.calledForView}" />
+
             <h:form id="form">
                 <p:dataTable var="car" value="#{dtLazyView.lazyModel}" paginator="true" rows="10"
                              paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"

@@ -21,10 +21,7 @@ package org.apache.myfaces.core.extensions.quarkus.showcase;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlDivision;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.*;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.AfterAll;
@@ -76,6 +73,17 @@ public class QuarkusMyFacesShowcaseTest
         assertThat(datatable).isNotNull();
         assertThat(datatable.getByXPath("//tr[contains(@class,'ui-datatable-selectable')]"))
                 .hasSize(10);
+    }
+
+    @Test
+    public void shouldObserveEvents() throws Exception
+    {
+        final HtmlPage page = webClient.getPage(url + "/index.xhtml");
+        final HtmlInput called = (HtmlInput) page.getElementById("called");
+        final HtmlInput calledForView = (HtmlInput) page.getElementById("calledForView");
+
+        assertThat(called.getValue()).isEqualTo("1");
+        assertThat(calledForView.getValue()).isEqualTo("1");
     }
 
     @Test
