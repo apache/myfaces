@@ -117,7 +117,12 @@ public abstract class ViewHandler
      */
     @JSFWebConfigParam(since = "2.0")
     public static final java.lang.String FACELETS_SKIP_COMMENTS_PARAM_NAME = "jakarta.faces.FACELETS_SKIP_COMMENTS";
-    
+
+    /**
+     * @since 5.0
+     */
+    public static final int FACELETS_BUFFER_SIZE_DEFAULT_VALUE = 1024;
+
     /**
      * @since Faces 1.2
      */

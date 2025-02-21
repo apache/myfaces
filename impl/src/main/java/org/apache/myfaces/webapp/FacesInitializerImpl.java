@@ -18,25 +18,15 @@
  */
 package org.apache.myfaces.webapp;
 
-import org.apache.myfaces.config.FacesConfigValidator;
-import org.apache.myfaces.config.FacesConfigurator;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
-import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
-import org.apache.myfaces.context.ExceptionHandlerImpl;
-import org.apache.myfaces.application.viewstate.StateUtils;
-import org.apache.myfaces.util.WebConfigParamUtils;
-import org.apache.myfaces.cdi.util.BeanEntry;
-import org.apache.myfaces.spi.InjectionProvider;
-import org.apache.myfaces.spi.InjectionProviderException;
-import org.apache.myfaces.spi.InjectionProviderFactory;
-import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
-
 import jakarta.el.ELManager;
 import jakarta.el.ExpressionFactory;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
@@ -44,42 +34,52 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostConstructApplicationEvent;
 import jakarta.faces.event.PreDestroyApplicationEvent;
 import jakarta.faces.event.SystemEvent;
+import jakarta.faces.push.PushContext;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRegistration;
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.server.ServerContainer;
+import jakarta.websocket.server.ServerEndpointConfig;
+import org.apache.myfaces.application.viewstate.StateUtils;
+import org.apache.myfaces.cdi.util.BeanEntry;
+import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.config.FacesConfigValidator;
+import org.apache.myfaces.config.FacesConfigurator;
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.context.ExceptionHandlerImpl;
+import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
+import org.apache.myfaces.push.EndpointImpl;
+import org.apache.myfaces.push.WebsocketConfigurator;
+import org.apache.myfaces.push.cdi.WebsocketSessionManager;
+import org.apache.myfaces.spi.InjectionProvider;
+import org.apache.myfaces.spi.InjectionProviderException;
+import org.apache.myfaces.spi.InjectionProviderFactory;
+import org.apache.myfaces.spi.ServiceProviderFinder;
+import org.apache.myfaces.spi.ServiceProviderFinderFactory;
+import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.util.WebConfigParamUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.StringUtils;
+import org.apache.myfaces.view.facelets.ViewPoolProcessor;
+import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.CDI;
-import jakarta.faces.FacesException;
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.application.ViewVisitOption;
-import jakarta.faces.push.PushContext;
-import jakarta.websocket.DeploymentException;
-import jakarta.websocket.server.ServerContainer;
-import jakarta.websocket.server.ServerEndpointConfig;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ServiceLoader;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
-import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.push.EndpointImpl;
-import org.apache.myfaces.push.WebsocketConfigurator;
-import org.apache.myfaces.push.cdi.WebsocketSessionManager;
-import org.apache.myfaces.util.lang.ClassUtils;
-import org.apache.myfaces.spi.ServiceProviderFinder;
-import org.apache.myfaces.spi.ServiceProviderFinderFactory;
-import org.apache.myfaces.view.facelets.ViewPoolProcessor;
-import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Performs common initialization tasks.
@@ -644,7 +644,7 @@ public class FacesInitializerImpl implements FacesInitializer
     {
         Boolean b = WebConfigParamUtils.getBooleanInitParameter(externalContext, 
                 PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME);
-        
+
         if (Boolean.TRUE.equals(b))
         {
             // get the instance

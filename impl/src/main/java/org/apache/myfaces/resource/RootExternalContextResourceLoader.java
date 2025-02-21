@@ -37,10 +37,6 @@ import org.apache.myfaces.util.lang.SkipMatchIterator;
  */
 public class RootExternalContextResourceLoader extends ResourceLoader
 {
-    private static final String CONTRACTS = "contracts";
-    
-    private static final String RESOURCES = "resources";
-    
     private String contractsDirectory = null;
     
     private String resourcesDirectory = null;
@@ -50,11 +46,13 @@ public class RootExternalContextResourceLoader extends ResourceLoader
         super("");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         contractsDirectory = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(), 
-                ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, CONTRACTS);
+                ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME,
+                ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE);
         contractsDirectory = contractsDirectory.startsWith("/") ? contractsDirectory : '/'+contractsDirectory;
         
         resourcesDirectory = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(), 
-            ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, RESOURCES);
+            ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME,
+                ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE);
         resourcesDirectory = resourcesDirectory.startsWith("/") ? resourcesDirectory : '/'+resourcesDirectory;
     }
 

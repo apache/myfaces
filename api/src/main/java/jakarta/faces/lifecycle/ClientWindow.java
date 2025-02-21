@@ -50,7 +50,17 @@ public abstract class ClientWindow
 
     private static final String CLIENT_WINDOW_RENDER_MODE_DISABLED = 
             "org.apache.myfaces.CLIENT_WINDOW_URL_QUERY_PARAMETER_DISABLED";
-    
+
+    /**
+     * @since 5.0
+     */
+    public static final String CLIENT_WINDOW_MODE_DEFAULT_VALUE = "none";
+
+    /**
+     * @since 5.0
+     */
+    public static final int NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE = 10;
+
     public abstract void decode(FacesContext context);
     
     public abstract String getId();

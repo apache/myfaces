@@ -66,7 +66,17 @@ public abstract class ResourceHandler
     /**
      * @since 4.0
      */
-    public static final String FACES_SCRIPT_LIBRARY_NAME = "jakarta.faces";        
+    public static final String FACES_SCRIPT_LIBRARY_NAME = "jakarta.faces";
+
+    /**
+     * @since 5.0
+     */
+    public static final String WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE = "resources";
+
+    /**
+     * @since 5.0
+     */
+    public static final String WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE = "contracts";
 
     private final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
 
