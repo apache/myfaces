@@ -393,7 +393,7 @@ export class ResponseProcessor implements IResponseProcessor {
      * all processing done we can close the request and send the appropriate events
      */
     done() {
-        const eventData = EventData.createFromRequest(this.request.value, this.externalContext, SUCCESS);
+        const eventData = EventData.createFromRequest(this.request.value, this.internalContext, this.externalContext, SUCCESS);
 
         //because some frameworks might decorate them over the context in the response
         const eventHandler = this.externalContext.getIf(ON_EVENT).orElseLazy(() => this.internalContext.getIf(ON_EVENT).value).orElse(EMPTY_FUNC).value;
