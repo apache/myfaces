@@ -136,4 +136,28 @@ describe('tests the addOnEvent and addOnError handling', function () {
 
     });
 
+    it("must keep the source despite source being deleted in the dom", function () {
+        let onEventCalled2 = 0;
+
+        let assertSourceExists = (data: any) => {
+            expect(!!data?.source?.id).to.be.true;
+        }
+
+
+        faces.ajax.addOnEvent((data: any) => {
+            assertSourceExists(data);
+            if (data.status == "complete") {
+                //we now remove the source from the dom to simulate a page change
+                DQ.byId(data.source).delete();
+            }
+        });
+        faces.ajax.addOnEvent(() => {
+            onEventCalled2++;
+
+        });
+        DQ.byId("cmd_update_insert").click();
+        this.respond(XmlResponses.UPDATE_INSERT_1);
+
+    });
+
 });

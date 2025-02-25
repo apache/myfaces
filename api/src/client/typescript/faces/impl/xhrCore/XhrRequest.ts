@@ -464,7 +464,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
      * other helpers
      */
     private sendEvent(evtType: string) {
-        const eventData = EventData.createFromRequest(this.xhrObject, this.requestContext, evtType);
+        const eventData = EventData.createFromRequest(this.xhrObject, this.internalContext, this.requestContext, evtType);
         try {
             // User code error, we might cover
             // this in onError, but also we cannot swallow it.
