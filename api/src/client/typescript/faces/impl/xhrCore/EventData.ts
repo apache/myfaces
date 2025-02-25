@@ -24,19 +24,28 @@ export class EventData implements IEventData{
     responseText: string;
     responseXML: Document;
 
-    static createFromRequest(request: XMLHttpRequest, context: Config, /*event name*/ name: string): EventData {
+    static createFromRequest(request: XMLHttpRequest, internalContext: Config, context: Config, /*event name*/ name: string): EventData {
 
         let eventData = new EventData();
-
+        let internalSource = "_internal._source";
         eventData.type = EVENT;
         eventData.status = name;
 
-        let sourceId: string = context.getIf(SOURCE)
-            .orElseLazy(() => context.getIf(P_AJAX_SOURCE).value)
-            .orElseLazy(() => context.getIf(CTX_PARAM_REQ_PASS_THR, P_AJAX_SOURCE).value)
-            .value;
-        if (sourceId) {
-            eventData.source = DQ.byId(sourceId, true).first().value.value;
+        eventData.source = internalContext.getIf("_source","_element").value;
+        // this fixes the issue that the source element is not present anymore at done
+        // at page transitions
+        if( !eventData.source) {
+            let sourceId: string = context.getIf(SOURCE)
+                .orElseLazy(() => context.getIf(P_AJAX_SOURCE).value)
+                .orElseLazy(() => context.getIf(CTX_PARAM_REQ_PASS_THR, P_AJAX_SOURCE).value)
+                .value;
+            if (sourceId) {
+                eventData.source = DQ.byId(sourceId, true).first().value.value;
+            }
+            if (eventData.source) {
+                //we store the event source for later references
+                internalContext.assign("_source","_element").value = eventData.source;
+            }
         }
 
         if (name !== BEGIN) {
