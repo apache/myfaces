@@ -61,7 +61,8 @@ public class AjaxScriptBuilder
                              Boolean resetValues,
                              String onerror,
                              String onevent,
-                             List<UIParameter> uiParams)
+                             List<UIParameter> uiParams,
+                             String userParameters)
     {
         build(context,
                 sb,
@@ -75,7 +76,8 @@ public class AjaxScriptBuilder
                 onerror,
                 onevent,
                 null,
-                uiParams);
+                uiParams,
+                userParameters);
     }
 
     public static void build(FacesContext context,
@@ -89,7 +91,8 @@ public class AjaxScriptBuilder
                              boolean resetValues,
                              String onerror,
                              String onevent,
-                             Collection<ClientBehaviorContext.Parameter> params)
+                             Collection<ClientBehaviorContext.Parameter> params,
+                             String userParameters)
     {
         String execute = null;
         if (executeList != null && !executeList.isEmpty())
@@ -115,7 +118,8 @@ public class AjaxScriptBuilder
                 onerror,
                 onevent,
                 params,
-                null);
+                null,
+                userParameters);
     }
 
     public static void build(FacesContext context,
@@ -130,7 +134,8 @@ public class AjaxScriptBuilder
                              String onerror,
                              String onevent,
                              Collection<ClientBehaviorContext.Parameter> params,
-                             List<UIParameter> uiParams)
+                             List<UIParameter> uiParams,
+                             String userParameters)
     {
         // CHECKSTYLE:ON
         HtmlCommandScript commandScript = (component instanceof HtmlCommandScript hcs)
@@ -252,6 +257,15 @@ public class AjaxScriptBuilder
             }
 
             sb.append('}');
+        }
+        else
+        {
+            sb.append(",{}");
+        }
+        if(userParameters != null && !userParameters.isEmpty())
+        {
+            sb.append(',');
+            sb.append(userParameters);
         }
 
         sb.append(')');

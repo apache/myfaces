@@ -79,7 +79,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                 ajaxBehavior.isResetValues(),
                 ajaxBehavior.getOnerror(),
                 ajaxBehavior.getOnevent(),
-                behaviorContext.getParameters());
+                behaviorContext.getParameters(),
+                null);
   
         return retVal.toString();
     }

@@ -98,7 +98,8 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 commandScript.getResetValues(),
                 commandScript.getOnerror(),
                 commandScript.getOnevent(),
-                uiParams);
+                uiParams,
+                "o");
 
         script.append(ajax.toString());
         script.decreaseIndent();
