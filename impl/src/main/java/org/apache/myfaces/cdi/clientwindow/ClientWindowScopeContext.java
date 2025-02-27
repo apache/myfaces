@@ -72,7 +72,11 @@ public class ClientWindowScopeContext implements Context
         String windowId = getCurrentClientWindowId(facesContext);
         if (windowId != null)
         {
-            return getStorageHolder(facesContext).getContextualStorage(windowId, createIfNotExist);
+            ClientWindowScopeContextualStorageHolder storageHolder = getStorageHolder(facesContext);
+            if (storageHolder != null)
+            {
+                return storageHolder.getContextualStorage(windowId, createIfNotExist);
+            }
         }
         return null;
     }
