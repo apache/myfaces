@@ -72,7 +72,8 @@ public class AjaxScriptBuilder
             Boolean resetValues,
             String onerror,
             String onevent,
-            List<UIParameter> uiParams)
+            List<UIParameter> uiParams,
+            String userParameters)
     {
         build(context,
                 sb,
@@ -86,28 +87,30 @@ public class AjaxScriptBuilder
                 onerror,
                 onevent,
                 null,
-                uiParams);
+                uiParams,
+                userParameters);
     }
-    
+
     public static void build(FacesContext context,
-            StringBuilder sb,
-            UIComponent component,
-            String sourceId,
-            String eventName,
-            Collection<String> executeList,
-            Collection<String> renderList,
-            String delay,
-            boolean resetValues,
-            String onerror,
-            String onevent,
-            Collection<ClientBehaviorContext.Parameter> params)
+                             StringBuilder sb,
+                             UIComponent component,
+                             String sourceId,
+                             String eventName,
+                             Collection<String> executeList,
+                             Collection<String> renderList,
+                             String delay,
+                             boolean resetValues,
+                             String onerror,
+                             String onevent,
+                             Collection<ClientBehaviorContext.Parameter> params,
+                             String userParameters)
     {
         String execute = null;
         if (executeList != null && !executeList.isEmpty())
         {
             execute = String.join(BLANK, executeList);
         }
-            
+
         String render = null;
         if (renderList != null && !renderList.isEmpty())
         {
@@ -126,22 +129,24 @@ public class AjaxScriptBuilder
                 onerror,
                 onevent,
                 params,
-                null);
+                null,
+                userParameters);
     }
-    
+
     public static void build(FacesContext context,
-            StringBuilder sb,
-            UIComponent component,
-            String sourceId,
-            String eventName,
-            String execute,
-            String render,
-            String delay,
-            String resetValues,
-            String onerror,
-            String onevent,
-            Collection<ClientBehaviorContext.Parameter> params,
-            List<UIParameter> uiParams)
+                             StringBuilder sb,
+                             UIComponent component,
+                             String sourceId,
+                             String eventName,
+                             String execute,
+                             String render,
+                             String delay,
+                             String resetValues,
+                             String onerror,
+                             String onevent,
+                             Collection<ClientBehaviorContext.Parameter> params,
+                             List<UIParameter> uiParams,
+                             String userParameters)
     {
     // CHECKSTYLE:ON
         HtmlCommandScript commandScript = (component instanceof HtmlCommandScript)
@@ -203,7 +208,7 @@ public class AjaxScriptBuilder
         sb.append(COMMA);
 
         appendIds(sb, render, seHandler, seContext);
-        
+
         if (onevent != null || onerror != null || delay != null || resetValues != null
                 || (params != null && !params.isEmpty()) || (uiParams != null && !uiParams.isEmpty()))
         {
@@ -263,15 +268,24 @@ public class AjaxScriptBuilder
 
             sb.append(R_C_BRACE);
         }
+        else
+        {
+            sb.append(",{}");
+        }
+        if(userParameters != null && !userParameters.isEmpty())
+        {
+            sb.append(COMMA);
+            sb.append(userParameters);
+        }
 
         sb.append(R_PAREN);
     }
-    
+
     private static void appendIds(StringBuilder sb, String expressions,
             SearchExpressionHandler handler, SearchExpressionContext searchExpressionContext)
     {
         sb.append(QUOTE);
-        
+
         if (StringUtils.isNotBlank(expressions))
         {
             List<String> clientIds =
@@ -289,12 +303,12 @@ public class AjaxScriptBuilder
                 }
             }
         }
-        
+
         sb.append(QUOTE);
     }
 
 
-    public static void appendProperty(StringBuilder builder, 
+    public static void appendProperty(StringBuilder builder,
                                       String name,
                                       Object value,
                                       boolean quoteValue)
@@ -313,7 +327,7 @@ public class AjaxScriptBuilder
         builder.append(QUOTE);
         builder.append(name);
         builder.append(QUOTE);
-        
+
         builder.append(COLON);
 
         if (value == null)

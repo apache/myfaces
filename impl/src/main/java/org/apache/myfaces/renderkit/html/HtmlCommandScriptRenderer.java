@@ -98,7 +98,10 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 commandScript.getResetValues(),
                 commandScript.getOnerror(),
                 commandScript.getOnevent(),
-                uiParams);
+                uiParams,
+                // 'o' parameter is coming from the inline function defined above. It is
+                // a set of user parameters which are passed into myfaces.ab!
+                "o");
 
         script.append(ajax.toString());
         script.decreaseIndent();
