@@ -81,7 +81,8 @@ public class AjaxScriptBuilderTest extends AbstractFacesTestCase
                 false,
                 null,
                 "testJs",
-                params);
+                params,
+                null);
 
         String script = sb.toString();
 
