@@ -691,7 +691,7 @@ public abstract class UIComponent
 
     protected abstract void addFacesListener(FacesListener listener);
 
-    protected abstract FacesListener[] getFacesListeners(Class clazz);
+    protected abstract FacesListener[] getFacesListeners(Class<? extends FacesListener> clazz);
 
     protected abstract void removeFacesListener(FacesListener listener);
 

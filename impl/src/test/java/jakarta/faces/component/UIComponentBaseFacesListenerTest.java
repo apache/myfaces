@@ -73,14 +73,6 @@ public class UIComponentBaseFacesListenerTest extends AbstractUIComponentBaseTes
     }
 
     @Test
-    public void testInvalidListenerType() throws Exception
-    {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            _testImpl.getFacesListeners(Date.class);
-        });
-    }
-
-    @Test
     public void testEmptyListener() throws Exception
     {
         FacesListener[] listener = _testImpl.getFacesListeners(ActionListener.class);

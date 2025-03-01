@@ -1202,9 +1202,8 @@ public abstract class UIComponentBase extends UIComponent
         }
     }
 
-    // FIXME: Notify EG for generic usage
     @Override
-    protected FacesListener[] getFacesListeners(Class clazz)
+    protected FacesListener[] getFacesListeners(Class<? extends FacesListener> clazz)
     {
         Assert.notNull(clazz, "clazz");
 
