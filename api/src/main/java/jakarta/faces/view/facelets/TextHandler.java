@@ -21,7 +21,7 @@ package jakarta.faces.view.facelets;
 /**
  * @since 2.0
  */
-public interface TextHandler
+public interface TextHandler extends FaceletHandler
 {
     public String getText();
     
