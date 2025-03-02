@@ -36,7 +36,8 @@ public @interface FacesConfig
     /**
      * @since 4.0
      */
-    public static final class Literal extends AnnotationLiteral<FacesConfig> implements FacesConfig {
+    public static final class Literal extends AnnotationLiteral<FacesConfig> implements FacesConfig
+    {
         private static final long serialVersionUID = 1L;
 
         public static final Literal INSTANCE = new Literal();
