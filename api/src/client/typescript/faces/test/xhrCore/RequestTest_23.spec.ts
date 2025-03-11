@@ -242,7 +242,7 @@ describe('Tests after core when it hits response', function () {
 
             xhrReq.respond(200, {'Content-Type': 'text/xml'}, STD_XML);
             expect(this.jsfAjaxResponse.callCount).to.eq(1);
-            //success ommitted due to fake response
+            //success omitted due to fake response
             expect(globalCnt == 3).to.eq(true);
             expect(localCnt == 3).to.eq(true);
             done();

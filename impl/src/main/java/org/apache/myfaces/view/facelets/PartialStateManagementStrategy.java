@@ -66,7 +66,7 @@ import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 
 /**
  * This class implements partial state saving feature when facelets
- * is used to render pages. (Theorically it could be applied on jsp case too,
+ * is used to render pages. (Theoretically it could be applied on jsp case too,
  * but all considerations below should be true before apply it).
  * 
  * The following considerations apply for this class:

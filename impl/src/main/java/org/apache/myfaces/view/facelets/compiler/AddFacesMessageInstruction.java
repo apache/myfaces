@@ -35,13 +35,13 @@ import org.apache.myfaces.view.facelets.AbstractFaceletContext;
  */
 final class AddFacesMessageInstruction implements Instruction
 {
-    private final FacesMessage.Severity serverity;
+    private final FacesMessage.Severity severity;
     private final String summary;
     private final String detail;
     
-    public AddFacesMessageInstruction(FacesMessage.Severity serverity, String summary, String detail)
+    public AddFacesMessageInstruction(FacesMessage.Severity severity, String summary, String detail)
     {
-        this.serverity = serverity;
+        this.severity = severity;
         this.summary = summary;
         this.detail = detail;
     }
@@ -55,7 +55,7 @@ final class AddFacesMessageInstruction implements Instruction
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
         FacesContext facesContext = ((AbstractFaceletContext)ctx).getFacesContext();
-        facesContext.addMessage(null, new FacesMessage(this.serverity, this.summary, this.detail));
+        facesContext.addMessage(null, new FacesMessage(this.severity, this.summary, this.detail));
         return this;
     }
 
