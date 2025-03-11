@@ -62,7 +62,7 @@ public class FlowImpl extends Flow implements Freezable
     private Map<String, SwitchNode> switchesMap;
     private List<ViewNode> viewsList;
     
-    // Note this class should be thread safe and inmutable once
+    // Note this class should be thread safe and immutable once
     // the flow is initialized or placed into service by the runtime.
     private Map<String, Parameter> unmodifiableInboundParametersMap;
     private Map<String, FlowCallNode> unmodifiableFlowCallsMap;
@@ -92,7 +92,7 @@ public class FlowImpl extends Flow implements Freezable
         
         // Collections.unmodifiableMap(...) uses delegation pattern, so as long
         // as we don't modify _inboundParametersMap in the wrong time, it
-        // will be thread safe and inmutable.
+        // will be thread safe and immutable.
         unmodifiableInboundParametersMap = Collections.unmodifiableMap(inboundParametersMap);
         unmodifiableFlowCallsMap = Collections.unmodifiableMap(flowCallsMap);
         unmodifiableMethodCallsList = Collections.unmodifiableList(methodCallsList);
@@ -367,7 +367,7 @@ public class FlowImpl extends Flow implements Freezable
     {
         if (initialized)
         {
-            throw new IllegalStateException("Flow is inmutable once initialized");
+            throw new IllegalStateException("Flow is immutable once initialized");
         }
     }
 
