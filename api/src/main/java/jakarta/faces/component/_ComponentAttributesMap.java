@@ -75,7 +75,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     public static final String PROPERTY_DESCRIPTOR_MAP_KEY = "oam.cc.beanInfo.PDM";
     
     /**
-     * This variable works as a check to indicate the minimun lenght we need to check
+     * This variable works as a check to indicate the minimum length we need to check
      * for the special attributes, and save some time in get(), containsKey() and 
      * put() operations.
      */

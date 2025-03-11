@@ -294,13 +294,13 @@ public class MockResponseStateManager extends ResponseStateManager
             else
             {
                 throw new FacesException(
-                        "The state should be an array of Object[] of lenght 2");
+                        "The state should be an array of Object[] of length 2");
             }
         }
         else
         {
             throw new FacesException(
-                    "The state should be an array of Object[] of lenght 2, or a SerializedView instance");
+                    "The state should be an array of Object[] of length 2, or a SerializedView instance");
         }
 
         Object[] savedState = new Object[3];
