@@ -307,7 +307,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBeforeRender();
         executeBuildViewCycle();
         
-        // Now let's try to remove some component programatically
+        // Now let's try to remove some component programmatically
         // that invalidates the view to be reused without a refresh,
         // so in the pool it should be marked as REFRESH_REQUIRED
         UIForm form = (UIForm) facesContext.getViewRoot().findComponent("mainForm");
@@ -340,7 +340,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBeforeRender();
         executeBuildViewCycle();
         
-        // Now let's try to remove some component programatically
+        // Now let's try to remove some component programmatically
         // that invalidates the view to be reused without a refresh,
         // so in the pool it should be marked as REFRESH_REQUIRED
         UIForm form = (UIForm) facesContext.getViewRoot().findComponent("mainForm");
@@ -1893,7 +1893,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
         executeBeforeRender();
         executeBuildViewCycle();
         
-        // Now let's try to remove some component programatically
+        // Now let's try to remove some component programmatically
         // that invalidates the view to be reused without a refresh,
         // so in the pool it should be marked as REFRESH_REQUIRED
         UIPanel panel = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel1");
@@ -1926,7 +1926,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
 
         executeBuildViewCycle();
         
-        // Now let's try to remove some component programatically
+        // Now let's try to remove some component programmatically
         // that invalidates the view to be reused without a refresh,
         // so in the pool it should be marked as REFRESH_REQUIRED
         UIPanel panel = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel1");
@@ -1969,7 +1969,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTes
 
         executeBuildViewCycle();
         
-        // Now let's try to remove some component programatically
+        // Now let's try to remove some component programmatically
         // that invalidates the view to be reused without a refresh,
         // so in the pool it should be marked as REFRESH_REQUIRED
         UIPanel panel = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel1");

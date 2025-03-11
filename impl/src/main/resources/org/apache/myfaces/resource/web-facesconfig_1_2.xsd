@@ -18,7 +18,7 @@
 -->
 
 <!--
-  ** This XSD contains only the programatic elements required for an implementation.
+  ** This XSD contains only the programmatic elements required for an implementation.
   ** For the XSD from Sun that includes documentation and other copyrighted information
   ** please refer to the latest XSD at :
   ** http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd

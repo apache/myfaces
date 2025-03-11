@@ -410,9 +410,9 @@ public class ViewHandlerImpl extends ViewHandler
             // Write the STATE_KEY out. Unfortunately, this will
             // be wasteful for pure server-side state managers where nothing
             // is actually written into the output, but this cannot
-            // programatically be discovered
+            // programmatically be discovered
             // -= Leonardo Uribe =- On MyFacesResponseStateManager was added
-            // some methods to discover it programatically.
+            // some methods to discover it programmatically.
             if (StateCacheUtils.isMyFacesResponseStateManager(rsm))
             {
                 if (StateCacheUtils.getMyFacesResponseStateManager(rsm).isWriteStateAfterRenderViewRequired(context))
