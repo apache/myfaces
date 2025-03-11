@@ -514,7 +514,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
             // in the right order, preventing duplicates (see COMPONENT_ADDED_AFTER_BUILD_VIEW for details).
             clientIdsAdded.clear();
             
-            // This call only has sense when components has been added programatically, because if facelets has control
+            // This call only has sense when components has been added programmatically, because if facelets has control
             // over all components in the component tree, build the initial state and apply the state will have the
             // same effect.
             RequestViewContext.getCurrentInstance(context).refreshRequestViewContext(context, view);

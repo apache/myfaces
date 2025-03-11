@@ -90,7 +90,7 @@ public final class ComponentSupport
 
     /**
      * Special myfaces core marker to indicate the component is handled by a facelet tag handler,
-     * so its creation is not handled by user programatically and PSS remove listener should
+     * so its creation is not handled by user programmatically and PSS remove listener should
      * not register it when a remove happens.
      */
     public final static String COMPONENT_ADDED_BY_HANDLER_MARKER = "oam.vf.addedByHandler";

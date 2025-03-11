@@ -480,7 +480,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         {
             // UIViewRoot.markInitialState() is not called because it does
             // not have a facelet tag handler class that create it, instead
-            // new instances are created programatically.
+            // new instances are created programmatically.
             if (!refreshTransientBuild || refreshPartialView)
             {
                 // Save the state
@@ -2543,7 +2543,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 if (UIComponent.isCompositeComponent(createdComponent))
                 {
                     // 1. Composite component. Needs special handling because
-                    // facets will be added programatically. The algorithm that
+                    // facets will be added programmatically. The algorithm that
                     // process the composite component content should occur
                     // after the component is added to the view (PostAddToViewEvent).
                     // Requires refresh. To do that, we need to save the MARK_CREATED
@@ -2589,7 +2589,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     // 4. Single component without children: 
                     // Remove MARK_CREATED because it does not requires
                     // refresh on restore. When it is added to the component
-                    // tree, it will be saved and restored as if was a programatically
+                    // tree, it will be saved and restored as if was a programmatically
                     // added component.
                     createdComponent.getAttributes().put(ComponentSupport.MARK_CREATED, null);
                 }

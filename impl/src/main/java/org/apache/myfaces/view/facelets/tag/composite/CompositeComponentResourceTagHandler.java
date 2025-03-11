@@ -182,7 +182,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         // Since Faces 2.2, there are two cases here:
         // 
         // 1. The composite component content is defined as facelet content like usual.
-        // 2. The composite component content will be defined programatically. That means,
+        // 2. The composite component content will be defined programmatically. That means,
         // once the component instance is created, the user will be responsible to add
         // children / facets and the code that process the composite component take effect
         // when the composite component is added to the view. 
@@ -793,7 +793,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         
         BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor();
 
-        // Since the children / facet were added programatically, there is no handler or facelets to apply.
+        // Since the children / facet were added programmatically, there is no handler or facelets to apply.
         
         //Check for required facets
         Map<String, PropertyDescriptor> facetPropertyDescriptorMap = (Map<String, PropertyDescriptor>)
