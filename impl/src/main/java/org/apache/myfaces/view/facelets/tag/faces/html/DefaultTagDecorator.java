@@ -346,7 +346,7 @@ public class DefaultTagDecorator implements TagDecorator
         
         if (elementNameTagAttributeSet)
         {
-            // This is unlikely, but theorically possible.
+            // This is unlikely, but theoretically possible.
             return new TagAttributesImpl(Arrays.copyOf(convertedTagAttributes, convertedTagAttributes.length-1));
         }
         else

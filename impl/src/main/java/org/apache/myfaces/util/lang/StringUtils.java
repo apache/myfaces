@@ -464,7 +464,7 @@ public final class StringUtils
     }
 
     /**
-     * Split a string into an array of strings arround a character separator.
+     * Split a string into an array of strings around a character separator.
      * This  function will be efficient for longer strings
      *
      * @param str the string to be split
@@ -496,7 +496,7 @@ public final class StringUtils
     }
 
     /**
-     * Split a string into an array of strings arround a character separator.
+     * Split a string into an array of strings around a character separator.
      * Each element can be optionally quoted by the quote character.<br>
      * This function will be efficient for long strings
      *
@@ -565,7 +565,7 @@ public final class StringUtils
     }
 
     /**
-     * Split a string into an array of strings arround a character separator.
+     * Split a string into an array of strings around a character separator.
      * This  function will be efficient for short strings, for longer strings,
      * another approach may be better
      *
@@ -614,7 +614,7 @@ public final class StringUtils
     }
 
     /**
-     * Split a string into an array of strings arround a character separator.
+     * Split a string into an array of strings around a character separator.
      * Each element can be optionally quoted by the quote character.<br>
      * This function will be efficient for short strings, for longer strings,
      * another approach may be better

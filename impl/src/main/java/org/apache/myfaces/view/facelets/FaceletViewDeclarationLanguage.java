@@ -933,7 +933,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // traverse over it, but here the metadata returned by UIComponent.BEANINFO_KEY is available
         // only for composite components.
         // That means somewhere we need to create a custom BeanInfo object for composite components
-        // that will be filled somewhere (theorically in ViewDeclarationLanguage.getComponentMetadata())
+        // that will be filled somewhere (theoretically in ViewDeclarationLanguage.getComponentMetadata())
 
         PropertyDescriptor[] propertyDescriptors = compositeComponentMetadata.getPropertyDescriptors();
 

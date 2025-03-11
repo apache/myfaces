@@ -47,7 +47,7 @@ $baseContent
 #end
 #set ($propertyList = ${component.propertyList})
 #foreach( $property in $propertyList )
-## Theorically, it should only add properties visible on tld or transient
+## Theoretically, it should only add properties visible on tld or transient
 ## (not visible on tld but used on renderers like "transient").
 ## On myfaces core 1.2, only "transient" property use it.
 ## But inclusive, some tagExcluded properties belongs to the

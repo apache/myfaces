@@ -47,7 +47,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
  */
 public final class MessageUtils
 {
-    /** Utility class, do not instatiate */
+    /** Utility class, do not instantiate */
     private MessageUtils()
     {
         // nope
@@ -62,9 +62,9 @@ public final class MessageUtils
     private static Logger log = Logger.getLogger(MessageUtils.class.getName());
 
     /**
-     * @param severity serverity of message
+     * @param severity severity of message
      * @param messageId id of message
-     * @param arg arument of message
+     * @param arg argument of message
      *
      * @return generated FacesMessage
      */
@@ -91,9 +91,9 @@ public final class MessageUtils
     }
 
     /**
-     * @param severity serverity of message
+     * @param severity severity of message
      * @param messageId id of message
-     * @param args aruments of message
+     * @param args arguments of message
      *
      * @return generated FacesMessage
      */

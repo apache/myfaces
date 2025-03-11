@@ -451,7 +451,7 @@ public final class StateUtils
                 {
                     isMacEqual = false;
                     // MYFACES-2934 Must compare *ALL* bytes of the hash, 
-                    // otherwise a side-channel timing attack is theorically possible
+                    // otherwise a side-channel timing attack is theoretically possible
                     // but with a very very low probability, because the
                     // comparison time is too small to be measured compared to
                     // the overall request time and in real life applications,

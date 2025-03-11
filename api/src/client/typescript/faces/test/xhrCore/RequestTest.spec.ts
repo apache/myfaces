@@ -281,7 +281,7 @@ describe('Tests after core when it hits response', function () {
             expect(requestBody.indexOf("message=Hello%20World")).not.to.eq(-1);
 
             expect(this.jsfAjaxResponse.callCount).to.eq(1);
-            //success ommitted due to fake response
+            //success omitted due to fake response
             expect(globalCnt == 3).to.eq(true);
             expect(localCnt == 3).to.eq(true);
             done();
@@ -871,7 +871,7 @@ describe('Tests after core when it hits response', function () {
             expect(requestBody.indexOf("message=Hello%20World")).not.to.eq(-1);
 
             expect(this.jsfAjaxResponse.callCount).to.eq(1);
-            //success ommitted due to fake response
+            //success omitted due to fake response
             expect(globalCnt == 3).to.eq(true);
             expect(localCnt == 3).to.eq(true);
             done();

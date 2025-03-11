@@ -222,7 +222,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractFacesCon
      * Tests the case with two config files. The first one would install the a
      * default validator (in this case the RequiredValidator), but the second one 
      * specifies an empty default-validators element, which overrules the first one
-     * and cleares all existing default-validators.
+     * and clears all existing default-validators.
      * In this case the RequiredValidator must not be installed, however the BeanValidator
      * has to be installed (automatically) since bean validation is available.
      */
@@ -252,7 +252,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractFacesCon
         
         // the required validator must not be installed, because the latter config file
         // (empty-default-validators.xml) has an empty default validators element
-        // and this cleares all existing default-validators.
+        // and this clears all existing default-validators.
         Assertions.assertFalse(application.getDefaultValidatorInfo().containsKey(RequiredValidator.VALIDATOR_ID));
         
         // and since bean validation is available, the BeanValidator has to be installed
@@ -303,7 +303,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractFacesCon
      * Tests the case with two config files. The first one would install a
      * default validator (in this case the RequiredValidator), but the second one 
      * also specifies default-validators. This overrules the first config and thus 
-     * cleares all existing default-validators and adds its default-validators.
+     * clears all existing default-validators and adds its default-validators.
      * In this case the RequiredValidator must not be installed, however the 
      * LengthValidator has to be installed (and the BeanValidator must not be installed
      * since bean validation is not available).
@@ -334,7 +334,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractFacesCon
         
         // the required validator must not be installed, because the latter config file
         // (default-length-validator.xml) specifies a default validators element
-        // and this cleares all existing default-validators.
+        // and this clears all existing default-validators.
         Assertions.assertFalse(application.getDefaultValidatorInfo().containsKey(RequiredValidator.VALIDATOR_ID));
         
         // the length validator has to be installed, because it was installed
