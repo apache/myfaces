@@ -825,7 +825,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
      *
      * @param facesContext the <code>FacesContext</code>.
      * @param uiData the <code>UIData</code> being rendered.
-     * @param columnIndex the index of the currenly rendered column
+     * @param columnIndex the index of the currently rendered column
      */
     protected void beforeColumn(FacesContext facesContext, UIData uiData, int columnIndex) throws IOException
     {        
@@ -836,7 +836,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
      *
      * @param facesContext the <code>FacesContext</code>.
      * @param uiData the <code>UIData</code> being rendered.
-     * @param columnIndex the index of the currenly rendered column
+     * @param columnIndex the index of the currently rendered column
      */
     protected void afterColumn(FacesContext facesContext, UIData uiData, int columnIndex) throws IOException
     {        
@@ -864,7 +864,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
      * @param facesContext the <code>FacesContext</code>.
      * @param uiData the <code>UIData</code> being rendered.
      * @param header true if the header of the column child is rendered
-     * @param columnIndex the index of the currenly rendered column
+     * @param columnIndex the index of the currently rendered column
      */
     protected void beforeColumnHeaderOrFooter(FacesContext facesContext, UIData uiData, boolean header,
             int columnIndex) throws IOException
@@ -876,7 +876,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
      * @param facesContext the <code>FacesContext</code>.
      * @param uiData the <code>UIData</code> being rendered.
      * @param header true if the header of the column child is rendered
-     * @param columnIndex the index of the currenly rendered column
+     * @param columnIndex the index of the currently rendered column
      */
     protected void afterColumnHeaderOrFooter(FacesContext facesContext, UIData uiData, boolean header,
             int columnIndex) throws IOException
