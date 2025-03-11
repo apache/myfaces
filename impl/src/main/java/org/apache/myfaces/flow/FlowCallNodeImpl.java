@@ -127,7 +127,7 @@ public class FlowCallNodeImpl extends FlowCallNode implements Freezable
     {
         if (initialized)
         {
-            throw new IllegalStateException("Flow is inmutable once initialized");
+            throw new IllegalStateException("Flow is immutable once initialized");
         }
     }
 

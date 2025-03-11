@@ -19,7 +19,7 @@
 package org.apache.myfaces.flow;
 
 /**
- * Objects of classes implementing this class can be made inmutable calling
+ * Objects of classes implementing this class can be made immutable calling
  * freeze() method.
  * 
  * @author Leonardo Uribe

@@ -189,7 +189,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
             else if (_isSetConverter() || _converter != null)
             {
                 // A converter that does not implement StateHolder does not need
-                // to save/restore the state, so we can consider it inmutable.
+                // to save/restore the state, so we can consider it immutable.
                 // If Call saveAttachedState(), keep the value, but do not set
                 // nullDelta only if the converter was not set after markInitialState(),
                 // so if the parent returns null, this part will return
