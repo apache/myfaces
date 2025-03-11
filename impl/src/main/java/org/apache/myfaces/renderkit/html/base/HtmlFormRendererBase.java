@@ -244,7 +244,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
         UIForm htmlForm = (UIForm)component;
 
         Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
-        // Perf: initialize StringBuilder to maximal lenght used in this renderer, render_response
+        // Perf: initialize StringBuilder to maximal length used in this renderer, render_response
         // method will re-use it without capacity expanding 
         StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER, 100);
         String submittedValue = (String) paramMap.get(

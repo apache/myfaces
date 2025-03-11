@@ -677,7 +677,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             }
             else
             {
-                // Zero lenght, if that so the flow definition must be implicitly derived. 
+                // Zero length, if that so the flow definition must be implicitly derived.
                 // See Faces 2.2 section 11.4.3.3
                 // 
                 FacesConfigImpl facesConfig = new FacesConfigImpl();

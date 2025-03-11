@@ -60,8 +60,8 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         executeViewHandlerRender();
         executeAfterRender();
         
-        // The lenght validator for field1 force a minimum of
-        // 4 digits, but the entered text has only 3 charactes.
+        // The length validator for field1 force a minimum of
+        // 4 digits, but the entered text has only 3 characters.
         // In the ajax request, that force a validation error, so
         // the submitted values are not updated into the model
         // but if the submitted value is set, it will render "xxx"
@@ -214,8 +214,8 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         executeViewHandlerRender();
         executeAfterRender();
 
-        // The lenght validator for field1 force a minimum of
-        // 4 digits, but the entered text has only 3 charactes.
+        // The length validator for field1 force a minimum of
+        // 4 digits, but the entered text has only 3 characters.
         // In the ajax request, that force a validation error, so
         // the submitted values are not updated into the model
         // but if the submitted value is set, it will render "xxx"
@@ -325,8 +325,8 @@ public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
         executeViewHandlerRender();
         executeAfterRender();
 
-        // The lenght validator for field1 force a minimum of
-        // 4 digits, but the entered text has only 3 charactes.
+        // The length validator for field1 force a minimum of
+        // 4 digits, but the entered text has only 3 characters.
         // In the ajax request, that force a validation error, so
         // the submitted values are not updated into the model
         // but if the submitted value is set, it will render "xxx"
