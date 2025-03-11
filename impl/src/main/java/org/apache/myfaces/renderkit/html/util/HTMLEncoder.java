@@ -156,7 +156,7 @@ public abstract class HTMLEncoder
                     case '\u00DF' : app = "&szlig;"; break;
 
                     //misc
-                    //case 0x80: app = "&euro;"; break;  sometimes euro symbol is ascii 128, should we suport it?
+                    //case 0x80: app = "&euro;"; break;  sometimes euro symbol is ascii 128, should we support it?
                     case '\u20AC': app = "&euro;";  break;
                     case '\u00AB': app = "&laquo;"; break;
                     case '\u00BB': app = "&raquo;"; break;
@@ -315,7 +315,7 @@ public abstract class HTMLEncoder
                     case '\u00DF' : app = "&szlig;"; break;
 
                     //misc
-                    //case 0x80: app = "&euro;"; break;  sometimes euro symbol is ascii 128, should we suport it?
+                    //case 0x80: app = "&euro;"; break;  sometimes euro symbol is ascii 128, should we support it?
                     case '\u20AC': app = "&euro;";  break;
                     case '\u00AB': app = "&laquo;"; break;
                     case '\u00BB': app = "&raquo;"; break;
@@ -485,7 +485,7 @@ public abstract class HTMLEncoder
                     case '\u00DF' : app = "&szlig;"; break;
 
                     //misc
-                    //case 0x80: app = "&euro;"; break;  sometimes euro symbol is ascii 128, should we suport it?
+                    //case 0x80: app = "&euro;"; break;  sometimes euro symbol is ascii 128, should we support it?
                     case '\u20AC': app = "&euro;";  break;
                     case '\u00AB': app = "&laquo;"; break;
                     case '\u00BB': app = "&raquo;"; break;

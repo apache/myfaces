@@ -187,7 +187,7 @@ public class CompositeResourceLibrary implements TagLibrary
     @Override
     public boolean containsFunction(String ns, String name)
     {
-        // Composite component tag library does not suport functions
+        // Composite component tag library does not support functions
         return false;
     }
 
@@ -236,7 +236,7 @@ public class CompositeResourceLibrary implements TagLibrary
     @Override
     public Method createFunction(String ns, String name)
     {
-        // Composite component tag library does not suport functions
+        // Composite component tag library does not support functions
         return null;
     }
 

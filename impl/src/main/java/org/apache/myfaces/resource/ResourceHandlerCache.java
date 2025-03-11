@@ -78,7 +78,7 @@ public class ResourceHandlerCache
 
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to get resource from cache for " + resourceName);
+            log.log(Level.FINE, "Attempting to get resource from cache for " + resourceName);
         }
 
         ResourceKey key = new ResourceKey(resourceName, libraryName, contentType, localePrefix, contractName);
@@ -119,7 +119,7 @@ public class ResourceHandlerCache
 
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to put resource to cache for " + resourceName);
+            log.log(Level.FINE, "Attempting to put resource to cache for " + resourceName);
         }
 
         _resourceCacheMap.put(new ResourceKey(resourceName, libraryName,
@@ -135,7 +135,7 @@ public class ResourceHandlerCache
 
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to get resource from cache for " + resourceId);
+            log.log(Level.FINE, "Attempting to get resource from cache for " + resourceId);
         }
 
         return _resourceCacheMap.get(resourceId);
@@ -150,7 +150,7 @@ public class ResourceHandlerCache
 
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to get resource from cache for " + resourceId);
+            log.log(Level.FINE, "Attempting to get resource from cache for " + resourceId);
         }
 
         return _resourceCacheMap.get(contractName + ':' + resourceId);
@@ -185,7 +185,7 @@ public class ResourceHandlerCache
 
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to put resource to cache for " + resourceId);
+            log.log(Level.FINE, "Attempting to put resource to cache for " + resourceId);
         }
 
         if (resource.getContractName() != null)
@@ -230,7 +230,7 @@ public class ResourceHandlerCache
 
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to get resource from cache for " + resourceName);
+            log.log(Level.FINE, "Attempting to get resource from cache for " + resourceName);
         }
 
         ResourceKey key = new ResourceKey(resourceName, null, contentType, localePrefix, contractName);
@@ -254,7 +254,7 @@ public class ResourceHandlerCache
 
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to put resource to cache for " + resourceName);
+            log.log(Level.FINE, "Attempting to put resource to cache for " + resourceName);
         }
 
         _viewResourceCacheMap.put(new ResourceKey(resourceName, null,
@@ -270,7 +270,7 @@ public class ResourceHandlerCache
 
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to get libraryExists from cache for " + libraryName);
+            log.log(Level.FINE, "Attempting to get libraryExists from cache for " + libraryName);
         }
 
         return _libraryExistsCacheMap.get(libraryName);
@@ -285,7 +285,7 @@ public class ResourceHandlerCache
         
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to set confirmLibraryExists on cache " + libraryName);
+            log.log(Level.FINE, "Attempting to set confirmLibraryExists on cache " + libraryName);
         }
 
         _libraryExistsCacheMap.put(libraryName, Boolean.TRUE);
@@ -300,7 +300,7 @@ public class ResourceHandlerCache
         
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to set confirmLibraryNotExists on cache " + libraryName);
+            log.log(Level.FINE, "Attempting to set confirmLibraryNotExists on cache " + libraryName);
         }
 
         _libraryExistsCacheMap.put(libraryName, Boolean.FALSE);
