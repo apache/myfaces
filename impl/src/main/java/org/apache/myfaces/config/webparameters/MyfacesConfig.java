@@ -607,7 +607,7 @@ public class MyfacesConfig
     public static final String FACES_INIT_PLUGINS = "org.apache.myfaces.FACES_INIT_PLUGINS";
     
     /**
-     * If the flag is true, the algoritm skip jar scanning for faces-config files to check if the current
+     * If the flag is true, the algorithm skip jar scanning for faces-config files to check if the current
      * application requires FacesServlet to be added dynamically (servlet spec 3). This param can be set using 
      * a system property with the same name too.
      */

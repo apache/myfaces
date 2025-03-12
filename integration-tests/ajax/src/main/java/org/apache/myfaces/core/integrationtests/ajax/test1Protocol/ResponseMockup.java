@@ -245,7 +245,7 @@ public class ResponseMockup extends HttpServlet
 
     private void illegalResponse2(PrintWriter out)
     {
-        out.println("blablabl this is an illegal reponse, you should see an error");
+        out.println("blablabl this is an illegal response, you should see an error");
     }
 
     private void viewRootReplacement1(PrintWriter out, PartialResponse root) throws IOException

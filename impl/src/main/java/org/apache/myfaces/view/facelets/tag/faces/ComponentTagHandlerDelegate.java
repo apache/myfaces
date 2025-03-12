@@ -580,7 +580,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         else
         {
             // According to the, spec call the second alternative with null rendererType gives
-            // the same result, but without the unnecesary call for FacesContext.getCurrentInstance().
+            // the same result, but without the unnecessary call for FacesContext.getCurrentInstance().
             // Saves 1 call per component without rendererType (f:viewParam, h:column, f:selectItem, ...)
             // and it does not have any side effects (the spec javadoc mentions in a explicit way
             // that rendererType can be null!).

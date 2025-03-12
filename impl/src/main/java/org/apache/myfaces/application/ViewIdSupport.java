@@ -268,7 +268,7 @@ public class ViewIdSupport
                     // -= Leonardo Uribe =- It is evident that when the page is generated, the derived 
                     // viewId will end with the 
                     // right contextSuffix, and a navigation entry on faces-config.xml should use such id,
-                    // this is just a workaroud
+                    // this is just a workaround
                     // for usability. There is a potential risk that change the mapping in a webapp make 
                     // the same application fail,
                     // so use viewIds ending with mapping extensions is not a good practice.

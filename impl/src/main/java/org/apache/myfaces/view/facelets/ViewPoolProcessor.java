@@ -51,7 +51,7 @@ import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 
 /**
- * This class is reponsible for all processing tasks related to the view pool.
+ * This class is responsible for all processing tasks related to the view pool.
  * 
  * For enable the pool only for a subset of your views, you can
  * add an entry inside faces-config.xml file like this:

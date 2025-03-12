@@ -261,7 +261,7 @@ public class SessionIdGenerator
             }
             catch (NoSuchAlgorithmException e)
             {
-                log.log(Level.SEVERE, "Invalid provider / algoritm SHA1PRNG for generate secure random token", e);
+                log.log(Level.SEVERE, "Invalid provider / algorithm SHA1PRNG for generate secure random token", e);
             }
         }
 

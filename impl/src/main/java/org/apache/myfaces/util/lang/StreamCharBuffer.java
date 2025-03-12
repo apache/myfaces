@@ -104,7 +104,7 @@ import java.util.Set;
  *
  * <p>
  * By using the "connectTo" method, one can connect the buffer directly to a
- * target java.io.Writer. The internal buffer gets flushed automaticly to the
+ * target java.io.Writer. The internal buffer gets flushed automatically to the
  * target whenever the buffer gets filled up. See connectTo(Writer).
  * </p>
  *
@@ -350,7 +350,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
     /**
      * Connect this buffer to a target Writer.
      *
-     * When the buffer (a chunk) get filled up, it will automaticly write it's content to the Writer
+     * When the buffer (a chunk) get filled up, it will automatically write it's content to the Writer
      *
      * @param w
      */

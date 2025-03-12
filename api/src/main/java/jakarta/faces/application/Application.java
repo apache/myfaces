@@ -493,7 +493,7 @@ public abstract class Application
     /**
      * <p>
      * Return the default <code>ActionListener</code> to be registered for all <code>ActionSource</code> components 
-     * in this appication. If not explicitly set, a default implementation must be provided that performs the 
+     * in this application. If not explicitly set, a default implementation must be provided that performs the
      * following functions:
      * </p>
      * <ul>
@@ -805,7 +805,7 @@ public abstract class Application
     public abstract StateManager getStateManager();
 
     /**
-     * Return an <code>Iterator</code> over the supported <code>Locales</code> for this appication.
+     * Return an <code>Iterator</code> over the supported <code>Locales</code> for this application.
      */
     public abstract Iterator<Locale> getSupportedLocales();
 
