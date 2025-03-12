@@ -112,7 +112,7 @@ public class PartialVisitContext extends VisitContext
         // Initialize ids collection
         _ids = new HashSet<String>();
 
-        // Intialize subtreeClientIds collection
+        // Initialize subtreeClientIds collection
         _subtreeClientIds = new HashMap<String, Collection<String>>();
 
         // Initialize the clientIds collection.  Note that we proxy 

@@ -1790,7 +1790,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     {
                         // Call this method to force close the tag if necessary.
                         // The spec javadoc says this: 
-                        // "... Flush any ouput buffered by the output method to the underlying 
+                        // "... Flush any output buffered by the output method to the underlying
                         // Writer or OutputStream. This method will not flush the underlying 
                         // Writer or OutputStream; it simply clears any values buffered by this 
                         // ResponseWriter. ..."

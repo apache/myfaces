@@ -19,7 +19,7 @@
 import {Optional} from "./Monad";
 
 export enum PromiseStatus {
-    PENDING, FULLFILLED, REJECTED
+    PENDING, FULFILLED, REJECTED
 }
 
 export interface IPromise {
@@ -225,7 +225,7 @@ export class Promise implements IPromise {
         }
 
         this.appyFinally();
-        this.status = PromiseStatus.FULLFILLED;
+        this.status = PromiseStatus.FULFILLED;
     }
 
     protected reject(val?: any) {

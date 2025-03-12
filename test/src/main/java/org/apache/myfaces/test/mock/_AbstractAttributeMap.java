@@ -366,7 +366,7 @@ abstract class _AbstractAttributeMap<V> extends AbstractMap<String, V>
     }
 
     /**
-     * Not very efficient since it generates a new instance of <code>Entry</code> for each element and still internaly
+     * Not very efficient since it generates a new instance of <code>Entry</code> for each element and still internally
      * uses the <code>KeyIterator</code>. It is more efficient to use the <code>KeyIterator</code> directly.
      */
     private final class EntryIterator extends

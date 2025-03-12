@@ -213,7 +213,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractFacesTestCase
             
             // Assertions
             Assertions.assertFalse(output.contains(HTML.ONCLICK_ATTR)); // the output must not contain onclick 
-            Assertions.assertTrue(output.contains(HTML.DISABLED_ATTR)); // the ouput must contain disabled
+            Assertions.assertTrue(output.contains(HTML.DISABLED_ATTR)); // the output must contain disabled
         }
         catch (Exception e)
         {

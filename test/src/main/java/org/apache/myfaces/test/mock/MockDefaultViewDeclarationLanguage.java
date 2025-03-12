@@ -86,7 +86,7 @@ public class MockDefaultViewDeclarationLanguage extends ViewDeclarationLanguage
                 if (oldViewRoot == null)
                 {
                     // If not, this method must call calculateLocale() and calculateRenderKitId(), and store the results
-                    // as the values of the locale and renderKitId, proeprties, respectively, of the newly created
+                    // as the values of the locale and renderKitId, properties, respectively, of the newly created
                     // UIViewRoot.
                     ViewHandler handler = application.getViewHandler();
                     newViewRoot.setLocale(handler.calculateLocale(context));

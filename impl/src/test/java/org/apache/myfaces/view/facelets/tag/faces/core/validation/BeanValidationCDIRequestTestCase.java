@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * This test is the same as FlowMyFacesRequestTestCase with the diference that
+ * This test is the same as FlowMyFacesRequestTestCase with the difference that
  * in this case CDI is enabled and the other alternative is used.
  */
 public class BeanValidationCDIRequestTestCase extends AbstractMyFacesCDIRequestTestCase
