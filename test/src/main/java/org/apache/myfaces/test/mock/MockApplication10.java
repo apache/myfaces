@@ -342,9 +342,8 @@ public abstract class MockApplication10 extends Application
     }
 
     @Override
-    public Converter createConverter(Class targetClass)
+    public <T> Converter<T> createConverter(Class<T> targetClass)
     {
-
         String converterClass = (String) converters1.get(targetClass);
         if (converterClass == null)
         {
@@ -352,8 +351,8 @@ public abstract class MockApplication10 extends Application
         }
         try
         {
-            Class clazz = Class.forName(converterClass);
-            return ((Converter) clazz.newInstance());
+            Class<T> clazz = (Class<T>) Class.forName(converterClass);
+            return ((Converter<T>) clazz.newInstance());
         }
         catch (Exception e)
         {

@@ -1345,7 +1345,7 @@ public class ApplicationImpl extends Application
      * configured via normal dependency-injection, and is generally a better choice than using this method.
      */
     @Override
-    public final Converter createConverter(final String converterId)
+    public final Converter<?> createConverter(final String converterId)
     {
         Assert.notEmpty(converterId, "converterId");
 
@@ -1407,7 +1407,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public final Converter createConverter(final Class<?> targetClass)
+    public <T> Converter<T> createConverter(Class<T> targetClass)
     {
         Assert.notNull(targetClass, "targetClass");
 
@@ -1415,7 +1415,7 @@ public class ApplicationImpl extends Application
     }
 
     @SuppressWarnings("unchecked")
-    private Converter<?> internalCreateConverter(final Class<?> targetClass)
+    private <T> Converter<T> internalCreateConverter(Class<T> targetClass)
     {
         // Locate a Converter registered for the target class itself.
         Object converterClassOrClassName = _converterTargetClassToConverterClassMap.get(targetClass);
@@ -1433,7 +1433,7 @@ public class ApplicationImpl extends Application
                 {
                     // search all superinterfaces for a matching converter,
                     // create it
-                    final Converter<?> converter = internalCreateConverter(interfaces[i]);
+                    final Converter<T> converter = (Converter<T>) internalCreateConverter(interfaces[i]);
                     if (converter != null)
                     {
                         return converter;
@@ -1482,7 +1482,7 @@ public class ApplicationImpl extends Application
                     }
                 }
                 
-                Converter<?> converter = null;
+                Converter<T> converter = null;
                 
                 if (Boolean.TRUE.equals(_cdiManagedConverterMap.get(converterClass)))
                 {
@@ -1537,35 +1537,35 @@ public class ApplicationImpl extends Application
         // locate converter for primitive types
         if (targetClass == Long.TYPE)
         {
-            return internalCreateConverter(Long.class);
+            return (Converter<T>) internalCreateConverter(Long.class);
         }
         else if (targetClass == Boolean.TYPE)
         {
-            return internalCreateConverter(Boolean.class);
+            return (Converter<T>) internalCreateConverter(Boolean.class);
         }
         else if (targetClass == Double.TYPE)
         {
-            return internalCreateConverter(Double.class);
+            return (Converter<T>) internalCreateConverter(Double.class);
         }
         else if (targetClass == Byte.TYPE)
         {
-            return internalCreateConverter(Byte.class);
+            return (Converter<T>) internalCreateConverter(Byte.class);
         }
         else if (targetClass == Short.TYPE)
         {
-            return internalCreateConverter(Short.class);
+            return (Converter<T>) internalCreateConverter(Short.class);
         }
         else if (targetClass == Integer.TYPE)
         {
-            return internalCreateConverter(Integer.class);
+            return (Converter<T>) internalCreateConverter(Integer.class);
         }
         else if (targetClass == Float.TYPE)
         {
-            return internalCreateConverter(Float.class);
+            return (Converter<T>) internalCreateConverter(Float.class);
         }
         else if (targetClass == Character.TYPE)
         {
-            return internalCreateConverter(Character.class);
+            return (Converter<T>) internalCreateConverter(Character.class);
         }
 
         // Locate a Converter registered for the superclass (if any) of the
@@ -1573,7 +1573,7 @@ public class ApplicationImpl extends Application
         // recursively working up the inheritance hierarchy.
         Class<?> superClazz = targetClass.getSuperclass();
 
-        return superClazz != null ? internalCreateConverter(superClazz) : null;
+        return superClazz != null ? (Converter<T>) internalCreateConverter(superClazz) : null;
 
     }
 

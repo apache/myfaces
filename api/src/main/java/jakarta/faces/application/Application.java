@@ -428,7 +428,7 @@ public abstract class Application
      *             if <code>targetClass</code> is <code>null</code>
      * 
      */
-    public abstract Converter createConverter(Class<?> targetClass);
+    public abstract <T> Converter<T> createConverter(Class<T> targetClass);
 
     /**
      * Instantiate and return a new <code>{@link Converter}</code> instance of the class specified by a previous call to
@@ -443,7 +443,7 @@ public abstract class Application
      * @throws NullPointerException
      *             if converterId is <code>null</code>
      */
-    public abstract Converter createConverter(String converterId);
+    public abstract Converter<?> createConverter(String converterId);
 
     /**
      * Instantiate and return a new <code>{@link Validator}</code> instance of the class specified by a previous call to

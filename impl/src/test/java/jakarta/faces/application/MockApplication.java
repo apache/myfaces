@@ -59,7 +59,7 @@ public class MockApplication extends Application
     }
 
     @Override
-    public Converter createConverter(Class<?> targetClass)
+    public <T> Converter<T> createConverter(Class<T> targetClass)
     {
         return null;
     }
