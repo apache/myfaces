@@ -25,7 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * HttpSession attibutes as Map.
+ * HttpSession attributes as Map.
  *
  * @author Anton Koinov (latest modification by $Author: jakobk $)
  * @version $Revision: 979229 $ $Date: 2010-07-26 12:26:53 +0200 (Mo, 26 Jul 2010) $

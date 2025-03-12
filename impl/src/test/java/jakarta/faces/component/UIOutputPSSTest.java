@@ -382,7 +382,7 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         
         Object state1 = output.saveState(facesContext);
         
-        // Transient means no state, but the effect is the converter dissapear
+        // Transient means no state, but the effect is the converter disappear
         // (because is transient, and in Faces 1.2/1.1 that was the effect).
         Assertions.assertNotNull(state1);
         
@@ -408,7 +408,7 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         
         Object state1 = output.saveState(facesContext);
         
-        // Transient means no state, but the effect is the converter dissapear
+        // Transient means no state, but the effect is the converter disappear
         // (because is transient, and in Faces 1.2/1.1 that was the effect).
         Assertions.assertNotNull(state1);
         

@@ -16,4 +16,4 @@
     specific language governing permissions and limitations
     under the License.
 */
-console.log("js resource added succesfully!");
+console.log("js resource added successfully!");

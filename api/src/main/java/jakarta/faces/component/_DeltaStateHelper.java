@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * </p>
  * <p>
  * For components not implementing partial state saving only the initial states are
- * of importance, everything is stored and restored continously there
+ * of importance, everything is stored and restored continuously there
  * </p> 
  * <p>
  * The state helper seems to have three internal storage mechanisms:

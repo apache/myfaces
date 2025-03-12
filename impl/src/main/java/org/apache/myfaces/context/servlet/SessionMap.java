@@ -28,7 +28,7 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.myfaces.util.lang.AbstractThreadSafeAttributeMap;
 
 /**
- * HttpSession attibutes as Map.
+ * HttpSession attributes as Map.
  *
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$

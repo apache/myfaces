@@ -36,7 +36,7 @@ const cwd = process.cwd();
 function copyFilesRecursively(source: string, target: string)
 {
     fse.copySync(path.resolve(cwd, source), path.resolve(cwd, target), {overwrite: true});
-    console.log(`${source} sucessfully copied to ${target}`);
+    console.log(`${source} successfully copied to ${target}`);
 }
 
 /**

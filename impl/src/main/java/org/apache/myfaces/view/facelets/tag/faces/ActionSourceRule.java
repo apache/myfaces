@@ -75,7 +75,7 @@ public final class ActionSourceRule extends MetaRule
             // problem - one-arg constructor will not preserve the current VariableMapper.
             // This is a problem when using facelets and <ui:decorate/> with EL params (see MYFACES-2541 for details).
             // So we must create two MethodExpressions here - both are created from the current 
-            // facelets context and thus varibale mapping will work.
+            // facelets context and thus variable mapping will work.
             final MethodExpression methodExpressionOneArg
                     = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
             final MethodExpression methodExpressionZeroArg

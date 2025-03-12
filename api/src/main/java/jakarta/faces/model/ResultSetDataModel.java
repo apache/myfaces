@@ -171,7 +171,7 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
             return;
         }
 
-        // Notify all listeners of the upated row
+        // Notify all listeners of the updated row
         DataModelListener[] listeners = getDataModelListeners();
 
         if ((old != _currentIndex) && (listeners != null))

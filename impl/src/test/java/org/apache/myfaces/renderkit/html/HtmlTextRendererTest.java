@@ -168,7 +168,7 @@ public class HtmlTextRendererTest extends AbstractFacesTestCase
     }
     
     @Test
-    public void testWhenSubmittedValueIsNullDefaultShouldDissapearFromRendering() {
+    public void testWhenSubmittedValueIsNullDefaultShouldDisappearFromRendering() {
         //See MYFACES-2161 and MYFACES-1549 for details
         UIViewRoot root = new UIViewRoot();
         UIForm form = new UIForm();
