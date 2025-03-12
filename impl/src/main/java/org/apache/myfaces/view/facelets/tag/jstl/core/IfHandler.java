@@ -38,7 +38,7 @@ import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 
 /**
- * Simple conditional tag, which evalutes its body if the
+ * Simple conditional tag, which evaluates its body if the
  * supplied condition is true and optionally exposes a Boolean
  * scripting variable representing the evaluation of this condition
  * 

@@ -37,7 +37,7 @@ abstract class _UIMessage extends UIComponentBase
 
     /**
      * The ID of the component whose attached FacesMessage object (if present) 
-     * should be diplayed by this component.
+     * should be displayed by this component.
      * <p>
      * This is a required property on the component.
      * </p>

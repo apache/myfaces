@@ -35,7 +35,7 @@ import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 
 /**
  * Subtag of &lt;choose&gt; that includes its body if its
- * condition evalutes to 'true'
+ * condition evaluates to 'true'
  * 
  * @author Jacob Hookom
  * @version $Id$
