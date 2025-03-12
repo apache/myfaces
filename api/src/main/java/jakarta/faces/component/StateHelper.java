@@ -28,9 +28,9 @@ public interface StateHelper extends StateHolder
 {
     public void add(Serializable key, Object value);
 
-    public Object eval(Serializable key);
+    public <T> T eval(Serializable key);
 
-    public Object eval(Serializable key, Object defaultValue);
+    public <T> T eval(Serializable key, T defaultValue);
 
     /**
      * 
@@ -40,15 +40,15 @@ public interface StateHelper extends StateHolder
      * 
      * @since 4.0
      */
-    public Object eval(Serializable key, Supplier<Object> defaultValueSupplier);
+    public <T> T eval(Serializable key, Supplier<T> defaultValueSupplier);
 
-    public Object get(Serializable key);
+    public <T> T get(Serializable key);
 
-    public Object put(Serializable key, Object value);
+    public <T> T put(Serializable key, T value);
 
-    public Object put(Serializable key, String mapKey, Object value);
+    public <T> T put(Serializable key, String mapKey, T value);
 
-    public Object remove(Serializable key);
+    public <T> T remove(Serializable key);
 
-    public Object remove(Serializable key, Object valueOrKey);
+    public <T> T remove(Serializable key, T valueOrKey);
 }

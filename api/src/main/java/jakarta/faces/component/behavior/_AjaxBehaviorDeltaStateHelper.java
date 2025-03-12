@@ -123,9 +123,9 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
     }
 
     @Override
-    public Object eval(Serializable key)
+    public <T> T eval(Serializable key)
     {
-        Object returnValue = _fullState.get(key);
+        T returnValue = (T) _fullState.get(key);
         if (returnValue != null)
         {
             return returnValue;
@@ -139,9 +139,9 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
     }
 
     @Override
-    public Object eval(Serializable key, Object defaultValue)
+    public <T> T eval(Serializable key, T defaultValue)
     {
-        Object returnValue = _fullState.get(key);
+        T returnValue = (T) _fullState.get(key);
 
         if (returnValue == null)
         {
@@ -161,9 +161,9 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
     }
 
     @Override
-    public Object eval(Serializable key, Supplier<Object> defaultValueSupplier)
+    public <T> T eval(Serializable key, Supplier<T> defaultValueSupplier)
     {
-        Object returnValue = _fullState.get(key);
+        T returnValue = (T) _fullState.get(key);
         
         if (returnValue == null)
         {
@@ -183,31 +183,31 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
     }
 
     @Override
-    public Object get(Serializable key)
+    public <T> T get(Serializable key)
     {
-        return _fullState.get(key);
+        return (T) _fullState.get(key);
     }
 
     @Override
-    public Object put(Serializable key, Object value)
+    public <T> T put(Serializable key, T value)
     {
-        Object returnValue = null;
+        T returnValue = null;
         if (_createDeltas())
         {
             if (_deltas.containsKey(key))
             {
-                returnValue = _deltas.put(key, value);
+                returnValue = (T) _deltas.put(key, value);
                 _fullState.put(key, value);
             }
             else
             {
                 _deltas.put(key, value);
-                returnValue = _fullState.put(key, value);
+                returnValue = (T) _fullState.put(key, value);
             }
         }
         else
         {
-            returnValue = _fullState.put(key, value);
+            returnValue = (T) _fullState.put(key, value);
         }
         return returnValue;
     }

@@ -180,7 +180,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     {
         super();
         this._component = component;
-        _fullState = new HashMap<Serializable, Object>();
+        _fullState = new HashMap<>();
         _deltas = null;
         _transientState = null;
         _initialFullState = null;
@@ -201,7 +201,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                 if (_initialState == null)
                 {
                     // Copy it directly
-                    _initialFullState = new HashMap<Serializable, Object>();
+                    _initialFullState = new HashMap<>();
                     copyMap(_component.getFacesContext(), _fullState, _initialFullState);
                 }
                 else
@@ -223,7 +223,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                         // contains some key already defined in initialState, this key must be
                         // overriden. It is better to do in that way, because it is possible
                         // to skip resetState() if the view cannot be recycled.
-                        _initialFullState = new HashMap<Serializable, Object>();
+                        _initialFullState = new HashMap<>();
                         copyMap(_component.getFacesContext(), _fullState, _initialFullState);
                     }
                 }
@@ -326,9 +326,9 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     }
 
     @Override
-    public Object eval(Serializable key)
+    public <T> T eval(Serializable key)
     {
-        Object returnValue = _fullState.get(key);
+        T returnValue = (T) _fullState.get(key);
         if (returnValue != null)
         {
             return returnValue;
@@ -342,9 +342,9 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     }
 
     @Override
-    public Object eval(Serializable key, Object defaultValue)
+    public <T> T eval(Serializable key, T defaultValue)
     {
-        Object returnValue = _fullState.get(key);
+        T returnValue = (T) _fullState.get(key);
 
         if (returnValue == null)
         {
@@ -373,9 +373,9 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
      * @since 4.0
      */
     @Override
-    public Object eval(Serializable key, Supplier<Object> defaultValueSupplier)
+    public <T> T eval(Serializable key, Supplier<T> defaultValueSupplier)
     {
-        Object returnValue = _fullState.get(key);
+        T returnValue = (T) _fullState.get(key);
         
         if (returnValue == null) {
             ValueExpression expression = _component.getValueExpression(key.toString());
@@ -394,20 +394,20 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     }
 
     @Override
-    public Object get(Serializable key)
+    public <T> T get(Serializable key)
     {
-        return _fullState.get(key);
+        return (T) _fullState.get(key);
     }
 
     @Override
-    public Object put(Serializable key, Object value)
+    public <T> T put(Serializable key, T value)
     {
-        Object returnValue = null;
+        T returnValue = null;
         if (_createDeltas(key))
         {
             if (_deltas.containsKey(key))
             {
-                returnValue = _deltas.put(key, value);
+                returnValue = (T) _deltas.put(key, value);
                 _fullState.put(key, value);
             }
             else if (value == null && !_fullState.containsKey(key))
@@ -417,21 +417,21 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             else
             {
                 _deltas.put(key, value);
-                returnValue = _fullState.put(key, value);
+                returnValue = (T) _fullState.put(key, value);
             }
         }
         else
         {
-            returnValue = _fullState.put(key, value);
+            returnValue = (T) _fullState.put(key, value);
         }
         return returnValue;
     }
 
     @Override
-    public Object put(Serializable key, String mapKey, Object value)
+    public <T> T put(Serializable key, String mapKey, T value)
     {
         boolean returnSet = false;
-        Object returnValue = null;
+        T returnValue = null;
         if (_createDeltas(key))
         {
             //Track delta case
@@ -444,7 +444,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
 
             if (mapValues.containsKey(mapKey))
             {
-                returnValue = mapValues.put(mapKey, value);
+                returnValue = (T) mapValues.put(mapKey, value);
                 returnSet = true;
             }
             else
@@ -467,7 +467,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         }
         else
         {
-            returnValue = mapValues.put(mapKey, value);
+            returnValue = (T) mapValues.put(mapKey, value);
         }
         return returnValue;
     }
@@ -1012,7 +1012,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     {
         if (_transientState == null)
         {
-            _transientState = new HashMap<Object, Object>();
+            _transientState = new HashMap<>();
         }
         return _transientState.put(key, value);
     }
