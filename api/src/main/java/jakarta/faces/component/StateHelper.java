@@ -42,6 +42,25 @@ public interface StateHelper extends StateHolder
      */
     public <T> T eval(Serializable key, Supplier<T> defaultValueSupplier);
 
+    /**
+     *
+     * @param stateHelper
+     * @param key
+     * @param defaultValueSupplier
+     * @return
+     * @param <T>
+     *
+     * @since 5.0
+     */
+    public default <T> T computeIfAbsent(Serializable key, Supplier<T> defaultValueSupplier) {
+        T value = (T) get(key);
+        if (value == null) {
+            value = defaultValueSupplier.get();
+            put(key, value);
+        }
+        return value;
+    }
+
     public <T> T get(Serializable key);
 
     public <T> T put(Serializable key, T value);
