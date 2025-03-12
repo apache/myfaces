@@ -299,7 +299,7 @@ public class PartialVisitContext extends VisitContext
     }
 
     // Converts an client id into a plain old id by ripping
-    // out the trailing id segmetn.
+    // out the trailing id segment.
     private String _getIdFromClientId(String clientId)
     {
         final char separator = getFacesContext().getNamingContainerSeparatorChar();

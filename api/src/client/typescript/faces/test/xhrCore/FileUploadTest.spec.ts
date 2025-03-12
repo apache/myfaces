@@ -83,7 +83,7 @@ describe('Tests on the xhr core when it starts to call the request', function ()
             button.addEventListener("click", (event: Event) => {
                 faces.ajax.request(event.target, event, {render: '@all', execute: '@form'})
             }).click();
-            //this.resonse("ok");
+            //this.response("ok");
 
             expect(this.requests.length).to.eq(1);
             let request = this.requests[0];
@@ -113,7 +113,7 @@ describe('Tests on the xhr core when it starts to call the request', function ()
             button.addEventListener("click", (event: Event) => {
                 faces.ajax.request(event.target, event, {render: '@all', execute: 'input_1 fíleupload'})
             }).click();
-            //this.resonse("ok");
+            //this.response("ok");
 
             expect(this.requests.length).to.eq(1);
             let request = this.requests[0];

@@ -346,7 +346,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     {
                         ((PartialStateManagementStrategy) 
                                 getStateManagementStrategy(context, view.getViewId())).
-                                suscribeListeners(view);
+                                subscribeListeners(view);
                     }
                     // If the result is complete, the view restored here is static. 
                     // static views can be marked as filled.
@@ -475,7 +475,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             setFilledView(context, view);
         }
 
-        // Suscribe listeners if we are using partialStateSaving
+        // Subscribe listeners if we are using partialStateSaving
         if (usePartialStateSavingOnThisView)
         {
             // UIViewRoot.markInitialState() is not called because it does
@@ -511,15 +511,15 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 context.getAttributes().remove(IS_BUILDING_INITIAL_STATE_KEY_ALIAS);
             }
 
-            // We need to suscribe the listeners of changes in the component tree
-            // only the first time here. Later we suscribe this listeners on
+            // We need to subscribe the listeners of changes in the component tree
+            // only the first time here. Later we subscribe this listeners on
             // DefaultFaceletsStateManagement.restoreView, to ensure 
             // relocated components are not retrieved later on getClientIdsRemoved().
             if (!(refreshTransientBuild && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
                     && !view.isTransient())
             {
                 ((PartialStateManagementStrategy) getStateManagementStrategy(context, view.getViewId())).
-                        suscribeListeners(view);
+                        subscribeListeners(view);
             }
 
             context.getAttributes().remove(USING_PSS_ON_THIS_VIEW);
