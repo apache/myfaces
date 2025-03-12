@@ -790,7 +790,7 @@ public final class RendererUtils
     }
 
     /**
-      * Checks for name/library attributes on component and if they are avaliable,
+      * Checks for name/library attributes on component and if they are available,
       * creates {@link Resource} and returns it's path suitable for rendering.
       * If component doesn't have name/library gets value for attribute named <code>attributeName</code> 
       * returns it processed with {@link #toResourceUri(jakarta.faces.context.FacesContext, java.lang.Object)}

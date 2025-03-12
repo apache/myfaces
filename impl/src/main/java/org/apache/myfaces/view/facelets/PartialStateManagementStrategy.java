@@ -302,7 +302,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                         // In the latest code related to PostAddToView, it is
                         // triggered no matter if it is applied on postback. It seems that MYFACES-2389, 
                         // TRINIDAD-1670 and TRINIDAD-1671 are related.
-                        suscribeListeners(view);
+                        subscribeListeners(view);
                     }
                     finally
                     {
@@ -1397,7 +1397,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
         }
     }
     
-    public void suscribeListeners(UIViewRoot uiViewRoot)
+    public void subscribeListeners(UIViewRoot uiViewRoot)
     {
         boolean listenerSubscribed = false;
         List<SystemEventListener> pavList = uiViewRoot.getViewListenersForEventClass(PostAddToViewEvent.class);
@@ -1474,7 +1474,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
             }
             
             // This is a view listener. It is not saved on the state and this listener
-            // is suscribed each time the view is restored, so we can cache facesContext
+            // is subscribed each time the view is restored, so we can cache facesContext
             // here
             if (_facesContext == null)
             {

@@ -269,7 +269,7 @@ public abstract class AbstractMyFacesTestCase
     }
     
     /**
-     * setup servlets avaliable in the test environment
+     * setup servlets available in the test environment
      * 
      * @throws Exception
      */
@@ -279,7 +279,7 @@ public abstract class AbstractMyFacesTestCase
     }
     
     /**
-     * setup listeners avaliable in the test environment
+     * setup listeners available in the test environment
      * 
      * @throws Exception
      */

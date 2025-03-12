@@ -152,7 +152,7 @@ public class PartialStateManagementStrategyTest extends
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
-        stateManagement.suscribeListeners(viewRoot);
+        stateManagement.subscribeListeners(viewRoot);
         
         viewRoot.getAttributes().put("somekey", "somevalue");
         
@@ -180,7 +180,7 @@ public class PartialStateManagementStrategyTest extends
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
-        stateManagement.suscribeListeners(viewRoot);
+        stateManagement.subscribeListeners(viewRoot);
 
         viewRoot.getAttributes().put("somekey", "somevalue");
         
@@ -223,7 +223,7 @@ public class PartialStateManagementStrategyTest extends
         
         vdl.buildView(facesContext, viewRoot);
         
-        stateManagement.suscribeListeners(viewRoot);
+        stateManagement.subscribeListeners(viewRoot);
         
         facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
         
@@ -287,7 +287,7 @@ public class PartialStateManagementStrategyTest extends
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
-        stateManagement.suscribeListeners(viewRoot);
+        stateManagement.subscribeListeners(viewRoot);
 
         viewRoot.getAttributes().put("somekey", "somevalue");
         
@@ -355,7 +355,7 @@ public class PartialStateManagementStrategyTest extends
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
-        stateManagement.suscribeListeners(viewRoot);
+        stateManagement.subscribeListeners(viewRoot);
 
         viewRoot.getAttributes().put("somekey", "somevalue");
         
