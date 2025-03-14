@@ -423,7 +423,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
 
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
 
-        Assertions.assertEquals("form1:one", handler.resolveClientId(searchContext, "form1:one"));
+        Assert.assertEquals("form1:one", handler.resolveClientId(searchContext, "form1:one"));
 
         processRemainingPhases();
     }
