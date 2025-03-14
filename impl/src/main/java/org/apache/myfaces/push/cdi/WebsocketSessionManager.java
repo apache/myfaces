@@ -59,7 +59,8 @@ public class WebsocketSessionManager
 {
     private Lazy<ConcurrentLRUCache<String, Collection<Reference<Session>>>> sessionMap;
 
-    private Lazy<ConcurrentHashMap<UserChannelKey, Set<String>>> userMap;
+    // map is holding relation between user / channel and channel token with number of used connections
+    private Lazy<ConcurrentHashMap<UserChannelKey, ConcurrentMap<String, Integer>>> userMap;
     private Queue<String> restoreQueue;
 
     private static final CloseReason REASON_EXPIRED = new CloseReason(NORMAL_CLOSURE, "Expired");
@@ -83,7 +84,7 @@ public class WebsocketSessionManager
         return sessionMap.get();
     }
 
-    public ConcurrentMap<UserChannelKey, Set<String>> getUserMap()
+    public ConcurrentMap<UserChannelKey, ConcurrentMap<String, Integer>> getUserMap()
     {
         return userMap.get();
     }
@@ -101,8 +102,10 @@ public class WebsocketSessionManager
     {
         UserChannelKey userChannelKey = new UserChannelKey(user, channel);
 
-        Set<String> channelTokenSet = getUserMap().computeIfAbsent(userChannelKey, k -> new HashSet<>(1));
-        channelTokenSet.add(channelToken);
+        ConcurrentMap<String, Integer> channelTokenMap = getUserMap().computeIfAbsent(userChannelKey,
+                k -> new ConcurrentHashMap<>(1));
+        // +1 for new connection of user
+        channelTokenMap.compute(channelToken, (key, value) -> value == null ? 1 : ++value);
     }
 
     public void deregisterUser(Serializable user, String channel, String channelToken)
@@ -111,11 +114,23 @@ public class WebsocketSessionManager
 
         synchronized (getUserMap())
         {
-            Set<String> channelTokenSet = getUserMap().get(userChannelKey);
-            if (channelTokenSet != null)
+            ConcurrentMap<String, Integer> channelTokenMap = getUserMap().get(userChannelKey);
+            if (channelTokenMap != null)
             {
-                channelTokenSet.remove(channelToken);
-                if (channelTokenSet.isEmpty())
+                int value = channelTokenMap.get(channelToken);
+                if (value == 1)
+                {
+                    // let's remove it from the map
+                    channelTokenMap.remove(channelToken);
+                }
+                else
+                {
+                    // -1 for connection of user
+                    channelTokenMap.put(channelToken, --value);
+                }
+
+                // let's remove channelToken if no more user connections
+                if (channelTokenMap.isEmpty())
                 {
                     getUserMap().remove(userChannelKey);
                 }
@@ -126,7 +141,8 @@ public class WebsocketSessionManager
     public Set<String> getChannelTokensForUser(Serializable user, String channel)
     {
         UserChannelKey userChannelKey = new UserChannelKey(user, channel);
-        return getUserMap().get(userChannelKey);
+        // just for compatibility, returning keySet
+        return getUserMap().get(userChannelKey).keySet();
     }
 
     public void initSessionMap(ExternalContext context)
