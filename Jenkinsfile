@@ -42,7 +42,7 @@ pipeline {
                 axes {
                     axis {
                         name 'JAVA_VERSION'
-                        values 'jdk_11_latest'
+                        values 'jdk_17_latest'
                     }
                 }
 
@@ -72,7 +72,7 @@ pipeline {
         stage('Deploy') {
             tools {
                 maven "maven_latest"
-                jdk "jdk_11_latest"
+                jdk "jdk_17_latest"
             }
             steps {
                 sh "mvn clean deploy -Pgenerate-assembly"
