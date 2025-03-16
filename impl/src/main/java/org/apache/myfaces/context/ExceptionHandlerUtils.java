@@ -69,6 +69,11 @@ public class ExceptionHandlerUtils
 
     public static void logException(Throwable exception, UIComponent component, FacesContext context, Logger logger)
     {
+        if (exception == null)
+        {
+            return;
+        }
+
         while (exception instanceof FacesWrapper ||
                 (exception.getClass().equals(FacesException.class) || exception.getClass().equals(ELException.class)))
         {
