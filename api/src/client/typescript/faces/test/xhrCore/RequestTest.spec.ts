@@ -62,7 +62,7 @@ let issueStdPPSReq = function (element) {
             pps: true
         },
         /*
-         * params is the spec conform way to pass additional request paramerters
+         * params is the spec conform way to pass additional request parameters
          */
         params: {
             pass1: "pass1",
@@ -634,7 +634,7 @@ describe('Tests after core when it hits response', function () {
 
 
             // TODO the request map only has the params and input1_ and input_2 passed no matter now many other values
-            // we might have to add some input elements into the form which are filetered out
+            // we might have to add some input elements into the form which are filtered out
         } finally {
             send.restore();
         }

@@ -113,7 +113,7 @@ export module Implementation {
  Small internal explanation, this code is optimized for readability
  and cuts off a ton of old legacy code.
  Aka older browsers are not supported anymore.
- We use a self written helper library to keep the number of exernal
+ We use a self written helper library to keep the number of external
  code dependencies down.
  The library is called mona-dish and started as a small sideproject of mine
  it provides following

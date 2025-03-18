@@ -30,7 +30,7 @@ public interface ClientBehaviorHolder
     public void addClientBehavior(String eventName, ClientBehavior behavior);
     
     /**
-     * Retruns an immutable <code>Map</code> of the attached <code>ClientBehavior</code>s for the
+     * Returns an immutable <code>Map</code> of the attached <code>ClientBehavior</code>s for the
      * component. If no behavior is present this method return an empty Map (<code>Collections.emptyMap()</code>). 
      * @return
      */

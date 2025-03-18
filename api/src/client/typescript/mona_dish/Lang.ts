@@ -39,7 +39,7 @@ export module Lang {
      * </code>
      *
      * @param resolverProducer a lambda which can produce the value
-     * @param defaultValue an optional default value if the producer failes to produce anything
+     * @param defaultValue an optional default value if the producer fails to produce anything
      * @returns an Optional of the produced value
      */
     export function saveResolve<T>(resolverProducer: () => T, defaultValue: T = null): Optional<T> {
