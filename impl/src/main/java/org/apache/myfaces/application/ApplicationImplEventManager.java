@@ -275,7 +275,7 @@ public class ApplicationImplEventManager
         // Do it with a copy because the list could be changed during a event see MYFACES-2935
         List<SystemEventListener> listenersCopy = new ArrayList<>(listeners);
 
-        // If the inner for is succesful, processedListenerIndex == listenersCopy.size()
+        // If the inner for is successful, processedListenerIndex == listenersCopy.size()
         // and the loop will be complete.
         while (processedListenerIndex < listenersCopy.size())
         {                

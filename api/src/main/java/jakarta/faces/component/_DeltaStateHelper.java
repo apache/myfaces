@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 /**
  * A delta enabled state holder implementing the StateHolder Interface. 
  * <p>
- * Components implementing the PartalStateHolder interface have an initial state
+ * Components implementing the PartialStateHolder interface have an initial state
  * and delta states, the initial state is the one holding all root values
  * and deltas store differences to the initial states
  * </p>
@@ -767,7 +767,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     }
     
     /**
-     * Try to reset the state and then check if the reset was succesful or not,
+     * Try to reset the state and then check if the reset was successful or not,
      * calling saveState().
      */
     public Object resetHardState(FacesContext context)

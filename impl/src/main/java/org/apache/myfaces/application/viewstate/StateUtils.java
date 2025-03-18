@@ -179,7 +179,7 @@ public final class StateUtils
     @JSFWebConfigParam(name="org.apache.myfaces.MAC_SECRET.CACHE",group="state")
     public static final String INIT_MAC_SECRET_KEY_CACHE = "org.apache.myfaces.MAC_SECRET.CACHE";
     
-    /** Utility class, do not instatiate */
+    /** Utility class, do not instantiate */
     private StateUtils()
     {
         //nope

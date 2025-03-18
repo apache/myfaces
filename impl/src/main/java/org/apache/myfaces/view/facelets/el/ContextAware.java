@@ -22,7 +22,7 @@ import org.apache.myfaces.view.facelets.LocationAware;
 
 
 /**
- * Identification inferface for types that know about {@link jakarta.faces.view.Location}
+ * Identification interface for types that know about {@link jakarta.faces.view.Location}
  * and XML attribute name/value pair.
  * 
  *  <ol>
