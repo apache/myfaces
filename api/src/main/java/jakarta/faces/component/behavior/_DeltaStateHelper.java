@@ -37,7 +37,7 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
 /**
  * A delta enabled state holder implementing the StateHolder Interface. 
  * <p>
- * Components implementing the PartalStateHolder interface have an initial state
+ * Components implementing the PartialStateHolder interface have an initial state
  * and delta states, the initial state is the one holding all root values
  * and deltas store differences to the initial states
  * </p>

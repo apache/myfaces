@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets;
 import jakarta.faces.view.Location;
 
 /**
- * Identification inferface for types that know about {@link Location}.
+ * Identification interface for types that know about {@link Location}.
  * 
  * If type implements this interface, we can say that it knows where instance
  * implementing this interfaces is located in facelets view.

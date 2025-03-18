@@ -663,7 +663,7 @@ public final class StringUtils
                 if ((pos < len) && (str.charAt(pos) != separator))
                 {
                     throw new IllegalArgumentException(
-                        "Separator must follow closing quote in strng '"
+                        "Separator must follow closing quote in string '"
                         + str + '\'');
                 }
             }
@@ -709,7 +709,7 @@ public final class StringUtils
                 if (str.charAt(pos) != separator)
                 {
                     throw new IllegalArgumentException(
-                        "Separator must follow closing quote in strng '"
+                        "Separator must follow closing quote in string '"
                         + str + '\'');
                 }
             }

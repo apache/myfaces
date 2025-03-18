@@ -192,7 +192,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
             log.warning("Resource referenced by resourceName "+ resourceName +
                     (libraryName == null ? "" : " and libraryName " + libraryName) +
                     " not found in call to ResourceHandler.createResource."+
-                    " It will be silenty ignored.");
+                    " It will be silently ignored.");
             return;
         }
         else
