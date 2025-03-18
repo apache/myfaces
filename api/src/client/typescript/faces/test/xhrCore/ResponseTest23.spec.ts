@@ -155,7 +155,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
     });
 
 
-    it("must have a proper workiung head replace", function () {
+    it("must have a proper working head replace", function () {
         DQ.byId("cmd_replace").click();
         this.respond(XmlResponses.HEAD_REPLACEMENT);
 
@@ -171,7 +171,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
     });
 
 
-    it("must have a proper workiung  root replace", function () {
+    it("must have a proper working root replace", function () {
         DQ.byId("cmd_replace").click();
         this.respond(XmlResponses.VIEW_ROOT_REPLACEMENT);
 
@@ -202,7 +202,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
             "embedded scripts must be executed").to.be.true;
     });
 
-    it("must have a viewstate update to be peformed", function () {
+    it("must have a viewstate update to be performed", function () {
         DQ.byId("cmd_viewstate").click();
 
         this.respond(XmlResponses.VIEWSTATE_1);

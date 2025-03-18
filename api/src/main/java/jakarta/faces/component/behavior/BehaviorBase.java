@@ -252,8 +252,8 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         
         if (_behaviorListeners == null)
         {
-            // Lazy instanciation with size 1:
-            // the only posibility how to add listener is <f:ajax listener="" /> - there is no <f:ajaxListener/> tag 
+            // Lazy instantiation with size 1:
+            // the only possibility how to add listener is <f:ajax listener="" /> - there is no <f:ajaxListener/> tag
             _behaviorListeners = new _DeltaList<>(1);
         }
         

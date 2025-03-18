@@ -22,7 +22,7 @@ import defaultMyFaces = StandardInits.defaultMyFaces;
 import {_Es2019Array, DQ, DQ$} from "mona-dish";
 import {expect} from "chai";
 
-describe('Tests for the MyFaces specifig oam submit', function () {
+describe('Tests for the MyFaces specific oam submit', function () {
     let oldFlatMap = null;
     beforeEach(async function () {
 
