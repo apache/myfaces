@@ -74,17 +74,20 @@ public class ExceptionHandlerUtils
             return;
         }
 
-        while (exception instanceof FacesWrapper ||
-                (exception.getClass().equals(FacesException.class) || exception.getClass().equals(ELException.class)))
+        while (exception instanceof FacesWrapper)
         {
-            if (exception instanceof FacesWrapper)
-            {
-                exception = (Throwable) ((FacesWrapper) exception).getWrapped();
-            }
-            else if (exception.getClass().equals(FacesException.class)
-                    || exception.getClass().equals(ELException.class))
+            exception = (Throwable) ((FacesWrapper) exception).getWrapped();
+        }
+
+        while ((exception.getClass().equals(FacesException.class) || exception.getClass().equals(ELException.class)))
+        {
+            if (exception.getCause() != null)
             {
                 exception = exception.getCause();
+            }
+            else
+            {
+                break;
             }
         }
 
@@ -164,3 +167,4 @@ public class ExceptionHandlerUtils
         return location;
     }
 }
+
