@@ -338,7 +338,7 @@ public class MockResourceHandler extends ResourceHandler
     }
 
     /**
-     * Gets the ClassLoader associated with the current thread.  Includes a check for priviledges
+     * Gets the ClassLoader associated with the current thread.  Includes a check for privileges
      * against java2 security to ensure no security related exceptions are encountered.
      *
      * @return ClassLoader

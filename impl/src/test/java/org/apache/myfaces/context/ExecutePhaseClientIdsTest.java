@@ -131,7 +131,7 @@ public class ExecutePhaseClientIdsTest extends AbstractFacesTestCase {
         
         Assertions.assertTrue(pprContext.getExecuteIds().size() == 4);
 
-        // FIXME: Latest spec uses a Collection so order is not garanteed
+        // FIXME: Latest spec uses a Collection so order is not guaranteed
 //        Assertions.assertTrue("Value match", pprContext.getExecuteIds().get(0).equals("view1:panel1:_component1"));
 //        Assertions.assertTrue("Value match", pprContext.getExecuteIds().get(2).equals("component3"));
 //

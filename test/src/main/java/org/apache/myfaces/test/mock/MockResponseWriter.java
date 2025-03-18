@@ -333,7 +333,7 @@ public class MockResponseWriter extends ResponseWriter
 
     /**
      * <p>Write a numeric character reference for specified character
-     * to the specfied writer.</p>
+     * to the specified writer.</p>
      *
      * @param writer Writer we are writing to
      * @param ch Character to be translated and appended

@@ -59,7 +59,7 @@ abstract public class FaceletCompositionContext
         }
         else
         {
-            // Here we have two choices: retrieve it throught ThreadLocal var
+            // Here we have two choices: retrieve it through ThreadLocal var
             // or use the attribute value on FacesContext, but it seems better
             // use the FacesContext attribute map.
             return (FaceletCompositionContext)
@@ -194,7 +194,7 @@ abstract public class FaceletCompositionContext
     /**
      * Check if the current view will be refreshed with partial state saving.
      * 
-     * This param is used in two posible events:
+     * This param is used in two possible events:
      * 
      * 1. To notify UIInstruction instances to look for instances moved by
      *    cc:insertChildren or cc:insertFacet.

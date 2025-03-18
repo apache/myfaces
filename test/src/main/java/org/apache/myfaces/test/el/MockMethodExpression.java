@@ -165,7 +165,7 @@ public class MockMethodExpression extends MethodExpression
     }
 
     /**
-     * <p>Evaluate the expression relative to the specified ocntext,
+     * <p>Evaluate the expression relative to the specified context,
      * and return the result after coercion to the expected result type.</p>
      *
      * @param context ELContext for this evaluation
@@ -218,7 +218,7 @@ public class MockMethodExpression extends MethodExpression
     // --------------------------------------------------------- Private Methods
 
     /**
-     * <p>Parse the expression string into its constituent elemetns.</p>
+     * <p>Parse the expression string into its constituent elements.</p>
      */
     private void parse()
     {

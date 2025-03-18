@@ -576,7 +576,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         if (pContext.isAjaxRequest())
         {
             // Perform partial rendering by calling PartialViewContext.processPartial() with PhaseId.RENDER_RESPONSE.
-            //sectin 13.4.3 of the jsf2 specification
+            //section 13.4.3 of the jsf2 specification
             pContext.processPartial(PhaseId.RENDER_RESPONSE);
         }
         else
