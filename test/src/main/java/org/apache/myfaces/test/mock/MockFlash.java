@@ -330,7 +330,7 @@ public class MockFlash extends Flash
 
             if (facesContext.isPostback())
             {
-                //Retore token
+                //Restore token
                 String previousToken = _getPostbackMapKey(facesContext
                         .getExternalContext());
 

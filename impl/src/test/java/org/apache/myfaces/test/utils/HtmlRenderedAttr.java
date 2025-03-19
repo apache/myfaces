@@ -68,9 +68,9 @@ public class HtmlRenderedAttr
         expectedOccurrences = 1;
     }
     
-    public HtmlRenderedAttr(String name, String value, String expectedHtml, int occurances) {
+    public HtmlRenderedAttr(String name, String value, String expectedHtml, int occurrences) {
         this(name, value, expectedHtml);
-        this.expectedOccurrences = occurances;
+        this.expectedOccurrences = occurrences;
     }
 
     public String getName()

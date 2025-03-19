@@ -275,7 +275,7 @@ public class MockValueExpression extends ValueExpression
     // --------------------------------------------------------- Private Methods
 
     /**
-     * <p>Parse the expression string into its constituent elemetns.</p>
+     * <p>Parse the expression string into its constituent elements.</p>
      */
     private void parse()
     {

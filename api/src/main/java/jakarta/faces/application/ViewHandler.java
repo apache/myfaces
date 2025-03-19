@@ -229,7 +229,7 @@ public abstract class ViewHandler
 
     /**
      * Return a Faces action URL derived from the viewId argument that is suitable to be used as
-     * the target of a link in a Faces response. Compiliant implementations must implement this method
+     * the target of a link in a Faces response. Compliant implementations must implement this method
      * as specified in section Faces.7.5.2. The default implementation simply calls through to
      * getActionURL(jakarta.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
      * 
@@ -274,7 +274,7 @@ public abstract class ViewHandler
     /**
      * Return a Faces action URL derived from the viewId argument that is suitable to be used by
      * the NavigationHandler to issue a redirect request to the URL using a NonFaces request.
-     * Compiliant implementations must implement this method as specified in section Faces.7.5.2.
+     * Compliant implementations must implement this method as specified in section Faces.7.5.2.
      * The default implementation simply calls through to
      * getActionURL(jakarta.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
      * 
