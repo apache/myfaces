@@ -280,11 +280,18 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
                 {
                     if (contentTypeListStringFromAccept != null)
                     {
-                        String[] contentTypes = ContentTypeUtils.splitContentTypeListString(
-                                contentTypeListStringFromAccept);
-                        if (ContentTypeUtils.containsContentType(ContentTypeUtils.ANY_CONTENT_TYPE, contentTypes))
+                        if(contentTypeListString == null) // Added for MYFACES-4703
                         {
                             selectedContentType = myfacesConfig.getDefaultResponseWriterContentTypeMode();
+                        }
+                        else
+                        {
+                            String[] contentTypes = ContentTypeUtils.splitContentTypeListString(
+                                contentTypeListStringFromAccept);
+                            if (ContentTypeUtils.containsContentType(ContentTypeUtils.ANY_CONTENT_TYPE, contentTypes))
+                            {
+                                selectedContentType = myfacesConfig.getDefaultResponseWriterContentTypeMode();
+                            }
                         }
                     }
                     else if (isAjaxRequest)
@@ -304,8 +311,11 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
                     {
                         // Note this case falls when contentTypeListStringFromAccept == null and 
                         // contentTypeListString != null, but since this not an ajax request, 
-                        // contentTypeListString should fall back to default (MYFACES-4703)
-                        selectedContentType = myfacesConfig.getDefaultResponseWriterContentTypeMode();
+                        // contentTypeListString should be taken strictly and throw IllegalArgumentException
+                        throw new IllegalArgumentException(
+                                "ContentTypeList does not contain a supported content type: "
+                                        + ((contentTypeListString != null) ? 
+                                                contentTypeListString : contentTypeListStringFromAccept) );
                     }
                 }
             }
