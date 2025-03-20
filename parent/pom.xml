@@ -34,7 +34,7 @@
         This project is the home of the MyFaces implementation of the JavaServer Faces 2.3 specification, and
         consists of an API module (jakarta.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
-    <version>4.0.4-SNAPSHOT</version>
+    <version>4.0.3-SNAPSHOT</version>
     <url>https://myfaces.apache.org/#/core40</url>
 
     <issueManagement>
