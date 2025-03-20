@@ -111,7 +111,7 @@ describe('tests the addOnEvent and addOnError handling', function () {
             expect(onErrorCalled1).to.eq(1);
             expect(onErrorCalled2).to.eq(1);
             expect(errorTitle).to.eq('Erro21');
-            expect(errorMessage).to.eq('Error2 Text');
+            expect(errorMessage).to.eq('serverError: Error2 Text');
         } finally {
             console.error = oldErr;
         }
