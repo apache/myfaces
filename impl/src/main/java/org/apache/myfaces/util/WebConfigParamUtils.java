@@ -645,7 +645,7 @@ public final class WebConfigParamUtils
     }
 
     /**
-     * Gets the init parameter value from the specified context and instanciate it. 
+     * Gets the init parameter value from the specified context and instantiate it.
      * If the parameter was not specified, the default value is used instead.
      * 
      * @param context
