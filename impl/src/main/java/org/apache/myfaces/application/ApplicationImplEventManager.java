@@ -188,7 +188,7 @@ public class ApplicationImplEventManager
         }
         catch (Exception e)
         {
-            throw new FacesException("Couldn't instanciate system event of type " + 
+            throw new FacesException("Couldn't instantiate system event of type " +
                     systemEventClass.getName(), e);
         }
     }

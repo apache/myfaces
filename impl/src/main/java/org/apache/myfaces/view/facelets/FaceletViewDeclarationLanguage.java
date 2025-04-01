@@ -1354,7 +1354,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             ValueExpression attributeNameValueExpression,
             boolean ccAttrMeRedirection)
     {
-        //First try to remove any prevous target if any
+        //First try to remove any previous target if any
         ActionListener o = (ActionListener)
                 mctx.removeMethodExpressionTargeted(innerComponent, targetAttributeName);
         if (o != null)
@@ -1404,7 +1404,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             ValueExpression attributeNameValueExpression,
             boolean ccAttrMeRedirection)
     {
-        //First try to remove any prevous target if any
+        //First try to remove any previous target if any
         Validator o = (Validator) mctx.removeMethodExpressionTargeted(innerComponent, targetAttributeName);
         if (o != null)
         {
@@ -1521,7 +1521,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 
                 if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
                 {
-                    //retargetMethodExpression occur on build view time, so it is safe to call markInitiaState here
+                    //retargetMethodExpression occur on build view time, so it is safe to call markInitialState here
                     innerComponent.markInitialState();
                 }
             }
@@ -1551,7 +1551,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             //Replace it with a method expression
             topLevelComponent.getAttributes().put(attributeName, methodExpression);
         }
-        // Othewise keep the current ValueExpression, because it will be used chain other value 
+        // Otherwise keep the current ValueExpression, because it will be used chain other value
         // expressions
     }
 

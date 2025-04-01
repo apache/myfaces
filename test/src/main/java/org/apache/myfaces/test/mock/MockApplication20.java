@@ -548,7 +548,7 @@ public abstract class MockApplication20 extends MockApplication12
             }
             catch (Exception e)
             {
-                throw new FacesException("Couldn't instanciate system event of type " + systemEventClass.getName(), e);
+                throw new FacesException("Couldn't instantiate system event of type " + systemEventClass.getName(), e);
             }
         }
 
