@@ -548,13 +548,14 @@ public class MyfacesConfig
     private static final boolean USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION_DEFAULT = false;
     
     /**
-     * Add autocomplete="off" to the view state hidden field. Enabled by default.
+     * Add autocomplete="..." to the view state hidden field. Enabled by default.
+     * One time code added via MYFACES-4721
      */
-    @JSFWebConfigParam(since="2.2.8, 2.1.18, 2.0.24", expectedValues="true, false", 
+    @JSFWebConfigParam(since="2.2.8, 2.1.18, 2.0.24", expectedValues="true, false, one-time-code", 
            defaultValue="true", group="state")
     public static final String AUTOCOMPLETE_OFF_VIEW_STATE = 
             "org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE";
-    private static final boolean AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT = true;
+    private static final String AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT = "true";
     
     /**
      * Set the max time in miliseconds set on the "Expires" header for a resource rendered by 
@@ -868,7 +869,7 @@ public class MyfacesConfig
     private boolean serializeStateInSession = false;
     private boolean compressStateInSession = COMPRESS_STATE_IN_SESSION_DEFAULT;
     private boolean useFlashScopePurgeViewsInSession = USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION_DEFAULT;
-    private boolean autocompleteOffViewState = AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT;
+    private String autocompleteOffViewState = AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT;
     private long resourceMaxTimeExpires = RESOURCE_MAX_TIME_EXPIRES_DEFAULT;
     private boolean lazyLoadConfigObjects = LAZY_LOAD_CONFIG_OBJECTS_DEFAULT;
     private String elResolverComparator;
@@ -1203,7 +1204,7 @@ public class MyfacesConfig
         cfg.useFlashScopePurgeViewsInSession = getBoolean(extCtx, USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION,
                 USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION_DEFAULT);
 
-        cfg.autocompleteOffViewState = getBoolean(extCtx, AUTOCOMPLETE_OFF_VIEW_STATE,
+        cfg.autocompleteOffViewState = getString(extCtx, AUTOCOMPLETE_OFF_VIEW_STATE,
                 AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT);
         
         cfg.resourceMaxTimeExpires = getLong(extCtx, RESOURCE_MAX_TIME_EXPIRES,
@@ -1639,9 +1640,15 @@ public class MyfacesConfig
         return useFlashScopePurgeViewsInSession;
     }
 
-    public boolean isAutocompleteOffViewState()
+    public String getAutocompleteOffViewState()
     {
-        return autocompleteOffViewState;
+        if(autocompleteOffViewState.equals("false")){
+            return null;
+        }
+        if(autocompleteOffViewState.equals("true")){
+            return "off";
+        }
+        return autocompleteOffViewState; // return one-time-code
     }
 
     public long getResourceMaxTimeExpires()
