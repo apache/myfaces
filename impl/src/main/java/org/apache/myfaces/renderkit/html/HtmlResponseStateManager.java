@@ -56,17 +56,17 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     private static final String SESSION_TOKEN = "oam.rsm.SESSION_TOKEN";
     
     /**
-     * Add autocomplete="off" to the view state hidden field. Disabled by default.
+     * Add autocomplete="off" to the view state hidden field. Enabled (true) by default.
      */
-    @JSFWebConfigParam(since="2.2.8, 2.1.18, 2.0.24", expectedValues="true, false", 
-           defaultValue="false", group="state")
+    @JSFWebConfigParam(since="2.2.8, 2.1.18, 2.0.24", expectedValues="true, false, one-time-code", 
+           defaultValue="true", group="state")
     public static final String INIT_PARAM_AUTOCOMPLETE_OFF_VIEW_STATE = 
             "org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE";
             
     private StateCacheProvider _stateCacheFactory;
     
-    private Boolean _autoCompleteOffViewState;
-    
+    private String _autoCompleteOffViewState;
+
     public HtmlResponseStateManager()
     {
         _autoCompleteOffViewState = null;
@@ -145,9 +145,11 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
                     facesContext), null);
         }
         responseWriter.writeAttribute(HTML.VALUE_ATTR, serializedState, null);
-        if (this.isAutocompleteOffViewState(facesContext))
+        // only off, null, or one-time-code
+        String autoCompleteValue = this.getAutocompleteViewStateValue(facesContext);
+        if (autoCompleteValue != null)
         {
-            responseWriter.writeAttribute(HTML.AUTOCOMPLETE_ATTR, "off", null);
+            responseWriter.writeAttribute(HTML.AUTOCOMPLETE_ATTR, autoCompleteValue, null);
         }
         responseWriter.endElement(HTML.INPUT_ELEM);
     }
@@ -344,13 +346,30 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         return id;
     }
 
-    private boolean isAutocompleteOffViewState(FacesContext facesContext)
+    // Changed from Boolean to String in MYFACES-4721
+    private String getAutocompleteViewStateValue(FacesContext facesContext)
     {
-        if (_autoCompleteOffViewState == null)
+        if(_autoCompleteOffViewState == null) 
         {
-            _autoCompleteOffViewState = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                    INIT_PARAM_AUTOCOMPLETE_OFF_VIEW_STATE, false);
+            _autoCompleteOffViewState = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
+            INIT_PARAM_AUTOCOMPLETE_OFF_VIEW_STATE, "true");
+    
+            _autoCompleteOffViewState =  _autoCompleteOffViewState.toLowerCase();
+    
+            if(_autoCompleteOffViewState.equals("false"))
+            {
+                _autoCompleteOffViewState = null;  // null means autocomplete isn't written
+            }
+            else if(_autoCompleteOffViewState.equals("one-time-code"))
+            {
+               // keep it as is
+            } 
+            else // default (true) and wrong config scenario
+            {
+                _autoCompleteOffViewState = "off";
+            }
         }
+
         return _autoCompleteOffViewState;
     }
 }
