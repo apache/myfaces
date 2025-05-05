@@ -18,6 +18,10 @@
  */
 package jakarta.faces.view.facelets;
 
+import jakarta.faces.component.UIComponent;
+
+import java.io.IOException;
+
 /**
  * @since 2.0
  */
@@ -26,4 +30,16 @@ public interface TextHandler extends FaceletHandler
     public String getText();
     
     public String getText(FaceletContext ctx);
+
+    /**
+     * <p class="changed_added_5_0">
+     * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose of
+     * not breaking existing implementations of this interface.
+     * </p>
+     */
+    @Override
+    default void apply(FaceletContext ctx, UIComponent parent) throws IOException
+    {
+        throw new UnsupportedOperationException();
+    }
 }
