@@ -139,7 +139,7 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <excludes>**/src/main/java/jakarta/faces/component/ActionSource.java,**/src/main/java/jakarta/faces/component/StateHelper.java</excludes>
+                            <excludes>**/src/main/java/jakarta/faces/component/ActionSource.java,**/src/main/java/jakarta/faces/component/StateHelper.java,**/src/main/java/jakarta/faces/view/facelets/TextHandler.java</excludes>
                         </configuration>
                         <goals>
                             <goal>build-metadata</goal>
@@ -150,7 +150,7 @@
                         <configuration>
                             <jsfVersion>20</jsfVersion>
                             <templateComponentName>componentClass20.vm</templateComponentName>
-                            <excludes>**/src/main/java/jakarta/faces/component/ActionSource.java,**/src/main/java/jakarta/faces/component/StateHelper.java</excludes>
+                            <excludes>**/src/main/java/jakarta/faces/component/ActionSource.java,**/src/main/java/jakarta/faces/component/StateHelper.java,**/src/main/java/jakarta/faces/view/facelets/TextHandler.java</excludes>
                         </configuration>
                         <goals>
                             <goal>make-components</goal>
