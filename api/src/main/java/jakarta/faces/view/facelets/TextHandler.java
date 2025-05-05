@@ -33,8 +33,8 @@ public interface TextHandler extends FaceletHandler
 
     /**
      * <p class="changed_added_5_0">
-     * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose of
-     * not breaking existing implementations of this interface.
+     * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole
+     * purpose of not breaking existing implementations of this interface.
      * </p>
      */
     @Override
