@@ -117,6 +117,10 @@ public class ClientWindowScopeContext implements Context
         checkActive(facesContext);
 
         ContextualStorage storage = getContextualStorage(facesContext, true);
+        if (storage == null)
+        {
+            return null;
+        }
 
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
         ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
