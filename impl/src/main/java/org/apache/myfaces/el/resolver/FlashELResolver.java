@@ -218,7 +218,7 @@ public class FlashELResolver extends ELResolver
      *   This occur when the ELResolver try to get the keep object.
      *   
      * Note that when "keep" is resolved by FlashELResolver,
-     * we need a way to comunicate that the current lookup is 
+     * we need a way to communicate that the current lookup is
      * for keep promotion.
      * 
      * This var do the job.

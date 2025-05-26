@@ -40,7 +40,7 @@ import org.apache.myfaces.view.facelets.tag.faces.core.AjaxHandler;
  * The methods here are only used by the current implementation and the intention
  * is not expose it as public api.
  * 
- * Aditionally, it also contains methods used by the current implementation for
+ * Additionally, it also contains methods used by the current implementation for
  * implement new features, like composite components and UniqueIdVendor support.
  * 
  * @author Leonardo Uribe (latest modification by $Author$)

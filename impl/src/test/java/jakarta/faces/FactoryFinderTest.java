@@ -250,7 +250,7 @@ public class FactoryFinderTest
     }
 
     /*
-     * Adding factories should add the class name to the list of avalable class names Test method for
+     * Adding factories should add the class name to the list of available class names Test method for
      * 'jakarta.faces.FactoryFinder.setFactory(String, String)'
      */
     @Test

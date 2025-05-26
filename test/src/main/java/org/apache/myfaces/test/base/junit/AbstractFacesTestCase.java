@@ -64,7 +64,7 @@ import  org.junit.jupiter.api.BeforeEach;
  * <p>In addition, appropriate factory classes will have been registered with
  * <code>jakarta.faces.FactoryFinder</code> for <code>Application</code> and
  * <code>RenderKit</code> instances.  The created <code>FacesContext</code>
- * instance will also have been registered in the apppriate thread local
+ * instance will also have been registered in the appropriate thread local
  * variable, to simulate what a servlet container would do.</p>
  *
  * <p><strong>WARNING</strong> - If you choose to subclass this class, be sure

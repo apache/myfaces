@@ -168,7 +168,7 @@ class _Hex
         int digit = Character.digit(ch, 16);
         if (digit == -1)
         {
-            throw new Exception("Illegal hexadecimal charcter " + ch
+            throw new Exception("Illegal hexadecimal character " + ch
                     + " at index " + index);
         }
         return digit;

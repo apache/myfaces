@@ -43,7 +43,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
     }
 
     @Test
-    public void testWithNullExperession() throws Exception
+    public void testWithNullExpression() throws Exception
     {
         try
         {
@@ -62,7 +62,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
     }
 
     @Test
-    public void testWithEmptyExperession() throws Exception
+    public void testWithEmptyExpression() throws Exception
     {
         Assertions.assertNull(_testImpl.findComponent(""));
     }

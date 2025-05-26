@@ -54,8 +54,8 @@ public class CsrfSessionTokenFactorySecureRandom extends CsrfSessionTokenFactory
      * By default is SHA1PRNG
      */
     @JSFWebConfigParam(since="2.2.0", defaultValue="SHA1PRNG", group="state")
-    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM 
-            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM";
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_PARAM
+            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM";
     
     private final SessionIdGenerator sessionIdGenerator;
     private final int length;
@@ -87,7 +87,7 @@ public class CsrfSessionTokenFactorySecureRandom extends CsrfSessionTokenFactory
         
         String secureRandomAlgorithm = WebConfigParamUtils.getStringInitParameter(
             facesContext.getExternalContext(), 
-            RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM);
+            RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_PARAM);
         if (secureRandomAlgorithm != null)
         {
             sessionIdGenerator.setSecureRandomAlgorithm(secureRandomAlgorithm);

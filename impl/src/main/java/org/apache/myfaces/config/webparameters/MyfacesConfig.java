@@ -259,7 +259,7 @@ public class MyfacesConfig
     /**
      * This param makes h:form component to render the view state and other hidden fields
      * at the beginning of the form. This also includes component resources with target="form",
-     * but it does not include legacy 1.1 myfaces specific hidden field adition.
+     * but it does not include legacy 1.1 myfaces specific hidden field addition.
      */
     @JSFWebConfigParam(since = "2.2.4", defaultValue = "false", expectedValues = "true,false",
             group="render")

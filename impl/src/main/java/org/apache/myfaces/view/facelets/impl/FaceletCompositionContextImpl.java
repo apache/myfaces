@@ -608,7 +608,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _deletionLevel--;
     }
 
-    /** Mark a component to be deleted from the tree. The component to be deleted is addded on the
+    /** Mark a component to be deleted from the tree. The component to be deleted is added on the
      * current level. This is done from ComponentSupport.markForDeletion
      *
      * @param id
@@ -1073,7 +1073,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     {
         if (_visitContextFactory == null)
         {
-            // Store it in application map improve performance because it avoids FactoryFinde.getFactory(...) call
+            // Store it in application map improve performance because it avoids FactoryFinder.getFactory(...) call
             // which has synchronized blocks.
             _visitContextFactory = (VisitContextFactory) _facesContext.getExternalContext().getApplicationMap()
                     .computeIfAbsent(
