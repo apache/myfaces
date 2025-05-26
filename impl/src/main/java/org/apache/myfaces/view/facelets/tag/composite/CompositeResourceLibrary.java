@@ -266,7 +266,7 @@ public class CompositeResourceLibrary implements TagLibrary
                         if (compositeComponentResourceWrapped != null)
                         {
                             Resource compositeComponentResource
-                                    = new CompositeResouceWrapper(compositeComponentResourceWrapped);
+                                    = new CompositeResourceWrapper(compositeComponentResourceWrapped);
                             ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
                                     "jakarta.faces.NamingContainer", null);
 

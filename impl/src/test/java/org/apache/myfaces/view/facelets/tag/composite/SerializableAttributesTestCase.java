@@ -33,7 +33,7 @@ public class SerializableAttributesTestCase
     @Test
     public void testSerializeCompositeResourceWrapper() throws Exception
     {
-        CompositeResouceWrapper subject = new CompositeResouceWrapper();
+        CompositeResourceWrapper subject = new CompositeResourceWrapper();
         subject.setResourceName("testRes");
         subject.setLibraryName("testLib");
         subject.setContentType(null);
@@ -45,7 +45,7 @@ public class SerializableAttributesTestCase
         baos.flush();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
-        CompositeResouceWrapper blorg = (CompositeResouceWrapper) ois.readObject();
+        CompositeResourceWrapper blorg = (CompositeResourceWrapper) ois.readObject();
         Assertions.assertEquals(blorg.getResourceName(), subject.getResourceName());
         Assertions.assertEquals(blorg.getLibraryName(), subject.getLibraryName());
         Assertions.assertEquals(blorg.getContentType(), subject.getContentType());
