@@ -1928,7 +1928,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     }
 
     /**
-     * Agregates events for ANY_PHASE and current phase
+     * Aggregates events for ANY_PHASE and current phase
      */
     private static class Events
     {
