@@ -39,18 +39,18 @@ import jakarta.faces.context.FacesContext;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public final class CompositeResouceWrapper extends Resource implements FacesWrapper<Resource>, Externalizable
+public final class CompositeResourceWrapper extends Resource implements FacesWrapper<Resource>, Externalizable
 {
     private static final long serialVersionUID = 8067930634887545843L;
     
     private transient Resource _delegate;
     
-    public CompositeResouceWrapper()
+    public CompositeResourceWrapper()
     {
         super();
     }
     
-    public CompositeResouceWrapper(Resource delegate)
+    public CompositeResourceWrapper(Resource delegate)
     {
         super();
         this._delegate = delegate;

@@ -47,7 +47,7 @@ import jakarta.faces.view.facelets.ValidatorHandler;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.LocationAwareFacesException;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceWrapper;
 
 /**
  * Base class for defining TagLibraries in Java
@@ -832,7 +832,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
             if (compositeComponentResourceWrapped != null)
             {
                 Resource compositeComponentResource
-                        = new CompositeResouceWrapper(compositeComponentResourceWrapped);
+                        = new CompositeResourceWrapper(compositeComponentResourceWrapped);
                 ComponentConfig componentConfig = new ComponentConfigWrapper(cfg,
                         "jakarta.faces.NamingContainer", null);
 
