@@ -132,8 +132,8 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         servletContext.setAttribute(MyFacesHttpSessionListener.APPLICATION_MAP_KEY, httpSessionListener);
         
         
-        boolean startDireclty = shouldStartupRegardless(servletContext);
-        if (startDireclty)
+        boolean startDirectly = shouldStartupRegardless(servletContext);
+        if (startDirectly)
         {
             // if the INITIALIZE_ALWAYS_STANDALONE param was set to true,
             // we do not want to have the FacesServlet being added, we simply 

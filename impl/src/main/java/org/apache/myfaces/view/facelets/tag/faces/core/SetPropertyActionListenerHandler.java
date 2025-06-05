@@ -121,7 +121,7 @@ public class SetPropertyActionListenerHandler extends TagHandler
             {
                 Class<?> targetType = _target.getType(elContext);
                 // Spec says: "all getType() on the "value" to determine  property type" but it is not necessary
-                // beacuse type we have objValue already
+                // because type we have objValue already
 
                 //   Coerce the value of the "value" expression to
                 // the "target" expression value type following the Expression
