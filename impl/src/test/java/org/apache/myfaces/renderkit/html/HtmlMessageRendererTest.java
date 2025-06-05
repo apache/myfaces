@@ -131,7 +131,7 @@ public class HtmlMessageRendererTest extends AbstractFacesConfigurableMockTestCa
         
         facesContext.addMessage(inputText.getClientId(facesContext), 
                 new FacesMessage("Validation message here."));        
-        facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSumary", "detailWarnSummary"));
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSummary", "detailWarnSummary"));
         message.setErrorClass(ERROR_CLASS);
         message.setWarnClass(WARN_CLASS);
         message.setInfoClass(INFO_CLASS);
@@ -149,7 +149,7 @@ public class HtmlMessageRendererTest extends AbstractFacesConfigurableMockTestCa
     @Test
     public void testRenderSpanOnlyWhenNecessary() throws Exception
     {
-        facesContext.addMessage(inputText.getClientId(), new FacesMessage(FacesMessage.Severity.WARN, "warnSumary", "detailWarnSummary"));
+        facesContext.addMessage(inputText.getClientId(), new FacesMessage(FacesMessage.Severity.WARN, "warnSummary", "detailWarnSummary"));
         message.setFor("myInputId");
         message.encodeEnd(facesContext);
         facesContext.renderResponse();
@@ -164,7 +164,7 @@ public class HtmlMessageRendererTest extends AbstractFacesConfigurableMockTestCa
         
         facesContext.addMessage(inputText.getClientId(facesContext), 
                 new FacesMessage("Validation message here."));
-        facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSumary", "detailWarnSummary"));
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSummary", "detailWarnSummary"));
         message.setErrorClass(ERROR_CLASS);
         message.setWarnClass(WARN_CLASS);
         message.setInfoClass(INFO_CLASS);

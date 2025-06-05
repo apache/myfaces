@@ -23,7 +23,7 @@ import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceWrapper;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
@@ -243,7 +243,7 @@ public final class TagLibraryConfig
                         // CompositeComponentResourceTagHandler. Then, its values 
                         // (resourceName, libraryName) will be used to derive the real instance
                         // to use in a view, based on the locale used.
-                        Resource compositeComponentResource = new CompositeResouceWrapper(
+                        Resource compositeComponentResource = new CompositeResourceWrapper(
                             _resourceHandler.createResource(resourceName, _compositeLibraryName));
                         
                         if (compositeComponentResource != null)

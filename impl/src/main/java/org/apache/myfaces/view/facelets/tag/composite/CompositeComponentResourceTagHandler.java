@@ -452,7 +452,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             if (resourceForCurrentView != null)
             {
                 //Wrap it for serialization.
-                resourceForCurrentView = new CompositeResouceWrapper(resourceForCurrentView);
+                resourceForCurrentView = new CompositeResourceWrapper(resourceForCurrentView);
             }
             else
             {
