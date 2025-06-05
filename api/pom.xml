@@ -325,7 +325,7 @@
             </build>
         </profile>
 
-        <!-- This profile verifies the binary compablity with the jsf api of the RI -->
+        <!-- This profile verifies the binary compatibility with the jsf api of the RI -->
         <profile>
             <id>checkCompatibility</id>
             <build>

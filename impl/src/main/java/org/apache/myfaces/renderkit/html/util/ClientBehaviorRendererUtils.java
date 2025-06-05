@@ -138,7 +138,7 @@ public class ClientBehaviorRendererUtils
      *
      * @param eventName    event name ("onclick" etc...)
      * @param config       the {@link MyfacesConfig}
-     * @param uiComponent  the component which has the attachement (or should have)
+     * @param uiComponent  the component which has the attachment (or should have)
      * @param facesContext the facesContext
      * @param params       params map of params which have to be dragged into the request
      * @return a string representation of the javascripts for the attached event behavior,

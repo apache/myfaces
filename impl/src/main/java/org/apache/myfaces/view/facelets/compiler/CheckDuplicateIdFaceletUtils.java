@@ -135,7 +135,7 @@ public final class CheckDuplicateIdFaceletUtils
             }
         }
 
-        // 2) we store the first commponent in exception attributes
+        // 2) we store the first component in exception attributes
         DuplicateIdException duplicateIdException = new DuplicateIdException(message, firstComponent, component);
 
         ExceptionQueuedEventContext exceptionContext = new ExceptionQueuedEventContext(context, duplicateIdException,
