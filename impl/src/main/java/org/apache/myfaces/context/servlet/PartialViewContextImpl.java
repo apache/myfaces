@@ -574,7 +574,8 @@ public class PartialViewContextImpl extends PartialViewContext
             List<UIComponent> list = rvc.getRenderTargetComponentList(target);
             if (list != null && !list.isEmpty())
             {
-                writer.startUpdate("jakarta.faces.Resource");
+                boolean updateStarted = false;
+
                 for (UIComponent component : list)
                 {
                     boolean resourceRendered = false;
@@ -586,6 +587,12 @@ public class PartialViewContextImpl extends PartialViewContext
 
                         if (resourceName == null || resourceName.isEmpty())
                         {
+                            if (!updateStarted)
+                            {
+                                writer.startUpdate("jakarta.faces.Resource");
+                                updateStarted = true;
+                            }
+
                             // No resource, render all
                             component.encodeAll(facesContext);
                             continue;
@@ -600,11 +607,23 @@ public class PartialViewContextImpl extends PartialViewContext
                         if (!context.getApplication().getResourceHandler().isResourceRendered(
                                 context, resourceName, libraryName))
                         {
+                            if (!updateStarted)
+                            {
+                                writer.startUpdate("jakarta.faces.Resource");
+                                updateStarted = true;
+                            }
+
                             component.encodeAll(facesContext);
                         }
                     }
                     else
                     {
+                        if (!updateStarted)
+                        {
+                            writer.startUpdate("jakarta.faces.Resource");
+                            updateStarted = true;
+                        }
+
                         component.encodeAll(facesContext);
                     }
                     if (!resourceRendered)
@@ -616,7 +635,11 @@ public class PartialViewContextImpl extends PartialViewContext
                         updatedComponents.add(component);
                     }
                 }
-                writer.endUpdate();
+
+                if (updateStarted)
+                {
+                    writer.endUpdate();
+                }
             }
         }
     }
