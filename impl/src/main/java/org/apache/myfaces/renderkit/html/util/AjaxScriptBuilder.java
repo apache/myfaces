@@ -189,7 +189,7 @@ public class AjaxScriptBuilder
         }
         sb.append(COMMA);
 
-        sb.append(commandScript == null ? AJAX_VAL_EVENT : AJAX_VAL_NULL);
+        sb.append(AJAX_VAL_EVENT);
         sb.append(COMMA);
         sb.append(QUOTE);
 
