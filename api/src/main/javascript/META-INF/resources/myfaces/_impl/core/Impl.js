@@ -276,7 +276,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             /*compliance with Mojarra which automatically adds @this to an execute
              * the spec rev 2.0a however states, if none is issued nothing at all should be sent down
              */
-            options.execute = (options.execute.indexOf("@this") == -1) ? options.execute : options.execute;
+            options.execute = (options.execute.indexOf("@this") == -1) ? [options.execute, "@this"].join(" ") : options.execute;
 
             this._transformList(passThrgh, this.P_EXECUTE, options.execute, form, elementId, context.viewId);
         } else {
