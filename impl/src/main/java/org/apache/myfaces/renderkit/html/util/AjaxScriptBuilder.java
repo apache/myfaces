@@ -189,7 +189,7 @@ public class AjaxScriptBuilder
         }
         sb.append(COMMA);
 
-        sb.append(commandScript == null ? AJAX_VAL_EVENT : AJAX_VAL_NULL);
+        sb.append(AJAX_VAL_EVENT);
 
 
         sb.append(COMMA);
@@ -305,7 +305,7 @@ public class AjaxScriptBuilder
             {
                 for (int i = 0; i < clientIds.size(); i++)
                 {
-                    if (i > 0 && (i < clientIds.size() -1 ))
+                    if (i > 0)
                     {
                         sb.append(' ');
                     }

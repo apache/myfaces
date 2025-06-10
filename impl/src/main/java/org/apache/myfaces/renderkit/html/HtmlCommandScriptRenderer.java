@@ -20,6 +20,7 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import jakarta.faces.component.UIComponent;
@@ -42,6 +43,8 @@ import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.util.StringUtils;
+
+import static jakarta.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME;
 
 @JSFRenderer(
     renderKitId="HTML_BASIC",
@@ -82,11 +85,16 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         
         script.prettyLine();
         script.increaseIndent();
-        script.append("var "+name+" = function(o){var o=(typeof o==='object')&&o?o:{};");
+        script.append("var "+name+" = function(o, event){var o=(typeof o==='object')&&o?o:{};");
         script.prettyLine();
-        
         List<UIParameter> uiParams = HtmlRendererUtils.getValidUIParameterChildren(
                 context, getChildren(commandScript), false, false);
+        UIParameter behaviorEventMarker = new UIParameter();
+        behaviorEventMarker.setName(BEHAVIOR_EVENT_PARAM_NAME);
+        behaviorEventMarker.setValue(commandScript.getDefaultEventName());
+        List<UIParameter> finalUIParams = new ArrayList<>(uiParams.size() + 1);
+        finalUIParams.addAll(uiParams);
+        finalUIParams.add(behaviorEventMarker);
         
         StringBuilder ajax = SharedStringBuilder.get(context, AJAX_SB, 60);
 
@@ -100,7 +108,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 commandScript.getResetValues(),
                 commandScript.getOnerror(),
                 commandScript.getOnevent(),
-                uiParams);
+                finalUIParams);
 
         script.append(ajax.toString());
         script.decreaseIndent();
@@ -140,7 +148,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         }
         
         Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
-        String behaviorEventName = paramMap.get(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
+        String behaviorEventName = paramMap.get(BEHAVIOR_EVENT_PARAM_NAME);
         if (behaviorEventName != null)
         {
             String sourceId = paramMap.get(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME);
