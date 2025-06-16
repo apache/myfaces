@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
- * Extendend functionality
- * like issuing element outside of a form
- * and partial page submit
- *
- * Author: Werner Punz (latest modification by $Author: ganeshpuri $)
- * Version: $Revision: 1.4 $ $Date: 2009/05/31 09:16:44 $
+ * this method is used only for pure multipart form parts
+ * like form data with file uploads.
+ * This is a replacement for the iframe request which we used until now
+ * The iframe method works on older browsers but most likely will
+ * be cut off in future browsers, because there is an alternative
+ * in form of FormData.
  */
+_MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
+    _AJAXUTIL: myfaces._impl.xhrCore._AjaxUtils,
 
-//partial extension for the ajax request
-myfaces._impl.xhrCore._AjaxRequest = _MF_CLS(_PFX_XHR + "_ExtAjaxRequest", myfaces._impl.xhrCore._AjaxRequest , /** @lends myfaces._impl.xhrCore._ExtAjaxRequest.prototype */ {
-    constructor_: function(args) {
-        this._callSuper("constructor_", args);
+    constructor_: function(arguments) {
+        this._callSuper("constructor_", arguments);
+
+        this._contentType = "multipart/form-data";
     },
 
     /**
      * Spec. 13.3.1
      * Collect and encode input elements.
-     * Additionally the hidden element jakarta.faces.ViewState
+     * Additionally, the hidden element javax.faces.ViewState
      * Enhancement partial page submit
      *
      * @return  an element of formDataWrapper
@@ -41,22 +42,34 @@ myfaces._impl.xhrCore._AjaxRequest = _MF_CLS(_PFX_XHR + "_ExtAjaxRequest", myfac
     getFormData : function() {
         var _AJAXUTIL = this._AJAXUTIL, myfacesOptions = this._context.myfaces, ret = null;
 
+
         //now this is less performant but we have to call it to allow viewstate decoration
         if (!this._partialIdsArray || !this._partialIdsArray.length) {
-            ret = this._callSuper("getFormData");
+            ret = new FormData();
+            _AJAXUTIL.encodeSubmittableFields(ret, this._sourceForm);
             //just in case the source item is outside of the form
             //only if the form override is set we have to append the issuing item
             //otherwise it is an element of the parent form
-            if (this._source && myfacesOptions && myfacesOptions.form)
+            if (this._source && !this._isBehaviorEvent()) {
                 _AJAXUTIL.appendIssuingItem(this._source, ret);
+            }
         } else {
-            ret = this._Lang.createFormDataDecorator(new Array());
+            ret = new FormData();
             _AJAXUTIL.encodeSubmittableFields(ret, this._sourceForm, this._partialIdsArray);
-            if (this._source && myfacesOptions && myfacesOptions.form)
+            if (this._source && !this._isBehaviorEvent()) {
                 _AJAXUTIL.appendIssuingItem(this._source, ret);
-
+            }
         }
+
         return ret;
+    },
+
+    _getTransport: function() {
+        return new XMLHttpRequest();
+    },
+
+    _applyContentType: function(xhr) {
+
     }
 
 });

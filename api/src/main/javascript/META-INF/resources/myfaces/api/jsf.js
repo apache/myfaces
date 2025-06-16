@@ -79,7 +79,7 @@ if (!window.jsf) {
          * </li>
          *
          * @return {String} the current project state emitted by the server side method:
-         * <i>jakarta.faces.application.Application.getProjectStage()</i>
+         * <i>javax.faces.application.Application.getProjectStage()</i>
          */
         this.getProjectStage = function() {
             var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
@@ -88,7 +88,7 @@ if (!window.jsf) {
 
         /**
          * collect and encode data for a given form element (must be of type form)
-         * find the jakarta.faces.ViewState element and encode its value as well!
+         * find the javax.faces.ViewState element and encode its value as well!
          * return a concatenated string of the encoded values!
          *
          * @throws an exception in case of the given element not being of type form!

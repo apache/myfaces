@@ -48,15 +48,20 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * [STATIC] constants
      */
 
-    P_PARTIAL_SOURCE:"jakarta.faces.source",
-    P_VIEWSTATE:"jakarta.faces.ViewState",
-    P_CLIENTWINDOW:"jakarta.faces.ClientWindow",
-    P_AJAX:"jakarta.faces.partial.ajax",
-    P_EXECUTE:"jakarta.faces.partial.execute",
-    P_RENDER:"jakarta.faces.partial.render",
-    P_EVT:"jakarta.faces.partial.event",
-    P_WINDOW_ID:"jakarta.faces.ClientWindow",
-    P_RESET_VALUES:"jakarta.faces.partial.resetValues",
+    P_PARTIAL_SOURCE:"javax.faces.source",
+    P_VIEWSTATE:"javax.faces.ViewState",
+    P_CLIENTWINDOW:"javax.faces.ClientWindow",
+    P_AJAX:"javax.faces.partial.ajax",
+    P_EXECUTE:"javax.faces.partial.execute",
+    P_RENDER:"javax.faces.partial.render",
+    P_EVT:"javax.faces.partial.event",
+    P_BEHAVIOR_EVENT:"javax.faces.behavior.event",
+    P_WINDOW_ID:"javax.faces.ClientWindow",
+    P_RESET_VALUES:"javax.faces.partial.resetValues",
+
+    //faces std values
+    STD_VALUES: [this.P_PARTIAL_SOURCE, this.P_VIEWSTATE, this.P_CLIENTWINDOW, this.P_AJAX,
+        this.P_EXECUTE, this.P_RENDER, this.P_EVT, this.P_BEHAVIOR_EVENT, this.P_WINDOW_ID, this.P_RESET_VALUES],
 
     /* message types */
     ERROR:"error",
@@ -84,7 +89,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
     /**
      * collect and encode data for a given form element (must be of type form)
-     * find the jakarta.faces.ViewState element and encode its value as well!
+     * find the javax.faces.ViewState element and encode its value as well!
      * return a concatenated string of the encoded values!
      *
      * @throws Error in case of the given element not being of type form!
@@ -142,7 +147,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
          *all the time
          **/
         var _Lang = this._Lang,
-                _Dom = this._Dom;
+            _Dom = this._Dom,
+            _Utils = myfaces._impl.xhrCore._AjaxUtils;
         /*assert if the onerror is set and once if it is set it must be of type function*/
         _Lang.assertType(options.onerror, "function");
         /*assert if the onevent is set and once if it is set it must be of type function*/
@@ -152,7 +158,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         options = options || {};
 
         /**
-         * we cross reference statically hence the mapping here
+         * we cross - reference statically hence the mapping here
          * the entire mapping between the functions is stateless
          */
         //null definitely means no event passed down so we skip the ie specific checks
@@ -180,6 +186,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
          */
         // this is legacy behavior which is faulty, will be removed if we decide to do it
         // that way
+        // TODO not sure whether we add the naming container prefix to the user params
         var passThrgh = _Lang.mixMaps({}, options, true, this._BLOCKFILTER);
         // jsdoc spec everything under params must be passed through
         if(options.params)  {
@@ -223,6 +230,12 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         context.viewId = this.getViewId(form);
 
         /**
+         * we also now assign the container data to deal with it later
+         */
+        _Utils._assignNamingContainerData(mfInternal, form, jsf.separatorchar);
+
+
+        /**
          * JSF2.2 client window must be part of the issuing form so it is encoded
          * automatically in the request
          */
@@ -231,7 +244,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //in case someone decorates the getClientWindow we reset the value from
         //what we are getting
         if ('undefined' != typeof clientWindow && null != clientWindow) {
-            var formElem = _Dom.getNamedElementFromForm(form, this.P_CLIENTWINDOW);
+            var formElem = _Dom.getNamedElementFromForm(form, _Utils._$ncRemap(mfInternal,  this.P_CLIENTWINDOW));
             if (formElem) {
                 //we store the value for later processing during the ajax phase
                 //job so that we do not get double values
@@ -251,18 +264,18 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         */
 
         /**
-         * binding contract the jakarta.faces.source must be set
+         * binding contract the javax.faces.source must be set
          */
         passThrgh[this.P_PARTIAL_SOURCE] = elementId;
 
         /**
-         * jakarta.faces.partial.ajax must be set to true
+         * javax.faces.partial.ajax must be set to true
          */
         passThrgh[this.P_AJAX] = true;
 
         /**
          * if resetValues is set to true
-         * then we have to set jakarta.faces.resetValues as well
+         * then we have to set javax.faces.resetValues as well
          * as pass through parameter
          * the value has to be explicitly true, according to
          * the specs jsdoc
@@ -313,9 +326,26 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         passThrgh[form.id] = form.id;
 
         /* jsf2.2 only: options.delay || */
+
+        // TCK 790 we now have to remap all passthroughs in case of a naming container
+        // thing is the naming container is always prefixed on inputs, and our own
+        // passthroughs are not mapped for now (if we have to do that we we have to add a similar mapping code)
+        var passthroughKeys = Object.keys(passThrgh);
+        for(var key in passthroughKeys) {
+            if(!Object.hasOwnProperty(key) || this.STD_VALUES.indexOf(key) == -1) {
+                continue;
+            }
+            passThrgh[_Utils._$ncRemap(mfInternal, key)] = passThrgh[key];
+            delete passThrgh[key];
+        }
+
+        /* faces2.2 only: options.delay || */
         var delayTimeout = options.delay || this._RT.getLocalOrGlobalConfig(context, "delay", false);
 
         if (!!delayTimeout) {
+            if(delayTimeout.toLowerCase &&  delayTimeout.toLowerCase() === "none"){
+                delayTimeout = 0;
+            }
             if(!(delayTimeout >= 0)) {
                 // abbreviation which covers all cases of non positive values,
                 // including NaN and non-numeric strings, no type equality is deliberate here,
@@ -697,7 +727,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
                 getConfig = myfaces._impl.core._Runtime.getGlobalConfig,
                 scriptTags = document.getElementsByTagName("script");
         for (var i = 0; i < scriptTags.length && !found; i++) {
-            if (scriptTags[i].src.search(/\/jakarta\.faces\.resource.*\/jsf\.js.*separator/) != -1) {
+            if (scriptTags[i].src.search(/\/javax\.faces\.resource.*\/jsf\.js.*separator/) != -1) {
                 found = true;
                 var result = scriptTags[i].src.match(/separator=([^&;]*)/);
                 this._separator = decodeURIComponent(result[1]);
@@ -727,7 +757,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
             /* run through all script tags and try to find the one that includes jsf.js */
             for (var i = 0; i < scriptTags.length && !found; i++) {
-                if (scriptTags[i].src.search(/\/jakarta\.faces\.resource\/jsf\.js.*ln=jakarta\.faces/) != -1) {
+                if (scriptTags[i] && scriptTags[i].src && scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
                     var result = scriptTags[i].src.match(/stage=([^&;]*)/);
                     found = true;
                     if (result) {

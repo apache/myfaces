@@ -49,12 +49,12 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
     CMD_REDIRECT: "redirect",
 
     /*other constants*/
-    P_VIEWSTATE: "jakarta.faces.ViewState",
-    P_CLIENTWINDOW: "jakarta.faces.ClientWindow",
-    P_VIEWROOT: "jakarta.faces.ViewRoot",
-    P_VIEWHEAD: "jakarta.faces.ViewHead",
-    P_VIEWBODY: "jakarta.faces.ViewBody",
-    P_RESOURCE: "jakarta.faces.Resource",
+    P_VIEWSTATE: "javax.faces.ViewState",
+    P_CLIENTWINDOW: "javax.faces.ClientWindow",
+    P_VIEWROOT: "javax.faces.ViewRoot",
+    P_VIEWHEAD: "javax.faces.ViewHead",
+    P_VIEWBODY: "javax.faces.ViewBody",
+    P_RESOURCE: "javax.faces.Resource",
 
     /**
      * uses response to start Html element replacement
@@ -232,7 +232,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var _Dom = this._Dom;
         var prefix = this._getPrefix(context);
 
-        //in IE7 looking up form elements with complex names (such as 'jakarta.faces.ViewState') fails in certain cases
+        //in IE7 looking up form elements with complex names (such as 'javax.faces.ViewState') fails in certain cases
         //iterate through the form elements to find the element, instead
         var fieldsFound = [];
 
@@ -258,7 +258,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
             //per JSF 2.3 spec the identifier of the element must be unique in the dom tree
             //otherwise we will break the html spec here
-            element.innerHTML = ["<input type='hidden'", "id='", this._fetchUniqueId(prefix, identifier), "' name='", identifier, "' value='", value, "' />"].join("");
+            element.innerHTML = ["<input type='hidden'", "id='", this._fetchUniqueId(prefix, identifier), "' name='", this._getNamingContainerPrefix(context) + identifier, "' value='", value, "' />"].join("");
             //now we go to proper dom handling after having to deal with another ie screw-up
             try {
                 theForm.appendChild(element.childNodes[0]);
@@ -284,7 +284,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @param context the client context holding all request context data and some internal data
      * @param elem the root to start with, must be a dom node not an identifier
      * @param value the new value
-     * @param identifier the identifier for the client artifact aka jakarta.faces.ViewState, ClientWindowId etc...
+     * @param identifier the identifier for the client artifact aka javax.faces.ViewState, ClientWindowId etc...
      *
      * @private
      */
@@ -386,6 +386,12 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         if (prefix != "") {
             prefix = prefix + jsf.separatorchar;
         }
+        return prefix;
+    },
+
+    _getNamingContainerPrefix: function(context) {
+        var mfInternal = context._mfInternal;
+        var prefix = myfaces._impl.xhrCore._AjaxUtils._$ncRemap(context._mfInternal, "");
         return prefix;
     },
 
