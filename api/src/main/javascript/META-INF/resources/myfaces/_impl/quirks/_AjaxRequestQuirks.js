@@ -97,7 +97,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequestQuirks", myfaces._impl.xhrCore._AjaxRequest, /**
     },
 
     _applyClientWindowId:function () {
-        var clientWindow = this._Dom.getNamedElementFromForm(this._sourceForm, "javax.faces.ClientWindow");
+        var clientWindow = this._Dom.getNamedElementFromForm(this._sourceForm, "jakarta.faces.ClientWindow");
         //pass through if exists already set by _Impl
         if ('undefined' != typeof this._context._mfInternal._clientWindow) {
             this._context._mfInternal._clientWindowOld = clientWindow.value;
@@ -113,7 +113,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequestQuirks", myfaces._impl.xhrCore._AjaxRequest, /**
     _restoreClientWindowId:function () {
         //we have to reset the client window back to its original state
 
-        var clientWindow = this._Dom.getNamedElementFromForm(this._sourceForm, "javax.faces.ClientWindow");
+        var clientWindow = this._Dom.getNamedElementFromForm(this._sourceForm, "jakarta.faces.ClientWindow");
         if(!clientWindow) {
             return;
         }
@@ -225,7 +225,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequestQuirks", myfaces._impl.xhrCore._AjaxRequest, /**
     /**
      * Spec. 13.3.1
      * Collect and encode input elements.
-     * Additionally the hidden element javax.faces.ViewState
+     * Additionally the hidden element jakarta.faces.ViewState
      *
      *
      * @return  an element of formDataWrapper

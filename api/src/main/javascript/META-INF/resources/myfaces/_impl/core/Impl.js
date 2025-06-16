@@ -48,16 +48,16 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * [STATIC] constants
      */
 
-    P_PARTIAL_SOURCE:"javax.faces.source",
-    P_VIEWSTATE:"javax.faces.ViewState",
-    P_CLIENTWINDOW:"javax.faces.ClientWindow",
-    P_AJAX:"javax.faces.partial.ajax",
-    P_EXECUTE:"javax.faces.partial.execute",
-    P_RENDER:"javax.faces.partial.render",
-    P_EVT:"javax.faces.partial.event",
-    P_BEHAVIOR_EVENT:"javax.faces.behavior.event",
-    P_WINDOW_ID:"javax.faces.ClientWindow",
-    P_RESET_VALUES:"javax.faces.partial.resetValues",
+    P_PARTIAL_SOURCE:"jakarta.faces.source",
+    P_VIEWSTATE:"jakarta.faces.ViewState",
+    P_CLIENTWINDOW:"jakarta.faces.ClientWindow",
+    P_AJAX:"jakarta.faces.partial.ajax",
+    P_EXECUTE:"jakarta.faces.partial.execute",
+    P_RENDER:"jakarta.faces.partial.render",
+    P_EVT:"jakarta.faces.partial.event",
+    P_BEHAVIOR_EVENT:"jakarta.faces.behavior.event",
+    P_WINDOW_ID:"jakarta.faces.ClientWindow",
+    P_RESET_VALUES:"jakarta.faces.partial.resetValues",
 
     //faces std values
     STD_VALUES: [this.P_PARTIAL_SOURCE, this.P_VIEWSTATE, this.P_CLIENTWINDOW, this.P_AJAX,
@@ -89,7 +89,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
     /**
      * collect and encode data for a given form element (must be of type form)
-     * find the javax.faces.ViewState element and encode its value as well!
+     * find the jakarta.faces.ViewState element and encode its value as well!
      * return a concatenated string of the encoded values!
      *
      * @throws Error in case of the given element not being of type form!
@@ -264,18 +264,18 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         */
 
         /**
-         * binding contract the javax.faces.source must be set
+         * binding contract the jakarta.faces.source must be set
          */
         passThrgh[this.P_PARTIAL_SOURCE] = elementId;
 
         /**
-         * javax.faces.partial.ajax must be set to true
+         * jakarta.faces.partial.ajax must be set to true
          */
         passThrgh[this.P_AJAX] = true;
 
         /**
          * if resetValues is set to true
-         * then we have to set javax.faces.resetValues as well
+         * then we have to set jakarta.faces.resetValues as well
          * as pass through parameter
          * the value has to be explicitly true, according to
          * the specs jsdoc
@@ -727,7 +727,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
                 getConfig = myfaces._impl.core._Runtime.getGlobalConfig,
                 scriptTags = document.getElementsByTagName("script");
         for (var i = 0; i < scriptTags.length && !found; i++) {
-            if (scriptTags[i].src.search(/\/javax\.faces\.resource.*\/jsf\.js.*separator/) != -1) {
+            if (scriptTags[i].src.search(/\/jakarta\.faces\.resource.*\/jsf\.js.*separator/) != -1) {
                 found = true;
                 var result = scriptTags[i].src.match(/separator=([^&;]*)/);
                 this._separator = decodeURIComponent(result[1]);
@@ -757,7 +757,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
             /* run through all script tags and try to find the one that includes jsf.js */
             for (var i = 0; i < scriptTags.length && !found; i++) {
-                if (scriptTags[i] && scriptTags[i].src && scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
+                if (scriptTags[i] && scriptTags[i].src && scriptTags[i].src.search(/\/jakarta\.faces\.resource\/jsf\.js.*ln=jakarta\.faces/) != -1) {
                     var result = scriptTags[i].src.match(/stage=([^&;]*)/);
                     found = true;
                     if (result) {

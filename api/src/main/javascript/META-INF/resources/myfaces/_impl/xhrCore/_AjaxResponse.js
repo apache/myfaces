@@ -49,12 +49,12 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
     CMD_REDIRECT: "redirect",
 
     /*other constants*/
-    P_VIEWSTATE: "javax.faces.ViewState",
-    P_CLIENTWINDOW: "javax.faces.ClientWindow",
-    P_VIEWROOT: "javax.faces.ViewRoot",
-    P_VIEWHEAD: "javax.faces.ViewHead",
-    P_VIEWBODY: "javax.faces.ViewBody",
-    P_RESOURCE: "javax.faces.Resource",
+    P_VIEWSTATE: "jakarta.faces.ViewState",
+    P_CLIENTWINDOW: "jakarta.faces.ClientWindow",
+    P_VIEWROOT: "jakarta.faces.ViewRoot",
+    P_VIEWHEAD: "jakarta.faces.ViewHead",
+    P_VIEWBODY: "jakarta.faces.ViewBody",
+    P_RESOURCE: "jakarta.faces.Resource",
 
     /**
      * uses response to start Html element replacement
@@ -232,7 +232,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var _Dom = this._Dom;
         var prefix = this._getPrefix(context);
 
-        //in IE7 looking up form elements with complex names (such as 'javax.faces.ViewState') fails in certain cases
+        //in IE7 looking up form elements with complex names (such as 'jakarta.faces.ViewState') fails in certain cases
         //iterate through the form elements to find the element, instead
         var fieldsFound = [];
 
@@ -284,7 +284,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @param context the client context holding all request context data and some internal data
      * @param elem the root to start with, must be a dom node not an identifier
      * @param value the new value
-     * @param identifier the identifier for the client artifact aka javax.faces.ViewState, ClientWindowId etc...
+     * @param identifier the identifier for the client artifact aka jakarta.faces.ViewState, ClientWindowId etc...
      *
      * @private
      */

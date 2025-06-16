@@ -31,14 +31,14 @@ _MF_CLS(_PFX_XHR+"_IFrameRequest", myfaces._impl.xhrCore._AjaxRequest,
      * @constant
      * @description request marker that the request is an iframe based request
      */
-    //JX_PART_IFRAME: "javax.faces.partial.iframe",
+    //JX_PART_IFRAME: "jakarta.faces.partial.iframe",
     /**
      * @constant
      * @description request marker that the request is an apache myfaces iframe request based request
      */
-    MF_PART_IFRAME: "javax.faces.transport.iframe",
+    MF_PART_IFRAME: "jakarta.faces.transport.iframe",
 
-    MF_PART_FACES_REQUEST: "javax.faces.request",
+    MF_PART_FACES_REQUEST: "jakarta.faces.request",
 
 
     constructor_: function(args) {
