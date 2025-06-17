@@ -58,7 +58,6 @@ public class AjaxScriptBuilder
     private static final String L_C_BRACE = "{";
     private static final String R_C_BRACE = "}";
     public static final String AJAX_KEY_PARAMS = "params";
-    public static final String AJAX_VAL_NULL = "null";
     public static final String MYFACES_AB = "myfaces.ab";
 
 
@@ -149,10 +148,6 @@ public class AjaxScriptBuilder
                              String userParameters)
     {
     // CHECKSTYLE:ON
-        HtmlCommandScript commandScript = (component instanceof HtmlCommandScript)
-                ? (HtmlCommandScript) component
-                : null;
-   
         sb.append(MYFACES_AB +L_PAREN);
 
         if (sourceId == null)
@@ -188,12 +183,12 @@ public class AjaxScriptBuilder
         }
         sb.append(COMMA);
 
-        sb.append(commandScript == null ? AJAX_VAL_EVENT : AJAX_VAL_NULL);
+        sb.append(AJAX_VAL_EVENT);
         sb.append(COMMA+QUOTE);
 
         sb.append(eventName);
         sb.append(QUOTE+COMMA);
-        
+
         SearchExpressionHandler seHandler = null;
         SearchExpressionContext seContext = null;
         if (StringUtils.isNotBlank(execute) || StringUtils.isNotBlank(render))
