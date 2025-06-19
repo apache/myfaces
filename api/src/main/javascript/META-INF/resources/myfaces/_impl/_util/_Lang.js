@@ -621,7 +621,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
              * @constructor
              */
             this.FormDataDecoratorOther = function (theFormData) {
-                this._valBuf = theFormData;
+                this._valBuf = theFormData || [];
                 this._idx = {};
 
             };
