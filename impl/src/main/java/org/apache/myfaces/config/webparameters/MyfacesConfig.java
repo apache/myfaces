@@ -575,7 +575,7 @@ public class MyfacesConfig
     @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", expectedValues="true, false", group="viewhandler", 
             tags="performance",
             desc="Enable or disable the cache used to 'remember' if a view exists or not and reduce the impact " +
-                 "of sucesive calls to ExternalContext.getResource().")
+                 "of successive calls to ExternalContext.getResource().")
     public static final String VIEWID_EXISTS_CACHE_ENABLED = "org.apache.myfaces.VIEWID_EXISTS_CACHE_ENABLED";
     private static final boolean VIEWID_EXISTS_CACHE_ENABLED_DEFAULT = true;
     
@@ -733,7 +733,7 @@ public class MyfacesConfig
     
 
     /**
-     * Define the class implementing InjectionProvider interface to handle dependendy injection,
+     * Define the class implementing InjectionProvider interface to handle dependency injection,
      * PostConstruct and PreDestroy callbacks.
      * 
      * <p>This also can be configured using a SPI entry (/META-INF/services/...).</p>
@@ -747,9 +747,9 @@ public class MyfacesConfig
     
     
     /**
-     * Defines if the clientbehavior scripts are passed as string or function to the faces.util.chain.
+     * Defines if the client behavior scripts are passed as string or function to the faces.util.chain.
      * "As string" is actually the default behavior of both MyFaces (until 2.3-next) and Mojarra.
-     * "As function" is quite usefull for CSP as no string needs to be evaluated as function.
+     * "As function" is quite useful for CSP as no string needs to be evaluated as function.
      * 
      * Our faces.util.chain supports both of course.
      */

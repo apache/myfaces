@@ -1479,7 +1479,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
 
             synchronized (cases)
             {
-                // We do not really need this sychronization at all, but this
+                // We do not really need this synchronization at all, but this
                 // gives us the peace of mind that some good optimizing compiler
                 // will not rearrange the execution of the assignment to an
                 // earlier time, before all init code completes

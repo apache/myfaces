@@ -139,7 +139,7 @@ public class NoInjectionAnnotationInjectionProvider extends InjectionProvider
             {
                 // a method that does not take any arguments
                 // the method must not be static
-                // must not throw any checked expections
+                // must not throw any checked exceptions
                 // the return value must be void
                 // the method may be public, protected, package private or private
 
@@ -178,9 +178,9 @@ public class NoInjectionAnnotationInjectionProvider extends InjectionProvider
             Method method = methods[i];
             if (method.isAnnotationPresent(PreDestroy.class))
             {
-                // must not throw any checked expections
+                // must not throw any checked exceptions
                 // the method must not be static
-                // must not throw any checked expections
+                // must not throw any checked exceptions
                 // the return value must be void
                 // the method may be public, protected, package private or private
 

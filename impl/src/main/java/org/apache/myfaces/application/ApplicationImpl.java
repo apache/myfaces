@@ -248,7 +248,7 @@ public class ApplicationImpl extends Application
             throw new IllegalArgumentException("runtimeConfig must mot be null");
         }
         // set default implementation in constructor
-        // pragmatic approach, no syncronizing will be needed in get methods
+        // pragmatic approach, no synchronizing will be needed in get methods
         _viewHandler = new ViewHandlerImpl();
         _navigationHandler = new NavigationHandlerImpl();
         _actionListener = new ActionListenerImpl();

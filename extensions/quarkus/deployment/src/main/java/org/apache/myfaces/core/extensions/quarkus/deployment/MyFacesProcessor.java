@@ -248,7 +248,7 @@ class MyFacesProcessor
         }
         if (facesServlet == null)
         {
-            // Only define here if not explictly defined in web.xml
+            // Only define here if not explicitly defined in web.xml
             servlet.produce(ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
                     .setMultipartConfig(new MultipartConfigElement(""))
                     .addMapping("*.xhtml")

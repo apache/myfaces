@@ -865,7 +865,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
         // - Perform the navigation
         //
         // Generated links requires only to perform the first one, but the operations
-        // are only perfomed when the transition between pages occur or in a get request
+        // are only performed when the transition between pages occur or in a get request
         // when there is a pending navigation. 
         ClientWindow clientWindow = context.getExternalContext().getClientWindow();
         

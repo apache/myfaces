@@ -129,7 +129,7 @@ class PackageInfo
             }
             else
             {
-                // iterate trhough all the children starting with the package name
+                // iterate through all the children starting with the package name
                 File file;
                 try
                 {
