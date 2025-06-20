@@ -265,8 +265,8 @@ public class ResourceImpl extends Resource implements ContractResource
             
             // If the lastModified date is lower or equal than ifModifiedSince,
             // the agent does not need to update.
-            // Note the lastModified time is set at milisecond precision, but when 
-            // the date is parsed and sent on ifModifiedSince, the exceding milliseconds
+            // Note the lastModified time is set at millisecond precision, but when
+            // the date is parsed and sent on ifModifiedSince, the exceeding milliseconds
             // are trimmed. So, we have to compare trimming this from the calculated
             // lastModified time.
             if ( (lastModified-(lastModified % 1000)) <= ifModifiedSince)

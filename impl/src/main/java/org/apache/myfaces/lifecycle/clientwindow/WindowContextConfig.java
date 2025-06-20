@@ -47,7 +47,7 @@ public class WindowContextConfig
      * It is only possible to prevent it if the ClientSideWindowHandler is used.
      * </p>
      *
-     * <p><b>ATTENTION:</b> Since CODI-1.0.6 this is set to <code>true</code> as defalt!</p>
+     * <p><b>ATTENTION:</b> Since CODI-1.0.6 this is set to <code>true</code> as default!</p>
      *
      * <p>
      * This must be enabled to:

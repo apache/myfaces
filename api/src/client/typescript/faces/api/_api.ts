@@ -250,7 +250,7 @@ export module myfaces {
      * @param execute execute list as passed down in faces.ajax.request
      * @param render the render list as string
      * @param options the options which need to be merged in
-     * @param userParameters a set of user parameters which go into the final options under params, they can overide whatever is passed via options
+     * @param userParameters a set of user parameters which go into the final options under params, they can override whatever is passed via options
      */
     export function ab(source: Element, event: Event, eventName: string, execute: string, render: string, options: Options = {}, userParameters: Options = {}): void {
         if(!options) {
