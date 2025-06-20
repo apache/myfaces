@@ -57,7 +57,7 @@ import jakarta.faces.validator.Validator;
  * {@link ApplicationFactory}. Because this instance is shared, it must be implemented in a thread-safe manner.
  * </p>
  * 
- * Holds webapp-wide resources for a Faces application. There is a single one of these for a web application, accessable
+ * Holds webapp-wide resources for a Faces application. There is a single one of these for a web application, accessible
  * via
  * 
  * <pre>
@@ -537,7 +537,7 @@ public abstract class Application
             return application.getBehaviorIds();
         }
         // It is better to return an empty iterator,
-        // to keep compatiblity with previous jsf 2.0 Application
+        // to keep compatibility with previous jsf 2.0 Application
         // instances
         return Collections.EMPTY_LIST.iterator();
     }

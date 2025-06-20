@@ -66,7 +66,7 @@ public class ValidateWholeBeanComponent extends UIInput
     @Override
     public void encodeBegin(FacesContext context) throws IOException
     {    
-        // Developement check: https://github.com/jakartaee/faces/issues/1780
+        // Development check: https://github.com/jakartaee/faces/issues/1780
         if (context.isProjectStage(ProjectStage.Development)) 
         {
             // find closest form

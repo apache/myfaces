@@ -877,7 +877,7 @@ public final class RendererUtils
         }
 
         // With Faces 2.0 url for resources can be done with EL like #{resource['resourcename']}
-        // and such EL after evalution contains context path for the current web application already,
+        // and such EL after evaluation contains context path for the current web application already,
         // -> we dont want call viewHandler.getResourceURL()
         if (uri.contains(ResourceHandler.RESOURCE_IDENTIFIER))
         {

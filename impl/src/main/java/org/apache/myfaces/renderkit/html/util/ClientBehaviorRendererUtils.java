@@ -414,7 +414,7 @@ public class ClientBehaviorRendererUtils
     /**
      * This function correctly escapes the given JavaScript code
      * for the use in the faces.util.chain() JavaScript function.
-     * It also handles double-escaping correclty.
+     * It also handles double-escaping correctly.
      *
      * @param facesContext
      * @param javaScript

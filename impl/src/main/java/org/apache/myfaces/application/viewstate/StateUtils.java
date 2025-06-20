@@ -531,7 +531,7 @@ public final class StateUtils
         
         if (log.isLoggable(Level.FINE))
         {
-            log.fine("Using algorithm paramaters " + algorithmParams);
+            log.fine("Using algorithm parameters " + algorithmParams);
         }
         
         return algorithmParams;

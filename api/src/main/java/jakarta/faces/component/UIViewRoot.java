@@ -1750,7 +1750,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 }
                 catch (RuntimeException re)
                 {
-                    // catch any Exception that occures while processing the phase
+                    // catch any Exception that occurs while processing the phase
                     // to ensure invocation of the afterPhase methods
                     processingException = re;
                 }

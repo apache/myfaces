@@ -481,7 +481,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     }
 
     /**
-     * If the binding attribute was specified, use that in conjuction with our componentType String variable to call
+     * If the binding attribute was specified, use that in conjunction with our componentType String variable to call
      * createComponent on the Application, otherwise just pass the componentType String. <p> If the binding was used,
      * then set the ValueExpression "binding" on the created UIComponent.</p>
      * 

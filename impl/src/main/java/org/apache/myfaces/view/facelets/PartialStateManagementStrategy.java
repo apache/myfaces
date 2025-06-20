@@ -227,7 +227,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                     // Since Faces 2.2, UIViewRoot.restoreViewScopeState() must be called, but
                     // to get the state of the root, it is necessary to force calculate the
                     // id from this location. Remember in this point, PSS is enabled, so the
-                    // code match with the assigment done in 
+                    // code match with the assignment done in
                     // FaceletViewDeclarationLanguage.buildView()
                     states = (Map<String, Object>) state[1];
                     faceletViewState = UIComponentBase.restoreAttachedState(

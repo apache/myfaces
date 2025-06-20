@@ -504,7 +504,7 @@ public class MockFlash extends Flash
     }
 
     /**
-     * For check if there is a redirect we to take into accout this points:
+     * For check if there is a redirect we to take into account this points:
      * <p/>
      * 1. isRedirect() could be accessed many times during the same
      * request.
