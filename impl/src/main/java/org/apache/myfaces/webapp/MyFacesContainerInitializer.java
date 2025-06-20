@@ -198,7 +198,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     }
 
     /**
-     * Checks if the <code>INITIALIZE_ALWAYS_STANDALONE</code> flag is ture in <code>web.xml</code>.
+     * Checks if the <code>INITIALIZE_ALWAYS_STANDALONE</code> flag is true in <code>web.xml</code>.
      * If the flag is true, this means we should not add the FacesServlet, instead we want to
      * init MyFaces regardless...
      */

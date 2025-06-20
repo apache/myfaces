@@ -220,7 +220,7 @@ public final class Classpath
     }
 
     /**
-     * Join tokens, exlude last if param equals true.
+     * Join tokens, exclude last if param equals true.
      * 
      * @param tokens
      *            the tokens

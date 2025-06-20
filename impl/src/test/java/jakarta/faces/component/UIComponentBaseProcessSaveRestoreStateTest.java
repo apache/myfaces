@@ -82,7 +82,7 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
     }
 
     @Test
-    public void testSaveStateExpections() throws Exception
+    public void testSaveStateExceptions() throws Exception
     {
         Assertions.assertThrows(NullPointerException.class, () -> {
             _testImpl.processSaveState(null);
@@ -90,7 +90,7 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
     }
 
     @Test
-    public void testRestoreStateExpections() throws Exception
+    public void testRestoreStateExceptions() throws Exception
     {
         Assertions.assertThrows(NullPointerException.class, () -> {
             _testImpl.processRestoreState(null, null);
