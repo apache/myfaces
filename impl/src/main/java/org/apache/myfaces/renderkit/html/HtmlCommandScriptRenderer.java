@@ -80,7 +80,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         
         script.prettyLine();
         script.increaseIndent();
-        script.append("var "+name+" = function(o){var o=(typeof o==='object')&&o?o:{};");
+        script.append("var "+name+" = function(o, event){var o=(typeof o==='object')&&o?o:{};");
         script.prettyLine();
         
         List<UIParameter> uiParams = HtmlRendererUtils.getValidUIParameterChildren(
