@@ -36,7 +36,7 @@ public final class TagHandlerUtils
 {
 
     /**
-     * Find the first occurence of a tag handler that is instanceof T
+     * Find the first occurrence of a tag handler that is instanceof T
      *
      * @since 2.0.1
      * @param <T>

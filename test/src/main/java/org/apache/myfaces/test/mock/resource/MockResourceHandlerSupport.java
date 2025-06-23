@@ -91,7 +91,7 @@ public class MockResourceHandlerSupport
     }
 
     /**
-     * Get the mapping used as prefix(/faces) or sufix(.jsf)
+     * Get the mapping used as prefix(/faces) or suffix(.jsf)
      * 
      * @return
      */

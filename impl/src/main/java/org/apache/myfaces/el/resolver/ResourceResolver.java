@@ -101,7 +101,7 @@ public final class ResourceResolver extends ELResolver
                         // composite component, instead we need to find the libraryName of the
                         // composite component associated with the Location. For any composite component
                         // instance that is created under the same facelet it will be the same,
-                        // so it is enought to get the first one matching the Location object.
+                        // so it is enough to get the first one matching the Location object.
                         Location location = ResourceELUtils.getResourceLocationForResolver(facesContext);
                         if (location != null)
                         {

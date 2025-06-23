@@ -33,7 +33,7 @@ import org.apache.myfaces.view.facelets.pool.ViewEntry;
  * the view. The maxCount is just a way to limit the max footprint fo the pool
  * in memory, but if the limit is exceed, the vm can always reclaim the memory space.</li>
  * <li>View creation is quite fast, so according to previous tests done,
- * include any syncronized method in this code will produce worse performance.</li>
+ * include any synchronized method in this code will produce worse performance.</li>
  * </ol>
  *
  * @author Leonardo Uribe

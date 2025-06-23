@@ -92,7 +92,7 @@
                 berlios jsunit under apache2 license to cover javascript core routines which
                 do not have to rely on a browser or can work on browser mockups!
 
-                for furhter on dom testing we probably have to integrate html based tests
+                for further on dom testing we probably have to integrate html based tests
                 with a browser engine but for the core apis this should be sufficient
             -->
             <plugin>

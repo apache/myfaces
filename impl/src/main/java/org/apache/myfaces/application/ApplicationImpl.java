@@ -248,7 +248,7 @@ public class ApplicationImpl extends Application
             throw new IllegalArgumentException("runtimeConfig must mot be null");
         }
         // set default implementation in constructor
-        // pragmatic approach, no syncronizing will be needed in get methods
+        // pragmatic approach, no synchronizing will be needed in get methods
         _viewHandler = new ViewHandlerImpl();
         _navigationHandler = new NavigationHandlerImpl();
         _actionListener = new ActionListenerImpl();
@@ -1330,10 +1330,10 @@ public class ApplicationImpl extends Application
      * A converter registered via a config file can have any number of nested attribute or property tags. The Faces
      * specification is very vague about what effect these nested tags have. This method ignores nested attribute
      * definitions, but for each nested property tag the corresponding setter is invoked on the new Converter instance
-     * passing the property's defaultValuer. Basic typeconversion is done so the target properties on the Converter
+     * passing the property's defaultValuer. Basic type conversion is done so the target properties on the Converter
      * instance can be String, int, boolean, etc. Note that:
      * <ol>
-     * <li>the Sun Mojarra Faces implemenation ignores nested property tags completely, so this behaviour cannot be 
+     * <li>the Sun Mojarra Faces implementation ignores nested property tags completely, so this behaviour cannot be
      * relied on across implementations.
      * <li>there is no equivalent functionality for converter classes registered via the Application.addConverter api
      * method.

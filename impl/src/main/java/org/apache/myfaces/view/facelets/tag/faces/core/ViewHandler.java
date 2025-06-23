@@ -121,7 +121,7 @@ public final class ViewHandler extends TagHandler
             if (this.contentType != null)
             {
                 // This value is read as rfc2616 section 3.7 Media Types.
-                // We should check and extract the param "charset" and assing
+                // We should check and extract the param "charset" and assign
                 // it as encoding for this page.
                 String v = this.contentType.getValue(ctx);
                 if (v != null)
@@ -137,7 +137,7 @@ public final class ViewHandler extends TagHandler
                             {
                                 encodingValue = v.substring(i);
                             }
-                            // Substract charset from encoding, it will be added 
+                            // Subtract charset from encoding, it will be added
                             // later on FaceletViewDeclarationLanguage.createResponseWriter
                             // by calling response.setContentType
                             v = v.substring(0 , j);

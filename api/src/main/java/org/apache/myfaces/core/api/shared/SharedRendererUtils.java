@@ -334,7 +334,7 @@ public class SharedRendererUtils
                             for (SelectItem itemFromGroup : group.getSelectItems()) 
                             {
                                 String keyString = getConvertedStringValue(
-                                    facesContext, component, converter, itemFromGroup); // converter retreived earlier
+                                    facesContext, component, converter, itemFromGroup); // converter retrieved earlier
                                 availableItems.put(keyString, itemFromGroup.getValue());
                             }
                         }
@@ -510,7 +510,7 @@ public class SharedRendererUtils
         /**
      * Convenient utility method that returns the currently given value as String,
      * using the given converter.
-     * Especially usefull for dealing with primitive types.
+     * Especially useful for dealing with primitive types.
      */
     public static String getConvertedStringValue(FacesContext context,
             UIComponent component, Converter converter, Object value)
@@ -537,7 +537,7 @@ public class SharedRendererUtils
     /**
      * Convenient utility method that returns the currently given SelectItem value
      * as String, using the given converter.
-     * Especially usefull for dealing with primitive types.
+     * Especially useful for dealing with primitive types.
      */
     public static String getConvertedStringValue(FacesContext context,
             UIComponent component, Converter converter, SelectItem selectItem)

@@ -198,7 +198,7 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
             try
             {
                 ClassUtils.classForName("jakarta.ejb.EJB");
-                // Asume full JEE 5 container
+                // Assume full JEE 5 container
                 return new AllAnnotationInjectionProvider(context);
             }
             catch (ClassNotFoundException e)
