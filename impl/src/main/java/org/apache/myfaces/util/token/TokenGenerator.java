@@ -21,7 +21,10 @@ package org.apache.myfaces.util.token;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,6 +34,13 @@ public class TokenGenerator
 {
     private final AtomicLong seed;
     
+    private static Logger log = Logger.getLogger(TokenGenerator.class.getName());
+
+    // TODO -- make a web parameter or it would be nice 
+    // to consolidate RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM, 
+    // and RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM
+    private String[] supportedAlgorithmsList = {"SHA256DRBG","DRBG","SHA1PRNG"};
+
     public TokenGenerator()
     {
         seed = new AtomicLong(generateSeed());
@@ -38,16 +48,27 @@ public class TokenGenerator
     
     private long generateSeed()
     {
-        SecureRandom rng;
-        try
+        SecureRandom rng = null;
+        for(String algorithm :supportedAlgorithmsList)
         {
-            // try SHA1 first
-            rng = SecureRandom.getInstance("SHA1PRNG");
+            if(rng == null) 
+            {
+                try
+                {
+                    rng = SecureRandom.getInstance(algorithm);
+                }
+                catch (NoSuchAlgorithmException e)
+                {
+                    // ignore -- log will next if rng is null
+                }
+            }
         }
-        catch (NoSuchAlgorithmException e)
+
+        if(rng == null)
         {
-            // SHA1 not present, so try the default (which could potentially not be
-            // cryptographically secure)
+            log.log(Level.WARNING, Arrays.toString(supportedAlgorithmsList) + " is not supported either." + 
+                "Attempting to use default implmenentation.");
+
             rng = new SecureRandom();
         }
 

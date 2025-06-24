@@ -107,17 +107,29 @@ public class MockFlash extends Flash
      */
     private static long _getSeed()
     {
-        SecureRandom rng;
+        SecureRandom rng = null;
         try
         {
-            // try SHA1 first
-            rng = SecureRandom.getInstance("SHA1PRNG");
+            // try SHA256DRBG first
+            rng = SecureRandom.getInstance("SHA256DRBG");
         }
         catch (NoSuchAlgorithmException e)
         {
-            // SHA1 not present, so try the default (which could potentially not be
-            // cryptographically secure)
-            rng = new SecureRandom();
+        }
+
+        if(rng == null)
+        {
+            try
+            {
+                // try SHA1 next
+                rng = SecureRandom.getInstance("SHA1PRNG");
+            }
+            catch (NoSuchAlgorithmException e)
+            {
+                // SHA256DRBG and SHA1PRNG not present, so try the default (which could potentially not be
+                // cryptographically secure)
+                rng = new SecureRandom();
+            }
         }
 
         // use 48 bits for strength and fill them in

@@ -474,12 +474,13 @@ public class MyfacesConfig
     
     /**
      * Sets the random algorithm to initialize the secure random id generator. 
-     * By default is SHA1PRNG
+     * The default is SHA256DRBG,DRBG,SHA1PRNG (in order of priority).
+     * The "SHA256DRBG,DRBG, and SHA1PRNG" options were introduced in 4.1.2. 
      */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA1PRNG", group="state")
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA256DRBG,DRBG,SHA1PRNG", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM";
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT = "SHA1PRNG";
+    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT = "SHA256DRBG,DRBG,SHA1PRNG";
     
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM = "random";
@@ -831,7 +832,7 @@ public class MyfacesConfig
     private int randomKeyInViewStateSessionTokenLength = RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_DEFAULT;
     private String randomKeyInViewStateSessionTokenSecureRandomClass;
     private String randomKeyInViewStateSessionTokenSecureRandomProvider;
-    private String randomKeyInViewStateSessionTokenSecureRandomAlgorithm
+    private String randomKeyInViewStateSessionTokenSecureRandomAlgorithmList
             = RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT;
     private String randomKeyInCsrfSessionToken = RANDOM_KEY_IN_CSRF_SESSION_TOKEN_DEFAULT;
     private boolean serializeStateInSession = false;
@@ -1147,7 +1148,7 @@ public class MyfacesConfig
                 RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER,
                 null);
         
-        cfg.randomKeyInViewStateSessionTokenSecureRandomAlgorithm = getString(extCtx,
+        cfg.randomKeyInViewStateSessionTokenSecureRandomAlgorithmList = getString(extCtx,
                 RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM,
                 RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT);
         
@@ -1611,9 +1612,9 @@ public class MyfacesConfig
         return randomKeyInViewStateSessionTokenSecureRandomProvider;
     }
 
-    public String getRandomKeyInViewStateSessionTokenSecureRandomAlgorithm()
+    public String[] getRandomKeyInViewStateSessionTokenSecureRandomAlgorithmList()
     {
-        return randomKeyInViewStateSessionTokenSecureRandomAlgorithm;
+        return randomKeyInViewStateSessionTokenSecureRandomAlgorithmList.split(",");
     }
 
     public String getRandomKeyInCsrfSessionToken()

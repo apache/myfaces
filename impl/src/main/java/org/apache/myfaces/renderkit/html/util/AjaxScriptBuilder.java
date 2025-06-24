@@ -24,7 +24,6 @@ import java.util.RandomAccess;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIParameter;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
-import jakarta.faces.component.html.HtmlCommandScript;
 import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.context.FacesContext;

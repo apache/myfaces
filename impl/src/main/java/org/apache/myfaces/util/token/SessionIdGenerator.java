@@ -21,6 +21,7 @@ package org.apache.myfaces.util.token;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
@@ -58,20 +59,24 @@ public class SessionIdGenerator
     /**
      * The name of the algorithm to use to create instances of
      * {@link SecureRandom} which are used to generate session IDs. If no
-     * algorithm is specified, SHA1PRNG is used. To use the platform default
-     * (which may be SHA1PRNG), specify the empty string. If an invalid
-     * algorithm and/or provider is specified the {@link SecureRandom} instances
-     * will be created using the defaults. If that fails, the {@link
+     * algorithm is specified, SHA256DRBG,DRBG, and SHA1PRNG is used. 
+     * They are ordered in prority. If none work, then MyFaces 
+     * will try to use the platform default.
+     * 
+     * If an invalid algorithm and/or provider is specified the {@link SecureRandom}
+     * instances will be created using the defaults. If that fails, the {@link
      * SecureRandom} instances will be created using platform defaults.
+     * 
+     * The "SHA256DRBG,DRBG, and SHA1PRNG" options were introduced in 4.1.2. 
      */
-    private String secureRandomAlgorithm = "SHA1PRNG";
+    private String[] secureRandomAlgorithmList = {"SHA256DRBG","DRBG", "SHA1PRNG"};
     
     /**
      * The name of the provider to use to create instances of
      * {@link SecureRandom} which are used to generate session IDs. If no
-     * algorithm is specified the of SHA1PRNG default is used. If an invalid
-     * algorithm and/or provider is specified the {@link SecureRandom} instances
-     * will be created using the defaults. If that fails, the {@link
+     * algorithm is specified, then  "SHA256DRBG,DRBG, and SHA1PRNG" will be tried.
+     * If an invalid algorithm and/or provider is specified the {@link SecureRandom}
+     * instances will be created using the defaults. If that fails, the {@link
      * SecureRandom} instances will be created using platform defaults.
      */
     private String secureRandomProvider = null;
@@ -101,9 +106,9 @@ public class SessionIdGenerator
      *
      * @param secureRandomAlgorithm The name of the algorithm
      */
-    public void setSecureRandomAlgorithm(String secureRandomAlgorithm)
-    {
-        this.secureRandomAlgorithm = secureRandomAlgorithm;
+    public void setSecureRandomAlgorithmList(String[] secureRandomAlgorithmList)
+    {        
+        this.secureRandomAlgorithmList = secureRandomAlgorithmList;
     }
 
     /**
@@ -223,52 +228,50 @@ public class SessionIdGenerator
             }
         }
 
-        if (result == null)
+        for(String secureRandomAlgorithm : secureRandomAlgorithmList )
         {
-            // No secureRandomClass or creation failed. Use SecureRandom.
-            try
+            if (result == null)
             {
-                if (StringUtils.isNotBlank(secureRandomProvider))
+                // No secureRandomClass or creation failed. Use SecureRandom.
+                try
                 {
-                    result = SecureRandom.getInstance(secureRandomAlgorithm, secureRandomProvider);
-                }
-                else
-                {
-                    if (StringUtils.isNotBlank(secureRandomAlgorithm))
+                    if (StringUtils.isNotBlank(secureRandomProvider))
                     {
-                        result = SecureRandom.getInstance(secureRandomAlgorithm);
+                        result = SecureRandom.getInstance(secureRandomAlgorithm, secureRandomProvider);
                     }
+                    else
+                    {
+                        if (StringUtils.isNotBlank(secureRandomAlgorithm))
+                        {
+                            result = SecureRandom.getInstance(secureRandomAlgorithm);
+                        }
+                    }
+                } 
+                catch (NoSuchAlgorithmException e)
+                {
+                    // ignore since we may have multiple algorithms to try
+                    // if result is null after this for loop, we log a serere msg below
+                }
+                catch (NoSuchProviderException e)
+                {
+                    log.log(Level.SEVERE, "Exception initializing random number generator using provider: " + 
+                            secureRandomProvider + " and algorithm: " + secureRandomAlgorithm, e);
                 }
             }
-            catch (NoSuchAlgorithmException e)
-            {
-                log.log(Level.SEVERE, "Exception initializing random number generator using algorithm: "+
-                        secureRandomAlgorithm, e);
-            }
-            catch (NoSuchProviderException e)
-            {
-                log.log(Level.SEVERE, "Exception initializing random number generator using provider: " + 
-                        secureRandomProvider, e);
-            }
         }
 
         if (result == null)
         {
-            // Invalid provider / algorithm
-            try
-            {
-                result = SecureRandom.getInstance("SHA1PRNG");
-            }
-            catch (NoSuchAlgorithmException e)
-            {
-                log.log(Level.SEVERE, "Invalid provider / algorithm SHA1PRNG for generate secure random token", e);
-            }
-        }
+             log.log(Level.SEVERE, "Defaulting to the platform default SecureRandom implementation due to failure" + 
+                " to initialize random number generator using algorithms: " 
+                + Arrays.toString(secureRandomAlgorithmList));
 
-        if (result == null)
-        {
             // Nothing works - use platform default
             result = new SecureRandom();
+        }
+        else
+        {
+             log.log(Level.INFO, "Sucessfully initialized session id generator with " + result);
         }
 
         // Force seeding to take place
