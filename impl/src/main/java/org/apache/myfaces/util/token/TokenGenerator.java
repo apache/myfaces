@@ -21,7 +21,12 @@ package org.apache.myfaces.util.token;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 
 /**
  *
@@ -31,23 +36,42 @@ public class TokenGenerator
 {
     private final AtomicLong seed;
     
+    private static Logger log = Logger.getLogger(TokenGenerator.class.getName());
+
+    // TODO -- make a web parameter or it would be nice 
+    // to consolidate RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM, 
+    // and RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM
+    private static String secureRandomAlgorithm;
+
     public TokenGenerator()
     {
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance();
+        // null check shouldn't be necessary since we have defaults specified?
+        secureRandomAlgorithm = config.getrandomKeyInViewStateSessionTokenSecureRandomAlgorithm();
         seed = new AtomicLong(generateSeed());
+    }
+
+    public static void setSecureRandomAlgorithm(String alg) {
+        secureRandomAlgorithm = alg;
     }
     
     private long generateSeed()
     {
-        SecureRandom rng;
-        try
+        SecureRandom rng = null;
+                try
+                {
+                    rng = SecureRandom.getInstance(secureRandomAlgorithm);
+                }
+                catch (NoSuchAlgorithmException e)
+                {
+                    // ignore -- log will next if rng is null
+                }
+
+        if(rng == null)
         {
-            // try SHA1 first
-            rng = SecureRandom.getInstance("SHA1PRNG");
-        }
-        catch (NoSuchAlgorithmException e)
-        {
-            // SHA1 not present, so try the default (which could potentially not be
-            // cryptographically secure)
+            log.log(Level.WARNING, secureRandomAlgorithm + " is not supported." + 
+                "Attempting to use default implmenentation.");
+
             rng = new SecureRandom();
         }
 
