@@ -110,12 +110,12 @@ public class MockFlash extends Flash
         SecureRandom rng;
         try
         {
-            // try SHA1 first
-            rng = SecureRandom.getInstance("SHA1PRNG");
+            // try SHA256DRBG first
+            rng = SecureRandom.getInstance("SHA256DRBG");
         }
         catch (NoSuchAlgorithmException e)
         {
-            // SHA1 not present, so try the default (which could potentially not be
+            // SHA256DRBG not present, so try the default (which could potentially not be
             // cryptographically secure)
             rng = new SecureRandom();
         }

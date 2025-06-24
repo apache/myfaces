@@ -58,18 +58,18 @@ public class SessionIdGenerator
     /**
      * The name of the algorithm to use to create instances of
      * {@link SecureRandom} which are used to generate session IDs. If no
-     * algorithm is specified, SHA1PRNG is used. To use the platform default
-     * (which may be SHA1PRNG), specify the empty string. If an invalid
+     * algorithm is specified, SHA256DRBG is used. To use the platform default
+     * (which may be SHA256DRBG), specify the empty string. If an invalid
      * algorithm and/or provider is specified the {@link SecureRandom} instances
      * will be created using the defaults. If that fails, the {@link
      * SecureRandom} instances will be created using platform defaults.
      */
-    private String secureRandomAlgorithm = "SHA1PRNG";
+    private String secureRandomAlgorithm = "SHA256DRBG";
     
     /**
      * The name of the provider to use to create instances of
      * {@link SecureRandom} which are used to generate session IDs. If no
-     * algorithm is specified the of SHA1PRNG default is used. If an invalid
+     * algorithm is specified the of SHA256DRBG default is used. If an invalid
      * algorithm and/or provider is specified the {@link SecureRandom} instances
      * will be created using the defaults. If that fails, the {@link
      * SecureRandom} instances will be created using platform defaults.
@@ -257,11 +257,11 @@ public class SessionIdGenerator
             // Invalid provider / algorithm
             try
             {
-                result = SecureRandom.getInstance("SHA1PRNG");
+                result = SecureRandom.getInstance("SHA256DRBG");
             }
             catch (NoSuchAlgorithmException e)
             {
-                log.log(Level.SEVERE, "Invalid provider / algoritm SHA1PRNG for generate secure random token", e);
+                log.log(Level.SEVERE, "Invalid provider / algoritm SHA256DRBG for generate secure random token", e);
             }
         }
 
