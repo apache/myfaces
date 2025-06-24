@@ -42,7 +42,7 @@ public class TokenGenerator
         try
         {
             // try SHA1 first
-            rng = SecureRandom.getInstance("SHA1PRNG");
+            rng = SecureRandom.getInstance("SHA256DRBG");
         }
         catch (NoSuchAlgorithmException e)
         {
