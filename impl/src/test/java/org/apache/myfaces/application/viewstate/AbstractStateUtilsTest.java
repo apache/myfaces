@@ -107,21 +107,21 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
     public void testCompression()
     {
         int size = 2049;
-        byte[] orginalBytes = new byte[size];
-        byte[] lessBytes = StateUtils.compress(orginalBytes);
-        Assertions.assertTrue(lessBytes.length < orginalBytes.length);
+        byte[] originalBytes = new byte[size];
+        byte[] lessBytes = StateUtils.compress(originalBytes);
+        Assertions.assertTrue(lessBytes.length < originalBytes.length);
         byte[] moreBytes = StateUtils.decompress(lessBytes);
         Assertions.assertTrue(moreBytes.length > lessBytes.length);
-        Assertions.assertTrue(Arrays.equals(moreBytes, orginalBytes));
+        Assertions.assertTrue(Arrays.equals(moreBytes, originalBytes));
     }
 
     @Test
     public void testEncoding()
     {
-        byte[] orginalBytes = sensitiveString.getBytes();
-        byte[] encoded = StateUtils.encode(orginalBytes);
+        byte[] originalBytes = sensitiveString.getBytes();
+        byte[] encoded = StateUtils.encode(originalBytes);
         byte[] decoded = StateUtils.decode(encoded);
-        Assertions.assertTrue(Arrays.equals(decoded, orginalBytes));
+        Assertions.assertTrue(Arrays.equals(decoded, originalBytes));
     }
 
     /**
@@ -191,13 +191,13 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
     public void testCompressionNegative()
     {
         int size = 2049;
-        byte[] orginalBytes = new byte[size];
-        byte[] lessBytes = StateUtils.compress(orginalBytes);
+        byte[] originalBytes = new byte[size];
+        byte[] lessBytes = StateUtils.compress(originalBytes);
         lessBytes[1] = (byte) 3;
         try
         {
             byte[] moreBytes = StateUtils.decompress(lessBytes);
-            Assertions.assertFalse(Arrays.equals(moreBytes, orginalBytes));
+            Assertions.assertFalse(Arrays.equals(moreBytes, originalBytes));
         }
         catch (Exception e)
         {
@@ -211,13 +211,13 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
     @Test
     public void testEncodingNegative()
     {
-        byte[] orginalBytes = sensitiveString.getBytes();
-        byte[] encoded = StateUtils.encode(orginalBytes);
+        byte[] originalBytes = sensitiveString.getBytes();
+        byte[] encoded = StateUtils.encode(originalBytes);
         encoded[1] = (byte) 9;
         try
         {
             byte[] decoded = StateUtils.decode(encoded);
-            Assertions.assertFalse(Arrays.equals(decoded, orginalBytes));
+            Assertions.assertFalse(Arrays.equals(decoded, originalBytes));
         }
         catch (Exception e)
         {
