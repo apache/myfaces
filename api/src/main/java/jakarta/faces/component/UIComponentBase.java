@@ -932,7 +932,7 @@ public abstract class UIComponentBase extends UIComponent
         }
 
         // -=Leonardo Uribe=- In jsf 1.1 and 1.2 this warning has sense, but in jsf 2.0 it is common to have
-        // components without any explicit id (UIViewParameter components and UIOuput resource components) instances.
+        // components without any explicit id (UIViewParameter components and UIOutput resource components) instances.
         // So, this warning is becoming obsolete in this new context and should be removed.
         //if (idWasNull && log.isLoggable(Level.WARNING))
         //{
@@ -955,7 +955,7 @@ public abstract class UIComponentBase extends UIComponent
      */
     public String getDefaultEventName()
     {
-        // if a default event exists for a component, this method is overriden thus assume null
+        // if a default event exists for a component, this method is overridden thus assume null
         return null;
     }
     

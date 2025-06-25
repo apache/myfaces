@@ -43,7 +43,7 @@ public interface ComponentAttrs
     String   FOR_ATTR                       = "for";
     String   CONVERTER_ATTR                 = "converter";
 
-    // Ouput_Time Attributes
+    // Output_Time Attributes
     String   TIME_STYLE_ATTR                = "timeStyle";
     String   TIMEZONE_ATTR                  = "timezone";
 

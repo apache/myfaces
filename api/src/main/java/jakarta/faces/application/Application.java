@@ -84,7 +84,7 @@ public abstract class Application
      * 
      * Note: every method, which uses getMyfacesApplicationInstance() to
      *       delegate itself to the current ApplicationImpl MUST be
-     *       overriden by the current ApplicationImpl to prevent infinite loops. 
+     *       overridden by the current ApplicationImpl to prevent infinite loops.
      */
     private Application getMyfacesApplicationInstance()
     {

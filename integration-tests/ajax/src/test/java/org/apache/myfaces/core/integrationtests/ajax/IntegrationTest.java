@@ -167,8 +167,8 @@ public class IntegrationTest
                 webDriver.findElement(new ByIdOrName("logError")).getText().contains("malformedXML"));
 
         //server error, should trigger our error chain, no log error
-        trigger("cmd_error", webDriver -> webDriver.findElement(new ByIdOrName("processedErrror")).isDisplayed() &&
-                webDriver.findElement(new ByIdOrName("processedErrror")).getText().contains("serverError"));
+        trigger("cmd_error", webDriver -> webDriver.findElement(new ByIdOrName("processedError")).isDisplayed() &&
+                webDriver.findElement(new ByIdOrName("processedError")).getText().contains("serverError"));
 
 
     }
