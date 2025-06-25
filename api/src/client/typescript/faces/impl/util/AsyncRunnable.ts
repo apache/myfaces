@@ -144,4 +144,3 @@ export abstract class AsyncRunnable<T> implements IAsyncRunnable<T>{
         return this;
     }
 }
-

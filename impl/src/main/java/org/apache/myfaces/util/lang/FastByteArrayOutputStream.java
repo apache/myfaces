@@ -106,5 +106,3 @@ public class FastByteArrayOutputStream extends OutputStream
         return new FastByteArrayInputStream(buf, size);
     }
 }
-
-

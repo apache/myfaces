@@ -116,4 +116,3 @@ Since 2.3-next a Quarkus extension is available. A sample project can be found h
 
 ### Differences to a normal servlet container while developing
 - You need to put your views under `src/main/resources/META-INF/resources` as Quarkus doesn't create a WAR and src/main/webapp is ignored!
-

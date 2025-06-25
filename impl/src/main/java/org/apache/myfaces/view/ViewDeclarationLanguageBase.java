@@ -199,4 +199,3 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
         return _renderKitFactory;
     }
 }
-

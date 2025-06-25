@@ -332,6 +332,3 @@ export class CancellablePromise extends Promise {
     private cancellator = () => {
     };
 }
-
-
-

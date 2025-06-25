@@ -144,4 +144,3 @@ describe('Tests of the various aspects of the response protocol functionality', 
         expect(errorData.source).to.eq("form1:button1:booga");
     })
 });
-

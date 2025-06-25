@@ -30,4 +30,3 @@ export function _global$(): any | null {
     //want the window object
     return _global$?.window ?? _global$;
 }
-

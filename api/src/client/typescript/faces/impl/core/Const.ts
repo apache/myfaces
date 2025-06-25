@@ -216,4 +216,3 @@ export function $nsp(inputNamespace?: any): any {
      }
      return (!!window?.faces) ? inputNamespace.replace(/javax\.faces/gi,"jakarta.faces"): inputNamespace.replace(/jakarta\.faces/gi, "javax.faces");
 }
-

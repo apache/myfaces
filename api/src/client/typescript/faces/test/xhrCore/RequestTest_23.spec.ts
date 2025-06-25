@@ -403,4 +403,3 @@ describe('Tests after core when it hits response', function () {
 
 
 });
-

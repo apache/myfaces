@@ -145,4 +145,3 @@ describe('Lang tests', () => {
         expect(formData.makeFinal()).to.eq("1&2&3&bla=arg");
     });*/
 });
-

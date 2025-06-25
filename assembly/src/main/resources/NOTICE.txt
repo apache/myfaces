@@ -5,4 +5,3 @@ The Apache Software Foundation (http://www.apache.org/).
 See the file LICENSE.txt
 See licenses for accompanying products in the "/licenses" subdirectory.
 ------------------------------------------------------------------------
-

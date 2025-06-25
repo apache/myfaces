@@ -82,4 +82,3 @@ public class Insert2 implements Change
         return builder.toString();
     }
 }
-

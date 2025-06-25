@@ -201,4 +201,3 @@
 <!ATTLIST value-class                       id ID #IMPLIED>
 <!ATTLIST variable-resolver                 id ID #IMPLIED>
 <!ATTLIST view-handler                      id ID #IMPLIED>
-

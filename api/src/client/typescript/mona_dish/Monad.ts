@@ -412,6 +412,3 @@ export class ValueEmbedder<T> extends Optional<T> implements IValueHolder<T> {
     }
 
 }
-
-
-
