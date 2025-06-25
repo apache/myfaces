@@ -81,4 +81,3 @@ public class NullReturningGetExpressionStringValueExpression extends ValueExpres
         return false;
     }
 }
-

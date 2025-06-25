@@ -121,5 +121,3 @@ describe('javax.ajax.request test suite', () => {
 
     });
 });
-
-

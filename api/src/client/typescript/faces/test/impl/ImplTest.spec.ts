@@ -228,5 +228,3 @@ describe('faces.ajax.request test suite', () => {
 
 
 });
-
-

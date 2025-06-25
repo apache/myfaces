@@ -227,4 +227,3 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
 
 
 }
-

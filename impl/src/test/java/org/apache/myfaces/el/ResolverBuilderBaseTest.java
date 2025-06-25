@@ -76,4 +76,3 @@ public class ResolverBuilderBaseTest extends AbstractFacesTestCase
         Assertions.assertEquals(Arrays.asList(resolver), resolvers);
     }
 }
-

@@ -477,4 +477,3 @@ public class BeanValidator implements Validator<Object>, PartialStateHolder
         _initialStateMarked = true;
     }
 }
-

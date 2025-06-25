@@ -166,5 +166,3 @@ describe('Config tests', () => {
     });
 
 });
-
-

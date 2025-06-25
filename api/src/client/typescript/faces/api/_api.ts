@@ -323,5 +323,3 @@ export module myfaces {
      */
     export const oam = _oam;
 }
-
-

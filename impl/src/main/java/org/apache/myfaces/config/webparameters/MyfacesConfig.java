@@ -1816,4 +1816,3 @@ public class MyfacesConfig
         return exceptionTypesToIgnoreInLogging;
     }
 }
-

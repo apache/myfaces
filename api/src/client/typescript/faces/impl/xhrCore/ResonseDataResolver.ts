@@ -118,4 +118,3 @@ function resolveSourceElementId(context: Config, internalContext: Config): Optio
     return internalContext.getIf(CTX_PARAM_SRC_CTL_ID)
         .orElseLazy(() => context.getIf(SOURCE, "id").value);
 }
-
