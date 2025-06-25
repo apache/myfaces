@@ -162,8 +162,8 @@ public class ResourceHandlerImpl extends ResourceHandler
         //
         // Contracts are on top of everything, because it is a concept that defines
         // resources in a application scope concept. It means all resources in
-        // /resources or /META-INF/resources can be overriden using a contract. Note
-        // it also means resources under /META-INF/flows can also be overriden using
+        // /resources or /META-INF/resources can be overridden using a contract. Note
+        // it also means resources under /META-INF/flows can also be overridden using
         // a contract.
         
         // Check first the preferred contract if any. If not found, try the remaining
@@ -1019,8 +1019,8 @@ public class ResourceHandlerImpl extends ResourceHandler
         //
         // Contracts are on top of everything, because it is a concept that defines
         // resources in a application scope concept. It means all resources in
-        // /resources or /META-INF/resources can be overriden using a contract. Note
-        // it also means resources under /META-INF/flows can also be overriden using
+        // /resources or /META-INF/resources can be overridden using a contract. Note
+        // it also means resources under /META-INF/flows can also be overridden using
         // a contract.
         if (contractPreferred != null)
         {
@@ -1600,8 +1600,8 @@ public class ResourceHandlerImpl extends ResourceHandler
         //
         // Contracts are on top of everything, because it is a concept that defines
         // resources in a application scope concept. It means all resources in
-        // /resources or /META-INF/resources can be overriden using a contract. Note
-        // it also means resources under /META-INF/flows can also be overriden using
+        // /resources or /META-INF/resources can be overridden using a contract. Note
+        // it also means resources under /META-INF/flows can also be overridden using
         // a contract.
         if (contractPreferred != null)
         {

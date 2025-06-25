@@ -137,7 +137,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         }
 
         // -=Leonardo Uribe=- In jsf 1.1 and 1.2 this warning has sense, but in jsf 2.0 it is common to have
-        // components without any explicit id (UIViewParameter components and UIOuput resource components) instances.
+        // components without any explicit id (UIViewParameter components and UIOutput resource components) instances.
         // So, this warning is becoming obsolete in this new context and should be removed.
         //if (idWasNull && log.isLoggable(Level.WARNING))
         //{

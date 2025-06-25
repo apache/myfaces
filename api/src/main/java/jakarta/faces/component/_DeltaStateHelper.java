@@ -221,7 +221,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                     {
                         // Copy it directly, but note in this case if the initialFullState map
                         // contains some key already defined in initialState, this key must be
-                        // overriden. It is better to do in that way, because it is possible
+                        // overridden. It is better to do in that way, because it is possible
                         // to skip resetState() if the view cannot be recycled.
                         _initialFullState = new HashMap<>();
                         copyMap(_component.getFacesContext(), _fullState, _initialFullState);
