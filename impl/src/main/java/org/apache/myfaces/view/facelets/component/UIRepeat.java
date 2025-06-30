@@ -1605,7 +1605,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 }
             }
 
-            // Now Look throught facets on this UIComponent
+            // Now Look through facets on this UIComponent
             if (this.getFacetCount() > 0)
             {
                 for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();)
