@@ -100,7 +100,6 @@
                         <exclude>src/main/resources/META-INF/licenses/*-LICENSE.TXT</exclude>
                         <exclude>src/main/resources/META-INF/services/**</exclude>
                         <exclude>.git</exclude>
-                        <exclude>.github/linters/codespell.txt</exclude>
                         <exclude>.gitignore</exclude>
                         <exclude>**/target/**/*</exclude>
                         <!-- The xsd files are CDDL+GLP:
