@@ -228,6 +228,8 @@ public class SessionIdGenerator
             }
         }
 
+        boolean providerException = false;
+
         for(String secureRandomAlgorithm : secureRandomAlgorithmList )
         {
             if (result == null)
@@ -254,15 +256,19 @@ public class SessionIdGenerator
                 }
                 catch (NoSuchProviderException e)
                 {
-                    // keeping though this may be unnecessary? 
-                    log.log(Level.SEVERE, "Exception initializing random number generator using provider: " + 
-                            secureRandomProvider + " and algorithm: " + secureRandomAlgorithm, e);
+                    providerException = true;
                 }
             }
             if(result != null)
             {
                 break;  // found
             }
+        }
+
+        if(providerException)
+        {
+            log.log(Level.SEVERE, "Exception initializing random number generator using provider: " + 
+                secureRandomProvider + " and algorithm: " + Arrays.toString(secureRandomAlgorithmList));
         }
 
         if (result == null)
