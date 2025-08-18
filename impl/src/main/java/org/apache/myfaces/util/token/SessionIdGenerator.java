@@ -254,9 +254,14 @@ public class SessionIdGenerator
                 }
                 catch (NoSuchProviderException e)
                 {
+                    // keeping though this may be unnecessary? 
                     log.log(Level.SEVERE, "Exception initializing random number generator using provider: " + 
                             secureRandomProvider + " and algorithm: " + secureRandomAlgorithm, e);
                 }
+            }
+            if(result != null)
+            {
+                break;  // found
             }
         }
 

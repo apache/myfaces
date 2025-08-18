@@ -61,7 +61,12 @@ public class TokenGenerator
                 {
                     // ignore -- log will next if rng is null
                 }
+            } 
+            else 
+            {
+                break; //found
             }
+            
         }
 
         if(rng == null)

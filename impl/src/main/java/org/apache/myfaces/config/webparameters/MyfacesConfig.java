@@ -1614,7 +1614,14 @@ public class MyfacesConfig
 
     public String[] getRandomKeyInViewStateSessionTokenSecureRandomAlgorithmList()
     {
-        return randomKeyInViewStateSessionTokenSecureRandomAlgorithmList.split(",");
+        String[] algorthms =
+         randomKeyInViewStateSessionTokenSecureRandomAlgorithmList.split(",");
+
+         for(int i = 0; i < algorthms.length; i++)
+         {
+            algorthms[i] = algorthms[i].trim();
+         }
+         return algorthms;
     }
 
     public String getRandomKeyInCsrfSessionToken()
