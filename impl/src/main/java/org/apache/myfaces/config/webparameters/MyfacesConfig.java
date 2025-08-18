@@ -480,7 +480,8 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA256DRBG,DRBG,SHA1PRNG", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM";
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT = "SHA256DRBG,DRBG,SHA1PRNG";
+    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT 
+        = "SHA256DRBG,DRBG,SHA1PRNG";
     
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM = "random";

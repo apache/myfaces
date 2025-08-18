@@ -21,15 +21,18 @@ package org.apache.myfaces.renderkit.html.util;
 import java.util.Collection;
 import java.util.List;
 import java.util.RandomAccess;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIParameter;
-import jakarta.faces.component.behavior.ClientBehaviorContext;
-import jakarta.faces.component.search.SearchExpressionContext;
-import jakarta.faces.component.search.SearchExpressionHandler;
-import jakarta.faces.context.FacesContext;
+
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.lang.StringUtils;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.html.HtmlCommandScript;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.context.FacesContext;
 
 // CHECKSTYLE:OFF
 public class AjaxScriptBuilder
