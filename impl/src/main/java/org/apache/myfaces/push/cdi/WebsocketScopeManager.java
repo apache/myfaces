@@ -158,26 +158,9 @@ public class WebsocketScopeManager
     @ViewScoped
     public static class ViewScope extends AbstractUserScope implements Serializable
     {
-        @Inject private WebsocketScopeManager scopeManager;
-        @Inject private WebsocketSessionManager sessionManager;
-        
-        /*
-         * If the view is discarded, destroy the websocket sessions associated with the view because they are no
-         * longer valid
-         */
         @PreDestroy
         public void destroy()
         {
-            // destroy parent scope ("session")
-            SessionScope sessionScope = (SessionScope) scopeManager.getSessionScope(false);
-            if (sessionScope != null)
-            {
-                for (String token : tokens.keySet())
-                {
-                    sessionScope.destroyChannelToken(token);
-                }
-            }
-
             channelTokens.clear();
             tokens.clear();
        }
