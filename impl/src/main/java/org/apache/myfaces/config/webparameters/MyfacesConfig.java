@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.config.webparameters;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -472,12 +475,13 @@ public class MyfacesConfig
     
     /**
      * Sets the random algorithm to initialize the secure random id generator. 
-     * By default is SHA1PRNG
+     * The default is SHA256DRBG,DRBG,SHA1PRNG (in order of priority).
+     * The "SHA256DRBG,DRBG, and SHA1PRNG" options were introduced in 4.1.2. 
      */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA1PRNG", group="state")
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA256DRBG,DRBG,SHA1PRNG", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM";
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT = "SHA1PRNG";
+    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT = "SHA256DRBG,DRBG,SHA1PRNG";
     
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM = "random";
@@ -1145,7 +1149,12 @@ public class MyfacesConfig
         cfg.randomKeyInViewStateSessionTokenSecureRandomAlgorithm = getString(extCtx,
                 RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM,
                 RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT);
-        
+        // Given a list of algorithms. Quick test to see what's available and it set. 
+        // Although it's meant for SessionIdGenerator, it will also be used with the TokenGenerator class, too. 
+        cfg.randomKeyInViewStateSessionTokenSecureRandomAlgorithm = 
+            selectAvailableSecureRandomAlgorithm(cfg.randomKeyInViewStateSessionTokenSecureRandomAlgorithm,
+                cfg.randomKeyInViewStateSessionTokenSecureRandomProvider);
+
         cfg.randomKeyInCsrfSessionToken = getString(extCtx, RANDOM_KEY_IN_CSRF_SESSION_TOKEN,
                 RANDOM_KEY_IN_CSRF_SESSION_TOKEN_DEFAULT);
         
@@ -1342,6 +1351,41 @@ public class MyfacesConfig
         }
         
         return cfg;
+    }
+
+    private static String selectAvailableSecureRandomAlgorithm(String algorithmsList, String provider) {
+
+        String[] algorithms = algorithmsList.split(",");
+
+         for(int i = 0; i < algorithms.length; i++)
+         {
+            algorithms[i] = algorithms[i].trim();
+            try {
+                    if (StringUtils.isNotBlank(provider))
+                    {
+                        SecureRandom.getInstance(algorithms[i], provider);
+                        return algorithms[i];
+                    }
+                    else
+                    {
+                        if (StringUtils.isNotBlank(algorithms[i]))
+                        {
+                            SecureRandom.getInstance(algorithms[i]);
+                            return algorithms[i];
+                        }
+                    }
+            } 
+            catch (NoSuchAlgorithmException e)
+            {
+
+            } 
+            catch (NoSuchProviderException e)
+            {
+
+            }
+         }
+         // None worked - return the first and an error will reported later
+         return algorithms[0]; 
     }
 
     private static boolean getBoolean(ExternalContext externalContext, String paramName, boolean defaultValue)

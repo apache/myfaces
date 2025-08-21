@@ -51,9 +51,11 @@ public class CsrfSessionTokenFactorySecureRandom extends CsrfSessionTokenFactory
     
     /**
      * Sets the random algorithm to initialize the secure random id generator. 
-     * By default is SHA1PRNG
+     * The default is SHA256DRBG,DRBG,SHA1PRNG (in order of priority).
+     * The "SHA256DRBG,DRBG, and SHA1PRNG" options were introduced in 4.1.2. 
      */
-    @JSFWebConfigParam(since="2.2.0", defaultValue="SHA1PRNG", group="state")
+    // NOTE: ALGORITM is spelled wrong, but it has been documented that way since creation.
+    @JSFWebConfigParam(since="2.2.0", defaultValue="SHA256DRBG,DRBG,SHA1PRNG", group="state")
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM 
             = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM";
     
