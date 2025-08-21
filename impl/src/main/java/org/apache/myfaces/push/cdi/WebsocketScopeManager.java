@@ -169,7 +169,7 @@ public class WebsocketScopeManager
         public void destroy()
         {
             // destroy parent scope ("session")
-            SessionScope sessionScope = (SessionScope) scopeManager.getScope(SCOPE_SESSION, false);
+            SessionScope sessionScope = (SessionScope) scopeManager.getSessionScope(false);
             if (sessionScope != null)
             {
                 for (String token : tokens.keySet())
