@@ -161,26 +161,12 @@ public class WebsocketScopeManager
         @Inject private WebsocketScopeManager scopeManager;
         @Inject private WebsocketSessionManager sessionManager;
         
-        /*
-         * If the view is discarded, destroy the websocket sessions associated with the view because they are no
-         * longer valid
-         */
         @PreDestroy
         public void destroy()
         {
-            // destroy parent scope ("session")
-            SessionScope sessionScope = (SessionScope) scopeManager.getScope(SCOPE_SESSION, false);
-            if (sessionScope != null)
-            {
-                for (String token : tokens.keySet())
-                {
-                    sessionScope.destroyChannelToken(token);
-                }
-            }
-
             channelTokens.clear();
             tokens.clear();
-       }
+        }
     }
     
     
