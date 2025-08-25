@@ -57,10 +57,10 @@ public class KeyFactorySecureRandom extends KeyFactory<byte[]>
             sessionIdGenerator.setSecureRandomProvider(secureRandomProvider);
         }
 
-        String secureRandomAlgorithm = config.getRandomKeyInViewStateSessionTokenSecureRandomAlgorithm();
-        if (secureRandomAlgorithm != null)
+        String[] secureRandomAlgorithmList = config.getRandomKeyInViewStateSessionTokenSecureRandomAlgorithmList();
+        if (secureRandomAlgorithmList != null)
         {
-            sessionIdGenerator.setSecureRandomAlgorithm(secureRandomAlgorithm);
+            sessionIdGenerator.setSecureRandomAlgorithmList(secureRandomAlgorithmList);
         }
     }
 
