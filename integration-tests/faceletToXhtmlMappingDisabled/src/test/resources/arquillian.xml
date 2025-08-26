@@ -23,9 +23,8 @@
 
     <extension qualifier="webdriver">
         <property name="browser">chromeHeadless</property>
-        <property name="browserVersion">100</property>
-        <property name="chromeDriverVersion">${chromeDriverVersion:}</property>
-    </extension>
+        <property name="browserVersion">139.0</property>
+   </extension>
 
     <container qualifier="tomcat" default="true">
         <configuration>
