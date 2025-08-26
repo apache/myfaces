@@ -33,7 +33,7 @@
         This project is the home of the MyFaces implementation of the Jakarta Server Faces 3.0 specification, and
         consists of an API module (jakarta.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
-    <version>3.0.3-SNAPSHOT</version>
+    <version>3.0.4-SNAPSHOT</version>
     <url>http://myfaces.apache.org/#/core30</url>
 
     <issueManagement>

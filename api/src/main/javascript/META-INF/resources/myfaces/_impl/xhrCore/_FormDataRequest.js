@@ -26,7 +26,6 @@ _MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
 
     constructor_: function(arguments) {
         this._callSuper("constructor_", arguments);
-
         this._contentType = "multipart/form-data";
     },
 
@@ -41,7 +40,6 @@ _MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
      */
     getFormData : function() {
         var _AJAXUTIL = this._AJAXUTIL, myfacesOptions = this._context.myfaces, ret = null;
-
 
         //now this is less performant but we have to call it to allow viewstate decoration
         if (!this._partialIdsArray || !this._partialIdsArray.length) {
@@ -69,7 +67,5 @@ _MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
     },
 
     _applyContentType: function(xhr) {
-
     }
-
 });

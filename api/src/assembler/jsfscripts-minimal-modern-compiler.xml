@@ -56,6 +56,7 @@
                 <include>**/_impl/xhrCore/engine/BaseRequest.js</include>
 
                 <include>**/_impl/xhrCore/_AjaxRequest.js</include>
+                <include>**/_impl/xhrCore/_ExtAjaxRequest.js</include>
                 <include>**/_impl/xhrCore/_FormDataRequest.js</include>
                 <!-- not yet used in 2.0 but for development purposes it makes sense to include it here -->
                 <include>**/_impl/xhrCore/_AjaxResponse.js</include>
