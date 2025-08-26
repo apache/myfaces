@@ -55,8 +55,13 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
     P_EXECUTE:"jakarta.faces.partial.execute",
     P_RENDER:"jakarta.faces.partial.render",
     P_EVT:"jakarta.faces.partial.event",
+    P_BEHAVIOR_EVENT:"jakarta.faces.behavior.event",
     P_WINDOW_ID:"jakarta.faces.ClientWindow",
     P_RESET_VALUES:"jakarta.faces.partial.resetValues",
+
+    //faces std values
+    STD_VALUES: [this.P_PARTIAL_SOURCE, this.P_VIEWSTATE, this.P_CLIENTWINDOW, this.P_AJAX,
+        this.P_EXECUTE, this.P_RENDER, this.P_EVT, this.P_BEHAVIOR_EVENT, this.P_WINDOW_ID, this.P_RESET_VALUES],
 
     /* message types */
     ERROR:"error",
@@ -142,7 +147,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
          *all the time
          **/
         var _Lang = this._Lang,
-                _Dom = this._Dom;
+            _Dom = this._Dom,
+            _Utils = myfaces._impl.xhrCore._AjaxUtils;
         /*assert if the onerror is set and once if it is set it must be of type function*/
         _Lang.assertType(options.onerror, "function");
         /*assert if the onevent is set and once if it is set it must be of type function*/
@@ -152,7 +158,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         options = options || {};
 
         /**
-         * we cross reference statically hence the mapping here
+         * we cross - reference statically hence the mapping here
          * the entire mapping between the functions is stateless
          */
         //null definitely means no event passed down so we skip the ie specific checks
@@ -180,6 +186,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
          */
         // this is legacy behavior which is faulty, will be removed if we decide to do it
         // that way
+        // TODO not sure whether we add the naming container prefix to the user params
         var passThrgh = _Lang.mixMaps({}, options, true, this._BLOCKFILTER);
         // jsdoc spec everything under params must be passed through
         if(options.params)  {
@@ -223,6 +230,12 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         context.viewId = this.getViewId(form);
 
         /**
+         * we also now assign the container data to deal with it later
+         */
+        _Utils._assignNamingContainerData(mfInternal, form, jsf.separatorchar);
+
+
+        /**
          * JSF2.2 client window must be part of the issuing form so it is encoded
          * automatically in the request
          */
@@ -231,7 +244,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //in case someone decorates the getClientWindow we reset the value from
         //what we are getting
         if ('undefined' != typeof clientWindow && null != clientWindow) {
-            var formElem = _Dom.getNamedElementFromForm(form, this.P_CLIENTWINDOW);
+            var formElem = _Dom.getNamedElementFromForm(form, _Utils._$ncRemap(mfInternal,  this.P_CLIENTWINDOW));
             if (formElem) {
                 //we store the value for later processing during the ajax phase
                 //job so that we do not get double values
@@ -313,6 +326,20 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         passThrgh[form.id] = form.id;
 
         /* jsf2.2 only: options.delay || */
+
+        // TCK 790 we now have to remap all passthroughs in case of a naming container
+        // thing is the naming container is always prefixed on inputs, and our own
+        // passthroughs are not mapped for now (if we have to do that we we have to add a similar mapping code)
+        var passthroughKeys = Object.keys(passThrgh);
+        for(var key in passthroughKeys) {
+            if(!Object.hasOwnProperty(key) || this.STD_VALUES.indexOf(key) == -1) {
+                continue;
+            }
+            passThrgh[_Utils._$ncRemap(mfInternal, key)] = passThrgh[key];
+            delete passThrgh[key];
+        }
+
+        /* faces2.2 only: options.delay || */
         var delayTimeout = options.delay || this._RT.getLocalOrGlobalConfig(context, "delay", false);
 
         if (!!delayTimeout) {
@@ -730,7 +757,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
             /* run through all script tags and try to find the one that includes jsf.js */
             for (var i = 0; i < scriptTags.length && !found; i++) {
-                if (scriptTags[i].src.search(/\/jakarta\.faces\.resource\/jsf\.js.*ln=jakarta\.faces/) != -1) {
+                if (scriptTags[i] && scriptTags[i].src && scriptTags[i].src.search(/\/jakarta\.faces\.resource\/jsf\.js.*ln=jakarta\.faces/) != -1) {
                     var result = scriptTags[i].src.match(/stage=([^&;]*)/);
                     found = true;
                     if (result) {

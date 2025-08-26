@@ -26,12 +26,13 @@ _MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
 
     constructor_: function(arguments) {
         this._callSuper("constructor_", arguments);
+        this._contentType = "multipart/form-data";
     },
 
     /**
      * Spec. 13.3.1
      * Collect and encode input elements.
-     * Additionally, the hidden element javax.faces.ViewState
+     * Additionally, the hidden element jakarta.faces.ViewState
      * Enhancement partial page submit
      *
      * @return  an element of formDataWrapper
@@ -40,7 +41,6 @@ _MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
     getFormData : function() {
         var _AJAXUTIL = this._AJAXUTIL, myfacesOptions = this._context.myfaces, ret = null;
 
-
         //now this is less performant but we have to call it to allow viewstate decoration
         if (!this._partialIdsArray || !this._partialIdsArray.length) {
             ret = new FormData();
@@ -48,13 +48,13 @@ _MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
             //just in case the source item is outside of the form
             //only if the form override is set we have to append the issuing item
             //otherwise it is an element of the parent form
-            if (this._source && myfacesOptions && myfacesOptions.form) {
+            if (this._source && !this._isBehaviorEvent()) {
                 _AJAXUTIL.appendIssuingItem(this._source, ret);
             }
         } else {
             ret = new FormData();
             _AJAXUTIL.encodeSubmittableFields(ret, this._sourceForm, this._partialIdsArray);
-            if (this._source && this._source && myfacesOptions && myfacesOptions.form) {
+            if (this._source && !this._isBehaviorEvent()) {
                 _AJAXUTIL.appendIssuingItem(this._source, ret);
             }
         }
@@ -67,8 +67,5 @@ _MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
     },
 
     _applyContentType: function(xhr) {
-        //by overriding we let the form data and xhr object
-        //figure it out themselves (auto multipart)
     }
-
 });
