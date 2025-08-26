@@ -22,11 +22,9 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.annotation.FacesConfig;
 import jakarta.inject.Named;
 
-import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
-
 @Named
 @RequestScoped
-@FacesConfig(version = JSF_2_3)
+@FacesConfig
 public class TestBean
 {
     private String sayHello = "hello world from bean";
