@@ -44,6 +44,7 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.annotation.View;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.FacesComponent;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponent;
@@ -230,12 +231,13 @@ class MyFacesProcessor
 
     @BuildStep
     void buildServlet(WebMetadataBuildItem  webMetaDataBuildItem,
-            BuildProducer<FeatureBuildItem> feature,
-            BuildProducer<ServletBuildItem> servlet,
-            BuildProducer<ListenerBuildItem> listener)
+                      BuildProducer<FeatureBuildItem> feature,
+                      BuildProducer<ServletBuildItem> servlet,
+                      BuildProducer<ListenerBuildItem> listener) throws IOException
     {
         WebMetaData webMetaData = webMetaDataBuildItem.getWebMetaData();
-        ServletMetaData facesServlet = null;
+
+        ServletMetaData facesServlet;
         if (webMetaData.getServlets() != null)
         {
             facesServlet = webMetaData.getServlets().stream()
@@ -243,13 +245,44 @@ class MyFacesProcessor
                 .findFirst()
                 .orElse(null);
         }
+        else
+        {
+            facesServlet = null;
+        }
+
         if (facesServlet == null)
         {
             // Only define here if not explictly defined in web.xml
-            servlet.produce(ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
+            ServletBuildItem.Builder builder = ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
                     .setMultipartConfig(new MultipartConfigElement(""))
-                    .addMapping("*.xhtml")
-                    .build());
+                    .addMapping("*.xhtml");
+
+            findTopLevelViews().forEach(view ->
+            {
+                builder.addMapping(view.replace(ViewHandler.DEFAULT_FACELETS_SUFFIX, ""));
+            });
+
+            servlet.produce(builder.build());
+        }
+        else
+        {
+            ServletBuildItem.Builder builder = ServletBuildItem
+                    .builder(facesServlet.getName(), facesServlet.getServletClass());
+
+            webMetaData.getServletMappings().forEach(mapping ->
+            {
+                if (facesServlet.getName().equals(mapping.getServletName()))
+                {
+                    mapping.getUrlPatterns().forEach(builder::addMapping);
+                }
+            });
+
+            findTopLevelViews().forEach(view ->
+            {
+                builder.addMapping(view.replace(ViewHandler.DEFAULT_FACELETS_SUFFIX, ""));
+            });
+
+            servlet.produce(builder.build());
         }
 
         // sometimes Quarkus doesn't scan web-fragments?! lets add it manually
@@ -431,6 +464,12 @@ class MyFacesProcessor
     @Record(ExecutionTime.STATIC_INIT)
     void collectTopLevelViews(MyFacesRecorder recorder) throws IOException
     {
+        findTopLevelViews().forEach(recorder::registerTopLevelView);
+    }
+
+    Set<String> findTopLevelViews() throws IOException
+    {
+        Set<String> topLevelViews = new HashSet<>();
         visitRuntimeMetaInfResources(visit ->
         {
             if (Files.isDirectory(visit.getPath()))
@@ -451,11 +490,12 @@ class MyFacesProcessor
                     return;
                 }
 
-                String viewId = visit.getRelativePath().toString()
+                String viewId = "/" + visit.getRelativePath().toString()
                         .replace("META-INF/resources/", "");
-                recorder.registerTopLevelView(viewId);
+                topLevelViews.add(viewId);
             }
         });
+        return topLevelViews;
     }
 
     @BuildStep
