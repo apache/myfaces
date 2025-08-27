@@ -596,6 +596,7 @@ class MyFacesProcessor
 
         // Register CDI produced servlet objects for EL #{session} and #{request}
         classes.addAll(Arrays.asList(
+                jakarta.servlet.http.Cookie.class,
                 io.undertow.servlet.spec.HttpServletRequestImpl.class,
                 io.undertow.servlet.spec.HttpServletResponseImpl.class,
                 io.undertow.servlet.spec.HttpSessionImpl.class));
