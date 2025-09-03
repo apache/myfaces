@@ -814,7 +814,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                                      writer.getCharacterEncoding());
                 href = hrefBuf.toString();
             }
-            // check for the fragement attribute
+            // check for the fragment attribute
             String fragmentAttr = null;
             if (output instanceof HtmlOutputLink link)
             {
