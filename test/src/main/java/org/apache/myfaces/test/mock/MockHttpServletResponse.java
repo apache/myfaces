@@ -246,6 +246,23 @@ public class MockHttpServletResponse implements HttpServletResponse
     }
 
     @Override
+    public void sendRedirect(String location, int sc, boolean clearBuffer)
+    {
+        if (this.committed)
+        {
+            throw new IllegalStateException("Response is already committed");
+        }
+        setStatus(sc);
+        setHeader("Location", location);
+        this.message = location;
+        this.committed = true;
+        if(clearBuffer)
+        {
+            resetBuffer(); // no op -- not implemented
+        }
+    }
+
+    @Override
     public void setDateHeader(String name, long value)
     {
 
