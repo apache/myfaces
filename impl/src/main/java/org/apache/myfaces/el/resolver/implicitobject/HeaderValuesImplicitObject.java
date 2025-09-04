@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.el.resolver.implicitobject;
 
-import java.beans.FeatureDescriptor;
-import java.util.Map;
 import jakarta.el.ELContext;
 
 /**
@@ -53,15 +51,6 @@ public class HeaderValuesImplicitObject extends ImplicitObject
     public Class<?> getType()
     {
         return null;
-    }
-
-    @Override
-    public FeatureDescriptor getDescriptor()
-    {
-        return makeDescriptor(NAME,
-                              "Map whose keys are a set of request header names and whose values are all of the "
-                              + "values (of type String[]) for each header name.",
-                              Map.class);
     }
 
 }

@@ -19,9 +19,8 @@
 
 package org.apache.myfaces.test.el;
 
-import java.util.Iterator;
-
 import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.faces.FacesException;
 
@@ -32,14 +31,15 @@ import jakarta.faces.FacesException;
  *
  * @since 1.0.0
  */
-public class FacesVariableResolverChainWrapper extends AbstractELResolver
+public class FacesVariableResolverChainWrapper extends ELResolver
 {
 
     /**
      * <p>Return the most general type this resolver accepts for the
      * <code>property</code> argument.</p>
      */
-    public Class getCommonPropertyType(ELContext context, Object base)
+    @Override
+    public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
 
         if (base != null)
@@ -53,19 +53,6 @@ public class FacesVariableResolverChainWrapper extends AbstractELResolver
 
     }
 
-    /**
-     * <p>Return an <code>Iterator</code> over the attributes that this
-     * resolver knows how to deal with.</p>
-     *
-     * @param context <code>ELContext</code> for evaluating this value
-     * @param base Base object against which this evaluation occurs
-     */
-    public Iterator getFeatureDescriptors(ELContext context, Object base)
-    {
-
-        return null;
-
-    }
 
     /**
      * <p>Return the Java type of the specified property.</p>
@@ -75,7 +62,8 @@ public class FacesVariableResolverChainWrapper extends AbstractELResolver
      *  (must be null because we are evaluating a top level variable)
      * @param property Property name to be accessed
      */
-    public Class getType(ELContext context, Object base, Object property)
+    @Override
+    public Class<?> getType(ELContext context, Object base, Object property)
     {
 
         if ((base == null) && (property == null))
@@ -95,6 +83,7 @@ public class FacesVariableResolverChainWrapper extends AbstractELResolver
      *  (must be null because we are evaluating a top level variable)
      * @param property Property name to be accessed
      */
+    @Override
     public Object getValue(ELContext context, Object base, Object property)
     {
         throw new FacesException("not supported anymore");
@@ -109,6 +98,7 @@ public class FacesVariableResolverChainWrapper extends AbstractELResolver
      *  (must be null because we are evaluating a top level variable)
      * @param property Property name to be accessed
      */
+    @Override
     public boolean isReadOnly(ELContext context, Object base, Object property)
     {
 
@@ -129,6 +119,7 @@ public class FacesVariableResolverChainWrapper extends AbstractELResolver
      * @param property Property name to be accessed
      * @param value New value to be set
      */
+    @Override
     public void setValue(ELContext context, Object base, Object property,
             Object value)
     {

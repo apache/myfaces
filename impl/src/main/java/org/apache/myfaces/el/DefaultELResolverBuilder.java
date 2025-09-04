@@ -18,18 +18,20 @@
  */
 package org.apache.myfaces.el;
 
-import org.apache.myfaces.el.resolver.FlashELResolver;
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELResolver;
 import jakarta.el.ListELResolver;
 import jakarta.el.MapELResolver;
+import jakarta.el.OptionalELResolver;
+import jakarta.el.RecordELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.StaticFieldELResolver;
+import org.apache.myfaces.el.resolver.FlashELResolver;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
@@ -50,6 +52,7 @@ import org.apache.myfaces.el.resolver.implicitobject.ImplicitObjectResolver;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.el.resolver.EmptyStringToNullELResolver;
 import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  * Create the el resolver for faces. see 1.2 spec section 5.6.2
@@ -126,7 +129,7 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
  
         try
         {
-            ELResolver streamElResolver = (ELResolver) runtimeConfig.getExpressionFactory().getStreamELResolver();
+            ELResolver streamElResolver = runtimeConfig.getExpressionFactory().getStreamELResolver();
             if (streamElResolver != null)
             {
                 list.add(streamElResolver);
@@ -149,6 +152,23 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         list.add(new MapELResolver());
         list.add(new ListELResolver());
         list.add(new ArrayELResolver());
+
+        if (ExternalSpecifications.isEL6Available())
+        {
+            try
+            {
+                if(!config.isOptionalELResolverDisabled()) 
+                {
+                    list.add(new OptionalELResolver()); // not disabled (default), so add it in.
+                }
+                list.add(new RecordELResolver());
+            }
+            catch (Throwable ex)
+            {
+                LOG.log(Level.WARNING, "Could not add OptionalELResolver / RecordELResolver!", ex);
+            }
+        }
+
         if (PropertyDescriptorUtils.isUseLambdaMetafactory(facesContext.getExternalContext()))
         {
             list.add(new LambdaBeanELResolver());

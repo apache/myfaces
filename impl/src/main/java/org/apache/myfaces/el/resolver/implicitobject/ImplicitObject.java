@@ -18,9 +18,7 @@
  */
 package org.apache.myfaces.el.resolver.implicitobject;
 
-import java.beans.FeatureDescriptor;
 import jakarta.el.ELContext;
-import jakarta.el.ELResolver;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -34,8 +32,6 @@ public abstract class ImplicitObject
 
     public abstract Object getValue(ELContext context);
 
-    public abstract FeatureDescriptor getDescriptor();
-
     /**
      * Returns an interned String representing the name of the implicit object.
      */
@@ -45,20 +41,6 @@ public abstract class ImplicitObject
      * Returns the most general type allowed for a future call to setValue()
      */
     public abstract Class<?> getType();
-
-    protected FeatureDescriptor makeDescriptor(String name, String description, Class<?> elResolverType)
-    {
-        FeatureDescriptor fd = new FeatureDescriptor();
-        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
-        fd.setValue(ELResolver.TYPE, elResolverType);
-        fd.setName(name);
-        fd.setDisplayName(name);
-        fd.setShortDescription(description);
-        fd.setExpert(false);
-        fd.setHidden(false);
-        fd.setPreferred(true);
-        return fd;
-    }
 
     // get the FacesContext from the ELContext
     protected FacesContext facesContext(ELContext context)

@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.el.resolver.implicitobject;
 
-import java.beans.FeatureDescriptor;
-import java.util.Map;
 import jakarta.el.ELContext;
 
 /**
@@ -53,12 +51,6 @@ public class CookieImplicitObject extends ImplicitObject
     public Class<?> getType()
     {
         return null;
-    }
-
-    @Override
-    public FeatureDescriptor getDescriptor()
-    {
-        return makeDescriptor(NAME, "Map whose keys are a set of cookie names in the current request", Map.class);
     }
 
 }

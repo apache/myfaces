@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.el.resolver.implicitobject;
 
-import java.beans.FeatureDescriptor;
-import java.util.Map;
 import jakarta.el.ELContext;
 
 /**
@@ -53,15 +51,6 @@ public class ParamValuesImplicitObject extends ImplicitObject
     public Class<?> getType()
     {
         return null;
-    }
-
-    @Override
-    public FeatureDescriptor getDescriptor()
-    {
-        return makeDescriptor(NAME,
-                              "Map whose keys are a set of request param names and whose values (type String[]) "
-                              + "are all values for each name in the request",
-                              Map.class);
     }
 
 }
