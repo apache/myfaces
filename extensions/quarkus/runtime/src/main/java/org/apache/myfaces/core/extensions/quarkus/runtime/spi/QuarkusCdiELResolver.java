@@ -56,7 +56,7 @@ public class QuarkusCdiELResolver extends ELResolver
         return null;
     }
 
-    @Override
+    // @Override  commented out for EL 5.0 / 6.0 compatibility 
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext arg0, Object arg1)
     {
         return null;

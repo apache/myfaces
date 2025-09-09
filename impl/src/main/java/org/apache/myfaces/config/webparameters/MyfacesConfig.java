@@ -785,6 +785,15 @@ public class MyfacesConfig
     public static final String EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING =
             "org.apache.myfaces.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING";
 
+
+    /**
+     * Expression Language 6.0's OptionalELResolver is enabled by default, so this option allows us to disable it.
+     */
+    @JSFWebConfigParam(name="org.apache.myfaces.DISABLE_OPTIONAL_EL_RESOLVER", since="4.1.2", defaultValue = "false")
+    public static final String DISABLE_OPTIONAL_EL_RESOLVER = "org.apache.myfaces.DISABLE_OPTIONAL_EL_RESOLVER";
+    public static final boolean DISABLE_OPTIONAL_EL_RESOLVER_DEFAULT = false;
+
+
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
     private boolean strictJsf2AllowSlashLibraryName;
@@ -865,6 +874,7 @@ public class MyfacesConfig
     private boolean elResolverTracing = EL_RESOLVER_TRACING_DEFAULT;
     private long faceletsRefreshPeriod = -1;
     private List<String> exceptionTypesToIgnoreInLogging = new ArrayList<>();
+    private boolean disableOptionalResolver = DISABLE_OPTIONAL_EL_RESOLVER_DEFAULT;
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1340,6 +1350,8 @@ public class MyfacesConfig
                 cfg.exceptionTypesToIgnoreInLogging.add(exceptionTypeToIgnoreInLogging);
             }
         }
+
+        cfg.disableOptionalResolver = getBoolean(extCtx, DISABLE_OPTIONAL_EL_RESOLVER, DISABLE_OPTIONAL_EL_RESOLVER_DEFAULT);
         
         return cfg;
     }
@@ -1815,6 +1827,11 @@ public class MyfacesConfig
     public List<String> getExceptionTypesToIgnoreInLogging()
     {
         return exceptionTypesToIgnoreInLogging;
+    }
+
+    public boolean isOptionalELResolverDisabled()
+    {
+        return disableOptionalResolver;
     }
 }
 
