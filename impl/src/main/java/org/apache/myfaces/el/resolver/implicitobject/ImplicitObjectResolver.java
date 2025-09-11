@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.myfaces.el.resolver.CookieImplicitObject;
+
 /**
  * See Faces 1.2 spec sections 5.6.1.1 and 5.6.2.1
  * 
@@ -231,7 +233,7 @@ public class ImplicitObjectResolver extends ELResolver
         return null;
     }
 
-    @Override
+    // @Override -- This method was removed in EL 6.0, but still supporting EL 5.0
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         if (base != null)

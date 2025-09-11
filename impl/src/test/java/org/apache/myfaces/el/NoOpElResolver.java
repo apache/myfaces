@@ -21,9 +21,6 @@ package org.apache.myfaces.el;
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -33,12 +30,6 @@ public class NoOpElResolver extends ELResolver
 
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base)
-    {
-        return null;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         return null;
     }

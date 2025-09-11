@@ -131,7 +131,7 @@ public class ScopedAttributeResolver extends ELResolver
         return Object.class;
     }
 
-    @Override
+    // @Override -- This method was removed in EL 6.0, but still supporting EL 5.0
     public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base)
     {
 
@@ -176,8 +176,8 @@ public class ScopedAttributeResolver extends ELResolver
     private static FeatureDescriptor makeDescriptor(final String name, final Class<?> runtimeType)
     {
         FeatureDescriptor fd = new FeatureDescriptor();
-        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
-        fd.setValue(ELResolver.TYPE, runtimeType);
+        fd.setValue(ELConstants.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
+        fd.setValue(ELConstants.TYPE, runtimeType);
         fd.setName(name);
         fd.setDisplayName(name);
         fd.setShortDescription(name);

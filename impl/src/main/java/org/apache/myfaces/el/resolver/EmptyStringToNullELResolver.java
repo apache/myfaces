@@ -42,7 +42,7 @@ public class EmptyStringToNullELResolver extends ELResolver
         return (T) value;
     }
 
-    @Override
+    // @Override -- This method was removed in EL 6.0, but still supporting EL 5.0
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         return null;

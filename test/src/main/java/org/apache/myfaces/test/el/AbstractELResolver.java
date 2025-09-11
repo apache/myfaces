@@ -30,6 +30,14 @@ import jakarta.el.ELResolver;
 abstract class AbstractELResolver extends ELResolver
 {
 
+    /*
+     * These two were removed in Expression Langauge 6.0, but we want to keep backwards
+     * compatability with 5.0.
+     */
+    public static final String TYPE = "type";
+
+    public static final String RESOLVABLE_AT_DESIGN_TIME = "resolvableAtDesignTime";
+
     // ------------------------------------------------------- Protected Methods
 
     /**
@@ -59,15 +67,15 @@ abstract class AbstractELResolver extends ELResolver
         descriptor.setExpert(expert);
         descriptor.setHidden(hidden);
         descriptor.setPreferred(preferred);
-        descriptor.setValue(ELResolver.TYPE, type);
+        descriptor.setValue(AbstractELResolver.TYPE, type);
         if (designTime)
         {
-            descriptor.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME,
+            descriptor.setValue(AbstractELResolver.RESOLVABLE_AT_DESIGN_TIME,
                     Boolean.TRUE);
         }
         else
         {
-            descriptor.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME,
+            descriptor.setValue(AbstractELResolver.RESOLVABLE_AT_DESIGN_TIME,
                     Boolean.FALSE);
         }
 

@@ -58,7 +58,7 @@ public final class ResourceResolver extends ELResolver
         return base == null ? Object.class : null;
     }
 
-    @Override
+    // @Override -- This method was removed in EL 6.0, but still supporting EL 5.0
     public Iterator<FeatureDescriptor> getFeatureDescriptors(
             final ELContext context, final Object base)
     {

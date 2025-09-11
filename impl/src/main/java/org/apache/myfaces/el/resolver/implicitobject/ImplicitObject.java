@@ -19,8 +19,10 @@
 package org.apache.myfaces.el.resolver.implicitobject;
 
 import java.beans.FeatureDescriptor;
+
+import org.apache.myfaces.el.resolver.ELConstants;
+
 import jakarta.el.ELContext;
-import jakarta.el.ELResolver;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -49,8 +51,8 @@ public abstract class ImplicitObject
     protected FeatureDescriptor makeDescriptor(String name, String description, Class<?> elResolverType)
     {
         FeatureDescriptor fd = new FeatureDescriptor();
-        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
-        fd.setValue(ELResolver.TYPE, elResolverType);
+        fd.setValue(ELConstants.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
+        fd.setValue(ELConstants.TYPE, elResolverType);
         fd.setName(name);
         fd.setDisplayName(name);
         fd.setShortDescription(description);

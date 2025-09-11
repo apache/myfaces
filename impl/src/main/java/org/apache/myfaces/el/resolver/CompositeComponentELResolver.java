@@ -67,7 +67,7 @@ public final class CompositeComponentELResolver extends ELResolver
         return String.class;
     }
 
-    @Override
+    // @Override -- This method was removed in EL 6.0, but still supporting EL 5.0
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         // Per the spec, do nothing.

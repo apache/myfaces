@@ -93,7 +93,7 @@ public class ReservedWordsELResolver extends AbstractELResolver
         return false;
     }
 
-    @Override
+    // @Override -- This method was removed in EL 6.0, but still supporting EL 5.0
     public synchronized Iterator<FeatureDescriptor> getFeatureDescriptors(
         ELContext context, Object base)
     {
