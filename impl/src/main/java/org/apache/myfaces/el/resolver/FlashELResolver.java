@@ -286,7 +286,7 @@ public class FlashELResolver extends ELResolver
         return null;
     }
 
-    @Override
+    // @Override -- This method was removed in EL 6.0, but still supporting EL 5.0
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         ArrayList<FeatureDescriptor> descriptors = new ArrayList<>(1);
@@ -313,8 +313,8 @@ public class FlashELResolver extends ELResolver
             Class<?> elResolverType)
     {
         FeatureDescriptor fd = new FeatureDescriptor();
-        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
-        fd.setValue(ELResolver.TYPE, elResolverType);
+        fd.setValue(ELConstants.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
+        fd.setValue(ELConstants.TYPE, elResolverType);
         fd.setName(name);
         fd.setDisplayName(name);
         fd.setShortDescription(description);

@@ -644,11 +644,11 @@
                                 </Export-Package>
                                 <Import-Package>
                                     !org.apache.myfaces.*,
-                                    jakarta.annotation;version="[2.1.0, 3.0.0)",
+                                    jakarta.annotation;version="[2.1.0, 4.0.0)",
                                     javax.crypto,
                                     javax.crypto.spec,
                                     jakarta.ejb;version="[4.0.0, 5.0.0)";resolution:=optional,
-                                    jakarta.el;version="[5.0.0, 6.0.0)",
+                                    jakarta.el;version="[5.0.0, 7.0.0)",
                                     javax.naming,
                                     jakarta.persistence;version="[3.1.0, 4.0.0)";resolution:=optional,
                                     javax.portlet;version="[1.0.0, 2.1)";resolution:=optional,
@@ -983,7 +983,6 @@
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.0.0-RC2</version>
             <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
         <dependency>

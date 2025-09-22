@@ -166,7 +166,7 @@ public final class ResourceBundleResolver extends ELResolver
         return null;
     }
 
-    @Override
+    // @Override -- This method was removed in EL 6.0, but still supporting EL 5.0
     public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base)
     {
         if (base != null)
@@ -231,10 +231,10 @@ public final class ResourceBundleResolver extends ELResolver
     private static FeatureDescriptor makeDescriptor(org.apache.myfaces.config.element.ResourceBundle bundle)
     {
         final FeatureDescriptor fd = new FeatureDescriptor();
-        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
+        fd.setValue(ELConstants.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
         fd.setName(bundle.getVar());
         fd.setDisplayName(bundle.getDisplayName());
-        fd.setValue(ELResolver.TYPE, ResourceBundle.class);
+        fd.setValue(ELConstants.TYPE, ResourceBundle.class);
         fd.setShortDescription("");
         fd.setExpert(false);
         fd.setHidden(false);
