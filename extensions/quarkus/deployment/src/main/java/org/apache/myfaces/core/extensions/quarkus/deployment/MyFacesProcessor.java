@@ -23,6 +23,7 @@ import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -237,53 +238,59 @@ class MyFacesProcessor
     {
         WebMetaData webMetaData = webMetaDataBuildItem.getWebMetaData();
 
+        boolean extensionlessViews = webMetaData.getContextParams().stream().anyMatch(p ->
+                "jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING".equals(p.getParamName())
+                        && "true".equals(p.getParamValue()));
+
+        // handle jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING
+        Set<String> extensionlessViewMappings = extensionlessViews
+                ? findTopLevelViews().stream()
+                .map(view -> view.replace(ViewHandler.DEFAULT_FACELETS_SUFFIX, ""))
+                .collect(Collectors.toSet())
+                : Collections.emptySet();
+
         ServletMetaData facesServlet;
-        if (webMetaData.getServlets() != null)
+
+        // try to find already registered FacesServlet
+        if (webMetaData.getServlets() == null)
+        {
+            facesServlet = null;
+        }
+        else
         {
             facesServlet = webMetaData.getServlets().stream()
                 .filter(servletMeta -> FacesServlet.class.getName().equals(servletMeta.getServletClass()))
                 .findFirst()
                 .orElse(null);
         }
-        else
-        {
-            facesServlet = null;
-        }
 
+        ServletBuildItem.Builder builder;
         if (facesServlet == null)
         {
-            // Only define here if not explictly defined in web.xml
-            ServletBuildItem.Builder builder = ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
+            // add a default "Faces Servlet"
+            builder = ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
                     .setMultipartConfig(new MultipartConfigElement(""))
                     .addMapping("*.xhtml");
 
-            findTopLevelViews().forEach(view ->
+            if (!extensionlessViewMappings.isEmpty())
             {
-                builder.addMapping(view.replace(ViewHandler.DEFAULT_FACELETS_SUFFIX, ""));
-            });
+                extensionlessViewMappings.forEach(builder::addMapping);
+            }
 
             servlet.produce(builder.build());
         }
-        else
+        else if (!extensionlessViewMappings.isEmpty())
         {
-            ServletBuildItem.Builder builder = ServletBuildItem
-                    .builder(facesServlet.getName(), facesServlet.getServletClass());
+            // in case when there are extensionless views enabled, we have add mappings for it
+            // this is currently only possible by re-register the FacesServlet
+            // https://github.com/quarkusio/quarkus/issues/49705
+            builder = createServletBuilderFromMetaData(webMetaData, facesServlet);
 
-            webMetaData.getServletMappings().forEach(mapping ->
-            {
-                if (facesServlet.getName().equals(mapping.getServletName()))
-                {
-                    mapping.getUrlPatterns().forEach(builder::addMapping);
-                }
-            });
-
-            findTopLevelViews().forEach(view ->
-            {
-                builder.addMapping(view.replace(ViewHandler.DEFAULT_FACELETS_SUFFIX, ""));
-            });
+            extensionlessViewMappings.forEach(builder::addMapping);
 
             servlet.produce(builder.build());
         }
+
 
         // sometimes Quarkus doesn't scan web-fragments?! lets add it manually
         listener.produce(new ListenerBuildItem(StartupServletContextListener.class.getName()));
@@ -302,7 +309,6 @@ class MyFacesProcessor
         {
             beanDefiningAnnotation.produce(new BeanDefiningAnnotationBuildItem(DotName.createSimple(clazz)));
         }
-
     }
 
     @BuildStep
@@ -977,5 +983,54 @@ class MyFacesProcessor
                 }
             }
         }
+    }
+
+    private ServletBuildItem.Builder createServletBuilderFromMetaData(WebMetaData webMetaData,
+                                                                      ServletMetaData servletMeta)
+    {
+        ServletBuildItem.Builder builder = ServletBuildItem.builder(servletMeta.getName(),
+                servletMeta.getServletClass());
+
+        webMetaData.getServletMappings().forEach(mapping ->
+        {
+            if (servletMeta.getName().equals(mapping.getServletName()))
+            {
+                mapping.getUrlPatterns().forEach(builder::addMapping);
+            }
+        });
+        if (servletMeta.getInitParam() != null)
+        {
+            servletMeta.getInitParam()
+                    .forEach(param -> builder.addInitParam(param.getParamName(),  param.getParamValue()));
+        }
+        if (servletMeta.getLoadOnStartup() != null)
+        {
+            builder.setLoadOnStartup(Integer.parseInt(servletMeta.getLoadOnStartup()));
+        }
+        if (servletMeta.isAsyncSupported())
+        {
+            builder.setAsyncSupported(servletMeta.isAsyncSupported());
+        }
+        if (servletMeta.getMultipartConfig() != null)
+        {
+            MultipartConfigElement multipartConfigElement;
+            if (servletMeta.getMultipartConfig().getFileSizeThresholdSet()
+                || servletMeta.getMultipartConfig().getMaxFileSizeSet()
+                || servletMeta.getMultipartConfig().getMaxRequestSizeSet())
+            {
+                multipartConfigElement = new MultipartConfigElement(servletMeta.getMultipartConfig().getLocation());
+            }
+            else
+            {
+                multipartConfigElement = new MultipartConfigElement(servletMeta.getMultipartConfig().getLocation(),
+                        servletMeta.getMultipartConfig().getMaxFileSize(),
+                        servletMeta.getMultipartConfig().getMaxRequestSize(),
+                        servletMeta.getMultipartConfig().getFileSizeThreshold());
+            }
+
+            builder.setMultipartConfig(multipartConfigElement);
+        }
+
+        return builder;
     }
 }
