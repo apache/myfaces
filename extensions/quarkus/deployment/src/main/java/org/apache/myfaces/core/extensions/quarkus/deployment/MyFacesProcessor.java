@@ -23,6 +23,7 @@ import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,7 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.annotation.View;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.FacesComponent;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponent;
@@ -233,26 +235,63 @@ class MyFacesProcessor
 
     @BuildStep
     void buildServlet(WebMetadataBuildItem  webMetaDataBuildItem,
-            BuildProducer<FeatureBuildItem> feature,
-            BuildProducer<ServletBuildItem> servlet,
-            BuildProducer<ListenerBuildItem> listener)
+                      BuildProducer<FeatureBuildItem> feature,
+                      BuildProducer<ServletBuildItem> servlet,
+                      BuildProducer<ListenerBuildItem> listener) throws IOException
     {
         WebMetaData webMetaData = webMetaDataBuildItem.getWebMetaData();
-        ServletMetaData facesServlet = null;
-        if (webMetaData.getServlets() != null)
+
+        boolean extensionlessViews = webMetaData.getContextParams().stream().anyMatch(p ->
+                FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME.equals(p.getParamName())
+                        && "true".equals(p.getParamValue()));
+
+        // handle jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING
+        Set<String> extensionlessViewMappings = extensionlessViews
+                ? findTopLevelViews().stream()
+                    .map(view -> view.replace(ViewHandler.DEFAULT_FACELETS_SUFFIX, ""))
+                    .collect(Collectors.toSet())
+                : Collections.emptySet();
+
+        ServletMetaData facesServlet;
+
+        // try to find already registered FacesServlet
+        if (webMetaData.getServlets() == null)
+        {
+            facesServlet = null;
+        }
+        else
         {
             facesServlet = webMetaData.getServlets().stream()
-                .filter(servletMeta -> FacesServlet.class.getName().equals(servletMeta.getServletClass()))
-                .findFirst()
-                .orElse(null);
+                    .filter(servletMeta -> FacesServlet.class.getName().equals(servletMeta.getServletClass()))
+                    .findFirst()
+                    .orElse(null);
         }
+
+        ServletBuildItem.Builder builder;
         if (facesServlet == null)
         {
-            // Only define here if not explicitly defined in web.xml
-            servlet.produce(ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
+            // add a default "Faces Servlet"
+            builder = ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
                     .setMultipartConfig(new MultipartConfigElement(""))
-                    .addMapping("*.xhtml")
-                    .build());
+                    .addMapping("*.xhtml");
+
+            if (!extensionlessViewMappings.isEmpty())
+            {
+                extensionlessViewMappings.forEach(builder::addMapping);
+            }
+
+            servlet.produce(builder.build());
+        }
+        else if (!extensionlessViewMappings.isEmpty())
+        {
+            // in case when there are extensionless views enabled, we have add mappings for it
+            // this is currently only possible by re-register the FacesServlet
+            // https://github.com/quarkusio/quarkus/issues/49705
+            builder = createServletBuilderFromMetaData(webMetaData, facesServlet);
+
+            extensionlessViewMappings.forEach(builder::addMapping);
+
+            servlet.produce(builder.build());
         }
 
         // sometimes Quarkus doesn't scan web-fragments?! lets add it manually
@@ -434,6 +473,12 @@ class MyFacesProcessor
     @Record(ExecutionTime.STATIC_INIT)
     void collectTopLevelViews(MyFacesRecorder recorder) throws IOException
     {
+        findTopLevelViews().forEach(recorder::registerTopLevelView);
+    }
+
+    Set<String> findTopLevelViews() throws IOException
+    {
+        Set<String> topLevelViews = new HashSet<>();
         visitRuntimeMetaInfResources(visit ->
         {
             if (Files.isDirectory(visit.getPath()))
@@ -454,11 +499,12 @@ class MyFacesProcessor
                     return;
                 }
 
-                String viewId = visit.getRelativePath().toString()
+                String viewId = "/" + visit.getRelativePath().toString()
                         .replace("META-INF/resources/", "");
-                recorder.registerTopLevelView(viewId);
+                topLevelViews.add(viewId);
             }
         });
+        return topLevelViews;
     }
 
     @BuildStep
@@ -942,5 +988,54 @@ class MyFacesProcessor
                 }
             }
         }
+    }
+
+    private ServletBuildItem.Builder createServletBuilderFromMetaData(WebMetaData webMetaData,
+                                                                      ServletMetaData servletMeta)
+    {
+        ServletBuildItem.Builder builder = ServletBuildItem.builder(servletMeta.getName(),
+                servletMeta.getServletClass());
+
+        webMetaData.getServletMappings().forEach(mapping ->
+        {
+            if (servletMeta.getName().equals(mapping.getServletName()))
+            {
+                mapping.getUrlPatterns().forEach(builder::addMapping);
+            }
+        });
+        if (servletMeta.getInitParam() != null)
+        {
+            servletMeta.getInitParam()
+                    .forEach(param -> builder.addInitParam(param.getParamName(),  param.getParamValue()));
+        }
+        if (servletMeta.getLoadOnStartup() != null)
+        {
+            builder.setLoadOnStartup(Integer.parseInt(servletMeta.getLoadOnStartup()));
+        }
+        if (servletMeta.isAsyncSupported())
+        {
+            builder.setAsyncSupported(servletMeta.isAsyncSupported());
+        }
+        if (servletMeta.getMultipartConfig() != null)
+        {
+            MultipartConfigElement multipartConfigElement;
+            if (servletMeta.getMultipartConfig().getFileSizeThresholdSet()
+                    || servletMeta.getMultipartConfig().getMaxFileSizeSet()
+                    || servletMeta.getMultipartConfig().getMaxRequestSizeSet())
+            {
+                multipartConfigElement = new MultipartConfigElement(servletMeta.getMultipartConfig().getLocation());
+            }
+            else
+            {
+                multipartConfigElement = new MultipartConfigElement(servletMeta.getMultipartConfig().getLocation(),
+                        servletMeta.getMultipartConfig().getMaxFileSize(),
+                        servletMeta.getMultipartConfig().getMaxRequestSize(),
+                        servletMeta.getMultipartConfig().getFileSizeThreshold());
+            }
+
+            builder.setMultipartConfig(multipartConfigElement);
+        }
+
+        return builder;
     }
 }

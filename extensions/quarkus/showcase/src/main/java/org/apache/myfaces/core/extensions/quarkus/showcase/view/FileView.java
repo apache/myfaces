@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.showcase.view;
 
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
@@ -45,12 +47,18 @@ public class FileView implements Serializable
         {
             System.out.println(file.getFileName());
         }
+
+        FacesMessage facesMessage = new FacesMessage(FacesMessage.Severity.INFO, "File Uploaded", "File Uploaded");
+        FacesContext.getCurrentInstance().addMessage(null, facesMessage);
     }
 
     public void handleFileUpload(FileUploadEvent event)
     {
         System.out.println("auto file upload start");
         System.out.println(event.getFile().getFileName());
+
+        FacesMessage facesMessage = new FacesMessage(FacesMessage.Severity.INFO, "File Uploaded", "File Uploaded");
+        FacesContext.getCurrentInstance().addMessage(null, facesMessage);
     }
 
     public UploadedFile getFile()
