@@ -49,6 +49,16 @@
                 <h:commandButton id="submit2" value="Submit" action="#{fileView.upload}"/>
 
             </h:form>
+
+            <br />
+            <br />
+
+            Simple AJAX:
+            <h:form id="test2" enctype="multipart/form-data">
+                <p:fileUpload value="#{fileView.file}" mode="simple" skinSimple="false"/>
+
+                <p:commandButton id="submit3" value="Submit" action="#{fileView.upload}"/>
+            </h:form>
         </h:body>
     </f:view>
 </html>
