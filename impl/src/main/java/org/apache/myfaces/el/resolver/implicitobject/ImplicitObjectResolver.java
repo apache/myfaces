@@ -29,8 +29,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.myfaces.el.resolver.CookieImplicitObject;
-
 /**
  * See Faces 1.2 spec sections 5.6.1.1 and 5.6.2.1
  * 
