@@ -31,6 +31,8 @@
         <h:body>            
             Advanced:
             <h:form id="test" enctype="multipart/form-data">
+                <p:messages />
+
                 <p:fileUpload
                     label="test"
                     mode="advanced"
@@ -55,9 +57,11 @@
 
             Simple AJAX:
             <h:form id="test2" enctype="multipart/form-data">
+                <p:messages />
+
                 <p:fileUpload value="#{fileView.file}" mode="simple" skinSimple="false"/>
 
-                <p:commandButton id="submit3" value="Submit" action="#{fileView.upload}"/>
+                <p:commandButton id="submit3" value="Submit" action="#{fileView.upload}" process="@this" update="@form"/>
             </h:form>
         </h:body>
     </f:view>
