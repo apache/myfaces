@@ -239,7 +239,7 @@ class MyFacesProcessor
         WebMetaData webMetaData = webMetaDataBuildItem.getWebMetaData();
 
         boolean extensionlessViews = webMetaData.getContextParams().stream().anyMatch(p ->
-                "jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING".equals(p.getParamName())
+                FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME.equals(p.getParamName())
                         && "true".equals(p.getParamValue()));
 
         // handle jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING
