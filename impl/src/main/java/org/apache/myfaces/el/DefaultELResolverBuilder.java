@@ -157,7 +157,10 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         {
             try
             {
-                list.add(new OptionalELResolver());
+                if(!config.isOptionalELResolverDisabled()) 
+                {
+                    list.add(new OptionalELResolver()); // not disabled (default), so add it in.
+                }
                 list.add(new RecordELResolver());
             }
             catch (Throwable ex)
