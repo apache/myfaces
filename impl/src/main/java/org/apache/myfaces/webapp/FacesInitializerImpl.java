@@ -189,7 +189,7 @@ public class FacesInitializerImpl implements FacesInitializer
             if ("false".equals(useEncryption))
             {
                 log.warning(StateUtils.USE_ENCRYPTION + " is set to false. " 
-                        + "This is unsecure and should only be used for local or intranet applications!");
+                        + "This is insecure and should only be used for local or intranet applications!");
             }
             else
             {
