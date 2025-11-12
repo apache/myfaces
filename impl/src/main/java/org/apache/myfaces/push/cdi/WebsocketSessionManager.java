@@ -141,8 +141,12 @@ public class WebsocketSessionManager
     public Set<String> getChannelTokensForUser(Serializable user, String channel)
     {
         UserChannelKey userChannelKey = new UserChannelKey(user, channel);
-        // just for compatibility, returning keySet
-        return getUserMap().get(userChannelKey).keySet();
+        ConcurrentMap<String, Integer> channelTokenMap = getUserMap().get(userChannelKey);
+        if (channelTokenMap == null)
+        {
+            return null;
+        }
+        return channelTokenMap.keySet();
     }
 
     public void initSessionMap(ExternalContext context)
