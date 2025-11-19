@@ -238,9 +238,14 @@ class MyFacesProcessor
     {
         WebMetaData webMetaData = webMetaDataBuildItem.getWebMetaData();
 
-        boolean extensionlessViews = webMetaData.getContextParams().stream().anyMatch(p ->
-                FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME.equals(p.getParamName())
-                        && "true".equals(p.getParamValue()));
+        boolean extensionlessViews = false;
+        if (webMetaData.getContextParams() != null)
+        {
+            extensionlessViews = webMetaData.getContextParams().stream().anyMatch(p ->
+                    FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME.equals(p.getParamName())
+                            && "true".equals(p.getParamValue()));
+        }
+
 
         // handle jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING
         Set<String> extensionlessViewMappings = extensionlessViews
@@ -991,13 +996,16 @@ class MyFacesProcessor
         ServletBuildItem.Builder builder = ServletBuildItem.builder(servletMeta.getName(),
                 servletMeta.getServletClass());
 
-        webMetaData.getServletMappings().forEach(mapping ->
+        if (webMetaData.getServletMappings() != null)
         {
-            if (servletMeta.getName().equals(mapping.getServletName()))
+            webMetaData.getServletMappings().forEach(mapping ->
             {
-                mapping.getUrlPatterns().forEach(builder::addMapping);
-            }
-        });
+                if (servletMeta.getName().equals(mapping.getServletName()))
+                {
+                    mapping.getUrlPatterns().forEach(builder::addMapping);
+                }
+            });
+        }
         if (servletMeta.getInitParam() != null)
         {
             servletMeta.getInitParam()
