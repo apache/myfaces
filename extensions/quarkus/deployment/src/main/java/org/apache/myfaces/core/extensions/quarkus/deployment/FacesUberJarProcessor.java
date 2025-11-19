@@ -32,7 +32,7 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import io.quarkus.deployment.IsNormal;
+import io.quarkus.deployment.IsProduction;
 import io.quarkus.deployment.pkg.builditem.UberJarMergedResourceBuildItem;
 import org.atteo.xmlcombiner.XmlCombiner;
 import org.jboss.logging.Logger;
@@ -61,7 +61,7 @@ public class FacesUberJarProcessor
      *
      * @param producer The build item producer for creating `UberJarMergedResourceBuildItem` instances.
      */
-    @BuildStep(onlyIf = IsNormal.class)
+    @BuildStep(onlyIf = IsProduction.class)
     void uberJarServiceLoaders(BuildProducer<UberJarMergedResourceBuildItem> producer)
     {
         List<String> serviceFiles = List.of(
@@ -89,7 +89,7 @@ public class FacesUberJarProcessor
      * @param generatedResourcesProducer the producer to add generated resources
      * @param packageConfig the package configuration to check for UBER_JAR type
      */
-    @BuildStep(onlyIf = IsNormal.class)
+    @BuildStep(onlyIf = IsProduction.class)
     void uberJarXmlFiles(BuildProducer<GeneratedResourceBuildItem> generatedResourcesProducer,
                          PackageConfig packageConfig)
     {

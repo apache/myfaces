@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.deployment;
 
-import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -232,15 +231,19 @@ class MyFacesProcessor
 
     @BuildStep
     void buildServlet(WebMetadataBuildItem  webMetaDataBuildItem,
-                      BuildProducer<FeatureBuildItem> feature,
                       BuildProducer<ServletBuildItem> servlet,
-                      BuildProducer<ListenerBuildItem> listener) throws IOException
+                      BuildProducer<ListenerBuildItem> listener)
     {
         WebMetaData webMetaData = webMetaDataBuildItem.getWebMetaData();
 
-        boolean extensionlessViews = webMetaData.getContextParams().stream().anyMatch(p ->
-                FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME.equals(p.getParamName())
-                        && "true".equals(p.getParamValue()));
+        boolean extensionlessViews = false;
+
+        if (webMetaData.getContextParams() != null)
+        {
+            extensionlessViews = webMetaData.getContextParams().stream().anyMatch(p ->
+                    FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME.equals(p.getParamName())
+                            && "true".equals(p.getParamValue()));
+        }
 
         // handle jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING
         Set<String> extensionlessViewMappings = extensionlessViews
@@ -281,7 +284,7 @@ class MyFacesProcessor
         }
         else if (!extensionlessViewMappings.isEmpty())
         {
-            // in case when there are extensionless views enabled, we have add mappings for it
+            // in case when there are extensionless views enabled, we have added mappings for it
             // this is currently only possible by re-register the FacesServlet
             // https://github.com/quarkusio/quarkus/issues/49705
             builder = createServletBuilderFromMetaData(webMetaData, facesServlet);
@@ -468,12 +471,12 @@ class MyFacesProcessor
 
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
-    void collectTopLevelViews(MyFacesRecorder recorder) throws IOException
+    void collectTopLevelViews(MyFacesRecorder recorder)
     {
         findTopLevelViews().forEach(recorder::registerTopLevelView);
     }
 
-    Set<String> findTopLevelViews() throws IOException
+    Set<String> findTopLevelViews()
     {
         Set<String> topLevelViews = new HashSet<>();
         visitRuntimeMetaInfResources(visit ->
@@ -496,7 +499,7 @@ class MyFacesProcessor
                     return;
                 }
 
-                String viewId = "/" + visit.getRelativePath().toString()
+                String viewId = "/" + visit.getRelativePath()
                         .replace("META-INF/resources/", "");
                 topLevelViews.add(viewId);
             }
@@ -761,7 +764,7 @@ class MyFacesProcessor
     public List<String> collectImplementors(CombinedIndexBuildItem combinedIndex, String className)
     {
         List<String> classes = combinedIndex.getIndex()
-                .getAllKnownImplementors(DotName.createSimple(className))
+                .getAllKnownImplementations(DotName.createSimple(className))
                 .stream()
                 .map(ClassInfo::toString)
                 .collect(Collectors.toList());
@@ -991,13 +994,16 @@ class MyFacesProcessor
         ServletBuildItem.Builder builder = ServletBuildItem.builder(servletMeta.getName(),
                 servletMeta.getServletClass());
 
-        webMetaData.getServletMappings().forEach(mapping ->
+        if (webMetaData.getServletMappings() != null)
         {
-            if (servletMeta.getName().equals(mapping.getServletName()))
+            webMetaData.getServletMappings().forEach(mapping ->
             {
-                mapping.getUrlPatterns().forEach(builder::addMapping);
-            }
-        });
+                if (servletMeta.getName().equals(mapping.getServletName()))
+                {
+                    mapping.getUrlPatterns().forEach(builder::addMapping);
+                }
+            });
+        }
         if (servletMeta.getInitParam() != null)
         {
             servletMeta.getInitParam()
