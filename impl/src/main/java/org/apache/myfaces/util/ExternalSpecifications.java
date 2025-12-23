@@ -96,8 +96,6 @@ public final class ExternalSpecifications
             available = false;
         }
 
-        log.info("MyFaces Core CDI support " + (available ? "enabled" : "disabled"));
- 
         return available;
     });
 
@@ -113,11 +111,27 @@ public final class ExternalSpecifications
         {
             available = false;
         }
-        log.info("MyFaces Core Servlet 6.0 support " + (available ? "enabled" : "disabled"));
+        log.info("MyFaces Core: Servlet 6.0 support " + (available ? "enabled" : "disabled"));
 
         return available;
     });
-    
+
+    private static Lazy<Boolean> el6Available = new Lazy<>(() ->
+    {
+        boolean available;
+        try
+        {
+            available = ClassUtils.classForName("jakarta.el.OptionalELResolver") != null;
+        }
+        catch (Throwable t)
+        {
+            available = false;
+        }
+        log.info("MyFaces Core: EL 6.0 support " + (available ? "enabled" : "disabled"));
+
+        return available;
+    });
+
     /**
      * This method determines if Bean Validation is present.
      *
@@ -139,6 +153,11 @@ public final class ExternalSpecifications
     public static boolean isServlet6Available()
     {
         return sevlet6Available.get();
+    }
+
+    public static boolean isEL6Available()
+    {
+        return el6Available.get();
     }
 
     /**

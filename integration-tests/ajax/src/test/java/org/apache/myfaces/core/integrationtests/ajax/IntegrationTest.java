@@ -90,6 +90,11 @@ public class IntegrationTest
     @ArquillianResource
     protected URL contextPath;
 
+    @org.junit.BeforeClass
+    public static void setupDriver()
+    {
+        io.github.bonigarcia.wdm.WebDriverManager.chromedriver().setup();
+    }
 
     @After
     public void after()

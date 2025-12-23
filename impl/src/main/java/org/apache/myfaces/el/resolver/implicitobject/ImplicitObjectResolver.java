@@ -231,7 +231,7 @@ public class ImplicitObjectResolver extends ELResolver
         return null;
     }
 
-    @Override
+    // @Override -- This method was removed in EL 6.0, but still supporting EL 5.0
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         if (base != null)
