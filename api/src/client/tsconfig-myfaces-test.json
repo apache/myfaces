@@ -42,7 +42,7 @@
       "./typescript/faces/@types/"
     ],
     "paths": {
-      "mona-dish": ["./typescript/mona_dish/index_core.ts"]
+      "mona-dish": ["./typescript/mona_dish/index.ts"]
     }
   },
   "exclude": [
