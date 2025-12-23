@@ -38,7 +38,7 @@ import {
     XML_TAG_AFTER,
     XML_TAG_BEFORE, NAMED_VIEWROOT, XML_ATTR_NAMED_VIEWROOT, P_VIEWSTATE, $faces
 } from "../core/Const";
-import {resolveContexts, resolveResponseXML} from "./ResonseDataResolver";
+import {resolveContexts, resolveResponseXML} from "./ResponseDataResolver";
 import {ExtConfig} from "../util/ExtDomQuery";
 
 

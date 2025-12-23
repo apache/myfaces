@@ -77,12 +77,12 @@ function resetServerValues(evt) {
  * special element holding the processed errors
  */
 var processError = function (data) {
-    if (document.querySelectorAll("#processedErrror").length == 0) {
+    if (document.querySelectorAll("#processedError").length == 0) {
         var element = document.createElement("div");
-        element.id = "processedErrror";
+        element.id = "processedError";
         document.body.append(element);
     }
-    let logElement = document.querySelectorAll("#processedErrror")[0];
+    let logElement = document.querySelectorAll("#processedError")[0];
     logElement.innerText = logElement.innerText + JSON.stringify(data);
 };
 

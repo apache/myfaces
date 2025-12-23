@@ -384,7 +384,7 @@ public class NavigationHandlerImplTest extends AbstractFacesTestCase
     }
     
     @Test
-    public void testActionOutcomePrecendeceMachRule() throws Exception
+    public void testActionOutcomePrecedenceMachRule() throws Exception
     {
         loadTextFacesConfig("simple-action-outcome-precedence-config.xml");
 
@@ -423,7 +423,7 @@ public class NavigationHandlerImplTest extends AbstractFacesTestCase
     }
     
     @Test
-    public void testActionOutcomePrecendeceAlternateOutcomeMachRule() throws Exception
+    public void testActionOutcomePrecedenceAlternateOutcomeMachRule() throws Exception
     {
         loadTextFacesConfig("simple-action-outcome-precedence-config.xml");
 
@@ -462,7 +462,7 @@ public class NavigationHandlerImplTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testActionOutcomePrecendeceNoOutcomeMachRule() throws Exception
+    public void testActionOutcomePrecedenceNoOutcomeMachRule() throws Exception
     {
         loadTextFacesConfig("simple-action-outcome-precedence-config.xml");
 
@@ -502,7 +502,7 @@ public class NavigationHandlerImplTest extends AbstractFacesTestCase
     }
     
     @Test
-    public void testActionOutcomePrecendece2MachRule() throws Exception
+    public void testActionOutcomePrecedence2MachRule() throws Exception
     {
         loadTextFacesConfig("simple-action-outcome-precedence-2-config.xml");
 

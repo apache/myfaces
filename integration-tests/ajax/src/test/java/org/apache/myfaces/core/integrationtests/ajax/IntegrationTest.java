@@ -90,6 +90,11 @@ public class IntegrationTest
     @ArquillianResource
     protected URL contextPath;
 
+    @org.junit.BeforeClass
+    public static void setupDriver()
+    {
+        io.github.bonigarcia.wdm.WebDriverManager.chromedriver().setup();
+    }
 
     @After
     public void after()
@@ -167,8 +172,8 @@ public class IntegrationTest
                 webDriver.findElement(new ByIdOrName("logError")).getText().contains("malformedXML"));
 
         //server error, should trigger our error chain, no log error
-        trigger("cmd_error", webDriver -> webDriver.findElement(new ByIdOrName("processedErrror")).isDisplayed() &&
-                webDriver.findElement(new ByIdOrName("processedErrror")).getText().contains("serverError"));
+        trigger("cmd_error", webDriver -> webDriver.findElement(new ByIdOrName("processedError")).isDisplayed() &&
+                webDriver.findElement(new ByIdOrName("processedError")).getText().contains("serverError"));
 
 
     }

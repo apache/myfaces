@@ -128,8 +128,6 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         WebsocketChannelTokenBuilder channelTokenBuilder =
                 CDIUtils.get(beanManager, WebsocketChannelTokenBuilder.class);
 
-        // Create channel token 
-        // TODO: Use ResponseStateManager to create the token
         // The default scope is application. When the user attribute is specified, then the default scope is session.
         String scope = component.getScope();
         if (scope == null)
@@ -143,18 +141,19 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
 
         WebsocketScopeManager scopeManager = CDIUtils.get(beanManager, WebsocketScopeManager.class);
 
+        WebsocketScopeManager.AbstractScope scopeImpl = scopeManager.getScope(scope, true);
+
         // try to find an existing channelToken
         String channelToken = null;
-        if (scopeManager.getScope(scope, true).isChannelAvailable(channel))
+        if (scopeImpl.isChannelAvailable(channel))
         {
             if (component.getUser() == null)
             {
-                List<String> channelTokenList = scopeManager.getScope (scope, true).getChannelTokens(channel);
+                List<String> channelTokenList = scopeImpl.getChannelTokens(channel);
                 if (LOG.isLoggable(Level.FINE))
                 {
-                    LOG.log(Level.FINE, "WebsocketComponentRenderer.encodeEnd: for channel = {0} found : ",
-                            channel);
-                    channelTokenList.forEach (p -> LOG.log(Level.FINE, "  {0}", p));
+                    LOG.log(Level.FINE, "WebsocketComponentRenderer.encodeEnd: for channel = {0} found : ", channel);
+                    channelTokenList.forEach(p -> LOG.log(Level.FINE, "  {0}", p));
                 }
                 // should be just one
                 if (channelTokenList.size() == 1)
@@ -164,8 +163,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
             }
             else
             {
-                List<String> channelTokenList = scopeManager.getScope (scope, true)
-                        .getChannelTokens(channel, component.getUser());
+                List<String> channelTokenList = scopeImpl.getChannelTokens(channel, component.getUser());
                 if (LOG.isLoggable(Level.FINE))
                 {
                     LOG.log(Level.FINE,
@@ -178,7 +176,6 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
                 {
                     channelToken = channelTokenList.get(0);
                 }
-
             }
         }
 
@@ -194,7 +191,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         {
             // No channel token found for that combination, create a new token for this view
             channelToken = channelTokenBuilder.createChannelToken(facesContext, channel);
-            scopeManager.getScope(scope, true).registerWebsocketSession(channelToken, metadata);
+            scopeImpl.registerWebsocketSession(channelToken, metadata);
         }
 
         // Register channel in view scope to chain discard view algorithm using @PreDestroy

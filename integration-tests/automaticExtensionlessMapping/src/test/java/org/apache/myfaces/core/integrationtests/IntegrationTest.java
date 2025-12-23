@@ -71,6 +71,12 @@ public class IntegrationTest
     @ArquillianResource
     protected URL contextPath;
 
+    @org.junit.BeforeClass
+    public static void setupDriver()
+    {
+        io.github.bonigarcia.wdm.WebDriverManager.chromedriver().setup();
+    }
+
     @Before
     public void before()
     {
@@ -116,6 +122,43 @@ public class IntegrationTest
         Assert.assertTrue(webDriver.getPageSource().contains("/jakarta.faces.resource/faces.js.xhtml?ln=jakarta.faces"));
     }
 
+    @Test
+    public void subfolder()
+    {
+        webDriver.get(contextPath + "some-folder/bar");
+
+        // check that URLs are rendered as exact mapping
+        Assert.assertTrue(webDriver.getPageSource().contains("/bar\""));
+
+        // check if served as non-exact-mapping
+        Assert.assertTrue(webDriver.getCurrentUrl().endsWith("some-folder/bar"));
+
+        Assert.assertTrue(webDriver.getPageSource().contains("/foo\""));
+        Assert.assertTrue(webDriver.getPageSource().contains("/someFolder/bar\""));
+        Assert.assertFalse(webDriver.getPageSource().contains("/someFolder/bar.xhtml\""));
+
+        // resources must NOT use exact mapping
+        Assert.assertTrue(webDriver.getPageSource().contains("/jakarta.faces.resource/faces.js.xhtml?ln=jakarta.faces"));
+    }
+
+    @Test
+    public void subfolder2()
+    {
+        webDriver.get(contextPath + "someFolder/bar");
+
+        // check that URLs are rendered as exact mapping
+        Assert.assertTrue(webDriver.getPageSource().contains("/bar\""));
+
+        // check if served as non-exact-mapping
+        Assert.assertTrue(webDriver.getCurrentUrl().endsWith("someFolder/bar"));
+
+        Assert.assertTrue(webDriver.getPageSource().contains("/foo\""));
+        Assert.assertTrue(webDriver.getPageSource().contains("/some-folder/bar\""));
+        Assert.assertFalse(webDriver.getPageSource().contains("/some-folder/bar.xhtml\""));
+
+        // resources must NOT use exact mapping
+        Assert.assertTrue(webDriver.getPageSource().contains("/jakarta.faces.resource/faces.js.xhtml?ln=jakarta.faces"));
+    }
 
     /*
      * MYFACES-4644: Ensure Programmatic Views can be accesssed without extensions
