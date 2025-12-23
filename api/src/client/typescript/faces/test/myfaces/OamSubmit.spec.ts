@@ -18,12 +18,12 @@ import {describe, it} from "mocha";
 
 import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import defaultMyFaces = StandardInits.defaultMyFaces;
+const defaultMyFaces = StandardInits.defaultMyFaces;
 import {oam} from "../../myfaces/OamSubmit";
-import setHiddenInput = oam.setHiddenInput;
+const setHiddenInput = oam.setHiddenInput;
 import {DomQuery} from "mona-dish";
-import clearHiddenInput = oam.clearHiddenInput;
-import submitForm = oam.submitForm;
+const clearHiddenInput = oam.clearHiddenInput;
+const submitForm = oam.submitForm;
 import Sinon, {spy} from "sinon";
 
 

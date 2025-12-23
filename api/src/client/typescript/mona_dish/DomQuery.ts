@@ -22,11 +22,11 @@ import {ICollector, IStreamDataSource, ITERATION_STATUS} from "./SourcesCollecto
 import {Lang} from "./Lang";
 import {_global$} from "./Global";
 import {Es2019Array} from "./Es2019Array";
-import trim = Lang.trim;
+const trim = Lang.trim;
 
-import isString = Lang.isString;
-import eqi = Lang.equalsIgnoreCase;
-import objToArray = Lang.objToArray;
+const isString = Lang.isString;
+const eqi = Lang.equalsIgnoreCase;
+const objToArray = Lang.objToArray;
 import {append, assign, simpleShallowMerge} from "./AssocArray";
 import {IDomQuery} from "./IDomQuery";
 
@@ -305,9 +305,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                         rootNode.push(...foundElement.values)
                     }
                 } else if (rootNode[cnt] instanceof DomQuery) {
-                    this.rootNode.push(...(<any>rootNode[cnt]).values);
+                    this.rootNode.push(...(rootNode[cnt] as any).values);
                 } else {
-                    this.rootNode.push(<any>rootNode[cnt]);
+                    this.rootNode.push(rootNode[cnt] as any);
                 }
             }
         }
@@ -425,11 +425,11 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     get checked(): boolean {
-        return new Es2019Array(...this.values).every(el => !!(<any>el).checked);
+        return new Es2019Array(...this.values).every(el => !!(el).checked as any);
     }
 
     set checked(newChecked: boolean) {
-        this.eachElem(el => (<any>el).checked = newChecked);
+        this.eachElem(el => (el as any).checked = newChecked);
     }
 
     get elements(): DomQuery {
@@ -569,7 +569,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         if (isString(selector)) {
             return (!deep) ? new DomQuery(document).byId(<string>selector) : new DomQuery(document).byIdDeep(<string>selector);
         } else {
-            return new DomQuery(<any>selector);
+            return new DomQuery(selector as any);
         }
     }
 
@@ -583,7 +583,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         if (isString(selector)) {
             return new DomQuery(document).byTagName(<string>selector);
         } else {
-            return new DomQuery(<any>selector);
+            return new DomQuery(selector as any);
         }
     }
 
@@ -669,7 +669,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * @param index
      */
     filesFromElem(index: number): Array<any> {
-        return (index < this.rootNode.length) ? (<any>this.rootNode[index])?.files ? (<any>this.rootNode[index]).files : [] : [];
+        return (index < this.rootNode.length) ? (this.rootNode[index] as any)?.files ? (this.rootNode[index] as any).files : [] : [];
     }
 
     /**
@@ -932,7 +932,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         let matched = [];
 
         this.eachElem(item => {
-            if (this._mozMatchesSelector(item, selector)) {
+            if (this._matchesSelector(item, selector)) {
                 matched.push(item)
             }
         });
@@ -947,7 +947,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      */
     matchesSelector(selector: string): boolean {
         return this.asArray
-            .some(item => this._mozMatchesSelector(item.getAsElem(0).value, selector));
+            .some(item => this._matchesSelector(item.getAsElem(0).value, selector));
     }
 
     /**
@@ -1277,7 +1277,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     parent(): DomQuery {
         let ret = [];
         this.eachElem((item: Element) => {
-            let parent = item.parentNode || (<any>item).host || item.shadowRoot;
+            let parent = item.parentNode || (item as any).host || item.shadowRoot;
             if (parent && ret.indexOf(parent) == -1) {
                 ret.push(parent);
             }
@@ -1605,12 +1605,12 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 (event as any).synthetic = true; // allow detection of synthetic events
                 // The second parameter says go ahead with the default action
                 node.dispatchEvent(event);
-            } else if ((<any>node).fireEvent) {
+            } else if ((node as any).fireEvent) {
                 // IE-old school style, you can drop this if you don't need to support IE8 and lower
                 let event = doc.createEventObject();
                 event.synthetic = true; // allow detection of synthetic events
                 Object.keys(finalOptions).forEach(key => event[key] = finalOptions[key]);
-                (<any>node).fireEvent("on" + eventName, event);
+                (node as any).fireEvent("on" + eventName, event);
             }
         })
     }
@@ -1623,7 +1623,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                         textContent: ""
                     };
                 }).value;
-                return (<any>item).textContent || "";
+                return (item as any).textContent || "";
             })
             .reduce((text1, text2) => [text1,joinString,text2].join(""), "");
     }
@@ -1636,7 +1636,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                         innerText: ""
                     };
                 }).value;
-                return (<any>item).innerText || "";
+                return (item as any).innerText || "";
             })
             .reduce((text1, text2) => {
                 return [text1, text2].join(joinString)
@@ -1723,7 +1723,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                         element.checked
                     )
                 ) {
-                    let uploadedFiles = (<any>element.value)?.value?.files;
+                    let uploadedFiles = (element.value as any)?.value?.files;
                     let filesArr: any = uploadedFiles ?? [];
                     if (filesArr?.length) { //files can be empty but set
                         // xhr level2, single multiple must be passes as they are
@@ -1754,7 +1754,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 return item?.value?.value?.nodeType == TYPE_CDATA_BLOCK;
             })
             .reduce((reduced: Array<any>, item: DomQuery) => {
-                reduced.push((<any>item?.value?.value)?.data ?? "");
+                reduced.push((item?.value?.value as any)?.data ?? "");
                 return reduced;
             }, []);
         /*let res: any = this.lazyStream.flatMap(item => {
@@ -1762,7 +1762,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         }).filter(item => {
             return item?.value?.value?.nodeType == TYPE_CDATA_BLOCK;
         }).reduce((reduced: Array<any>, item: DomQuery) => {
-            reduced.push((<any>item?.value?.value)?.data ?? "");
+            reduced.push((item?.value?.value)?.data ?? "" as any);
             return reduced;
         }, []).value;*/
 
@@ -1827,8 +1827,8 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         let shadowRoots: DomQuery[] = [];
         this.eachElem((item: Element) => {
             let shadowElement: DomQuery;
-            if ((<any>item)?.attachShadow) {
-                shadowElement = DomQuery.byId((<any>item).attachShadow(params));
+            if ((item)?.attachShadow as any) {
+                shadowElement = DomQuery.byId((item as any).attachShadow(params));
                 shadowRoots.push(shadowElement);
             } else {
                 throw new Error("Shadow dom creation not supported by the browser, please use a shim, to gain this functionality");
@@ -1890,9 +1890,9 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         let caretPos = 0;
 
         try {
-            if ((<any>document)?.selection) {
+            if ((document as any)?.selection) {
                 ctrl.focus();
-                let selection = (<any>document).selection.createRange();
+                let selection = (document as any).selection.createRange();
                 // the selection now is start zero
                 selection.moveStart('character', -ctrl.value.length);
                 // the caret-position is the selection start
@@ -2069,8 +2069,6 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         return foundNodes;
     }
 
-    // source: https:// developer.mozilla.org/en-US/docs/Web/API/Element/matches
-    // code snippet license: https:// creativecommons.org/licenses/by-sa/2.5/
     /**
      * matches selector call in a browser independent manner
      *
@@ -2078,22 +2076,12 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      * @param selector
      * @private
      */
-    private _mozMatchesSelector(toMatch: Element, selector: string): boolean {
-        let prototypeOwner: { [key: string]: Function } = (<any>toMatch);
-        let matchesSelector: Function = prototypeOwner.matches ||
-            prototypeOwner.matchesSelector ||
-            prototypeOwner.mozMatchesSelector ||
-            prototypeOwner.msMatchesSelector ||
-            prototypeOwner.oMatchesSelector ||
-            prototypeOwner.webkitMatchesSelector ||
-            function (s: string) {
-                let matches: NodeListOf<HTMLElement> = (document || ownerDocument).querySelectorAll(s),
-                    i = matches.length;
-                while (--i >= 0 && matches.item(i) !== toMatch) {
-                }
-                return i > -1;
-            };
-        return matchesSelector.call(toMatch, selector);
+    private _matchesSelector(toMatch: Element, selector: string): boolean {
+        if(toMatch.matches) {
+            return toMatch.matches(selector);
+        }
+        var foundElements = (document || ownerDocument).querySelectorAll(selector);
+        return Array.prototype.indexOf.call(foundElements, toMatch) !== -1;
     }
 
     /**

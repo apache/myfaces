@@ -94,7 +94,7 @@ export class Promise implements IPromise {
                 myapply();
             }
         };
-        (<any>executor).__last__ = true;
+        (executor as any).__last__ = true;
 
         for (let cnt = 0; cnt < promises.length; cnt++) {
             promises[cnt].finally(executor);
@@ -121,7 +121,7 @@ export class Promise implements IPromise {
             myreject = null;
             return null;
         };
-        (<any>thenexecutor).__last__ = true;
+        (thenexecutor as any).__last__ = true;
 
         let catchexeutor = (): IPromise => {
             if (!!myreject) {
@@ -131,7 +131,7 @@ export class Promise implements IPromise {
             myapply = null;
             return null;
         };
-        (<any>catchexeutor).__last__ = true;
+        (catchexeutor as any).__last__ = true;
 
         for (let cnt = 0; cnt < promises.length; cnt++) {
             promises[cnt].then(thenexecutor);
@@ -188,8 +188,8 @@ export class Promise implements IPromise {
     }
 
     finally(executorFunc: () => void): Promise {
-        if ((<any>this).__reason__) {
-            (<any>this).__reason__.finally(executorFunc);
+        if ((this as any).__reason__) {
+            (this as any).__reason__.finally(executorFunc);
             return;
         }
 

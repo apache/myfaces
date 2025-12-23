@@ -1,6 +1,6 @@
 import {describe} from "mocha";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import defaultMyFaces = StandardInits.defaultMyFaces;
+const defaultMyFaces = StandardInits.defaultMyFaces;
 import {expect} from "chai";
 
 describe('API tests', () => {

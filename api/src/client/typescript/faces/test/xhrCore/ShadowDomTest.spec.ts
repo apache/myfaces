@@ -23,7 +23,7 @@ import * as sinon from "sinon";
 import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
 import {expect} from "chai";
 import {DomQuery} from "mona-dish";
-import shadowDomMyFaces = StandardInits.shadowDomMyFaces;
+const shadowDomMyFaces = StandardInits.shadowDomMyFaces;
 
 
 sinon.reset();
@@ -50,11 +50,11 @@ describe('shadow dom testsuite', () => {
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 Implementation.reset();
                 close();
             }

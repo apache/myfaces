@@ -30,7 +30,7 @@
 * jsf_ts github project for the time being to be in sync with it.
 */
 {
-  "extends": "./typescript/faces/tsconfig.json",
+  "extends": "./tsconfig-myfaces.json",
   "compilerOptions": {
     "moduleResolution": "node",
     /**
@@ -47,7 +47,6 @@
   },
   "exclude": [
     "./typescript/mona_dish/index.ts",
-    "./typescript/mona_dish/Messaging.ts",
-    "./**/*.spec.ts"
+    "./typescript/mona_dish/Messaging.ts"
   ]
 }

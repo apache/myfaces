@@ -64,9 +64,9 @@ import {
 } from "../core/Const";
 import {ExtConfig, ExtDomQuery} from "../util/ExtDomQuery";
 import {HiddenInputBuilder} from "../util/HiddenInputBuilder";
-import trim = Lang.trim;
+const trim = Lang.trim;
 import {ExtLang} from "../util/Lang";
-import ofAssoc = ExtLang.ofAssoc;
+const ofAssoc = ExtLang.ofAssoc;
 
 
 /**
@@ -262,7 +262,7 @@ export class ResponseProcessor implements IResponseProcessor {
 
         const before = node.attr(XML_TAG_BEFORE);
         const after = node.attr(XML_TAG_AFTER);
-        const insertNodes = DQ.fromMarkup(<any>node.cDATAAsString);
+        const insertNodes = DQ.fromMarkup(node.cDATAAsString as any);
 
         if (before.isPresent()) {
             DQ.byId(before.value, true).insertBefore(insertNodes);
@@ -287,7 +287,7 @@ export class ResponseProcessor implements IResponseProcessor {
 
         before.each(item => {
             const insertId = item.attr(ATTR_ID);
-            const insertNodes = DQ.fromMarkup(<any>item.cDATAAsString);
+            const insertNodes = DQ.fromMarkup(item.cDATAAsString as any);
             if (insertId.isPresent()) {
                 DQ.byId(insertId.value, true).insertBefore(insertNodes);
                 this.internalContext.assign(UPDATE_ELEMS).value.push(insertNodes);
@@ -296,7 +296,7 @@ export class ResponseProcessor implements IResponseProcessor {
 
         after.each(item => {
             const insertId = item.attr(ATTR_ID);
-            const insertNodes = DQ.fromMarkup(<any>item.cDATAAsString);
+            const insertNodes = DQ.fromMarkup(item.cDATAAsString as any);
             if (insertId.isPresent()) {
                 DQ.byId(insertId.value, true).insertAfter(insertNodes);
                 this.internalContext.assign(UPDATE_ELEMS).value.push(insertNodes);

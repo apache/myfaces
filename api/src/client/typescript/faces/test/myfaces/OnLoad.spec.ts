@@ -18,7 +18,7 @@ import {describe, it} from "mocha";
 
 import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import defaultMyFaces = StandardInits.defaultMyFaces;
+const defaultMyFaces = StandardInits.defaultMyFaces;
 
 
 

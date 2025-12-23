@@ -80,7 +80,7 @@ export module Assertions {
         let finalMessage = message ?? EMPTY_STR;
 
         //TODO clean up the messy makeException, this is a perfect case for encapsulation and sane defaults
-        return ExtLang.makeException(error, finalTitle, finalName, "Response", caller || (((<any>arguments).caller) ? (<any>arguments).caller.toString() : "_raiseError"), finalMessage);
+        return ExtLang.makeException(error, finalTitle, finalName, "Response", caller || (((arguments as any).caller) ? (arguments as any).caller.toString() : "_raiseError"), finalMessage);
     }
 
     /*

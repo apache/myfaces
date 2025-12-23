@@ -17,7 +17,7 @@
 
 import {Lang} from "./Lang";
 import {DomQuery} from "./DomQuery";
-import isString = Lang.isString;
+const isString = Lang.isString;
 import {_global$} from "./Global";
 
 declare let ActiveXObject: any;

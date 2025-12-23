@@ -29,7 +29,7 @@ import {ExtLang} from "../impl/util/Lang";
  * we might move the code over in the future, but for now a straight 1:1 port suffices
  */
 export module oam {
-    import ofAssoc = ExtLang.ofAssoc;
+    const ofAssoc = ExtLang.ofAssoc;
     /**
      * sets a hidden input field
      * @param formName the formName

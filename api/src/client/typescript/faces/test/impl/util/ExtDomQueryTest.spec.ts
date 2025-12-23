@@ -19,7 +19,7 @@ import {expect} from 'chai';
 
 import {ExtDomQuery} from "../../../impl/util/ExtDomQuery";
 import {StandardInits} from "../../frameworkBase/_ext/shared/StandardInits";
-import defaultMyFaces = StandardInits.defaultMyFaces;
+const defaultMyFaces = StandardInits.defaultMyFaces;
 import Sinon from "sinon";
 
 declare var faces: any;

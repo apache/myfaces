@@ -30,7 +30,7 @@ export module ExtLang {
     export function getLanguage(): string {
         //TODO global config override
 
-        let language: string = (<any>navigator).languages?.[0] ?? navigator?.language;
+        let language: string = (navigator as any).languages?.[0] ?? navigator?.language;
         language = language.split("-")[0];
         return language;
     }
@@ -117,7 +117,7 @@ export module ExtLang {
      */
     export function makeException(error: Error, title: string, name: string, callerCls: string, callFunc: string, message: string): Error {
 
-        return new Error(message + (callerCls ?? nameSpace) + callFunc ?? (EMPTY_STR + (<any>arguments).caller.toString()));
+        return new Error(message + (callerCls ?? nameSpace) + callFunc ?? (EMPTY_STR + (arguments as any).caller.toString()));
 
     }
 
