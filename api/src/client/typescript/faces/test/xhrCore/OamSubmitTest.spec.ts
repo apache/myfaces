@@ -18,7 +18,7 @@ import {describe} from "mocha";
 import * as sinon from "sinon";
 import {Implementation} from "../../impl/AjaxImpl";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import defaultMyFaces = StandardInits.defaultMyFaces;
+const defaultMyFaces = StandardInits.defaultMyFaces;
 import {_Es2019Array, DQ, DQ$} from "mona-dish";
 import {expect} from "chai";
 
@@ -35,16 +35,16 @@ describe('Tests for the MyFaces specifig oam submit', function () {
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
-            this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
+            this.jsfAjaxResponse = sinon.spy((global as any).faces.ajax, "response");
             oldFlatMap =Array.prototype["flatMap"];
             window["Es2019Array"] = _Es2019Array;
             delete Array.prototype["flatMap"];
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();

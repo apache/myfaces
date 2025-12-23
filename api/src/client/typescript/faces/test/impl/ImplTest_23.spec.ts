@@ -21,7 +21,7 @@ import * as sinon from 'sinon';
 
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {CTX_PARAM_REQ_PASS_THR, P_EXECUTE, P_RENDER} from "../../impl/core/Const";
-import defaultMyFaces23 = StandardInits.defaultMyFaces23;
+const defaultMyFaces23 = StandardInits.defaultMyFaces23;
 
 
 sinon.reset();
@@ -58,7 +58,7 @@ describe('javax.ajax.request test suite', () => {
 
             expect(addRequestToQueue.called).to.be.true;
             expect(addRequestToQueue.callCount).to.eq(1);
-            const context = (<Config>addRequestToQueue.args[0][2]);
+            const context = (addRequestToQueue.args[0][2] as Config);
 
             expect(context.getIf(CTX_PARAM_REQ_PASS_THR, P_RENDER).value).eq("@all");
             //Execute issuing form due to @form and always the issuing element

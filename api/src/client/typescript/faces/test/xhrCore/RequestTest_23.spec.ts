@@ -63,9 +63,9 @@ let {
 } = remapNamespacesFor23();
 
 
-import STD_XML = StandardInits.STD_XML;
-import defaultMyFaces23 = StandardInits.defaultMyFaces23;
-import HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
+const STD_XML = StandardInits.STD_XML;
+const defaultMyFaces23 = StandardInits.defaultMyFaces23;
+const HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
 
 declare var jsf: any;
 declare var Implementation: any;
@@ -94,13 +94,13 @@ describe('Tests on the xhr core when it starts to call the request', function ()
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
-            this.jsfAjaxResponse = sinon.spy((<any>global).jsf.ajax, "response");
+            this.jsfAjaxResponse = sinon.spy((global as any).jsf.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();
@@ -198,15 +198,15 @@ describe('Tests after core when it hits response', function () {
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
+            (global as any).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
 
             // @ts-ignore
             window.XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest() as XMLHttpRequest;
 
-            this.jsfAjaxResponse = sinon.spy((<any>global).jsf.ajax, "response");
+            this.jsfAjaxResponse = sinon.spy((global as any).jsf.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();

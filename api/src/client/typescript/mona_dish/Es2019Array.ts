@@ -20,10 +20,10 @@ class Es2019Array_<T>  extends Array<T>{
         }
 
         //for testing it definitely runs into this branch because we are on es5 level
-        //if (!(<any>Array.prototype).flatMap) {
+        //if (!(Array.prototype).flatMap as any) {
             this.flatMap = (flatMapFun) => this._flatMap(flatMapFun) as any;
         //}
-        //if (!(<any>Array.prototype).flat) {
+        //if (!(Array.prototype).flat as any) {
             this.flat = (flatLevel: number = 1) => this._flat(flatLevel);
         //}
     }

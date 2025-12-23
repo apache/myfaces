@@ -166,7 +166,7 @@ export function getEventTarget(evt: Event): Element {
      * behavior. I don´t use it that way but nevertheless it
      * does not break anything so why not
      */
-    let t = finalEvent?.srcElement ?? finalEvent?.target ?? (<any>finalEvent)?.source;
+    let t = finalEvent?.srcElement ?? finalEvent?.target ?? (finalEvent as any)?.source;
     while ((t) && (t.nodeType != 1)) {
         t = t.parentNode;
     }

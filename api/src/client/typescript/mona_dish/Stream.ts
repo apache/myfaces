@@ -685,7 +685,7 @@ export class LazyStream<T> implements IStreamDataSource<T>, IStream<T>, IMonad<T
     }
 
     flatMap<StreamMapper>(fn: StreamMapper | ArrayMapper<any>): LazyStream<any> {
-        return new LazyStream<any>(new FlatMapStreamDataSource(<any>fn, this));
+        return new LazyStream<any>(new FlatMapStreamDataSource(fn as any, this));
     }
 
     //endpoint
