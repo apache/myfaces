@@ -17,7 +17,7 @@
 import {expect} from 'chai';
 import {describe, it} from 'mocha';
 import {from} from "rxjs";
-import {ArrayCollector, Config, DomQuery, DomQueryCollector, Lang, LazyStream, Stream} from "mona-dish/dist/js/umd";
+import {ArrayCollector, Config, DomQuery, DomQueryCollector, Lang, LazyStream, Stream} from "mona-dish";
 import {tobagoSheetWithHeader} from "./markups/tobago-with-header";
 import {tobagoSheetWithoutHeader} from "./markups/tobago-without-header";
 

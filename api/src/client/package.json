@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "doc": "npx typedoc --tsconfig ./tsconfig-typedoc.json",
-    "test": "cross-env TS_NODE_PROJECT=./tsconfig-myfaces.json mocha",
+    "test": "cross-env TS_NODE_PROJECT=./tsconfig-myfaces-test.json mocha",
     "copy:npm-sources": "ts-node typescript/node_build/copysources.ts",
     "build:development": "webpack --mode development --env FILE_NAME=faces-development ",
     "build:production": "webpack --mode production --env FILE_NAME=faces",
