@@ -20,10 +20,10 @@ import {Implementation} from "../../impl/AjaxImpl";
 
 import {expect} from "chai";
 
-import defaultMyFaces = StandardInits.defaultMyFaces;
+const defaultMyFaces = StandardInits.defaultMyFaces;
 import {_Es2019Array, Lang} from "mona-dish";
 import {FakeWebsocket} from "./FakeWebsocket";
-import assertType = Lang.assertType;
+const assertType = Lang.assertType;
 
 declare var faces: any;
 
@@ -40,27 +40,27 @@ describe('Tests the jsf websocket client side api on high level (generic test wi
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
-            this.jsfAjaxResponse = sinon.stub((<any>global).faces.ajax, "response");
+            this.jsfAjaxResponse = sinon.stub((global as any).faces.ajax, "response");
 
             this.fakeWebsocket = new FakeWebsocket();
             this.socket = sinon.stub(window, 'WebSocket').returns(this.fakeWebsocket);
-            (<any>global).WebSocket = this.socket;
+            (global as any).WebSocket = this.socket;
 
-            this.pushImpl = (<any>global).PushImpl;
+            this.pushImpl = (global as any).PushImpl;
             this.initSpy = sinon.spy(this.pushImpl, "init");
             oldFlatMap =Array.prototype["flatMap"];
             window["Es2019Array"] = _Es2019Array;
             delete Array.prototype["flatMap"];
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 this.socket.restore();
                 this.initSpy.restore();
-                delete (<any>global).WebSocket;
+                delete (global as any).WebSocket;
                 Implementation.reset();
                 close();
             }

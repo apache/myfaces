@@ -152,12 +152,12 @@ export module Implementation {
 
  */
 
-    import trim = Lang.trim;
-    import getMessage = ExtLang.getMessage;
-    import getGlobalConfig = ExtLang.getGlobalConfig;
+    const trim = Lang.trim;
+    const getMessage = ExtLang.getMessage;
+    const getGlobalConfig = ExtLang.getGlobalConfig;
     import assert = Assertions.assert;
-    import ofAssoc = ExtLang.ofAssoc;
-    import collectAssoc = ExtLang.collectAssoc;
+    const ofAssoc = ExtLang.ofAssoc;
+    const collectAssoc = ExtLang.collectAssoc;
 
     let projectStage: string = null;
     let separator: string = null;

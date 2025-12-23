@@ -21,7 +21,7 @@ import {
     fixEmptyParameters, getFormInputsAsArr
 } from "../util/FileUtils";
 import {ExtLang} from "../util/Lang";
-import ofAssoc = ExtLang.ofAssoc;
+const ofAssoc = ExtLang.ofAssoc;
 import {Es2019Array} from "mona-dish";
 
 

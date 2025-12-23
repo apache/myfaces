@@ -21,7 +21,7 @@ import {ProbeClass} from "./AsynchronousProbe";
 
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {Implementation} from "../../impl/AjaxImpl";
-import defaultMyFaces = StandardInits.defaultMyFaces;
+const defaultMyFaces = StandardInits.defaultMyFaces;
 import {XhrQueueController} from "../../impl/util/XhrQueueController";
 
 describe('Asynchronous Queue tests', () => {
@@ -38,13 +38,13 @@ describe('Asynchronous Queue tests', () => {
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
-            this.jsfAjaxResponse = sinon.stub((<any>global).faces.ajax, "response");
+            this.jsfAjaxResponse = sinon.stub((global as any).faces.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();

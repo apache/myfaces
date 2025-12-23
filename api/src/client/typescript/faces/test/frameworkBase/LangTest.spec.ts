@@ -2,15 +2,15 @@ import {expect} from 'chai';
 import {describe, it} from 'mocha';
 import {Lang} from "mona-dish";
 
-import equalsIgnoreCase = Lang.equalsIgnoreCase;
-import assertType = Lang.assertType;
-import objToArray = Lang.objToArray;
-import isFunc = Lang.isFunc;
-import isString = Lang.isString;
-import trim = Lang.trim;
-import strToArray = Lang.strToArray;
+const equalsIgnoreCase = Lang.equalsIgnoreCase;
+const assertType = Lang.assertType;
+const objToArray = Lang.objToArray;
+const isFunc = Lang.isFunc;
+const isString = Lang.isString;
+const trim = Lang.trim;
+const strToArray = Lang.strToArray;
 import {ExtLang} from "../../impl/util/Lang";
-import keyValToStr = ExtLang.keyValToStr;
+const keyValToStr = ExtLang.keyValToStr;
 
 
 const jsdom = require("jsdom");
@@ -41,11 +41,8 @@ function hello_world() {
 
 describe('Hello World!', () => {
     before(() => {
-        (<any>global).window = window;
-        (<any>global).document = window.document;
-        (<any>global).navigator = {
-            language: "en-En"
-        };
+        (global as any).window = window;
+        (global as any).document = window.document;
 
     });
     it('first test', () => {
@@ -126,7 +123,7 @@ describe('Lang tests', () => {
     });
 
     it('equals ignore case test', () => {
-        expect(equalsIgnoreCase(<any>null, <any>null)).to.be.true;
+        expect(equalsIgnoreCase(null, null as any)).to.be.true;
         expect(equalsIgnoreCase("", "")).to.be.true;
         expect(equalsIgnoreCase("null", "NuLL")).to.be.true;
         expect(equalsIgnoreCase("null ", "NuLL")).to.be.false;

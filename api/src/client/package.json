@@ -24,7 +24,7 @@
     "html-webpack-plugin": "^5.5.1",
     "jsdom": "^21.1.1",
     "jsdom-global": "^3.0.2",
-    "jsf.js_next_gen": "4.0.4-beta.7",
+    "jsf.js_next_gen": "4.0.4-beta.8",
     "mocha": "^10.8.2",
     "npm-check-updates": "^16.10.8",
     "nyc": "^15.1.0",
@@ -38,6 +38,6 @@
     "typescript": "^5.0.4",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^5.2.1"
+    "webpack-dev-server": "^5.2.2"
   }
 }

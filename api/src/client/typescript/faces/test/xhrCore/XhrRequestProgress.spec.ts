@@ -2,7 +2,7 @@ import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import * as sinon from "sinon";
 import {Implementation} from "../../impl/AjaxImpl";
 import {expect} from "chai";
-import protocolPage = StandardInits.protocolPage;
+const protocolPage = StandardInits.protocolPage;
 
 const jsdom = require("jsdom");
 const {JSDOM} = jsdom;
@@ -23,12 +23,12 @@ describe("Should trigger the progress on xhr request", function () {
                 this.requests.push(xhr);
             };
             //we anchchor the mock into the fake dom
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
             //general cleanup of overloaded resources
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 Implementation.reset();
                 close();
             };

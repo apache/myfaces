@@ -27,7 +27,7 @@ import {Config, DQ, Optional, XMLQuery} from "mona-dish";
 
 import {EventData} from "./EventData";
 import {ExtLang} from "../util/Lang";
-import getMessage = ExtLang.getMessage;
+const getMessage = ExtLang.getMessage;
 
 
 export enum ErrorType {
