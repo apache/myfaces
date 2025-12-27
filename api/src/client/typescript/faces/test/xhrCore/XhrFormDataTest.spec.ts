@@ -20,7 +20,7 @@ import * as sinon from 'sinon';
 import {XhrFormData} from "../../impl/xhrCore/XhrFormData";
 import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import defaultMyFaces = StandardInits.defaultMyFaces;
+const defaultMyFaces = StandardInits.defaultMyFaces;
 import {Implementation} from "../../impl/AjaxImpl";
 
 const jsdom = require("jsdom");
@@ -39,16 +39,16 @@ describe('XhrFormData tests', function () {
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
-            this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
+            this.jsfAjaxResponse = sinon.spy((global as any).faces.ajax, "response");
             oldFlatMap =Array.prototype["flatMap"];
             window["Es2019Array"] = _Es2019Array;
             delete Array.prototype["flatMap"];
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();
@@ -65,16 +65,16 @@ describe('XhrFormData tests', function () {
         let waitForResult = defaultMyFaces();
 
         return waitForResult.then((close) => {
-            (<any>global).window = window;
-            (<any>global).body = window.document.body;
-            (<any>global).document = window.document;
+            (global as any).window = window;
+            (global as any).body = window.document.body;
+            (global as any).document = window.document;
             global.body.innerHTML = `
       <div id="id_1"></div>
       <div id="id_2" booga="blarg"></div>
       <div id="id_3"></div>
       <div id="id_4"></div>
     `;
-            (<any>global).navigator = {
+            (global as any).navigator = {
                 language: "en-En"
             };
 
@@ -83,13 +83,13 @@ describe('XhrFormData tests', function () {
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
         });
 
         this.afterEach(function () {
-            (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+            (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
         });
     });
 

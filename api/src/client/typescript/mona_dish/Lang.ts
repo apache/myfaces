@@ -110,7 +110,7 @@ export module Lang {
         }
         //since offset is numeric we cannot use the shortcut due to 0 being false
         //special condition array delivered no offset no pack
-        if ((<any>obj) instanceof Array && !offset && !pack) return obj;
+        if ((obj) instanceof Array && !offset && !pack as any) return obj;
 
         return new Es2019Array(...pack.concat(Array.prototype.slice.call(obj, offset)));
     }
@@ -169,8 +169,8 @@ export module Lang {
         }
 
         let to = Object(target);
-        if((<any>Object).assign) {
-            theArgs.forEach(item => (<any>Object).assign(to, item));
+        if((Object).assign as any) {
+            theArgs.forEach(item => (Object).assign(to, item) as any);
             return to;
         }
 

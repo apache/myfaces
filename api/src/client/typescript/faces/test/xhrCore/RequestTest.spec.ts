@@ -29,11 +29,11 @@ import {
     P_WINDOW_ID,
     SUCCESS
 } from "../../impl/core/Const";
-import defaultMyFaces = StandardInits.defaultMyFaces;
-import initVirtualElement = StandardInits.initVirtualElement;
-import STD_XML = StandardInits.STD_XML;
+const defaultMyFaces = StandardInits.defaultMyFaces;
+const initVirtualElement = StandardInits.initVirtualElement;
+const STD_XML = StandardInits.STD_XML;
 import exp from "constants";
-import initCheckboxForm = StandardInits.initCheckboxRadioForm;
+const initCheckboxForm = StandardInits.initCheckboxRadioForm;
 
 declare var faces: any;
 declare var Implementation: any;
@@ -87,16 +87,16 @@ describe('Tests on the xhr core when it starts to call the request', function ()
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
-            this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
+            this.jsfAjaxResponse = sinon.spy((global as any).faces.ajax, "response");
             oldFlatMap =Array.prototype["flatMap"];
             window["Es2019Array"] = _Es2019Array;
             delete Array.prototype["flatMap"];
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();
@@ -230,14 +230,14 @@ describe('Tests after core when it hits response', function () {
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
+            (global as any).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
             // @ts-ignore
             window.XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest() as XMLHttpRequest;
 
-            this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
+            this.jsfAjaxResponse = sinon.spy((global as any).faces.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();

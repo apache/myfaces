@@ -17,10 +17,10 @@ import * as sinon from "sinon";
 import {Implementation} from "../../impl/AjaxImpl";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 
-import protocolPage = StandardInits.protocolPage;
+const protocolPage = StandardInits.protocolPage;
 import {Config, DQ} from "mona-dish";
 import {expect} from "chai";
-import HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
+const HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
 import {it} from "mocha";
 import {decodeEncodedValues} from "../../impl/util/FileUtils";
 import {ExtConfig} from "../../impl/util/ExtDomQuery";
@@ -98,13 +98,13 @@ describe("test for proper request param patterns identical to the old implementa
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
-            this.jsfAjaxResponse = sinon.stub((<any>global).faces.ajax, "response");
+            this.jsfAjaxResponse = sinon.stub((global as any).faces.ajax, "response");
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();
