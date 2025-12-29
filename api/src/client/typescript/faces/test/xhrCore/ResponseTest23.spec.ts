@@ -21,11 +21,11 @@ import * as sinon from "sinon";
 
 import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
 import {expect} from "chai";
-import protocolPage = StandardInits.protocolPage;
+const protocolPage = StandardInits.protocolPage;
 import {DQ, DQ$} from "mona-dish";
 import {$nsp} from "../../impl/core/Const";
-import STD_XML = StandardInits.STD_XML;
-import HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
+const STD_XML = StandardInits.STD_XML;
+const HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
 
 
 declare var jsf: any;
@@ -57,11 +57,11 @@ describe('Tests of the various aspects of the response protocol functionality', 
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 Implementation.reset();
                 close();
             }
@@ -83,19 +83,19 @@ describe('Tests of the various aspects of the response protocol functionality', 
             .value.indexOf("update succeeded 1") != -1)
             .to.be.true;
 
-        let pos1 = (<string>DQ.byId(document.body).html()
-            .value).indexOf("insert before succeeded should display before test1");
-        let pos3 = (<string>DQ.byId(document.body).html()
-            .value).indexOf("insert after succeeded should display after test1");
-        let pos2 = (<string>DQ.byId(document.body).html()
-            .value).indexOf("update succeeded 1");
+        let pos1 = (DQ.byId(document.body).html()
+            .value as string).indexOf("insert before succeeded should display before test1");
+        let pos3 = (DQ.byId(document.body).html()
+            .value as string).indexOf("insert after succeeded should display after test1");
+        let pos2 = (DQ.byId(document.body).html()
+            .value as string).indexOf("update succeeded 1");
 
         expect(pos1 != -1).to.be.true;
 
         expect(pos1 < pos2 && pos2 < pos3).to.be.true;
 
-        let pos4 = (<string>DQ.byId(document.body).html()
-            .value).indexOf("embedded script at update succeed");
+        let pos4 = (DQ.byId(document.body).html()
+            .value as string).indexOf("embedded script at update succeed");
 
         expect(pos4 != -1).to.be.true;
 
@@ -114,19 +114,19 @@ describe('Tests of the various aspects of the response protocol functionality', 
             .value.indexOf("update succeeded 2") != -1)
             .to.be.true;
 
-        let pos1 = (<string>DQ.byId(document.body).html()
-            .value).indexOf("insert before succeeded should display before test1");
-        let pos3 = (<string>DQ.byId(document.body).html()
-            .value).indexOf("insert after succeeded should display after test1");
-        let pos2 = (<string>DQ.byId(document.body).html()
-            .value).indexOf("update succeeded 2");
+        let pos1 = (DQ.byId(document.body).html()
+            .value as string).indexOf("insert before succeeded should display before test1");
+        let pos3 = (DQ.byId(document.body).html()
+            .value as string).indexOf("insert after succeeded should display after test1");
+        let pos2 = (DQ.byId(document.body).html()
+            .value as string).indexOf("update succeeded 2");
 
         expect(pos1 != -1).to.be.true;
 
         expect(pos1 < pos2 && pos2 < pos3).to.be.true;
 
-        let pos4 = (<string>DQ.byId(document.body).html()
-            .value).indexOf("embedded script at update succeed");
+        let pos4 = (DQ.byId(document.body).html()
+            .value as string).indexOf("embedded script at update succeed");
 
         expect(pos4 != -1).to.be.true;
 
@@ -139,7 +139,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         //basic replacement
         let newBody = DQ.byId(document.body);
-        let newContent = <string>newBody.html().value;
+        let newContent = newBody.html().value as string;
         //standard replacement successful
         expect(newContent.indexOf("<h3>Body replacement test successful</h3>") != -1,
             "elements must be updated").to.be.true;
@@ -161,7 +161,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         //basic replacement
         let newBody = DQ.byId(document.body);
-        let newContent = <string>newBody.html().value;
+        let newContent = newBody.html().value as string;
 
         //standard replacement successful
         //script eval
@@ -178,7 +178,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         //basic replacement
         let newHead = DQ.byId(document.head);
         let newBody = DQ.byId(document.body);
-        let newContent = <string>newBody.html().value;
+        let newContent = newBody.html().value as string;
 
         expect(newHead.isPresent(), " head must exist ").to.be.true;
 
@@ -223,7 +223,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         DQ.byId("cmd_eval").click();
         this.respond(XmlResponses.EVAL_1);
 
-        let resultHTML: string = <string>DQ.byId(document.body).html().value;
+        let resultHTML: string = DQ.byId(document.body).html().value as string;
         expect(resultHTML.indexOf('eval test succeeded') != -1).to.be.true;
 
     });

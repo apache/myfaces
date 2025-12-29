@@ -117,7 +117,7 @@ describe('Lang tests', () => {
 
     it('equals ignore case test', () => {
         const lang = Lang;
-        expect(lang.equalsIgnoreCase(<any>null, <any>null)).to.be.true;
+        expect(lang.equalsIgnoreCase(null, null as any)).to.be.true;
         expect(lang.equalsIgnoreCase("", "")).to.be.true;
         expect(lang.equalsIgnoreCase("null", "NuLL")).to.be.true;
         expect(lang.equalsIgnoreCase("null ", "NuLL")).to.be.false;

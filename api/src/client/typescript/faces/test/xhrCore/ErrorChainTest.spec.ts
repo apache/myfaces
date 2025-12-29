@@ -22,7 +22,7 @@ import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
 import {expect} from "chai";
 import {Implementation} from "../../impl/AjaxImpl";
-import errorChainPage = StandardInits.errorChainPage;
+const errorChainPage = StandardInits.errorChainPage;
 import {DQ} from "mona-dish";
 import {ErrorData} from "../../impl/xhrCore/ErrorData";
 
@@ -56,11 +56,11 @@ describe('Tests of the various aspects of the response protocol functionality', 
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 Implementation.reset();
                 close();
             }
@@ -136,7 +136,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
     it('must have correct source element within the error Data Object', () => {
         const errorData = new ErrorData("form1:button1", "errorName", "errorMessage");
-        expect((<Element>errorData.source).id).to.eq("form1:button1");
+        expect((errorData.source as Element).id).to.eq("form1:button1");
     })
 
     it('should have correct source id string within the error Data Object if element not existing', () => {

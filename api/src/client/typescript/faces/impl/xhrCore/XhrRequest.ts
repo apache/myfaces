@@ -67,7 +67,7 @@ import {
     resolveHandlerFunc,
     resoveNamingContainerMapper
 } from "./RequestDataResolver";
-import failSaveExecute = ExtLang.failSaveExecute;
+const failSaveExecute = ExtLang.failSaveExecute;
 import {ExtConfig} from "../util/ExtDomQuery";
 
 /**

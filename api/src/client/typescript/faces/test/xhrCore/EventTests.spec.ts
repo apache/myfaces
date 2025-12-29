@@ -20,7 +20,7 @@ import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {Implementation} from "../../impl/AjaxImpl";
 
 import {expect} from "chai";
-import protocolPage = StandardInits.protocolPage;
+const protocolPage = StandardInits.protocolPage;
 import {DQ} from "mona-dish";
 import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
 
@@ -46,11 +46,11 @@ describe('tests the addOnEvent and addOnError handling', function () {
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 Implementation.reset();
                 close();
             }

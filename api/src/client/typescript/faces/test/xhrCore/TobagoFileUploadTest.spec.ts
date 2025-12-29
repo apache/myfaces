@@ -19,7 +19,7 @@ import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {_Es2019Array, DomQuery} from "mona-dish";
 import {Implementation} from "../../impl/AjaxImpl";
-import defaultFileForm = StandardInits.tobagoFileForm;
+const defaultFileForm = StandardInits.tobagoFileForm;
 
 declare var faces: any;
 
@@ -46,14 +46,14 @@ describe('Tests on the xhr core when it starts to call the request', function ()
       this.xhr.onCreate = (xhr) => {
         this.requests.push(xhr);
       };
-      (<any>global).XMLHttpRequest = this.xhr;
+      (global as any).XMLHttpRequest = this.xhr;
       window.XMLHttpRequest = this.xhr;
       oldFlatMap =Array.prototype["flatMap"];
       window["Es2019Array"] = _Es2019Array;
       delete Array.prototype["flatMap"];
 
       this.closeIt = () => {
-        (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+        (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
         Implementation.reset();
         close();
         if(oldFlatMap) {

@@ -1,7 +1,7 @@
 import {Es2019Array} from "./Es2019Array";
 import {IValueHolder, Optional, ValueEmbedder} from "./Monad";
 import {Lang} from "./Lang";
-import objAssign = Lang.objAssign;
+const objAssign = Lang.objAssign;
 import {append, appendIf, assign, assignIf, resolve, shallowMerge} from "./AssocArray";
 
 /**

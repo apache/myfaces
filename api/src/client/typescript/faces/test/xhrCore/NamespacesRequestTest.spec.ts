@@ -27,10 +27,10 @@ import {
     P_VIEWSTATE,
     P_WINDOW_ID
 } from "../../impl/core/Const";
-import defaultMyFacesNamespaces = StandardInits.defaultMyFacesNamespaces;
+const defaultMyFacesNamespaces = StandardInits.defaultMyFacesNamespaces;
 import {escape} from "querystring";
 import {ExtLang} from "../../impl/util/Lang";
-import ofAssoc = ExtLang.ofAssoc;
+const ofAssoc = ExtLang.ofAssoc;
 
 declare var faces: any;
 declare var Implementation: any;
@@ -59,16 +59,16 @@ describe('Namespacing tests', function () {
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (<any>global).XMLHttpRequest = this.xhr;
+            (global as any).XMLHttpRequest = this.xhr;
             window.XMLHttpRequest = this.xhr;
 
-            this.jsfAjaxResponse = sinon.spy((<any>global).faces.ajax, "response");
+            this.jsfAjaxResponse = sinon.spy((global as any).faces.ajax, "response");
             oldFlatMap =Array.prototype["flatMap"];
             window["Es2019Array"] = _Es2019Array;
             delete Array.prototype["flatMap"];
 
             this.closeIt = () => {
-                (<any>global).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
                 this.jsfAjaxResponse.restore();
                 Implementation.reset();
                 close();
