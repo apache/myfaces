@@ -1,6 +1,6 @@
 import {IAsyncRunnable} from "./AsyncRunnable";
 import {ExtLang} from "./Lang";
-import debounce = ExtLang.debounce;
+const debounce = ExtLang.debounce;
 
 /**
  * A simple XHR queue controller

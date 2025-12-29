@@ -22,7 +22,7 @@ import {_global$} from "./Global";
 
 if ("undefined" != typeof _global$) {
     (function () {
-        if (void 0 === _global$().Reflect || void 0 === _global$().customElements || (<any>_global$().customElements).polyfillWrapFlushCallback) return;
+        if (void 0 === _global$().Reflect || void 0 === _global$().customElements || (_global$().customElements).polyfillWrapFlushCallback as any) return;
         const a = HTMLElement;
         _global$().HTMLElement = {
             HTMLElement: function HTMLElement() {
@@ -132,14 +132,14 @@ export class TagBuilder {
 
             let applyCallback = (name: string) => {
                 let outerCallback = this[name];
-                let protoCallback = (<any>this.clazz.prototype)[name];
+                let protoCallback = (this.clazz.prototype as any)[name];
                 let finalCallback = outerCallback || protoCallback;
                 if (finalCallback) {
-                    (<any>this.clazz.prototype)[name] = function () {
+                    (this.clazz.prototype as any)[name] = function () {
                         if(outerCallback) {
                             finalCallback.apply(DomQuery.byId(this));
                         } else {
-                            protoCallback.apply(<any>this);
+                            protoCallback.apply(this as any);
                         }
                     }
                 }
@@ -164,7 +164,7 @@ export class TagBuilder {
             let _t_ = this;
             let applyCallback = (name: string, scope: any) => {
                 if (_t_[name]) {
-                    _t_[name].apply(DomQuery.byId(<any>scope));
+                    _t_[name].apply(DomQuery.byId(scope) as any);
                 }
             };
 

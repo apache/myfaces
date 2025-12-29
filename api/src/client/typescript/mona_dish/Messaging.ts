@@ -543,9 +543,9 @@ export class Broker extends BaseBroker {
          * @param event
          */
         let evtHandler = (event: MessageEvent | CustomEvent<Message>) => {
-            let details = (<any>event)?.detail ?? (<MessageEvent>event)?.data?.detail;
+            let details = (event as any)?.detail ?? (<MessageEvent>event)?.data?.detail;
             //TODO possible crypto hook, needs unit testing
-            let channel = ((<any>event)?.data?.channel) ?? ((<any>event)?.channel);
+            let channel = ((event as any)?.data?.channel) ?? ((event as any)?.channel);
 
             //javascript loses the type info in certain module types
             if (details?.identifier && details?.message) {
@@ -555,7 +555,7 @@ export class Broker extends BaseBroker {
                 }
                 //coming in from up... we need to send it down
                 //a relayed message always has to trigger the listeners as well
-                if ((<any>event)?.detail) {
+                if ((event as any)?.detail) {
                     this.broadcast(channel, msg);
                 } else {
                     this.broadcast(channel, msg);
@@ -573,13 +573,13 @@ export class Broker extends BaseBroker {
      * @param scopeElement
      */
     register(scopeElement: HTMLElement | Window | ShadowRoot): BaseBroker {
-        this.rootElem = (<any>scopeElement).host ? (<any>scopeElement).host : scopeElement;
-        if ((<any>scopeElement).host) {
+        this.rootElem = (scopeElement as any).host ? (scopeElement as any).host : scopeElement;
+        if ((scopeElement as any).host) {
             let host = (<ShadowRoot>scopeElement).host;
             host.setAttribute("data-broker", "1");
         } else {
             if (scopeElement?.["setAttribute"])
-                (<any>scopeElement).setAttribute("data-broker", "1");
+                (scopeElement as any).setAttribute("data-broker", "1");
         }
 
         this.rootElem.addEventListener(this.brokerGroup + "__||__" + Broker.EVENT_TYPE, this.msgHandler, {capture: true});
@@ -704,7 +704,7 @@ export class Broker extends BaseBroker {
 
         } else {
             let customEvent = new (_global$()).CustomEvent(name, wrapper);
-            (<any>customEvent).channel = wrapper.channel;
+            (customEvent as any).channel = wrapper.channel;
             return customEvent;
         }
 

@@ -30,7 +30,7 @@
 * jsf_ts github project for the time being to be in sync with it.
 */
 {
-  "extends": "./typescript/faces/tsconfig.json",
+  "extends": "./tsconfig-myfaces.json",
   "compilerOptions": {
     "moduleResolution": "node",
     /**
@@ -42,12 +42,11 @@
       "./typescript/faces/@types/"
     ],
     "paths": {
-      "mona-dish": ["./typescript/mona_dish/index_core.ts"]
+      "mona-dish": ["./typescript/mona_dish/index.ts"]
     }
   },
   "exclude": [
     "./typescript/mona_dish/index.ts",
-    "./typescript/mona_dish/Messaging.ts",
-    "./**/*.spec.ts"
+    "./typescript/mona_dish/Messaging.ts"
   ]
 }

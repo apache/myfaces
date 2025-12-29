@@ -512,19 +512,19 @@ function triggerRequestChain(event) {
     }
 
     export function standardInit(scope: any, initFunc: (boolean) => Promise<() => void> = defaultHtml): Promise<any> {
-        (<any>global).navigator = {
+        (global as any).navigator = {
             language: "en-En"
         };
         return initFunc(false).then((closeFunc: Function) => {
-            (<any>scope).currentTest.closeIt = () => {
+            (scope as any).currentTest.closeIt = () => {
                 closeFunc();
-                delete (<any>global).navigator;
+                delete (global as any).navigator;
             }
         });
     }
 
     export function standardClose(scope: any) {
-        (<any>scope).currentTest.closeIt();
+        (scope as any).currentTest.closeIt();
     }
 
     export function defaultHtml(withJsf = true): Promise<() => void> {
@@ -564,7 +564,7 @@ function triggerRequestChain(event) {
 
     export function shadowDomMyFaces(withJsf = true): Promise<() => void> {
         return <Promise<() => void>>init(HTML_SHADOW, withJsf).then((close) => {
-            let shadow = DomQuery.byId(<any>window.document).byId("shadowDomArea").attachShadow();
+            let shadow = DomQuery.byId(window.document as any).byId("shadowDomArea").attachShadow();
             shadow.innerHtml = `
                 <input type="button" id="input_3" name="input_3" value="input_3_val" ></input>
                 <div id="shadowContent">before update</div>
@@ -605,28 +605,28 @@ function triggerRequestChain(event) {
      * @param Implementation
      */
     let applyJsfToGlobals = function (data, Implementation, PushImpl) {
-        (<any>global).faces = data.faces;
-        (<any>global).myfaces = data.myfaces;
-        (<any>global).window.faces = data.faces;
-        (<any>global).window.myfaces = data.myfaces;
-        (<any>global).Implementation = Implementation.Implementation;
-        (<any>global).PushImpl = PushImpl.PushImpl;
+        (global as any).faces = data.faces;
+        (global as any).myfaces = data.myfaces;
+        (global as any).window.faces = data.faces;
+        (global as any).window.myfaces = data.myfaces;
+        (global as any).Implementation = Implementation.Implementation;
+        (global as any).PushImpl = PushImpl.PushImpl;
         //bypass a bug on windows jsdom, domparser not an auto global but on window only
-        (<any>global).DOMParser = (<any>global)?.DOMParser ?? window.DOMParser;
-        (<any>global).document = (<any>global)?.document ?? window.document;
+        (global as any).DOMParser = (global as any)?.DOMParser ?? window.DOMParser;
+        (global as any).document = (global as any)?.document ?? window.document;
     };
 
     let applyJsfToGlobals23 = function (data, Implementation, PushImpl) {
-        (<any>global).jsf = data.jsf;
-        (<any>global).myfaces = data.myfaces;
-        (<any>global).window.jsf = data.jsf;
-        (<any>global).window.myfaces = data.myfaces;
-        (<any>global).Implementation = Implementation.Implementation;
-        (<any>global).window.Implementation = Implementation.Implementation;
-        (<any>global).PushImpl = PushImpl.PushImpl;
+        (global as any).jsf = data.jsf;
+        (global as any).myfaces = data.myfaces;
+        (global as any).window.jsf = data.jsf;
+        (global as any).window.myfaces = data.myfaces;
+        (global as any).Implementation = Implementation.Implementation;
+        (global as any).window.Implementation = Implementation.Implementation;
+        (global as any).PushImpl = PushImpl.PushImpl;
         //bypass a bug on windows jsdom, domparser not an auto global but on window only
-        (<any>global).DOMParser = (<any>global)?.DOMParser ?? window.DOMParser;
-        (<any>global).document = (<any>global)?.document ?? window.document;
+        (global as any).DOMParser = (global as any)?.DOMParser ?? window.DOMParser;
+        (global as any).document = (global as any)?.document ?? window.document;
     };
 
 
@@ -670,14 +670,14 @@ function triggerRequestChain(event) {
      * lets clean up some old data which might interfere
      */
     let resetGlobals = function () {
-        (<any>global)?.Implementation?.reset();
-        (<any>global)?.PushImpl?.reset();
+        (global as any)?.Implementation?.reset();
+        (global as any)?.PushImpl?.reset();
 
-        ((<any>global).faces) ? delete (<any>global).faces : null;
-        ((<any>global).jsf) ? delete (<any>global).jsf : null;
-        delete (<any>global).myfaces;
-        ((<any>global).Implementation) ? delete (<any>global).Implementation : null;
-        delete (<any>global).PushImpl;
+        ((global as any).faces) ? delete (global as any).faces : null;
+        ((global as any).jsf) ? delete (global as any).jsf : null;
+        delete (global as any).myfaces;
+        ((global as any).Implementation) ? delete (global as any).Implementation : null;
+        delete (global as any).PushImpl;
     };
 
     /**

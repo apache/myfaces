@@ -161,7 +161,7 @@ export module faces {
          * @param errorFunc error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
          */
         export function addOnError(errorFunc: (data: ErrorData) => void): void {
-            Implementation.addOnError(<any>errorFunc);
+            Implementation.addOnError(errorFunc as any);
         }
 
         /**
@@ -171,7 +171,7 @@ export module faces {
          * @param eventFunc event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
          */
         export function addOnEvent(eventFunc: (data: EventData) => void): void {
-            Implementation.addOnEvent(<any>eventFunc);
+            Implementation.addOnEvent(eventFunc as any);
         }
     }
 
