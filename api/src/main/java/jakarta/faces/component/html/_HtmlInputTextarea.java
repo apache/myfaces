@@ -21,6 +21,7 @@ package jakarta.faces.component.html;
 import jakarta.faces.component.UIInput;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * Renders a HTML textarea element.
@@ -59,4 +60,6 @@ abstract class _HtmlInputTextarea extends UIInput implements _AccesskeyProperty,
      */
     public abstract int getRows();
 
+    @JSFProperty
+    public abstract String getPlaceholder();
 }

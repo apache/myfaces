@@ -71,4 +71,6 @@ abstract class _HtmlInputText extends UIInput implements _AccesskeyProperty,
     @JSFProperty
     public abstract String getAutocomplete();
 
+    @JSFProperty
+    public abstract String getPlaceholder();
 }
