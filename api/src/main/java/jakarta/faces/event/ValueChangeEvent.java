@@ -24,14 +24,14 @@ import jakarta.faces.context.FacesContext;
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
  */
-public class ValueChangeEvent extends FacesEvent
+public class ValueChangeEvent<T> extends FacesEvent
 {
     private static final long serialVersionUID = -2490528664421353795L;
-    // FIELDS
-    private Object _oldValue;
-    private Object _newValue;
 
-    public ValueChangeEvent(FacesContext facesContext, UIComponent uiComponent, Object oldValue, Object newValue)
+    private T _oldValue;
+    private T _newValue;
+
+    public ValueChangeEvent(FacesContext facesContext, UIComponent uiComponent, T oldValue, T newValue)
     {
         super(facesContext, uiComponent);
         if (uiComponent == null)
@@ -42,8 +42,7 @@ public class ValueChangeEvent extends FacesEvent
         _newValue = newValue;
     }
 
-    // CONSTRUCTORS
-    public ValueChangeEvent(UIComponent uiComponent, Object oldValue, Object newValue)
+    public ValueChangeEvent(UIComponent uiComponent, T oldValue, T newValue)
     {
         super(uiComponent);
         if (uiComponent == null)
@@ -54,13 +53,12 @@ public class ValueChangeEvent extends FacesEvent
         _newValue = newValue;
     }
 
-    // METHODS
-    public Object getNewValue()
+    public T getNewValue()
     {
         return _newValue;
     }
 
-    public Object getOldValue()
+    public T getOldValue()
     {
         return _oldValue;
     }
@@ -74,6 +72,6 @@ public class ValueChangeEvent extends FacesEvent
     @Override
     public void processListener(FacesListener facesListeners)
     {
-        ((ValueChangeListener)facesListeners).processValueChange(this);
+        ((ValueChangeListener) facesListeners).processValueChange(this);
     }
 }
