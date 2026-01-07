@@ -101,12 +101,8 @@ abstract class _UISelectItems extends UIComponentBase
      * @since 2.0
      * @return
      */
-    @JSFExclude
-    @JSFProperty(literalOnly = true)
-    public String getVar()
-    {
-        return null;
-    }
+    @JSFProperty
+    public abstract String getVar();
     
     /**
      * The value for the current item.
