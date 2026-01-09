@@ -69,8 +69,10 @@ public class HtmlFormRendererBase extends HtmlRenderer
 
         UIForm htmlForm = (UIForm)component;
 
-        if (facesContext.isProjectStage(ProjectStage.Development) && !((UIForm) component).isPrependId()) {
-            LOGGER.warning("The <h:form prependId=\"false\"> is deprecated as of Faces 5.0 and should not longer be used.");
+        if (facesContext.isProjectStage(ProjectStage.Development) && !((UIForm) component).isPrependId())
+        {
+            LOGGER.warning(
+                    "The <h:form prependId=\"false\"> is deprecated as of Faces 5.0 and should not longer be used.");
         }
 
         ResponseWriter writer = facesContext.getResponseWriter();
