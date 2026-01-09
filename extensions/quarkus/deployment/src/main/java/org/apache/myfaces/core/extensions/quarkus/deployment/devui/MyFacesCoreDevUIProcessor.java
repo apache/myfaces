@@ -18,14 +18,10 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.deployment.devui;
 
-import org.apache.myfaces.config.webparameters.MyfacesConfig;
-
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.devui.spi.page.CardPageBuildItem;
-import io.quarkus.devui.spi.page.Page;
-import io.quarkus.devui.spi.page.PageBuilder;
 
 /**
  * Dev UI card for displaying important details such as the library version.
@@ -38,15 +34,8 @@ public class MyFacesCoreDevUIProcessor
     {
         final CardPageBuildItem card = new CardPageBuildItem();
 
-        final PageBuilder versionPage = Page.externalPageBuilder("Version")
-                .icon("font-awesome-solid:book")
-                .url("https://myfaces.apache.org/#/core40")
-                .doNotEmbed()
-                .staticLabel(MyfacesConfig.class.getPackage().getImplementationVersion());
-
-        card.addPage(versionPage);
-
-        card.setCustomCard("qwc-myfaces-core-card.js");
+        card.addLibraryVersion("org.apache.myfaces.core", "myfaces-impl", "MyFaces",
+                "https://myfaces.apache.org/#/core50");
 
         cardPageBuildItemBuildProducer.produce(card);
     }
