@@ -1884,7 +1884,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * component is therefore used to cache the datamodel for each row of the table. In the normal case where this table
      * is not nested inside a component that changes its id (like a table does) then this map only ever has one entry.
      */
-    protected DataModel getDataModel()
+    protected <T> DataModel<T> getDataModel()
     {
         DataModel dataModel;
         String clientID = "";
