@@ -234,8 +234,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
 
         writer.writeAttribute(HTML.COLSPAN_ATTR, Integer.toString(columns), null);
 
-        //RendererUtils.renderChild(context, facet);
-        facet.encodeAll(context);
+        RendererUtils.renderFacet(context, facet);
 
         writer.endElement(header ? HTML.TH_ELEM : HTML.TD_ELEM);
         writer.endElement(HTML.TR_ELEM);

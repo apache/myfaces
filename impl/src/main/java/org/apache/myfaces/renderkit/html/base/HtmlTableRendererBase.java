@@ -238,9 +238,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
             // no facet to be rendered
             return;
         }
-        // render the facet
-        //RendererUtils.renderChild(facesContext, colgroupsFacet);
-        colgroupsFacet.encodeAll(facesContext);
+
+        RendererUtils.renderFacet(facesContext, colgroupsFacet);
     } 
     
     /**
@@ -1161,11 +1160,9 @@ public class HtmlTableRendererBase extends HtmlRenderer
         {
             writer.writeAttribute(HTML.CLASS_ATTR, styleClass, null);
         }
-        if (facet != null)
-        {
-            //RendererUtils.renderChild(facesContext, facet);
-            facet.encodeAll(facesContext);
-        }
+
+        RendererUtils.renderFacet(facesContext, facet);
+
         writer.endElement(colElementName);
         writer.endElement(HTML.TR_ELEM);
     }
@@ -1332,11 +1329,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
 
         writer.writeAttribute(HTML.SCOPE_ATTR, "col", null);
 
-        if (facet != null)
-        {
-            //RendererUtils.renderChild(facesContext, facet);
-            facet.encodeAll(facesContext);
-        }
+        RendererUtils.renderFacet(facesContext, facet);
+
         writer.endElement(determineHeaderCellTag(facesContext, uiComponent.getParent()));
     }
 
@@ -1384,11 +1378,9 @@ public class HtmlTableRendererBase extends HtmlRenderer
         {
             writer.writeAttribute(HTML.CLASS_ATTR, footerStyleClass, null);
         }
-        if (facet != null)
-        {
-            //RendererUtils.renderChild(facesContext, facet);
-            facet.encodeAll(facesContext);
-        }
+
+        RendererUtils.renderFacet(facesContext, facet);
+
         writer.endElement(HTML.TD_ELEM);
     }
 
