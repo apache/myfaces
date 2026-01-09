@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindow;
@@ -1345,6 +1346,16 @@ public class MyfacesConfig
 
         String[] exceptionTypesToIgnoreInLogging = StringUtils.splitShortString(
                 getString(extCtx, EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING, ""),
+                ',');
+        for (String exceptionTypeToIgnoreInLogging : exceptionTypesToIgnoreInLogging)
+        {
+            if (StringUtils.isNotBlank(exceptionTypeToIgnoreInLogging))
+            {
+                cfg.exceptionTypesToIgnoreInLogging.add(exceptionTypeToIgnoreInLogging);
+            }
+        }
+        exceptionTypesToIgnoreInLogging = StringUtils.splitShortString(
+                getString(extCtx, ExceptionHandler.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING_PARAM_NAME, ""),
                 ',');
         for (String exceptionTypeToIgnoreInLogging : exceptionTypesToIgnoreInLogging)
         {

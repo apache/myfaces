@@ -29,6 +29,21 @@ import jakarta.faces.event.SystemEventListener;
  */
 public abstract class ExceptionHandler implements SystemEventListener
 {
+    /**
+     * <p class="changed_added_5_0">
+     * The name of the context init parameter that specifies exception types to be ignored in logging by
+     * <code>ExceptionHandler</code> implementations.
+     * The parameter value must be a comma-separated list of fully qualified exception class names.
+     * Implementations and component libraries should consult this
+     * parameter when determining whether to log a given exception, and should ignore exceptions that
+     * are instances of the specified types.
+     * </p>
+     *
+     * @since 5.0
+     */
+    public static final String EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING_PARAM_NAME
+            = "jakarta.faces.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING";
+
     public ExceptionHandler()
     {
 
