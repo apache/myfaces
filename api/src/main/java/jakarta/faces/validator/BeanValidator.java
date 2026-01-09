@@ -207,10 +207,14 @@ public class BeanValidator implements Validator<Object>, PartialStateHolder
                 }
             }
         }
-        
+
+        Object coercedValue = context.getApplication().getExpressionFactory().coerceToType(
+                value,
+                valueExpression.getType(context.getELContext()));
+
         // Delegate to Bean Validation.
         Set<?> constraintViolations
-                = validator.validateValue(valueBaseClass, valueProperty, value, validationGroupsArray);
+                = validator.validateValue(valueBaseClass, valueProperty, coercedValue, validationGroupsArray);
         if (!constraintViolations.isEmpty())
         {
             Set<FacesMessage> messages = new LinkedHashSet<>(constraintViolations.size());
