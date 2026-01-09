@@ -27,7 +27,7 @@ metadata:
   - "Faces"
   - "Jakarta Faces"
   guide: "https://myfaces.apache.org/#/coregettingstarted?id=quarkus"
-  icon-url: "https://www.apache.org/foundation/press/kit/poweredBy/Apache_PoweredBy.svg"
+  icon-url: "https://www.apache.org/logos/originals/myfaces.svg"
   categories:
   - "web"
   status: "stable"
