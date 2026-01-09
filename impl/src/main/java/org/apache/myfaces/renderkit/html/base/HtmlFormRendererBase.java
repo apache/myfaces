@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
+import jakarta.faces.application.ProjectStage;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
@@ -25,6 +26,7 @@ import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIComponent;
@@ -43,6 +45,8 @@ import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public class HtmlFormRendererBase extends HtmlRenderer
 {
+    private static final Logger LOGGER = Logger.getLogger(HtmlFormRendererBase.class.getName());
+
     private static final String FORM_TARGET = HTML.FORM_ELEM;
     private static final String HIDDEN_SUBMIT_INPUT_SUFFIX = "_SUBMIT";
     private static final String HIDDEN_SUBMIT_INPUT_VALUE = "1";
@@ -64,6 +68,10 @@ public class HtmlFormRendererBase extends HtmlRenderer
         RendererUtils.checkParamValidity(facesContext, component, UIForm.class);
 
         UIForm htmlForm = (UIForm)component;
+
+        if (facesContext.isProjectStage(ProjectStage.Development) && !((UIForm) component).isPrependId()) {
+            LOGGER.warning("The <h:form prependId=\"false\"> is deprecated as of Faces 5.0 and should not longer be used.");
+        }
 
         ResponseWriter writer = facesContext.getResponseWriter();
         String clientId = htmlForm.getClientId(facesContext);
