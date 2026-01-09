@@ -57,7 +57,7 @@ public class ByteConverter implements Converter<Byte>
         {
             throw new ConverterException(MessageUtils.getErrorMessage(facesContext,
                            BYTE_ID,
-                           new Object[]{value,"156",MessageUtils.getLabel(facesContext, uiComponent)}), e);
+                           new Object[]{value,"106",MessageUtils.getLabel(facesContext, uiComponent)}), e);
         }
     }
 
