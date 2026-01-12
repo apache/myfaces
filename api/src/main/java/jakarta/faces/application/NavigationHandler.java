@@ -21,6 +21,7 @@ package jakarta.faces.application;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,9 +49,15 @@ public abstract class NavigationHandler
         this.handleNavigation(context, fromAction, outcome);
     }
 
-    public abstract NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome);
+    public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome)
+    {
+        return null;
+    }
 
-    public abstract Map<String, Set<NavigationCase>> getNavigationCases();
+    public Map<String, Set<NavigationCase>> getNavigationCases()
+    {
+        return Collections.emptyMap();
+    }
 
     public void performNavigation(String outcome)
     {
