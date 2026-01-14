@@ -155,13 +155,13 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
-    public Converter<?> createConverter(String converterId)
+    public <T> Converter<T> createConverter(String converterId)
     {
         return getWrapped().createConverter(converterId);
     }
 
     @Override
-    public Validator createValidator(String validatorId) throws FacesException
+    public <T> Validator<T> createValidator(String validatorId) throws FacesException
     {
         return getWrapped().createValidator(validatorId);
     }

@@ -443,7 +443,7 @@ public abstract class Application
      * @throws NullPointerException
      *             if converterId is <code>null</code>
      */
-    public abstract Converter<?> createConverter(String converterId);
+    public abstract <T> Converter<T> createConverter(String converterId);
 
     /**
      * Instantiate and return a new <code>{@link Validator}</code> instance of the class specified by a previous call to
@@ -457,7 +457,7 @@ public abstract class Application
      * @throws NullPointerException
      *             if validatorId is <code>null</code>
      */
-    public abstract Validator createValidator(String validatorId) throws FacesException;
+    public abstract <T> Validator<T> createValidator(String validatorId) throws FacesException;
 
     /**
      * <p>
