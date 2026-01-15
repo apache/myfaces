@@ -138,6 +138,10 @@ public class AjaxHandler extends TagHandler implements
     @JSFFaceletAttribute(name = "resetValues", className = "jakarta.el.ValueExpression",
             deferredValueType = "java.lang.Boolean")
     private final TagAttribute resetValues;
+
+    @JSFFaceletAttribute(name = "clearModel", className = "jakarta.el.ValueExpression",
+            deferredValueType = "java.lang.Boolean")
+    private final TagAttribute clearModel;
     
     private final boolean wrappingMode;
 
@@ -154,6 +158,7 @@ public class AjaxHandler extends TagHandler implements
         render = getAttribute("render");
         delay = getAttribute("delay");
         resetValues = getAttribute("resetValues");
+        clearModel = getAttribute("clearModel");
 
         // According to the spec, this tag works in two different ways:
         // 1. Apply an ajax behavior for a selected component in this way
@@ -365,6 +370,7 @@ public class AjaxHandler extends TagHandler implements
         setAttribute(faceletContext, ajaxBehavior, render, Object.class);
         setAttribute(faceletContext, ajaxBehavior, delay, String.class, (v) -> ajaxBehavior.setDelay(v));
         setAttribute(faceletContext, ajaxBehavior, resetValues, Boolean.class, (v) -> ajaxBehavior.setResetValues(v));
+        setAttribute(faceletContext, ajaxBehavior, clearModel, Boolean.class, (v) -> ajaxBehavior.setClearModel(v));
         if (listener != null)
         {
             MethodExpression expr = listener.getMethodExpression(

@@ -25,19 +25,10 @@ import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.core.api.shared.lang.LocaleUtils;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
@@ -144,7 +135,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     }
 
     // todo: is it right to save the state of _events and _phaseListeners?
-    private List<FacesEvent> _events;
+    private Map<PhaseId, List<FacesEvent>> _events;
 
     /**
      * Map containing view scope objects. 
@@ -962,10 +953,15 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         Assert.notNull(event, "event");
         if (_events == null)
         {
-            _events = new ArrayList<FacesEvent>();
+            _events = new EnumMap<>(PhaseId.class);
         }
 
-        _events.add(event);
+        List<FacesEvent> eventsByPhaseId = _events.get(event.getPhaseId());
+        if (eventsByPhaseId == null) {
+            eventsByPhaseId = new ArrayList<>(5);
+            _events.put(event.getPhaseId(), eventsByPhaseId);
+        }
+        eventsByPhaseId.add(event);
     }
 
     @Override
@@ -1457,11 +1453,20 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     }
 
     /**
-     * @since 2.2
-     * @param context
-     * @param clientIds
+     * <p class="changed_added_5_0">
+     * Use {@link #visitTree} to visit the clientIds with the given visit hints, if any, and, if the node is an instance of {@link EditableValueHolder}, call its
+     * {@link EditableValueHolder#resetValue} method, and, if {@code clearModel} is true, then invoke {@link EditableValueHolder#setValue(Object)} with value of {@code null},
+     * followed by {@link UIInput#updateModel(FacesContext)}.
+     * </p>
+     *
+     * @since 5.0
+     *
+     * @param context the {@link FacesContext} for the request we are processing.
+     * @param clientIds The client ids to be visited, on which the described action will be taken.
+     * @param clearModel Whether to clear the model values as well.
+     * @param visitHints Any visit hints you wish to apply to the visit.
      */
-    public void resetValues(FacesContext context, java.util.Collection<java.lang.String> clientIds, VisitHint... visitHints)
+    public void resetValues(FacesContext context, Collection<String> clientIds, boolean clearModel, VisitHint... visitHints)
     {
         if (clientIds == null || clientIds.isEmpty())
         {
@@ -1489,12 +1494,22 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             else {
                 // lazy init
                 if (contextCallback == null) {
-                    contextCallback = new ResetInputContextCallback(visitContext);
+                    contextCallback = new ResetInputContextCallback(visitContext, clearModel);
                 }
 
                 this.invokeOnComponent(context, clientId, contextCallback);
             }
         }
+    }
+
+    /**
+     * @since 2.2
+     * @param context
+     * @param clientIds
+     */
+    public void resetValues(FacesContext context, java.util.Collection<java.lang.String> clientIds, VisitHint... visitHints)
+    {
+        resetValues(context, clientIds, false, visitHints);
     }
 
     /**
@@ -1791,33 +1806,46 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     }
 
     /**
+     * <p class="changed_added_5_0">
+     * Returns an unmodifiable map of unmodifiable lists of faces events that have been queued so far.
+     * </p>
+     * @return an unmodifiable map of unmodifiable lists of faces events that have been queued so far.
+     * @since 5.0
+     */
+    public Map<PhaseId, List<FacesEvent>> getQueuedEvents()
+    {
+        if (_events == null) {
+            return Collections.emptyMap();
+        }
+
+        return _events.entrySet().stream().collect(
+                Collectors.toUnmodifiableMap(
+                        Map.Entry::getKey,
+                        entry -> Collections.unmodifiableList(entry.getValue())));
+    }
+
+    /**
      * Gathers all event for current and ANY phase
      * @param phaseId current phase id
      */
     private Events _getEvents(PhaseId phaseId)
     {
-        // Gather the events and purge the event list to prevent concurrent modification during broadcasting
-        int size = _events.size();
-        List<FacesEvent> anyPhase = new ArrayList<>(size);
-        List<FacesEvent> onPhase = new ArrayList<>(size);
+        // Gather events for ANY_PHASE
+        List<FacesEvent> anyPhaseList = _events.get(PhaseId.ANY_PHASE);
+        List<FacesEvent> anyPhase = anyPhaseList != null ? new ArrayList<>(anyPhaseList) : new ArrayList<>(0);
 
-        for (int i = 0; i < size; i++)
+        // Gather events for the specific phase
+        List<FacesEvent> onPhaseList = _events.get(phaseId);
+        List<FacesEvent> onPhase = onPhaseList != null ? new ArrayList<>(onPhaseList) : new ArrayList<>(0);
+
+        // Clear the retrieved events from the map to prevent concurrent modification during broadcasting
+        if (anyPhaseList != null)
         {
-            FacesEvent event = _events.get(i);
-            if (event.getPhaseId().equals(PhaseId.ANY_PHASE))
-            {
-                anyPhase.add(event);
-                _events.remove(i);
-                size--;
-                i--;
-            }
-            else if (event.getPhaseId().equals(phaseId))
-            {
-                onPhase.add(event);
-                _events.remove(i);
-                size--;
-                i--;
-            }
+            anyPhaseList.clear();
+        }
+        if (onPhaseList != null)
+        {
+            onPhaseList.clear();
         }
 
         return new Events(anyPhase, onPhase);
@@ -1836,7 +1864,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         if (listenerSuccessMap == null)
         {
-            listenerSuccessMap = new HashMap<>(PhaseId.VALUES.size(), 1f);
+            listenerSuccessMap = new EnumMap<>(PhaseId.class);
         }
         return listenerSuccessMap;
     }
@@ -1958,17 +1986,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
     }
 
-    public static class ResetInputContextCallback implements ContextCallback {
+    private static class ResetInputContextCallback implements ContextCallback {
 
         private VisitContext visitContext;
+        private boolean clearModel;
 
         /**
          * Constructs a new ResetInputContextCallback with the given {@link VisitContext}.
          *
          * @param visitContext the visit context to be used for visiting component trees
          */
-        public ResetInputContextCallback(VisitContext visitContext) {
+        public ResetInputContextCallback(VisitContext visitContext, boolean clearModel) {
             this.visitContext = visitContext;
+            this.clearModel = clearModel;
         }
 
         /**
@@ -1981,24 +2011,48 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
          */
         @Override
         public void invokeContextCallback(FacesContext fc, UIComponent component) {
-            if (component instanceof EditableValueHolder) {
-                ((EditableValueHolder) component).resetValue();
+            if (component instanceof EditableValueHolder evh) {
+                evh.resetValue();
+
+                if (clearModel) {
+                    evh.setValue(null);
+                    if (evh instanceof UIInput input) {
+                        input.updateModel(visitContext.getFacesContext());
+                    }
+                }
             }
             else {
-                component.visitTree(visitContext, ResetInputVisitCallback.INSTANCE);
+                component.visitTree(visitContext, ResetInputVisitCallback.getInstance(clearModel));
             }
         }
     }
 
-    public static class ResetInputVisitCallback implements VisitCallback {
+    private static class ResetInputVisitCallback implements VisitCallback {
 
-        public static final ResetInputVisitCallback INSTANCE = new ResetInputVisitCallback();
+        private static final ResetInputVisitCallback INSTANCE = new ResetInputVisitCallback(false);
+        private static final ResetInputVisitCallback INSTANCE_CLEAR_MODEL = new ResetInputVisitCallback(true);
+
+        public static ResetInputVisitCallback getInstance(boolean clearModel) {
+            return clearModel ? INSTANCE_CLEAR_MODEL : INSTANCE;
+        }
+
+        private final boolean clearModel;
+
+        public ResetInputVisitCallback(boolean clearModel) {
+            this.clearModel = clearModel;
+        }
 
         @Override
         public VisitResult visit(VisitContext context, UIComponent target) {
-            if (target instanceof EditableValueHolder) {
-                EditableValueHolder input = (EditableValueHolder) target;
-                input.resetValue();
+            if (target instanceof EditableValueHolder evh) {
+                evh.resetValue();
+
+                if (clearModel) {
+                    evh.setValue(null);
+                    if (evh instanceof UIInput input) {
+                        input.updateModel(context.getFacesContext());
+                    }
+                }
             }
 
             return VisitResult.ACCEPT;

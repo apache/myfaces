@@ -33,6 +33,7 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewParameter;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
@@ -44,6 +45,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.BehaviorEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.RenderKit;
@@ -90,6 +92,7 @@ public class PartialViewContextImpl extends PartialViewContext
     private VisitContextFactory visitContextFactory = null;
     private Boolean _resetValues = null;
     private List<String> _evalScripts = new ArrayList<>();
+    private List<AjaxBehavior> queuedAjaxBehaviors;
 
     public PartialViewContextImpl(FacesContext context)
     {
@@ -387,6 +390,17 @@ public class PartialViewContextImpl extends PartialViewContext
                 || phaseId == PhaseId.PROCESS_VALIDATIONS
                 || phaseId == PhaseId.UPDATE_MODEL_VALUES)
         {
+            if (phaseId == PhaseId.APPLY_REQUEST_VALUES)
+            {
+                queuedAjaxBehaviors = viewRoot.getQueuedEvents().values().stream().flatMap(List::stream)
+                        .filter(BehaviorEvent.class::isInstance)
+                        .map(BehaviorEvent.class::cast)
+                        .map(BehaviorEvent::getBehavior)
+                        .filter(AjaxBehavior.class::isInstance)
+                        .map(AjaxBehavior.class::cast)
+                        .toList();
+            }
+
             processPartialExecute(viewRoot, phaseId);
         }
         else if (phaseId == PhaseId.RENDER_RESPONSE)
@@ -441,7 +455,9 @@ public class PartialViewContextImpl extends PartialViewContext
             
             if (isResetValues())
             {
-                viewRoot.resetValues(context, getRenderIds(), RESET_VALUES_HINTS);
+                boolean clearModel = queuedAjaxBehaviors != null
+                        && queuedAjaxBehaviors.stream().anyMatch(AjaxBehavior::isClearModel);
+                viewRoot.resetValues(context, getRenderIds(), clearModel, RESET_VALUES_HINTS);
             }
 
             if (pvc.isRenderAll())
@@ -685,6 +701,7 @@ public class PartialViewContextImpl extends PartialViewContext
         _partialRequest = null;
         _renderAll = null;
         context = null;
+        queuedAjaxBehaviors = null;
         _released = true;
     }
     

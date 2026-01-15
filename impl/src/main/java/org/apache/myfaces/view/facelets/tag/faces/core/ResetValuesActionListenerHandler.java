@@ -62,6 +62,10 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
     @JSFFaceletAttribute(name = "render", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.Object")
     private final TagAttribute _render;
+
+    @JSFFaceletAttribute(name = "clearModel", className = "jakarta.el.ValueExpression",
+            deferredValueType = "java.lang.Object")
+    private final TagAttribute _clearModel;
     
     private final Collection<String> _clientIds;
 
@@ -86,6 +90,7 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
         {
             _clientIds = null;
         }
+        _clearModel = getAttribute("clearModel");
     }
 
     /*
@@ -163,7 +168,8 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
             listener = new LiteralResetValuesActionListener(_clientIds,
                 topParentComponent != null
                         ? (Location) topParentComponent.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY)
-                        : null);
+                        : null,
+                    _render.getBoolean(faceletContext));
         }
         else
         {
@@ -171,7 +177,8 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
                     _render.getValueExpression(faceletContext, Object.class),
                     topParentComponent != null
                             ? (Location) topParentComponent.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY)
-                            : null);
+                            : null,
+                    _render.getBoolean(faceletContext));
         }
         as.addActionListener(listener);
     }
@@ -195,15 +202,17 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
 
         private ValueExpression renderExpression;
         private Location topCompositeComponentReference;
+        private boolean clearModel;
         
         private ResetValuesActionListener()
         {
         }
         
-        public ResetValuesActionListener(ValueExpression renderExpression, Location location)
+        public ResetValuesActionListener(ValueExpression renderExpression, Location location, boolean clearModel)
         {
             this.renderExpression = renderExpression;
             this.topCompositeComponentReference = location;
+            this.clearModel = clearModel;
         }
 
         @Override
@@ -261,14 +270,14 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
                 contextComponent = event.getComponent();
             }
 
-            List<String> list = new ArrayList<>();
+            List<String> list = new ArrayList<>(clientIds.size());
             for (String id : clientIds)
             {
                 list.add(getComponentId(faces, contextComponent, id));
             }
             
             // Call resetValues
-            root.resetValues(faces, list);
+            root.resetValues(faces, list, clearModel);
         }
     }
     
@@ -278,15 +287,17 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
 
         private Collection<String> clientIds;
         private Location topCompositeComponentReference;
+        private boolean clearModel;
         
         private LiteralResetValuesActionListener()
         {
         }
         
-        public LiteralResetValuesActionListener(Collection<String> clientIds, Location location)
+        public LiteralResetValuesActionListener(Collection<String> clientIds, Location location, boolean clearModel)
         {
             this.clientIds = clientIds;
             this.topCompositeComponentReference = location;
+            this.clearModel = clearModel;
         }
 
         @Override
@@ -324,13 +335,13 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
                 contextComponent = event.getComponent();
             }
 
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>(clientIds.size());
             for (String id : clientIds)
             {
                 list.add(getComponentId(faces, contextComponent, id));
             }
             
-            root.resetValues(faces, list);
+            root.resetValues(faces, list, clearModel);
         }
     }
     

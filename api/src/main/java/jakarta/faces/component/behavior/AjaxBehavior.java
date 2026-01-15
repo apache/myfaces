@@ -52,6 +52,7 @@ public class AjaxBehavior extends ClientBehaviorBase
     private static final String ATTR_DISABLED = "disabled";
     private static final String ATTR_IMMEDIATE = "immediate";
     private static final String ATTR_DELAY = "delay";
+    private static final String ATTR_CLEAR_MODEL = "clearModel";
     private static final String ATTR_RESET_VALUES = "resetValues";
 
     /**
@@ -235,6 +236,51 @@ public class AjaxBehavior extends ClientBehaviorBase
     public void setDelay(String delay)
     {
         getStateHelper().put(ATTR_DELAY, delay);
+    }
+
+    /**
+     * <p class="changed_added_5_0">
+     * Return the clearModel status of this behavior.
+     * </p>
+     *
+     * @return the clearModel status.
+     *
+     * @since 5.0
+     */
+    public boolean isClearModel()
+    {
+        Boolean result = (Boolean) getStateHelper().eval(ATTR_CLEAR_MODEL);
+        return result != null ? result : false;
+    }
+
+    /**
+     * <p class="changed_added_5_0">
+     * Set the clearModel status of this behavior.
+     * </p>
+     *
+     * @param clearModel the clearModel status.
+     *
+     * @since 5.0
+     */
+    public void setClearModel(boolean clearModel)
+    {
+        getStateHelper().put(ATTR_CLEAR_MODEL, clearModel);
+    }
+
+    /**
+     * <p class="changed_added_5_0">
+     * Tests whether the clearModel attribute is specified. Returns true if the clearModel attribute is specified, either
+     * as a locally set property or as a value expression.
+     * </p>
+     *
+     * @return the flag whether the clearModel attribute is specified.
+     *
+     * @since 5.0
+     */
+    public boolean isClearModelSet()
+    {
+        return (getStateHelper().get(ATTR_CLEAR_MODEL) != null) ||
+                (getValueExpression(ATTR_CLEAR_MODEL) != null);
     }
 
     @Override
