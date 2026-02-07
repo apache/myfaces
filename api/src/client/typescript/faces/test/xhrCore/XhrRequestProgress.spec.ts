@@ -6,7 +6,7 @@ const protocolPage = StandardInits.protocolPage;
 
 const jsdom = require("jsdom");
 const {JSDOM} = jsdom;
-
+import * as nise from "nise";
 
 describe("Should trigger the progress on xhr request", function () {
     beforeEach(async function () {
@@ -15,7 +15,7 @@ describe("Should trigger the progress on xhr request", function () {
         //build up the test fixture
         return waitForResult.then((close) => {
             //we generate an xhr mock class replacement
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
 
             //we store the requests to have access to them later

@@ -27,8 +27,7 @@ import {
     COMPLETE, EMPTY_STR,
     SUCCESS
 } from "../../impl/core/Const";
-;
-
+import * as nise from "nise";
 
 /**
  * wherever we reference the namespaces they must be mapped to javax instead of jakarta
@@ -89,7 +88,7 @@ describe('Tests on the xhr core when it starts to call the request', function ()
 
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
@@ -193,15 +192,15 @@ describe('Tests after core when it hits response', function () {
 
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (global as any).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
+            (global as any).XMLHttpRequest = this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
 
             // @ts-ignore
-            window.XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest() as XMLHttpRequest;
+            window.XMLHttpRequest = this.xhr = nise.fakeXhr.useFakeXMLHttpRequest() as XMLHttpRequest;
 
             this.jsfAjaxResponse = sinon.spy((global as any).jsf.ajax, "response");
 
