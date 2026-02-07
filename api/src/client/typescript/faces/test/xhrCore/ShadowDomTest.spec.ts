@@ -24,7 +24,7 @@ import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
 import {expect} from "chai";
 import {DomQuery} from "mona-dish";
 const shadowDomMyFaces = StandardInits.shadowDomMyFaces;
-
+import * as nise from "nise";
 
 sinon.reset();
 
@@ -37,7 +37,7 @@ describe('shadow dom testsuite', () => {
         let waitForResult = shadowDomMyFaces();
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
 
             this.respond = (response: string): XMLHttpRequest => {

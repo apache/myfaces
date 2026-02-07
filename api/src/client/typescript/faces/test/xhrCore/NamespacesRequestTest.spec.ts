@@ -31,7 +31,7 @@ const defaultMyFacesNamespaces = StandardInits.defaultMyFacesNamespaces;
 import {escape} from "querystring";
 import {ExtLang} from "../../impl/util/Lang";
 const ofAssoc = ExtLang.ofAssoc;
-
+import * as nise from "nise";
 declare var faces: any;
 declare var Implementation: any;
 
@@ -54,7 +54,7 @@ describe('Namespacing tests', function () {
 
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);

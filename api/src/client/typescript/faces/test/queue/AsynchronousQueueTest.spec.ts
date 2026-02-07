@@ -17,6 +17,8 @@
 import {describe, it} from 'mocha';
 import {expect} from 'chai';
 import * as sinon from 'sinon';
+import * as nise from "nise";
+
 import {ProbeClass} from "./AsynchronousProbe";
 
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
@@ -33,7 +35,7 @@ describe('Asynchronous Queue tests', () => {
 
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);

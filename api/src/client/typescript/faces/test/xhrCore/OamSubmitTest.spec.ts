@@ -21,6 +21,7 @@ import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 const defaultMyFaces = StandardInits.defaultMyFaces;
 import {_Es2019Array, DQ, DQ$} from "mona-dish";
 import {expect} from "chai";
+import * as nise from "nise";
 
 describe('Tests for the MyFaces specifig oam submit', function () {
     let oldFlatMap = null;
@@ -30,7 +31,7 @@ describe('Tests for the MyFaces specifig oam submit', function () {
 
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);

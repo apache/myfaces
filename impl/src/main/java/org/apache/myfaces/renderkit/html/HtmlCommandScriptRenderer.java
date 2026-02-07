@@ -71,16 +71,24 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         String name;
         if (cmdName != null && cmdName.length() > 0)
         {
-            name = JavascriptUtils.getValidJavascriptName(cmdName, true);
+            name = JavascriptUtils.getValidJavascriptName(cmdName, true, true);
         }
         else
         {
             name = JavascriptUtils.getValidJavascriptName(component.getClientId(context), true);
         }
-        
+
         script.prettyLine();
         script.increaseIndent();
-        script.append("var "+name+" = function(o, event){var o=(typeof o==='object')&&o?o:{};");
+        if(name.contains("."))
+        {
+            script.append("myfaces.reserveNamespace('"+name+"');");
+            script.append(name+" = function(o, event){var o=(typeof o==='object')&&o?o:{};");
+        }
+        else
+        {
+            script.append("var "+name+" = function(o, event){var o=(typeof o==='object')&&o?o:{};");
+        }
         script.prettyLine();
         
         List<UIParameter> uiParams = HtmlRendererUtils.getValidUIParameterChildren(

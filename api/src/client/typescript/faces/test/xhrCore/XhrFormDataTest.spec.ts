@@ -25,6 +25,7 @@ import {Implementation} from "../../impl/AjaxImpl";
 
 const jsdom = require("jsdom");
 const {JSDOM} = jsdom;
+import * as nise from "nise";
 
 describe('XhrFormData tests', function () {
     let oldFlatMap = null;
@@ -34,7 +35,7 @@ describe('XhrFormData tests', function () {
 
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
@@ -78,7 +79,7 @@ describe('XhrFormData tests', function () {
                 language: "en-En"
             };
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);

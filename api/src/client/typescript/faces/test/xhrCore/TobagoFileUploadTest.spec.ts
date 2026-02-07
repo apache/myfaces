@@ -20,7 +20,7 @@ import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {_Es2019Array, DomQuery} from "mona-dish";
 import {Implementation} from "../../impl/AjaxImpl";
 const defaultFileForm = StandardInits.tobagoFileForm;
-
+import * as nise from "nise";
 declare var faces: any;
 
 /**
@@ -33,7 +33,7 @@ describe('Tests on the xhr core when it starts to call the request', function ()
     let waitForResult = defaultFileForm();
     return waitForResult.then((close) => {
 
-      this.xhr = sinon.useFakeXMLHttpRequest();
+      this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
       this.requests = [];
 
       this.respond = (response: string): XMLHttpRequest => {

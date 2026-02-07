@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 
 import jakarta.faces.context.ExternalContext;
+import java.util.stream.Collectors;
 
 public final class JavascriptUtils
 {
@@ -97,6 +98,21 @@ public final class JavascriptUtils
     {
         return origIdentifier.replaceAll("-", "\\$_");
     }
+
+    public static String getValidJavascriptName(String s, boolean allowNamespaces, boolean checkForReservedWord)
+    {
+        if(!allowNamespaces)
+        {
+            return getValidJavascriptName(s, checkForReservedWord);
+        }
+        else
+        {
+            return Arrays.stream(s.split("\\."))
+                    .map(ns -> getValidJavascriptName(ns, checkForReservedWord))
+                    .collect(Collectors.joining("."));
+        }
+    }
+
 
     public static String getValidJavascriptName(String s, boolean checkForReservedWord)
     {
