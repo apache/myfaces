@@ -34,7 +34,6 @@ export module faces {
      * <li>middle two digits minor spec release number</li>
      * <li>right two digits bug release number</li>
      * </ul>
-     * @constant
      */
     export var specversion = 400000;
     /**
@@ -43,7 +42,6 @@ export module faces {
      * A number increased with every implementation version
      * and reset by moving to a new spec release number
      *
-     * @constant
      */
     export var implversion = 0;
 
@@ -316,6 +314,19 @@ export module myfaces {
             executionFunc();
         }
 
+    }
+
+    /**
+     * reserve a namespace for the given string
+     * @param namespace the namespace to reserve with '.' as separator
+     */
+    export function reserveNamespace(namespace: string): void {
+        let current: any = window;
+        const namespaces = namespace.split(".");
+        for(const part of namespaces) {
+            current[part] = current[part] || {};
+            current = current[part];
+        }
     }
 
     /**

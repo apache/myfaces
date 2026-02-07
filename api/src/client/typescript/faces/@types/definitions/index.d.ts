@@ -126,6 +126,7 @@ declare global {
 
     interface MyFacesAPI {
         ab(source: Element, event: Event, eventName: string, execute: string, render: string, options?: Context, userParams?: Context): void;
+        reserveNamespace(namespace: string): void;
 
         config: { [key: string]: any };
         oam: OAM;

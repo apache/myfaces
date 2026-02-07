@@ -23,6 +23,7 @@ import {expect} from "chai";
 const protocolPage = StandardInits.protocolPage;
 import {DQ} from "mona-dish";
 import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
+import * as nise from "nise";
 
 declare var faces: any;
 
@@ -33,7 +34,7 @@ describe('tests the addOnEvent and addOnError handling', function () {
         let waitForResult = protocolPage();
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
 
             this.respond = (response: string): XMLHttpRequest => {
