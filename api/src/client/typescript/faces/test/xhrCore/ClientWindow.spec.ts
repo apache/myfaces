@@ -3,6 +3,7 @@ import * as sinon from "sinon";
 import {Implementation} from "../../impl/AjaxImpl";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {expect} from "chai";
+import * as nise from "nise";
 
 const jsdom = require("jsdom");
 const {JSDOM} = jsdom;
@@ -16,7 +17,7 @@ describe('adds a getClientWindowTests', function () {
 
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);

@@ -117,7 +117,7 @@ export module ExtLang {
      */
     export function makeException(error: Error, title: string, name: string, callerCls: string, callFunc: string, message: string): Error {
 
-        return new Error(message + (callerCls ?? nameSpace) + callFunc ?? (EMPTY_STR + (arguments as any).caller.toString()));
+        return new Error(message + (callerCls ?? nameSpace) + callFunc );
 
     }
 

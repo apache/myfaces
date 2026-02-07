@@ -17,7 +17,7 @@
 import {describe} from "mocha";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import * as sinon from "sinon";
-
+import * as nise from "nise";
 
 import {XmlResponses} from "../frameworkBase/_ext/shared/XmlResponses";
 import {expect} from "chai";
@@ -40,7 +40,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         let waitForResult = protocolPage();
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
 
             this.respond = (response: string): XMLHttpRequest => {
