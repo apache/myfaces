@@ -25,6 +25,7 @@ import {Implementation} from "../../impl/AjaxImpl";
 const errorChainPage = StandardInits.errorChainPage;
 import {DQ} from "mona-dish";
 import {ErrorData} from "../../impl/xhrCore/ErrorData";
+import * as nise from "nise";
 
 /**
  * Tests for error recover if an error is triggered mid chain
@@ -35,7 +36,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         let waitForResult = errorChainPage(true);
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
 
             this.respond = (response: string): XMLHttpRequest => {
