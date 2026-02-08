@@ -17,18 +17,23 @@
     specific language governing permissions and limitations
     under the License.
 -->
-<faces-config version="2.2"
-              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+<faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              version="4.1"
+              xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_1.xsd">
 
     <factory combine.children='append'>
         <application-factory>org.apache.myfaces.core.extensions.quarkus.runtime.application.QuarkusApplicationFactory</application-factory>
         <exception-handler-factory>org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory</exception-handler-factory>
     </factory>
 
+    <lifecycle combine.children='append'>
+    </lifecycle>
+
     <application combine.children='append'>
         <resource-handler>org.apache.myfaces.core.extensions.quarkus.runtime.application.QuarkusResourceHandler</resource-handler>
     </application>
+
+    <render-kit combine.children='append'>
+    </render-kit>
 
 </faces-config>
