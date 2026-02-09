@@ -24,7 +24,7 @@ const HTML_PREFIX_EMBEDDED_BODY = StandardInits.HTML_PREFIX_EMBEDDED_BODY;
 import {it} from "mocha";
 import {decodeEncodedValues} from "../../impl/util/FileUtils";
 import {ExtConfig} from "../../impl/util/ExtDomQuery";
-
+import * as nise from "nise";
 /**
  * merges a list of key value entries into a target config
  * @param target the target receiving the key value entries
@@ -93,7 +93,7 @@ describe("test for proper request param patterns identical to the old implementa
 
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);

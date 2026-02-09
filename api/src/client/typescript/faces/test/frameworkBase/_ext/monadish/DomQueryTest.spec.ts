@@ -602,7 +602,7 @@ describe('DOMQuery tests', function () {
 
     });
 
-    it("it must handle innerText properly", function (done) {
+    /*it("it must handle innerText properly", function (done) {
 
         //jsdom bug
         Object.defineProperty(Object.prototype, 'innerText', {
@@ -614,9 +614,10 @@ describe('DOMQuery tests', function () {
         let probe = DomQuery.byId("id_1");
         probe.innerHTML = "<div>hello</div><div>world</div>";
         // bug in domjs in current revision, textContent is ignored
-        //expect(probe.innerText()).to.eq("helloworld");
+        // todo reenable when jsdom has fixed innerText
+        expect(probe.innerText()).to.eq("helloworld");
         done();
-    });
+    });*/
     it("it must handle textContent properly", function () {
         let probe = DomQuery.byId("id_1");
         probe.innerHTML = "<div>hello</div><div>world</div>";

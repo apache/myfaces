@@ -25,6 +25,8 @@ import {DQ} from "mona-dish";
  */
 export module PushImpl {
 
+    // @deprecated because we can assume at least for the newer versions
+    // that the protocol is properly set!
     const URL_PROTOCOL = DQ.global().location.protocol.replace("http", "ws") + "//";
 
 
@@ -240,7 +242,10 @@ export module PushImpl {
     }
 
     // Private static functions ---------------------------------------------------------------------------------------
-
+    // @deprecated because we can assume at least for the newer versions
+    // that the protocol is properly set!
+    // https://issues.apache.org/jira/browse/MYFACES-4718
+    // This needs further investigation
     function getBaseURL(url: string) {
         if (url.indexOf("://") < 0) {
             let base = DQ.global().location.hostname + ":" + DQ.global().location.port;

@@ -16,8 +16,7 @@
 
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import {Lang} from "mona-dish";
-
+import { Lang } from "mona-dish";
 
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;

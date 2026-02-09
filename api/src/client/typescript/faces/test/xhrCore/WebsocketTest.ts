@@ -15,6 +15,7 @@
  */
 import {describe} from "mocha";
 import * as sinon from "sinon";
+import * as nise from "nise";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {Implementation} from "../../impl/AjaxImpl";
 
@@ -35,7 +36,7 @@ describe('Tests the jsf websocket client side api on high level (generic test wi
 
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);

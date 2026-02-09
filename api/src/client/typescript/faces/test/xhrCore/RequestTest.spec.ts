@@ -34,7 +34,7 @@ const initVirtualElement = StandardInits.initVirtualElement;
 const STD_XML = StandardInits.STD_XML;
 import exp from "constants";
 const initCheckboxForm = StandardInits.initCheckboxRadioForm;
-
+import * as nise from "nise";
 declare var faces: any;
 declare var Implementation: any;
 
@@ -82,7 +82,7 @@ describe('Tests on the xhr core when it starts to call the request', function ()
 
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
@@ -225,14 +225,14 @@ describe('Tests after core when it hits response', function () {
 
         return waitForResult.then((close) => {
 
-            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             this.requests = [];
             this.xhr.onCreate = (xhr) => {
                 this.requests.push(xhr);
             };
-            (global as any).XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest();
+            (global as any).XMLHttpRequest = this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
             // @ts-ignore
-            window.XMLHttpRequest = this.xhr = sinon.useFakeXMLHttpRequest() as XMLHttpRequest;
+            window.XMLHttpRequest = this.xhr = nise.fakeXhr.useFakeXMLHttpRequest() as XMLHttpRequest;
 
             this.jsfAjaxResponse = sinon.spy((global as any).faces.ajax, "response");
 
