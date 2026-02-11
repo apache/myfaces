@@ -36,7 +36,7 @@ import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper;
 
 public class LambdaBeanELResolver extends BeanELResolver
 {
-    private final ConcurrentHashMap<String, Map<String, ? extends PropertyDescriptorWrapper>> cache;
+    protected final ConcurrentHashMap<String, Map<String, ? extends PropertyDescriptorWrapper>> cache;
 
     public LambdaBeanELResolver()
     {

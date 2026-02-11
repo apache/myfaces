@@ -89,7 +89,7 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         if (replaceImplicitObjectResolverWithCDIResolver)
         {
             list.add(ImplicitObjectResolver.makeResolverForCDI());
-            list.add(getCDIELResolver());
+            list.add(getCDIELResolver(facesContext));
         }
         else
         {
@@ -129,7 +129,7 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
  
         try
         {
-            ELResolver streamElResolver = (ELResolver) runtimeConfig.getExpressionFactory().getStreamELResolver();
+            ELResolver streamElResolver = runtimeConfig.getExpressionFactory().getStreamELResolver();
             if (streamElResolver != null)
             {
                 list.add(streamElResolver);
@@ -169,14 +169,7 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
             }
         }
 
-        if (PropertyDescriptorUtils.isUseLambdaMetafactory(facesContext.getExternalContext()))
-        {
-            list.add(new LambdaBeanELResolver());
-        }
-        else
-        {
-            list.add(new BeanELResolver());
-        }
+        list.add(getBeanELResolver(facesContext));
 
         // give the user a chance to sort the resolvers
         sortELResolvers(list);
@@ -203,9 +196,19 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         compositeElResolver.add(new ScopedAttributeResolver());
     }
     
-    protected ELResolver getCDIELResolver()
+    protected ELResolver getCDIELResolver(FacesContext facesContext)
     {
-        BeanManager beanManager = CDIUtils.getBeanManager(FacesContext.getCurrentInstance());
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
         return beanManager.getELResolver();
+    }
+
+    protected BeanELResolver getBeanELResolver(FacesContext facesContext)
+    {
+        if (PropertyDescriptorUtils.isUseLambdaMetafactory(facesContext.getExternalContext()))
+        {
+            return new LambdaBeanELResolver();
+        }
+
+        return new BeanELResolver();
     }
 }
