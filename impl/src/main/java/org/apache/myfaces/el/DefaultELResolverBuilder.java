@@ -18,6 +18,10 @@
  */
 package org.apache.myfaces.el;
 
+import org.apache.myfaces.el.resolver.FlashELResolver;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
 import jakarta.el.CompositeELResolver;
@@ -28,10 +32,6 @@ import jakarta.el.OptionalELResolver;
 import jakarta.el.RecordELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.StaticFieldELResolver;
-import org.apache.myfaces.el.resolver.FlashELResolver;
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
@@ -89,7 +89,7 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         if (replaceImplicitObjectResolverWithCDIResolver)
         {
             list.add(ImplicitObjectResolver.makeResolverForCDI());
-            list.add(getCDIELResolver());
+            list.add(getCDIELResolver(facesContext));
         }
         else
         {
@@ -169,14 +169,7 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
             }
         }
 
-        if (PropertyDescriptorUtils.isUseLambdas(facesContext.getExternalContext()))
-        {
-            list.add(new LambdaBeanELResolver());
-        }
-        else
-        {
-            list.add(new BeanELResolver());
-        }
+        list.add(getBeanELResolver(facesContext));
 
         // give the user a chance to sort the resolvers
         sortELResolvers(list);
@@ -203,9 +196,19 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
         compositeElResolver.add(new ScopedAttributeResolver());
     }
     
-    protected ELResolver getCDIELResolver()
+    protected ELResolver getCDIELResolver(FacesContext facesContext)
     {
-        BeanManager beanManager = CDIUtils.getBeanManager(FacesContext.getCurrentInstance());
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
         return beanManager.getELResolver();
+    }
+
+    protected BeanELResolver getBeanELResolver(FacesContext facesContext)
+    {
+        if (PropertyDescriptorUtils.isUseLambdas(facesContext.getExternalContext()))
+        {
+            return new LambdaBeanELResolver();
+        }
+
+        return new BeanELResolver();
     }
 }

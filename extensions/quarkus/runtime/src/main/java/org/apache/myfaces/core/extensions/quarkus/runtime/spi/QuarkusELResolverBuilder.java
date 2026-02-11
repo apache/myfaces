@@ -18,8 +18,10 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.runtime.spi;
 
+import jakarta.el.BeanELResolver;
 import jakarta.el.ELResolver;
 
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.DefaultELResolverBuilder;
@@ -38,8 +40,14 @@ public class QuarkusELResolverBuilder extends DefaultELResolverBuilder
     }
 
     @Override
-    protected ELResolver getCDIELResolver()
+    protected ELResolver getCDIELResolver(FacesContext facesContext)
     {
         return new QuarkusCdiELResolver();
+    }
+
+    @Override
+    protected BeanELResolver getBeanELResolver(FacesContext facesContext)
+    {
+        return new QuarkusBeanELResolver();
     }
 }
