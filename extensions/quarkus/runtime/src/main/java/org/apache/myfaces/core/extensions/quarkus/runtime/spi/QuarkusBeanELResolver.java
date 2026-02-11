@@ -46,6 +46,7 @@ public class QuarkusBeanELResolver extends LambdaBeanELResolver
         {
             beanCache = PropertyDescriptorUtils.getCachedPropertyDescriptors(
                     FacesContext.getCurrentInstance().getExternalContext(),
+                    this.getClass(),
                     type);
             cache.put(type.getName(), beanCache);
         }
