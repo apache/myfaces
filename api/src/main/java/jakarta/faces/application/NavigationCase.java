@@ -42,6 +42,7 @@ public class NavigationCase
     private boolean _includeViewParams;
     private boolean _redirect;
     private Map<String,List<String>> _parameters;
+    private String _fragment;
 
     private ValueExpression _conditionExpression;
     private ValueExpression _toViewIdExpression;
@@ -59,6 +60,14 @@ public class NavigationCase
         _includeViewParams = includeViewParams;
         _parameters = parameters;
     }
+
+    public NavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId,
+                          Map<String,List<String>> parameters, String fragment, boolean redirect,
+                          boolean includeViewParams)
+    {
+        this(fromViewId, fromAction, fromOutcome, condition, toViewId, parameters, redirect, includeViewParams);
+        _fragment = fragment;
+    }
     
     public NavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId,
                           String toFlowDocumentId, Map<String,List<String>> parameters, boolean redirect,
@@ -73,7 +82,15 @@ public class NavigationCase
         _redirect = redirect;
         _includeViewParams = includeViewParams;
         _parameters = parameters;
+    }
 
+    public NavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId,
+                          String toFlowDocumentId, Map<String,List<String>> parameters, String fragment,
+                          boolean redirect, boolean includeViewParams)
+    {
+        this(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, parameters, redirect,
+                includeViewParams);
+        _fragment = fragment;
     }
 
     /**
@@ -145,7 +162,12 @@ public class NavigationCase
     {
         return _fromViewId;
     }
-    
+
+    public String getFragment()
+    {
+        return _fragment;
+    }
+
     public URL getBookmarkableURL(FacesContext context) throws MalformedURLException
     {
         ExternalContext externalContext = context.getExternalContext();

@@ -698,5 +698,42 @@ public class NavigationHandlerImplTest extends AbstractFacesTestCase
 
         Assertions.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
-    
+
+
+    @Test
+    public void testFragment()
+    {
+        NavigationHandlerImpl nh = new NavigationHandlerImpl();
+
+        // get the NavigationCase
+        // note that the URL parameters can be separated via & or &amp;
+        NavigationCase navigationCase = nh.getNavigationCase(facesContext, null,
+                "test.xhtml?faces-redirect=true&a=b&amp;includeViewParams=true&amp;c=d&e=f#myFragment");
+
+        // created the expected parameter map
+        Map<String, List<String>> expected = new HashMap<String, List<String>>();
+        expected.put("a", Arrays.asList("b"));
+        expected.put("c", Arrays.asList("d"));
+        expected.put("e", Arrays.asList("f"));
+        // note that faces-redirect and includeViewParams
+        // should not be added as a parameter
+
+        Assertions.assertEquals(expected, navigationCase.getParameters());
+        Assertions.assertTrue(navigationCase.isIncludeViewParams());
+        Assertions.assertTrue(navigationCase.isRedirect());
+        Assertions.assertEquals("myFragment", navigationCase.getFragment());
+    }
+
+    @Test
+    public void testFragmentNavigation() throws Exception {
+        NavigationHandlerImpl underTest = new NavigationHandlerImpl();
+        // simulate no available ViewRoot (in case of VEE)
+        facesContext.setViewRoot(null);
+        facesContext.getPartialViewContext().setPartialRequest(true);
+
+        underTest.handleNavigation(facesContext, null, "/viewExpired.xhtml#test");
+
+        Assertions.assertNotNull(facesContext.getViewRoot());
+        Assertions.assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
+    }
 }

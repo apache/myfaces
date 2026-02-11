@@ -136,10 +136,24 @@ public abstract class ViewHandlerWrapper extends ViewHandler
     }
 
     @Override
+    public String getBookmarkableURL(FacesContext context, String viewId,
+                                     Map<String, List<String>> parameters, boolean includeViewParams, String fragment)
+    {
+        return getWrapped().getBookmarkableURL(context, viewId, parameters, includeViewParams, fragment);
+    }
+
+    @Override
     public String getRedirectURL(FacesContext context, String viewId,
             Map<String, List<String>> parameters, boolean includeViewParams)
     {
         return getWrapped().getRedirectURL(context, viewId, parameters, includeViewParams);
+    }
+
+    @Override
+    public String getRedirectURL(FacesContext context, String viewId,
+                                 Map<String, List<String>> parameters, boolean includeViewParams, String fragment)
+    {
+        return getWrapped().getRedirectURL(context, viewId, parameters, includeViewParams, fragment);
     }
 
     @Override

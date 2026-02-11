@@ -225,7 +225,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 String redirectPath = viewHandler.getRedirectURL(
                         facesContext, toViewId, 
                         NavigationUtils.getEvaluatedNavigationParameters(facesContext, navigationCaseParameters),
-                        navigationCase.isIncludeViewParams());
+                        navigationCase.isIncludeViewParams(),
+                        navigationCase.getFragment());
                 
                 // The spec doesn't say anything about how to handle redirect but it is
                 // better to apply the transition here where we have already calculated the
@@ -783,7 +784,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 }
                 if (outcomeToGo != null && navigationCase == null) // Apply implicit navigation rules over outcomeToGo
                 {
-                    navigationCase = getOutcomeNavigationCase (facesContext, actionToGo, outcomeToGo);
+                    navigationCase = getOutcomeNavigationCase(facesContext, actionToGo, outcomeToGo);
                 }
             }
             if (startFlowId != null)
@@ -795,7 +796,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         {
             //if outcome is null, we don't check outcome based nav cases
             //otherwise, if navgiationCase is still null, check outcome-based nav cases
-            navigationCase = getOutcomeNavigationCase (facesContext, fromAction, outcome);
+            navigationCase = getOutcomeNavigationCase(facesContext, fromAction, outcome);
         }
         if (outcome != null && navigationCase == null && !facesContext.isProjectStage(ProjectStage.Production))
         {
@@ -1004,20 +1005,29 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
     {
         String implicitViewId = null;
         boolean includeViewParams = false;
-        int index;
+        int questionMarkPos;
         boolean isRedirect = false;
         String queryString = null;
+        String fragment = null;
+        int fragmentPos;
         NavigationCase result = null;
         String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
         StringBuilder viewIdToTest = SharedStringBuilder.get(facesContext, OUTCOME_NAVIGATION_SB);
         viewIdToTest.append(outcome);
-        
-        // If viewIdToTest contains a query string, remove it and set queryString with that value.
-        index = viewIdToTest.indexOf("?");
-        if (index != -1)
+
+        fragmentPos = viewIdToTest.lastIndexOf("#");
+        if (fragmentPos != -1)
         {
-            queryString = viewIdToTest.substring(index + 1);
-            viewIdToTest.setLength(index);
+            fragment = viewIdToTest.substring(fragmentPos + 1);
+            viewIdToTest.setLength(fragmentPos);
+        }
+
+        // If viewIdToTest contains a query string, remove it and set queryString with that value.
+        questionMarkPos = viewIdToTest.indexOf("?");
+        if (questionMarkPos != -1)
+        {
+            queryString = viewIdToTest.substring(questionMarkPos + 1);
+            viewIdToTest.setLength(questionMarkPos);
             
             // If queryString contains "faces-redirect=true", set isRedirect to true.
             if (queryString.contains("faces-redirect=true"))
@@ -1035,15 +1045,15 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         }
         
         // If viewIdToTest does not have a "file extension", use the one from the current viewId.
-        index = viewIdToTest.indexOf(".");
-        if (index == -1)
+        questionMarkPos = viewIdToTest.indexOf(".");
+        if (questionMarkPos == -1)
         {
             if (viewId != null)
             {
-                index = viewId.lastIndexOf('.');
-                if (index != -1)
+                questionMarkPos = viewId.lastIndexOf('.');
+                if (questionMarkPos != -1)
                 {
-                    viewIdToTest.append(viewId.substring (index));
+                    viewIdToTest.append(viewId.substring (questionMarkPos));
                 }
             }
             else
@@ -1059,10 +1069,10 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 String tempViewId = getViewIdSupport().calculateViewId(facesContext);
                 if (tempViewId != null)
                 {
-                    index = tempViewId.lastIndexOf('.');
-                    if(index != -1)
+                    questionMarkPos = tempViewId.lastIndexOf('.');
+                    if(questionMarkPos != -1)
                     {
-                        viewIdToTest.append(tempViewId.substring(index));
+                        viewIdToTest.append(tempViewId.substring(questionMarkPos));
                     }
                 }
             }
@@ -1082,19 +1092,19 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         } 
         if (!startWithSlash) 
         {
-            index = -1;
+            questionMarkPos = -1;
             if (viewId != null)
             {
-               index = viewId.lastIndexOf('/');
+               questionMarkPos = viewId.lastIndexOf('/');
             }
             
-            if (index == -1)
+            if (questionMarkPos == -1)
             {
                 viewIdToTest.insert(0, '/');
             }
             else
             {
-                viewIdToTest.insert(0, viewId, 0, index + 1);
+                viewIdToTest.insert(0, viewId, 0, questionMarkPos + 1);
             }
         }
         
@@ -1160,7 +1170,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             }
             
             // Finally, create the NavigationCase.
-            result = new NavigationCase(viewId, fromAction, outcome, null, implicitViewId, params, isRedirect,
+            result = new NavigationCase(viewId, fromAction, outcome, null, implicitViewId, params, fragment, isRedirect,
                     includeViewParams);
         }
 

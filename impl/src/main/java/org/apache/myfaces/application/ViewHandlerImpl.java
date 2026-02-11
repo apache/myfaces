@@ -132,7 +132,14 @@ public class ViewHandlerImpl extends ViewHandler
 
     @Override
     public String getBookmarkableURL(FacesContext context, String viewId,
-            Map<String, List<String>> parameters, boolean includeViewParams)
+                                     Map<String, List<String>> parameters, boolean includeViewParams)
+    {
+        return getBookmarkableURL(context, viewId, parameters, includeViewParams, null);
+    }
+
+    @Override
+    public String getBookmarkableURL(FacesContext context, String viewId,
+            Map<String, List<String>> parameters, boolean includeViewParams, String fragment)
     {
         Map<String, List<String>> viewParameters;
         if (includeViewParams)
@@ -146,16 +153,27 @@ public class ViewHandlerImpl extends ViewHandler
         
         // note that we cannot use this.getActionURL(), because this will
         // cause problems if the ViewHandler is wrapped
-        String actionEncodedViewId = getViewHandler(context).getActionURL(context, viewId);
-        
+        String baseUrl = getViewHandler(context).getActionURL(context, viewId);
+        if (fragment != null)
+        {
+            baseUrl = baseUrl + "#" + fragment;
+        }
+
         ExternalContext externalContext = context.getExternalContext();
-        String bookmarkEncodedURL = externalContext.encodeBookmarkableURL(actionEncodedViewId, viewParameters);
+        String bookmarkEncodedURL = externalContext.encodeBookmarkableURL(baseUrl, viewParameters);
         return externalContext.encodeActionURL(bookmarkEncodedURL);
     }
 
     @Override
     public String getRedirectURL(FacesContext context, String viewId,
-            Map<String, List<String>> parameters, boolean includeViewParams)
+                                 Map<String, List<String>> parameters, boolean includeViewParams)
+    {
+        return getRedirectURL(context, viewId, parameters, includeViewParams, null);
+    }
+
+    @Override
+    public String getRedirectURL(FacesContext context, String viewId,
+            Map<String, List<String>> parameters, boolean includeViewParams, String fragment)
     {
         Map<String, List<String>> viewParameters;
         if (includeViewParams)
@@ -169,10 +187,14 @@ public class ViewHandlerImpl extends ViewHandler
         
         // note that we cannot use this.getActionURL(), because this will
         // cause problems if the ViewHandler is wrapped
-        String actionEncodedViewId = getViewHandler(context).getActionURL(context, viewId);
-        
+        String baseUrl = getViewHandler(context).getActionURL(context, viewId);
+        if (fragment != null)
+        {
+            baseUrl = baseUrl + "#" + fragment;
+        }
+
         ExternalContext externalContext = context.getExternalContext();
-        String redirectEncodedURL = externalContext.encodeRedirectURL(actionEncodedViewId, viewParameters);
+        String redirectEncodedURL = externalContext.encodeRedirectURL(baseUrl, viewParameters);
         return externalContext.encodeActionURL(redirectEncodedURL);
     }
 
