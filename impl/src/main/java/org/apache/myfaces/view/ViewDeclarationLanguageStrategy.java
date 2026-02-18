@@ -24,7 +24,7 @@ import jakarta.faces.view.ViewDeclarationLanguage;
  * This class represents a supported {@link ViewDeclarationLanguage} in the application. Notably,
  * the default ViewDeclarationLanguageFactory maintains an ordered list of supported languages for 
  * the purpose of determining which one to use for a given view id by calling the {@link #handles} 
- * method of each ofthe registered support and using the first match.
+ * method of each of the registered support and using the first match.
  * 
  * @author Simon Lessard (latest modification by $Author$)
  * @version $Revision$ $Date$

@@ -27,7 +27,7 @@ import {_global$} from "./Global";
 /**
  * generic crypto interface
  * to encrypt messages before they are sent
- * to the message bus oder the underlying bus system
+ * to the message bus over the underlying bus system
  *
  * The idea is to make it as easy as possible, you can use for instance crypto js to
  * handle everything

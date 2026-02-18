@@ -342,7 +342,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 }
             }
     
-            // Now Look throught facets on this UIComponent
+            // Now Look through facets on this UIComponent
             if (this.getFacetCount() > 0)
             {
                 for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();)
