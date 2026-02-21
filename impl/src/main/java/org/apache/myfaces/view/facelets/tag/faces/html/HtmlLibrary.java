@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.faces.html;
 
+import java.util.Set;
+
 /**
  * @author Jacob Hookom
  * @version $Id$
@@ -27,6 +29,7 @@ public final class HtmlLibrary extends AbstractHtmlLibrary
     public final static String NAMESPACE = "jakarta.faces.html";
     public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsf/html";
     public final static String SUN_NAMESPACE = "http://java.sun.com/jsf/html";
+    public final static Set<String> NAMESPACES = Set.of(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
 
     public final static HtmlLibrary INSTANCE = new HtmlLibrary();
 

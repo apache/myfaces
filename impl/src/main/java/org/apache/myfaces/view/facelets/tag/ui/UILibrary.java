@@ -21,6 +21,8 @@ package org.apache.myfaces.view.facelets.tag.ui;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
+import java.util.Set;
+
 /**
  * NOTE: This implementation is provided for compatibility reasons and
  * it is considered faulty. It is enabled using
@@ -35,6 +37,7 @@ public final class UILibrary extends AbstractTagLibrary
     public final static String NAMESPACE = "jakarta.faces.facelets";
     public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsf/facelets";
     public final static String SUN_NAMESPACE = "http://java.sun.com/jsf/facelets";
+    public final static Set<String> NAMESPACES = Set.of(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
 
     public final static UILibrary INSTANCE = new UILibrary();
 

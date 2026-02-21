@@ -20,6 +20,8 @@ package org.apache.myfaces.view.facelets.tag.faces;
 
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
+import java.util.Set;
+
 /**
  *
  * @author Leonardo Uribe
@@ -29,6 +31,8 @@ public final class JsfLibrary extends AbstractTagLibrary
     public final static String NAMESPACE = "jakarta.faces";
     public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsf";
     public final static String SUN_NAMESPACE = "http://java.sun.com/jsf";
+    public final static String[] NAMESPACES = new String[] {NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE};
+    public final static Set<String> NAMESPACES_SET = Set.of(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
 
     public final static JsfLibrary INSTANCE = new JsfLibrary();
 

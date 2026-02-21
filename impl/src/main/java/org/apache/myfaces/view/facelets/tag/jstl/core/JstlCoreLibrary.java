@@ -20,6 +20,8 @@ package org.apache.myfaces.view.facelets.tag.jstl.core;
 
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
+import java.util.Set;
+
 /**
  * @author Jacob Hookom
  * @version $Id$
@@ -29,6 +31,7 @@ public final class JstlCoreLibrary extends AbstractTagLibrary
     public final static String NAMESPACE = "jakarta.tags.core";
     public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsp/jstl/core";
     public final static String SUN_NAMESPACE = "http://java.sun.com/jsp/jstl/core";
+    public final static Set<String> NAMESPACES = Set.of(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
 
     // This namespace was used in the early stages of Faces 2.0 development, but later
     // it was fixed to use the same syntax for jsp. But some applications still

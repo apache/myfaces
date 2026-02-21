@@ -424,6 +424,13 @@ final class CompilationManager
             log.fine("Namespace Pushed " + prefix + ": " + uri);
         }
 
+        var replacement = DeprecatedNamespacesChecker.shouldWarnAboutForDeprecatedNamespace(uri);
+        if (replacement != null && log.isLoggable(Level.WARNING))
+        {
+            log.warning("The namespace '" + uri + "' is DEPRECATED and will be removed in a future version of"
+                    + " Jakarta Faces. Applications should migrate to '" + replacement + "' instead.");
+        }
+
         this.namespaceManager.pushNamespace(prefix, uri);
         NamespaceUnit unit;
         if (this.currentUnit() instanceof NamespaceUnit)

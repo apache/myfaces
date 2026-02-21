@@ -38,6 +38,8 @@ import org.apache.myfaces.component.validate.ValidateWholeBeanComponent;
 
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
+import java.util.Set;
+
 /**
  * For Tag details, see Faces Core <a target="_new"
  * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/tld-summary.html">taglib documentation</a>.
@@ -50,6 +52,7 @@ public final class CoreLibrary extends AbstractTagLibrary
     public final static String NAMESPACE = "jakarta.faces.core";
     public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsf/core";
     public final static String SUN_NAMESPACE = "http://java.sun.com/jsf/core";
+    public final static Set<String> NAMESPACES = Set.of(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
 
     public final static CoreLibrary INSTANCE = new CoreLibrary();
 

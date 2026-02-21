@@ -20,6 +20,8 @@ package org.apache.myfaces.view.facelets.tag.composite;
 
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
+import java.util.Set;
+
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -29,7 +31,8 @@ public class CompositeLibrary extends AbstractTagLibrary
     public final static String NAMESPACE = "jakarta.faces.composite";
     public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsf/composite";
     public final static String SUN_NAMESPACE = "http://java.sun.com/jsf/composite";
-    
+    public final static Set<String> NAMESPACES = Set.of(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
+
     public CompositeLibrary()
     {
         super(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);

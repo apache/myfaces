@@ -20,6 +20,8 @@ package org.apache.myfaces.view.facelets.tag.faces;
 
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
+import java.util.Set;
+
 /**
  * Dummy library, so passthrough namespace can be recognized by facelet compiler.
  * 
@@ -33,6 +35,7 @@ public class PassThroughLibrary extends AbstractTagLibrary
     public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsf/passthrough";
     public final static String SUN_NAMESPACE = "http://java.sun.com/jsf/passthrough";
     public final static String[] NAMESPACES = new String[] {NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE};
+    public final static Set<String> NAMESPACES_SET = Set.of(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
 
     public final static PassThroughLibrary INSTANCE = new PassThroughLibrary();
     

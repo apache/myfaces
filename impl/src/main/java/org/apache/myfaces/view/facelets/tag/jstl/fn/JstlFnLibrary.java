@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.view.facelets.TagConfig;
@@ -40,6 +41,7 @@ public class JstlFnLibrary implements TagLibrary
     public final static String NAMESPACE = "jakarta.tags.functions";
     public final static String JCP_NAMESPACE = "http://xmlns.jcp.org/jsp/jstl/functions";
     public final static String SUN_NAMESPACE = "http://java.sun.com/jsp/jstl/functions";
+    public final static Set<String> NAMESPACES = Set.of(NAMESPACE, JCP_NAMESPACE, SUN_NAMESPACE);
 
     private final Map<String, Method> fns = new HashMap<>();
 
