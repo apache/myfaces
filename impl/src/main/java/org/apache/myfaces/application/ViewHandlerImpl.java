@@ -134,12 +134,12 @@ public class ViewHandlerImpl extends ViewHandler
     public String getBookmarkableURL(FacesContext context, String viewId,
                                      Map<String, List<String>> parameters, boolean includeViewParams)
     {
-        return getBookmarkableURL(context, viewId, parameters, includeViewParams, null);
+        return getBookmarkableURL(context, viewId, parameters, null, includeViewParams);
     }
 
     @Override
     public String getBookmarkableURL(FacesContext context, String viewId,
-            Map<String, List<String>> parameters, boolean includeViewParams, String fragment)
+            Map<String, List<String>> parameters, String fragment, boolean includeViewParams)
     {
         Map<String, List<String>> viewParameters;
         if (includeViewParams)
@@ -168,12 +168,12 @@ public class ViewHandlerImpl extends ViewHandler
     public String getRedirectURL(FacesContext context, String viewId,
                                  Map<String, List<String>> parameters, boolean includeViewParams)
     {
-        return getRedirectURL(context, viewId, parameters, includeViewParams, null);
+        return getRedirectURL(context, viewId, parameters, null, includeViewParams);
     }
 
     @Override
     public String getRedirectURL(FacesContext context, String viewId,
-            Map<String, List<String>> parameters, boolean includeViewParams, String fragment)
+            Map<String, List<String>> parameters, String fragment, boolean includeViewParams)
     {
         Map<String, List<String>> viewParameters;
         if (includeViewParams)

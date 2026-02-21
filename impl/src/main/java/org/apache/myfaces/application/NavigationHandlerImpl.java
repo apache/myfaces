@@ -225,8 +225,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 String redirectPath = viewHandler.getRedirectURL(
                         facesContext, toViewId, 
                         NavigationUtils.getEvaluatedNavigationParameters(facesContext, navigationCaseParameters),
-                        navigationCase.isIncludeViewParams(),
-                        navigationCase.getFragment());
+                        navigationCase.getFragment(),
+                        navigationCase.isIncludeViewParams());
                 
                 // The spec doesn't say anything about how to handle redirect but it is
                 // better to apply the transition here where we have already calculated the

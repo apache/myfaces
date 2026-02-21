@@ -241,10 +241,11 @@ public abstract class ViewHandler
      * 
      * @since 2.0
      */
+    @Deprecated
     public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
                                      boolean includeViewParams)
     {
-        return getBookmarkableURL(context, viewId, parameters, includeViewParams, null);
+        return getBookmarkableURL(context, viewId, parameters, null, includeViewParams);
     }
 
     /**
@@ -259,7 +260,7 @@ public abstract class ViewHandler
      * @since 5.0
      */
     public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
-                                     boolean includeViewParams, String fragment)
+                                     String fragment, boolean includeViewParams)
     {
         return getActionURL(context, viewId);
     }
@@ -303,10 +304,11 @@ public abstract class ViewHandler
      * 
      * @since 2.0
      */
+    @Deprecated
     public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
                                  boolean includeViewParams)
     {
-        return getRedirectURL(context, viewId, parameters, includeViewParams, null);
+        return getRedirectURL(context, viewId, parameters, null, includeViewParams);
     }
 
     /**
@@ -321,7 +323,7 @@ public abstract class ViewHandler
      * @since 5.0
      */
     public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
-                                 boolean includeViewParams, String fragment)
+                                 String fragment, boolean includeViewParams)
     {
         return getActionURL(context, viewId);
     }

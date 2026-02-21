@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
@@ -47,8 +48,9 @@ public class NavigationCase
     private ValueExpression _conditionExpression;
     private ValueExpression _toViewIdExpression;
 
+    @Deprecated
     public NavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId,
-            Map<String,List<String>> parameters, boolean redirect, boolean includeViewParams)
+                          Map<String,List<String>> parameters, boolean redirect, boolean includeViewParams)
     {
         _condition = condition;
         _fromViewId = fromViewId;
@@ -106,9 +108,10 @@ public class NavigationCase
         else if (o instanceof NavigationCase c)
         {
 
-            return equals(_fromViewId, c._fromViewId) && equals(_fromAction, c._fromAction)
-                    && equals(_fromOutcome, c._fromOutcome) && equals(_condition, c._condition)
-                    && equals(_toViewId, c._toViewId) && _redirect == c._redirect
+            return Objects.equals(_fromViewId, c._fromViewId) && Objects.equals(_fromAction, c._fromAction)
+                    && Objects.equals(_fromOutcome, c._fromOutcome) && Objects.equals(_condition, c._condition)
+                    && Objects.equals(_toViewId, c._toViewId) && _redirect == c._redirect
+                    && Objects.equals(_fragment, c._fragment)
                     && _includeViewParams == c._includeViewParams;
         }
         else
@@ -116,16 +119,11 @@ public class NavigationCase
             return false;
         }
     }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode()
     {
-        return hash(_fromViewId) << 4 ^ hash(_fromAction) << 8 ^ hash(_fromOutcome) << 12 ^ hash(_condition) << 16
-                ^ hash(_toViewId) << 20 ^ hash(Boolean.valueOf(_redirect)) << 24
-                ^ hash(Boolean.valueOf(_includeViewParams));
+        return Objects.hash(_fromViewId, _fromAction, _fromOutcome, _condition, _toViewId, _redirect,
+                _includeViewParams, _fragment);
     }
 
     public URL getActionURL(FacesContext context) throws MalformedURLException
@@ -163,6 +161,11 @@ public class NavigationCase
         return _fromViewId;
     }
 
+    /**
+     *
+     * @return
+     * @since 5.0
+     */
     public String getFragment()
     {
         return _fragment;
@@ -285,7 +288,15 @@ public class NavigationCase
         builder.append("<to-view-id>");
         builder.append(_toViewId);
         builder.append("</to-view-id>\n");
-        
+
+        if (_fragment != null)
+        {
+            builder.append("  ");
+            builder.append("<fragment>");
+            builder.append(_fragment);
+            builder.append("</fragment>\n");
+        }
+
         if (_toFlowDocumentId != null)
         {
             builder.append("  ");
@@ -354,22 +365,5 @@ public class NavigationCase
         }
 
         return _toViewIdExpression;
-    }
-
-    private boolean equals(Object o1, Object o2)
-    {
-        if (o1 == null)
-        {
-            return o2 == null;
-        }
-        else
-        {
-            return o1.equals(o2);
-        }
-    }
-
-    private int hash(Object o)
-    {
-        return o == null ? 0 : o.hashCode();
     }
 }

@@ -146,7 +146,13 @@ public abstract class NavigationCaseWrapper extends NavigationCase
     {
         return getWrapped().toString();
     }
-    
+
+    @Override
+    public String getFragment()
+    {
+        return getWrapped().getFragment();
+    }
+
     @Override
     public NavigationCase getWrapped()
     {
