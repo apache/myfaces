@@ -32,7 +32,7 @@
     <description>
         The private implementation classes of the Apache MyFaces Core 5.0 Implementation
     </description>
-    <url>https://myfaces.apache.org/#/core40</url>
+    <url>https://myfaces.apache.org/#/core50</url>
 
     <properties>
         <openwebbeans.version>4.0.1</openwebbeans.version>

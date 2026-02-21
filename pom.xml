@@ -250,7 +250,7 @@
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <siteModule.path>core40/module</siteModule.path>
+        <siteModule.path>core50/module</siteModule.path>
         <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
         <siteContent.path>${user.home}/myfaces-site/site/${siteModule.path}</siteContent.path>
         <!-- it's a default location for performance reason (not checkout the content all the time)
