@@ -369,30 +369,34 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
 
     private processRequestErrors(resolve: Consumer<any>): boolean {
         const responseXML = new XMLQuery(this.xhrObject?.responseXML);
+        const responseText = this.xhrObject?.responseText ?? "";
         const responseCode = this.xhrObject?.status ?? -1;
         if(responseXML.isXMLParserError()) {
-            // invalid response
+            // Firefox: malformed XML produces a Document with <parsererror>
             const errorName = "Invalid Response";
             const errorMessage = "The response xml is invalid";
-
+            this.handleGenericResponseError(errorName, errorMessage, MALFORMEDXML, resolve);
+            return true;
+        } else if(responseXML.isAbsent() && responseText.trim().length > 0) {
+            // Chrome: responseXML is null for unparseable XML, but responseText has content
+            const errorName = "Invalid Response";
+            const errorMessage = "The response xml is invalid";
             this.handleGenericResponseError(errorName, errorMessage, MALFORMEDXML, resolve);
             return true;
         } else if(responseXML.isAbsent()) {
-            // empty response
+            // Truly empty response
             const errorName = "Empty Response";
             const errorMessage = "The response has provided no data";
-
             this.handleGenericResponseError(errorName, errorMessage, EMPTY_RESPONSE, resolve);
             return true;
         } else if (responseCode >= 300  || responseCode < 200) {
-            // other server errors
-            // all errors from the server are resolved without interfering in the queue
             this.handleHttpError(resolve);
             return true;
         }
-        //additional errors are application errors and must be handled within the response
         return false;
     }
+
+
     private handleGenericResponseError(errorName: string, errorMessage: string, responseStatus: string, resolve: (s?: any) => void) {
         const errorData: ErrorData = new ErrorData(
             this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value,
