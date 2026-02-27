@@ -16,9 +16,9 @@
 
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { Config, Optional } from "mona-dish";
+import pkg from 'mona-dish';
+const { Config, Optional } = pkg;
 
-//TODO saveResolveTest
 describe('optional tests', () => {
     it('fromnullable null', () => {
         expect(Optional.fromNullable(null).isPresent()).to.be.false;
