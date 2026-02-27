@@ -22,7 +22,7 @@ import {Es2019Array} from "./Es2019Array";
  * Lang helpers crossported from the apache myfaces project
  */
 export module Lang {
-    
+
 
     //should be in lang, but for now here to avoid recursive imports, not sure if typescript still has a problem with those
     /**
