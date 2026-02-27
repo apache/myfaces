@@ -248,12 +248,12 @@ describe('Tests of the various aspects of the response protocol functionality', 
         (global as any)["MF_23"] = true;
         // language=XML
         this.respond(`<?xml version="1.0" encoding="UTF-8"?>
-            <partial-response id="j_id__v_0">
-                <changes>
-                    <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
-                    <update id="j_id__v_0:javax.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]></update>
-                </changes>
-            </partial-response>`);
+        <partial-response id="j_id__v_0">
+            <changes>
+                <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
+                <update id="j_id__v_0:javax.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]></update>
+            </changes>
+        </partial-response>`);
 
 
         expect(DQ$("[name*='javax.faces.ViewState']").isAbsent()).to.be.false;
@@ -283,14 +283,14 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
         // language=XML
         this.respond(`<?xml version="1.0" encoding="UTF-8"?>
-            <partial-response id="j_id__v_0">
-                <changes>
-                    <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
-                    <update id="j_id__v_0:javax.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]><!-- 
+        <partial-response id="j_id__v_0">
+            <changes>
+                <update id="updatePanel"><![CDATA[<span id="updatePanel">hello world</span>]]></update>
+                <update id="j_id__v_0:javax.faces.ViewState:1"><![CDATA[RTUyRDI0NzE4QzAxM0E5RDAwMDAwMDVD]]><!-- 
                         Some random junk which is sent by the server
                     --></update>
-                </changes>
-            </partial-response>`);
+            </changes>
+        </partial-response>`);
 
 
         expect(DQ$("[name*='javax.faces.ViewState']").isAbsent()).to.be.false;
@@ -378,9 +378,9 @@ describe('Tests of the various aspects of the response protocol functionality', 
         expect(DQ.querySelectorAll("body tobago-page tobago-sheet > style").nonce.value).to.be.eq("nonceValue");
     });
 
-    
+
     it("must pass named params properly (tobago testcase)", function(done) {
-            window.document.body.innerHTML = HTML_PREFIX_EMBEDDED_BODY;
+        window.document.body.innerHTML = HTML_PREFIX_EMBEDDED_BODY;
         try {
 
             let event = {
@@ -407,9 +407,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
         expect(requestBody.indexOf("javax.faces.behavior.event")).to.not.eq(-1);
         expect(requestBody.indexOf("javax.faces.behavior.event=change")).to.not.eq(-1);
         expect(requestBody.indexOf("page%3Ainput=input_value")).to.not.eq(-1);
-            done();
+        done();
 
     });
-
-
 });

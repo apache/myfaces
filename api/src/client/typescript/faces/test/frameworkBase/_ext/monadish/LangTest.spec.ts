@@ -16,10 +16,12 @@
 
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { Lang } from "mona-dish";
+import pkg from 'mona-dish';
+const { Lang } = pkg;
 
-const jsdom = require("jsdom");
+import jsdom from "jsdom";
 const { JSDOM } = jsdom;
+
 const dom = new JSDOM(`
     <!DOCTYPE html>
 <html lang="en">
