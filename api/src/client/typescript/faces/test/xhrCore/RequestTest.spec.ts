@@ -883,5 +883,38 @@ describe('Tests after core when it hits response', function () {
         }
     });
 
+    it('must handle Chrome-style null responseXML with non-empty responseText as malformed XML error', function (done) {
+        // Chrome sets responseXML=null for unparseable XML but still provides responseText,
+        // which is the code path added in processRequestErrors for Chrome compatibility.
+        // We simulate this by responding with a non-XML content type so responseXML stays null.
+        try {
+            let element = DomQuery.byId("input_2").getAsElem(0).value;
+            faces.ajax.request(element, null, {
+                execute: "input_1",
+                render: "@form",
+                params: {
+                    pass1: "pass1",
+                    pass2: "pass2",
+                },
+                onerror: (error: any) => {
+                    try {
+                        expect(error.type).to.eq("error");
+                        expect(error.status).to.eq("malformedXML");
+                        done();
+                    } catch (e) {
+                        done(e);
+                    }
+                }
+            });
+
+            let xhrReq = this.requests[0];
+            // Content-Type text/plain ensures responseXML is null while responseText is non-empty,
+            // matching Chrome's behavior when it encounters unparseable XML
+            xhrReq.respond(200, {'Content-Type': 'text/plain'}, "this is not valid xml content");
+        } catch (e) {
+            done(e);
+        }
+    });
+
 });
 
