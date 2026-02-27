@@ -109,48 +109,48 @@ enum BlockFilter {
  * however a dedicated api makes sense for readability reasons
  */
 export module Implementation {
-/*
- Small internal explanation, this code is optimized for readability
- and cuts off a ton of old legacy code.
- Aka older browsers are not supported anymore.
- We use a self written helper library to keep the number of external
- code dependencies down.
- The library is called mona-dish and started as a small sideproject of mine
- it provides following
+    /*
+     Small internal explanation, this code is optimized for readability
+     and cuts off a ton of old legacy code.
+     Aka older browsers are not supported anymore.
+     We use a self written helper library to keep the number of external
+     code dependencies down.
+     The library is called mona-dish and started as a small sideproject of mine
+     it provides following
 
- a) Monad like structures for querying because this keeps the code denser and adds abstractions
- that always was the strong point of jQuery, and it still is better in this regard than what ecmascript provides
+     a) Monad like structures for querying because this keeps the code denser and adds abstractions
+     that always was the strong point of jQuery, and it still is better in this regard than what ecmascript provides
 
- c) A neutral json like configuration which allows assignments of arbitrary values with reduce code which then can be
- transformed into different data representations
+     c) A neutral json like configuration which allows assignments of arbitrary values with reduce code which then can be
+     transformed into different data representations
 
- examples:
- internalCtx.assign(MYPARAM, CTX_PARAM_SRC_FRM_ID).value = form.id.value;
- passes a value into context.MYPARAM.CTX_PARAM_SRC_FRM_ID
+     examples:
+     internalCtx.assign(MYPARAM, CTX_PARAM_SRC_FRM_ID).value = form.id.value;
+     passes a value into context.MYPARAM.CTX_PARAM_SRC_FRM_ID
 
- basically an abbreviation for
+     basically an abbreviation for
 
- internalCtxt[MYPARAM] = internalCtxt?.[MYPARAM] ?  internalCtxt[MYPARAM] : {};
- internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] = internalCtxt?.[MYPARAM][CTX_PARAM_SRC_FRM_ID] ?  internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] : {};
- internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] = form.id.value;
-
-
- internalCtx.assign(condition, MYPARAM, CTX_PARAM_SRC_FRM_ID).value = form.id.value;
- passes a value into context.MYPARAM.CTX_PARAM_SRC_FRM_ID if condition === true otherwise it is ignored
-
- abbreviates:
- if(condition) {
-    internalCtxt[MYPARAM] = internalCtxt?.[MYPARAM] ?  internalCtxt[MYPARAM] : {};
-    internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] = internalCtxt?.[MYPARAM][CTX_PARAM_SRC_FRM_ID] ?  internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] : {};
-    internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] = form.id.value;
- }
+     internalCtxt[MYPARAM] = internalCtxt?.[MYPARAM] ?  internalCtxt[MYPARAM] : {};
+     internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] = internalCtxt?.[MYPARAM][CTX_PARAM_SRC_FRM_ID] ?  internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] : {};
+     internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] = form.id.value;
 
 
- d) Optional constructs, while under heavy debate we only use them lightly where the api requires it from mona-dish
+     internalCtx.assign(condition, MYPARAM, CTX_PARAM_SRC_FRM_ID).value = form.id.value;
+     passes a value into context.MYPARAM.CTX_PARAM_SRC_FRM_ID if condition === true otherwise it is ignored
 
- Note the inclusion of this library uses a reduced build which only includes the part of it, which we really use
+     abbreviates:
+     if(condition) {
+        internalCtxt[MYPARAM] = internalCtxt?.[MYPARAM] ?  internalCtxt[MYPARAM] : {};
+        internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] = internalCtxt?.[MYPARAM][CTX_PARAM_SRC_FRM_ID] ?  internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] : {};
+        internalCtxt[MYPARAM][CTX_PARAM_SRC_FRM_ID] = form.id.value;
+     }
 
- */
+
+     d) Optional constructs, while under heavy debate we only use them lightly where the api requires it from mona-dish
+
+     Note the inclusion of this library uses a reduced build which only includes the part of it, which we really use
+
+     */
 
     const trim = Lang.trim;
     const getMessage = ExtLang.getMessage;

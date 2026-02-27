@@ -147,7 +147,7 @@ describe('Tests for the MyFaces specific oam submit', function () {
             return false;
         };
         try {
-        myfaces.oam.submitForm("blarg", "bla");
+            myfaces.oam.submitForm("blarg", "bla");
         } catch(e) {
             done(e);
         }
