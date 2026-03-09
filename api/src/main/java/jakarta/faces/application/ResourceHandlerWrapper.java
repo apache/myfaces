@@ -160,4 +160,19 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler
     {
         return getWrapped().isResourceRendered(facesContext, resourceName, libraryName);
     }
+
+    /**
+     * <p class="changed_added_5_0">
+     * The default behavior of this method is to call
+     * {@link ResourceHandler#getCurrentNonce(FacesContext)} on the wrapped {@link ResourceHandler}
+     * object.
+     * </p>
+     *
+     * @since 5.0
+     */
+    @Override
+    public String getCurrentNonce(FacesContext context)
+    {
+        return getWrapped().getCurrentNonce(context);
+    }
 }

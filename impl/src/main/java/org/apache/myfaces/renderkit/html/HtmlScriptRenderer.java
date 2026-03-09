@@ -146,6 +146,7 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
                 ResponseWriter writer = facesContext.getResponseWriter();
                 writer.startElement(HTML.SCRIPT_ELEM, component);
                 HtmlRendererUtils.renderScriptType(facesContext, writer);
+                HtmlRendererUtils.renderNonce(facesContext, writer);
                 RendererUtils.renderChildren(facesContext, component);
                 writer.endElement(HTML.SCRIPT_ELEM);
             }
@@ -231,6 +232,7 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.startElement(HTML.SCRIPT_ELEM, component);
             HtmlRendererUtils.renderScriptType(facesContext, writer);
+            HtmlRendererUtils.renderNonce(facesContext, writer);
             String path = resource.getRequestPath();
             if (additionalQueryParams != null)
             {

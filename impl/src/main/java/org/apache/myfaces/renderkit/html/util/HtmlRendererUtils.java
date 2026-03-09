@@ -1801,4 +1801,13 @@ public final class HtmlRendererUtils
             writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
         }
     }
+
+    public static void renderNonce(FacesContext context, ResponseWriter writer) throws IOException
+    {
+        String nonce = context.getApplication().getResourceHandler().getCurrentNonce(context);
+        if (nonce != null)
+        {
+            writer.writeAttribute("nonce", nonce, "nonce");
+        }
+    }
 }

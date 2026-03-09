@@ -46,6 +46,7 @@ import jakarta.faces.FacesWrapper;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
@@ -217,6 +218,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private Set<String> fullStateSavingViewIds;
     private Map<String, List<String>> _contractMappings;
     private List<String> _prefixWildcardKeys;
+
+    private static final String NONCE_EXPRESSION = "#{nonce}";
+    private String cspHeader;
+    private boolean dynamicCspHeader;
 
     public FaceletViewDeclarationLanguage(FacesContext context)
     {
@@ -1771,6 +1776,13 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     //    extContext.getSession(true);
                     //}
 
+                    // Add CSP header if necessary
+                    String nonce = context.getApplication().getResourceHandler().getCurrentNonce(context);
+                    if (nonce != null)
+                    {
+                        extContext.addResponseHeader("Content-Security-Policy", evaluateCspHeader(context, nonce));
+                    }
+
                     // render the view to the response
                     writer.startDocument();
 
@@ -2633,5 +2645,29 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         }
         return stream;
     }
-    
+
+    private String evaluateCspHeader(FacesContext context, String nonce)
+    {
+        if (cspHeader == null)
+        {
+            cspHeader = config.getCspHeader();
+
+            if (!cspHeader.contains(NONCE_EXPRESSION))
+            {
+                throw new IllegalArgumentException("The context parameter " + ResourceHandler.CSP_POLICY_PARAM_NAME
+                        + " must include the expression '" + NONCE_EXPRESSION + "'");
+            }
+
+            dynamicCspHeader = cspHeader.replace(NONCE_EXPRESSION, "").contains("#{");
+        }
+
+        var header = cspHeader.replace(NONCE_EXPRESSION, nonce);
+
+        if (dynamicCspHeader)
+        {
+            header = context.getApplication().evaluateExpressionGet(context, header, String.class);
+        }
+
+        return header;
+    }
 }

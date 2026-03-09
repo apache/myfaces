@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.context.ExceptionHandler;
@@ -879,6 +880,8 @@ public class MyfacesConfig
     private long faceletsRefreshPeriod = -1;
     private List<String> exceptionTypesToIgnoreInLogging = new ArrayList<>();
     private boolean disableOptionalResolver = DISABLE_OPTIONAL_EL_RESOLVER_DEFAULT;
+    private boolean cspEnabled = false;
+    private String cspHeader = null;
 
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1367,7 +1370,11 @@ public class MyfacesConfig
 
         cfg.disableOptionalResolver
                 = getBoolean(extCtx, DISABLE_OPTIONAL_EL_RESOLVER, DISABLE_OPTIONAL_EL_RESOLVER_DEFAULT);
-        
+
+        cfg.cspEnabled = getBoolean(extCtx, ResourceHandler.ENABLE_CSP_NONCE_PARAM_NAME, false);
+
+        cfg.cspHeader = getString(extCtx, ResourceHandler.CSP_POLICY_PARAM_NAME, ResourceHandler.DEFAULT_CSP_POLICY);
+
         return cfg;
     }
 
@@ -1841,6 +1848,16 @@ public class MyfacesConfig
     public boolean isOptionalELResolverDisabled()
     {
         return disableOptionalResolver;
+    }
+
+    public boolean isCspEnabled()
+    {
+        return cspEnabled;
+    }
+
+    public String getCspHeader()
+    {
+        return cspHeader;
     }
 }
 

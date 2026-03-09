@@ -57,7 +57,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -70,6 +72,7 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.StringTokenizer;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -98,13 +101,16 @@ public class ResourceHandlerImpl extends ResourceHandler
     
     private static final String[] FACELETS_VIEW_MAPPINGS_PARAM = {ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME,
             "facelets.VIEW_MAPPINGS"};
-    
+
+    private static final String CURRENT_NONCE = ResourceHandlerImpl.class.getName() + ".currentNonce";
+
     private ResourceHandlerSupport _resourceHandlerSupport;
     private ResourceHandlerCache _resourceHandlerCache;
     private Boolean _allowSlashLibraryName;
     private int _resourceBufferSize = -1;
     private String[] _excludedResourceExtensions;
     private Set<String> _viewSuffixes = null;
+    private Boolean cspEnabled = null;
 
     @Override
     public Resource createResource(String resourceName)
@@ -1896,5 +1902,31 @@ public class ResourceHandlerImpl extends ResourceHandler
     {       
         StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER, 40);
         return sb.append(libraryName).append('/').append(resourceName).toString();
+    }
+
+    @Override
+    public String getCurrentNonce(FacesContext context)
+    {
+        if (this.cspEnabled == null)
+        {
+            this.cspEnabled = MyfacesConfig.getCurrentInstance(context).isCspEnabled();
+        }
+
+        if (cspEnabled)
+        {
+            var viewMap = context.getViewRoot().getViewMap(true);
+            var nonce = (String) viewMap.get(CURRENT_NONCE);
+
+            if (nonce == null)
+            {
+                nonce = Base64.getEncoder().encodeToString(
+                        UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
+                viewMap.put(CURRENT_NONCE, nonce);
+            }
+
+            return nonce;
+        }
+
+        return null;
     }
 }

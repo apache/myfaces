@@ -206,6 +206,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
 
         writer.startElement(HTML.SCRIPT_ELEM, component);
         HtmlRendererUtils.renderScriptType(facesContext, writer);
+        HtmlRendererUtils.renderNonce(facesContext, writer);
 
         StringBuilder sb = new StringBuilder(50);
         sb.append("faces.push.init(");
