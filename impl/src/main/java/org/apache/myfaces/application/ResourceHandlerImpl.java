@@ -57,7 +57,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
-import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -72,7 +72,6 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.StringTokenizer;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -111,6 +110,7 @@ public class ResourceHandlerImpl extends ResourceHandler
     private String[] _excludedResourceExtensions;
     private Set<String> _viewSuffixes = null;
     private Boolean cspEnabled = null;
+    private SecureRandom secureRandom;
 
     @Override
     public Resource createResource(String resourceName)
@@ -1910,23 +1910,42 @@ public class ResourceHandlerImpl extends ResourceHandler
         if (this.cspEnabled == null)
         {
             this.cspEnabled = MyfacesConfig.getCurrentInstance(context).isCspEnabled();
+            this.secureRandom = new SecureRandom();
+            secureRandom.nextBytes(new byte[1]);
         }
 
-        if (cspEnabled)
+        if (!cspEnabled)
         {
-            var viewMap = context.getViewRoot().getViewMap(true);
-            var nonce = (String) viewMap.get(CURRENT_NONCE);
+            return null;
+        }
+
+        String nonce = null;
+
+        var viewMap = context.getViewRoot().getViewMap(false);
+        if (viewMap != null)
+        {
+            nonce = (String) viewMap.get(CURRENT_NONCE);
+        }
+
+        if (nonce == null && !context.getPartialViewContext().isPartialRequest())
+        {
+            nonce = (String) context.getExternalContext().getRequestMap().get(CURRENT_NONCE);
 
             if (nonce == null)
             {
-                nonce = Base64.getEncoder().encodeToString(
-                        UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
-                viewMap.put(CURRENT_NONCE, nonce);
+                byte[] bytes = new byte[32];
+                secureRandom.nextBytes(bytes);
+                nonce = Base64.getEncoder().encodeToString(bytes);
+
+                context.getExternalContext().getRequestMap().put(CURRENT_NONCE, nonce);
             }
 
-            return nonce;
+            if (viewMap != null && nonce != null)
+            {
+                viewMap.put(CURRENT_NONCE, nonce);
+            }
         }
 
-        return null;
+        return nonce;
     }
 }
