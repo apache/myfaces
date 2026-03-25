@@ -97,7 +97,10 @@ public class ResourceHandlerImpl extends ResourceHandler
     public final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
 
     private static final String SHARED_STRING_BUILDER = ResourceHandlerImpl.class.getName() + ".SHARED_STRING_BUILDER";
-    
+
+    private static final String PROGRAMMATIC_VIEW_IDS_CACHE_KEY =
+            ResourceHandlerImpl.class.getName() + ".PROGRAMMATIC_VIEW_IDS";
+
     private static final String[] FACELETS_VIEW_MAPPINGS_PARAM = {ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME,
             "facelets.VIEW_MAPPINGS"};
 
@@ -1727,32 +1730,58 @@ public class ResourceHandlerImpl extends ResourceHandler
             this._viewSuffixes = loadSuffixes(facesContext.getExternalContext());
         }
 
-        Iterator it = new FilterInvalidSuffixViewResourceIterator(new ViewResourceIterator(facesContext, 
+        Iterator<String> resourceIt = new FilterInvalidSuffixViewResourceIterator(
+                new ViewResourceIterator(facesContext,
                     getResourceHandlerSupport(), localePrefix, contracts,
                     contractPreferred, path, maxDepth, options), facesContext, _viewSuffixes);
 
-        return Stream.concat(StreamSupport.stream(Spliterators.spliteratorUnknownSize(it,Spliterator.DISTINCT),
-                                                    false), getProgrammaticViewIds(facesContext));
+        Stream<String> resourceStream = StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(resourceIt, Spliterator.DISTINCT), false);
+        return Stream.concat(resourceStream, resolveProgrammaticViewIds(facesContext).stream());
     }
 
-    private Stream<String> getProgrammaticViewIds(FacesContext facesContext)
+    /**
+     * CDI {@code @View} IDs; cached in the application map for the application lifetime.
+     */
+    @SuppressWarnings("unchecked")
+    private List<String> resolveProgrammaticViewIds(FacesContext facesContext)
     {
-        ArrayList<String> views = new ArrayList<String>();
-        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
-        if (beanManager != null)
+        Map<String, Object> appMap = facesContext.getExternalContext().getApplicationMap();
+        List<String> cached = (List<String>) appMap.get(PROGRAMMATIC_VIEW_IDS_CACHE_KEY);
+        if (cached != null)
         {
-            for (Bean<?> bean : beanManager.getBeans(Object.class, Any.Literal.INSTANCE))
+            return cached;
+        }
+        synchronized (appMap)
+        {
+            cached = (List<String>) appMap.get(PROGRAMMATIC_VIEW_IDS_CACHE_KEY);
+            if (cached != null)
             {
-                for (Annotation qualifier : bean.getQualifiers())
+                return cached;
+            }
+            BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
+            if (beanManager == null)
+            {
+                cached = List.of();
+            }
+            else
+            {
+                ArrayList<String> views = new ArrayList<>();
+                for (Bean<?> bean : beanManager.getBeans(Object.class, Any.Literal.INSTANCE))
                 {
-                    if (qualifier instanceof View view)
+                    for (Annotation qualifier : bean.getQualifiers())
                     {
-                        views.add(view.value());
+                        if (qualifier instanceof View view)
+                        {
+                            views.add(view.value());
+                        }
                     }
                 }
+                cached = List.copyOf(views);
             }
+            appMap.put(PROGRAMMATIC_VIEW_IDS_CACHE_KEY, cached);
+            return cached;
         }
-        return views.stream();
     }
     
     private Set<String> loadSuffixes(ExternalContext context)

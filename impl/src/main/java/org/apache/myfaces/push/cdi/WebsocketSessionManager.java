@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +39,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.websocket.CloseReason;
@@ -164,12 +162,16 @@ public class WebsocketSessionManager
                     Collection<Reference<Session>> referenceCollection = entry.getValue();
                     if (referenceCollection != null)
                     {
-                        Collection<Reference<Session>> newReferenceCollection =
-                                referenceCollection
-                                        .stream()
-                                        .filter(p -> p.get() != null && p.get().isOpen())
-                                        .distinct()
-                                        .collect(Collectors.toCollection(ConcurrentLinkedQueue::new));
+                        ConcurrentLinkedQueue<Reference<Session>> newReferenceCollection =
+                                new ConcurrentLinkedQueue<>();
+                        for (Reference<Session> p : referenceCollection)
+                        {
+                            Session s = p.get();
+                            if (s != null && s.isOpen())
+                            {
+                                newReferenceCollection.add(p);
+                            }
+                        }
                         newSessionMap.put(entry.getKey(), newReferenceCollection);
                     }
                 }
@@ -204,14 +206,14 @@ public class WebsocketSessionManager
             sessions = sessionMap.get(channelToken);
         }
 
-        Optional<Reference<Session>> referenceOptional =
-                sessions.stream().filter(p -> Objects.equals(p.get(), session)).findFirst();
-
-        if (!referenceOptional.isPresent())
+        for (Reference<Session> p : sessions)
         {
-            return sessions.add(new SoftReference<>(session));
+            if (Objects.equals(p.get(), session))
+            {
+                return true;
+            }
         }
-        return true;
+        return sessions.add(new SoftReference<>(session));
     }
 
     /**
@@ -231,9 +233,22 @@ public class WebsocketSessionManager
                     "session.id = {1}", new Object[] {channelToken ,session.getId()});
         }
         Collection<Reference<Session>> collection = getSessionMap().get(channelToken);
-        Optional<Reference<Session>> referenceOptional =
-                collection.stream().filter(p -> Objects.equals(p.get(), session)).findFirst();
-        referenceOptional.ifPresent(collection::remove);
+        if (collection != null)
+        {
+            Reference<Session> toRemove = null;
+            for (Reference<Session> p : collection)
+            {
+                if (Objects.equals(p.get(), session))
+                {
+                    toRemove = p;
+                    break;
+                }
+            }
+            if (toRemove != null)
+            {
+                collection.remove(toRemove);
+            }
+        }
     }
 
     /**
@@ -280,7 +295,7 @@ public class WebsocketSessionManager
         {
             String json = Json.encode(message);
 
-            sessions.forEach(sessionRef ->
+            for (Reference<Session> sessionRef : sessions)
             {
                 if (sessionRef != null && sessionRef.get() != null)
                 {
@@ -297,7 +312,7 @@ public class WebsocketSessionManager
                         removeSession(channelToken, session);
                     }
                 }
-            });
+            }
             return results;
         }
         else
@@ -369,8 +384,12 @@ public class WebsocketSessionManager
             {
 
                 Collection<Reference<Session>> collectionRef = map.values().iterator().next();
-                collectionRef.stream().filter(ref -> ref != null).forEach(ref ->
+                for (Reference<Session> ref : collectionRef)
                 {
+                    if (ref == null)
+                    {
+                        continue;
+                    }
                     Session session = ref.get();
                     if (session != null)
                     {
@@ -389,7 +408,7 @@ public class WebsocketSessionManager
                         // Remove one element from the queue
                         queue.poll();
                     }
-                });
+                }
             }
         }
     }

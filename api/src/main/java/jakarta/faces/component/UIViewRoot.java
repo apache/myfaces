@@ -28,7 +28,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
@@ -1814,14 +1813,16 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public Map<PhaseId, List<FacesEvent>> getQueuedEvents()
     {
-        if (_events == null) {
+        if (_events == null || _events.isEmpty())
+        {
             return Collections.emptyMap();
         }
-
-        return _events.entrySet().stream().collect(
-                Collectors.toUnmodifiableMap(
-                        Map.Entry::getKey,
-                        entry -> Collections.unmodifiableList(entry.getValue())));
+        EnumMap<PhaseId, List<FacesEvent>> view = new EnumMap<>(PhaseId.class);
+        for (Map.Entry<PhaseId, List<FacesEvent>> e : _events.entrySet())
+        {
+            view.put(e.getKey(), Collections.unmodifiableList(e.getValue()));
+        }
+        return Collections.unmodifiableMap(view);
     }
 
     /**

@@ -78,6 +78,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -683,7 +684,8 @@ public abstract class AbstractMyFacesTestCase
             PhaseListenerManager phaseManager = (PhaseListenerManager) facesContext.getAttributes().get(PHASE_MANAGER_INSTANCE);
             if (phaseManager == null)
             {
-                phaseManager = new PhaseListenerManager(lifecycle, facesContext, lifecycleImpl.getPhaseListeners());
+                phaseManager = new PhaseListenerManager(lifecycle, facesContext,
+                        Arrays.asList(lifecycleImpl.getPhaseListeners()));
                 facesContext.getAttributes().put(PHASE_MANAGER_INSTANCE, phaseManager);
             }
 
@@ -875,7 +877,8 @@ public abstract class AbstractMyFacesTestCase
                 phaseManager = (PhaseListenerManager) facesContext.getAttributes().get(PHASE_MANAGER_INSTANCE);
                 if (phaseManager == null)
                 {
-                    phaseManager = new PhaseListenerManager(lifecycle, facesContext, lifecycleImpl.getPhaseListeners());
+                    phaseManager = new PhaseListenerManager(lifecycle, facesContext,
+                            Arrays.asList(lifecycleImpl.getPhaseListeners()));
                     facesContext.getAttributes().put(PHASE_MANAGER_INSTANCE, phaseManager);
                 }
 

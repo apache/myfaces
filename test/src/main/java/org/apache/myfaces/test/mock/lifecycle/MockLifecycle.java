@@ -44,7 +44,7 @@ public class MockLifecycle extends Lifecycle
     /**
      * <p>List of event listeners for this instance.</p>
      */
-    private List phaseListenerList = new ArrayList();
+    private final List<PhaseListener> phaseListenerList = new ArrayList<>();
     private PhaseExecutor[] lifecycleExecutors;
     private PhaseExecutor renderExecutor;
 
@@ -70,7 +70,7 @@ public class MockLifecycle extends Lifecycle
     @Override
     public void execute(FacesContext context) throws FacesException
     {
-        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this,context, getPhaseListeners());
+        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, context, phaseListenerList);
         for (int executorIndex = 0; executorIndex < lifecycleExecutors.length; executorIndex++)
         {
             if (executePhase(context, lifecycleExecutors[executorIndex],
@@ -144,7 +144,7 @@ public class MockLifecycle extends Lifecycle
         }
 
         PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this,
-                context, getPhaseListeners());
+                context, phaseListenerList);
 
         try
         {

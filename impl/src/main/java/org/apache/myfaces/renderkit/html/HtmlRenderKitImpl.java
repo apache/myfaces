@@ -174,9 +174,12 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
                 // this is not necessarily an error, but users do need to be
                 // very careful about jar processing order when overriding
                 // some component's renderer with an alternate renderer.
-                log.fine("Overwriting renderer with family = " + componentFamily +
-                   " rendererType = " + rendererType +
-                   " renderer class = " + renderer.getClass().getName());
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("Overwriting renderer with family = " + componentFamily +
+                       " rendererType = " + rendererType +
+                       " renderer class = " + renderer.getClass().getName());
+                }
             }
         }
         familyRendererMap.put(rendererType, renderer);

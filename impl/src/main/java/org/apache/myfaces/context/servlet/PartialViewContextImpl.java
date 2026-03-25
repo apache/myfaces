@@ -46,6 +46,7 @@ import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.BehaviorEvent;
+import jakarta.faces.event.FacesEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.RenderKit;
@@ -93,6 +94,7 @@ public class PartialViewContextImpl extends PartialViewContext
     private Boolean _resetValues = null;
     private List<String> _evalScripts = new ArrayList<>();
     private List<AjaxBehavior> queuedAjaxBehaviors;
+    private boolean queuedAjaxClearModel;
 
     public PartialViewContextImpl(FacesContext context)
     {
@@ -392,13 +394,32 @@ public class PartialViewContextImpl extends PartialViewContext
         {
             if (phaseId == PhaseId.APPLY_REQUEST_VALUES)
             {
-                queuedAjaxBehaviors = viewRoot.getQueuedEvents().values().stream().flatMap(List::stream)
-                        .filter(BehaviorEvent.class::isInstance)
-                        .map(BehaviorEvent.class::cast)
-                        .map(BehaviorEvent::getBehavior)
-                        .filter(AjaxBehavior.class::isInstance)
-                        .map(AjaxBehavior.class::cast)
-                        .toList();
+                ArrayList<AjaxBehavior> ajaxList = new ArrayList<>();
+                boolean clearModel = false;
+                for (List<FacesEvent> events : viewRoot.getQueuedEvents().values())
+                {
+                    if (events == null)
+                    {
+                        continue;
+                    }
+                    for (FacesEvent fe : events)
+                    {
+                        if (fe instanceof BehaviorEvent be)
+                        {
+                            var behavior = be.getBehavior();
+                            if (behavior instanceof AjaxBehavior ab)
+                            {
+                                ajaxList.add(ab);
+                                if (!clearModel && ab.isClearModel())
+                                {
+                                    clearModel = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                queuedAjaxBehaviors = ajaxList;
+                queuedAjaxClearModel = clearModel;
             }
 
             processPartialExecute(viewRoot, phaseId);
@@ -455,8 +476,7 @@ public class PartialViewContextImpl extends PartialViewContext
             
             if (isResetValues())
             {
-                boolean clearModel = queuedAjaxBehaviors != null
-                        && queuedAjaxBehaviors.stream().anyMatch(AjaxBehavior::isClearModel);
+                boolean clearModel = queuedAjaxBehaviors != null && queuedAjaxClearModel;
                 viewRoot.resetValues(context, getRenderIds(), clearModel, RESET_VALUES_HINTS);
             }
 
@@ -702,6 +722,7 @@ public class PartialViewContextImpl extends PartialViewContext
         _renderAll = null;
         context = null;
         queuedAjaxBehaviors = null;
+        queuedAjaxClearModel = false;
         _released = true;
     }
     
