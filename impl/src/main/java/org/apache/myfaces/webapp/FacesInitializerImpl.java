@@ -64,7 +64,6 @@ import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
-import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -330,9 +329,6 @@ public class FacesInitializerImpl implements FacesInitializer
         _dispatchApplicationEvent(servletContext, PreDestroyApplicationEvent.class);
 
         _callPreDestroyOnInjectedJSFArtifacts(facesContext);
-        
-        // clear the cache of MetaRulesetImpl in order to prevent a memory leak
-        MetaRulesetImpl.clearMetadataTargetCache();
 
         if (facesContext.getExternalContext().getApplicationMap().containsKey(PUSH_INITIALIZED))
         {

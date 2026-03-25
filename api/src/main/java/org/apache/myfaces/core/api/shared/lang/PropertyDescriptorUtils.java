@@ -61,29 +61,28 @@ public class PropertyDescriptorUtils
 
     private static Map<String, Map<String, ? extends PropertyDescriptorWrapper>> getCache(ExternalContext ec)
     {
+        Map<String, Object> appMap = ec.getApplicationMap();
         Map<String, Map<String, ? extends PropertyDescriptorWrapper>> cache =
-                (Map<String, Map<String, ? extends PropertyDescriptorWrapper>>) ec.getApplicationMap().get(CACHE_KEY);
-        if (cache == null)
+                (Map<String, Map<String, ? extends PropertyDescriptorWrapper>>) appMap.get(CACHE_KEY);
+        if (cache != null)
         {
-            cache = new ConcurrentHashMap<>(1000);
-            ec.getApplicationMap().put(CACHE_KEY, cache);
+            return cache;
         }
-
-        return cache;
+        return (Map<String, Map<String, ? extends PropertyDescriptorWrapper>>) appMap.computeIfAbsent(CACHE_KEY,
+                k -> new ConcurrentHashMap<>(1000));
     }
 
     public static Map<String, ? extends PropertyDescriptorWrapper> getCachedPropertyDescriptors(ExternalContext ec,
                                                                                                 Class<?> caller,
                                                                                                 Class<?> target)
     {
-        Map<String, ? extends PropertyDescriptorWrapper> cache = getCache(ec).get(target.getName());
-        if (cache == null)
+        Map<String, Map<String, ? extends PropertyDescriptorWrapper>> outer = getCache(ec);
+        Map<String, ? extends PropertyDescriptorWrapper> cache = outer.get(target.getName());
+        if (cache != null)
         {
-            final Class<?> realTarget = target;
-            cache = getCache(ec).computeIfAbsent(target.getName(), k -> getPropertyDescriptors(ec, caller, target));
+            return cache;
         }
-
-        return cache;
+        return outer.computeIfAbsent(target.getName(), k -> getPropertyDescriptors(ec, caller, target));
     }
 
     public static boolean isUseLambdas(ExternalContext ec)
@@ -112,8 +111,13 @@ public class PropertyDescriptorUtils
 
                 if (isUseLambdas(ec))
                 {
-                    List<Module> cache = moduleAccessCache.computeIfAbsent(caller.getModule(),
-                            (k) -> new CopyOnWriteArrayList<>());
+                    Module callerModule = caller.getModule();
+                    List<Module> cache = moduleAccessCache.get(callerModule);
+                    if (cache == null)
+                    {
+                        cache = moduleAccessCache.computeIfAbsent(callerModule,
+                                k -> new CopyOnWriteArrayList<>());
+                    }
                     if (!cache.contains(target.getModule()))
                     {
                         if (!caller.getModule().canRead(target.getModule()))

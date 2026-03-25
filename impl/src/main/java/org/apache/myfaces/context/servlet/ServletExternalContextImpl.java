@@ -407,7 +407,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         }
         
         Set<String> pushedResourceUrls = (Set<String>) facesContext.getAttributes()
-                 .computeIfAbsent(PUSHED_RESOURCE_URLS, a -> new HashSet<>());
+                .computeIfAbsent(PUSHED_RESOURCE_URLS, a -> new HashSet<>());
         if (pushedResourceUrls.contains(resourceUrl))
         {
             return;

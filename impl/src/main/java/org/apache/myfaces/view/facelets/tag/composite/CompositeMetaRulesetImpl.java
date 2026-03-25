@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
@@ -49,15 +50,18 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
     
     private static final String METADATA_KEY = CompositeMetaRulesetImpl.class.getName() + ".METADATA";
 
-    private static Map<String, MetadataTarget> getMetaData()
+    private static ConcurrentHashMap<String, MetadataTarget> getMetaData()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-
-        Map<String, MetadataTarget> metadata = (Map<String, MetadataTarget>) applicationMap.computeIfAbsent(
-                METADATA_KEY, k -> new HashMap<>());
-
-        return metadata;
+        ConcurrentHashMap<String, MetadataTarget> map =
+                (ConcurrentHashMap<String, MetadataTarget>) applicationMap.get(METADATA_KEY);
+        if (map != null)
+        {
+            return map;
+        }
+        return (ConcurrentHashMap<String, MetadataTarget>) applicationMap.computeIfAbsent(METADATA_KEY,
+                k -> new ConcurrentHashMap<>(64));
     }
 
     private final Map<String, TagAttribute> _attributes;
@@ -206,32 +210,28 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
     
     private MetadataTarget _getBaseMetadataTarget()
     {
-        Map<String, MetadataTarget> metadata = getMetaData();
+        ConcurrentHashMap<String, MetadataTarget> metadata = getMetaData();
         String key = _type.getName();
-
         MetadataTarget meta = metadata.get(key);
-        if (meta == null)
+        if (meta != null)
+        {
+            return meta;
+        }
+        return metadata.computeIfAbsent(key, k ->
         {
             try
             {
                 if (PropertyDescriptorUtils.isUseLambdas(
                         FacesContext.getCurrentInstance().getExternalContext()))
                 {
-                    meta = new LambdaMetadataTargetImpl(_type);
+                    return new LambdaMetadataTargetImpl(_type);
                 }
-                else
-                {
-                    meta = new MetadataTargetImpl(_type);
-                }
+                return new MetadataTargetImpl(_type);
             }
             catch (IntrospectionException e)
             {
                 throw new TagException(_tag, "Error Creating TargetMetadata", e);
             }
-
-            metadata.put(key, meta);
-        }
-
-        return meta;
+        });
     }    
 }

@@ -20,6 +20,7 @@ package org.apache.myfaces.spi.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.faces.context.ExternalContext;
@@ -49,7 +50,13 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
     @Override
     public StateCacheProvider getStateCacheProvider(ExternalContext externalContext)
     {
-        return (StateCacheProvider) externalContext.getApplicationMap().computeIfAbsent(STATE_CACHE_PROVIDER_INSTANCE,
+        Map<String, Object> appMap = externalContext.getApplicationMap();
+        StateCacheProvider provider = (StateCacheProvider) appMap.get(STATE_CACHE_PROVIDER_INSTANCE);
+        if (provider != null)
+        {
+            return provider;
+        }
+        return (StateCacheProvider) appMap.computeIfAbsent(STATE_CACHE_PROVIDER_INSTANCE,
                 k -> createStateCacheProvider(externalContext));
     }
     
@@ -85,9 +92,9 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(STATE_CACHE_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).
-                    getServiceProviderList(STATE_CACHE_PROVIDER);
-            externalContext.getApplicationMap().put(STATE_CACHE_PROVIDER_LIST, classList);
+            classList = (List<String>) externalContext.getApplicationMap().computeIfAbsent(STATE_CACHE_PROVIDER_LIST,
+                    k -> ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).
+                            getServiceProviderList(STATE_CACHE_PROVIDER));
         }
         return ClassUtils.buildApplicationObject(StateCacheProvider.class, classList, new StateCacheProviderImpl());
     }    

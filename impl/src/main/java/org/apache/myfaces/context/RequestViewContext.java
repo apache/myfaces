@@ -111,7 +111,7 @@ public class RequestViewContext
     public static void setCurrentInstance(FacesContext ctx, UIViewRoot root, RequestViewContext rvc)
     {
         Map<UIViewRoot, RequestViewContext> map = (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes()
-                .computeIfAbsent(VIEW_CONTEXT_KEY, k -> new HashMap<>());
+                .computeIfAbsent(VIEW_CONTEXT_KEY, k -> new HashMap<>(5));
         map.put(root, rvc);
     }
 

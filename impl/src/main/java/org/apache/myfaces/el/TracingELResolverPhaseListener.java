@@ -61,13 +61,13 @@ public class TracingELResolverPhaseListener implements PhaseListener
 
     public static TracingInfo getTracingInfo(Class<? extends ELResolver> resolver)
     {
-        return getTracingInfos().computeIfAbsent(resolver, (k) -> new TracingInfo());
+        return getTracingInfos().computeIfAbsent(resolver, k -> new TracingInfo());
     }
 
     public static Map<Class<? extends ELResolver>, TracingInfo> getTracingInfos()
     {
         return (Map<Class<? extends ELResolver>, TracingInfo>) FacesContext.getCurrentInstance().getAttributes()
-                .computeIfAbsent(TRACING_INFOS, (k) -> new HashMap<>());
+                .computeIfAbsent(TRACING_INFOS, k -> new HashMap<>());
     }
 
     @Override

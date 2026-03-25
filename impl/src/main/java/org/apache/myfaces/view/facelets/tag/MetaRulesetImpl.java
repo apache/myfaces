@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
-import org.apache.myfaces.util.lang.ClassUtils;
 import jakarta.faces.view.facelets.MetaRule;
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.Metadata;
@@ -31,7 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.faces.context.FacesContext;
@@ -49,44 +48,29 @@ public final class MetaRulesetImpl extends MetaRuleset
 {
     private final static Logger log = Logger.getLogger(MetaRulesetImpl.class.getName());
 
-    /**
-     * Cache the MetadataTarget instances per ClassLoader using the Class-Name of the type variable
-     * of MetadataTarget.
-     * NOTE that we do it this way, because the only other valid way in order to support a shared
-     * classloader scenario would be to use a WeakHashMap<Class<?>, MetadataTarget>, but this
-     * creates a cyclic reference between the key and the value of the WeakHashMap which will
-     * most certainly cause a memory leak! Furthermore we can manually cleanup the Map when
-     * the webapp is undeployed just by removing the Map for the current ClassLoader. 
-     */
-    private volatile static WeakHashMap<ClassLoader, Map<String, MetadataTarget>> metadata
-            = new WeakHashMap<ClassLoader, Map<String, MetadataTarget>>();
+    private static final String METADATA_KEY = MetaRulesetImpl.class.getName() + ".METADATA";
 
     /**
-     * Removes the cached MetadataTarget instances in order to prevent a memory leak.
+     * MetadataTarget cache keyed by component class name, stored in the JSF application map so it
+     * is released with the web application (no separate undeploy hook).
      */
-    public static void clearMetadataTargetCache()
+    @SuppressWarnings("unchecked")
+    private static ConcurrentHashMap<String, MetadataTarget> getMetaData()
     {
-        metadata.remove(ClassUtils.getContextClassLoader());
-    }
-
-    private static Map<String, MetadataTarget> getMetaData()
-    {
-        ClassLoader cl = ClassUtils.getContextClassLoader();
-        
-        Map<String, MetadataTarget> metadata = MetaRulesetImpl.metadata.get(cl);
-
-        if (metadata == null)
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null)
         {
-            // Ensure thread-safe put over _metadata, and only create one map
-            // per classloader to hold metadata.
-            synchronized (MetaRulesetImpl.metadata)
-            {
-                metadata = MetaRulesetImpl.metadata.computeIfAbsent(cl,
-                    k -> new HashMap<>());
-            }
+            throw new IllegalStateException("No FacesContext is available");
         }
-
-        return metadata;
+        Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
+        ConcurrentHashMap<String, MetadataTarget> map =
+                (ConcurrentHashMap<String, MetadataTarget>) applicationMap.get(METADATA_KEY);
+        if (map != null)
+        {
+            return map;
+        }
+        return (ConcurrentHashMap<String, MetadataTarget>) applicationMap.computeIfAbsent(METADATA_KEY,
+                k -> new ConcurrentHashMap<>(64));
     }
 
     private final static TagAttribute[] EMPTY = new TagAttribute[0];
@@ -320,40 +304,28 @@ public final class MetaRulesetImpl extends MetaRuleset
 
     private MetadataTarget _getMetadataTarget()
     {
-        Map<String, MetadataTarget> metadata = getMetaData();
+        ConcurrentHashMap<String, MetadataTarget> metadata = getMetaData();
         String metaKey = _type.getName();
-
         MetadataTarget meta = metadata.get(metaKey);
-        if (meta == null)
+        if (meta != null)
+        {
+            return meta;
+        }
+        return metadata.computeIfAbsent(metaKey, key ->
         {
             try
             {
                 if (PropertyDescriptorUtils.isUseLambdas(
                         FacesContext.getCurrentInstance().getExternalContext()))
                 {
-                    meta = new LambdaMetadataTargetImpl(_type);
+                    return new LambdaMetadataTargetImpl(_type);
                 }
-                else
-                {
-                    meta = new MetadataTargetImpl(_type);
-                }
+                return new MetadataTargetImpl(_type);
             }
             catch (IntrospectionException e)
             {
                 throw new TagException(_tag, "Error Creating TargetMetadata", e);
             }
-
-            synchronized(metadata)
-            {
-                // Use a synchronized block to ensure proper operation on concurrent use cases.
-                // This is a racy single check, because initialization over the same class could happen
-                // multiple times, but the same result is always calculated. The synchronized block 
-                // just ensure thread-safety, because only one thread will modify the cache map
-                // at the same time.
-                metadata.put(metaKey, meta);
-            }
-        }
-
-        return meta;
+        });
     }
 }
