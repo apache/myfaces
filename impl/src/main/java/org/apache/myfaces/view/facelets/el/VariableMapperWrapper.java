@@ -34,7 +34,7 @@ import jakarta.faces.FacesWrapper;
  * @author Jacob Hookom
  * @version $Id$
  */
-public final class VariableMapperWrapper extends VariableMapperBase implements FacesWrapper<VariableMapper>
+public class VariableMapperWrapper extends VariableMapperBase implements FacesWrapper<VariableMapper>
 {
     private final VariableMapper _target;
     private final VariableMapperBase _targetBase;

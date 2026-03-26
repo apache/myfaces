@@ -420,8 +420,38 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     public boolean includeDefinition(UIComponent parent, String name)
             throws IOException, FaceletException, FacesException, ELException
     {
-        return _isolatedTemplateContext.get(_currentTemplateContext).includeDefinition(
-                this, this._facelet, parent, name);
+        // Walk template contexts from innermost outward so ui:insert inside ui:include can
+        // resolve ui:define from an enclosing composition (MYFACES-4577). Stop when a
+        // composite-component layer is reached: outer Facelets definitions must not apply
+        // inside composite implementation (TemplateContext javadoc).
+        int i = _currentTemplateContext;
+        while (i >= 0)
+        {
+            TemplateContext tc = _isolatedTemplateContext.get(i);
+            if (tc.includeDefinition(this, this._facelet, parent, name))
+            {
+                return true;
+            }
+            if (tc.getCompositeComponentClient() != null)
+            {
+                break;
+            }
+            // If this layer already has a templating ui:composition (template="..."), do not
+            // merge outer template clients: inner ui:insert must use default body or inner
+            // defines only (multilevel_template_* tests).
+            if (i > 0 && ((TemplateContextImpl) tc).hasTemplatingCompositionExtended())
+            {
+                break;
+            }
+            // Only cross this boundary for ui:include isolation layers (MYFACES-4577). Nested
+            // user-tag or other TemplateContext pushes must not inherit outer ui:define names.
+            if (i > 0 && !((TemplateContextImpl) tc).isIncludeIsolationLayer())
+            {
+                break;
+            }
+            i--;
+        }
+        return false;
     }
 
     @Override

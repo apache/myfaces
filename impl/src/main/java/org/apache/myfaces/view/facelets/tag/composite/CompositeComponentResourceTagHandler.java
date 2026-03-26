@@ -59,6 +59,7 @@ import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
+import org.apache.myfaces.view.facelets.el.TaglibAttributeVariableMapper;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
@@ -445,7 +446,11 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         VariableMapper orig = faceletContext.getVariableMapper();
         try
         {
-            faceletContext.setVariableMapper(new VariableMapperWrapper(orig));
+            // MYFACES-4589: taglib UserTagHandler binds attribute short names on VariableMapper
+            // (MYFACES-4585). Those bindings must not shadow managed beans inside this composite
+            // implementation (e.g. #{color.blue} vs ancestor taglib attribute "color").
+            VariableMapper forComposite = TaglibAttributeVariableMapper.unwrapTaglibAttributeScopes(orig);
+            faceletContext.setVariableMapper(new VariableMapperWrapper(forComposite));
             actx.pushCompositeComponentClient(this);
             Resource resourceForCurrentView = faceletContext.getFacesContext().getApplication().
                 getResourceHandler().createResource(_resource.getResourceName(), _resource.getLibraryName());
