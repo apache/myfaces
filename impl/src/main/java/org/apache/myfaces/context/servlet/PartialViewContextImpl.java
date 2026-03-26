@@ -59,6 +59,7 @@ import org.apache.myfaces.application.viewstate.StateTokenProcessor;
 import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
@@ -572,6 +573,8 @@ public class PartialViewContextImpl extends PartialViewContext
                 writer.writeText(cw.getId(), null);
                 writer.endUpdate();
             }
+
+            CommonHtmlEventsUtil.flushDeferredCspBehaviorScripts(context, writer);
         }
         catch (IOException ex)
         {

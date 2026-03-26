@@ -1274,31 +1274,9 @@ public final class HtmlRendererUtils
             Map<String, List<ClientBehavior>> clientBehaviors,
             String htmlAttrName, String attributeValue) throws IOException
     {
-
-        List<ClientBehavior> cbl = (clientBehaviors != null) ? clientBehaviors
-                .get(eventName) : null;
-        if (cbl == null || cbl.isEmpty())
-        {
-            return renderHTMLAttribute(writer, componentProperty, htmlAttrName, attributeValue);
-        }
-        if (cbl.size() > 1 || (cbl.size() == 1 && attributeValue != null))
-        {
-            return renderHTMLAttribute(writer, componentProperty, htmlAttrName,
-                    ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
-                            component, sourceId, eventName,
-                            eventParameters, clientBehaviors, attributeValue,
-                            RendererUtils.EMPTY_STRING));
-        }
-        else
-        {
-            //Only 1 behavior and attrValue == null, so just render it directly
-            return renderHTMLAttribute(
-                    writer, componentProperty, htmlAttrName,
-                    cbl.get(0).getScript(
-                            ClientBehaviorContext.createClientBehaviorContext(
-                                    facesContext, component, eventName,
-                                    sourceId, eventParameters)));
-        }
+        return CommonHtmlEventsUtil.renderBehaviorizedAttribute(facesContext, writer,
+                componentProperty, component, sourceId, eventName, eventParameters,
+                clientBehaviors, htmlAttrName, attributeValue);
     }
 
     /**
@@ -1344,42 +1322,9 @@ public final class HtmlRendererUtils
             String htmlAttrName, String attributeValue, String serverSideScript)
             throws IOException
     {
-
-        List<ClientBehavior> cbl = (clientBehaviors != null) ? clientBehaviors.get(eventName) : null;
-        if (((cbl != null) ? cbl.size() : 0) + (attributeValue != null ? 1 : 0)
-                + (serverSideScript != null ? 1 : 0) <= 1)
-        {
-            if (cbl == null || cbl.isEmpty())
-            {
-                if (attributeValue != null)
-                {
-                    return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName, attributeValue);
-                }
-                else
-                {
-                    return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName, serverSideScript);
-                }
-            }
-            else
-            {
-                return renderHTMLStringAttribute(
-                        writer, componentProperty, htmlAttrName,
-                        cbl.get(0).getScript(
-                                ClientBehaviorContext
-                                        .createClientBehaviorContext(
-                                                facesContext, component,
-                                                eventName, sourceId,
-                                                eventParameters)));
-            }
-        }
-        else
-        {
-            return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
-                    ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
-                            component, sourceId, eventName,
-                            eventParameters, clientBehaviors, attributeValue,
-                            serverSideScript));
-        }
+        return CommonHtmlEventsUtil.renderBehaviorizedAttribute(facesContext, writer,
+                componentProperty, component, sourceId, eventName, eventParameters,
+                clientBehaviors, htmlAttrName, attributeValue, serverSideScript);
     }
 
     public static boolean renderBehaviorizedAttribute(
@@ -1410,48 +1355,9 @@ public final class HtmlRendererUtils
             String htmlAttrName, String attributeValue, String serverSideScript)
             throws IOException
     {
-        List<ClientBehavior> cb1 = (clientBehaviors != null) ? clientBehaviors.get(eventName) : null;
-        List<ClientBehavior> cb2 = (clientBehaviors != null) ? clientBehaviors.get(eventName2) : null;
-        if (((cb1 != null) ? cb1.size() : 0) + ((cb2 != null) ? cb2.size() : 0)
-                + (attributeValue != null ? 1 : 0) <= 1)
-        {
-            if (attributeValue != null)
-            {
-                return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName, attributeValue);
-            }
-            else if (serverSideScript != null)
-            {
-                return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName, serverSideScript);
-            }
-            else if (((cb1 != null) ? cb1.size() : 0) > 0)
-            {
-                return renderHTMLStringAttribute(
-                        writer, componentProperty, htmlAttrName,
-                        cb1.get(0).getScript(ClientBehaviorContext
-                                        .createClientBehaviorContext(
-                                                facesContext, component,
-                                                eventName, sourceId,
-                                                eventParameters)));
-            }
-            else
-            {
-                return renderHTMLStringAttribute(
-                        writer, componentProperty, htmlAttrName,
-                        cb2.get(0).getScript(ClientBehaviorContext
-                                        .createClientBehaviorContext(
-                                                facesContext, component,
-                                                eventName2, sourceId,
-                                                eventParameters2)));
-            }
-        }
-        else
-        {
-            return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
-                    ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
-                            component, sourceId, eventName,
-                            eventParameters, eventName2, eventParameters2,
-                            clientBehaviors, attributeValue, serverSideScript));
-        }
+        return CommonHtmlEventsUtil.renderBehaviorizedAttribute(facesContext, writer,
+                componentProperty, component, sourceId, eventName, eventParameters,
+                eventName2, eventParameters2, clientBehaviors, htmlAttrName, attributeValue, serverSideScript);
     }
     // CHECKSTYLE: ON
 

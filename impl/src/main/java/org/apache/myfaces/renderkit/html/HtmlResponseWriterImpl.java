@@ -35,6 +35,7 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.ContentTypeUtils;
 import org.apache.myfaces.renderkit.html.util.UnicodeEncoder;
@@ -306,6 +307,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     public void endDocument() throws IOException
     {
         FacesContext facesContext = getFacesContext();
+        CommonHtmlEventsUtil.flushDeferredCspBehaviorScripts(facesContext, this);
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
         if (myfacesConfig.isEarlyFlushEnabled())
         {

@@ -224,6 +224,7 @@
         <module>ajax</module>
         <module>automaticExtensionlessMapping</module>
         <module>myfaces4623</module>
+        <module>csp</module>
     </modules>
 
     <profiles>
