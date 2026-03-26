@@ -162,9 +162,15 @@ public class SelectItemsUtil
     {
         List<SelectItem> items = new ArrayList<>();
 
-        for (int i = 0; i < component.getChildCount(); i++)
+        int childCount = component.getChildCount();
+        if (childCount == 0)
         {
-            UIComponent child = component.getChildren().get(i);
+            return items;
+        }
+        List<UIComponent> children = component.getChildren();
+        for (int i = 0; i < childCount; i++)
+        {
+            UIComponent child = children.get(i);
             if (child instanceof UISelectItems uiSelectItems)
             {
                 createSelectItems(context, uiSelectItems, uiSelectItems.getValue(), SelectItem::new, items::add);

@@ -271,8 +271,9 @@ public final class HtmlRendererUtils
                         facesContext.getNamingContainerSeparatorChar() + group;
                 if (paramMap.containsKey(fullGroupId))
                 {
+                    String componentClientId = component.getClientId(facesContext);
                     String submittedValue = (String) paramMap.get(fullGroupId);
-                    String submittedValueNamespace = component.getClientId(facesContext) +
+                    String submittedValueNamespace = componentClientId +
                             facesContext.getNamingContainerSeparatorChar();
                     if (submittedValue.startsWith(submittedValueNamespace))
                     {
@@ -280,7 +281,7 @@ public final class HtmlRendererUtils
                         SelectOneGroupSetSubmittedValueCallback callback = 
                                 new SelectOneGroupSetSubmittedValueCallback(group,
                                         submittedValue,
-                                        component.getClientId(facesContext),
+                                        componentClientId,
                                         component.getValueExpression("value") != null);
                         form.visitTree(VisitContext.createVisitContext(facesContext,
                                 null, MyFacesVisitHints.SET_SKIP_UNRENDERED),

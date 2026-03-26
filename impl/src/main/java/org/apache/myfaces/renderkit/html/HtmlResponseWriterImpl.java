@@ -305,7 +305,8 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     @Override
     public void endDocument() throws IOException
     {
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(FacesContext.getCurrentInstance());
+        FacesContext facesContext = getFacesContext();
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
         if (myfacesConfig.isEarlyFlushEnabled())
         {
             _currentWriter.flush();
