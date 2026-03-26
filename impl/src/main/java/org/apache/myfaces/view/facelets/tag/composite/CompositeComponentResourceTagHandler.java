@@ -624,14 +624,15 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                     if (facetName == null)
                     {
                         children = new ArrayList<>(parent.getChildCount());
+                        List<UIComponent> live = parent.getChildren();
                         int i = 0;
                         while (parent.getChildCount()-i > 0)
                         {
-                            UIComponent child = parent.getChildren().get(i);
+                            UIComponent child = live.get(i);
                             if (Boolean.TRUE.equals(
                                     child.getAttributes().get(InsertChildrenHandler.INSERT_CHILDREN_USED)))
                             {
-                                children.add(parent.getChildren().remove(i));
+                                children.add(live.remove(i));
                             }
                             else
                             {
@@ -651,14 +652,15 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                         else
                         {
                             UIComponent parentToApply = child;
+                            List<UIComponent> live = parentToApply.getChildren();
                             int i = 0;
                             while (parentToApply.getChildCount()-i > 0)
                             {
-                                child = parentToApply.getChildren().get(i);
+                                child = live.get(i);
                                 if (Boolean.TRUE.equals(child.getAttributes().get(
                                         InsertChildrenHandler.INSERT_CHILDREN_USED)))
                                 {
-                                    children.add(parentToApply.getChildren().remove(i));
+                                    children.add(live.remove(i));
                                 }
                                 else
                                 {

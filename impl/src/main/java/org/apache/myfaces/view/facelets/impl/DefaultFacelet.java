@@ -396,10 +396,13 @@ final class DefaultFacelet extends AbstractFacelet
                         markApplied(token, facet);
                     }
                 }
-                for (int i = 0; i < childCount; i++)
+                if (childCount > 0)
                 {
-                    UIComponent child = parent.getChildren().get(i);
-                    markApplied(token, child);
+                    List<UIComponent> children = parent.getChildren();
+                    for (int i = 0; i < childCount; i++)
+                    {
+                        markApplied(token, children.get(i));
+                    }
                 }
             }
         }
