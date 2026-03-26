@@ -659,9 +659,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
                     int childCount = fc.getChildCount();
                     if (childCount > 0)
                     {
+                        List<UIComponent> children = fc.getChildren();
                         for (int i = 0; i < childCount; i++)
                         {
-                            UIComponent child = fc.getChildren().get(i);
+                            UIComponent child = children.get(i);
                             id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                             if (id != null)
                             {
@@ -676,9 +677,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         int childCount = component.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = component.getChildren();
             for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (id != null)
                 {
@@ -702,9 +704,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
             int childCount = component.getChildCount();
             if (childCount > 0)
             {
+                List<UIComponent> children = component.getChildren();
                 for (int i = 0, size = childCount; i < size; i++)
                 {
-                    UIComponent child = component.getChildren().get(i);
+                    UIComponent child = children.get(i);
                     id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                     if (id != null)
                     {
@@ -727,13 +730,14 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         int childCount = component.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = component.getChildren();
             for (int i = 0; i < childCount; i ++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED); 
                 if (id != null && removeComponentForDeletion(id) != null)
                 {
-                    component.getChildren().remove(i);
+                    children.remove(i);
                     i--;
                     childCount--;
                 }
@@ -758,13 +762,14 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
                 {
                     if (fc.getChildCount() > 0)
                     {
-                        for (int i = 0, size = fc.getChildCount(); i < size; i++)
+                        List<UIComponent> children = fc.getChildren();
+                        for (int i = 0, size = children.size(); i < size; i++)
                         {
-                            UIComponent child = fc.getChildren().get(i);
+                            UIComponent child = children.get(i);
                             id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                             if (id != null && removeComponentForDeletion(id) != null)
                             {
-                                fc.getChildren().remove(i);
+                                children.remove(i);
                                 i--;
                                 size--;
                             }
@@ -814,13 +819,14 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
                     int childCount = fc.getChildCount();
                     if (childCount > 0)
                     {
+                        List<UIComponent> children = fc.getChildren();
                         for (int i = 0; i < childCount; i ++)
                         {
-                            UIComponent child = fc.getChildren().get(i);
+                            UIComponent child = children.get(i);
                             id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED); 
                             if (id != null && finalizeRelocatableResourcesForDeletion(id) == null)
                             {
-                                fc.getChildren().remove(i);
+                                children.remove(i);
                                 i--;
                                 childCount--;
                             }

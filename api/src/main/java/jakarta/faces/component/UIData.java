@@ -1780,9 +1780,15 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private void processColumnFacets(FacesContext context, int processAction)
     {
-        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+        int childCount = getChildCount();
+        if (childCount == 0)
         {
-            UIComponent child = getChildren().get(i);
+            return;
+        }
+        List<UIComponent> children = getChildren();
+        for (int i = 0; i < childCount; i++)
+        {
+            UIComponent child = children.get(i);
             if (child instanceof UIColumn)
             {
                 if (!ComponentUtils.isRendered(context, child))
@@ -1813,6 +1819,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private void processColumnChildren(FacesContext context, int processAction)
     {
+        int childCount = getChildCount();
+        if (childCount == 0)
+        {
+            return;
+        }
+        List<UIComponent> children = getChildren();
         int first = getFirst();
         int rows = getRows();
         int last;
@@ -1834,9 +1846,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 break;
             }
             
-            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (child instanceof UIColumn)
                 {
                     if (!ComponentUtils.isRendered(context, child))
@@ -1845,9 +1857,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                         continue;
                     }
 
-                    for (int j = 0, columnChildCount = child.getChildCount(); j < columnChildCount; j++)
+                    List<UIComponent> columnChildren = child.getChildren();
+                    for (int j = 0, columnChildCount = columnChildren.size(); j < columnChildCount; j++)
                     {
-                        UIComponent columnChild = child.getChildren().get(j);
+                        UIComponent columnChild = columnChildren.get(j);
                         process(context, columnChild, processAction);
                     }
                 }

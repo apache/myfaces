@@ -961,19 +961,23 @@ public class HtmlTableRendererBase extends HtmlRenderer
         int colspan = 0;
         boolean hasColumnFacet = false;
         int childCount = component.getChildCount();
-        for (int i = 0; i < childCount; i++)
+        if (childCount > 0)
         {
-            UIComponent uiComponent = component.getChildren().get(i);
-            if(uiComponent.isRendered())
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0; i < childCount; i++)
             {
-                // a UIColumn has a span of 1, anything else has a span of 0
-                colspan += determineChildColSpan(uiComponent);
-
-                // hasColumnFacet is true if *any* child column has a facet of
-                // the specified type.
-                if (!hasColumnFacet)
+                UIComponent uiComponent = children.get(i);
+                if(uiComponent.isRendered())
                 {
-                    hasColumnFacet = hasFacet(header, uiComponent);
+                    // a UIColumn has a span of 1, anything else has a span of 0
+                    colspan += determineChildColSpan(uiComponent);
+
+                    // hasColumnFacet is true if *any* child column has a facet of
+                    // the specified type.
+                    if (!hasColumnFacet)
+                    {
+                        hasColumnFacet = hasFacet(header, uiComponent);
+                    }
                 }
             }
         }
@@ -1177,11 +1181,13 @@ public class HtmlTableRendererBase extends HtmlRenderer
         writer.startElement(HTML.TR_ELEM, null); // component);
         int columnIndex = 0;
         int newspaperColumns = getNewspaperColumns(component);
+        int childCount = component.getChildCount();
+        List<UIComponent> children = childCount > 0 ? component.getChildren() : null;
         for(int nc = 0; nc < newspaperColumns; nc++)
         {
-            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent uiComponent = component.getChildren().get(i);
+                UIComponent uiComponent = children.get(i);
                 if (uiComponent.isRendered())
                 {
                     if (component instanceof UIData data && uiComponent instanceof UIColumn)

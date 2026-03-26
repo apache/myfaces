@@ -288,9 +288,10 @@ public abstract class UIComponentBase extends UIComponent
         
         if (component.getChildCount() > 0)
         {
-            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, childCount = children.size(); i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 _publishPreRemoveFromViewEvent(context, child);
             }
         }
@@ -309,9 +310,10 @@ public abstract class UIComponentBase extends UIComponent
         
         if (component.getChildCount() > 0)
         {
-            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, childCount = children.size(); i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 _updateInView(child, isInView);
             }
         }
@@ -511,11 +513,13 @@ public abstract class UIComponentBase extends UIComponent
             } // let children render itself
             else
             {
-                if (this.getChildCount() > 0)
+                int childCount = this.getChildCount();
+                if (childCount > 0)
                 {
-                    for (int i = 0; i < this.getChildCount(); i++)
+                    List<UIComponent> children = this.getChildren();
+                    for (int i = 0; i < childCount; i++)
                     {
-                        UIComponent comp = this.getChildren().get(i);
+                        UIComponent comp = children.get(i);
                         comp.encodeAll(context);
                     }
                 }
@@ -589,11 +593,13 @@ public abstract class UIComponentBase extends UIComponent
                 {
                     // If no Renderer is associated with this UIComponent, iterate over each of the children of this
                     // component and call UIComponent.encodeAll(jakarta.faces.context.FacesContext).
-                    if (getChildCount() > 0)
+                    int childCount = getChildCount();
+                    if (childCount > 0)
                     {
-                        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                        List<UIComponent> children = getChildren();
+                        for (int i = 0; i < childCount; i++)
                         {
-                            UIComponent child = getChildren().get(i);
+                            UIComponent child = children.get(i);
                             child.encodeAll(context);
                         }
                     }
@@ -1316,10 +1322,15 @@ public abstract class UIComponentBase extends UIComponent
                         facet.processDecodes(context);
                     }
                 }
-                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                int childCount = getChildCount();
+                if (childCount > 0)
                 {
-                    UIComponent child = getChildren().get(i);
-                    child.processDecodes(context);
+                    List<UIComponent> children = getChildren();
+                    for (int i = 0; i < childCount; i++)
+                    {
+                        UIComponent child = children.get(i);
+                        child.processDecodes(context);
+                    }
                 }
 
                 try
@@ -1372,10 +1383,15 @@ public abstract class UIComponentBase extends UIComponent
                         }
                     }
     
-                    for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                    int childCount = getChildCount();
+                    if (childCount > 0)
                     {
-                        UIComponent child = getChildren().get(i);
-                        child.processValidators(context);
+                        List<UIComponent> children = getChildren();
+                        for (int i = 0; i < childCount; i++)
+                        {
+                            UIComponent child = children.get(i);
+                            child.processValidators(context);
+                        }
                     }
                 }
                 finally
@@ -1420,10 +1436,15 @@ public abstract class UIComponentBase extends UIComponent
                     }
                 }
 
-                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                int childCount = getChildCount();
+                if (childCount > 0)
                 {
-                    UIComponent child = getChildren().get(i);
-                    child.processUpdates(context);
+                    List<UIComponent> children = getChildren();
+                    for (int i = 0; i < childCount; i++)
+                    {
+                        UIComponent child = children.get(i);
+                        child.processUpdates(context);
+                    }
                 }
             }
         }
@@ -1490,9 +1511,10 @@ public abstract class UIComponentBase extends UIComponent
 
                 // To improve speed and robustness, the facets and children processing is splited to maintain the
                 // facet --> state coherence based on the facet's name
+                List<UIComponent> children = getChildren();
                 for (int i = 0; i < childCount; i++)
                 {
-                    UIComponent child = getChildren().get(i);
+                    UIComponent child = children.get(i);
                     if (!child.isTransient())
                     {
                         if (childrenList == null)
@@ -1569,9 +1591,10 @@ public abstract class UIComponentBase extends UIComponent
                 // To improve speed and robustness, the facets and children processing is splited to maintain the
                 // facet --> state coherence based on the facet's name
                 int idx = 0;
-                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                List<UIComponent> children = getChildren();
+                for (int i = 0, childCount = children.size(); i < childCount; i++)
                 {
-                    UIComponent child = getChildren().get(i);
+                    UIComponent child = children.get(i);
                     if (!child.isTransient())
                     {
                         Object childState = childrenList.get(idx++);

@@ -23,6 +23,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 import java.util.Collection;
+import java.util.List;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
@@ -144,20 +145,25 @@ public class ComponentUtils
             }
         }
         
-        for (int i = 0, childCount = findBase.getChildCount(); i < childCount; i++)
+        int childCount = findBase.getChildCount();
+        if (childCount > 0)
         {
-            UIComponent child = findBase.getChildren().get(i);
-            if (!(child instanceof NamingContainer))
+            List<UIComponent> children = findBase.getChildren();
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent find = findComponent(child, id, separatorChar);
-                if (find != null)
+                UIComponent child = children.get(i);
+                if (!(child instanceof NamingContainer))
                 {
-                    return find;
+                    UIComponent find = findComponent(child, id, separatorChar);
+                    if (find != null)
+                    {
+                        return find;
+                    }
                 }
-            }
-            else if (id.equals(child.getId()))
-            {
-                return child;
+                else if (id.equals(child.getId()))
+                {
+                    return child;
+                }
             }
         }
 
@@ -200,11 +206,13 @@ public class ComponentUtils
                 }
             }
         }
-        if (parent.getChildCount() > 0)
+        int childCount = parent.getChildCount();
+        if (childCount > 0)
         {
-            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = parent.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (id.equals(child.getId()))
                 {
                     if (innerExpr == null)

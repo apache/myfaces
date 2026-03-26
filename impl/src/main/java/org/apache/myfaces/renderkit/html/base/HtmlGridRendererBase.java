@@ -307,9 +307,11 @@ public class HtmlGridRendererBase extends HtmlRenderer
             int columnIndex = 0;
             int rowClassIndex = 0;
             boolean rowStarted = false;
-            for (int i = 0, size = component.getChildCount(); i < size; i++)
+            int size = component.getChildCount();
+            List<UIComponent> children = size > 0 ? component.getChildren() : null;
+            for (int i = 0; i < size; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (child.isRendered())
                 {
                     if (columnIndex == 0)

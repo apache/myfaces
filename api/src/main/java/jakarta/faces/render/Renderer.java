@@ -19,6 +19,7 @@
 package jakarta.faces.render;
 
 import java.io.IOException;
+import java.util.List;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -65,11 +66,13 @@ public abstract class Renderer<T extends UIComponent>
         Assert.notNull(context, "context");
         Assert.notNull(component, "component");
 
-        if (component.getChildCount() > 0)
+        int childCount = component.getChildCount();
+        if (childCount > 0)
         {
-            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (!child.isRendered())
                 {
                     continue;

@@ -529,13 +529,14 @@ public class ViewPoolProcessor
         int childCount = root.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = root.getChildren();
             for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = root.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (child != null && child.isTransient() &&
                     child.getAttributes().get(ComponentSupport.MARK_CREATED) == null)
                 {
-                    root.getChildren().remove(i);
+                    children.remove(i);
                     i--;
                     childCount--;
                 }
@@ -610,14 +611,15 @@ public class ViewPoolProcessor
         int childCount = component.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = component.getChildren();
             for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (child != null && child.isTransient() && id == null)
                 {
                     //Remove both transient not facelets bound components
-                    component.getChildren().remove(i);
+                    children.remove(i);
                     i--;
                     childCount--;
                 }
@@ -671,7 +673,7 @@ public class ViewPoolProcessor
                         if (!found)
                         {
                             //Remove it, because for this dynamic state it it does not exists.
-                            component.getChildren().remove(i);
+                            children.remove(i);
                             i--;
                             childCount--;
                         }
@@ -702,13 +704,14 @@ public class ViewPoolProcessor
         int childCount = component.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = component.getChildren();
             for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (child != null && child.isTransient() &&
                     child.getAttributes().get(ComponentSupport.MARK_CREATED) == null)
                 {
-                    component.getChildren().remove(i);
+                    children.remove(i);
                     i--;
                     childCount--;
                 }
@@ -757,14 +760,15 @@ public class ViewPoolProcessor
             root.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, ViewPoolProcessor.RESET_MODE_HARD);
             if (childCount > 0)
             {
+                List<UIComponent> children = root.getChildren();
                 for (int i = 0; i < childCount; i++)
                 {
-                    UIComponent child = root.getChildren().get(i);
+                    UIComponent child = children.get(i);
                     boolean containsFaceletId = child.getAttributes().containsKey(ComponentSupport.MARK_CREATED);
                     if (child != null && child.isTransient() && !containsFaceletId)
                     {
                         //Transient and not bound to facelets tag, remove it!.
-                        root.getChildren().remove(i);
+                        children.remove(i);
                         i--;
                         childCount--;
                     }
@@ -773,7 +777,7 @@ public class ViewPoolProcessor
                         if (child.getAttributes().containsKey(ComponentSupport.COMPONENT_ADDED_BY_HANDLER_MARKER))
                         {
                             //Dynamically added or moved, remove it!
-                            root.getChildren().remove(i);
+                            children.remove(i);
                             i--;
                             childCount--;
 
@@ -798,7 +802,7 @@ public class ViewPoolProcessor
                                 }
                                 else
                                 {
-                                    root.getChildren().remove(i);
+                                    children.remove(i);
                                     i--;
                                     childCount--;
                                 }
@@ -811,7 +815,7 @@ public class ViewPoolProcessor
                         else
                         {
                             // Non facelets component, remove it!.
-                            root.getChildren().remove(i);
+                            children.remove(i);
                             i--;
                             childCount--;
                         }
@@ -836,14 +840,15 @@ public class ViewPoolProcessor
         int childCount = component.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = component.getChildren();
             for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 boolean containsFaceletId = child.getAttributes().containsKey(ComponentSupport.MARK_CREATED);
                 if (child.isTransient() && !containsFaceletId)
                 {
                     //Transient and not bound to facelets tag, remove it!.
-                    component.getChildren().remove(i);
+                    children.remove(i);
                     i--;
                     childCount--;
                 }
@@ -852,7 +857,7 @@ public class ViewPoolProcessor
                     if (child.getAttributes().containsKey(ComponentSupport.COMPONENT_ADDED_BY_HANDLER_MARKER))
                     {
                         //Dynamically added or moved, remove it!
-                        component.getChildren().remove(i);
+                        children.remove(i);
                         i--;
                         childCount--;
 
@@ -877,7 +882,7 @@ public class ViewPoolProcessor
                             }
                             else
                             {
-                                component.getChildren().remove(i);
+                                children.remove(i);
                                 i--;
                                 childCount--;
                             }
@@ -890,7 +895,7 @@ public class ViewPoolProcessor
                     else
                     {
                         // Non facelets component, remove it!.
-                        component.getChildren().remove(i);
+                        children.remove(i);
                         i--;
                         childCount--;
                     }

@@ -529,9 +529,10 @@ public final class RendererUtils
         int childCount = component.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = component.getChildren();
             for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 child.encodeAll(facesContext);
             }
         }
@@ -813,7 +814,7 @@ public final class RendererUtils
             final ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
             final Resource resource;
 
-            final String libraryName = (String) component.getAttributes().get(ComponentAttrs.LIBRARY_ATTR);
+            final String libraryName = (String) attributes.get(ComponentAttrs.LIBRARY_ATTR);
             if ((libraryName != null) && (libraryName.length() > 0))
             {
                 resource = resourceHandler.createResource(resourceName, libraryName);
@@ -849,7 +850,7 @@ public final class RendererUtils
         }
         else
         {
-            String value = (String) component.getAttributes().get(attributeName);
+            String value = (String) attributes.get(attributeName);
             return toResourceUri(facesContext, value);
         }
     }

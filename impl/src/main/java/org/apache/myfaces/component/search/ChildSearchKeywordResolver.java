@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.component.search;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import jakarta.faces.FacesException;
@@ -55,15 +56,17 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
             }
 
             int count = 0;
-            for (int i = 0; i < current.getChildCount(); i++)
+            List<UIComponent> children = current.getChildren();
+            int n = children.size();
+            for (int i = 0; i < n; i++)
             {
-                if (!(current.getChildren().get(i) instanceof UntargetableComponent))
+                if (!(children.get(i) instanceof UntargetableComponent))
                 {
                     count++;
                 }
                 if (count == childNumber + 1)
                 {
-                    expressionContext.invokeContextCallback(current.getChildren().get(childNumber));
+                    expressionContext.invokeContextCallback(children.get(i));
                     break;
                 }
             }
