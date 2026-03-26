@@ -25,6 +25,7 @@ import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.renderkit.RendererUtils;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.html.HtmlPanelGroup;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -57,69 +58,111 @@ public class HtmlGroupRendererBase extends HtmlRenderer
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException
     {
+        RendererUtils.checkParamValidity(context, component, UIPanel.class);
+        if (!needsWrapper(context, component))
+        {
+            return;
+        }
+        writeWrapperStart(context, component);
     }
 
     @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException
     {
+        RendererUtils.renderChildren(context, component);
     }
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException
     {
-        ResponseWriter writer = context.getResponseWriter();
-        boolean span = false;
+        if (!needsWrapper(context, component))
+        {
+            return;
+        }
+        context.getResponseWriter().endElement(layoutElementFor((HtmlPanelGroup) component));
+    }
 
-        // will be SPAN or DIV, depending on the layout attribute value
-        String layoutElement = HTML.SPAN_ELEM;
+    private static String layoutElementFor(HtmlPanelGroup panelGroup)
+    {
+        String layout = panelGroup.getLayout();
+        return layout != null && layout.equals(LAYOUT_BLOCK_VALUE) ? HTML.DIV_ELEM : HTML.SPAN_ELEM;
+    }
+
+    private boolean needsWrapper(FacesContext context, UIComponent component)
+    {
+        HtmlPanelGroup panelGroup = (HtmlPanelGroup) component;
+        Map<String, List<ClientBehavior>> behaviors = panelGroup.getClientBehaviors();
+        if (hasClientBehaviors(behaviors) || shouldRenderId(context, component))
+        {
+            return true;
+        }
+        if (isCommonPropertiesOptimizationEnabled(context))
+        {
+            return CommonHtmlAttributesUtil.getMarkedAttributes(component) > 0;
+        }
+        return hasAnyPassthroughAttribute(component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+    }
+
+    private static boolean hasClientBehaviors(Map<String, List<ClientBehavior>> behaviors)
+    {
+        return behaviors != null && !behaviors.isEmpty();
+    }
+
+    private static boolean hasAnyPassthroughAttribute(UIComponent component, String[] attributes)
+    {
+        for (String attrName : attributes)
+        {
+            Object value = component.getAttributes().get(attrName);
+            if (!RendererUtils.isDefaultAttributeValue(value))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void writeWrapperStart(FacesContext context, UIComponent component) throws IOException
+    {
+        ResponseWriter writer = context.getResponseWriter();
 
         HtmlPanelGroup panelGroup = (HtmlPanelGroup) component;
+        String layoutElement = layoutElementFor(panelGroup);
 
-        // if layout is 'block', render DIV instead SPAN
-        String layout = panelGroup.getLayout();
-        if (layout != null && layout.equals(LAYOUT_BLOCK_VALUE))
-        {
-            layoutElement = HTML.DIV_ELEM;
-        }
-        
         Map<String, List<ClientBehavior>> behaviors = panelGroup.getClientBehaviors();
-        if (behaviors != null && !behaviors.isEmpty())
+        if (hasClientBehaviors(behaviors))
         {
             ResourceUtils.renderDefaultJsfJsInlineIfNecessary(context, writer);
         }
 
-        if (!behaviors.isEmpty() || shouldRenderId(context, component))
+        if (hasClientBehaviors(behaviors) || shouldRenderId(context, component))
         {
-            span = true;
-
             writer.startElement(layoutElement, component);
 
-            //HtmlRendererUtils.writeIdIfNecessary(writer, component, context);
             writer.writeAttribute(HTML.ID_ATTR, component.getClientId(context), null);
 
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(context))
             {
                 commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
-                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer, 
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer,
                         commonPropertiesMarked, component);
             }
             else
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.UNIVERSAL_ATTRIBUTES);
             }
-            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(context))
+            if (!hasClientBehaviors(behaviors) && isCommonPropertiesOptimizationEnabled(context))
             {
-                CommonHtmlAttributesUtil.renderEventProperties(writer, 
+                CommonHtmlAttributesUtil.renderEventProperties(writer,
                         commonPropertiesMarked, component);
             }
             else
             {
                 if (isCommonEventsOptimizationEnabled(context))
                 {
-                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(context, writer, 
-                           commonPropertiesMarked,
-                           CommonHtmlEventsUtil.getMarkedEvents(component), component, behaviors);
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(context, writer,
+                            commonPropertiesMarked,
+                            CommonHtmlEventsUtil.getMarkedEvents(component), component, behaviors);
                 }
                 else
                 {
@@ -134,7 +177,6 @@ public class HtmlGroupRendererBase extends HtmlRenderer
                 long commonAttributesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
                 if (commonAttributesMarked > 0)
                 {
-                    span = true;
                     writer.startElement(layoutElement, component);
                     HtmlRendererUtils.writeIdIfNecessary(writer, component, context);
 
@@ -144,17 +186,11 @@ public class HtmlGroupRendererBase extends HtmlRenderer
             }
             else
             {
-                span = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
-                                                                                 component,
-                                                                                 layoutElement,
-                                                                                 HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+                HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
+                        component,
+                        layoutElement,
+                        HTML.COMMON_PASSTROUGH_ATTRIBUTES);
             }
-        }
-
-        RendererUtils.renderChildren(context, component);
-        if (span)
-        {
-            writer.endElement(layoutElement);
         }
     }
 
