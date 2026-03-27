@@ -132,7 +132,7 @@ public class DebugPhaseListener implements PhaseListener
             newValue = Arrays.deepToString((Object[]) newValue);
         }
         
-        // NOTE that the call stack does not make much sence here
+        // NOTE that the call stack does not make much sense here
         
         // create the debug-info array
         // structure:
