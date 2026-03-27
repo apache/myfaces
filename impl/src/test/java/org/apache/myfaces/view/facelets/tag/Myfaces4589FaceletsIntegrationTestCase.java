@@ -42,8 +42,12 @@ import org.junit.jupiter.api.Test;
  * <strong>fails</strong> until the implementation is fixed; it should <strong>pass</strong> once request beans
  * {@code color} / {@code icon} are not shadowed by taglib/composite attribute names.
  * </p>
+ * <p>
+ * {@code @Disabled} so the suite stays green until MYFACES-4589 production support is restored (same pattern as
+ * {@link Myfaces4585FaceletsIntegrationTestCase}).
+ * </p>
  */
-@Disabled
+@Disabled("MYFACES-4589: fails until taglib/composite VariableMapper behaviour is fixed (t:tagAttribute reproducer)")
 public class Myfaces4589FaceletsIntegrationTestCase extends AbstractFaceletTestCase
 {
 
