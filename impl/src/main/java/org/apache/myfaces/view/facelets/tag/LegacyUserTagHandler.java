@@ -38,7 +38,7 @@ import jakarta.faces.view.facelets.TagException;
 import jakarta.faces.view.facelets.TagHandler;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
-import org.apache.myfaces.view.facelets.el.TaglibAttributeVariableMapper;
+import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
 
 /**
@@ -111,8 +111,7 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
             // setup a variable map
             if (this._vars.length > 0)
             {
-                VariableMapper varMapper = new TaglibAttributeVariableMapper(
-                        TaglibAttributeVariableMapper.unwrapTaglibAttributeScopes(orig));
+                VariableMapper varMapper = new VariableMapperWrapper(orig);
                 for (int i = 0; i < this._vars.length; i++)
                 {
                     varMapper.setVariable(names[i], values[i]);

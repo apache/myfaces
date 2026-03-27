@@ -27,7 +27,6 @@ import java.util.Map;
 
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
-import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -43,7 +42,6 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
-import org.apache.myfaces.view.facelets.el.TaglibAttributeVariableMapper;
 import org.apache.myfaces.view.facelets.impl.TemplateContextImpl;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
@@ -98,7 +96,6 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
             ELException
     {
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-        VariableMapper orig = ctx.getVariableMapper();
         // eval include
         try
         {
@@ -123,9 +120,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
             {
                 if (this._vars.length > 0)
                 {
-                    boolean alwaysRecompile =
-                            ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode());
-                    if (alwaysRecompile)
+                    if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
                     {
                         FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
                         for (int i = 0; i < this._vars.length; i++)
@@ -142,24 +137,6 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
                             ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
                         }
                     }
-
-                    // MYFACES-4585: same taglib names must be on VariableMapper (as LegacyUserTagHandler does),
-                    // so EL evaluated outside TemplateContext-only paths resolves correctly (e.g. nested components).
-                    // MYFACES-4589 / nested taglib: do not delegate to ancestor user-tag attribute bindings.
-                    VariableMapper varMapper = new TaglibAttributeVariableMapper(
-                            TaglibAttributeVariableMapper.unwrapTaglibAttributeScopes(orig));
-                    for (int i = 0; i < this._vars.length; i++)
-                    {
-                        if (alwaysRecompile)
-                        {
-                            varMapper.setVariable(names[i], new FaceletStateValueExpression(uniqueId, names[i]));
-                        }
-                        else
-                        {
-                            varMapper.setVariable(names[i], values[i]);
-                        }
-                    }
-                    ctx.setVariableMapper(varMapper);
                 }
 
                 // Disable caching always, even in 'always' mode
@@ -173,10 +150,6 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
             finally
             {
                 fcc.endComponentUniqueIdSection();
-                if (this._vars.length > 0)
-                {
-                    ctx.setVariableMapper(orig);
-                }
             }
         }
         catch (FileNotFoundException e)
