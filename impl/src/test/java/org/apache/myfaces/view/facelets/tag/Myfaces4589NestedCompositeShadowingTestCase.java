@@ -27,10 +27,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * MYFACES-4589: ancestor Facelets taglib attribute short names (e.g. {@code color}) must not
- * shadow managed beans with the same identifier inside nested composite implementations.
+ * MYFACES-4589: outer composite passes {@code color="#{cc.attrs.color}"} (a String) into inner composite; inner
+ * implementation uses {@code #{color.blue}} and must resolve the request-scoped <em>bean</em> {@code color}, not
+ * shadow the composite attribute name. Unfixed implementations may throw
+ * {@code Property [blue] not found on type [java.lang.String]} during {@link #render}.
  */
-public class UserTagHandlerCompositeBeanShadowing4589TestCase extends AbstractFaceletTestCase
+public class Myfaces4589NestedCompositeShadowingTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -47,16 +49,34 @@ public class UserTagHandlerCompositeBeanShadowing4589TestCase extends AbstractFa
     }
 
     @Test
-    public void testBeanNotShadowedByTaglibAttributeInNestedComposite4589() throws Exception
+    public void testInnerCompositeColorBlueMustResolveBeanNotStringAttribute4589() throws Exception
     {
         facesContext.getExternalContext().getRequestMap().put("color", new ColorBean());
 
         UIViewRoot root = facesContext.getViewRoot();
-        vdl.buildView(facesContext, root, "user4589_main.xhtml");
+        vdl.buildView(facesContext, root, "nested4589.xhtml");
 
         String out = render(root);
         Assertions.assertTrue(out.contains("MYFACES4589_OK"),
-                "expected #{color.blue} to resolve bean, not taglib attribute: " + out);
+                "inner composite #{color.blue} must use Color bean getBlue(), not String.blue; output was: " + out);
+    }
+
+    /**
+     * Same as {@link #testInnerCompositeColorBlueMustResolveBeanNotStringAttribute4589()} but the outer composite is
+     * wrapped by a user taglib that registers short name {@code color} (external reproducer / OmniFaces-style).
+     */
+    @Test
+    public void testUserTaglibThenInnerCompositeColorBlueMustResolveBean4589() throws Exception
+    {
+        facesContext.getExternalContext().getRequestMap().put("color", new ColorBean());
+
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "nested_user4589.xhtml");
+
+        String out = render(root);
+        Assertions.assertTrue(out.contains("MYFACES4589_OK"),
+                "MYFACES-4589: inner #{color.blue} must resolve bean after user taglib color= pass-through; output: "
+                        + out);
     }
 
     public static class ColorBean

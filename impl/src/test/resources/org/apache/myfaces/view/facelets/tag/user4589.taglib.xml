@@ -28,4 +28,10 @@
         <tag-name>panel</tag-name>
         <source>user4589_panel.xhtml</source>
     </tag>
+
+    <!-- MYFACES-4589: user taglib short name color + nested composites (outer passes string into inner #{color.blue}) -->
+    <tag>
+        <tag-name>nestedPanel4589</tag-name>
+        <source>user4589_nested_panel.xhtml</source>
+    </tag>
 </facelet-taglib>
