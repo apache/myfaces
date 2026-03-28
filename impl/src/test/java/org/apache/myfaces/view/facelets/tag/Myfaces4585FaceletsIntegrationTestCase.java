@@ -37,7 +37,6 @@ import jakarta.faces.convert.ConverterException;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -59,12 +58,9 @@ import org.junit.jupiter.api.Test;
  * names there).
  * </p>
  * <p>
- * The test currently <strong>fails</strong> during render with {@code MethodNotFoundException} on {@code String}
- * (e.g. {@code String.suggest(String)}) until MYFACES-4585 is fixed; it is {@code @Disabled} so the suite stays green,
- * same as {@link Myfaces4589FaceletsIntegrationTestCase}.
+ * Regression test for MYFACES-4585 (must stay enabled once fixed).
  * </p>
  */
-@Disabled("MYFACES-4585: fails until UserTagHandler taglib bindings resolve converter for EL outside TemplateContext")
 public class Myfaces4585FaceletsIntegrationTestCase extends AbstractFaceletTestCase
 {
 

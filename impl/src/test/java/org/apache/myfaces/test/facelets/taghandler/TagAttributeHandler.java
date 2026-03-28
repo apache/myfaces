@@ -55,7 +55,7 @@ public class TagAttributeHandler extends TagHandler
     public void apply(FaceletContext context, UIComponent parent) throws IOException
     {
         DelegatingVariableMapper variableMapper = getDelegatingVariableMapper(context);
-        ValueExpression valueExpression = variableMapper.resolveWrappedVariable(name);
+        ValueExpression valueExpression = variableMapper.resolveWrappedVariable(name, context);
 
         if (valueExpression == null)
         {

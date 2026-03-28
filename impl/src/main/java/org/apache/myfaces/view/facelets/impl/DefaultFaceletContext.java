@@ -506,6 +506,21 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     }
 
     @Override
+    public ValueExpression resolveTemplateParameterInEnclosingContext(String name)
+    {
+        if (name == null || _currentTemplateContext <= 0)
+        {
+            return null;
+        }
+        TemplateContext enclosing = _isolatedTemplateContext.get(_currentTemplateContext - 1);
+        if (enclosing.containsParameter(name))
+        {
+            return enclosing.getParameter(name);
+        }
+        return null;
+    }
+
+    @Override
     public boolean includeCompositeComponentDefinition(UIComponent parent, String name)
             throws IOException, FaceletException, FacesException, ELException
     {
