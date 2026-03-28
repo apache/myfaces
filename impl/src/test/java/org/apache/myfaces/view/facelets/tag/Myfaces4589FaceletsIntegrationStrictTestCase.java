@@ -19,17 +19,17 @@
 package org.apache.myfaces.view.facelets.tag;
 
 /**
- * MYFACES-4585 with {@code org.apache.myfaces.STRICT_JSF_2_FACELETS_COMPATIBILITY=false} (default Facelets user-tag path).
+ * MYFACES-4589 with {@code org.apache.myfaces.STRICT_JSF_2_FACELETS_COMPATIBILITY=true} (legacy strict Facelets path).
  *
- * @see Myfaces4585FaceletsIntegrationStrictTestCase
- * @see AbstractMyfaces4585FaceletsIntegrationTestCase
+ * @see Myfaces4589FaceletsIntegrationTestCase
+ * @see AbstractMyfaces4589FaceletsIntegrationTestCase
  */
-public class Myfaces4585FaceletsIntegrationTestCase extends AbstractMyfaces4585FaceletsIntegrationTestCase
+public class Myfaces4589FaceletsIntegrationStrictTestCase extends AbstractMyfaces4589FaceletsIntegrationTestCase
 {
 
     @Override
     protected boolean strictJsf2FaceletsCompatibility()
     {
-        return false;
+        return true;
     }
 }

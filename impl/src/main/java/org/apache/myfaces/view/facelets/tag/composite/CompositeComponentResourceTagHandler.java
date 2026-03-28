@@ -59,6 +59,7 @@ import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
+import org.apache.myfaces.view.facelets.el.VariableMapperOverlaySupport;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
@@ -701,27 +702,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
 
             if (handler != null)
             {
-                AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-                // Pop the current composite component on stack, so #{cc} references
-                // can be resolved correctly, because they are relative to the page 
-                // that define it.
-                FaceletCompositionContext fcc = actx.getFaceletCompositionContext(); 
-                UIComponent innerCompositeComponent = fcc.getCompositeComponentFromStack(); 
-                fcc.popCompositeComponentToStack();
-                // Pop the template context, so ui:xx tags and nested composite component
-                // cases could work correctly 
-                TemplateContext itc = actx.popTemplateContext();
-                try
-                {
-                    handler.apply(ctx, parent);
-                }
-                finally
-                {
-                    actx.pushTemplateContext(itc);
-                    fcc.pushCompositeComponentToStack(innerCompositeComponent);
-                }
+                applyCompositeConsumerDefinition((AbstractFaceletContext) ctx, () -> handler.apply(ctx, parent));
                 return true;
-                
             }
             else
             {
@@ -731,32 +713,49 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         }
         else
         {
-            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-            // Pop the current composite component on stack, so #{cc} references
-            // can be resolved correctly, because they are relative to the page 
-            // that define it.
-            FaceletCompositionContext fcc = actx.getFaceletCompositionContext(); 
-            UIComponent innerCompositeComponent = fcc.getCompositeComponentFromStack(); 
-            fcc.popCompositeComponentToStack();
-            // Pop the template context, so ui:xx tags and nested composite component
-            // cases could work correctly 
-            TemplateContext itc = actx.popTemplateContext();
-            try
+            applyCompositeConsumerDefinition((AbstractFaceletContext) ctx, () ->
             {
                 for (int i = 0; i < _componentHandlers.size(); i++)
                 {
                     _componentHandlers.get(i).apply(ctx, parent);
                 }
-            }
-            finally
-            {
-                actx.pushTemplateContext(itc);
-                fcc.pushCompositeComponentToStack(innerCompositeComponent);
-            }
+            });
             return true;
         }
     }
-    
+
+    @FunctionalInterface
+    private interface CompositeConsumerDefinitionAction
+    {
+        void run() throws IOException, FacesException, FaceletException, ELException;
+    }
+
+    /**
+     * Applies {@code cc:insertFacet} / default-body ({@code cc:insertChildren}) markup: pop composite + template
+     * context, peel third-party taglib {@code VariableMapper} overlays for that scope (MYFACES-4589), then restore.
+     */
+    private static void applyCompositeConsumerDefinition(
+            AbstractFaceletContext actx, CompositeConsumerDefinitionAction action)
+            throws IOException, FacesException, FaceletException, ELException
+    {
+        FaceletCompositionContext fcc = actx.getFaceletCompositionContext();
+        UIComponent innerCompositeComponent = fcc.getCompositeComponentFromStack();
+        fcc.popCompositeComponentToStack();
+        TemplateContext itc = actx.popTemplateContext();
+        VariableMapper mapperOrig = actx.getVariableMapper();
+        actx.setVariableMapper(VariableMapperOverlaySupport.unwrapExternalWrappedDelegateChain(mapperOrig));
+        try
+        {
+            action.run();
+        }
+        finally
+        {
+            actx.setVariableMapper(mapperOrig);
+            actx.pushTemplateContext(itc);
+            fcc.pushCompositeComponentToStack(innerCompositeComponent);
+        }
+    }
+
     private void checkFacetRequired(FaceletContext ctx, String name)
     {
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;

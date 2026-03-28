@@ -29,9 +29,15 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+
 /**
- * Facelets tag handler mirroring OmniFaces {@code o:tagAttribute} for MYFACES-4589 integration tests without the full
- * OmniFaces {@code faces-config.xml} on the classpath.
+ * Facelets tag handler mirroring OmniFaces {@code o:tagAttribute} for MYFACES-4585/4589 integration tests.
+ * <p>
+ * Bindings are applied with {@link org.apache.myfaces.view.facelets.TemplateContext#setParameter} (same mechanism
+ * as {@code UserTagHandler}), not by replacing {@link FaceletContext#getVariableMapper()}. Installing a delegating
+ * mapper for taglib attribute names leaks across {@code cc:insertChildren} and shadows consumer EL (MYFACES-4589).
+ * </p>
  * <p>
  * Derived from OmniFaces {@code org.omnifaces.taghandler.TagAttribute} (Apache License 2.0, Copyright OmniFaces).
  * </p>
@@ -54,8 +60,10 @@ public class TagAttributeHandler extends TagHandler
     @Override
     public void apply(FaceletContext context, UIComponent parent) throws IOException
     {
-        DelegatingVariableMapper variableMapper = getDelegatingVariableMapper(context);
-        ValueExpression valueExpression = variableMapper.resolveWrappedVariable(name, context);
+        AbstractFaceletContext actx = (AbstractFaceletContext) context;
+        VariableMapper currentMapper = context.getVariableMapper();
+        DelegatingVariableMapper probe = new DelegatingVariableMapper(currentMapper);
+        ValueExpression valueExpression = probe.resolveWrappedVariable(name, context);
 
         if (valueExpression == null)
         {
@@ -67,12 +75,15 @@ public class TagAttributeHandler extends TagHandler
             {
                 valueExpression = createValueExpression(context,
                         "#{'j_ido" + context.generateUniqueId(this.tagId) + "'}", String.class);
-                variableMapper.setWrappedVariable(name, valueExpression);
+                actx.getTemplateContext().setParameter(name, valueExpression);
                 return;
             }
         }
 
-        variableMapper.setVariable(name, valueExpression);
+        if (valueExpression != null)
+        {
+            actx.getTemplateContext().setParameter(name, valueExpression);
+        }
     }
 
     private static ValueExpression createValueExpression(FaceletContext context, String expression, Class<?> type)
@@ -80,19 +91,5 @@ public class TagAttributeHandler extends TagHandler
         FacesContext facesContext = context.getFacesContext();
         return facesContext.getApplication().getExpressionFactory().createValueExpression(
                 facesContext.getELContext(), expression, type);
-    }
-
-    private DelegatingVariableMapper getDelegatingVariableMapper(FaceletContext context)
-    {
-        VariableMapper variableMapper = context.getVariableMapper();
-
-        if (variableMapper instanceof DelegatingVariableMapper)
-        {
-            return (DelegatingVariableMapper) variableMapper;
-        }
-
-        DelegatingVariableMapper delegatingVariableMapper = new DelegatingVariableMapper(variableMapper);
-        context.setVariableMapper(delegatingVariableMapper);
-        return delegatingVariableMapper;
     }
 }

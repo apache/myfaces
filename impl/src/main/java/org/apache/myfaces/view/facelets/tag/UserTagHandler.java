@@ -27,6 +27,7 @@ import java.util.Map;
 
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -48,9 +49,10 @@ import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
 
 /**
- * A Tag that is specified in a FaceletFile. Takes all attributes specified and sets them on the FaceletContext before
- * including the targeted Facelet file.
- * 
+ * A Tag that is specified in a FaceletFile. Binds taglib attributes on the Facelets template context, includes the
+ * targeted Facelet, then restores the template stack and the {@linkplain jakarta.el.VariableMapper VariableMapper} so
+ * tag-attribute overlays (e.g. OmniFaces {@code o:tagAttribute}) do not leak past the tag (MYFACES-4589).
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -83,11 +85,9 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
     }
 
     /**
-     * Iterate over all TagAttributes and set them on the FaceletContext's VariableMapper, then include the target
-     * Facelet. Finally, replace the old VariableMapper.
-     * 
+     * Binds taglib attributes on the current template context, includes the target Facelet, then restores state.
+     *
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
-     * @see jakarta.el.VariableMapper
      * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
      *        jakarta.faces.component.UIComponent)
      */
@@ -96,6 +96,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
             ELException
     {
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        VariableMapper userTagVariableMapperOrig = ctx.getVariableMapper();
         // eval include
         try
         {
@@ -161,6 +162,8 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
             // make sure we undo our changes
             actx.popClient(this);
             actx.popTemplateContext();
+            // Restore mapper so taglib overlays (e.g. o:tagAttribute) do not leak past this tag (MYFACES-4589).
+            ctx.setVariableMapper(userTagVariableMapperOrig);
         }
     }
 
