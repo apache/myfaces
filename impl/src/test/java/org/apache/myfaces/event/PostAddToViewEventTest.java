@@ -27,6 +27,7 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.faces.event.PhaseId;
 
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
@@ -35,7 +36,7 @@ import org.easymock.IAnswer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class PostAddToViewEventTest extends AbstractMyFacesRequestTestCase
+public class PostAddToViewEventTest extends AbstractMyFacesCDIRequestTestCase
 {
     
     

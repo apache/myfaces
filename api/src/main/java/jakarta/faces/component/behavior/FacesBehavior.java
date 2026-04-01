@@ -18,6 +18,7 @@
  */
 package jakarta.faces.component.behavior;
 
+import jakarta.enterprise.inject.Stereotype;
 import jakarta.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -28,19 +29,50 @@ import jakarta.inject.Qualifier;
 import java.util.Objects;
 
 /**
+ * <p class="changed_added_2_0 changed_modified_2_3">
+ * The presence of this annotation on a class automatically registers the class with the runtime as a {@link Behavior}.
+ * The value of this annotation attribute is taken to be the <em>behavior-id</em> with which instances of this class of
+ * behavior can be instantiated by calling
+ * {@link jakarta.faces.application.Application#createBehavior(java.lang.String)}
+ * </p>
+ *
  * @since 2.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Inherited
 @Qualifier
+@Stereotype
 public @interface FacesBehavior
 {
+    /**
+     * The value of this annotation attribute is taken to be the <em>behavior-id</em> with which instances of this class of
+     * behavior can be instantiated.
+     * @return the <em>behavior-id</em>
+     */
     public String value();
-    
+
+    /**
+     * <p class="changed_added_2_3">
+     * The value of this annotation attribute is taken to be an indicator that flags whether or not the given behavior is a
+     * CDI managed behavior.
+     * </p>
+     *
+     * <p class="changed_modified_5_0">
+     * Since Faces 5.0, all behaviors are CDI managed. This attribute is ignored.
+     * </p>
+     *
+     * @return true if CDI managed, false otherwise.
+     * @deprecated Since 5.0. All behaviors are now CDI managed. This attribute is ignored.
+     */
+    @Deprecated(since = "5.0", forRemoval = true)
     public boolean managed() default false;
 
-    /*
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link FacesBehavior} qualifier.
+     * </p>
+     *
      * @since 4.0
      */
     public static final class Literal extends AnnotationLiteral<FacesBehavior> implements FacesBehavior

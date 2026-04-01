@@ -22,13 +22,14 @@ import java.util.List;
 import java.util.Set;
 import jakarta.faces.application.StateManager;
 
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.junit.jupiter.api.Test;
 
-public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
+public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
 
     @Override

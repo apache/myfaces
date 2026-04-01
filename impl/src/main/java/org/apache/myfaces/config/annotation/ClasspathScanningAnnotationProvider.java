@@ -18,6 +18,21 @@
  */
 package org.apache.myfaces.config.annotation;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.validator.FacesValidator;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.spi.AnnotationProvider;
+import org.apache.myfaces.spi.AnnotationProviderFactory;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.view.facelets.util.Classpath;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -37,33 +52,15 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jakarta.enterprise.inject.spi.BeanManager;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.component.FacesComponent;
-import jakarta.faces.component.behavior.FacesBehavior;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.convert.FacesConverter;
-import jakarta.faces.event.NamedEvent;
-import jakarta.faces.render.FacesBehaviorRenderer;
-import jakarta.faces.render.FacesRenderer;
-import jakarta.faces.validator.FacesValidator;
-
-import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.util.lang.ClassUtils;
-import org.apache.myfaces.spi.AnnotationProvider;
-import org.apache.myfaces.spi.AnnotationProviderFactory;
-import org.apache.myfaces.view.facelets.util.Classpath;
 
 /**
  * 
  * @since 2.0.2
  * @author Leonardo Uribe
  */
-public class DefaultAnnotationProvider extends AnnotationProvider
+public class ClasspathScanningAnnotationProvider extends AnnotationProvider
 {
-    private static final Logger log = Logger.getLogger(DefaultAnnotationProvider.class.getName());
+    private static final Logger log = Logger.getLogger(ClasspathScanningAnnotationProvider.class.getName());
 
     /**
      * <p>Prefix path used to locate web application classes for this
@@ -120,7 +117,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         JSF_ANNOTATION_CLASSES = Collections.unmodifiableSet(ancl);
     }
 
-    public DefaultAnnotationProvider()
+    public ClasspathScanningAnnotationProvider()
     {
         super();
     }
@@ -128,17 +125,6 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     @Override
     public Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses(ExternalContext ctx)
     {
-        if (MyfacesConfig.getCurrentInstance(ctx).isUseCdiForAnnotationScanning())
-        {
-            BeanManager beanManager = CDIUtils.getBeanManager(ctx);
-            CdiAnnotationProviderExtension extension = CDIUtils.getOptional(beanManager,
-                    CdiAnnotationProviderExtension.class);
-            if (extension != null)
-            {
-                return extension.getMap();
-            }
-        }
-
         Map<Class<? extends Annotation>, Set<Class<?>>> map = new HashMap<>();
         Collection<Class<?>> classes = null;
 
@@ -216,7 +202,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                 }
                 catch(IOException e)
                 {
-                    log.log(Level.SEVERE, "cannot scan jar file for annotations:"+url, e);
+                    log.log(Level.SEVERE, "cannot scan jar file for annotations:" + url, e);
                 }
             }
             return list;

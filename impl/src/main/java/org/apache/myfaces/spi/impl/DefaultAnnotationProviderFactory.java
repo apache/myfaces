@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.spi.impl;
 
-import org.apache.myfaces.config.annotation.DefaultAnnotationProvider;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
@@ -96,6 +95,6 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
                     getServiceProviderList(ANNOTATION_PROVIDER);
             externalContext.getApplicationMap().put(ANNOTATION_PROVIDER_LIST, classList);
         }
-        return ClassUtils.buildApplicationObject(AnnotationProvider.class, classList, new DefaultAnnotationProvider());
+        return ClassUtils.buildApplicationObject(AnnotationProvider.class, classList, new CDIAnnotationProvider());
     }
 }
