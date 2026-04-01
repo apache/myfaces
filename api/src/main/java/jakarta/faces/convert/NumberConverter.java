@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Currency;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.PartialStateHolder;
@@ -61,6 +62,11 @@ public class NumberConverter implements Converter<Number>, PartialStateHolder
     public static final String PATTERN_ID = "jakarta.faces.converter.NumberConverter.PATTERN";
     public static final String PERCENT_ID = "jakarta.faces.converter.NumberConverter.PERCENT";
 
+    private static final Pattern FIXED_WIDTH_WHITESPACE =
+            Pattern.compile("[\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000]");
+    private static final Pattern ZERO_WIDTH_WHITESPACE =
+            Pattern.compile("[\u200b-\u200d\u2060\ufeff]");
+
     private String _currencyCode;
     private String _currencySymbol;
     private Locale _locale;
@@ -93,7 +99,7 @@ public class NumberConverter implements Converter<Number>, PartialStateHolder
         {
             return null;
         }
-        
+
         NumberFormat format = getNumberFormat(facesContext);
         format.setParseIntegerOnly(_integerOnly);
 
@@ -116,65 +122,87 @@ public class NumberConverter implements Converter<Number>, PartialStateHolder
             }
         }
 
-        DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
-        boolean changed = false;
-        if(dfs.getGroupingSeparator() == '\u00a0')
-        {
-            dfs.setGroupingSeparator(' ');
-            df.setDecimalFormatSymbols(dfs);
-            value = value.replace('\u00a0', ' ');
-            changed = true;
-        }
-
         formatCurrency(format);
 
         try
         {
+            DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
+            char origGroupingSep = symbols.getGroupingSeparator();
+            String origPrefix = df.getPositivePrefix();
+            String origSuffix = df.getPositiveSuffix();
+            String origNegPrefix = df.getNegativePrefix();
+            String origNegSuffix = df.getNegativeSuffix();
+
+            boolean hasFixedWidthWhitespace =
+                    FIXED_WIDTH_WHITESPACE.matcher(String.valueOf(origGroupingSep)).matches()
+                    || FIXED_WIDTH_WHITESPACE.matcher(origPrefix).find()
+                    || FIXED_WIDTH_WHITESPACE.matcher(origSuffix).find()
+                    || FIXED_WIDTH_WHITESPACE.matcher(origNegPrefix).find()
+                    || FIXED_WIDTH_WHITESPACE.matcher(origNegSuffix).find();
+
+            if (hasFixedWidthWhitespace)
+            {
+                String normalizedValue = normalizeWhitespace(value);
+
+                if (FIXED_WIDTH_WHITESPACE.matcher(String.valueOf(origGroupingSep)).matches())
+                {
+                    symbols.setGroupingSeparator(' ');
+                }
+
+                df.setDecimalFormatSymbols(symbols);
+                df.setPositivePrefix(normalizeWhitespace(origPrefix));
+                df.setPositiveSuffix(normalizeWhitespace(origSuffix));
+                df.setNegativePrefix(normalizeWhitespace(origNegPrefix));
+                df.setNegativeSuffix(normalizeWhitespace(origNegSuffix));
+
+                try
+                {
+                    return parse(normalizedValue, format, destType);
+                }
+                catch (ParseException pe)
+                {
+                    symbols.setGroupingSeparator(origGroupingSep);
+                    df.setDecimalFormatSymbols(symbols);
+                    df.setPositivePrefix(origPrefix);
+                    df.setPositiveSuffix(origSuffix);
+                    df.setNegativePrefix(origNegPrefix);
+                    df.setNegativeSuffix(origNegSuffix);
+                }
+            }
+
             return parse(value, format, destType);
         }
         catch (ParseException e)
         {
-            if(changed)
+            if (getPattern() != null)
             {
-                dfs.setGroupingSeparator('\u00a0');
-                df.setDecimalFormatSymbols(dfs);
+                throw new ConverterException(MessageUtils.getErrorMessage(facesContext,
+                        PATTERN_ID,
+                        new Object[]{value, "$###,###", MessageUtils.getLabel(facesContext, uiComponent)}));
             }
-            try
+            else if (getType().equals("number"))
             {
-                return parse(value, format, destType);
+                throw new ConverterException(MessageUtils.getErrorMessage(facesContext,
+                        NUMBER_ID,
+                        new Object[]{value, format.format(21),
+                                     MessageUtils.getLabel(facesContext, uiComponent)}));
             }
-            catch (ParseException pe)
+            else if (getType().equals("currency"))
             {
-                if (getPattern() != null)
-                {
-                    throw new ConverterException(MessageUtils.getErrorMessage(facesContext,
-                            PATTERN_ID,
-                            new Object[]{value, "$###,###", MessageUtils.getLabel(facesContext, uiComponent)}));
-                }
-                else if (getType().equals("number"))
-                {
-                    throw new ConverterException(MessageUtils.getErrorMessage(facesContext,
-                            NUMBER_ID,
-                            new Object[]{value, format.format(21),
-                                         MessageUtils.getLabel(facesContext, uiComponent)}));
-                }
-                else if (getType().equals("currency"))
-                {
-                    throw new ConverterException(MessageUtils.getErrorMessage(facesContext,
-                            CURRENCY_ID,
-                            new Object[]{value, format.format(42.25),
-                                         MessageUtils.getLabel(facesContext, uiComponent)}));
-                }
-                else if (getType().equals("percent"))
-                {
-                    throw new ConverterException(MessageUtils.getErrorMessage(facesContext,
-                            PERCENT_ID,
-                            new Object[]{value, format.format(.90),
-                                         MessageUtils.getLabel(facesContext, uiComponent)}));
-                }
+                throw new ConverterException(MessageUtils.getErrorMessage(facesContext,
+                        CURRENCY_ID,
+                        new Object[]{value, format.format(42.25),
+                                     MessageUtils.getLabel(facesContext, uiComponent)}));
+            }
+            else if (getType().equals("percent"))
+            {
+                throw new ConverterException(MessageUtils.getErrorMessage(facesContext,
+                        PERCENT_ID,
+                        new Object[]{value, format.format(.90),
+                                     MessageUtils.getLabel(facesContext, uiComponent)}));
             }
         }
-        
+
         return null;
     }
 
@@ -578,6 +606,12 @@ public class NumberConverter implements Converter<Number>, PartialStateHolder
     private DecimalFormatSymbols getDecimalFormatSymbols()
     {
         return new DecimalFormatSymbols(getLocale());
+    }
+
+    private static String normalizeWhitespace(String text)
+    {
+        String normalized = FIXED_WIDTH_WHITESPACE.matcher(text).replaceAll(" ");
+        return ZERO_WIDTH_WHITESPACE.matcher(normalized).replaceAll("");
     }
     
     private boolean _initialStateMarked = false;
