@@ -53,11 +53,12 @@ public class NumberConverterTest extends AbstractFacesTestCase
         mock = null;
     }
 
-    /*
-     * temporarily comment out tests that fail, until Matthias Wessendorf has time to investigate
+    /**
+     * Requires JDK locale data consistent with the hard-coded input (historically {@code java.locale.providers=COMPAT};
+     * COMPAT is unavailable on newer JDKs).
      */
     @Test
-    @Disabled // java.locale.providers=COMPAT not working currently
+    @Disabled("French currency input vs JDK locale data; enable when expectations match the runtime")
     public void testFranceLocaleWithNonBreakingSpace()
     {
         mock.setLocale(Locale.FRANCE);
@@ -68,9 +69,9 @@ public class NumberConverterTest extends AbstractFacesTestCase
         Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12\u00a0345,68 \u20AC");
         Assertions.assertNotNull(number);
     }
-    
+
     @Test
-    @Disabled // java.locale.providers=COMPAT not working currently
+    @Disabled("French currency input vs JDK locale data; enable when expectations match the runtime")
     public void testFranceLocaleWithoutNonBreakingSpace()
     {
         mock.setLocale(Locale.FRANCE);
@@ -226,6 +227,20 @@ public class NumberConverterTest extends AbstractFacesTestCase
         {
             // expected
         }
+    }
+
+    @Test
+    public void testCzechLocaleNbspGroupingStripsZeroWidthWhitespace()
+    {
+        mock.setLocale(new Locale("cs"));
+        mock.setIntegerOnly(true);
+        mock.setGroupingUsed(true);
+        FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale("cs"));
+        UIInput input = new UIInput();
+        Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input,
+                "7\u200b\u00a0000");
+        Assertions.assertNotNull(number);
+        Assertions.assertEquals(7000L, number.longValue());
     }
 
     @Test

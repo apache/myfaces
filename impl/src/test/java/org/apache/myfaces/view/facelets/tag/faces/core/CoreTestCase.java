@@ -20,6 +20,8 @@
 package org.apache.myfaces.view.facelets.tag.faces.core;
 
 import org.apache.myfaces.view.facelets.tag.faces.core.reset.ResetValuesBean;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -193,15 +195,37 @@ public class CoreTestCase extends AbstractFaceletTestCase
         Assertions.assertNotNull(out5.getConverter());
         DateTimeConverter converter6 = (DateTimeConverter) out6.getConverter();
 
-        Assertions.assertEquals("12/24/69", out1.getConverter().getAsString(
+        TimeZone gmt = TimeZone.getTimeZone("GMT");
+
+        DateFormat shortDate = DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
+        shortDate.setLenient(false);
+        shortDate.setTimeZone(gmt);
+        Assertions.assertEquals(shortDate.format(now), out1.getConverter().getAsString(
                 facesContext, out1, now));
-        Assertions.assertEquals("12/24/69 6:57:12 AM", out2.getConverter()
+
+        DateFormat shortDateMediumTime = DateFormat.getDateTimeInstance(
+                DateFormat.SHORT, DateFormat.MEDIUM, Locale.US);
+        shortDateMediumTime.setLenient(false);
+        shortDateMediumTime.setTimeZone(gmt);
+        Assertions.assertEquals(shortDateMediumTime.format(now), out2.getConverter()
                 .getAsString(facesContext, out2, now));
-        Assertions.assertEquals("Dec 24, 1969", out3.getConverter()
+
+        DateFormat mediumDate = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
+        mediumDate.setTimeZone(TimeZone.getTimeZone("CST"));
+        mediumDate.setLenient(false);
+        Assertions.assertEquals(mediumDate.format(now), out3.getConverter()
                 .getAsString(facesContext, out3, now));
-        Assertions.assertEquals("6:57:12 AM", out4.getConverter()
+
+        DateFormat mediumTime = DateFormat.getTimeInstance(DateFormat.MEDIUM, Locale.US);
+        mediumTime.setLenient(false);
+        mediumTime.setTimeZone(gmt);
+        Assertions.assertEquals(mediumTime.format(now), out4.getConverter()
                 .getAsString(facesContext, out4, now));
-        Assertions.assertEquals("0:57 AM, CST", out5.getConverter()
+
+        SimpleDateFormat patternCst = new SimpleDateFormat("K:mm a, z", Locale.US);
+        patternCst.setTimeZone(TimeZone.getTimeZone("CST"));
+        patternCst.setLenient(false);
+        Assertions.assertEquals(patternCst.format(now), out5.getConverter()
                 .getAsString(facesContext, out5, now));
         Assertions.assertEquals(TimeZone.getTimeZone("GMT"), converter6.getTimeZone());
     }

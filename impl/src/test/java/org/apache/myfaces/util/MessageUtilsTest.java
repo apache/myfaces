@@ -15,6 +15,7 @@
  */
 package org.apache.myfaces.util;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -195,7 +196,8 @@ public class MessageUtilsTest extends AbstractFacesTestCase
     public void testSubstituteParamsWithDELocale() {
         String paramString = MessageUtils.substituteParams(Locale.GERMANY, "currency {0,number,currency}", new Object[]{100});
 
-        Assertions.assertEquals("currency 100,00 \u20ac",paramString);
+        String expected = "currency " + NumberFormat.getCurrencyInstance(Locale.GERMANY).format(100);
+        Assertions.assertEquals(expected, paramString);
     }
 
     /**
