@@ -87,7 +87,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
 
     /**
      * @param component dataTable
-     * @return whether dataTable has newspaper columns layed out horizontally
+     * @return whether dataTable has newspaper columns laid out horizontally
      */
     protected boolean isNewspaperHorizontalOrientation(UIComponent component)
     {
