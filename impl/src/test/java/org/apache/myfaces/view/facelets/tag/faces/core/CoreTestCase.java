@@ -313,6 +313,31 @@ public class CoreTestCase extends AbstractFaceletTestCase
         Assertions.assertTrue(result.contains("???"));
     }
 
+    /**
+     * MYFACES-4426: f:loadBundle must reflect a locale change made via UIViewRoot#setLocale()
+     * during the invoke-application phase (or any time after the initial buildView).
+     * The ResourceBundleMap was previously backed by a fixed ResourceBundle resolved at
+     * buildView time; changing the locale afterwards had no effect.
+     */
+    @Test
+    public void testLoadBundleHandlerRefreshesOnLocaleChange() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        root.setLocale(Locale.ENGLISH);
+        vdl.buildView(facesContext, root, "loadBundle.xml");
+
+        Map<?, ?> bundle = (Map<?, ?>) facesContext.getExternalContext().getRequestMap().get("foo");
+        Assertions.assertNotNull(bundle);
+        Assertions.assertEquals("bar_en", bundle.get("foo"),
+                "English locale should return 'bar_en' (from bundle_en.properties)");
+
+        // Simulate locale change during invoke-application (MYFACES-4426).
+        root.setLocale(Locale.GERMAN);
+
+        Assertions.assertEquals("baz_de", bundle.get("foo"),
+                "After setLocale(GERMAN) the bundle map must return the German value without rebuildView");
+    }
+
     @Test
     public void testValidateDelegateHandler() throws Exception
     {
