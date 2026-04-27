@@ -324,7 +324,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 }
                 finally
                 {
-                    componentResource.setCachedFacesContext(context);
+                    componentResource.setCachedFacesContext(null);
                 }
             }
             else
