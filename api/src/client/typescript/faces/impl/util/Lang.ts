@@ -22,7 +22,7 @@ import {getEventTarget} from "../xhrCore/RequestDataResolver";
 import {Es2019Array} from "mona-dish";
 
 
-export module ExtLang {
+export namespace ExtLang {
 
     let installedLocale: Messages;
     let nameSpace = "impl/util/Lang/";

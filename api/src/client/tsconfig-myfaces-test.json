@@ -32,7 +32,6 @@
 {
   "extends": "./tsconfig-myfaces.json",
   "compilerOptions": {
-    "moduleResolution": "node",
     /**
     * key requirement no github dependencies on code level
     * we have to compile mona-dish in directly on source level
@@ -42,7 +41,7 @@
       "./typescript/faces/@types/"
     ],
     "paths": {
-      "mona-dish": ["./typescript/mona_dish/index.ts"]
+      "mona-dish": ["./typescript/mona_dish_shim.ts"]
     }
   },
   "exclude": [

@@ -86,7 +86,7 @@ describe('Tests on the xhr core when it starts to call the request', function ()
               execute: 'page:fileAjax',
               render: null
             });
-      }).dispatchEvent(new Event("change"));
+      }).dispatchEvent(new window.Event("change"));
 
       expect(this.requests.length).to.eq(1);
       let request = this.requests[0];

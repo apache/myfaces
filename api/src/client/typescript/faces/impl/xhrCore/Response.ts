@@ -43,7 +43,7 @@ import {ExtConfig} from "../util/ExtDomQuery";
 
 
 
-export module Response {
+export namespace Response {
 
 
     /**

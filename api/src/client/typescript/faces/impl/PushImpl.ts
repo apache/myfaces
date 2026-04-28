@@ -23,7 +23,7 @@ import {DQ} from "mona-dish";
 /**
  * Implementation class for the push functionality
  */
-export module PushImpl {
+export namespace PushImpl {
 
     // @deprecated because we can assume at least for the newer versions
     // that the protocol is properly set!

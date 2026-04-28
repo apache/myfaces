@@ -33,7 +33,7 @@ import {ExtLang} from "./Lang";
  * which raise an error
  *
  */
-export module Assertions {
+export namespace Assertions {
 
 
 

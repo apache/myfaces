@@ -108,7 +108,7 @@ enum BlockFilter {
  * but this is pointless, you always can overwrite the thin api layer
  * however a dedicated api makes sense for readability reasons
  */
-export module Implementation {
+export namespace Implementation {
     /*
      Small internal explanation, this code is optimized for readability
      and cuts off a ton of old legacy code.
@@ -174,8 +174,7 @@ export module Implementation {
      */
     export function getSeparatorChar(): string {
         return resolveGlobalConfig()?.separator ??
-            this?.separator ??
-            (separator = ExtDomQuery.searchJsfJsFor(/separator=([^&;]*)/).orElse(":").value);
+            (separator ??= ExtDomQuery.searchJsfJsFor(/separator=([^&;]*)/).orElse(":").value);
     }
 
     /**
@@ -197,8 +196,7 @@ export module Implementation {
      */
     export function getProjectStage(): string | null {
         return resolveGlobalConfig()?.projectStage ??
-            this?.projectStage ??
-            (projectStage = resolveProjectStateFromURL());
+            (projectStage ??= resolveProjectStateFromURL());
     }
 
     /**
