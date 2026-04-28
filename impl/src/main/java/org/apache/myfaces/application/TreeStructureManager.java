@@ -53,10 +53,11 @@ public class TreeStructureManager
         int childCount = component.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = component.getChildren();
             List<TreeStructComponent> structChildList = new ArrayList<>();
             for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (!child.isTransient())
                 {
                     TreeStructComponent structChild = internalBuildTreeStructureToSave(child);

@@ -55,6 +55,14 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
     public final static String NAME = "composition";
 
     /**
+     * @return true if this tag uses a template attribute (templating composition)
+     */
+    public boolean isTemplating()
+    {
+        return _template != null;
+    }
+
+    /**
      * The resolvable URI of the template to use. The content within the composition tag will 
      * be used in populating the template specified.
      */

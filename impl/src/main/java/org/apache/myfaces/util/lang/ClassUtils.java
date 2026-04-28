@@ -26,7 +26,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.core.api.shared.lang.Assert;
 
 
 
@@ -190,36 +189,13 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
     }
 
     /**
-     * Tries a Class.loadClass with the context class loader of the current thread first and automatically falls back to
-     * the ClassUtils class loader (i.e. the loader of the myfaces.jar lib) if necessary.
-     *
-     * @param type
-     *            fully qualified name of a non-primitive non-array class
-     * @return the corresponding Class
-     * @throws NullPointerException
-     *             if type is null
-     * @throws ClassNotFoundException
+     * MYFACES-4449: Delegates to API {@code classForName(String, ClassLoader)} with this module's ClassLoader
+     * as fallback (OSGi / split API–impl).
      */
-    // @Override MYFACES-4449: Methods that call ClassUtils.class.getClassLoader() need to be here
-    //           as well as in the API ClassUtils so that the correct ClassLoader is used.
     public static <T> Class<T> classForName(String type) throws ClassNotFoundException
     {
-        Assert.notNull(type, "type");
-
-        try
-        {
-            // Try WebApp ClassLoader first
-            return (Class<T>) Class.forName(type,
-                    false, // do not initialize for faster startup
-                    getContextClassLoader());
-        }
-        catch (ClassNotFoundException ignore)
-        {
-            // fallback: Try ClassLoader for ClassUtils (i.e. the myfaces.jar lib)
-            return (Class<T>) Class.forName(type,
-                    false, // do not initialize for faster startup
-                    ClassUtils.class.getClassLoader());
-        }
+        return org.apache.myfaces.core.api.shared.lang.ClassUtils.classForName(type,
+                ClassUtils.class.getClassLoader());
     }
 
     /**
@@ -346,6 +322,30 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
         }
         
         return null;
+    }
+
+    /**
+     * MYFACES-4639: Delegates to API {@code newInstance(String, ClassLoader)} with the impl module ClassLoader.
+     */
+    // @Override
+    public static Object newInstance(String type) throws FacesException
+    {
+        return org.apache.myfaces.core.api.shared.lang.ClassUtils.newInstance(type,
+                ClassUtils.class.getClassLoader());
+    }
+
+    // @Override
+    public static Object newInstance(String type, Class<?> expectedType) throws FacesException
+    {
+        return org.apache.myfaces.core.api.shared.lang.ClassUtils.newInstance(type, expectedType,
+                ClassUtils.class.getClassLoader());
+    }
+
+    // @Override
+    public static Object newInstance(String type, Class<?>[] expectedTypes)
+    {
+        return org.apache.myfaces.core.api.shared.lang.ClassUtils.newInstance(type, expectedTypes,
+                ClassUtils.class.getClassLoader());
     }
 
 }

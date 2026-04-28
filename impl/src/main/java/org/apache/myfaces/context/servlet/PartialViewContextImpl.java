@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,6 +59,7 @@ import org.apache.myfaces.application.viewstate.StateTokenProcessor;
 import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
@@ -500,7 +502,8 @@ public class PartialViewContextImpl extends PartialViewContext
                         // In Faces 2.3 it was added jakarta.faces.Resource as an update target to add scripts or
                         // stylesheets inside <head> tag
                         
-                        List<UIComponent> updatedComponents = new ArrayList<>();
+                        // Identity-based set (==) for fast ancestor/duplicate checks on component instances.
+                        Set<UIComponent> updatedComponents = Collections.newSetFromMap(new IdentityHashMap<>());
                         RequestViewContext rvc = RequestViewContext.getCurrentInstance(context);
                         processRenderResource(context, writer, rvc, updatedComponents, "head");
                         processRenderResource(context, writer, rvc, updatedComponents, "body");
@@ -514,7 +517,8 @@ public class PartialViewContextImpl extends PartialViewContext
                 }
                 else
                 {
-                    List<UIComponent> updatedComponents = new ArrayList<>();
+                    // Identity-based set (==) for fast ancestor/duplicate checks on component instances.
+                    Set<UIComponent> updatedComponents = Collections.newSetFromMap(new IdentityHashMap<>());
                     RequestViewContext rvc = RequestViewContext.getCurrentInstance(context);
                     processRenderResource(context, writer, rvc, updatedComponents, "head");
                     processRenderResource(context, writer, rvc, updatedComponents, "body");
@@ -569,6 +573,8 @@ public class PartialViewContextImpl extends PartialViewContext
                 writer.writeText(cw.getId(), null);
                 writer.endUpdate();
             }
+
+            CommonHtmlEventsUtil.flushDeferredCspBehaviorScripts(context, writer);
         }
         catch (IOException ex)
         {
@@ -601,7 +607,7 @@ public class PartialViewContextImpl extends PartialViewContext
     }
 
     private void processRenderResource(FacesContext facesContext, PartialResponseWriter writer, RequestViewContext rvc,
-                                       List<UIComponent> updatedComponents, String target) throws IOException
+                                       Set<UIComponent> updatedComponents, String target) throws IOException
     {
         if (rvc.isRenderTarget(target))
         {
@@ -662,10 +668,6 @@ public class PartialViewContextImpl extends PartialViewContext
                     }
                     if (!resourceRendered)
                     {
-                        if (updatedComponents == null)
-                        {
-                            updatedComponents = new ArrayList<>();
-                        }
                         updatedComponents.add(component);
                     }
                 }
@@ -691,10 +693,14 @@ public class PartialViewContextImpl extends PartialViewContext
         }
         
         writer.startUpdate(PartialResponseWriter.RENDER_ALL_MARKER);
-        for (int i = 0, childCount = viewRoot.getChildCount(); i < childCount; i++)
+        int childCount = viewRoot.getChildCount();
+        if (childCount > 0)
         {
-            UIComponent comp = viewRoot.getChildren().get(i);
-            comp.encodeAll(context);
+            List<UIComponent> children = viewRoot.getChildren();
+            for (int i = 0; i < childCount; i++)
+            {
+                children.get(i).encodeAll(context);
+            }
         }
         writer.endUpdate();
     }
@@ -751,7 +757,7 @@ public class PartialViewContextImpl extends PartialViewContext
     {
         private PhaseId _phaseId;
         private FacesContext _facesContext;
-        private List<UIComponent> _alreadyUpdatedComponents;
+        private Set<UIComponent> _alreadyUpdatedComponents;
 
         public PhaseAwareVisitCallback(FacesContext facesContext, PhaseId phaseId)
         {
@@ -761,7 +767,7 @@ public class PartialViewContextImpl extends PartialViewContext
         }
 
         public PhaseAwareVisitCallback(FacesContext facesContext, PhaseId phaseId,
-                                       List<UIComponent> alreadyUpdatedComponents)
+                                       Set<UIComponent> alreadyUpdatedComponents)
         {
             this._phaseId = phaseId;
             this._facesContext = facesContext;

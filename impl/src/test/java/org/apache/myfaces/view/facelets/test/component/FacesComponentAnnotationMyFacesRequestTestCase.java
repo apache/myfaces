@@ -21,12 +21,13 @@ package org.apache.myfaces.view.facelets.test.component;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.junit.jupiter.api.Test;
 
-public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
+public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpWebConfigParams() throws Exception

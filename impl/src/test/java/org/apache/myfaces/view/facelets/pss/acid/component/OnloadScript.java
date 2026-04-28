@@ -31,7 +31,7 @@ import jakarta.faces.event.PostAddToViewEvent;
 public class OnloadScript extends UIOutput {
 
     public OnloadScript() {
-        setRendererType("javax.faces.resource.Script");
+        setRendererType("jakarta.faces.resource.Script");
     }
 
     @Override

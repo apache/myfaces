@@ -222,11 +222,13 @@ public abstract class UIComponent
                     found = it.next().invokeOnComponent(context, clientId, callback);
                 }                
             }
-            if (this.getChildCount() > 0)
+            int childCount = getChildCount();
+            if (childCount > 0)
             {
-                for (int i = 0, childCount = getChildCount(); !found && (i < childCount); i++)
+                List<UIComponent> children = getChildren();
+                for (int i = 0; !found && (i < childCount); i++)
                 {
-                    UIComponent child = getChildren().get(i);
+                    UIComponent child = children.get(i);
                     found = child.invokeOnComponent(context, clientId, callback);
                 }
             }
@@ -693,11 +695,13 @@ public abstract class UIComponent
         } // let children render itself
         else
         {
-            if (this.getChildCount() > 0)
+            int childCount = this.getChildCount();
+            if (childCount > 0)
             {
-                for (int i = 0; i < this.getChildCount(); i++)
+                List<UIComponent> children = this.getChildren();
+                for (int i = 0; i < childCount; i++)
                 {
-                    UIComponent comp = this.getChildren().get(i);
+                    UIComponent comp = children.get(i);
                     comp.encodeAll(context);
                 }
             }
@@ -913,9 +917,10 @@ public abstract class UIComponent
                     int childCount = getChildCount();
                     if (childCount > 0)
                     {
+                        List<UIComponent> children = getChildren();
                         for (int i = 0; i < childCount; i++)
                         {
-                            UIComponent child = getChildren().get(i);
+                            UIComponent child = children.get(i);
                             if (child.visitTree(context, callback))
                             {
                                 return true;

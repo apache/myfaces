@@ -549,7 +549,14 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         
         writer.startElement(HTML.ANCHOR_ELEM, component);
         writer.writeURIAttribute(HTML.HREF_ATTR, "#", null);
-        writer.writeAttribute(HTML.ONCLICK_ATTR, onclick, null);
+        if (onclick != null && !onclick.isEmpty())
+        {
+            if (!CommonHtmlEventsUtil.deferClientBehaviorScriptIfCspNonceActive(
+                    facesContext, clientId, HTML.ONCLICK_ATTR, onclick))
+            {
+                writer.writeAttribute(HTML.ONCLICK_ATTR, onclick, null);
+            }
+        }
     }
 
     private boolean hasSubmittingBehavior(Map<String, List<ClientBehavior>> clientBehaviors, String eventName)

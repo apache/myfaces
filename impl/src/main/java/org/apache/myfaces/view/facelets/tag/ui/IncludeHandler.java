@@ -199,7 +199,7 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
                             values[i] = _params[i].getValue(ctx);
                         }
                         
-                        actx.pushTemplateContext(new TemplateContextImpl());
+                        actx.pushTemplateContext(new TemplateContextImpl(true));
                         
                         for (int i = 0; i < _params.length; i++)
                         {
@@ -208,7 +208,7 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
                     }
                     else
                     {
-                        actx.pushTemplateContext(new TemplateContextImpl());
+                        actx.pushTemplateContext(new TemplateContextImpl(true));
                     }
                     if (url == null)
                     {

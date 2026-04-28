@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.myfaces.view.facelets.tag;
 
 import java.io.FileNotFoundException;
@@ -25,6 +24,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
@@ -36,20 +36,31 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
 import jakarta.faces.view.facelets.TagHandler;
+
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
-import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
+import org.apache.myfaces.view.facelets.TemplateContext;
+import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
+import org.apache.myfaces.view.facelets.impl.TemplateContextImpl;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
 
 /**
- * A Tag that is specified in a FaceletFile. Takes all attributes specified and sets them on the FaceletContext before
- * including the targeted Facelet file.
- * 
+ * Strict Facelets compatibility handler for Facelets tag files ({@code source} taglibs). Matches
+ * {@link UserTagHandler}: taglib attributes use the Facelets
+ * {@linkplain org.apache.myfaces.view.facelets.TemplateContext template context}. Restores
+ * {@linkplain jakarta.el.VariableMapper VariableMapper} after include so third-party overlays do not leak
+ * (MYFACES-4589).
+ *
  * @author Jacob Hookom
- * @version $Id: UserTagHandler.java,v 1.12 2008/07/13 19:01:35 rlubke Exp $
+ * @version $Id$
  */
 final class LegacyUserTagHandler extends TagHandler implements TemplateClient, ComponentContainerHandler
 {
+
     protected final TagAttribute[] _vars;
     protected final URL _location;
     protected final Map<String, DefineHandler> _handlers;
@@ -76,11 +87,9 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
     }
 
     /**
-     * Iterate over all TagAttributes and set them on the FaceletContext's VariableMapper, then include the target
-     * Facelet. Finally, replace the old VariableMapper.
-     * 
+     * Binds taglib attributes on the current template context, then includes the target Facelet.
+     *
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
-     * @see jakarta.el.VariableMapper
      * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
      *        jakarta.faces.component.UIComponent)
      */
@@ -88,9 +97,8 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
-        VariableMapper orig = ctx.getVariableMapper();
-
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        VariableMapper userTagVariableMapperOrig = ctx.getVariableMapper();
         // eval include
         try
         {
@@ -106,21 +114,46 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
                     values[i] = _vars[i].getValueExpression(ctx, Object.class);
                 }
             }
-
+            actx.pushTemplateContext(new TemplateContextImpl());
             actx.pushClient(this);
-            // setup a variable map
-            if (this._vars.length > 0)
-            {
-                VariableMapper varMapper = new VariableMapperWrapper(orig);
-                for (int i = 0; i < this._vars.length; i++)
-                {
-                    varMapper.setVariable(names[i], values[i]);
-                }
-                ctx.setVariableMapper(varMapper);
-            }
-            actx.getTemplateContext().setAllowCacheELExpressions(false);
 
-            ctx.includeFacelet(parent, this._location);
+            FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
+            String uniqueId = fcc.startComponentUniqueIdSection();
+            try
+            {
+                if (this._vars.length > 0)
+                {
+                    if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
+                    {
+                        FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
+                        for (int i = 0; i < this._vars.length; i++)
+                        {
+                            faceletState.putBinding(uniqueId, names[i], values[i]);
+                            ValueExpression ve = new FaceletStateValueExpression(uniqueId, names[i]);
+                            actx.getTemplateContext().setParameter(names[i], ve);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < this._vars.length; i++)
+                        {
+                            ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
+                        }
+                    }
+                }
+
+                // Disable caching always, even in 'always' mode
+                // The only mode that can support EL caching in this condition is alwaysRedirect.
+                if (!ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
+                {
+                    actx.getTemplateContext().setAllowCacheELExpressions(false);
+                }
+                ctx.includeFacelet(parent, this._location);
+            }
+            finally
+            {
+                fcc.endComponentUniqueIdSection();
+            }
         }
         catch (FileNotFoundException e)
         {
@@ -130,7 +163,9 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
         {
             // make sure we undo our changes
             actx.popClient(this);
-            ctx.setVariableMapper(orig);
+            actx.popTemplateContext();
+            // Restore mapper so taglib overlays (e.g. o:tagAttribute) do not leak past this tag (MYFACES-4589).
+            ctx.setVariableMapper(userTagVariableMapperOrig);
         }
     }
 
@@ -140,18 +175,42 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
     {
         if (name != null)
         {
-            DefineHandler handler = _handlers == null ? null : _handlers.get(name);
+            if (this._handlers == null)
+            {
+                return false;
+            }
+            DefineHandler handler = this._handlers.get(name);
             if (handler != null)
             {
-                handler.applyDefinition(ctx, parent);
+                AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+                TemplateContext itc = actx.popTemplateContext();
+                try
+                {
+                    handler.applyDefinition(ctx, parent);
+                }
+                finally
+                {
+                    actx.pushTemplateContext(itc);
+                }
                 return true;
             }
-
-            return false;
+            else
+            {
+                return false;
+            }
         }
         else
         {
-            this.nextHandler.apply(ctx, parent);
+            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            TemplateContext itc = actx.popTemplateContext();
+            try
+            {
+                this.nextHandler.apply(ctx, parent);
+            }
+            finally
+            {
+                actx.pushTemplateContext(itc);
+            }
             return true;
         }
     }

@@ -44,6 +44,7 @@ import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
@@ -187,7 +188,11 @@ public class HtmlButtonRendererBase extends HtmlRenderer
                         form, validParams);
                 if (onClick.length() != 0)
                 {
-                    writer.writeAttribute(HTML.ONCLICK_ATTR, onClick, null);
+                    if (!CommonHtmlEventsUtil.deferClientBehaviorScriptIfCspNonceActive(
+                            facesContext, clientId, HTML.ONCLICK_ATTR, onClick))
+                    {
+                        writer.writeAttribute(HTML.ONCLICK_ATTR, onClick, null);
+                    }
                 }
             }
             else
@@ -201,7 +206,11 @@ public class HtmlButtonRendererBase extends HtmlRenderer
                         commandOnclick , null);
                 if (onClick.length() != 0)
                 {
-                    writer.writeAttribute(HTML.ONCLICK_ATTR, onClick, null);
+                    if (!CommonHtmlEventsUtil.deferClientBehaviorScriptIfCspNonceActive(
+                            facesContext, clientId, HTML.ONCLICK_ATTR, onClick))
+                    {
+                        writer.writeAttribute(HTML.ONCLICK_ATTR, onClick, null);
+                    }
                 }
             }
             

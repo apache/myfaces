@@ -1,0 +1,44 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:t="http://apache.myfaces.org/test/tagAttribute">
+
+    <!--@elvariable id="value" type="java.lang.Object"-->
+    <!--@elvariable id="converter" type="jakarta.faces.convert.Converter"-->
+
+    <t:tagAttribute name="value" default=""/>
+    <t:tagAttribute name="converter" default=""/>
+
+    <div>
+        <!--
+          PrimeFaces reproducer (p:autoComplete) EL surface (same bindings), without PrimeFaces:
+          value, converter, completeMethod -> suggest(), var=item, itemValue, itemLabel
+        -->
+        <h:inputText id="input"
+                     value="#{value}"
+                     converter="#{converter}"/>
+        <ui:repeat value="#{converter.suggest('')}" var="item">
+            <span class="myfaces4585-itemLabel"><h:outputText value="#{converter.getDisplayValue(item)}"/></span>
+            <span class="myfaces4585-itemValue"><h:outputText value="#{item}"/></span>
+            <ui:insert name="autoCompleteChildren"/>
+        </ui:repeat>
+    </div>
+</ui:composition>

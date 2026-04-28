@@ -27,13 +27,18 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
+import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
+import java.time.format.ResolverStyle;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQuery;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
@@ -86,6 +91,12 @@ public class DateTimeConverter
     private static final String STYLE_FULL = "full";
     private static final TimeZone TIMEZONE_DEFAULT = TimeZone.getTimeZone("GMT");
 
+    private static final Pattern ESCAPED_DATE_TIME_PATTERN = Pattern.compile("'[^']*+'");
+    private static final Pattern FIXED_WIDTH_WHITESPACE =
+            Pattern.compile("[\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000]");
+    private static final Pattern ZERO_WIDTH_WHITESPACE =
+            Pattern.compile("[\u200b-\u200d\u2060\ufeff]");
+
     private String _dateStyle;
     private Locale _locale;
     private String _pattern;
@@ -113,17 +124,18 @@ public class DateTimeConverter
             {
                 if (isJava8DateTimeFormatter())
                 {
-                    DateTimeFormatter format = getDateTimeFormatter();
+                    DateTimeFormatter format = getDateTimeFormatter(true);
+                    String toParse = normalizeWhitespace(value);
                     try
                     {
                         TemporalQuery tq = getTemporalQuery();
                         if (tq != null)
                         {
-                            return format.parse(value, tq);
+                            return format.parse(toParse, tq);
                         }
                         else
                         {
-                            return format.parse(value);
+                            return format.parse(toParse);
                         }
                     }
                     catch (Exception e)
@@ -143,7 +155,7 @@ public class DateTimeConverter
                         {
                             currentDate = ZonedDateTime.now();
                         }
-                        Object[] args = new Object[]{value,
+                        Object[] args = new Object[]{toParse,
                                 format.format(currentDate),MessageUtils.getLabel(facesContext, uiComponent)};
 
                         if(type.equals(TYPE_LOCAL_DATE))
@@ -225,7 +237,7 @@ public class DateTimeConverter
 
         if (isJava8DateTimeFormatter())
         {
-            DateTimeFormatter format = getDateTimeFormatter();
+            DateTimeFormatter format = getDateTimeFormatter(false);
             
             if (value instanceof TemporalAccessor accessor)
             {
@@ -300,14 +312,19 @@ public class DateTimeConverter
         return format;
     }
     
-    private DateTimeFormatter getDateTimeFormatter()
+    /**
+     * @param forParsing {@code true} for {@link #getAsObject}; when {@code localDate}, {@code localDateTime}, or
+     *                   {@code localTime} without an explicit pattern, use a whitespace-normalized localized pattern.
+     */
+    private DateTimeFormatter getDateTimeFormatter(boolean forParsing)
     {
-        DateTimeFormatter formatter = null;
+        DateTimeFormatter formatter;
         String type = getType();
         String pattern = getPattern();
+        Locale locale = getLocale();
+
         if (pattern != null && pattern.length() > 0)
         {
-            Locale locale = getLocale();
             if (locale == null)
             {
                 formatter = DateTimeFormatter.ofPattern(pattern);
@@ -316,51 +333,104 @@ public class DateTimeConverter
             {
                 formatter = DateTimeFormatter.ofPattern(pattern, locale);
             }
+            return formatter;
         }
-        else
+
+        if (forParsing
+                && (TYPE_LOCAL_DATE.equals(type) || TYPE_LOCAL_DATE_TIME.equals(type) || TYPE_LOCAL_TIME.equals(type)))
         {
             if (TYPE_LOCAL_DATE.equals(type))
             {
-                formatter = DateTimeFormatter.ofLocalizedDate(calcFormatStyle(getDateStyle()));
+                formatter = createLocalizedParseFormatter(calcFormatStyle(getDateStyle()), null, locale);
             }
-            else if (TYPE_LOCAL_DATE_TIME.equals(type) )
+            else if (TYPE_LOCAL_DATE_TIME.equals(type))
             {
                 String timeStyle = getTimeStyle();
                 if (timeStyle != null && timeStyle.length() > 0)
                 {
-                    formatter = DateTimeFormatter.ofLocalizedDateTime(
-                            calcFormatStyle(getDateStyle()), calcFormatStyle(timeStyle));
+                    formatter = createLocalizedParseFormatter(
+                            calcFormatStyle(getDateStyle()), calcFormatStyle(timeStyle), locale);
                 }
                 else
                 {
-                    formatter = DateTimeFormatter.ofLocalizedDateTime(
-                            calcFormatStyle(getDateStyle()));
+                    FormatStyle ds = calcFormatStyle(getDateStyle());
+                    formatter = createLocalizedParseFormatter(ds, ds, locale);
                 }
             }
-            else if (TYPE_LOCAL_TIME.equals(type) )
+            else
             {
-                formatter = DateTimeFormatter.ofLocalizedTime(calcFormatStyle(getTimeStyle()));
+                formatter = createLocalizedParseFormatter(null, calcFormatStyle(getTimeStyle()), locale);
             }
-            else if (TYPE_OFFSET_TIME.equals(type))
+            return formatter;
+        }
+
+        if (TYPE_LOCAL_DATE.equals(type))
+        {
+            formatter = DateTimeFormatter.ofLocalizedDate(calcFormatStyle(getDateStyle()));
+        }
+        else if (TYPE_LOCAL_DATE_TIME.equals(type))
+        {
+            String timeStyle = getTimeStyle();
+            if (timeStyle != null && timeStyle.length() > 0)
             {
-                formatter = DateTimeFormatter.ISO_OFFSET_TIME;
+                formatter = DateTimeFormatter.ofLocalizedDateTime(
+                        calcFormatStyle(getDateStyle()), calcFormatStyle(timeStyle));
             }
-            else if (TYPE_OFFSET_DATE_TIME.equals(type))
+            else
             {
-                formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-            }
-            else if (TYPE_ZONED_DATE_TIME.equals(type))
-            {
-                formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
-            }
-            
-            Locale locale = getLocale();
-            if (locale != null)
-            {
-                formatter = formatter.withLocale(locale);
+                formatter = DateTimeFormatter.ofLocalizedDateTime(
+                        calcFormatStyle(getDateStyle()));
             }
         }
+        else if (TYPE_LOCAL_TIME.equals(type))
+        {
+            formatter = DateTimeFormatter.ofLocalizedTime(calcFormatStyle(getTimeStyle()));
+        }
+        else if (TYPE_OFFSET_TIME.equals(type))
+        {
+            formatter = DateTimeFormatter.ISO_OFFSET_TIME;
+        }
+        else if (TYPE_OFFSET_DATE_TIME.equals(type))
+        {
+            formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+        }
+        else if (TYPE_ZONED_DATE_TIME.equals(type))
+        {
+            formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+        }
+        else
+        {
+            throw new ConverterException("invalid type '" + _type + '\'');
+        }
+
+        if (locale != null)
+        {
+            formatter = formatter.withLocale(locale);
+        }
         return formatter;
+    }
+
+    private static DateTimeFormatter createLocalizedParseFormatter(
+            FormatStyle dateStyle, FormatStyle timeStyle, Locale locale)
+    {
+        Locale loc = locale != null ? locale : Locale.getDefault();
+        String localizedPattern = DateTimeFormatterBuilder.getLocalizedDateTimePattern(
+                dateStyle, timeStyle, IsoChronology.INSTANCE, loc);
+        String normalizedPattern = normalizeWhitespace(localizedPattern);
+        DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder().appendPattern(normalizedPattern);
+        if (!ESCAPED_DATE_TIME_PATTERN.matcher(normalizedPattern).replaceAll("").contains("uu"))
+        {
+            builder.parseDefaulting(ChronoField.ERA, 1);
+        }
+        return builder.toFormatter(loc)
+                .withChronology(IsoChronology.INSTANCE)
+                .withResolverStyle(ResolverStyle.STRICT);
+    }
+
+    private static String normalizeWhitespace(CharSequence text)
+    {
+        String normalized = FIXED_WIDTH_WHITESPACE.matcher(text).replaceAll(" ");
+        return ZERO_WIDTH_WHITESPACE.matcher(normalized).replaceAll("");
     }
     
     /**

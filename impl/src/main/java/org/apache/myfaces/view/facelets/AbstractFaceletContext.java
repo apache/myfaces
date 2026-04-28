@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.UIComponent;
@@ -202,6 +203,21 @@ public abstract class AbstractFaceletContext extends FaceletContext
      * @return
      */
     public TemplateContext getTemplateContext()
+    {
+        return null;
+    }
+
+    /**
+     * If there is a Facelets template context below the current top of the stack, return the value
+     * expression bound for {@code name} as a taglib / {@code ui:param} parameter on that enclosing
+     * context; otherwise {@code null}. OmniFaces-style {@code o:tagAttribute} compares inner vs
+     * outer bindings; resolving {@code @name} only through the EL {@link jakarta.el.VariableMapper}
+     * can collapse to the same {@link ValueExpression} as the inner tag (MYFACES-4585).
+     *
+     * @param name taglib attribute / template parameter name
+     * @return parameter from the enclosing template layer, or {@code null}
+     */
+    public ValueExpression resolveTemplateParameterInEnclosingContext(String name)
     {
         return null;
     }

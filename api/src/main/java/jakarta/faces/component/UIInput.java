@@ -308,10 +308,14 @@ public class    UIInput extends UIOutput implements EditableValueHolder
             }
         }
 
-        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+        int childCount = getChildCount();
+        if (childCount > 0)
         {
-            UIComponent child = getChildren().get(i);
-            child.processValidators(context);
+            List<UIComponent> children = getChildren();
+            for (int i = 0; i < childCount; i++)
+            {
+                children.get(i).processValidators(context);
+            }
         }
 
         try

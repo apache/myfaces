@@ -22,7 +22,7 @@
     "cross-env": "^7.0.3",
     "fs-extra": "^11.1.1",
     "html-webpack-plugin": "^5.5.1",
-    "jsdom": "^21.1.1",
+    "jsdom": "^28.1.0",
     "jsdom-global": "^3.0.2",
     "jsf.js_next_gen": "4.0.5-beta.7",
     "mocha": "^10.8.2",

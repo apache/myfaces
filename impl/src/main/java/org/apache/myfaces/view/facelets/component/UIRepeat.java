@@ -574,11 +574,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
         }
         
-        if (parent.getChildCount() > 0)
+        int childCount = parent.getChildCount();
+        if (childCount > 0)
         {
-            for (int i = 0; i < parent.getChildCount(); i++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent component = parent.getChildren().get(i);
+                UIComponent component = children.get(i);
 
                 // reset the client id (see spec 3.1.6)
                 component.setId(component.getId());
@@ -652,11 +654,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
         }
         
-        if (parent.getChildCount() > 0)
+        int childCount = parent.getChildCount();
+        if (childCount > 0)
         {
-            for (int i = 0; i < parent.getChildCount(); i++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent component = parent.getChildren().get(i);
+                UIComponent component = children.get(i);
 
                 // reset the client id (see spec 3.1.6)
                 component.setId(component.getId());
@@ -771,11 +775,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
         }
         
-        if (parent.getChildCount() > 0)
+        int saveChildCount = parent.getChildCount();
+        if (saveChildCount > 0)
         {
-            for (int i = 0; i < parent.getChildCount(); i++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0; i < saveChildCount; i++)
             {
-                UIComponent child = parent.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (!child.isTransient())
                 {
                     // Add an entry to the collection, being an array of two
@@ -1529,24 +1535,29 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     }
                     else
                     {
-                        for (int j = 0, childCount = getChildCount(); j < childCount; j++)
+                        int childCount = getChildCount();
+                        if (childCount > 0)
                         {
-                            UIComponent child = getChildren().get(j);
-                            if (PhaseId.APPLY_REQUEST_VALUES.equals(phase))
+                            List<UIComponent> children = getChildren();
+                            for (int j = 0; j < childCount; j++)
                             {
-                                child.processDecodes(faces);
-                            }
-                            else if (PhaseId.PROCESS_VALIDATIONS.equals(phase))
-                            {
-                                child.processValidators(faces);
-                            }
-                            else if (PhaseId.UPDATE_MODEL_VALUES.equals(phase))
-                            {
-                                child.processUpdates(faces);
-                            }
-                            else if (PhaseId.RENDER_RESPONSE.equals(phase))
-                            {
-                                child.encodeAll(faces);
+                                UIComponent child = children.get(j);
+                                if (PhaseId.APPLY_REQUEST_VALUES.equals(phase))
+                                {
+                                    child.processDecodes(faces);
+                                }
+                                else if (PhaseId.PROCESS_VALIDATIONS.equals(phase))
+                                {
+                                    child.processValidators(faces);
+                                }
+                                else if (PhaseId.UPDATE_MODEL_VALUES.equals(phase))
+                                {
+                                    child.processUpdates(faces);
+                                }
+                                else if (PhaseId.RENDER_RESPONSE.equals(phase))
+                                {
+                                    child.encodeAll(faces);
+                                }
                             }
                         }
                     }
@@ -1809,12 +1820,17 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                             setRowIndex(i);
                             while (i < end && _isIndexAvailable())
                             {
-                                for (int j = 0, childCount = getChildCount(); j < childCount; j++)
+                                int childCount = getChildCount();
+                                if (childCount > 0)
                                 {
-                                    UIComponent child = getChildren().get(j);
-                                    if (child.visitTree(context, callback))
+                                    List<UIComponent> children = getChildren();
+                                    for (int j = 0; j < childCount; j++)
                                     {
-                                        return true;
+                                        UIComponent child = children.get(j);
+                                        if (child.visitTree(context, callback))
+                                        {
+                                            return true;
+                                        }
                                     }
                                 }
 
