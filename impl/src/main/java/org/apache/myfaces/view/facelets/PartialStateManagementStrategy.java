@@ -607,30 +607,31 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                     UIComponent parent = target;
                     if (parent.getChildCount() > 0)
                     {
+                        List<UIComponent> children = parent.getChildren();
                         String tagId = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
-                        if (childIndex < parent.getChildCount())
+                        if (childIndex < children.size())
                         {
                             // Try to find the component quickly 
-                            UIComponent dup = parent.getChildren().get(childIndex);
+                            UIComponent dup = children.get(childIndex);
                             if (tagId.equals(dup.getAttributes().get(ComponentSupport.MARK_CREATED)))
                             {
                                 // Replace
-                                parent.getChildren().remove(childIndex.intValue());
-                                parent.getChildren().add(childIndex, child);
+                                children.remove(childIndex.intValue());
+                                children.add(childIndex, child);
                                 done = true;
                             }
                         }
                         if (!done)
                         {
                             // Fallback to iteration
-                            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i ++)
+                            for (int i = 0, childCount = children.size(); i < childCount; i ++)
                             {
-                                UIComponent dup = parent.getChildren().get(i);
+                                UIComponent dup = children.get(i);
                                 if (tagId.equals(dup.getAttributes().get(ComponentSupport.MARK_CREATED)))
                                 {
                                     // Replace
-                                    parent.getChildren().remove(i);
-                                    parent.getChildren().add(i, child);
+                                    children.remove(i);
+                                    children.add(i, child);
                                     done = true;
                                     break;
                                 }
@@ -643,16 +644,17 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                     try
                     {
                             UIComponent parent = target;
-                            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i ++)
+                            List<UIComponent> children = parent.getChildren();
+                            for (int i = 0, childCount = children.size(); i < childCount; i ++)
                             {
-                                UIComponent dup = parent.getChildren().get(i);
+                                UIComponent dup = children.get(i);
                                 // myfaces-4623: avoid duplicate id exceptions w/ c:forEach for Resource Dependencies
                                 if (child.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX + ComponentUtils.RD_ID_PREFIX) 
                                         && child.getId().equals(dup.getId())) 
                                 {
                                     // Replace
-                                    parent.getChildren().remove(i);
-                                    parent.getChildren().add(i, child);
+                                    children.remove(i);
+                                    children.add(i, child);
                                     done = true;
                                     break;
                                 }
@@ -998,37 +1000,40 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                         
                         return VisitResult.REJECT;
                     }
-                    
+
                     ComponentState componentAddedAfterBuildView
                             = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+                    String targetClientId = target.getClientId(facesContext);
+                    UIComponent parent = target.getParent();
                     
                     //Note if UIViewRoot has this marker, Faces 1.2 like state saving is used.
                     if (componentAddedAfterBuildView != null && (target.getParent() != null))
                     {
                         if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
                         {
-                            registerOnAddRemoveList(facesContext, target.getClientId(facesContext));
+                            registerOnAddRemoveList(facesContext, targetClientId);
                             target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                         }
                         else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
                         {
-                            registerOnAddList(facesContext, target.getClientId(facesContext));
+                            registerOnAddList(facesContext, targetClientId);
                             target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                         }
                         else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
                         {
-                            registerOnAddList(facesContext, target.getClientId(facesContext));
+                            registerOnAddList(facesContext, targetClientId);
                         }
                         ensureClearInitialState(target);
                         //Save all required info to restore the subtree.
                         //This includes position, structure and state of subtree
                         
-                        int childIndex = target.getParent().getChildren().indexOf(target);
+                        String parentClientId = parent.getClientId(facesContext);
+                        int childIndex = parent.getChildren().indexOf(target);
                         if (childIndex >= 0)
                         {
-                            states.put(target.getClientId(facesContext), new AttachedFullStateWrapper( 
+                            states.put(targetClientId, new AttachedFullStateWrapper( 
                                     new Object[]{
-                                        target.getParent().getClientId(facesContext),
+                                        parentClientId,
                                         null,
                                         childIndex,
                                         internalBuildTreeStructureToSave(target),
@@ -1037,9 +1042,9 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                         else
                         {
                             String facetName = null;
-                            if (target.getParent().getFacetCount() > 0)
+                            if (parent.getFacetCount() > 0)
                             {
-                                for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet()) 
+                                for (Map.Entry<String, UIComponent> entry : parent.getFacets().entrySet()) 
                                 {
                                     if (target.equals(entry.getValue()))
                                     {
@@ -1048,8 +1053,8 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                                     }
                                 }
                             }
-                            states.put(target.getClientId(facesContext),new AttachedFullStateWrapper(new Object[]{
-                                    target.getParent().getClientId(facesContext),
+                            states.put(targetClientId,new AttachedFullStateWrapper(new Object[]{
+                                    parentClientId,
                                     facetName,
                                     null,
                                     internalBuildTreeStructureToSave(target),
@@ -1057,13 +1062,13 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                         }
                         return VisitResult.REJECT;
                     }
-                    else if (target.getParent() != null)
+                    else if (parent != null)
                     {
                         state = target.saveState (facesContext);
                         if (state != null)
                         {
                             // Save by client ID into our map.
-                            states.put(target.getClientId(facesContext), state);
+                            states.put(targetClientId, state);
                         }
                         
                         return VisitResult.ACCEPT;
@@ -1229,9 +1234,11 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
 
             ComponentState componentAddedAfterBuildView
                     = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+            String targetClientId = target.getClientId(facesContext);
+            UIComponent parent = target.getParent();
 
             //Note if UIViewRoot has this marker, Faces 1.2 like state saving is used.
-            if (componentAddedAfterBuildView != null && (target.getParent() != null))
+            if (componentAddedAfterBuildView != null && parent != null)
             {
                 //Set this view as not resetable.
                 //setViewResetable(false);
@@ -1253,30 +1260,31 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 {
                     //If the view has removed components, set the view as non resetable
                     setViewResetable(false);
-                    registerOnAddRemoveList(facesContext, target.getClientId(facesContext));
+                    registerOnAddRemoveList(facesContext, targetClientId);
                     target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                 }
                 else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
                 {
-                    registerOnAddList(facesContext, target.getClientId(facesContext));
+                    registerOnAddList(facesContext, targetClientId);
                     target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                 }
                 else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
                 {
                     // Later on the check of removed components we'll see if the view
                     // is resetable or not.
-                    registerOnAddList(facesContext, target.getClientId(facesContext));
+                    registerOnAddList(facesContext, targetClientId);
                 }
                 ensureClearInitialState(target);
                 //Save all required info to restore the subtree.
                 //This includes position, structure and state of subtree
 
-                int childIndex = target.getParent().getChildren().indexOf(target);
+                String parentClientId = parent.getClientId(facesContext);
+                int childIndex = parent.getChildren().indexOf(target);
                 if (childIndex >= 0)
                 {
-                    states.put(target.getClientId(facesContext), new AttachedFullStateWrapper( 
+                    states.put(targetClientId, new AttachedFullStateWrapper( 
                             new Object[]{
-                                target.getParent().getClientId(facesContext),
+                                parentClientId,
                                 null,
                                 childIndex,
                                 internalBuildTreeStructureToSave(target),
@@ -1285,9 +1293,9 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 else
                 {
                     String facetName = null;
-                    if (target.getParent().getFacetCount() > 0)
+                    if (parent.getFacetCount() > 0)
                     {
-                        for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet()) 
+                        for (Map.Entry<String, UIComponent> entry : parent.getFacets().entrySet()) 
                         {
                             if (target.equals(entry.getValue()))
                             {
@@ -1296,8 +1304,8 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                             }
                         }
                     }
-                    states.put(target.getClientId(facesContext), new AttachedFullStateWrapper(new Object[]{
-                            target.getParent().getClientId(facesContext),
+                    states.put(targetClientId, new AttachedFullStateWrapper(new Object[]{
+                            parentClientId,
                             facetName,
                             null,
                             internalBuildTreeStructureToSave(target),
@@ -1305,7 +1313,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 }
                 return VisitResult.REJECT;
             }
-            else if (target.getParent() != null)
+            else if (parent != null)
             {
                 if (forceHardReset)
                 {
@@ -1324,7 +1332,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                     if (state != null)
                     {
                         // Save by client ID into our map.
-                        states.put(target.getClientId (facesContext), state);
+                        states.put(targetClientId, state);
 
                         if (isViewResetable())
                         {
@@ -1382,9 +1390,10 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
         c.clearInitialState();
         if (c.getChildCount() > 0)
         {
-            for (int i = 0, childCount = c.getChildCount(); i < childCount; i++)
+            List<UIComponent> children = c.getChildren();
+            for (int i = 0, childCount = children.size(); i < childCount; i++)
             {
-                UIComponent child = c.getChildren().get(i);
+                UIComponent child = children.get(i);
                 ensureClearInitialState(child);
             }
         }
@@ -1543,10 +1552,11 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
         //children
         if (component.getChildCount() > 0)
         {
+            List<UIComponent> children = component.getChildren();
             List<TreeStructComponent> structChildList = new ArrayList<>();
-            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+            for (int i = 0, childCount = children.size(); i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);     
+                UIComponent child = children.get(i);     
                 if (!child.isTransient())
                 {
                     TreeStructComponent structChild = internalBuildTreeStructureToSave(child);

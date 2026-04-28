@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import jakarta.el.ELException;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -594,12 +593,19 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * @param toRemove
      * @return
      */
-    private String _removeFirst(String string, String toRemove)
+    protected String _removeFirst(String string, String toRemove)
     {
-        // do exactly what String.replaceFirst(toRemove, "") internally does,
-        // except treating the search as literal text and not as regex
-
-        return Pattern.compile(toRemove, Pattern.LITERAL).matcher(string).replaceFirst("");
+        // Literal first occurrence removal (same idea as Pattern.LITERAL + replaceFirst, without regex setup).
+        if (toRemove == null || toRemove.isEmpty())
+        {
+            return string;
+        }
+        int idx = string.indexOf(toRemove);
+        if (idx < 0)
+        {
+            return string;
+        }
+        return string.substring(0, idx) + string.substring(idx + toRemove.length());
     }
 
 }

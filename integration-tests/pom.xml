@@ -224,6 +224,7 @@
         <module>ajax</module>
         <module>automaticExtensionlessMapping</module>
         <module>myfaces4623</module>
+        <module>csp</module>
     </modules>
 
     <profiles>
@@ -270,7 +271,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
-        <tomcat.version>10.1.49</tomcat.version>
+        <tomcat.version>10.1.54</tomcat.version>
         <arquillian-drone.version>3.0.0-alpha.7</arquillian-drone.version>
     </properties>
 </project>

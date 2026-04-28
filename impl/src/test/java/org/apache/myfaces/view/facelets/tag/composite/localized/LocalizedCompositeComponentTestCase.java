@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite.localized;
 
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.test.core.annotation.DeclareFacesConfig;
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +33,7 @@ import org.junit.jupiter.api.Test;
  *
  */
 @DeclareFacesConfig("/faces-config.xml")
-public class LocalizedCompositeComponentTestCase extends AbstractMyFacesRequestTestCase
+public class LocalizedCompositeComponentTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     // This is a nice example that shows how AbstractMyFacesRequestTestCase 
     // could be be useful.

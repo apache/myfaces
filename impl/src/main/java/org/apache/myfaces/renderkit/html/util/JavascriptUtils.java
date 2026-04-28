@@ -22,14 +22,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 
 import jakarta.faces.context.ExternalContext;
-import java.util.stream.Collectors;
 
 public final class JavascriptUtils
 {
+    private static final Pattern PATTERN = Pattern.compile("-");
+
     private JavascriptUtils()
     {
         // utility class, do not instantiate
@@ -96,7 +98,7 @@ public final class JavascriptUtils
      */
     public static String getValidJavascriptNameAsInRI(String origIdentifier)
     {
-        return origIdentifier.replaceAll("-", "\\$_");
+        return PATTERN.matcher(origIdentifier).replaceAll("\\$_");
     }
 
     public static String getValidJavascriptName(String s, boolean allowNamespaces, boolean checkForReservedWord)
@@ -107,9 +109,21 @@ public final class JavascriptUtils
         }
         else
         {
-            return Arrays.stream(s.split("\\."))
-                    .map(ns -> getValidJavascriptName(ns, checkForReservedWord))
-                    .collect(Collectors.joining("."));
+            String[] segments = s.split("\\.", -1);
+            if (segments.length == 1)
+            {
+                return getValidJavascriptName(segments[0], checkForReservedWord);
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < segments.length; i++)
+            {
+                if (i > 0)
+                {
+                    sb.append('.');
+                }
+                sb.append(getValidJavascriptName(segments[i], checkForReservedWord));
+            }
+            return sb.toString();
         }
     }
 

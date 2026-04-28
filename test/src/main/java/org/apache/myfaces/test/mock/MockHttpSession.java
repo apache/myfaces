@@ -218,7 +218,10 @@ public class MockHttpSession implements HttpSession
     @Override
     public boolean isNew()
     {
-        throw new UnsupportedOperationException();
+        assertValidity();
+        // Servlet API: return false once the session is established with the client.
+        // OmniFaces OmniExternalContext.getFlash() calls HttpSession.isNew(); must not throw.
+        return false;
     }
 
     public void putValue(String name, Object value)

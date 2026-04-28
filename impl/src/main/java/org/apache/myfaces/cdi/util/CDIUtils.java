@@ -32,9 +32,9 @@ import jakarta.faces.view.ViewScoped;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.myfaces.webapp.FacesInitializerImpl;
 
@@ -121,9 +121,15 @@ public class CDIUtils
             Set<Bean<?>> beans = beanManager.getBeans(type, qualifiers);
             if (beanName != null)
             {
-                beans = beans.stream()
-                        .filter(bean -> Objects.equals(beanName, getBeanName(bean)))
-                        .collect(Collectors.toSet());
+                Set<Bean<?>> filtered = new HashSet<>();
+                for (Bean<?> bean : beans)
+                {
+                    if (Objects.equals(beanName, getBeanName(bean)))
+                    {
+                        filtered.add(bean);
+                    }
+                }
+                beans = filtered;
             }
             Bean<T> bean = (Bean<T>) beanManager.resolve(beans);
 

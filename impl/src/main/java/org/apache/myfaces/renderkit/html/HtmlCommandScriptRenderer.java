@@ -63,7 +63,8 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         writer.writeAttribute(HTML.ID_ATTR, component.getClientId(context), null);
         writer.startElement(HTML.SCRIPT_ELEM, component);
         HtmlRendererUtils.renderScriptType(context, writer);
-        
+        HtmlRendererUtils.renderNonce(context, writer);
+
         JavascriptContext script = new JavascriptContext();
         
         //Write content

@@ -19,8 +19,9 @@
 
 package org.apache.myfaces.lifecycle;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
+
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
@@ -39,20 +40,32 @@ public class PhaseListenerManager
 {
     private Lifecycle lifecycle;
     private FacesContext facesContext;
-    private PhaseListener[] phaseListeners;
+    private List<PhaseListener> phaseListeners;
 
     // Tracks success in the beforePhase. Listeners that throw an exception
     // in beforePhase or were never called because a previous listener threw
     // an exception should not have its afterPhase called
-    private Map<PhaseId, boolean[]> listenerSuccessMap;
+    private boolean[] beforePhaseSuccessScratch;
 
-    public PhaseListenerManager(Lifecycle lifecycle, FacesContext facesContext, PhaseListener[] phaseListeners)
+    /** Listener count at start of informPhaseListenersBefore; used for matching afterPhase. */
+    private int listenerCountForActivePhase;
+
+    private PhaseId activePhaseIdForBeforeSuccess;
+    private PhaseEvent phaseEventForActivePhase;
+
+    public PhaseListenerManager(Lifecycle lifecycle, FacesContext facesContext, List<PhaseListener> phaseListeners)
     {
         this.lifecycle = lifecycle;
         this.facesContext = facesContext;
         this.phaseListeners = phaseListeners;
-        this.listenerSuccessMap = new HashMap<>(PhaseId.VALUES.size(), 1f);
-       
+    }
+
+    private void ensureScratch(int minSize)
+    {
+        if (beforePhaseSuccessScratch == null || beforePhaseSuccessScratch.length < minSize)
+        {
+            beforePhaseSuccessScratch = new boolean[minSize];
+        }
     }
  
     private boolean isListenerForThisPhase(PhaseListener phaseListener, PhaseId phaseId)
@@ -63,24 +76,27 @@ public class PhaseListenerManager
 
     public void informPhaseListenersBefore(PhaseId phaseId)
     {
-        boolean[] beforePhaseSuccess = new boolean[phaseListeners.length];
-        listenerSuccessMap.put(phaseId, beforePhaseSuccess);
+        listenerCountForActivePhase = phaseListeners.size();
+        ensureScratch(listenerCountForActivePhase);
+        Arrays.fill(beforePhaseSuccessScratch, 0, listenerCountForActivePhase, false);
+        activePhaseIdForBeforeSuccess = phaseId;
 
         PhaseEvent event = new PhaseEvent(facesContext, phaseId, lifecycle);
+        phaseEventForActivePhase = event;
 
-        for (int i = 0; i < phaseListeners.length; i++)
+        for (int i = 0; i < listenerCountForActivePhase; i++)
         {
-            PhaseListener phaseListener = phaseListeners[i];
+            PhaseListener phaseListener = phaseListeners.get(i);
             if (isListenerForThisPhase(phaseListener, phaseId))
             {
                 try
                 {
                     phaseListener.beforePhase(event);
-                    beforePhaseSuccess[i] = true;
+                    beforePhaseSuccessScratch[i] = true;
                 }
                 catch (Throwable e)
                 {
-                    beforePhaseSuccess[i] = false; // redundant - for clarity
+                    beforePhaseSuccessScratch[i] = false; // redundant - for clarity
                     
                     // Faces 2.0: publish exceptions instead of logging them.
                     
@@ -94,25 +110,23 @@ public class PhaseListenerManager
 
     public void informPhaseListenersAfter(PhaseId phaseId)
     {
-        boolean[] beforePhaseSuccess = listenerSuccessMap.get(phaseId);
-        
-        if (beforePhaseSuccess == null)
+        if (activePhaseIdForBeforeSuccess != phaseId)
         {
             // informPhaseListenersBefore method was not called : maybe an exception in LifecycleImpl.executePhase  
             return;
         }
 
-        PhaseEvent event = null;
+        PhaseEvent event = phaseEventForActivePhase;
 
-        for (int i = phaseListeners.length - 1; i >= 0; i--)
+        for (int i = listenerCountForActivePhase - 1; i >= 0; i--)
         {
-            PhaseListener phaseListener = phaseListeners[i];
-            if (isListenerForThisPhase(phaseListener, phaseId) && beforePhaseSuccess[i])
+            if (i >= phaseListeners.size())
             {
-                if (event == null)
-                {
-                    event = new PhaseEvent(facesContext, phaseId, lifecycle);
-                }
+                continue;
+            }
+            PhaseListener phaseListener = phaseListeners.get(i);
+            if (isListenerForThisPhase(phaseListener, phaseId) && beforePhaseSuccessScratch[i])
+            {
                 try
                 {
                     phaseListener.afterPhase(event);
@@ -126,6 +140,8 @@ public class PhaseListenerManager
             }
         }
 
+        activePhaseIdForBeforeSuccess = null;
+        phaseEventForActivePhase = null;
     }
     
     private void publishException(Throwable e, PhaseId phaseId, String key)

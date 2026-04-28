@@ -116,34 +116,47 @@ public class ClassUtils
     }
 
     /**
-     * Tries a Class.loadClass with the context class loader of the current thread first and automatically falls back to
-     * the ClassUtils class loader (i.e. the loader of the myfaces.jar lib) if necessary.
-     * 
+     * Tries {@link Class#forName(String, boolean, ClassLoader)} with the context class loader first, then
+     * {@code fallbackLoader} (e.g. the ClassUtils defining module) if the type is not found.
+     *
      * @param type
      *            fully qualified name of a non-primitive non-array class
+     * @param fallbackLoader
+     *            loader used when the context class loader cannot resolve {@code type}; if {@code null}, no fallback
      * @return the corresponding Class
      * @throws NullPointerException
      *             if type is null
      * @throws ClassNotFoundException
+     *             if the type cannot be resolved
      */
-    public static <T> Class<T> classForName(String type) throws ClassNotFoundException
+    public static <T> Class<T> classForName(String type, ClassLoader fallbackLoader) throws ClassNotFoundException
     {
         Assert.notNull(type, "type");
- 
+
         try
         {
-            // Try WebApp ClassLoader first
             return (Class<T>) Class.forName(type,
-                    false, // do not initialize for faster startup
+                    false,
                     getContextClassLoader());
         }
         catch (ClassNotFoundException ignore)
         {
-            // fallback: Try ClassLoader for ClassUtils (i.e. the myfaces.jar lib)
+            if (fallbackLoader == null)
+            {
+                throw ignore;
+            }
             return (Class<T>) Class.forName(type,
-                    false, // do not initialize for faster startup
-                    ClassUtils.class.getClassLoader());
+                    false,
+                    fallbackLoader);
         }
+    }
+
+    /**
+     * Same as {@link #classForName(String, ClassLoader)} using {@code ClassUtils.class.getClassLoader()} as fallback.
+     */
+    public static <T> Class<T> classForName(String type) throws ClassNotFoundException
+    {
+        return classForName(type, ClassUtils.class.getClassLoader());
     }
 
     /**
@@ -367,22 +380,62 @@ public class ClassUtils
         {
             return null;
         }
-        return newInstance(simpleClassForName(type));
+        return newInstance(type, ClassUtils.class.getClassLoader());
+    }
+
+    /**
+     * Like {@link #newInstance(String)} but uses {@code fallbackLoader} when resolving the class name (MYFACES-4639).
+     */
+    public static Object newInstance(String type, ClassLoader fallbackLoader) throws FacesException
+    {
+        if (type == null)
+        {
+            return null;
+        }
+        try
+        {
+            return newInstance(classForName(type, fallbackLoader));
+        }
+        catch (ClassNotFoundException e)
+        {
+            log.log(Level.SEVERE, "Class " + type + " not found", e);
+            throw new FacesException(e);
+        }
     }
 
     public static Object newInstance(String type, Class<?> expectedType) throws FacesException
     {
-        return newInstance(type, expectedType == null ? null : new Class[] { expectedType });
+        return newInstance(type, expectedType, ClassUtils.class.getClassLoader());
+    }
+
+    public static Object newInstance(String type, Class<?> expectedType, ClassLoader fallbackLoader)
+            throws FacesException
+    {
+        return newInstance(type, expectedType == null ? null : new Class[] { expectedType }, fallbackLoader);
     }
 
     public static Object newInstance(String type, Class<?>[] expectedTypes)
+    {
+        return newInstance(type, expectedTypes, ClassUtils.class.getClassLoader());
+    }
+
+    public static Object newInstance(String type, Class<?>[] expectedTypes, ClassLoader fallbackLoader)
     {
         if (type == null)
         {
             return null;
         }
 
-        Class<?> clazzForName = simpleClassForName(type);
+        Class<?> clazzForName;
+        try
+        {
+            clazzForName = classForName(type, fallbackLoader);
+        }
+        catch (ClassNotFoundException e)
+        {
+            log.log(Level.SEVERE, "Class " + type + " not found", e);
+            throw new FacesException(e);
+        }
 
         if (expectedTypes != null)
         {

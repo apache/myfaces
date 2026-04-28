@@ -36,6 +36,7 @@ import jakarta.faces.validator.RegexValidator;
 import jakarta.faces.validator.RequiredValidator;
 import org.apache.myfaces.component.validate.ValidateWholeBeanComponent;
 
+import org.apache.myfaces.renderkit.html.ImportConstantsRenderer;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
 import java.util.Set;
@@ -126,7 +127,7 @@ public final class CoreLibrary extends AbstractTagLibrary
         
         this.addComponent("viewParam", UIViewParameter.COMPONENT_TYPE, null);
         
-        this.addComponent("importConstants", UIImportConstants.COMPONENT_TYPE, null);
+        this.addComponent("importConstants", UIImportConstants.COMPONENT_TYPE, ImportConstantsRenderer.RENDERER_TYPE);
         
         this.addComponent("validateWholeBean", ValidateWholeBeanComponent.COMPONENT_TYPE, null);
         

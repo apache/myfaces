@@ -37,7 +37,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
@@ -136,9 +135,15 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         else if (submittedValue instanceof Collection)
         {
             Collection<Part> parts = (Collection<Part>) submittedValue;
-            return Collections.unmodifiableList(parts.stream()
-                        .filter(part -> !isEmpty(part))
-                        .collect(Collectors.toList()));
+            List<Part> nonEmpty = new ArrayList<>(parts.size());
+            for (Part part : parts)
+            {
+                if (!isEmpty(part))
+                {
+                    nonEmpty.add(part);
+                }
+            }
+            return Collections.unmodifiableList(nonEmpty);
         }
         return submittedValue;
     }

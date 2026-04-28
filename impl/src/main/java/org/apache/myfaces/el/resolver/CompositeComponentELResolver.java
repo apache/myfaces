@@ -31,11 +31,10 @@ import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentBeanInfo
 
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
-import java.lang.ref.WeakReference;
 import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 /**
  * Composite component attribute EL resolver.  See Faces spec, section 5.6.2.2.
@@ -197,39 +196,25 @@ public final class CompositeComponentELResolver extends ELResolver
     {
         Map<Object, Object> contextMap = facesContext(elContext).getAttributes();
 
-        // We use a WeakHashMap<UIComponent, WeakReference<Map<String, Object>>> to
-        // hold attribute map wrappers by two reasons:
-        //
-        // 1. The wrapper is used multiple times for a very short amount of time (in fact on current request).
-        // 2. The original attribute map has an inner reference to UIComponent, so we need to wrap it
-        //    with WeakReference.
-        //
-        Map<UIComponent, WeakReference<Map<String, Object>>> compositeComponentAttributesMaps = 
-            (Map<UIComponent, WeakReference<Map<String, Object>>>) contextMap.get(COMPOSITE_COMPONENT_ATTRIBUTES_MAPS);
+        // IdentityHashMap: FacesContext is not thread-safe; keys are UIComponent instances by identity.
+        // The map lives only for the request (FacesContext attributes), avoiding WeakHashMap sync cost.
+        IdentityHashMap<UIComponent, Map<String, Object>> compositeComponentAttributesMaps =
+            (IdentityHashMap<UIComponent, Map<String, Object>>) contextMap.get(COMPOSITE_COMPONENT_ATTRIBUTES_MAPS);
 
         Map<String, Object> attributesMap = null;
-        WeakReference<Map<String, Object>> weakReference;
         if (compositeComponentAttributesMaps != null)
         {
-            weakReference = compositeComponentAttributesMaps.get(baseComponent);
-            if (weakReference != null)
-            {
-                attributesMap = weakReference.get();                
-            }
-            if (attributesMap == null)
-            {
-                //create a wrapper map
-                attributesMap = new CompositeComponentAttributesMapWrapper(baseComponent);
-                compositeComponentAttributesMaps.put(baseComponent, new WeakReference<>(attributesMap));
-            }
+            attributesMap = compositeComponentAttributesMaps.get(baseComponent);
         }
-        else
+        if (attributesMap == null)
         {
-            //Create both required maps
             attributesMap = new CompositeComponentAttributesMapWrapper(baseComponent);
-            compositeComponentAttributesMaps = new WeakHashMap<>();
-            compositeComponentAttributesMaps.put(baseComponent, new WeakReference<>(attributesMap));
-            contextMap.put(COMPOSITE_COMPONENT_ATTRIBUTES_MAPS, compositeComponentAttributesMaps);
+            if (compositeComponentAttributesMaps == null)
+            {
+                compositeComponentAttributesMaps = new IdentityHashMap<>(8);
+                contextMap.put(COMPOSITE_COMPONENT_ATTRIBUTES_MAPS, compositeComponentAttributesMaps);
+            }
+            compositeComponentAttributesMaps.put(baseComponent, attributesMap);
         }
         return attributesMap;
     }

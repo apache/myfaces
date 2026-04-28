@@ -124,8 +124,13 @@ public class RuntimeConfig implements Purgeable
     
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
-        return (RuntimeConfig) externalContext.getApplicationMap().computeIfAbsent(
-                APPLICATION_MAP_PARAM_NAME, k -> new RuntimeConfig());
+        Map<String, Object> appMap = externalContext.getApplicationMap();
+        RuntimeConfig config = (RuntimeConfig) appMap.get(APPLICATION_MAP_PARAM_NAME);
+        if (config != null)
+        {
+            return config;
+        }
+        return (RuntimeConfig) appMap.computeIfAbsent(APPLICATION_MAP_PARAM_NAME, k -> new RuntimeConfig());
     }
 
     @Override

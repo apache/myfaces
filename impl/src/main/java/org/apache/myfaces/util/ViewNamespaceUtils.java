@@ -24,7 +24,9 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.servlet.ServletRequest;
+
 import java.util.Map;
+import java.util.Set;
 
 public class ViewNamespaceUtils
 {
@@ -86,9 +88,16 @@ public class ViewNamespaceUtils
     protected static String resolvePrefixFromRequest(FacesContext facesContext,
             Map<String, String[]> requestParameterMap)
     {
-        String firstViewStateKey = requestParameterMap.keySet().stream()
-                .filter(item -> item.contains(ResponseStateManager.VIEW_STATE_PARAM))
-                .findFirst().orElse("");
+        String firstViewStateKey = "";
+        Set<String> keys = requestParameterMap.keySet();
+        for (String item : keys)
+        {
+            if (item.contains(ResponseStateManager.VIEW_STATE_PARAM))
+            {
+                firstViewStateKey = item;
+                break;
+            }
+        }
         if (!firstViewStateKey.isEmpty())
         {
             char sep = facesContext.getNamingContainerSeparatorChar();

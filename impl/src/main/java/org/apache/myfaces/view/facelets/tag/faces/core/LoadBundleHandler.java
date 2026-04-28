@@ -47,7 +47,7 @@ import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
 /**
  * Load a resource bundle localized for the Locale of the current view, and expose it (as a Map) in the request
  * attributes of the current request. 
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -99,11 +99,51 @@ public final class LoadBundleHandler extends TagHandler
             }
         }
 
-        protected final ResourceBundle bundle;
+        private final String bundleName;
+        private final ClassLoader classLoader;
+        private final ResourceBundle.Control bundleControl;
+        private final UIViewRoot viewRoot;
+        private ResourceBundle bundle;
+        private Locale bundleLocale;
 
-        public ResourceBundleMap(ResourceBundle bundle)
+        public ResourceBundleMap(String bundleName, ClassLoader classLoader,
+                ResourceBundle.Control bundleControl, UIViewRoot viewRoot,
+                ResourceBundle initialBundle, Locale initialLocale)
         {
-            this.bundle = bundle;
+            this.bundleName = bundleName;
+            this.classLoader = classLoader;
+            this.bundleControl = bundleControl;
+            this.viewRoot = viewRoot;
+            this.bundle = initialBundle;
+            this.bundleLocale = initialLocale;
+        }
+
+        /**
+         * Returns the bundle for the current view locale, refreshing it when the locale has changed
+         * since the bundle was last loaded (MYFACES-4426).
+         * Stores the UIViewRoot directly (both are request-scoped) to avoid a thread-local
+         * FacesContext lookup on every map access.
+         */
+        private ResourceBundle getBundle()
+        {
+            Locale locale = viewRoot.getLocale();
+            if (locale == null)
+            {
+                locale = Locale.getDefault();
+            }
+            if (!locale.equals(bundleLocale))
+            {
+                bundleLocale = locale;
+                if (bundleControl == null)
+                {
+                    bundle = ResourceBundle.getBundle(bundleName, locale, classLoader);
+                }
+                else
+                {
+                    bundle = ResourceBundle.getBundle(bundleName, locale, classLoader, bundleControl);
+                }
+            }
+            return bundle;
         }
 
         @Override
@@ -115,7 +155,7 @@ public final class LoadBundleHandler extends TagHandler
         @Override
         public boolean containsKey(Object key)
         {
-            return bundle.containsKey(key.toString());
+            return getBundle().containsKey(key.toString());
         }
 
         @Override
@@ -127,13 +167,14 @@ public final class LoadBundleHandler extends TagHandler
         @Override
         public Set<Map.Entry<String, String>> entrySet()
         {
-            Enumeration<String> e = this.bundle.getKeys();
+            ResourceBundle b = getBundle();
+            Enumeration<String> e = b.getKeys();
             Set<Map.Entry<String, String>> s = new HashSet<>();
             String k;
             while (e.hasMoreElements())
             {
                 k = e.nextElement();
-                s.add(new ResourceEntry(k, this.bundle.getString(k)));
+                s.add(new ResourceEntry(k, b.getString(k)));
             }
             return s;
         }
@@ -143,9 +184,10 @@ public final class LoadBundleHandler extends TagHandler
         {
             try
             {
-                if (this.bundle.containsKey((String) key))
+                ResourceBundle b = getBundle();
+                if (b.containsKey((String) key))
                 {
-                    return this.bundle.getString((String) key);
+                    return b.getString((String) key);
                 }
             }
             catch (java.util.MissingResourceException mre)
@@ -165,7 +207,7 @@ public final class LoadBundleHandler extends TagHandler
         @Override
         public Set<String> keySet()
         {
-            Enumeration<String> e = this.bundle.getKeys();
+            Enumeration<String> e = getBundle().getKeys();
             Set<String> s = new HashSet<String>();
             while (e.hasMoreElements())
             {
@@ -201,11 +243,12 @@ public final class LoadBundleHandler extends TagHandler
         @Override
         public Collection<String> values()
         {
-            Enumeration<String> e = this.bundle.getKeys();
+            ResourceBundle b = getBundle();
+            Enumeration<String> e = b.getKeys();
             Set<String> s = new HashSet<String>();
             while (e.hasMoreElements())
             {
-                s.add(this.bundle.getString(e.nextElement()));
+                s.add(b.getString(e.nextElement()));
             }
             return s;
         }
@@ -227,8 +270,8 @@ public final class LoadBundleHandler extends TagHandler
 
     /**
      * See taglib documentation.
-     * 
-     * See jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext, 
+     *
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
      * jakarta.faces.component.UIComponent)
      */
     @Override
@@ -236,17 +279,16 @@ public final class LoadBundleHandler extends TagHandler
             ELException
     {
         UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
-        ResourceBundle bundle = null;
+        ResourceBundle.Control bundleControl = MyfacesConfig.getCurrentInstance().getResourceBundleControl();
+        String name = this.basename.getValue(ctx);
+        ClassLoader cl = ClassUtils.getContextClassLoader();
+        Locale locale = root != null && root.getLocale() != null
+                ? root.getLocale()
+                : Locale.getDefault();
+
+        ResourceBundle bundle;
         try
         {
-            ResourceBundle.Control bundleControl = MyfacesConfig.getCurrentInstance().getResourceBundleControl();
-            
-            String name = this.basename.getValue(ctx);
-            ClassLoader cl = ClassUtils.getContextClassLoader();
-            Locale locale = root != null && root.getLocale() != null
-                    ? root.getLocale()
-                    : Locale.getDefault();
-
             if (bundleControl == null)
             {
                 bundle = ResourceBundle.getBundle(name, locale, cl);
@@ -260,7 +302,7 @@ public final class LoadBundleHandler extends TagHandler
         {
             throw new TagAttributeException(this.tag, this.basename, e);
         }
-        ResourceBundleMap map = new ResourceBundleMap(bundle);
+        ResourceBundleMap map = new ResourceBundleMap(name, cl, bundleControl, root, bundle, locale);
         FacesContext faces = ctx.getFacesContext();
         faces.getExternalContext().getRequestMap().put(this.var.getValue(ctx), map);
     }

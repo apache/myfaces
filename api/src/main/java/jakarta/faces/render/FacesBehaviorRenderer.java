@@ -18,6 +18,8 @@
  */
 package jakarta.faces.render;
 
+import jakarta.enterprise.inject.Stereotype;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -25,11 +27,67 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * <p class="changed_added_2_0">
+ * The presence of this annotation on a class automatically registers the class with the runtime as a
+ * {@link ClientBehaviorRenderer}.
+ *
+ * The value of the {@link #renderKitId} attribute is taken to be the <em>render-kit-id</em> to which an instance o
+ * this <code>Renderer</code> is to be added.
+ *
+ * There must be a public zero-argument constructor on any class where this annotation appears. The implementation mus
+ * indicate a fatal error if such a constructor does not exist and the application must not be placed in service.
+ *
+ * Within that {@link RenderKit}, the value of the {@link #rendererType} attribute is taken to be th
+ * <em>renderer-type</em>
+ *
+ * The implementation must guarantee that for each class annotated with <code>FacesBehaviorRenderer</code>,
+ * <span class="changed_modified_5_0">discovered during CDI bean discovery</span>,
+ * the following actions are taken.
+ * </p>
+ *
+ * <div class="changed_added_2_0">
+ *
+ * <ul>
+ *   <li>
+ *     <p>
+ *        Obtain a reference to the {@link RenderKitFactory} for this application.
+ *     </p>
+ *   </li>
+ *
+ *   <li>
+ *     <p>
+ *       See if a <code>RenderKit</code> exists for <em>render-kit-id</em>. If so, let that instance be
+ *       <em>renderKit</em> for
+ *       discussion. If not, the implementation must indicate a fatal error if such a <code>RenderKit</code> does not
+ *       exist and the application must not be placed in service.
+ *     </p>
+ *   </li>
+ *
+ *   <li>
+ *     <p>
+ *       Create an instance of this class using the public zero-argument constructor.
+ *     </p>
+ *   </li>
+ *
+ *   <li>
+ *     <p>
+ *       Call {@link RenderKit#addClientBehaviorRenderer} on <em>renderKit</em>, passing <em>type</em> as the first
+ *       argument,
+ *       and a {@link ClientBehaviorRenderer} instance as the second argument.
+ *     </p>
+ *   </li>
+ * </ul>
+ *
+ *
+ * </div>
+ *
  * @since 2.0
+ *
  */
 @Target(value=ElementType.TYPE)
 @Retention(value=RetentionPolicy.RUNTIME)
 @Inherited
+@Stereotype
 public @interface FacesBehaviorRenderer
 {
     /**

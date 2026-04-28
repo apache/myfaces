@@ -30,6 +30,7 @@ import org.apache.myfaces.view.facelets.tag.faces.JsfLibrary;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.Iterator;
 
@@ -46,6 +47,8 @@ public class FacesJSResourceLoader extends ResourceLoaderWrapper
 {
 
     public static final String SOURCE_MAP_MARKER = "//# sourceMappingURL=";
+
+    private static final byte[] NEWLINE_UTF8 = "\n".getBytes(StandardCharsets.UTF_8);
 
     private final ResourceLoader delegate;
 
@@ -111,25 +114,20 @@ public class FacesJSResourceLoader extends ResourceLoaderWrapper
         try (InputStream inputStream = delegate.getResourceInputStream(resourceMeta);
              ByteArrayOutputStream writer = new ByteArrayOutputStream())
         {
-            new BufferedReader(new InputStreamReader(inputStream))
-                    .lines()
-                    .forEach(line ->
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(inputStream, StandardCharsets.UTF_8)))
+            {
+                String line;
+                while ((line = reader.readLine()) != null)
+                {
+                    if (line.contains(SOURCE_MAP_MARKER))
                     {
-                        // filtering out the source map for now
-                        if (line.contains(SOURCE_MAP_MARKER))
-                        {
-                            return;
-                        }
-                        try
-                        {
-                            writer.write(line.getBytes());
-                            writer.write("\n".getBytes());
-                        }
-                        catch (IOException e)
-                        {
-                            throw new FacesException(e);
-                        }
-                    });
+                        continue;
+                    }
+                    writer.write(line.getBytes(StandardCharsets.UTF_8));
+                    writer.write(NEWLINE_UTF8);
+                }
+            }
 
             // for development mode we reattach an altered map reference
             if(FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development))
@@ -149,11 +147,11 @@ public class FacesJSResourceLoader extends ResourceLoaderWrapper
                 }
 
                 //We have to rely now on the resource being loaded during a request otherwise we cannot to the remapping
-                writer.write("\n".getBytes());
-                writer.write(SOURCE_MAP_MARKER.getBytes());
-                writer.write(mappedResourceName.getBytes());
+                writer.write(NEWLINE_UTF8);
+                writer.write(SOURCE_MAP_MARKER.getBytes(StandardCharsets.UTF_8));
+                writer.write(mappedResourceName.getBytes(StandardCharsets.UTF_8));
                 // we are now adding the library name to make the mapping request a resource request
-                writer.write(("?ln=" + libraryName).getBytes());
+                writer.write(("?ln=" + libraryName).getBytes(StandardCharsets.UTF_8));
             }
             return new ByteArrayInputStream(writer.toByteArray());
         }

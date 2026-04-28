@@ -19,6 +19,7 @@
 package org.apache.myfaces.renderkit.html.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +27,20 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.core.api.shared.CommonHtmlEvents;
 import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 public class CommonHtmlEventsUtil
 {
+    private static final String CSP_DEFERRED_BEHAVIOR_SCRIPTS_KEY =
+            CommonHtmlEventsUtil.class.getName() + ".DEFERRED_CSP_BEHAVIOR_SCRIPTS";
+
     public static long getMarkedEvents(UIComponent component)
     {
         return CommonHtmlEvents.getMarkedEvents(component);
@@ -93,30 +100,291 @@ public class CommonHtmlEventsUtil
         List<ClientBehavior> cbl = (clientBehaviors != null) ? clientBehaviors.get(eventName) : null;
         if (cbl == null || cbl.isEmpty())
         {
-            return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty,
+            return HtmlRendererUtils.renderHTMLAttribute(writer, componentProperty,
                     htmlAttrName, attributeValue);
         }
 
+        String targetElementId = sourceId != null ? sourceId : component.getClientId(facesContext);
+
         if (cbl.size() > 1 || (cbl.size() == 1 && attributeValue != null))
         {
-            return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
-                    ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
-                            component, sourceId, eventName,
-                            eventParameters, clientBehaviors, attributeValue,
-                            RendererUtils.EMPTY_STRING));
+            String chain = ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
+                    component, sourceId, eventName,
+                    eventParameters, clientBehaviors, attributeValue,
+                    RendererUtils.EMPTY_STRING);
+            if (StringUtils.isNotBlank(chain)
+                    && deferClientBehaviorScriptIfCspNonceActive(facesContext, targetElementId, htmlAttrName, chain))
+            {
+                return true;
+            }
+            return HtmlRendererUtils.renderHTMLAttribute(writer, componentProperty, htmlAttrName, chain);
         }
         else
         {
             //Only 1 behavior and attrValue == null, so just render it directly
             ClientBehaviorContext ctx = ClientBehaviorContext.createClientBehaviorContext(
                                     facesContext, component, eventName,sourceId, eventParameters);
-            return HtmlRendererUtils.renderHTMLStringAttribute(
+            String script = cbl.get(0).getScript(ctx);
+            if (deferClientBehaviorScriptIfCspNonceActive(facesContext, targetElementId, htmlAttrName, script))
+            {
+                return true;
+            }
+            return HtmlRendererUtils.renderHTMLAttribute(
                     writer,
                     componentProperty,
                     htmlAttrName,
-                    cbl.get(0).getScript(ctx));
+                    script);
         }
     }
+
+    /**
+     * When JSF CSP support is enabled ({@link jakarta.faces.application.ResourceHandler#ENABLE_CSP_NONCE_PARAM_NAME})
+     * or {@link jakarta.faces.application.ResourceHandler#getCurrentNonce} is non-null, inline {@code on*} event
+     * handler attributes must not carry behavior scripts. This method enqueues the same script to be emitted
+     * later (nonce-bearing {@code <script>} on a full response, or {@code <eval>} on Ajax) that assigns the
+     * handler on the element via the DOM ({@code element.onclick = function(event) { ... }}).
+     *
+     * @return {@code true} if the script was deferred and must not be rendered as an attribute
+     */
+    public static boolean deferClientBehaviorScriptIfCspNonceActive(
+            FacesContext facesContext,
+            String targetElementId,
+            String htmlAttrName,
+            String scriptBody)
+    {
+        if (!isCspDeferClientBehaviorInlineHandlers(facesContext))
+        {
+            return false;
+        }
+        if (StringUtils.isBlank(scriptBody))
+        {
+            return false;
+        }
+        String escapedId = escapeJsStringForSingleQuotes(targetElementId);
+        StringBuilder sb = new StringBuilder(64 + scriptBody.length() + escapedId.length());
+        sb.append("(function(el){if(!el)return;el.");
+        sb.append(htmlAttrName);
+        sb.append("=function(event){");
+        sb.append(scriptBody);
+        sb.append("};})(document.getElementById('");
+        sb.append(escapedId);
+        sb.append("'));");
+
+        List<String> queue = (List<String>) facesContext.getAttributes().computeIfAbsent(
+                CSP_DEFERRED_BEHAVIOR_SCRIPTS_KEY, k -> new ArrayList<>());
+        queue.add(sb.toString());
+        return true;
+    }
+
+    /**
+     * @return true when inline {@code on*} attributes must not carry client behavior scripts: JSF CSP is enabled
+     *         in configuration, or the resource handler already exposes a view nonce.
+     */
+    public static boolean isCspDeferClientBehaviorInlineHandlers(FacesContext facesContext)
+    {
+        MyfacesConfig cfg = MyfacesConfig.getCurrentInstance(facesContext);
+        if (cfg != null && cfg.isCspEnabled())
+        {
+            return true;
+        }
+        return facesContext.getApplication().getResourceHandler().getCurrentNonce(facesContext) != null;
+    }
+
+    private static String escapeJsStringForSingleQuotes(String s)
+    {
+        if (s == null)
+        {
+            return "";
+        }
+        StringBuilder out = null;
+        for (int i = 0; i < s.length(); i++)
+        {
+            char c = s.charAt(i);
+            if (c == '\\' || c == '\'')
+            {
+                if (out == null)
+                {
+                    out = new StringBuilder(s.length() + 8);
+                    out.append(s, 0, i);
+                }
+                out.append('\\');
+            }
+            if (out != null)
+            {
+                out.append(c);
+            }
+        }
+        return out == null ? s : out.toString();
+    }
+
+    /**
+     * Writes all scripts enqueued by {@link #deferClientBehaviorScriptIfCspNonceActive} in one
+     * nonce-bearing {@code <script>} block. Safe to call multiple times; only the first flush emits output.
+     */
+    public static void flushDeferredCspBehaviorScripts(FacesContext facesContext, ResponseWriter writer)
+            throws IOException
+    {
+        List<String> queue = (List<String>) facesContext.getAttributes().remove(CSP_DEFERRED_BEHAVIOR_SCRIPTS_KEY);
+        if (queue == null || queue.isEmpty())
+        {
+            return;
+        }
+        if (writer instanceof PartialResponseWriter prw)
+        {
+            prw.startEval();
+            for (int i = 0, n = queue.size(); i < n; i++)
+            {
+                prw.write(queue.get(i));
+            }
+            prw.endEval();
+        }
+        else
+        {
+            writer.startElement(HTML.SCRIPT_ELEM, null);
+            HtmlRendererUtils.renderScriptType(facesContext, writer);
+            HtmlRendererUtils.renderNonce(facesContext, writer);
+            for (int i = 0, n = queue.size(); i < n; i++)
+            {
+                writer.write(queue.get(i));
+            }
+            writer.endElement(HTML.SCRIPT_ELEM);
+        }
+    }
+
+    // CHECKSTYLE:OFF (ParameterNumber — mirrors jakarta.faces renderBehaviorizedAttribute overloads)
+    public static boolean renderBehaviorizedAttribute(
+            FacesContext facesContext, ResponseWriter writer,
+            String componentProperty, UIComponent component,
+            String sourceId, String eventName,
+            Collection<ClientBehaviorContext.Parameter> eventParameters,
+            Map<String, List<ClientBehavior>> clientBehaviors,
+            String htmlAttrName, String attributeValue, String serverSideScript) throws IOException
+    {
+
+        List<ClientBehavior> cbl = (clientBehaviors != null) ? clientBehaviors.get(eventName) : null;
+        String targetElementId = sourceId != null ? sourceId : component.getClientId(facesContext);
+        if (((cbl != null) ? cbl.size() : 0) + (attributeValue != null ? 1 : 0)
+                + (serverSideScript != null ? 1 : 0) <= 1)
+        {
+            if (cbl == null || cbl.isEmpty())
+            {
+                if (attributeValue != null)
+                {
+                    return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
+                            attributeValue);
+                }
+                else
+                {
+                    return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
+                            serverSideScript);
+                }
+            }
+            else
+            {
+                String script = cbl.get(0).getScript(
+                        ClientBehaviorContext
+                                .createClientBehaviorContext(
+                                        facesContext, component,
+                                        eventName, sourceId,
+                                        eventParameters));
+                if (deferClientBehaviorScriptIfCspNonceActive(facesContext, targetElementId, htmlAttrName, script))
+                {
+                    return true;
+                }
+                return HtmlRendererUtils.renderHTMLStringAttribute(
+                        writer, componentProperty, htmlAttrName,
+                        script);
+            }
+        }
+        else
+        {
+            String chain = ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
+                    component, sourceId, eventName,
+                    eventParameters, clientBehaviors, attributeValue,
+                    serverSideScript);
+            if (StringUtils.isNotBlank(chain)
+                    && deferClientBehaviorScriptIfCspNonceActive(facesContext, targetElementId, htmlAttrName, chain))
+            {
+                return true;
+            }
+            return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
+                    chain);
+        }
+    }
+
+    public static boolean renderBehaviorizedAttribute(
+            FacesContext facesContext, ResponseWriter writer,
+            String componentProperty, UIComponent component,
+            String sourceId, String eventName,
+            Collection<ClientBehaviorContext.Parameter> eventParameters,
+            String eventName2,
+            Collection<ClientBehaviorContext.Parameter> eventParameters2,
+            Map<String, List<ClientBehavior>> clientBehaviors,
+            String htmlAttrName, String attributeValue, String serverSideScript) throws IOException
+    {
+        List<ClientBehavior> cb1 = (clientBehaviors != null) ? clientBehaviors.get(eventName) : null;
+        List<ClientBehavior> cb2 = (clientBehaviors != null) ? clientBehaviors.get(eventName2) : null;
+        String targetElementId = sourceId != null ? sourceId : component.getClientId(facesContext);
+        if (((cb1 != null) ? cb1.size() : 0) + ((cb2 != null) ? cb2.size() : 0)
+                + (attributeValue != null ? 1 : 0) <= 1)
+        {
+            if (attributeValue != null)
+            {
+                return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
+                        attributeValue);
+            }
+            else if (serverSideScript != null)
+            {
+                return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
+                        serverSideScript);
+            }
+            else if (((cb1 != null) ? cb1.size() : 0) > 0)
+            {
+                String script = cb1.get(0).getScript(ClientBehaviorContext
+                        .createClientBehaviorContext(
+                                facesContext, component,
+                                eventName, sourceId,
+                                eventParameters));
+                if (deferClientBehaviorScriptIfCspNonceActive(facesContext, targetElementId, htmlAttrName, script))
+                {
+                    return true;
+                }
+                return HtmlRendererUtils.renderHTMLStringAttribute(
+                        writer, componentProperty, htmlAttrName,
+                        script);
+            }
+            else
+            {
+                String script = cb2.get(0).getScript(ClientBehaviorContext
+                        .createClientBehaviorContext(
+                                facesContext, component,
+                                eventName2, sourceId,
+                                eventParameters2));
+                if (deferClientBehaviorScriptIfCspNonceActive(facesContext, targetElementId, htmlAttrName, script))
+                {
+                    return true;
+                }
+                return HtmlRendererUtils.renderHTMLStringAttribute(
+                        writer, componentProperty, htmlAttrName,
+                        script);
+            }
+        }
+        else
+        {
+            String chain = ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
+                    component, sourceId, eventName,
+                    eventParameters, eventName2, eventParameters2,
+                    clientBehaviors, attributeValue, serverSideScript);
+            if (StringUtils.isNotBlank(chain)
+                    && deferClientBehaviorScriptIfCspNonceActive(facesContext, targetElementId, htmlAttrName, chain))
+            {
+                return true;
+            }
+            return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
+                    chain);
+        }
+    }
+    // CHECKSTYLE:ON
 
     public static void renderBehaviorizedEventHandlers(
             FacesContext facesContext, ResponseWriter writer,

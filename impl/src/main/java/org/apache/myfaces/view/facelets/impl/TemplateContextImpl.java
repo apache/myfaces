@@ -44,6 +44,7 @@ import org.apache.myfaces.view.facelets.PageContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.TemplateManager;
+import org.apache.myfaces.view.facelets.tag.ui.CompositionHandler;
 
 /**
  * 
@@ -75,9 +76,47 @@ public class TemplateContextImpl extends TemplateContext
     
     private final TemplateClientKnownParameterMap _templateClientKnownParameterMap;
 
+    /**
+     * True for layers pushed by {@code ui:include} to isolate params; used so
+     * {@link org.apache.myfaces.view.facelets.impl.DefaultFaceletContext#includeDefinition}
+     * only merges outer template clients across this boundary (MYFACES-4577), not across
+     * user-tag or other {@link org.apache.myfaces.view.facelets.AbstractFaceletContext#pushTemplateContext}
+     * uses (nested taglib tests).
+     */
+    private final boolean _includeIsolationLayer;
+
+    /**
+     * @return true if any client is a templating {@link CompositionHandler} (template attribute set)
+     */
+    boolean hasTemplatingCompositionExtended()
+    {
+        for (TemplateManagerImpl tm : _clients)
+        {
+            if (tm.isTemplatingComposition())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    boolean isIncludeIsolationLayer()
+    {
+        return _includeIsolationLayer;
+    }
+
     public TemplateContextImpl()
     {
+        this(false);
+    }
+
+    /**
+     * @param includeIsolationLayer {@code true} when this context is pushed by {@code ui:include}
+     */
+    public TemplateContextImpl(boolean includeIsolationLayer)
+    {
         super();
+        _includeIsolationLayer = includeIsolationLayer;
         _clients = new ArrayList<>(4);
         // Parameters registered using ui:param now are bound to template manager instances, because
         // it should follow the same rules as template clients registered here. For example, to resolve
@@ -253,6 +292,11 @@ public class TemplateContextImpl extends TemplateContext
         public boolean isRoot()
         {
             return this._root;
+        }
+
+        boolean isTemplatingComposition()
+        {
+            return _target instanceof CompositionHandler && ((CompositionHandler) _target).isTemplating();
         }
     }
     

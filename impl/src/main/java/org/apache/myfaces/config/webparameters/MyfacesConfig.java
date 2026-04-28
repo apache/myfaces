@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.context.ExceptionHandler;
@@ -364,16 +365,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true, false")
     public static final String VALIDATE = "org.apache.myfaces.VALIDATE";
-    
-    /**
-     * Defines if CDI should be used for annotation scanning to improve the startup performance.
-     */
-    @JSFWebConfigParam(since="2.2.9", tags = "performance", defaultValue = "false")
-    public static final String USE_CDI_FOR_ANNOTATION_SCANNING
-            = "org.apache.myfaces.annotation.USE_CDI_FOR_ANNOTATION_SCANNING";
-    private static final boolean USE_CDI_FOR_ANNOTATION_SCANNING_DEFAULT = false;
-    
-    
+
     /**
      * Controls the size of the cache used to check if a resource exists or not. 
      * 
@@ -827,7 +819,6 @@ public class MyfacesConfig
     private boolean supportEL3ImportHandler = SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT;
     private boolean strictJsf2OriginHeaderAppPath = STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT;
     private int resourceBufferSize = RESOURCE_BUFFER_SIZE_DEFAULT;
-    private boolean useCdiForAnnotationScanning = USE_CDI_FOR_ANNOTATION_SCANNING_DEFAULT;
     private boolean resourceHandlerCacheEnabled = RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT;
     private int resourceHandlerCacheSize = RESOURCE_HANDLER_CACHE_SIZE_DEFAULT;
     private String scanPackages;
@@ -879,6 +870,8 @@ public class MyfacesConfig
     private long faceletsRefreshPeriod = -1;
     private List<String> exceptionTypesToIgnoreInLogging = new ArrayList<>();
     private boolean disableOptionalResolver = DISABLE_OPTIONAL_EL_RESOLVER_DEFAULT;
+    private boolean cspEnabled = false;
+    private String cspHeader = null;
 
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1106,10 +1099,7 @@ public class MyfacesConfig
 
         cfg.resourceBufferSize = getInt(extCtx, RESOURCE_BUFFER_SIZE, 
                 RESOURCE_BUFFER_SIZE_DEFAULT);
-        
-        cfg.useCdiForAnnotationScanning = getBoolean(extCtx, USE_CDI_FOR_ANNOTATION_SCANNING,
-                USE_CDI_FOR_ANNOTATION_SCANNING_DEFAULT);
-        
+
         cfg.resourceHandlerCacheEnabled = getBoolean(extCtx, RESOURCE_HANDLER_CACHE_ENABLED,
                 RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT);
         if (cfg.projectStage != ProjectStage.Production)
@@ -1367,7 +1357,11 @@ public class MyfacesConfig
 
         cfg.disableOptionalResolver
                 = getBoolean(extCtx, DISABLE_OPTIONAL_EL_RESOLVER, DISABLE_OPTIONAL_EL_RESOLVER_DEFAULT);
-        
+
+        cfg.cspEnabled = getBoolean(extCtx, ResourceHandler.ENABLE_CSP_NONCE_PARAM_NAME, false);
+
+        cfg.cspHeader = getString(extCtx, ResourceHandler.CSP_POLICY_PARAM_NAME, ResourceHandler.DEFAULT_CSP_POLICY);
+
         return cfg;
     }
 
@@ -1576,11 +1570,6 @@ public class MyfacesConfig
     public int getResourceBufferSize()
     {
         return resourceBufferSize;
-    }
-
-    public boolean isUseCdiForAnnotationScanning()
-    {
-        return useCdiForAnnotationScanning;
     }
 
     public boolean isResourceHandlerCacheEnabled()
@@ -1841,6 +1830,16 @@ public class MyfacesConfig
     public boolean isOptionalELResolverDisabled()
     {
         return disableOptionalResolver;
+    }
+
+    public boolean isCspEnabled()
+    {
+        return cspEnabled;
+    }
+
+    public String getCspHeader()
+    {
+        return cspHeader;
     }
 }
 

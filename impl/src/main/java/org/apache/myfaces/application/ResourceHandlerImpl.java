@@ -57,7 +57,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -95,16 +97,23 @@ public class ResourceHandlerImpl extends ResourceHandler
     public final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
 
     private static final String SHARED_STRING_BUILDER = ResourceHandlerImpl.class.getName() + ".SHARED_STRING_BUILDER";
-    
+
+    private static final String PROGRAMMATIC_VIEW_IDS_CACHE_KEY =
+            ResourceHandlerImpl.class.getName() + ".PROGRAMMATIC_VIEW_IDS";
+
     private static final String[] FACELETS_VIEW_MAPPINGS_PARAM = {ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME,
             "facelets.VIEW_MAPPINGS"};
-    
+
+    private static final String CURRENT_NONCE = ResourceHandlerImpl.class.getName() + ".currentNonce";
+
     private ResourceHandlerSupport _resourceHandlerSupport;
     private ResourceHandlerCache _resourceHandlerCache;
     private Boolean _allowSlashLibraryName;
     private int _resourceBufferSize = -1;
     private String[] _excludedResourceExtensions;
     private Set<String> _viewSuffixes = null;
+    private Boolean cspEnabled = null;
+    private SecureRandom secureRandom;
 
     @Override
     public Resource createResource(String resourceName)
@@ -1721,32 +1730,58 @@ public class ResourceHandlerImpl extends ResourceHandler
             this._viewSuffixes = loadSuffixes(facesContext.getExternalContext());
         }
 
-        Iterator it = new FilterInvalidSuffixViewResourceIterator(new ViewResourceIterator(facesContext, 
+        Iterator<String> resourceIt = new FilterInvalidSuffixViewResourceIterator(
+                new ViewResourceIterator(facesContext,
                     getResourceHandlerSupport(), localePrefix, contracts,
                     contractPreferred, path, maxDepth, options), facesContext, _viewSuffixes);
 
-        return Stream.concat(StreamSupport.stream(Spliterators.spliteratorUnknownSize(it,Spliterator.DISTINCT),
-                                                    false), getProgrammaticViewIds(facesContext));
+        Stream<String> resourceStream = StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(resourceIt, Spliterator.DISTINCT), false);
+        return Stream.concat(resourceStream, resolveProgrammaticViewIds(facesContext).stream());
     }
 
-    private Stream<String> getProgrammaticViewIds(FacesContext facesContext)
+    /**
+     * CDI {@code @View} IDs; cached in the application map for the application lifetime.
+     */
+    @SuppressWarnings("unchecked")
+    private List<String> resolveProgrammaticViewIds(FacesContext facesContext)
     {
-        ArrayList<String> views = new ArrayList<String>();
-        BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
-        if (beanManager != null)
+        Map<String, Object> appMap = facesContext.getExternalContext().getApplicationMap();
+        List<String> cached = (List<String>) appMap.get(PROGRAMMATIC_VIEW_IDS_CACHE_KEY);
+        if (cached != null)
         {
-            for (Bean<?> bean : beanManager.getBeans(Object.class, Any.Literal.INSTANCE))
+            return cached;
+        }
+        synchronized (appMap)
+        {
+            cached = (List<String>) appMap.get(PROGRAMMATIC_VIEW_IDS_CACHE_KEY);
+            if (cached != null)
             {
-                for (Annotation qualifier : bean.getQualifiers())
+                return cached;
+            }
+            BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
+            if (beanManager == null)
+            {
+                cached = List.of();
+            }
+            else
+            {
+                ArrayList<String> views = new ArrayList<>();
+                for (Bean<?> bean : beanManager.getBeans(Object.class, Any.Literal.INSTANCE))
                 {
-                    if (qualifier instanceof View view)
+                    for (Annotation qualifier : bean.getQualifiers())
                     {
-                        views.add(view.value());
+                        if (qualifier instanceof View view)
+                        {
+                            views.add(view.value());
+                        }
                     }
                 }
+                cached = List.copyOf(views);
             }
+            appMap.put(PROGRAMMATIC_VIEW_IDS_CACHE_KEY, cached);
+            return cached;
         }
-        return views.stream();
     }
     
     private Set<String> loadSuffixes(ExternalContext context)
@@ -1896,5 +1931,50 @@ public class ResourceHandlerImpl extends ResourceHandler
     {       
         StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER, 40);
         return sb.append(libraryName).append('/').append(resourceName).toString();
+    }
+
+    @Override
+    public String getCurrentNonce(FacesContext context)
+    {
+        if (this.cspEnabled == null)
+        {
+            this.cspEnabled = MyfacesConfig.getCurrentInstance(context).isCspEnabled();
+            this.secureRandom = new SecureRandom();
+            secureRandom.nextBytes(new byte[1]);
+        }
+
+        if (!cspEnabled)
+        {
+            return null;
+        }
+
+        String nonce = null;
+
+        var viewMap = context.getViewRoot().getViewMap(false);
+        if (viewMap != null)
+        {
+            nonce = (String) viewMap.get(CURRENT_NONCE);
+        }
+
+        if (nonce == null && !context.getPartialViewContext().isPartialRequest())
+        {
+            nonce = (String) context.getExternalContext().getRequestMap().get(CURRENT_NONCE);
+
+            if (nonce == null)
+            {
+                byte[] bytes = new byte[32];
+                secureRandom.nextBytes(bytes);
+                nonce = Base64.getEncoder().encodeToString(bytes);
+
+                context.getExternalContext().getRequestMap().put(CURRENT_NONCE, nonce);
+            }
+
+            if (viewMap != null && nonce != null)
+            {
+                viewMap.put(CURRENT_NONCE, nonce);
+            }
+        }
+
+        return nonce;
     }
 }

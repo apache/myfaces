@@ -798,11 +798,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
         }
         
-        if (parent.getChildCount() > 0)
+        int childCount = parent.getChildCount();
+        if (childCount > 0)
         {
-            for (int i = 0; i < parent.getChildCount(); i++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent component = parent.getChildren().get(i);
+                UIComponent component = children.get(i);
 
                 // reset the client id (see spec 3.1.6)
                 component.setId(component.getId());
@@ -877,11 +879,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
         }
         
-        if (parent.getChildCount() > 0)
+        int childCount = parent.getChildCount();
+        if (childCount > 0)
         {
-            for (int i = 0; i < parent.getChildCount(); i++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent component = parent.getChildren().get(i);
+                UIComponent component = children.get(i);
 
                 // reset the client id (see spec 3.1.6)
                 component.setId(component.getId());
@@ -994,11 +998,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
         }
         
-        if (parent.getChildCount() > 0)
+        int saveChildCount = parent.getChildCount();
+        if (saveChildCount > 0)
         {
-            for (int i = 0; i < parent.getChildCount(); i++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0; i < saveChildCount; i++)
             {
-                UIComponent child = parent.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (!child.isTransient())
                 {
                     // Add an entry to the collection, being an array of two
@@ -1780,9 +1786,15 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private void processColumnFacets(FacesContext context, int processAction)
     {
-        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+        int childCount = getChildCount();
+        if (childCount == 0)
         {
-            UIComponent child = getChildren().get(i);
+            return;
+        }
+        List<UIComponent> children = getChildren();
+        for (int i = 0; i < childCount; i++)
+        {
+            UIComponent child = children.get(i);
             if (child instanceof UIColumn)
             {
                 if (!ComponentUtils.isRendered(context, child))
@@ -1813,6 +1825,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private void processColumnChildren(FacesContext context, int processAction)
     {
+        int childCount = getChildCount();
+        if (childCount == 0)
+        {
+            return;
+        }
+        List<UIComponent> children = getChildren();
         int first = getFirst();
         int rows = getRows();
         int last;
@@ -1834,9 +1852,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 break;
             }
             
-            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (child instanceof UIColumn)
                 {
                     if (!ComponentUtils.isRendered(context, child))
@@ -1845,9 +1863,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                         continue;
                     }
 
-                    for (int j = 0, columnChildCount = child.getChildCount(); j < columnChildCount; j++)
+                    List<UIComponent> columnChildren = child.getChildren();
+                    for (int j = 0, columnChildCount = columnChildren.size(); j < columnChildCount; j++)
                     {
-                        UIComponent columnChild = child.getChildren().get(j);
+                        UIComponent columnChild = columnChildren.get(j);
                         process(context, columnChild, processAction);
                     }
                 }
@@ -2158,9 +2177,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                             // visit every column directly without visiting its children
                             // (the children of every UIColumn will be visited later for
                             // every row) and also visit the column's facets
-                            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                            int colChildCount = getChildCount();
+                            List<UIComponent> colChildren = colChildCount > 0 ? getChildren() : null;
+                            for (int i = 0; i < colChildCount; i++)
                             {
-                                UIComponent child = getChildren().get(i);
+                                UIComponent child = colChildren.get(i);
                                 if (child instanceof UIColumn)
                                 {
                                     VisitResult columnResult = context.invokeVisitCallback(child, callback);
@@ -2196,18 +2217,24 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                                     return false;
                                 }
                                 // visit the children of every child of the UIData that is an instance of UIColumn
-                                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                                int rowChildCount = getChildCount();
+                                List<UIComponent> rowChildren = rowChildCount > 0 ? getChildren() : null;
+                                for (int i = 0; i < rowChildCount; i++)
                                 {
-                                    UIComponent child = getChildren().get(i);
+                                    UIComponent child = rowChildren.get(i);
                                     if (child instanceof UIColumn)
                                     {
-                                        for (int j = 0, grandChildCount = child.getChildCount();
-                                             j < grandChildCount; j++)
+                                        int grandChildCount = child.getChildCount();
+                                        if (grandChildCount > 0)
                                         {
-                                            UIComponent grandchild = child.getChildren().get(j);
-                                            if (grandchild.visitTree(context, callback))
+                                            List<UIComponent> grandChildren = child.getChildren();
+                                            for (int j = 0; j < grandChildCount; j++)
                                             {
-                                                return true;
+                                                UIComponent grandchild = grandChildren.get(j);
+                                                if (grandchild.visitTree(context, callback))
+                                                {
+                                                    return true;
+                                                }
                                             }
                                         }
                                     }

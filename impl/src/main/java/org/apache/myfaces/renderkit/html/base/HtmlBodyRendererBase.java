@@ -158,6 +158,8 @@ public class HtmlBodyRendererBase extends HtmlRenderer
                 child.encodeAll(facesContext);
             }
         }
+
+        CommonHtmlEventsUtil.flushDeferredCspBehaviorScripts(facesContext, writer);
         
         // render all unhandled FacesMessages when ProjectStage is Development
         if (facesContext.isProjectStage(ProjectStage.Development))

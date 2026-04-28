@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
@@ -114,9 +115,10 @@ public final class ComponentSupport
         int childCount = parent.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = parent.getChildren();
             for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = parent.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (id.equals(child.getId()))
                 {
                     return child;
@@ -139,9 +141,10 @@ public final class ComponentSupport
                     // only check the children and facets of the panel
                     if (facet.getChildCount() > 0)
                     {
-                        for (int i = 0, childCount = facet.getChildCount(); i < childCount; i ++)
+                        List<UIComponent> facetChildren = facet.getChildren();
+                        for (int i = 0, childCount = facetChildren.size(); i < childCount; i ++)
                         {
-                            UIComponent child = facet.getChildren().get(i);
+                            UIComponent child = facetChildren.get(i);
                             if (instance.equals(child))
                             {
                                 return entry.getKey();
@@ -184,9 +187,10 @@ public final class ComponentSupport
                     // only check the children and facets of the panel
                     if (facet.getChildCount() > 0)
                     {
-                        for (int i = 0, childCount = facet.getChildCount(); i < childCount; i ++)
+                        List<UIComponent> facetChildren = facet.getChildren();
+                        for (int i = 0, childCount = facetChildren.size(); i < childCount; i ++)
                         {
-                            UIComponent child = facet.getChildren().get(i);
+                            UIComponent child = facetChildren.get(i);
                             if (id.equals(child.getAttributes().get(MARK_CREATED)))
                             {
                                 return child;
@@ -219,9 +223,10 @@ public final class ComponentSupport
     {
         if (parent.getChildCount() > 0)
         {
-            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i ++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0, childCount = children.size(); i < childCount; i ++)
             {
-                UIComponent child = parent.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (id.equals(child.getAttributes().get(MARK_CREATED)))
                 {
                     return child;
@@ -243,9 +248,10 @@ public final class ComponentSupport
         Iterator<UIComponent> itr = null;
         if (parent.getChildCount() > 0)
         {
-            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i ++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0, childCount = children.size(); i < childCount; i ++)
             {
-                UIComponent child = parent.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (id.equals(child.getAttributes().get(MARK_CREATED)))
                 {
                     return child;
@@ -264,9 +270,10 @@ public final class ComponentSupport
                     // only check the children and facets of the panel
                     if (facet.getChildCount() > 0)
                     {
-                        for (int i = 0, childCount = facet.getChildCount(); i < childCount; i ++)
+                        List<UIComponent> facetChildren = facet.getChildren();
+                        for (int i = 0, childCount = facetChildren.size(); i < childCount; i ++)
                         {
-                            UIComponent child = facet.getChildren().get(i);
+                            UIComponent child = facetChildren.get(i);
                             if (id.equals(child.getAttributes().get(MARK_CREATED)))
                             {
                                 return child;
@@ -312,9 +319,10 @@ public final class ComponentSupport
                     // only check the children and facets of the panel
                     if (facet.getChildCount() > 0)
                     {
-                        for (int i = 0, childCount = facet.getChildCount(); i < childCount; i ++)
+                        List<UIComponent> facetChildren = facet.getChildren();
+                        for (int i = 0, childCount = facetChildren.size(); i < childCount; i ++)
                         {
-                            UIComponent child = facet.getChildren().get(i);
+                            UIComponent child = facetChildren.get(i);
                             if (id.equals(child.getAttributes().get(MARK_CREATED)))
                             {
                                 return entry.getKey();
@@ -432,9 +440,10 @@ public final class ComponentSupport
             }
             else if (toRender.getChildCount() > 0)
             {
-                for (int i = 0, childCount = toRender.getChildCount(); i < childCount; i++)
+                List<UIComponent> children = toRender.getChildren();
+                for (int i = 0, childCount = children.size(); i < childCount; i++)
                 {
-                    UIComponent child = toRender.getChildren().get(i);
+                    UIComponent child = children.get(i);
                     encodeRecursive(context, child);
                 }
             }
@@ -648,9 +657,10 @@ public final class ComponentSupport
         }
         if (parent.getChildCount() > 0)
         {
-            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0, childCount = children.size(); i < childCount; i++)
             {
-                UIComponent child = parent.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (id.equals(child.getId()))
                 {
                     if (innerExpr == null)

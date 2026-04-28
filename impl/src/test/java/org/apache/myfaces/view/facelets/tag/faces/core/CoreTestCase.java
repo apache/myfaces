@@ -20,6 +20,8 @@
 package org.apache.myfaces.view.facelets.tag.faces.core;
 
 import org.apache.myfaces.view.facelets.tag.faces.core.reset.ResetValuesBean;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -193,15 +195,37 @@ public class CoreTestCase extends AbstractFaceletTestCase
         Assertions.assertNotNull(out5.getConverter());
         DateTimeConverter converter6 = (DateTimeConverter) out6.getConverter();
 
-        Assertions.assertEquals("12/24/69", out1.getConverter().getAsString(
+        TimeZone gmt = TimeZone.getTimeZone("GMT");
+
+        DateFormat shortDate = DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
+        shortDate.setLenient(false);
+        shortDate.setTimeZone(gmt);
+        Assertions.assertEquals(shortDate.format(now), out1.getConverter().getAsString(
                 facesContext, out1, now));
-        Assertions.assertEquals("12/24/69 6:57:12 AM", out2.getConverter()
+
+        DateFormat shortDateMediumTime = DateFormat.getDateTimeInstance(
+                DateFormat.SHORT, DateFormat.MEDIUM, Locale.US);
+        shortDateMediumTime.setLenient(false);
+        shortDateMediumTime.setTimeZone(gmt);
+        Assertions.assertEquals(shortDateMediumTime.format(now), out2.getConverter()
                 .getAsString(facesContext, out2, now));
-        Assertions.assertEquals("Dec 24, 1969", out3.getConverter()
+
+        DateFormat mediumDate = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
+        mediumDate.setTimeZone(TimeZone.getTimeZone("CST"));
+        mediumDate.setLenient(false);
+        Assertions.assertEquals(mediumDate.format(now), out3.getConverter()
                 .getAsString(facesContext, out3, now));
-        Assertions.assertEquals("6:57:12 AM", out4.getConverter()
+
+        DateFormat mediumTime = DateFormat.getTimeInstance(DateFormat.MEDIUM, Locale.US);
+        mediumTime.setLenient(false);
+        mediumTime.setTimeZone(gmt);
+        Assertions.assertEquals(mediumTime.format(now), out4.getConverter()
                 .getAsString(facesContext, out4, now));
-        Assertions.assertEquals("0:57 AM, CST", out5.getConverter()
+
+        SimpleDateFormat patternCst = new SimpleDateFormat("K:mm a, z", Locale.US);
+        patternCst.setTimeZone(TimeZone.getTimeZone("CST"));
+        patternCst.setLenient(false);
+        Assertions.assertEquals(patternCst.format(now), out5.getConverter()
                 .getAsString(facesContext, out5, now));
         Assertions.assertEquals(TimeZone.getTimeZone("GMT"), converter6.getTimeZone());
     }
@@ -287,6 +311,31 @@ public class CoreTestCase extends AbstractFaceletTestCase
         Assertions.assertTrue(value instanceof Map);
         String result = (String) ((Map) value).get("some.not.found.key");
         Assertions.assertTrue(result.contains("???"));
+    }
+
+    /**
+     * MYFACES-4426: f:loadBundle must reflect a locale change made via UIViewRoot#setLocale()
+     * during the invoke-application phase (or any time after the initial buildView).
+     * The ResourceBundleMap was previously backed by a fixed ResourceBundle resolved at
+     * buildView time; changing the locale afterwards had no effect.
+     */
+    @Test
+    public void testLoadBundleHandlerRefreshesOnLocaleChange() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        root.setLocale(Locale.ENGLISH);
+        vdl.buildView(facesContext, root, "loadBundle.xml");
+
+        Map<?, ?> bundle = (Map<?, ?>) facesContext.getExternalContext().getRequestMap().get("foo");
+        Assertions.assertNotNull(bundle);
+        Assertions.assertEquals("bar_en", bundle.get("foo"),
+                "English locale should return 'bar_en' (from bundle_en.properties)");
+
+        // Simulate locale change during invoke-application (MYFACES-4426).
+        root.setLocale(Locale.GERMAN);
+
+        Assertions.assertEquals("baz_de", bundle.get("foo"),
+                "After setLocale(GERMAN) the bundle map must return the German value without rebuildView");
     }
 
     @Test

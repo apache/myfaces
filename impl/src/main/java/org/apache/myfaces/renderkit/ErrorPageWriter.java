@@ -727,7 +727,7 @@ public final class ErrorPageWriter
                 stateSize = -1;
                 if (log.isLoggable(Level.FINEST))
                 {
-                    log.fine("Could not determine state size: " + e.getMessage());
+                    log.log(Level.FINEST, "Could not determine state size: {0}", e.getMessage());
                 }
             }
         }
