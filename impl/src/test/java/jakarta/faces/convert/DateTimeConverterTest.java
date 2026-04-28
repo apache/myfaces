@@ -20,6 +20,8 @@
 package jakarta.faces.convert;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -104,5 +106,34 @@ public class DateTimeConverterTest extends AbstractFacesTestCase
         {
             Assertions.assertTrue(false, "this date should not be parsable - and it is, so this is wrong.");
         }
+    }
+
+    @Test
+    public void testLocalDateParsesRegularSpacesWhenLocaleUsesFixedWidthWhitespace()
+    {
+        UIInput input = new UIInput();
+        mock.setType("localDate");
+        mock.setLocale(Locale.FRANCE);
+        mock.setDateStyle("short");
+        LocalDate expected = LocalDate.of(2024, 6, 15);
+        String formatted = mock.getAsString(facesContext, input, expected);
+        String withAsciiSpaces = formatted.replace('\u202f', ' ').replace('\u00a0', ' ');
+        Object parsed = mock.getAsObject(facesContext, input, withAsciiSpaces);
+        Assertions.assertEquals(expected, parsed);
+    }
+
+    @Test
+    public void testLocalTimeStripsZeroWidthWhitespaceFromInput()
+    {
+        UIInput input = new UIInput();
+        mock.setType("localTime");
+        mock.setLocale(Locale.GERMANY);
+        mock.setTimeStyle("short");
+        LocalTime expected = LocalTime.of(14, 30);
+        String formatted = mock.getAsString(facesContext, input, expected);
+        Assertions.assertFalse(formatted.isEmpty());
+        String withZw = formatted.charAt(0) + "\u200b" + formatted.substring(1);
+        Object parsed = mock.getAsObject(facesContext, input, withZw);
+        Assertions.assertEquals(expected, parsed);
     }
 }

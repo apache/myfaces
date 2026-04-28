@@ -29,6 +29,8 @@ import jakarta.faces.validator.RequiredValidator;
 import jakarta.faces.webapp.FacesServlet;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 
+import org.apache.myfaces.config.annotation.ClasspathScanningAnnotationProvider;
+import org.apache.myfaces.spi.impl.DefaultAnnotationProviderFactory;
 import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -56,6 +58,8 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractFacesCon
         super.setUp();
         
         facesConfigurator = new FacesConfigurator(externalContext);
+        externalContext.getApplicationMap().put(DefaultAnnotationProviderFactory.ANNOTATION_PROVIDER_INSTANCE,
+                new ClasspathScanningAnnotationProvider());
     }
     
     @Override

@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.lifecycle;
 
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ import org.junit.jupiter.api.Test;
 /**
  * This class test 
  */
-public class RedirectTest extends AbstractMyFacesRequestTestCase
+public class RedirectTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Test
     public void testRedirect1() throws Exception
