@@ -16,6 +16,7 @@
 
 
 import {DomQuery} from "mona-dish";
+import type {ConstructorOptions} from "jsdom";
 
 
 declare let global;
@@ -36,7 +37,50 @@ declare let myfaces: any;
  * This is a pattern pretty much for every test which iterates over
  * multiple doms
  */
-export module StandardInits {
+export namespace StandardInits {
+
+    type GlobalJsdom = (html?: string, options?: ConstructorOptions) => () => void;
+    type GlobalJsdomModule = GlobalJsdom | { default?: GlobalJsdom };
+
+    function resolveGlobalJsdom(domIt: GlobalJsdomModule): GlobalJsdom {
+        return typeof domIt === "function" ? domIt : domIt.default;
+    }
+
+    function createStorageMock(): Storage {
+        const data: Record<string, string> = {};
+
+        return {
+            get length() {
+                return Object.keys(data).length;
+            },
+            clear() {
+                Object.keys(data).forEach(key => delete data[key]);
+            },
+            getItem(key: string) {
+                return Object.prototype.hasOwnProperty.call(data, key) ? data[key] : null;
+            },
+            key(index: number) {
+                return Object.keys(data)[index] ?? null;
+            },
+            removeItem(key: string) {
+                delete data[key];
+            },
+            setItem(key: string, value: string) {
+                data[key] = `${value}`;
+            }
+        };
+    }
+
+    function installStorageMocks(window: Window) {
+        Object.defineProperty(window, "localStorage", {
+            configurable: true,
+            value: createStorageMock()
+        });
+        Object.defineProperty(window, "sessionStorage", {
+            configurable: true,
+            value: createStorageMock()
+        });
+    }
 
     export const HTML_DEFAULT = `<!DOCTYPE html>
 <html lang="en">
@@ -637,15 +681,17 @@ function triggerRequestChain(event) {
      */
     let initJSDOM = async function (template: string) {
         // @ts-ignore
-        return import('jsdom-global').then((domIt) => {
+        return import('global-jsdom').then((domIt) => {
+            (global as any).document?.destroy?.();
             let params = {
                 contentType: "text/html",
                 runScripts: "dangerously",
                 resources: "usable",
-                url: `file://${__dirname}/index.html`
+                url: `file://${__dirname}/index.html`,
+                beforeParse: installStorageMocks
             };
             //we have two different apis depending whether we allow module interop with sinon or not
-            return (domIt?.default ?? domIt)?.(template, params) ;
+            return resolveGlobalJsdom(domIt)(template, params);
         });
     };
 
@@ -700,8 +746,11 @@ function triggerRequestChain(event) {
             await initJSF(IS_JSF_40);
         } else {
             // @ts-ignore
-            await import('jsdom-global').then((domIt) => {
-                clean = (domIt?.default ?? domIt)?.(template);
+            await import('global-jsdom').then((domIt) => {
+                clean = resolveGlobalJsdom(domIt)(template, {
+                    url: `file://${__dirname}/index.html`,
+                    beforeParse: installStorageMocks
+                });
             });
         }
         //the async is returning a promise on the caller level

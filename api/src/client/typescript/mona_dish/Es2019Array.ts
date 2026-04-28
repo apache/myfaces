@@ -33,7 +33,7 @@ class Es2019Array_<T>  extends Array<T>{
         return new (_Es2019Array as any) (... ret);
     }
 
-    concat(...items): T[] {
+    concat(...items: any[]): T[] {
         const ret = Array.prototype.concat.call(this._another, ...items);
         return new (_Es2019Array as any)(... ret);
     }
@@ -49,7 +49,7 @@ class Es2019Array_<T>  extends Array<T>{
     }
 
     splice(start: number, deleteCount?: number): T[] {
-        const ret = Array.prototype.splice.call(this._another, start, deleteCount);
+        const ret = Array.prototype.splice.call(this._another, start, deleteCount ?? 0);
         return new (_Es2019Array as any)(...ret);
     }
 
@@ -60,8 +60,8 @@ class Es2019Array_<T>  extends Array<T>{
 
 
     reduce(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue?: T): T {
-        const ret = Array.prototype.reduce.call(this._another, callbackfn, initialValue);
-        return ret;
+        const ret = Array.prototype.reduce.call(this._another, callbackfn as any, initialValue);
+        return ret as T;
     }
 
     /*reduceRight(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue: T): T {
@@ -73,14 +73,14 @@ class Es2019Array_<T>  extends Array<T>{
         return this._flatResolve(this._another, flatDepth);
     }
 
-    private _flatResolve(arr, flatDepth = 1) {
+    private _flatResolve(arr: any[], flatDepth = 1): any[] {
         //recursion break
         if (flatDepth == 0) {
             return arr;
         }
-        let res = [];
+        let res: any[] = [];
 
-        let reFlat = item => {
+        let reFlat = (item: any) => {
             item = Array.isArray(item) ? item : [item];
             let mapped = this._flatResolve(item, flatDepth - 1);
             res = res.concat(mapped);
@@ -105,19 +105,18 @@ export function _Es2019Array<T>(...data: T[]): Es2019Array_<T> {
     let proxied = new Proxy<Es2019Array_<T>>(ret, {
         get(target: Es2019Array_<unknown>, p: string | symbol, receiver: any): any {
             if("symbol" == typeof p) {
-
-                return target._another[p];
+                return (target._another as any)[p];
             }
             if(!isNaN(parseInt(p as string))) {
-                return target._another[p];
+                return (target._another as any)[p];
             } else {
-                return target[p];
+                return (target as any)[p];
             }
         },
 
         set(target, property, value): boolean {
-            target[property] = value;
-            target._another[property] = value;
+            (target as any)[property] = value;
+            (target._another as any)[property] = value;
             return true;
         }
 
@@ -130,11 +129,12 @@ export function _Es2019Array<T>(...data: T[]): Es2019Array_<T> {
  * the shim is only provided in case the native browser
  * does not yet have flatMap support on arrays
  */
-export var Es2019Array: any = (Array.prototype.flatMap) ? function<T>(...data: T[]): T[] {
+// Runtime check for browser compatibility — TypeScript knows flatMap exists in lib but older browsers may not have it.
+export var Es2019Array: any = ((Array.prototype as any).flatMap) ? function<T>(...data: T[]): T[] {
     // sometimes the typescript compiler produces
     // an array without flatmap between boundaries (the result produces True for Array.isArray
     // but has no flatMap function, could be a node issue also or Typescript!
     // we remap that (could be related to: https://github.com/microsoft/TypeScript/issues/31033
     // the check and remap fixes the issue which should not exist in the first place
-    return data?.flatMap ? data : _Es2019Array(...data);
+    return (data as any)?.flatMap ? data : _Es2019Array(...data);
 } : _Es2019Array;

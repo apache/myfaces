@@ -22,7 +22,7 @@ import {EventData} from "../impl/xhrCore/EventData";
 
 //we use modules to get a proper jsdoc and static/map structure in the calls
 //as per spec requirement
-export module faces {
+export namespace faces {
 
 
     /**
@@ -109,7 +109,7 @@ export module faces {
 
 
 
-    export module ajax {
+    export namespace ajax {
         "use strict";
 
         /**
@@ -173,7 +173,7 @@ export module faces {
         }
     }
 
-    export module util {
+    export namespace util {
 
         /**
          * varargs function which executes a chain of code (functions or any other code)
@@ -191,7 +191,7 @@ export module faces {
         }
     }
 
-    export module push {
+    export namespace push {
         /**
          * @param socketClientId the sockets client identifier
          * @param url the uri to reach the socket
@@ -236,7 +236,7 @@ export module faces {
     }
 }
 
-export module myfaces {
+export namespace myfaces {
     /**
      * AB function similar to mojarra and Primefaces
      * not part of the spec but a convenience accessor method
