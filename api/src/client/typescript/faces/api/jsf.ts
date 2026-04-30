@@ -25,7 +25,7 @@ if(!window?.jsf) {
     const faces = require("./_api").faces;
     (window as any)['jsf'] = window?.jsf ?? faces;
     window.jsf.specversion = 230000;
-    delete window.jsf.contextpath;
+    delete (window.jsf as Partial<typeof window.jsf>).contextpath;
 
     let faces4Init = faces.push.init;
     /*

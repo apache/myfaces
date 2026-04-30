@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {Crypto, Hash} from "./Messaging";
+import type {Crypto, Hash} from "./Messaging";
 import {AssocArrayCollector} from "./SourcesCollectors";
 import {LazyStream} from "./Stream";
 

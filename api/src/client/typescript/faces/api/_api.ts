@@ -72,7 +72,7 @@ export namespace faces {
      * @return {String} the current project state emitted by the server side method:
      * <i>jakarta.faces.application.Application.getProjectStage()</i>
      */
-    export function getProjectStage(): string {
+    export function getProjectStage(): string | null {
         return Implementation.getProjectStage();
     }
 
@@ -93,7 +93,7 @@ export namespace faces {
      * @return the window identifier or null if none is found
      * @param rootNode
      */
-    export function getClientWindow(rootNode?: Element | string): string {
+    export function getClientWindow(rootNode?: Element | string): string | null {
         return Implementation.getClientWindow(rootNode);
     }
 
@@ -138,7 +138,7 @@ export namespace faces {
          *
          */
         export function response(request: XMLHttpRequest, context?: Context): void {
-            Implementation.response(request, context);
+            Implementation.response(request, context as any);
         }
 
         /**
@@ -282,7 +282,7 @@ export namespace myfaces {
 
 
     const onReadyChain: Array<() => void> = [];
-    let readyStateListener = null;
+    let readyStateListener: (() => void) | null = null;
     // noinspection JSUnusedGlobalSymbols
     /**
      * Helper function in the myfaces namespace to handle document ready properly for the load case
@@ -296,7 +296,7 @@ export namespace myfaces {
             onReadyChain.push(executionFunc);
             if(!readyStateListener) {
                 readyStateListener = () => {
-                    window.removeEventListener("DOMContentLoaded", readyStateListener);
+                    window.removeEventListener("DOMContentLoaded", readyStateListener!);
                     readyStateListener = null;
                     try {
                         onReadyChain.forEach(func => func());
@@ -334,5 +334,3 @@ export namespace myfaces {
      */
     export const oam = _oam;
 }
-
-

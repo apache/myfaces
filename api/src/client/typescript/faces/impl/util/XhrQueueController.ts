@@ -8,7 +8,7 @@ const debounce = ExtLang.debounce;
  * Faces enforces for the XHR handling
  */
 export class XhrQueueController<T extends IAsyncRunnable<any>> {
-    queue = [];
+    queue: IAsyncRunnable<any>[] = [];
     taskRunning = false;
 
     constructor() {

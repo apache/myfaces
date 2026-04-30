@@ -52,7 +52,6 @@ function copyFilesRecursively(source: string, target: string)
 copyFilesRecursively('./node_modules/jsf.js_next_gen/src/main/typescript/api', './typescript/faces/api');
 copyFilesRecursively('./node_modules/jsf.js_next_gen/src/main/typescript/impl', './typescript/faces/impl');
 copyFilesRecursively('./node_modules/jsf.js_next_gen/src/main/typescript/myfaces', './typescript/faces/myfaces');
-copyFilesRecursively('./node_modules/jsf.js_next_gen/src/main/typescript/test', './typescript/faces/test');
 copyFilesRecursively('./node_modules/jsf.js_next_gen/src/main/typescript/@types', './typescript/faces/@types');
 copyFilesRecursively('./node_modules/mona-dish/src/main/typescript', './typescript/mona_dish');
 

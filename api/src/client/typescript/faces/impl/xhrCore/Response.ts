@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {DQ, XMLQuery} from "mona-dish";
+import {Config, DQ, XMLQuery} from "mona-dish";
 import {ResponseProcessor} from "./ResponseProcessor";
 
 import {IResponseProcessor} from "./IResponseProcessor";
@@ -87,7 +87,7 @@ export namespace Response {
     /**
      * highest node partial-response from there the main operations are triggered
      */
-    function processPartialTag(node: XMLQuery, responseProcessor: IResponseProcessor, internalContext) {
+    function processPartialTag(node: XMLQuery, responseProcessor: IResponseProcessor, internalContext: Config) {
 
 
         /*

@@ -87,7 +87,7 @@ import {ExtConfig} from "../util/ExtDomQuery";
 
 export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
 
-    private responseContext: Config;
+    private responseContext!: Config;
 
     private stopProgress = false;
 
@@ -368,7 +368,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
     }
 
     private processRequestErrors(resolve: Consumer<any>): boolean {
-        const responseXML = new XMLQuery(this.xhrObject?.responseXML);
+        const responseXML = new XMLQuery(this.xhrObject?.responseXML as any);
         const responseText = this.xhrObject?.responseText ?? "";
         const responseCode = this.xhrObject?.status ?? -1;
         if(responseXML.isXMLParserError()) {
@@ -485,12 +485,12 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
         }
     }
 
-    private handleErrorAndClearQueue(e, responseFormatError: boolean = false) {
+    private handleErrorAndClearQueue(e: any, responseFormatError: boolean = false) {
         this.handleError(e, responseFormatError);
         this.reject(e);
     }
 
-    private handleError(exception, responseFormatError: boolean = false) {
+    private handleError(exception: any, responseFormatError: boolean = false) {
         const errorData = (responseFormatError) ? ErrorData.fromHttpConnection(exception.source, exception.type, exception.message ?? EMPTY_STR, exception.responseText, exception.responseXML, exception.responseCode, exception.status) : ErrorData.fromClient(exception);
         const eventHandler = resolveHandlerFunc(this.requestContext, this.responseContext, ON_ERROR);
 

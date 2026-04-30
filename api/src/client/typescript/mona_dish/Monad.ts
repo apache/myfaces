@@ -42,7 +42,7 @@ export interface IFunctor<T> {
  * flatmap flats nested Monads into a IMonad of the deepest nested implementation
  */
 export interface IMonad<T, M extends IMonad<any, any>> extends IFunctor<T> {
-    flatMap<T, M>(f: (T) => M): IMonad<any, any>;
+    flatMap<R>(f?: (data: T) => R): IMonad<any, any>;
 }
 
 /**
@@ -104,12 +104,12 @@ export class Monad<T> implements IMonad<T, Monad<any>>, IValueHolder<T> {
  * sugar on top
  * (Side - effect free, since value assignment is not allowed)
  * */
-export class Optional<T> extends Monad<T> {
+export class Optional<T> extends Monad<T | null | undefined> {
 
     /*default value for absent*/
-    static absent = Optional.fromNullable(null);
+    static absent: Optional<any> = Optional.fromNullable(null);
 
-    constructor(value: T) {
+    constructor(value: T | null | undefined) {
         super(value);
     }
 
@@ -117,11 +117,11 @@ export class Optional<T> extends Monad<T> {
         if (this._value instanceof Monad) {
             return this._value.flatMap().value
         }
-        return this._value;
+        return this._value as T;
     }
 
-    static fromNullable<V extends Optional<T>, T>(value?: T): Optional<T> {
-        return <V> new Optional(value);
+    static fromNullable<V extends Optional<T>, T>(value?: T | null): Optional<T> {
+        return <V> new Optional<T>(value);
     }
 
     /*syntactic sugar for absent and present checks*/
@@ -132,7 +132,7 @@ export class Optional<T> extends Monad<T> {
     /**
      * any value present
      */
-    isPresent(presentRunnable ?: (val ?: Monad<T>) => void): boolean {
+    isPresent(presentRunnable ?: (val ?: Optional<T>) => void): boolean {
         let absent = this.isAbsent();
         if (!absent && presentRunnable) {
             presentRunnable.call(this, this)
@@ -140,8 +140,8 @@ export class Optional<T> extends Monad<T> {
         return !absent;
     }
 
-    ifPresentLazy(presentRunnable: (val ?: Monad<T>) => void = () => {
-    }): Monad<T> {
+    ifPresentLazy(presentRunnable: (val ?: Optional<T>) => void = () => {
+    }): Optional<T> {
         this.isPresent.call(this, presentRunnable);
         return this;
     }
@@ -176,7 +176,7 @@ export class Optional<T> extends Monad<T> {
      * all values are flattened when accessed anyway, so there is no need to call this method
      */
     flatMap<R>(fn?: (data: T) => R): Optional<any> {
-        let val = super.flatMap(fn);
+        let val = super.flatMap(fn as any);
         if (!(val instanceof Optional)) {
             return Optional.fromNullable(val.value);
         }
@@ -207,7 +207,7 @@ export class Optional<T> extends Monad<T> {
                 if (currentPos.getIfPresent(currKey).isAbsent()) {
                     return currentPos;
                 }
-                currentPos = (currentPos.getIfPresent(currKey).value instanceof Array) ? this.getClass().fromNullable(currentPos.getIfPresent(currKey).value[arrPos]) : this.getClass().absent;
+                currentPos = (currentPos.getIfPresent(currKey).value instanceof Array) ? this.getClass().fromNullable((currentPos.getIfPresent(currKey).value as any)[arrPos]) : this.getClass().absent;
                 if (currentPos.isAbsent()) {
                     return currentPos;
                 }
@@ -300,7 +300,7 @@ export class Optional<T> extends Monad<T> {
         if (this.isAbsent()) {
             return this.getClass().absent;
         }
-        return this.getClass().fromNullable(this.value[key]).flatMap();
+        return this.getClass().fromNullable((this.value as any)[key]).flatMap();
     }
 
     /**
@@ -327,7 +327,7 @@ export class Optional<T> extends Monad<T> {
     }
 
 
-    protected preprocessKeys(...keys): string[] {
+    protected preprocessKeys(...keys: string[]): string[] {
         return new Es2019Array(...keys)
             .flatMap(item => {
                 return new Es2019Array(...item.split(/]\s*\[/gi))
@@ -370,18 +370,18 @@ export class ValueEmbedder<T> extends Optional<T> implements IValueHolder<T> {
     }
 
     get value(): T {
-        return this._value ? <T>this._value[this.key] : null;
+        return this._value ? <T>(this._value as any)[this.key] : null as T;
     }
 
     set value(newVal: T) {
         if (!this._value) {
             return;
         }
-        this._value[this.key] = newVal
+        (this._value as any)[this.key] = newVal
     }
 
     orElse(elseValue: any): Optional<any> {
-        let alternative = {};
+        let alternative: { [key: string]: any } = {};
         alternative[this.key] = elseValue;
         return this.isPresent() ? this : new ValueEmbedder(alternative, this.key);
     }
@@ -390,7 +390,7 @@ export class ValueEmbedder<T> extends Optional<T> implements IValueHolder<T> {
         if (this.isPresent()) {
             return this;
         } else {
-            let alternative = {};
+            let alternative: { [key: string]: any } = {};
             alternative[this.key] = func();
             return new ValueEmbedder(alternative, this.key);
         }
@@ -412,6 +412,3 @@ export class ValueEmbedder<T> extends Optional<T> implements IValueHolder<T> {
     }
 
 }
-
-
-

@@ -16,9 +16,6 @@
 
 
 import {DomQuery} from "mona-dish";
-import type {ConstructorOptions} from "jsdom";
-
-
 declare let global;
 declare let faces: any;
 declare let jsf: any;
@@ -39,7 +36,7 @@ declare let myfaces: any;
  */
 export namespace StandardInits {
 
-    type GlobalJsdom = (html?: string, options?: ConstructorOptions) => () => void;
+    type GlobalJsdom = (html?: string, options?: object) => () => void;
     type GlobalJsdomModule = GlobalJsdom | { default?: GlobalJsdom };
 
     function resolveGlobalJsdom(domIt: GlobalJsdomModule): GlobalJsdom {

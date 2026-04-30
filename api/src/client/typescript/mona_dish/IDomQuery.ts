@@ -178,7 +178,7 @@ export interface IDomQuery {
      * @param selector the standard selector
      * @return a DomQuery with the results
      */
-    querySelectorAll(selector): DomQuery;
+    querySelectorAll(selector: string): DomQuery;
 
 
     /**
@@ -187,7 +187,7 @@ export interface IDomQuery {
      * @param selector the standard selector
      * @return a DomQuery with the results
      */
-    querySelectorAll(selector): DomQuery;
+    querySelectorAll(selector: string): DomQuery;
 
     /**
      * core byId method
@@ -530,7 +530,7 @@ export interface IDomQuery {
      * @param toMerge optional config which can be merged in
      * @return a copy pf
      */
-    encodeFormElement(toMerge): {[key: string]: any};
+    encodeFormElement(toMerge?: any): {[key: string]: any};
 
     /**
      * fetches the sub-nodes from ... to..

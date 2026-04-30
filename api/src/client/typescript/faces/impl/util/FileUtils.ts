@@ -15,17 +15,17 @@ import {$faces, EMPTY_STR} from "../core/Const";
  * @param defaultStr a default string if nothing comes out of it
  */
 export function encodeFormData(formData: Config,
-                               paramsMapper = (inStr, inVal) => [inStr, inVal],
+                               paramsMapper = (inStr: string, inVal: any) => [inStr, inVal],
                                defaultStr = EMPTY_STR): string {
     if (formData.isAbsent()) {
         return defaultStr;
     }
     const assocValues = formData.value;
 
-    const expandValueArrAndRename = key => assocValues[key].map(val => paramsMapper(key, val));
-    const isPropertyKey = key => assocValues.hasOwnProperty(key);
-    const isNotFile = ([, value]) => !(value instanceof ExtDomQuery.global().File);
-    const mapIntoUrlParam = keyVal => `${encodeURIComponent(keyVal[0])}=${encodeURIComponent(keyVal[1])}`;
+    const expandValueArrAndRename = (key: string) => assocValues[key].map((val: any) => paramsMapper(key, val));
+    const isPropertyKey = (key: string) => assocValues.hasOwnProperty(key);
+    const isNotFile = ([, value]: [string, any]) => !(value instanceof ExtDomQuery.global().File);
+    const mapIntoUrlParam = (keyVal: [string, any]) => `${encodeURIComponent(keyVal[0])}=${encodeURIComponent(keyVal[1])}`;
 
     return new Es2019Array(...Object.keys(assocValues))
         .filter(isPropertyKey)
@@ -40,8 +40,8 @@ export function encodeFormData(formData: Config,
  * @param encoded encoded string
  */
 export function decodeEncodedValues(encoded: string): string[][] {
-    const filterBlanks = item => !!(item || '').replace(/\s+/g, '');
-    const splitKeyValuePair = _line => {
+    const filterBlanks = (item: string) => !!(item || '').replace(/\s+/g, '');
+    const splitKeyValuePair = (_line: string) => {
         let line = decodeURIComponent(_line);
         let index = line.indexOf("=");
         if (index == -1) {
@@ -61,10 +61,10 @@ export function decodeEncodedValues(encoded: string): string[][] {
  */
 export function resolveFiles(dataSource: DQ): [string, File][] {
 
-    const expandFilesArr = ([key, files]) => {
-        return [...files].map(file => [key, file]);
+    const expandFilesArr = ([key, files]: any[]) => {
+        return [...files].map((file: File) => [key, file]);
     }
-    const remapFileInput = fileInput => {
+    const remapFileInput = (fileInput: DQ) => {
         return [fileInput.name.value || fileInput.id.value, fileInput.filesFromElem(0)];
     }
 

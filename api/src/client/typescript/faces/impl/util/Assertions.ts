@@ -49,7 +49,7 @@ export namespace Assertions {
 
     export function assertUrlExists(node: XMLQuery): void | never {
         if (node.attr(ATTR_URL).isAbsent()) {
-            throw Assertions.raiseError(new Error(), ExtLang.getMessage("ERR_RED_URL", null, "processRedirect"), "processRedirect");
+            throw Assertions.raiseError(new Error(), ExtLang.getMessage("ERR_RED_URL", undefined, "processRedirect"), "processRedirect");
         }
     }
 
@@ -112,5 +112,4 @@ export namespace Assertions {
         }
     }
 }
-
 

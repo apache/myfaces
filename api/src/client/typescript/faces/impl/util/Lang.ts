@@ -53,7 +53,7 @@ export namespace ExtLang {
      * @param defaultValue an optional default value if the producer fails to produce anything
      * @returns an Optional of the produced value
      */
-    export function failSaveResolve<T>(resolverProducer: () => T, defaultValue: T = null): Optional<T> {
+    export function failSaveResolve<T>(resolverProducer: () => T, defaultValue: T | null = null): Optional<T | null> {
         return LangBase.saveResolve(resolverProducer, defaultValue);
     }
 
@@ -66,7 +66,7 @@ export namespace ExtLang {
      * @param resolverProducer a producer function which produces a value in the non error case
      * @param defaultValue the default value in case of a fail of the function
      */
-    export function failSaveExecute<T>(resolverProducer: () => any, defaultValue: T = null): void {
+    export function failSaveExecute<T>(resolverProducer: () => any, defaultValue: T | null = null): void {
         LangBase.saveResolve(resolverProducer, defaultValue);
     }
 
@@ -85,7 +85,7 @@ export namespace ExtLang {
     export function getMessage(key: string, defaultMessage?: string, ...templateParams: Array<string>): string {
         installedLocale = installedLocale ?? new Messages();
 
-        let msg = installedLocale[key] ?? defaultMessage ?? key;
+        let msg = (installedLocale as any)[key] ?? defaultMessage ?? key;
         templateParams.forEach((param, cnt) => {
             msg = msg.replace(new RegExp(["\\{", cnt, "\\}"].join(EMPTY_STR), "g"), param);
         })
@@ -168,7 +168,7 @@ export namespace ExtLang {
         //html 5 for handling
         if (queryElem.attr(HTML_TAG_FORM).isPresent()) {
             let formId = queryElem.attr(HTML_TAG_FORM).value;
-            let foundForm = DQ.byId(formId, true);
+            let foundForm = DQ.byId(formId as any, true);
             if (foundForm.isPresent()) {
                 return foundForm;
             }
@@ -216,7 +216,7 @@ export namespace ExtLang {
      */
     export function ofAssoc(value: {[key: string]: any}) {
         return new Es2019Array(...Object.keys(value))
-            .map(key => [key, value[key]]);
+            .map((key: string) => [key, value[key]]);
     }
 
     export function collectAssoc(target: any, item: any) {
@@ -229,7 +229,7 @@ export namespace ExtLang {
      * Since we only use it in the XhrController
      * we can use a local module variable here
      */
-    let activeTimeouts = {};
+    let activeTimeouts: {[key: string]: ReturnType<typeof setTimeout>} = {};
 
 
 
@@ -242,7 +242,7 @@ export namespace ExtLang {
      * @param runnable a runnable which should go under debounce control
      * @param timeout a timeout for the debounce window
      */
-    export function debounce(key, runnable, timeout) {
+    export function debounce(key: string, runnable: Function, timeout: number) {
         function clearActiveTimeout() {
             clearTimeout(activeTimeouts[key]);
             delete activeTimeouts[key];
@@ -271,7 +271,7 @@ export namespace ExtLang {
      */
     function assertOnlyOneFormExists(forms: DomQuery): void | never {
         if (forms.isAbsent() || forms.length > 1) {
-            throw makeException(new Error(), null, null, "Impl", "getForm", getMessage("ERR_FORM"));
+            throw makeException(new Error(), null as any, null as any, "Impl", "getForm", getMessage("ERR_FORM"));
         }
     }
 }

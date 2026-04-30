@@ -81,9 +81,9 @@ export class XhrFormData extends Config {
            * expands key: [item1, item2]
            * to: [{key: key,  value: item1}, {key: key, value: item2}]
            */
-        let expandValueArrays = ([key, item]) => {
+        let expandValueArrays = ([key, item]: [string, any]) => {
             if (Array.isArray(item)) {
-                return new Es2019Array(...item).map(value => {
+                return new Es2019Array(...item).map((value: any) => {
                     return {key, value}
                 })
             }
@@ -94,7 +94,7 @@ export class XhrFormData extends Config {
          * remaps the incoming {key, value} tuples
          * to naming container prefixed keys and values
          */
-        let remapForNamingContainer = ({key, value}) => {
+        let remapForNamingContainer = ({key, value}: {key: string, value: any}) => {
             key = this.remapKeyForNamingContainer(key);
             return {key, value}
         };
@@ -154,11 +154,11 @@ export class XhrFormData extends Config {
      */
     private encodeSubmittableFields(parentItem: DQ, partialIds: string[] = []) {
 
-        const mergeIntoThis = ([key, value]) => this.append(key).value = value;
-        const namingContainerRemap = ([key, value]) => this.paramsMapper(key as string, value);
+        const mergeIntoThis = ([key, value]: [string, any]) => this.append(key).value = value;
+        const namingContainerRemap = ([key, value]: [string, any]) => this.paramsMapper(key as string, value);
 
         const remappedPartialIds = partialIds.map(partialId => this.remapKeyForNamingContainer(partialId));
-        const partialIdsFilter = ([key, value]) => (!remappedPartialIds.length || key.indexOf("@") == 0) ? true :
+        const partialIdsFilter = ([key, value]: [string, any]) => (!remappedPartialIds.length || key.indexOf("@") == 0) ? true :
             remappedPartialIds.indexOf(key) != -1;
 
         let inputs = getFormInputsAsArr(parentItem);
