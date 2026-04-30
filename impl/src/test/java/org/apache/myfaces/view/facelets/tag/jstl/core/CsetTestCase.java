@@ -205,4 +205,28 @@ public class CsetTestCase extends AbstractFaceletTestCase {
         Assertions.assertTrue(result.contains("rightValue"));
         Assertions.assertFalse(result.contains("doNotPrintValue"));
     }
+
+    /**
+     * c:set with scope="request" should store the value in request scope and
+     * the variable should be resolvable via EL expression #{demo}.
+     * Reproduces TOMEE-4603.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testCsetRequestScope1() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "csetrequestscope1.xhtml");
+
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        root.encodeAll(facesContext);
+        rw.flush();
+
+        String result = fw.toString();
+        Assertions.assertTrue(result.contains("someValue"));
+    }
 }
