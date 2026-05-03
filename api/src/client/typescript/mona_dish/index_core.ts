@@ -17,19 +17,36 @@
  * under the License.
  */
 export {DomQuery, ElementAttribute, DomQueryCollector, DQ, DQ$} from "./DomQuery";
-export {IDomQuery} from "./IDomQuery";
+export type {IDomQuery} from "./IDomQuery";
 export {Lang} from "./Lang";
-export {Monad, IValueHolder, IFunctor, IMonad, IIdentity, Optional, ValueEmbedder} from "./Monad";
+export {Monad, Optional, ValueEmbedder} from "./Monad";
+export type {IValueHolder, IFunctor, IMonad, IIdentity} from "./Monad";
+export {CancellablePromise, PromiseStatus} from "./Promise";
+export type {IPromise} from "./Promise";
 export {XMLQuery, XQ} from "./XmlQuery";
+export {Stream, LazyStream, FlatMapStreamDataSource} from "./Stream";
+export type {IteratableConsumer, IStream} from "./Stream";
+export {
+    ArrayStreamDataSource,
+    MappedStreamDataSource,
+    FilteredStreamDatasource,
+    MultiStreamDatasource,
+    SequenceDataSource,
+    QueryFormStringCollector,
+    ArrayCollector,
+    ConfigCollector,
+    AssocArrayCollector,
+    FormDataCollector,
+    QueryFormDataCollector,
+} from "./SourcesCollectors";
+export type {IStreamDataSource, ICollector} from "./SourcesCollectors";
 export {assign, assignIf, append, simpleShallowMerge, shallowMerge} from "./AssocArray"
 export {Config} from "./Config";
-export {ConfigDef} from "./Config";
+export type {ConfigDef} from "./Config";
 export {CONFIG_ANY} from "./Config";
 export {CONFIG_VALUE} from "./Config";
 export * as Assoc from "./AssocArray";
 export {Es2019Array, _Es2019Array} from "./Es2019Array";
-
-
-
+export {TagBuilder} from "./TagBuilder";
 
 

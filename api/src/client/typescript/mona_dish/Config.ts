@@ -18,7 +18,7 @@ class ConfigEntry<T> extends ValueEmbedder<T> {
      */
     arrPos: number;
 
-    constructor(rootElem: any, key: any, arrPos?: number) {
+    constructor(rootElem: { [key: string]: any } | any[], key: any, arrPos?: number) {
         super(rootElem, key);
 
         this.arrPos = arrPos ?? -1;
@@ -26,22 +26,22 @@ class ConfigEntry<T> extends ValueEmbedder<T> {
 
     get value() {
         if (this.key == "" && this.arrPos >= 0) {
-            return this._value[this.arrPos];
+            return (this._value as any)[this.arrPos];
         } else if (this.key && this.arrPos >= 0) {
-            return this._value[this.key][this.arrPos];
+            return (this._value as any)[this.key][this.arrPos];
         }
-        return this._value[this.key];
+        return (this._value as any)[this.key];
     }
 
     set value(val: T) {
         if (this.key == "" && this.arrPos >= 0) {
-            this._value[this.arrPos] = val;
+            (this._value as any)[this.arrPos] = val;
             return;
         } else if (this.key && this.arrPos >= 0) {
-            this._value[this.key][this.arrPos] = val;
+            (this._value as any)[this.key][this.arrPos] = val;
             return;
         }
-        this._value[this.key] = val;
+        (this._value as any)[this.key] = val;
     }
 }
 
@@ -138,7 +138,7 @@ export class Config extends Optional<any> {
      * assigns a new value on the given access path
      * @param accessPath
      */
-    assign(...accessPath): IValueHolder<any> {
+    assign(...accessPath: Array<any>): IValueHolder<any> {
         return assign(this.value, ...accessPath);
     }
 
@@ -211,8 +211,8 @@ export class Config extends Optional<any> {
 
         const ERR_ACCESS_PATH = "Access Path to config invalid";
         let currAccessPos: any = Optional.fromNullable(Object.keys(this.configDef).map(key => {
-            let ret = {};
-            ret[key] = this.configDef[key];
+            let ret: { [key: string]: any } = {};
+            ret[key] = this.configDef![key];
             return ret;
         }));
 
