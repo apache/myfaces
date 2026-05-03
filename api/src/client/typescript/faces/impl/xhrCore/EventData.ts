@@ -17,12 +17,12 @@ import {Config, DQ} from "mona-dish";
 import {BEGIN, CTX_PARAM_REQ_PASS_THR, EVENT, P_AJAX_SOURCE, SOURCE} from "../core/Const";
 
 export class EventData implements IEventData{
-    type: string;
-    status: string;
+    type!: string;
+    status!: string | null;
     source: any;
-    responseCode: number;
-    responseText: string;
-    responseXML: Document;
+    responseCode!: number;
+    responseText!: string;
+    responseXML!: Document | null;
 
     static createFromRequest(request: XMLHttpRequest, internalContext: Config, context: Config, /*event name*/ name: string): EventData {
 

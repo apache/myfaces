@@ -159,11 +159,11 @@ export namespace Implementation {
     const ofAssoc = ExtLang.ofAssoc;
     const collectAssoc = ExtLang.collectAssoc;
 
-    let projectStage: string = null;
-    let separator: string = null;
-    let eventQueue = [];
-    let errorQueue = [];
-    export let requestQueue: XhrQueueController<XhrRequest> = null;
+    let projectStage: string | null = null;
+    let separator: string | null = null;
+    let eventQueue: Function[] = [];
+    let errorQueue: Function[] = [];
+    export let requestQueue: XhrQueueController<XhrRequest> | null = null;
     /*error reporting threshold*/
     let threshold = "ERROR";
 
@@ -217,7 +217,7 @@ export namespace Implementation {
      * @param event
      * @param funcs
      */
-    export function chain(source: any, event: Event, ...funcs: EvalFuncs): boolean {
+    export function chain(source: any, event: Event | null, ...funcs: EvalFuncs): boolean {
         // we can use our lazy stream each functionality to run our chain here.
         // by passing a boolean as return value into the onElem call
         // we can stop early at the first false, just like the spec requests
@@ -444,7 +444,7 @@ export namespace Implementation {
             }
         } finally {
             if (clearRequestQueue) {
-                requestQueue.clear();
+                requestQueue?.clear();
             }
         }
     }
@@ -472,7 +472,7 @@ export namespace Implementation {
         errorQueue.forEach((errorCallback: Function) => {
             errorCallback(errorData);
         });
-        let displayError: (string) => void = getGlobalConfig("defaultErrorOutput", (console ? console.error : alert));
+        let displayError: (message: any) => void = getGlobalConfig("defaultErrorOutput", (console ? console.error : alert));
         displayError(errorData);
     }
 
@@ -497,12 +497,12 @@ export namespace Implementation {
         /*
          * lazy helper to fetch the window id from the included faces.js
          */
-        let fetchWindowIdFromJSFJS = (): Optional<string> => ExtDomQuery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null);
+        let fetchWindowIdFromJSFJS = (): Optional<string | null> => ExtDomQuery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null);
 
         /*
          * fetch window id from the url
          */
-        let fetchWindowIdFromURL = function (): Optional<string> {
+        let fetchWindowIdFromURL = function (): Optional<string | null> {
             const href = window.location.href, windowId = "jfwid";
             const regex = new RegExp("[\\?&]" + windowId + "=([^&#\\;]*)");
             const results = regex.exec(href);
@@ -696,7 +696,7 @@ export namespace Implementation {
         //a cleaner implementation of the transform list method
         const SEP = $faces().separatorchar;
         let iterValues: string[] = (userValues) ? trim(userValues).split(/\s+/gi) : [];
-        let ret = [];
+        let ret: string[] = [];
         let processed: {[key: string]: boolean} = {};
 
         /**
@@ -706,7 +706,7 @@ export namespace Implementation {
          * apparently the RI does not, so we have to follow the RI behavior here)
          * @param componentIdToTransform the componentId which needs post-processing
          */
-        const remapNamingContainer = componentIdToTransform => {
+        const remapNamingContainer = (componentIdToTransform: string) => {
             // pattern :<anything> must be prepended by viewRoot if there is one,
             // otherwise we are in a not namespaced then only the id has to match
             const rootNamingContainerPrefix = (rootNamingContainerId.length) ? rootNamingContainerId+SEP : EMPTY_STR;
@@ -795,7 +795,7 @@ export namespace Implementation {
         //we now can use the full code reduction given by our stream api
         //to filter
         return ofAssoc(mappedOpts)
-            .filter((item => !(item[0] in BlockFilter)))
+            .filter(((item: [string, any]) => !(item[0] in BlockFilter)))
             .reduce(collectAssoc, {});
     }
 
@@ -810,7 +810,7 @@ export namespace Implementation {
         //we now can use the full code reduction given by our stream api
         //to filter
         return ofAssoc(mappedOpts)
-            .filter((item => (item[0] == "myfaces")))
+            .filter(((item: [string, any]) => (item[0] == "myfaces")))
             .reduce(collectAssoc, {})?.[MYFACES];
     }
 
@@ -835,7 +835,7 @@ export namespace Implementation {
      * caller is basically notified that the execution can now stop (JSF requirement for chain)
      * @private
      */
-    function resolveAndExecute(source: any, event: Event, func: Function | string): boolean {
+    function resolveAndExecute(source: any, event: Event | null, func: Function | string): boolean {
         if ("string" != typeof func) {
             //function is passed down as chain parameter, can be executed as is
             return (<Function>func).call(source, event) !== false;

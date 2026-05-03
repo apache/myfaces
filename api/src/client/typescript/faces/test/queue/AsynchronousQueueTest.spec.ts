@@ -25,6 +25,44 @@ import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {Implementation} from "../../impl/AjaxImpl";
 const defaultMyFaces = StandardInits.defaultMyFaces;
 import {XhrQueueController} from "../../impl/util/XhrQueueController";
+import {IAsyncRunnable} from "../../impl/util/AsyncRunnable";
+
+class ControlledRunnable implements IAsyncRunnable<boolean> {
+    started = 0;
+    private thenHandlers: Array<(data: any) => any> = [];
+    private catchHandlers: Array<(data: any) => any> = [];
+
+    start(): void {
+        this.started++;
+    }
+
+    cancel(): void {
+    }
+
+    then(func: (data: any) => any): IAsyncRunnable<boolean> {
+        this.thenHandlers.push(func);
+        return this;
+    }
+
+    catch(func: (data: any) => any): IAsyncRunnable<boolean> {
+        this.catchHandlers.push(func);
+        return this;
+    }
+
+    finally(func: () => void): IAsyncRunnable<boolean> {
+        this.thenHandlers.push(func);
+        this.catchHandlers.push(func);
+        return this;
+    }
+
+    resolve(): void {
+        this.thenHandlers.forEach(handler => handler(true));
+    }
+
+    reject(): void {
+        this.catchHandlers.forEach(handler => handler(false));
+    }
+}
 
 describe('Asynchronous Queue tests', () => {
 
@@ -104,5 +142,108 @@ describe('Asynchronous Queue tests', () => {
 
     });
 
-    //TODO error test?
+    it('must not start a queued entry while another task is running', function () {
+        const queue = new XhrQueueController();
+        const first = new ControlledRunnable();
+        const second = new ControlledRunnable();
+
+        queue.enqueue(first);
+        queue.enqueue(second);
+
+        expect(first.started).to.eq(1);
+        expect(second.started).to.eq(0);
+        expect(queue.isEmpty).to.be.false;
+
+        first.resolve();
+
+        expect(second.started).to.eq(1);
+        expect(queue.isEmpty).to.be.true;
+    });
+
+    it('must clear queued entries and reset running state', function () {
+        const queue = new XhrQueueController();
+        const first = new ControlledRunnable();
+        const second = new ControlledRunnable();
+
+        queue.enqueue(first);
+        queue.enqueue(second);
+        queue.clear();
+
+        expect(queue.isEmpty).to.be.true;
+        expect(queue.taskRunning).to.be.false;
+        expect(second.started).to.eq(0);
+    });
+
+    it('must clear queued entries when a runnable rejects', function () {
+        const queue = new XhrQueueController();
+        const first = new ControlledRunnable();
+        const second = new ControlledRunnable();
+
+        queue.enqueue(first);
+        queue.enqueue(second);
+
+        first.reject();
+
+        expect(queue.isEmpty).to.be.true;
+        expect(queue.taskRunning).to.be.false;
+        expect(second.started).to.eq(0);
+    });
+
+    it('must reset running state when next is called on an empty queue', function () {
+        const queue = new XhrQueueController();
+        const first = new ControlledRunnable();
+
+        queue.enqueue(first);
+        first.resolve();
+
+        expect(queue.isEmpty).to.be.true;
+        expect(queue.taskRunning).to.be.false;
+        expect(() => queue.next()).not.to.throw();
+        expect(queue.taskRunning).to.be.false;
+    });
+
+    it('must debounce delayed enqueues by queue key', function () {
+        const clock = sinon.useFakeTimers();
+        const queue = new XhrQueueController();
+        const first = new ControlledRunnable();
+        const second = new ControlledRunnable();
+
+        try {
+            queue.enqueue(first, 50);
+            queue.enqueue(second, 50);
+
+            clock.tick(49);
+            expect(first.started).to.eq(0);
+            expect(second.started).to.eq(0);
+
+            clock.tick(1);
+            expect(first.started).to.eq(0);
+            expect(second.started).to.eq(1);
+        } finally {
+            clock.restore();
+        }
+    });
+
+    it('must debounce two instances independently without cross-interference', function () {
+        const clock = sinon.useFakeTimers();
+        const queueA = new XhrQueueController();
+        const queueB = new XhrQueueController();
+        const runnableA = new ControlledRunnable();
+        const runnableB = new ControlledRunnable();
+
+        try {
+            queueA.enqueue(runnableA, 50);
+            queueB.enqueue(runnableB, 50);
+
+            clock.tick(49);
+            expect(runnableA.started).to.eq(0);
+            expect(runnableB.started).to.eq(0);
+
+            clock.tick(1);
+            expect(runnableA.started).to.eq(1, "queueA runnable must start after its own debounce window");
+            expect(runnableB.started).to.eq(1, "queueB runnable must start after its own debounce window");
+        } finally {
+            clock.restore();
+        }
+    });
 });

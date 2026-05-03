@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {Crypto, Hash} from "./Messaging";
+import type {Crypto, Hash} from "./Messaging";
 import {AssocArrayCollector} from "./SourcesCollectors";
 import {LazyStream} from "./Stream";
 
@@ -60,7 +60,7 @@ export class JSONCrypto implements Crypto {
  *
  * The idea behind this is to have a generic wrapper which allows messages with dynamic encryption
  * where keys/salts only exist for a certain period of time before expiring!
- * That way someone who implements such a scheme does not have to take care about the bookeeping mechanisms!
+ * That way someone who implements such a scheme does not have to take care about the bookkeeping mechanisms!
  * Or you can use crypto mechanisms which do not have expiring keys and still expire them automatically
  *
  * I will leave it up to the system integrator to provide a rotating crypto class, because this is highly
@@ -74,7 +74,7 @@ export class ExpiringCrypto implements Crypto {
     private lastCall = 0;
 
     /**
-     * @param timeout timeout in miliseconds until a message is expired
+     * @param timeout timeout in milliseconds until a message is expired
      * @param parentCrypto the embedded decorated crypto algorithm
      * @param hashSum hashshum implementation to generate a hash
      */
@@ -101,7 +101,7 @@ export class ExpiringCrypto implements Crypto {
 
         let rotatingEncoded = this.hashSum.encode(data);
         if (!this.storedMessages?.[rotatingEncoded.toString()]) {
-            throw Error("An item was tried to be decryted which either was expired or invalid");
+            throw Error("An item was tried to be decrypted which either was expired or invalid");
         }
         return this.parentCrypto.decode(data);
     }

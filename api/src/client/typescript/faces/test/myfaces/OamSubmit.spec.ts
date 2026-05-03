@@ -130,5 +130,26 @@ describe('Tests on the xhr core when it starts to call the request', function ()
 
     })
 
+    it('onsubmit must receive null for compatibility', function () {
+        let FORM_ID = "blarg";
+        let form = DomQuery.byId(FORM_ID);
+        const onsumbit = Sinon.spy(() => false);
+        const submit_spy = Sinon.spy(() => {
+        });
+
+        (form.value.value as any).onsubmit = onsumbit;
+        (form.value.value as any).submit = submit_spy;
+
+        submitForm(FORM_ID, 'mylink', 'target1', {
+            booga1: "val_booga1",
+            booga2: "val_booga2"
+        });
+
+        expect(onsumbit.calledOnce).to.eq(true);
+        expect(onsumbit.firstCall.args.length).to.eq(1);
+        expect((onsumbit.firstCall.args as any[])[0]).to.eq(null);
+        expect(submit_spy.called).to.eq(false);
+    })
+
     // further tests will follow if needed, for now the namespace must be restored
 });
