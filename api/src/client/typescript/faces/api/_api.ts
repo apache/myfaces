@@ -206,10 +206,10 @@ export namespace faces {
         export function init(socketClientId: string,
                              url: string,
                              channel: string,
-                             onopen: Function,
-                             onmessage: Function,
-                             onerror: Function,
-                             onclose: Function,
+                             onopen: PushImpl.OpenCallback | string,
+                             onmessage: PushImpl.MessageCallback | string,
+                             onerror: PushImpl.ErrorCallback | string,
+                             onclose: PushImpl.CloseCallback | string,
                              behaviors: any,
                              autoConnect: boolean): void {
             PushImpl.init(socketClientId, url, channel, onopen, onmessage, onerror, onclose, behaviors, autoConnect);

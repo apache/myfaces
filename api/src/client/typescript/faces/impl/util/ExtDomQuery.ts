@@ -156,10 +156,6 @@ export class ExtDomQuery extends DQ {
             })?.[0]);
     }
 
-    globalEval(code: string, nonce ?: string): DQ {
-        return new ExtDomQuery(super.globalEval(code, nonce ?? this.nonce.value));
-    }
-
     // called from base class runScripts, do not delete
     // noinspection JSUnusedGlobalSymbols
     globalEvalSticky(code: string, nonce ?: string): DQ {

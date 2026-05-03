@@ -44,13 +44,13 @@ export function decodeEncodedValues(encoded: string): string[][] {
     const splitKeyValuePair = (_line: string) => {
         let line = decodeURIComponent(_line);
         let index = line.indexOf("=");
-        if (index == -1) {
+        if (index === -1) {
             return [line];
         }
         return [line.substring(0, index), line.substring(index + 1)];
     };
 
-    let requestParamEntries = encoded.split(/&/gi);
+    let requestParamEntries = encoded.split("&");
     return requestParamEntries.filter(filterBlanks).map(splitKeyValuePair);
 }
 
@@ -105,5 +105,5 @@ function resolveViewState(parentItem: DomQuery): string[][] | [string, File][] {
 export function getFormInputsAsArr(parentItem: DomQuery): string[][] | [string, File][] {
     const standardInputs: any = resolveViewState(parentItem);
     const fileInputs = resolveFiles(parentItem);
-    return standardInputs.concat(fileInputs)
+    return standardInputs.concat(fileInputs);
 }

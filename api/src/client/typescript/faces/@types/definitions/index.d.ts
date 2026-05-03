@@ -92,6 +92,15 @@ declare global {
              channel: string,
              onopen: Function,
              onmessage: Function,
+             onerror: Function,
+             onclose: Function,
+             behaviorScripts: any,
+             autoconnect: boolean): void;
+        init(socketClientId: string,
+             uri: string,
+             channel: string,
+             onopen: Function,
+             onmessage: Function,
              onclose: Function,
              behaviorScripts: any,
              autoconnect: boolean): void;

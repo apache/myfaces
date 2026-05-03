@@ -39,9 +39,8 @@ import {
     HTML_TAG_BODY,
     HTML_TAG_FORM,
     HTML_TAG_HEAD,
-    HTML_TAG_LINK,
     HTML_TAG_SCRIPT,
-    HTML_TAG_STYLE, IDENT_ALL, IDENT_NONE, NAMED_VIEWROOT,
+    IDENT_ALL, IDENT_NONE, NAMED_VIEWROOT,
     ON_ERROR,
     ON_EVENT,
     P_CLIENT_WINDOW,
@@ -405,6 +404,7 @@ export class ResponseProcessor implements IResponseProcessor {
      * proper viewState -> form assignment
      *
      * @param forms the forms to append the viewState to
+     * @param namedViewRoot if set to true, the name is also prefixed
      * @param viewState the final viewState
      * @param namingContainerId
      */
@@ -417,6 +417,7 @@ export class ResponseProcessor implements IResponseProcessor {
      * proper clientWindow -> form assignment
      *
      * @param forms the forms to append the viewState to
+     * @param namedViewRoot if set to true, the name is also prefixed
      * @param clientWindow the final viewState
      * @param namingContainerId
      */

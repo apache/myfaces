@@ -22,39 +22,31 @@
  * on jsf2.3 or earlier level, for 4.0+ please include faces.js
  */
 if(!window?.jsf) {
-    const faces = require("./_api").faces;
-    (window as any)['jsf'] = window?.jsf ?? faces;
+    const myfacesApi = require("./_api").faces;
+    (window as any)['jsf'] = window?.jsf ?? {...myfacesApi, push: {...myfacesApi.push}};
     window.jsf.specversion = 230000;
     delete (window.jsf as Partial<typeof window.jsf>).contextpath;
 
-    let faces4Init = faces.push.init;
     /*
      * we shim back the breaking api change from 3.0 to 4.0
-     * onerror is gone
+     * JSF 2.3 did not expose a websocket onerror callback.
      */
-    faces.push.init = (socketClientId: string,
-                       url: string,
-                       channel: string,
-                       onopen: Function,
-                       onmessage: Function,
-                       // no on error api change for 4.0
-                       //onerror: Function,
-                       onclose: Function,
-                       behaviors: any,
-                       autoConnect: boolean) => {
-        faces4Init(socketClientId, url, channel, onopen, onmessage, null, onclose, behaviors, autoConnect);
+    window.jsf.push.init = (socketClientId: string,
+                            url: string,
+                            channel: string,
+                            onopen: Function,
+                            onmessage: Function,
+                            onclose: Function,
+                            behaviors: any,
+                            autoConnect: boolean) => {
+        myfacesApi.push.init(socketClientId, url, channel, onopen, onmessage, null, onclose, behaviors, autoConnect);
     }
 }
 if(!window?.myfaces?.ab) {
     const myfaces = require("./_api").myfaces;
     //namespace might be extended is not exclusively reserved so we merge
     (window as any)["myfaces"] = window?.myfaces ?? {};
-    if(!window?.myfaces?.ab) {
-        const myfaces = require("./_api").myfaces;
-        //namespace might be extended is not exclusively reserved so we merge
-        (window as any)["myfaces"] = window?.myfaces ?? {};
-        Object.keys(myfaces).forEach(key => window.myfaces[key] = window.myfaces?.[key] ?? myfaces[key]);
-    }
+    Object.keys(myfaces).forEach(key => window.myfaces[key] = window.myfaces?.[key] ?? myfaces[key]);
 }
 
 export var jsf = window.jsf;

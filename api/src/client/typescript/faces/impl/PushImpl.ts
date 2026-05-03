@@ -17,7 +17,7 @@
 /**
  * Typescript port of the faces\.push part in the myfaces implementation
  */
-import {MAX_RECONNECT_ATTEMPTS, REASON_EXPIRED, RECONNECT_INTERVAL} from "./core/Const";
+import {MAX_RECONNECT_ATTEMPTS, RECONNECT_INTERVAL} from "./core/Const";
 import {DQ} from "mona-dish";
 
 /**
@@ -34,12 +34,17 @@ export namespace PushImpl {
     // they are not directly touched outside of tests
 
     /* socket map by token */
+    export type OpenCallback = (channel: string) => void;
+    export type MessageCallback = (message: any, channel: string, event: MessageEvent) => void;
+    export type ErrorCallback = (code: number, channel: string, event: CloseEvent) => void;
+    export type CloseCallback = (code: number, channel: string, event?: CloseEvent) => void;
+
     type ComponentData = {
         channelToken: string;
-        onopen: Function;
-        onmessage: Function;
-        onerror: Function;
-        onclose: Function;
+        onopen: OpenCallback;
+        onmessage: MessageCallback;
+        onerror: ErrorCallback;
+        onclose: CloseCallback;
         behaviors: any;
         autoconnect: boolean;
     };
@@ -50,12 +55,12 @@ export namespace PushImpl {
     /* client ids by token (share websocket connection) */
     export let clientIdsByTokens: {[key: string]: string[]} = {};
 
-
     // needed for testing
     export function reset() {
+        Object.values(sockets).forEach(s => { try { s.close(); } catch(e) { /* ignore */ } });
         sockets = {};
-        components = {}
-        clientIdsByTokens = {}
+        components = {};
+        clientIdsByTokens = {};
     }
 
     /*
@@ -76,13 +81,13 @@ export namespace PushImpl {
     export function init(socketClientId: string,
                          url: string,
                          channel: string,
-                         onopen: Function,
-                         onmessage: Function,
-                         onerror: Function,
-                         onclose: Function,
+                         onopen: OpenCallback | string,
+                         onmessage: MessageCallback | string,
+                         onerror: ErrorCallback | string,
+                         onclose: CloseCallback | string,
                          behaviors: any,
                          autoConnect: boolean) {
-        onclose = resolveFunction(onclose);
+        onclose = resolveFunction(onclose) as CloseCallback;
 
         if (!DQ.global().WebSocket) { // IE6-9.
             onclose(-1, channel);
@@ -94,9 +99,9 @@ export namespace PushImpl {
         if (!components[socketClientId]) {
             components[socketClientId] = {
                 'channelToken': channelToken,
-                'onopen': resolveFunction(onopen),
-                'onmessage' : resolveFunction(onmessage),
-                'onerror' : resolveFunction(onerror),
+                'onopen': resolveFunction(onopen) as OpenCallback,
+                'onmessage' : resolveFunction(onmessage) as MessageCallback,
+                'onerror' : resolveFunction(onerror) as ErrorCallback,
                 'onclose': onclose,
                 'behaviors': behaviors,
                 'autoconnect': autoConnect};
@@ -137,58 +142,40 @@ export namespace PushImpl {
 
     class Socket {
 
-        socket!: WebSocket;
-        reconnectAttempts = 0;
+        private socket: WebSocket | null = null;
+        private reconnectAttempts = 0;
+        private hasEverConnected = false;
+        private hasNotifiedInitialOpenAttempt = false;
 
         constructor(private channelToken: string, private url: string, private channel: string) {
         }
 
         open() {
-            if (this.socket && this.socket.readyState == 1) {
+            if (this.socket && this.socket.readyState === 1) {
                 return;
             }
             this.socket = new WebSocket(this.url);
-
             this.bindCallbacks();
+            this.notifyInitialOpenAttempt();
         }
 
         // noinspection JSUnusedLocalSymbols
         onopen(event: any) {
-            if (!this.reconnectAttempts) {
-                let clientIds = clientIdsByTokens[this.channelToken];
-                for (let i = clientIds.length - 1; i >= 0; i--) {
-                    let socketClientId = clientIds[i];
-                    components[socketClientId]?.['onopen']?.(this.channel);
-                }
-            }
+            this.hasEverConnected = true;
             this.reconnectAttempts = 0;
         }
 
         onerror(event: any) {
-            let message = JSON.parse(event?.data ?? null);
-            //TODO replace this with a more readable Stream code
-            for (let i = clientIdsByTokens[this.channelToken].length - 1; i >= 0; i--) {
-                let socketClientId = clientIdsByTokens[this.channelToken][i];
-                if (document.getElementById(socketClientId)) {
-                    try {
-                        components[socketClientId]?.['onerror']?.(message, this.channel, event);
-                    } catch (e) {
-                        //Ignore
-                    }
-                } else {
-                    clientIdsByTokens[this.channelToken].splice(i, 1);
-                }
-            }
-            if (clientIdsByTokens[this.channelToken].length == 0) {
-                // tag disappeared
-                this.close();
-            }
+            // Native WebSocket error events do not expose the close reason code.
+            // Faces onerror is fired from onclose only when a reconnect is attempted.
         }
 
-        onmmessage(event: any) {
+        onmessage(event: any) {
             let message = JSON.parse(event.data);
-            for (let i = clientIdsByTokens[this.channelToken].length - 1; i >= 0; i--) {
-                let socketClientId = clientIdsByTokens[this.channelToken][i];
+            let clientIds = clientIdsByTokens[this.channelToken];
+            if (!clientIds) return; // socket was torn down (reset()) while message was pending
+            for (let i = clientIds.length - 1; i >= 0; i--) {
+                let socketClientId = clientIds[i];
                 if (document.getElementById(socketClientId)) {
                     try {
                         components[socketClientId]?.['onmessage']?.(message, this.channel, event);
@@ -207,47 +194,115 @@ export namespace PushImpl {
                         }
                     }
                 } else {
-                    clientIdsByTokens[this.channelToken].splice(i, 1);
+                    clientIds.splice(i, 1);
                 }
             }
-            if (clientIdsByTokens[this.channelToken].length == 0) {
+            if (clientIds.length === 0) {
                 // tag disappeared
                 this.close();
             }
         }
 
         onclose(event: any) {
-            if (!this.socket
-                || (event.code == 1000 && event.reason == REASON_EXPIRED)
-                || (event.code == 1008)
-                || (!this.reconnectAttempts)
-                || (this.reconnectAttempts >= MAX_RECONNECT_ATTEMPTS)) {
-                let clientIds = clientIdsByTokens[this.channelToken];
-                for (let i = clientIds.length - 1; i >= 0; i--) {
-                    let socketClientId = clientIds[i];
-                    components?.[socketClientId]?.['onclose']?.(event?.code, this?.channel, event);
-                }
-            } else {
-                setTimeout(this.open, RECONNECT_INTERVAL * this.reconnectAttempts++);
+            if (this.isTerminalClose(event)) {
+                this.notifyClose(event);
+                this.resetConnectionState();
+                return;
             }
+
+            if (!this.notifyErrorAndPruneMissingComponents(event)) return;
+            if (this.closeIfChannelHasNoComponents()) return;
+
+            this.scheduleReconnect();
         };
 
         close() {
             if (this.socket) {
                 let s = this.socket;
-                this.socket = null as any;
+                this.socket = null;
                 s.close();
             }
+        }
+
+        private notifyInitialOpenAttempt() {
+            if (this.reconnectAttempts || this.hasNotifiedInitialOpenAttempt) return;
+
+            this.hasNotifiedInitialOpenAttempt = true;
+            let clientIds = clientIdsByTokens[this.channelToken];
+            if (!clientIds) return; // socket was torn down (reset()) while timer was pending
+            for (let i = clientIds.length - 1; i >= 0; i--) {
+                let socketClientId = clientIds[i];
+                components[socketClientId]?.['onopen']?.(this.channel);
+            }
+        }
+
+        private isTerminalClose(event: any): boolean {
+            return !this.socket
+                // Spec: no reconnect when the very first connection attempt fails.
+                // onerror must also not be invoked in this case, only onclose.
+                || !this.hasEverConnected
+                // Spec: code 1000 (normal closure) is always terminal, regardless of reason.
+                || event.code === 1000
+                // 1008 = Policy Violation. Reconnecting would hit the same rejection again.
+                || event.code === 1008
+                || this.reconnectAttempts >= MAX_RECONNECT_ATTEMPTS;
+        }
+
+        private notifyClose(event: any) {
+            let clientIds = clientIdsByTokens[this.channelToken];
+            if (!clientIds) return; // already torn down (reset() called while socket was open)
+            for (let i = clientIds.length - 1; i >= 0; i--) {
+                let socketClientId = clientIds[i];
+                components?.[socketClientId]?.['onclose']?.(event?.code, this?.channel, event);
+            }
+        }
+
+        private resetConnectionState() {
+            this.reconnectAttempts = 0;
+            this.hasEverConnected = false;
+            this.hasNotifiedInitialOpenAttempt = false;
+        }
+
+        private notifyErrorAndPruneMissingComponents(event: any): boolean {
+            let clientIds = clientIdsByTokens[this.channelToken];
+            if (!clientIds) return false; // already torn down (reset() called while socket was open)
+            for (let i = clientIds.length - 1; i >= 0; i--) {
+                let socketClientId = clientIds[i];
+                if (document.getElementById(socketClientId)) {
+                    try {
+                        components?.[socketClientId]?.['onerror']?.(event?.code, this?.channel, event);
+                    } catch (e) {
+                        //Ignore
+                    }
+                } else {
+                    clientIds.splice(i, 1);
+                }
+            }
+            return true;
+        }
+
+        private closeIfChannelHasNoComponents(): boolean {
+            if (clientIdsByTokens[this.channelToken]?.length !== 0) return false;
+
+            // tag disappeared
+            this.close();
+            return true;
+        }
+
+        private scheduleReconnect() {
+            const reconnectAttempt = ++this.reconnectAttempts;
+            this.socket = null;
+            setTimeout(() => this.open(), RECONNECT_INTERVAL * reconnectAttempt);
         }
 
         /**
          * bind the callbacks to the socket callbacks
          */
         private bindCallbacks() {
-            this.socket.onopen = (event: Event) => this.onopen(event);
-            this.socket.onmessage = (event: Event) => this.onmmessage(event);
-            this.socket.onclose = (event: Event) => this.onclose(event);
-            this.socket.onerror = (event: Event) => this.onerror(event);
+            this.socket!.onopen = (event: Event) => this.onopen(event);
+            this.socket!.onmessage = (event: Event) => this.onmessage(event);
+            this.socket!.onclose = (event: Event) => this.onclose(event);
+            this.socket!.onerror = (event: Event) => this.onerror(event);
         }
     }
 
@@ -281,9 +336,10 @@ export namespace PushImpl {
         }
     }
 
-    function resolveFunction(fn: Function | string = () => {
-    }): Function {
-        return <Function>((typeof fn !== "function") && (fn = DQ.global()[fn]), fn);
+    function resolveFunction<T extends Function>(fn?: T | string | null): T {
+        if (typeof fn === "function") return fn as T;
+        if (typeof fn === "string" && typeof DQ.global()[fn] === "function") return DQ.global()[fn] as T;
+        return (() => {}) as unknown as T;
     }
 
 }

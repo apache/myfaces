@@ -11,7 +11,13 @@ export class XhrQueueController<T extends IAsyncRunnable<any>> {
     queue: IAsyncRunnable<any>[] = [];
     taskRunning = false;
 
+    // Each instance needs its own debounce key: a shared key would cause enqueues
+    // on separate instances to cancel each other's debounce window.
+    private static instanceCount = 0;
+    private readonly debounceKey: string;
+
     constructor() {
+        this.debounceKey = `xhrQueue_${XhrQueueController.instanceCount++}`;
     }
 
     /**
@@ -21,7 +27,7 @@ export class XhrQueueController<T extends IAsyncRunnable<any>> {
      * until the debounce window for the timeout is closed.
      */
     enqueue(runnable: T, timeOut: number = 0) {
-        debounce("xhrQueue", () => {
+        debounce(this.debounceKey, () => {
             const requestHandler = this.enrichRunnable(runnable);
             if (!this.taskRunning) {
                 this.signalTaskRunning();

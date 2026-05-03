@@ -16,7 +16,7 @@
 
 
 import {DomQuery} from "mona-dish";
-declare let global;
+declare let global: any;
 declare let faces: any;
 declare let jsf: any;
 declare let myfaces: any;
