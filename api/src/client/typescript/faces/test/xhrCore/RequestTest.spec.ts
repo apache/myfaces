@@ -21,12 +21,16 @@ import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {_Es2019Array, DomQuery, DQ$} from "mona-dish";
 import {
     COMPLETE, EMPTY_STR,
+    EMPTY_RESPONSE,
+    HTTP_ERROR,
+    MALFORMEDXML,
     P_AJAX,
     P_EXECUTE,
     P_AJAX_SOURCE,
     P_RENDER,
     P_VIEWSTATE,
     P_WINDOW_ID,
+    STATE_EVT_TIMEOUT,
     SUCCESS
 } from "../../impl/core/Const";
 const defaultMyFaces = StandardInits.defaultMyFaces;
@@ -37,6 +41,12 @@ const initCheckboxForm = StandardInits.initCheckboxRadioForm;
 import * as nise from "nise";
 declare var faces: any;
 declare var Implementation: any;
+
+function suppressErrorOutput(): () => void {
+    const oldErr = console.error;
+    console.error = () => {};
+    return () => { console.error = oldErr; };
+}
 
 let issueStdReq = function (element) {
     faces.ajax.request(element, null, {
@@ -209,6 +219,65 @@ describe('Tests on the xhr core when it starts to call the request', function ()
 
             expect(this.requests[0].requestHeaders.Accept.indexOf("application/xml") != -1).to.be.true;
 
+        } finally {
+            send.restore();
+        }
+        done();
+    });
+
+    it('jakarta.faces.partial.event must be present in the body when an event is passed', function (done) {
+        let send = sinon.spy(XMLHttpRequest.prototype, "send");
+        try {
+            const element = DomQuery.byId("input_2").getAsElem(0).value;
+            // Simulate a real DOM event — its .type feeds jakarta.faces.partial.event
+            const clickEvent = new Event("click");
+            faces.ajax.request(element, clickEvent, {
+                execute: "input_1",
+                render: "@form"
+            });
+
+            const params: Record<string, string> = {};
+            (send.args[0][0] as string).split("&").forEach(p => {
+                const [k, v] = p.split("=");
+                params[decodeURIComponent(k)] = decodeURIComponent(v ?? "");
+            });
+
+            expect(params["jakarta.faces.partial.event"]).to.eq("click");
+        } finally {
+            send.restore();
+        }
+        done();
+    });
+
+    it('jakarta.faces.partial.event must be absent when no event is passed', function (done) {
+        let send = sinon.spy(XMLHttpRequest.prototype, "send");
+        try {
+            const element = DomQuery.byId("input_2").getAsElem(0).value;
+            // null event → assignIf(false, ...) skips P_EVT assignment
+            issueStdReq(element);
+
+            const body = send.args[0][0] as string;
+            expect(body).not.to.include("jakarta.faces.partial.event");
+        } finally {
+            send.restore();
+        }
+        done();
+    });
+
+    it('jakarta.faces.windowId must NOT appear in the POST body — it is stored in request context only', function (done) {
+        let send = sinon.spy(XMLHttpRequest.prototype, "send");
+        try {
+            const element = DomQuery.byId("input_2").getAsElem(0).value;
+            // windowId resolves from options.windowId; it is assigned to the top-level
+            // requestCtx (not to the pass-through map), so it never reaches the body.
+            faces.ajax.request(element, null, {
+                execute: "input_1",
+                render: "@form",
+                windowId: "test-window-id"
+            });
+
+            const body = send.args[0][0] as string;
+            expect(body).not.to.include("jakarta.faces.windowId");
         } finally {
             send.restore();
         }
@@ -887,7 +956,9 @@ describe('Tests after core when it hits response', function () {
         // Chrome sets responseXML=null for unparseable XML but still provides responseText,
         // which is the code path added in processRequestErrors for Chrome compatibility.
         // We simulate this by responding with a non-XML content type so responseXML stays null.
+        const restoreErrorOutput = suppressErrorOutput();
         try {
+            let assertionError: any = null;
             let element = DomQuery.byId("input_2").getAsElem(0).value;
             faces.ajax.request(element, null, {
                 execute: "input_1",
@@ -900,9 +971,8 @@ describe('Tests after core when it hits response', function () {
                     try {
                         expect(error.type).to.eq("error");
                         expect(error.status).to.eq("malformedXML");
-                        done();
                     } catch (e) {
-                        done(e);
+                        assertionError = e;
                     }
                 }
             });
@@ -911,10 +981,187 @@ describe('Tests after core when it hits response', function () {
             // Content-Type text/plain ensures responseXML is null while responseText is non-empty,
             // matching Chrome's behavior when it encounters unparseable XML
             xhrReq.respond(200, {'Content-Type': 'text/plain'}, "this is not valid xml content");
+            restoreErrorOutput();
+            done(assertionError);
         } catch (e) {
+            restoreErrorOutput();
             done(e);
         }
     });
 
 });
 
+describe('XhrRequest error handling and lifecycle', function () {
+
+    let restoreConsoleError: () => void;
+    beforeEach(function () { restoreConsoleError = suppressErrorOutput(); });
+    afterEach(function () { restoreConsoleError?.(); });
+
+    beforeEach(async function () {
+        let waitForResult = defaultMyFaces();
+        return waitForResult.then((close) => {
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
+            this.requests = [];
+            this.xhr.onCreate = (xhr: any) => this.requests.push(xhr);
+            (global as any).XMLHttpRequest = this.xhr;
+            window.XMLHttpRequest = this.xhr;
+            this.jsfAjaxResponse = sinon.spy((global as any).faces.ajax, "response");
+
+            this.closeIt = () => {
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                this.jsfAjaxResponse.restore();
+                Implementation.reset();
+                close();
+            };
+        });
+    });
+
+    afterEach(function () {
+        this.closeIt();
+    });
+
+    // ── HTTP error responses ──────────────────────────────────────────────────
+
+    // HTTP status is checked first, so any non-2xx response is reported as httpError
+    // regardless of body content (HTML error pages, valid XML, empty body, etc.)
+
+    it('must call onerror with httpError when a 4xx response has a non-XML body', function (done) {
+        let element = DomQuery.byId("input_2").getAsElem(0).value;
+        faces.ajax.request(element, null, {
+            execute: "input_1",
+            render: "@form",
+            onerror: (error: any) => {
+                try {
+                    expect(error.status).to.eq(HTTP_ERROR);
+                    done();
+                } catch (e) { done(e); }
+            }
+        });
+        this.requests[0].respond(404, {'Content-Type': 'text/html'}, "Not Found");
+    });
+
+    it('must call onerror with httpError when a 5xx response has a valid XML body', function (done) {
+        let element = DomQuery.byId("input_2").getAsElem(0).value;
+        faces.ajax.request(element, null, {
+            execute: "input_1",
+            render: "@form",
+            onerror: (error: any) => {
+                try {
+                    expect(error.status).to.eq(HTTP_ERROR);
+                    done();
+                } catch (e) { done(e); }
+            }
+        });
+        this.requests[0].respond(500, {'Content-Type': 'text/xml'}, STD_XML);
+    });
+
+    // ── Empty / malformed response ────────────────────────────────────────────
+
+    it('must call onerror with emptyResponse status when the response body is empty', function (done) {
+        let element = DomQuery.byId("input_2").getAsElem(0).value;
+        faces.ajax.request(element, null, {
+            execute: "input_1",
+            render: "@form",
+            onerror: (error: any) => {
+                try {
+                    expect(error.status).to.eq(EMPTY_RESPONSE);
+                    done();
+                } catch (e) { done(e); }
+            }
+        });
+        // Empty body: responseXML absent AND responseText empty → EMPTY_RESPONSE branch
+        this.requests[0].respond(200, {'Content-Type': 'text/xml'}, "");
+    });
+
+    it('must call onerror with malformedXML on a text/xml response with an invalid body', function (done) {
+        let element = DomQuery.byId("input_2").getAsElem(0).value;
+        faces.ajax.request(element, null, {
+            execute: "input_1",
+            render: "@form",
+            onerror: (error: any) => {
+                try {
+                    expect(error.status).to.eq(MALFORMEDXML);
+                    done();
+                } catch (e) { done(e); }
+            }
+        });
+        // Depending on the JS engine: JSDOM may produce a parseerror document (Firefox path)
+        // or null responseXML with non-empty responseText (Chrome path).
+        // Both processRequestErrors branches produce the same malformedXML status.
+        this.requests[0].respond(200, {'Content-Type': 'text/xml'}, "<unclosed");
+    });
+
+    // ── Timeout ───────────────────────────────────────────────────────────────
+
+    it('must fire the TIMEOUT_EVENT and then call onerror with httpError on xhr timeout', function (done) {
+        let timeoutEventReceived = false;
+        faces.ajax.addOnEvent((evt: any) => {
+            if (evt.status === STATE_EVT_TIMEOUT) {
+                timeoutEventReceived = true;
+            }
+        });
+
+        let element = DomQuery.byId("input_2").getAsElem(0).value;
+        faces.ajax.request(element, null, {
+            execute: "input_1",
+            render: "@form",
+            onerror: (error: any) => {
+                try {
+                    expect(timeoutEventReceived).to.be.true;
+                    expect(error.status).to.eq(HTTP_ERROR);
+                    done();
+                } catch (e) { done(e); }
+            }
+        });
+
+        // Directly invoke the ontimeout handler registered on the fake XHR by registerXhrCallbacks
+        this.requests[0].ontimeout?.();
+    });
+
+    // ── Abort ─────────────────────────────────────────────────────────────────
+
+    it('must call onerror with httpError when the xhr request is aborted', function (done) {
+        let element = DomQuery.byId("input_2").getAsElem(0).value;
+        faces.ajax.request(element, null, {
+            execute: "input_1",
+            render: "@form",
+            onerror: (error: any) => {
+                try {
+                    expect(error.status).to.eq(HTTP_ERROR);
+                    done();
+                } catch (e) { done(e); }
+            }
+        });
+
+        // Directly invoke the onabort handler registered on the fake XHR by registerXhrCallbacks
+        this.requests[0].onabort?.();
+    });
+
+    // ── Browser-cancelled response guard ──────────────────────────────────────
+
+    it('must treat browser-cancelled xhr errors as cleanup and not call onerror', function (done) {
+        let errorFired = false;
+        let element = DomQuery.byId("input_2").getAsElem(0).value;
+        faces.ajax.request(element, null, {
+            execute: "input_1",
+            render: "@form",
+            onerror: () => { errorFired = true; }
+        });
+
+        const fakeXhr = this.requests[0];
+        // Simulate the observed older browser cancelled-request fingerprint:
+        // status=0, readyState=4, empty responseText, null responseXML
+        Object.defineProperty(fakeXhr, 'status', {value: 0, configurable: true});
+        Object.defineProperty(fakeXhr, 'readyState', {value: 4, configurable: true});
+        Object.defineProperty(fakeXhr, 'responseText', {value: '', configurable: true});
+        Object.defineProperty(fakeXhr, 'responseXML', {value: null, configurable: true});
+
+        fakeXhr.onerror?.({} as Event);
+
+        // isCancelledResponse returns true → reject() called, onerror suppressed
+        setTimeout(() => {
+            expect(errorFired).to.be.false;
+            done();
+        }, 0);
+    });
+});

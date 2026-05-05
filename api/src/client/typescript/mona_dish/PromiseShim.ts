@@ -26,5 +26,5 @@ import {_global$} from "./Global";
 
 if(!Promise) {
     //we register promise in the global context
-    _global$["Promise"] = _Promise;
+    (_global$() as any)["Promise"] = _Promise;
 }

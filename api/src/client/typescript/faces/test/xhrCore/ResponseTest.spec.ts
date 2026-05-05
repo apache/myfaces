@@ -28,6 +28,12 @@ const protocolPage = StandardInits.protocolPage;
 declare var faces: any;
 declare var Implementation: any;
 
+function suppressErrorOutput(): () => void {
+    const oldErr = console.error;
+    console.error = () => {};
+    return () => { console.error = oldErr; };
+}
+
 /**
  * response test
  * the idea is simply to pass in a dom
@@ -395,7 +401,6 @@ describe('Tests of the various aspects of the response protocol functionality', 
         done();
     })
 
-    //TODO implement secondary response mockup
     it("must handle complex resource responses properly", function (done) {
         DQ.byId("cmd_complex_resource").click();
         this.respond(XmlResponses.MULTIPLE_RESOURCE_RESPONSE);
@@ -733,8 +738,7 @@ describe('Tests of the various aspects of the response protocol functionality', 
     it('must handle a ViewExpired Error correctly, and only once in a listener', function (done) {
 
         document.body.innerHTML = TCK_790_NAV_MARKUP;
-        const oldErr = console.error;
-        console.error = () => {};
+        const restore = suppressErrorOutput();
         try {
             let errorCalled = 0;
             faces.ajax.addOnError((error) => {
@@ -759,11 +763,106 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
             expect(errorCalled).to.eq(1);
         } finally {
-            console.error = oldErr;
+            restore();
         }
         done();
 
     });
 
+    // ── redirect ──────────────────────────────────────────────────────────────
+
+    it('must set window.location.href to the url given in a <redirect> response', function () {
+        // global-jsdom copies window properties onto the Node.js global as plain values, so
+        // global.window is a regular writable property. We replace it with a Proxy that
+        // intercepts .location reads and returns a plain stub — giving us a capturable href
+        // without fighting jsdom's non-configurable Location object.
+        const originalWindow = (global as any).window;
+        const mockLocation = { href: 'about:blank' };
+        (global as any).window = new Proxy(originalWindow, {
+            get(target, prop) {
+                if (prop === 'location') return mockLocation;
+                const val = (target as any)[prop];
+                return typeof val === 'function' ? val.bind(target) : val;
+            }
+        });
+        try {
+            faces.ajax.request(document.getElementById("cmd_eval"), null, {execute: "@form", render: "@none"});
+            this.respond(`<?xml version="1.0" encoding="UTF-8"?>
+            <partial-response>
+                <redirect url="http://example.com/redirected"/>
+            </partial-response>`);
+
+            expect(mockLocation.href).to.eq("http://example.com/redirected");
+        } finally {
+            (global as any).window = originalWindow;
+        }
+    });
+
+    it('must not change window.location.href when the redirect url is empty', function () {
+        const originalWindow = (global as any).window;
+        const mockLocation = { href: 'about:blank' };
+        (global as any).window = new Proxy(originalWindow, {
+            get(target, prop) {
+                if (prop === 'location') return mockLocation;
+                const val = (target as any)[prop];
+                return typeof val === 'function' ? val.bind(target) : val;
+            }
+        });
+        try {
+            faces.ajax.request(document.getElementById("cmd_eval"), null, {execute: "@form", render: "@none"});
+            this.respond(`<?xml version="1.0" encoding="UTF-8"?>
+            <partial-response>
+                <redirect url=""/>
+            </partial-response>`);
+
+            expect(mockLocation.href).to.eq('about:blank');
+        } finally {
+            (global as any).window = originalWindow;
+        }
+    });
+
+    // ── attributes tag ────────────────────────────────────────────────────────
+
+    it('must apply attribute changes from an <attributes> response to the target element', function () {
+        faces.ajax.request(document.getElementById("cmd_attributeschange"), null, {execute: "@form", render: "@none"});
+        this.respond(XmlResponses.ATTRIBUTE_CHANGE);
+
+        const target = document.getElementById("attributeChange");
+        // last <attribute name="style"> wins
+        expect(target.getAttribute("style")).to.eq("border:1px solid black;");
+        // onclick is set as a plain attribute string
+        expect(target.getAttribute("onclick")).to.include("evalarea4");
+    });
+
+    // ── error() with responseXML present ──────────────────────────────────────
+
+    it('must attach responseXML to the error data when the server returns a well-formed error response', function (done) {
+        const restore = suppressErrorOutput();
+        try {
+            let capturedError: any = null;
+            faces.ajax.addOnError((error: any) => {
+                capturedError = error;
+            });
+
+            faces.ajax.request(document.getElementById("cmd_eval"), null, {execute: "@form", render: "@none"});
+
+            this.respond(`<?xml version="1.0" encoding="UTF-8"?>
+            <partial-response>
+                <error>
+                    <error-name>com.example.SomeServerException</error-name>
+                    <error-message><![CDATA[Something went wrong on the server.]]></error-message>
+                </error>
+            </partial-response>`);
+
+            expect(capturedError).not.to.be.null;
+            expect(capturedError.errorName).to.eq("com.example.SomeServerException");
+            // responseXML must be present because the response was well-formed XML
+            expect(capturedError.responseXML).not.to.be.null;
+            expect(capturedError.responseXML).not.to.be.undefined;
+        } finally {
+            restore();
+        }
+        done();
+    });
 
 });

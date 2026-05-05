@@ -33,7 +33,7 @@ import {ExtLang} from "./Lang";
  * which raise an error
  *
  */
-export module Assertions {
+export namespace Assertions {
 
 
 
@@ -49,7 +49,7 @@ export module Assertions {
 
     export function assertUrlExists(node: XMLQuery): void | never {
         if (node.attr(ATTR_URL).isAbsent()) {
-            throw Assertions.raiseError(new Error(), ExtLang.getMessage("ERR_RED_URL", null, "processRedirect"), "processRedirect");
+            throw Assertions.raiseError(new Error(), ExtLang.getMessage("ERR_RED_URL", undefined, "processRedirect"), "processRedirect");
         }
     }
 
@@ -112,5 +112,4 @@ export module Assertions {
         }
     }
 }
-
 

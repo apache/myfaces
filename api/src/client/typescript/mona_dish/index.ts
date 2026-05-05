@@ -17,12 +17,15 @@
  * under the License.
  */
 export {DomQuery, ElementAttribute, DomQueryCollector, DQ, DQ$} from "./DomQuery";
-export {IDomQuery} from "./IDomQuery";
+export type {IDomQuery} from "./IDomQuery";
 export {Lang} from "./Lang";
-export {Monad, IValueHolder, IFunctor, IMonad, IIdentity, Optional, ValueEmbedder} from "./Monad";
-export {CancellablePromise, IPromise, PromiseStatus} from "./Promise";
+export {Monad, Optional, ValueEmbedder} from "./Monad";
+export type {IValueHolder, IFunctor, IMonad, IIdentity} from "./Monad";
+export {CancellablePromise, PromiseStatus} from "./Promise";
+export type {IPromise} from "./Promise";
 export {XMLQuery, XQ} from "./XmlQuery";
-export {Stream, LazyStream, IteratableConsumer, FlatMapStreamDataSource, IStream} from "./Stream";
+export {Stream, LazyStream, FlatMapStreamDataSource} from "./Stream";
+export type {IteratableConsumer, IStream} from "./Stream";
 export {
     ArrayStreamDataSource,
     MappedStreamDataSource,
@@ -30,24 +33,23 @@ export {
     MultiStreamDatasource,
     SequenceDataSource,
     QueryFormStringCollector,
-    IStreamDataSource,
-    ICollector,
     ArrayCollector,
     ConfigCollector,
     AssocArrayCollector,
     FormDataCollector,
     QueryFormDataCollector,
 } from "./SourcesCollectors";
+export type {IStreamDataSource, ICollector} from "./SourcesCollectors";
 
 
 export {TagBuilder} from "./TagBuilder";
 
-export {Message, Broker, BroadcastChannelBroker, Crypto, NoCrypto, Hash} from "./Messaging";
+export {Message, Broker, BroadcastChannelBroker, NoCrypto} from "./Messaging";
+export type {Crypto, Hash} from "./Messaging";
 export {JSONCrypto, ExpiringCrypto} from "./CryptoExtensions";
 export {assign, assignIf, simpleShallowMerge, shallowMerge} from "./AssocArray"
 export {Config} from "./Config";
-export {ConfigDef} from "./Config";
+export type {ConfigDef} from "./Config";
 export {CONFIG_ANY} from "./Config";
 export {CONFIG_VALUE} from "./Config";
 export {Es2019Array, _Es2019Array} from "./Es2019Array";
-

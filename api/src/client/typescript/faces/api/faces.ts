@@ -30,8 +30,8 @@
  */
 if(!window.faces) {
     //we lazily load the code to prevent ram bloat
-    const faces = require("./_api").faces;
-    window['faces'] = window?.faces ?? faces;
+    const myfacesApi = require("./_api").faces;
+    window['faces'] = window?.faces ?? myfacesApi;
 }
 if(!window?.myfaces?.ab) {
     const myfaces = require("./_api").myfaces;

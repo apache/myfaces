@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
@@ -211,8 +212,7 @@ public class IntegrationTest
     }
 
 
-    //@Test
-    //disabled for now due to being broken!
+    @Test
     public void testBasicTable()
     {
         webDriver.get(contextPath + "test4-tablebasic.jsf");
@@ -314,7 +314,7 @@ public class IntegrationTest
         webDriver.get(contextPath + "test5-viewbody-full-response.jsf");
         resetServerValues();
         trigger("cmd_body1", webDriver1 -> webDriver1.getPageSource().contains("Test for body change done") &&
-                webDriver1.findElement(new By.ById("scriptreceiver")).getText().contains("hello from embedded script & in the body"));
+                webDriver1.getPageSource().contains("Body replacement test  successful"));
     }
 
     /**
@@ -326,8 +326,9 @@ public class IntegrationTest
     void trigger(String id, ExpectedCondition<Boolean> condition)
     {
         webDriver.findElement(new ByIdOrName(id)).click();
-        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofMillis(5000));
-        wait.until(condition);
+        new WebDriverWait(webDriver, Duration.ofMillis(500))
+                .ignoring(StaleElementReferenceException.class)
+                .until(condition);
     }
 
 

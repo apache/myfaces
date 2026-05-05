@@ -116,7 +116,7 @@ export interface IResponseProcessor {
      * insert with before, after sub-tags
      * @param node
      */
-    insertWithSubTags(node: XMLQuery);
+    insertWithSubTags(node: XMLQuery): void;
 
     /**
      * process the viewState update, update the affected
@@ -155,5 +155,5 @@ export interface IResponseProcessor {
      * check whether we still are in a named view root
      * (can change after a navigation)
      */
-    updateNamedViewRootState();
+    updateNamedViewRootState(): void;
 }
