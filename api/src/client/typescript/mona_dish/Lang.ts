@@ -21,7 +21,7 @@ import {Es2019Array} from "./Es2019Array";
 /**
  * Lang helpers crossported from the apache myfaces project
  */
-export module Lang {
+export namespace Lang {
 
 
     //should be in lang, but for now here to avoid recursive imports, not sure if typescript still has a problem with those
@@ -39,10 +39,10 @@ export module Lang {
      * </code>
      *
      * @param resolverProducer a lambda which can produce the value
-     * @param defaultValue an optional default value if the producer failes to produce anything
+     * @param defaultValue an optional default value if the producer fails to produce anything
      * @returns an Optional of the produced value
      */
-    export function saveResolve<T>(resolverProducer: () => T, defaultValue: T = null): Optional<T> {
+    export function saveResolve<T>(resolverProducer: () => T, defaultValue: T | null = null): Optional<T> {
         try {
             let result = resolverProducer();
             return Optional.fromNullable(result ?? defaultValue);
@@ -57,10 +57,10 @@ export module Lang {
      * @param resolverProducer the producer for the resolve
      * @param defaultValue the default value producer function
      */
-    export function saveResolveLazy<T>(resolverProducer: () => T, defaultValue: () => T = null): Optional<T> {
+    export function saveResolveLazy<T>(resolverProducer: () => T, defaultValue: (() => T) | null = null): Optional<T> {
         try {
             let result = resolverProducer();
-            return Optional.fromNullable(result ?? defaultValue());
+            return Optional.fromNullable(result ?? defaultValue!());
         } catch (e) {
             return Optional.absent;
         }
@@ -74,7 +74,7 @@ export module Lang {
      */
     export function strToArray(it: string, splitter: string | RegExp = /\./gi): Array<string> {
 
-        let ret = [];
+        let ret: string[] = [];
         it.split(splitter).forEach((element => {
             ret.push(trim(element));
         }));
@@ -121,7 +121,7 @@ export module Lang {
      * @param source
      * @param destination
      */
-    export function equalsIgnoreCase(source?: string, destination?: string): boolean {
+    export function equalsIgnoreCase(source?: string | null, destination?: string | null): boolean {
         let finalSource = source ?? "___no_value__";
         let finalDest = destination ?? "___no_value__";
 
@@ -163,7 +163,7 @@ export module Lang {
 
     // code from https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
     // license https://creativecommons.org/licenses/by-sa/2.5/
-    export function objAssign(target: any, ...theArgs: any) { // .length of function is 2
+    export function objAssign(target: any, ...theArgs: any[]) { // .length of function is 2
         if (target == null) { // TypeError if undefined or null
             throw new TypeError('Cannot convert undefined or null to object');
         }
@@ -185,4 +185,3 @@ export module Lang {
 
 
 }
-

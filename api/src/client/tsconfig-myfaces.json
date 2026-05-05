@@ -32,7 +32,7 @@
 {
   "extends": "./typescript/faces/tsconfig.json",
   "compilerOptions": {
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     /**
     * key requirement no github dependencies on code level
     * we have to compile mona-dish in directly on source level

@@ -28,7 +28,7 @@ import {ExtLang} from "../impl/util/Lang";
  *
  * we might move the code over in the future, but for now a straight 1:1 port suffices
  */
-export module oam {
+export namespace oam {
     const ofAssoc = ExtLang.ofAssoc;
     /**
      * sets a hidden input field
@@ -37,7 +37,8 @@ export module oam {
      * @param value the value to be rendered
      */
     export const setHiddenInput = function (formName: string, name: string, value: string): void {
-        DQ.byId(document.forms[formName])
+        const forms = document.forms as HTMLCollectionOf<HTMLFormElement> & {[key: string]: HTMLFormElement};
+        DQ.byId(forms[formName])
             .each(form => {
                 const input = form.querySelectorAll(`input[type='hidden'][name='${name}']`);
                 if (input.isPresent()) {
@@ -57,7 +58,9 @@ export module oam {
      * @param name the name of the input field
      */
     export const clearHiddenInput = function (formName: string, name: string): void {
-        let element = document.forms?.[formName]?.elements?.[name];
+        const forms = document.forms as HTMLCollectionOf<HTMLFormElement> & {[key: string]: HTMLFormElement};
+        const elements = forms?.[formName]?.elements as HTMLFormControlsCollection & {[key: string]: Element};
+        let element = elements?.[name];
         if(!element) {
             return;
         }
@@ -95,7 +98,8 @@ export module oam {
         myfaces.oam.setHiddenInput(formName, `${formName}:_idcl`, linkId ?? '');
 
 
-        DQ.byId(document.forms?.[formName] ?? document.getElementById(formName)).each(form => {
+        const forms = document.forms as HTMLCollectionOf<HTMLFormElement> & {[key: string]: HTMLFormElement};
+        DQ.byId(forms?.[formName] ?? document.getElementById(formName)).each(form => {
             const ATTR_TARGET = "target";
             const formElement = form.getAsElem(0).value as HTMLFormElement;
             const oldTarget = (form.getAsElem(0).value as HTMLFormElement).getAttribute("target");
@@ -104,7 +108,7 @@ export module oam {
                 (form.getAsElem(0).value as HTMLFormElement).setAttribute("target", target);
             }
 
-            const result = formElement?.onsubmit?.(null);
+            const result = formElement?.onsubmit?.(null as any);
 
             try {
                 if ((!!result) || 'undefined' == typeof result) {

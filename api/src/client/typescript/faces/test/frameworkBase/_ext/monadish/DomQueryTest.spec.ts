@@ -59,6 +59,7 @@ describe('DOMQuery tests', function () {
         (global as any).window = window;
         (global as any).body = window.document.body;
         (global as any).document = window.document;
+        delete (global as any).MutationObserver;
 
 
     });

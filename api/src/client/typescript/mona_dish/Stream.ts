@@ -61,8 +61,8 @@ export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
      * it is swapped out by another one
      * from the next element
      */
-    activeDataSource: IStreamDataSource<S>;
-    walkedDataSources = [];
+    activeDataSource: IStreamDataSource<S> | null = null;
+    walkedDataSources: Array<IStreamDataSource<S>> = [];
     _currPos = 0;
 
     constructor(func: StreamMapper<T>, parent: IStreamDataSource<T>) {
@@ -87,7 +87,7 @@ export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
         let lookAhead = this?.activeDataSource?.lookAhead(cnt);
         if (this?.activeDataSource && lookAhead != ITERATION_STATUS.EO_STRM) {
             //this should cover 95% of all cases
-            return lookAhead;
+            return lookAhead as S | ITERATION_STATUS;
         }
 
         if (this.activeDataSource) {
@@ -142,8 +142,9 @@ export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
     next(): S | ITERATION_STATUS {
         if (this.hasNext()) {
             this._currPos++;
-            return this.activeDataSource.next();
+            return this.activeDataSource!.next();
         }
+        return undefined as any;
     }
 
     reset(): void {
@@ -158,7 +159,7 @@ export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
         if (!this.activeDataSource) {
             this.hasNext();
         }
-        return this.activeDataSource.current();
+        return this.activeDataSource!.current();
     }
 }
 
@@ -396,14 +397,14 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
     }
 
     /*
-     * we need to implement it to fullfill the contract, although it is used only internally
-     * all values are flattened when accessed anyway, so there is no need to call this methiod
+     * we need to implement it to fulfill the contract, although it is used only internally
+     * all values are flattened when accessed anyway, so there is no need to call this method
      */
 
-    flatMap<IStreamDataSource>(fn: (data: T) => IStreamDataSource | Array<any>): Stream<any> {
-        let ret = [];
+    flatMap<R>(fn?: (data: T) => R | Array<any>): Stream<any> {
+        let ret: any[] = [];
         this.each(item => {
-            let strmR: any = fn(item);
+            let strmR: any = fn!(item);
             ret = Array.isArray(strmR) ? ret.concat(strmR) : ret.concat(strmR.value);
         });
         return <Stream<any>>Stream.of(...ret);
@@ -412,19 +413,19 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
     filter(fn?: (data: T) => boolean): Stream<T> {
         let res: Array<T> = [];
         this.each((data) => {
-            if (fn(data)) {
+            if (fn!(data)) {
                 res.push(data);
             }
         });
         return new Stream<T>(...res);
     }
 
-    reduce<V>(fn: Reducable<T, V | T>, startVal: V = null): Optional<V | T> {
+    reduce<V>(fn: Reducable<T, V | T>, startVal: V | null = null): Optional<V | T> {
         let offset = startVal != null ? 0 : 1;
-        let val1: V | T = startVal != null ? startVal : this.value.length ? this.value[0] : null;
+        let val1: V | T | null = startVal != null ? startVal : this.value.length ? this.value[0] : null;
 
         for (let cnt = offset; cnt < this.value.length && (this._limits == -1 || cnt < this._limits); cnt++) {
-            val1 = fn(val1, this.value[cnt]);
+            val1 = fn(val1 as T | V, this.value[cnt]);
         }
         this.reset();
         return Optional.fromNullable<Optional<any>, V | T>(val1);
@@ -496,9 +497,9 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
         return !(isLimitsReached || isEndOfArray);
     }
 
-    next(): T {
+    next(): T | ITERATION_STATUS {
         if (!this.hasNext()) {
-            return null;
+            return null as any;
         }
         this.pos++;
         return this.value[this.pos];
@@ -641,7 +642,7 @@ export class LazyStream<T> implements IStreamDataSource<T>, IStream<T>, IMonad<T
         //return LazyStream.of(<IStream<T>>this, ...toAppend).flatMap(item => item);
     }
 
-    nextFilter(fn: Matchable<T>): T {
+    nextFilter(fn: Matchable<T>): T | ITERATION_STATUS {
         if (this.hasNext()) {
             let newVal: T = this.next() as T;
             if (!fn(newVal)) {
@@ -649,7 +650,7 @@ export class LazyStream<T> implements IStreamDataSource<T>, IStream<T>, IMonad<T
             }
             return <T>newVal;
         }
-        return null;
+        return null as any;
     }
 
     limits(max: number): LazyStream<T> {
@@ -669,22 +670,22 @@ export class LazyStream<T> implements IStreamDataSource<T>, IStream<T>, IMonad<T
 
     onElem(fn: IteratableConsumer<T>): LazyStream<T> {
         return new LazyStream(new MappedStreamDataSource((el) => {
-            if (fn(el, this.pos) === false) {
+            if (fn(el as T, this.pos) === false) {
                 this.stop();
             }
             return el;
         }, this));
     }
 
-    filter(fn: Matchable<T>): LazyStream<T> {
-        return <LazyStream<T>>new LazyStream<T>(new FilteredStreamDatasource<any>(fn, this));
+    filter(fn?: Matchable<T>): LazyStream<T> {
+        return <LazyStream<T>>new LazyStream<T>(new FilteredStreamDatasource<any>(fn!, this));
     }
 
-    map<R>(fn: Mappable<T, R>): LazyStream<any> {
-        return new LazyStream(new MappedStreamDataSource(fn, this));
+    map<R>(fn?: Mappable<T, R>): LazyStream<any> {
+        return new LazyStream(new MappedStreamDataSource(fn as any, this));
     }
 
-    flatMap<StreamMapper>(fn: StreamMapper | ArrayMapper<any>): LazyStream<any> {
+    flatMap<R>(fn?: ((data: T) => R | Array<any>)): LazyStream<any> {
         return new LazyStream<any>(new FlatMapStreamDataSource(fn as any, this));
     }
 
@@ -698,26 +699,26 @@ export class LazyStream<T> implements IStreamDataSource<T>, IStream<T>, IMonad<T
         this.reset();
     }
 
-    reduce<V>(fn: Reducable<T, V>, startVal: T | V = null): Optional<T | V> {
+    reduce<V>(fn: Reducable<T, V>, startVal: T | V | null = null): Optional<T | V> {
         if (!this.hasNext()) {
             return Optional.absent;
         }
-        let value1;
-        let value2 = null;
+        let value1: T | V | ITERATION_STATUS;
+        let value2: T | ITERATION_STATUS = ITERATION_STATUS.EO_STRM;
         if (startVal != null) {
             value1 = startVal;
             value2 = this.next();
         } else {
             value1 = this.next();
             if (!this.hasNext()) {
-                return Optional.fromNullable(value1);
+                return Optional.fromNullable(value1 as T | V);
             }
             value2 = this.next();
         }
-        value1 = fn(value1, value2);
+        value1 = fn(value1 as T | V, value2 as T);
         while (this.hasNext()) {
             value2 = this.next();
-            value1 = fn(value1, value2);
+            value1 = fn(value1 as T | V, value2 as T);
         }
         this.reset();
         return Optional.fromNullable(value1);

@@ -33,7 +33,7 @@ const getMessage = ExtLang.getMessage;
 export enum ErrorType {
     SERVER_ERROR = "serverError",
     HTTP_ERROR = "httpError",
-    CLIENT_ERROR = "clientErrror",
+    CLIENT_ERROR = "clientError",
     TIMEOUT = "timeout"
 }
 
@@ -57,14 +57,14 @@ export class ErrorData extends EventData implements IErrorData {
     responseText: string;
     responseXML: any;
 
-    status: string;
+    status: string | null;
     typeDetails: ErrorType;
 
-    serverErrorName: string;
-    serverErrorMessage: string;
+    serverErrorName!: string;
+    serverErrorMessage!: string;
     description: string;
 
-    constructor(source: string | Element, errorName: string, errorMessage: string, responseText: string = null, responseXML: Document = null, responseCode: number = -1, statusOverride: string = null,  type = ErrorType.CLIENT_ERROR) {
+    constructor(source: string | Element, errorName: string, errorMessage: string, responseText: string | null = null, responseXML: Document | null = null, responseCode: number = -1, statusOverride: string | null = null,  type = ErrorType.CLIENT_ERROR) {
         super();
 
         ///MYFACES-4676 error payload expects an element if possible
@@ -76,7 +76,7 @@ export class ErrorData extends EventData implements IErrorData {
         //tck requires that the type is prefixed to the message itself (jsdoc also) in case of a server error
         this.errorMessage = (type == ErrorType.SERVER_ERROR) ? type + ": " + errorMessage : errorMessage;
         this.responseCode = responseCode;
-        this.responseText = responseText;
+        this.responseText = responseText as any;
         this.responseXML = responseXML;
 
         this.status = statusOverride;
@@ -95,7 +95,7 @@ export class ErrorData extends EventData implements IErrorData {
         return new ErrorData((e as any)?.source ?? "client", e?.name ?? EMPTY_STR, e?.message ?? EMPTY_STR, e?.stack ?? EMPTY_STR);
     }
 
-    static fromHttpConnection(source: any, name: string, message: string, responseText: string, responseXML: Document, responseCode: number, status: string = EMPTY_STR): ErrorData {
+    static fromHttpConnection(source: any, name: string, message: string, responseText: string, responseXML: Document | null, responseCode: number, status: string = EMPTY_STR): ErrorData {
         return new ErrorData(source, name, message, responseText, responseXML, responseCode, status, ErrorType.HTTP_ERROR);
     }
 
@@ -108,13 +108,13 @@ export class ErrorData extends EventData implements IErrorData {
         let errorMessage = getMsg(context, ERROR_MESSAGE);
         let status = getMsg(context, STATUS);
         let responseText = getMsg(context, RESPONSE_TEXT);
-        let responseXML: Document = context.getIf(RESPONSE_XML).value;
+        let responseXML: Document | null = context.getIf(RESPONSE_XML).value;
 
 
         return new ErrorData(source, errorName, errorMessage, responseText, responseXML, errorCode, status, errorType);
     }
 
-    private static getMsg(context, param) {
+    private static getMsg(context: Config, param: string) {
         return getMessage(context.getIf(param).orElse(EMPTY_STR).value);
     }
 

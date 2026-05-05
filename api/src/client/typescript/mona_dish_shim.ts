@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,20 +13,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <parent>
-        <groupId>org.apache.myfaces.core</groupId>
-        <artifactId>myfaces-integration-tests</artifactId>
-        <version>4.1.3-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+ */
 
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>org.apache.myfaces.core.integration-tests</groupId>
-    <artifactId>protectedViews</artifactId>
-    <name>Apache MyFaces Core 4.1 - Integration Tests - protectedViews</name>
-    <packaging>war</packaging>
-
-</project>
+/**
+ * Shim to provide a default export for mona-dish.
+ *
+ * index.ts has only named exports, which breaks the pattern:
+ *   import pkg from 'mona-dish'; const { Lang } = pkg;
+ *
+ * Used via tsconfig paths for tests (tsx/ESM). Webpack keeps its own alias
+ * to index_core.ts for the reduced-core production bundle.
+ */
+export * from "./mona_dish/index";
+import * as _monaDish from "./mona_dish/index";
+export default _monaDish;

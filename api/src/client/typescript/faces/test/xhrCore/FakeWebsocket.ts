@@ -18,22 +18,38 @@ export class FakeWebsocket {
     onopen: Function = () => {}
     onmessage: Function = () => {}
     onclose: Function = () => {}
+    onerror: Function = () => {}
+    readyState = 0; // 0=CONNECTING, 1=OPEN, 3=CLOSED
 
     constructor() {
         setTimeout(() => {
+            if (this.readyState !== 0) return;
+            this.readyState = 1;
             this.onopen();
         }, 10);
     }
 
+    send() {}
 
-    send() {
-    }
-
+    /** Simulate a message arriving from the server. */
     _respond(response: any) {
         this.onmessage(response);
     }
 
+    /** Simulate a WebSocket error event. */
+    _error(event: any) {
+        this.onerror(event);
+    }
+
+    /** Simulate a server-initiated close with a specific CloseEvent. */
+    _close(event: any = {}) {
+        this.readyState = 3;
+        this.onclose(event);
+    }
+
+    /** Socket-initiated close (called by Socket.close()). */
     close() {
-        this.onclose();
+        this.readyState = 3;
+        this.onclose({});
     }
 }

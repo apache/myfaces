@@ -39,9 +39,8 @@ import {
     HTML_TAG_BODY,
     HTML_TAG_FORM,
     HTML_TAG_HEAD,
-    HTML_TAG_LINK,
     HTML_TAG_SCRIPT,
-    HTML_TAG_STYLE, IDENT_ALL, IDENT_NONE, NAMED_VIEWROOT,
+    IDENT_ALL, IDENT_NONE, NAMED_VIEWROOT,
     ON_ERROR,
     ON_EVENT,
     P_CLIENT_WINDOW,
@@ -204,7 +203,7 @@ export class ResponseProcessor implements IResponseProcessor {
     redirect(node: XMLQuery) {
         Assertions.assertUrlExists(node);
 
-        const redirectUrl = trim(node.attr(ATTR_URL).value);
+        const redirectUrl = trim(node.attr(ATTR_URL).value as any);
         if (redirectUrl != EMPTY_STR) {
             window.location.href = redirectUrl;
         }
@@ -240,7 +239,7 @@ export class ResponseProcessor implements IResponseProcessor {
         const elem = DQ.byId(node.id.value, true);
 
         node.byTagName(XML_TAG_ATTR).each((item: XMLQuery) => {
-            elem.attr(item.attr(ATTR_NAME).value).value = item.attr(ATTR_VALUE).value;
+            elem.attr(item.attr(ATTR_NAME).value as any).value = item.attr(ATTR_VALUE).value as any;
         });
     }
 
@@ -265,11 +264,11 @@ export class ResponseProcessor implements IResponseProcessor {
         const insertNodes = DQ.fromMarkup(node.cDATAAsString as any);
 
         if (before.isPresent()) {
-            DQ.byId(before.value, true).insertBefore(insertNodes);
+            DQ.byId(before.value as any, true).insertBefore(insertNodes);
             this.internalContext.assign(UPDATE_ELEMS).value.push(insertNodes);
         }
         if (after.isPresent()) {
-            const domQuery = DQ.byId(after.value, true);
+            const domQuery = DQ.byId(after.value as any, true);
             domQuery.insertAfter(insertNodes);
 
             this.internalContext.assign(UPDATE_ELEMS).value.push(insertNodes);
@@ -289,7 +288,7 @@ export class ResponseProcessor implements IResponseProcessor {
             const insertId = item.attr(ATTR_ID);
             const insertNodes = DQ.fromMarkup(item.cDATAAsString as any);
             if (insertId.isPresent()) {
-                DQ.byId(insertId.value, true).insertBefore(insertNodes);
+                DQ.byId(insertId.value as any, true).insertBefore(insertNodes);
                 this.internalContext.assign(UPDATE_ELEMS).value.push(insertNodes);
             }
         });
@@ -298,7 +297,7 @@ export class ResponseProcessor implements IResponseProcessor {
             const insertId = item.attr(ATTR_ID);
             const insertNodes = DQ.fromMarkup(item.cDATAAsString as any);
             if (insertId.isPresent()) {
-                DQ.byId(insertId.value, true).insertAfter(insertNodes);
+                DQ.byId(insertId.value as any, true).insertAfter(insertNodes);
                 this.internalContext.assign(UPDATE_ELEMS).value.push(insertNodes);
             }
         });
@@ -324,6 +323,7 @@ export class ResponseProcessor implements IResponseProcessor {
             this.internalContext.assign(APPLIED_CLIENT_WINDOW, node.id.value).value = new StateHolder($nsp(node.id.value), state);
             return true;
         }
+        return false;
     }
 
     /**
@@ -349,7 +349,7 @@ export class ResponseProcessor implements IResponseProcessor {
      */
     fixViewStates() {
         ofAssoc(this.internalContext.getIf(APPLIED_VST).orElse({}).value)
-            .forEach(([, value]) => {
+            .forEach(([, value]: [string, Config]) => {
                 const namingContainerId = this.internalContext.getIf(NAMING_CONTAINER_ID);
                 const namedViewRoot = !!this.internalContext.getIf(NAMED_VIEWROOT).value
                 const affectedForms = this.getContainerForms(namingContainerId)
@@ -367,7 +367,7 @@ export class ResponseProcessor implements IResponseProcessor {
      */
     fixClientWindow() {
         ofAssoc(this.internalContext.getIf(APPLIED_CLIENT_WINDOW).orElse({}).value)
-            .forEach(([, value]) => {
+            .forEach(([, value]: [string, Config]) => {
                 const namingContainerId = this.internalContext.getIf(NAMING_CONTAINER_ID);
                 const namedViewRoot = !!this.internalContext.getIf(NAMED_VIEWROOT).value;
                 const affectedForms = this.getContainerForms(namingContainerId)
@@ -385,7 +385,7 @@ export class ResponseProcessor implements IResponseProcessor {
                 !namedViewRoot.value)) {
             const SEP = $faces().separatorchar;
             this.internalContext.assign(NAMED_VIEWROOT).value = (!!document.getElementById(partialId.value)) || DQ$(`input[name*='${$nsp(P_VIEWSTATE)}']`)
-                .filter(node => node.attr("name").value.indexOf(partialId.value + SEP) == 0).length > 0;
+                .filter(node => (node.attr("name").value as any).indexOf(partialId.value + SEP) == 0).length > 0;
         }
     }
 
@@ -404,6 +404,7 @@ export class ResponseProcessor implements IResponseProcessor {
      * proper viewState -> form assignment
      *
      * @param forms the forms to append the viewState to
+     * @param namedViewRoot if set to true, the name is also prefixed
      * @param viewState the final viewState
      * @param namingContainerId
      */
@@ -416,6 +417,7 @@ export class ResponseProcessor implements IResponseProcessor {
      * proper clientWindow -> form assignment
      *
      * @param forms the forms to append the viewState to
+     * @param namedViewRoot if set to true, the name is also prefixed
      * @param clientWindow the final viewState
      * @param namingContainerId
      */
@@ -518,13 +520,13 @@ export class ResponseProcessor implements IResponseProcessor {
      * @param affectedForm
      * @private
      */
-    private isInExecuteOrRender(affectedForm) {
+    private isInExecuteOrRender(affectedForm: DQ) {
         const executes = this.externalContext.getIf($nsp(P_EXECUTE)).orElse("@none").value.split(/\s+/gi);
         const renders = this.externalContext.getIf(P_RENDER_OVERRIDE)
             .orElseLazy(() => this.externalContext.getIf($nsp(P_RENDER)).value)
             .orElse(IDENT_NONE).value.split(/\s+/gi);
         const executeAndRenders = executes.concat(...renders);
-        return [...executeAndRenders].filter(nameOrId => {
+        return [...executeAndRenders].filter((nameOrId: string) => {
             if ([IDENT_ALL, IDENT_NONE].indexOf(nameOrId) != -1) {
                 return true;
             }
@@ -555,7 +557,7 @@ export class ResponseProcessor implements IResponseProcessor {
         }
     }
 
-    private getNameOrIdSelector(nameOrId) {
+    private getNameOrIdSelector(nameOrId: string) {
         return `[id='${nameOrId}'], [name='${nameOrId}']`;
     }
 }

@@ -27,7 +27,7 @@ import {$faces, $nsp, P_WINDOW_ID} from "../core/Const";
 const IS_FACES_SOURCE = (source?: string): boolean => {
     //spec version smaller 4 we have to deal with the jsf namespace
 
-    return source && !!(source?.search(/\/jakarta\.faces\.resource.*\/faces\.js.*/) != -1 ||
+    return !!source && !!(source.search(/\/jakarta\.faces\.resource.*\/faces\.js.*/) != -1 ||
         source?.search(/\/faces-development\.js.*/) != -1 ||
         source?.search(/\/faces-uncompressed\.js.*/) != -1 ||
         source?.search(/\/faces[^.]*\.js.*ln=jakarta.faces.*/gi) != -1 ||
@@ -55,6 +55,10 @@ const IS_INTERNAL_SOURCE = (source: string): boolean => {
 
 
 const ATTR_SRC = 'src';
+
+function isRegExpMatchArray(value: RegExpMatchArray | null): value is RegExpMatchArray {
+    return value != null && value.length > 1;
+}
 
 /**
  * Extension which adds implementation specific
@@ -123,8 +127,8 @@ export class ExtDomQuery extends DQ {
         // the last possibility
         let nonceScript: Optional<DomQuery> = Optional.fromNullable(DQ
             .querySelectorAll("script[src], link[src]").asArray
-            .filter((item) => item.nonce.isPresent()  && item.attr(ATTR_SRC) != null)
-            .filter(item => IS_FACES_SOURCE(item.attr(ATTR_SRC).value))?.[0]);
+            .filter((item) => item.nonce.isPresent()  && item.attr(ATTR_SRC).value != null)
+            .filter(item => IS_FACES_SOURCE(item.attr(ATTR_SRC).value ?? undefined))?.[0]);
         if(!nonceScript?.value) {
             return ValueEmbedder.absent as ValueEmbedder<string>;
         }
@@ -144,16 +148,12 @@ export class ExtDomQuery extends DQ {
     searchJsfJsFor(regExp: RegExp): Optional<string> {
         //perfect application for lazy stream
         return Optional.fromNullable(DQ.querySelectorAll("script[src], link[src]").asArray
-            .filter(item => IS_FACES_SOURCE(item.attr(ATTR_SRC).value))
-            .map(item => item.attr(ATTR_SRC).value.match(regExp))
-            .filter(item => item != null && item.length > 1)
-            .map((result: string[]) => {
+            .filter(item => IS_FACES_SOURCE(item.attr(ATTR_SRC).value ?? undefined))
+            .map(item => (item.attr(ATTR_SRC).value ?? "").match(regExp))
+            .filter(isRegExpMatchArray)
+            .map((result) => {
                 return decodeURIComponent(result[1]);
             })?.[0]);
-    }
-
-    globalEval(code: string, nonce ?: string): DQ {
-        return new ExtDomQuery(super.globalEval(code, nonce ?? this.nonce.value));
     }
 
     // called from base class runScripts, do not delete
@@ -183,7 +183,7 @@ export class ExtDomQuery extends DQ {
     runHeadInserts(suppressDoubleIncludes = true): void {
         let head = ExtDomQuery.byId(document.head);
         //automated nonce handling
-        let processedScripts = [];
+        let processedScripts: DomQuery[] = [];
 
         // the idea is only to run head inserts on resources
         // which do not exist already, that way
@@ -264,26 +264,26 @@ export class ExtConfig extends  Config {
         super(root);
     }
 
-    assignIf(condition: boolean, ...accessPath): IValueHolder<any> {
+    assignIf(condition: boolean, ...accessPath: string[]): IValueHolder<any> {
         const accessPathMapped = this.remap(accessPath);
         return super.assignIf(condition, ...accessPathMapped);
     }
 
-    assign(...accessPath): IValueHolder<any> {
+    assign(...accessPath: string[]): IValueHolder<any> {
         const accessPathMapped = this.remap(accessPath);
         return super.assign(...accessPathMapped);
     }
 
-    append(...accessPath): IValueHolder<any> {
+    append(...accessPath: string[]): IValueHolder<any> {
         return super.append(...accessPath);
     }
 
-    appendIf(condition: boolean, ...accessPath): IValueHolder<any> {
+    appendIf(condition: boolean, ...accessPath: string[]): IValueHolder<any> {
         const accessPathMapped = this.remap(accessPath);
         return super.appendIf(condition, ...accessPathMapped);
     }
 
-    getIf(...accessPath): Config {
+    getIf(...accessPath: string[]): Config {
         const accessPathMapped = this.remap(accessPath);
         return super.getIf(...accessPathMapped);
     }
@@ -333,6 +333,6 @@ export class ExtConfig extends  Config {
         if(!this.$nspEnabled) {
             return accessPath;
         }
-        return new Es2019Array(...accessPath).map(key => $nsp(key));
+        return new Es2019Array(...accessPath).map((key: string) => $nsp(key));
     }
 }

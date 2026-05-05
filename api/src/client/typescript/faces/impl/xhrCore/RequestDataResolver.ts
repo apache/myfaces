@@ -57,9 +57,10 @@ export function resolveHandlerFunc(requestContext: Config, responseContext: Conf
 }
 
 export function resolveTargetUrl(srcFormElement: HTMLFormElement) {
-    return (typeof srcFormElement.elements[ENCODED_URL] == 'undefined') ?
+    const formElements = srcFormElement.elements as HTMLFormControlsCollection & {[key: string]: HTMLInputElement};
+    return (typeof formElements[ENCODED_URL] == 'undefined') ?
         srcFormElement.action :
-        srcFormElement.elements[ENCODED_URL].value;
+        formElements[ENCODED_URL].value;
 }
 
 export function resolveFinalUrl(sourceForm: DomQuery, formData: XhrFormData, ajaxType = REQ_TYPE_POST) {
@@ -76,7 +77,7 @@ export function resolveFinalUrl(sourceForm: DomQuery, formData: XhrFormData, aja
  * @param elem
  * @param event
  */
-export function resolveForm(elem: DQ, event: Event): DQ {
+export function resolveForm(elem: DQ, event?: Event): DQ {
     return ExtLang.getForm(elem.getAsElem(0).value, event);
 }
 
@@ -182,9 +183,9 @@ export function getEventTarget(evt: Event): Element {
  * @param opts
  * @param el
  */
-export function resolveDefaults(event: Event, opts: Options | [[string, any]] , el: Element | string = null): any {
+export function resolveDefaults(event?: Event, opts?: Options | [[string, any]] , el: Element | string | null = null): any {
     //deep copy the options, so that further transformations to not backfire into the callers
-    const elem = DQ.byId(el || <Element>event.target, true);
+    const elem = DQ.byId(el || (event as Event).target as Element, true);
     const options = new ExtConfig(opts).deepCopy as ExtConfig;
     return {
         options: options,

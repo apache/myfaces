@@ -19,7 +19,7 @@
 import {Optional} from "./Monad";
 
 export enum PromiseStatus {
-    PENDING, FULLFILLED, REJECTED
+    PENDING, FULFILLED, REJECTED
 }
 
 export interface IPromise {
@@ -105,8 +105,8 @@ export class Promise implements IPromise {
     static race(...promises: Array<IPromise>): IPromise {
 
         let promiseCnt = 0;
-        let myapply: Function;
-        let myreject: Function;
+        let myapply: Function | null;
+        let myreject: Function | null;
 
         let myPromise = new Promise((apply: Function, reject: Function) => {
             myapply = apply;
@@ -119,7 +119,7 @@ export class Promise implements IPromise {
             }
             myapply = null;
             myreject = null;
-            return null;
+            return null as any;
         };
         (thenexecutor as any).__last__ = true;
 
@@ -129,7 +129,7 @@ export class Promise implements IPromise {
             }
             myreject = null;
             myapply = null;
-            return null;
+            return null as any;
         };
         (catchexeutor as any).__last__ = true;
 
@@ -190,7 +190,7 @@ export class Promise implements IPromise {
     finally(executorFunc: () => void): Promise {
         if ((this as any).__reason__) {
             (this as any).__reason__.finally(executorFunc);
-            return;
+            return undefined as any;
         }
 
         this.allFuncs.push({"finally": executorFunc});
@@ -225,7 +225,7 @@ export class Promise implements IPromise {
         }
 
         this.appyFinally();
-        this.status = PromiseStatus.FULLFILLED;
+        this.status = PromiseStatus.FULFILLED;
     }
 
     protected reject(val?: any) {
@@ -332,6 +332,4 @@ export class CancellablePromise extends Promise {
     private cancellator = () => {
     };
 }
-
-
 

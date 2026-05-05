@@ -27,6 +27,12 @@ import {DQ} from "mona-dish";
 import {ErrorData} from "../../impl/xhrCore/ErrorData";
 import * as nise from "nise";
 
+function suppressErrorOutput(): () => void {
+    const oldErr = console.error;
+    console.error = () => {};
+    return () => { console.error = oldErr; };
+}
+
 /**
  * Tests for error recover if an error is triggered mid chain
  */
@@ -67,6 +73,10 @@ describe('Tests of the various aspects of the response protocol functionality', 
             }
         });
     });
+
+    let restoreConsoleError: () => void;
+    beforeEach(function () { restoreConsoleError = suppressErrorOutput(); });
+    afterEach(function () { restoreConsoleError?.(); });
 
     afterEach(function () {
         this.closeIt();
@@ -138,11 +148,15 @@ describe('Tests of the various aspects of the response protocol functionality', 
     it('must have correct source element within the error Data Object', () => {
         const errorData = new ErrorData("form1:button1", "errorName", "errorMessage");
         expect((errorData.source as Element).id).to.eq("form1:button1");
+        expect(errorData.errorName).to.eq("errorName");
+        expect(errorData.errorMessage).to.eq("errorMessage");
     })
 
     it('should have correct source id string within the error Data Object if element not existing', () => {
         const errorData = new ErrorData("form1:button1:booga", "errorName", "errorMessage");
         expect(errorData.source).to.eq("form1:button1:booga");
+        expect(errorData.errorName).to.eq("errorName");
+        expect(errorData.errorMessage).to.eq("errorMessage");
     })
 });
 
