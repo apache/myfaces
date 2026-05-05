@@ -58,7 +58,7 @@ declare global {
      */
     interface IErrorData {
         type: any;
-        status: string;
+        status: string | null;
         serverErrorName: string;
         serverErrorMessage: string;
         source: any;
@@ -73,7 +73,7 @@ declare global {
      * </ul>
      */
     interface IEventData {
-        status: String;
+        status: string | null;
         source: any;
     }
 
@@ -87,6 +87,15 @@ declare global {
     }
 
     interface Push {
+        init(socketClientId: string,
+             uri: string,
+             channel: string,
+             onopen: Function,
+             onmessage: Function,
+             onerror: Function,
+             onclose: Function,
+             behaviorScripts: any,
+             autoconnect: boolean): void;
         init(socketClientId: string,
              uri: string,
              channel: string,
@@ -125,6 +134,7 @@ declare global {
     }
 
     interface MyFacesAPI {
+        [key: string]: any;
         ab(source: Element, event: Event, eventName: string, execute: string, render: string, options?: Context, userParams?: Context): void;
         reserveNamespace(namespace: string): void;
 
@@ -150,6 +160,7 @@ declare global {
     // lib.dom.d.ts declares the type Window as being type for window.
     // noinspection JSUnusedGlobalSymbols
     interface Window {
+        [key: string]: any,
         myfaces: MyFacesAPI,
         faces: FacesAPI,
         jsf: FacesAPI,

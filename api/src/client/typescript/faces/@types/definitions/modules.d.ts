@@ -1,5 +1,4 @@
-/*!
- * Licensed to the Apache Software Foundation (ASF) under one or more
+/*! Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to you under the Apache License, Version 2.0
@@ -14,28 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-{
-  "compilerOptions": {
-    "target": "es2015",
-    "lib": [
-      "es2015.collection",
-      "dom"
-    ],
+// AI-generated: this file was created with assistance from Claude (Anthropic) — see AI_CONTRIBUTIONS.md
 
-    "outDir": "../../../target",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "module": "esnext",
-    "sourceMap": true,
-    "ignoreDeprecations": "6.0",
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "noImplicitThis": false,
-    "strictFunctionTypes": false,
-    "useUnknownInCatchVariables": false,
-    "typeRoots": [
-      "../../build/npm/node_modules/@types",
-      "./@types/"
-    ]
-  }
+declare module "mona-dish/dist/js/umd/index.js" {
+    export * from "mona-dish";
+}
+
+declare module "nise" {
+    const nise: any;
+    export = nise;
+}
+
+declare module "jsdom" {
+    export const JSDOM: any;
+    export const VirtualConsole: any;
+    export const CookieJar: any;
+    export const ResourceLoader: any;
+    export function toughCookie(...args: any[]): any;
 }

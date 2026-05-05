@@ -30,12 +30,12 @@ export interface IAsyncRunnable<T> {
     /**
      * starts the runnable
      */
-    start();
+    start(): void;
 
     /**
      * cancel the current ongoing op if possible
      */
-    cancel();
+    cancel(): void;
 
     /**
      * callback for then functionality
@@ -144,4 +144,3 @@ export abstract class AsyncRunnable<T> implements IAsyncRunnable<T>{
         return this;
     }
 }
-

@@ -39,7 +39,7 @@ function build(env: {[key:string]: string}, argv: {[key:string]: string}) {
 
         output: {
             path: path.resolve(__dirname, '../../target/classes/META-INF/resources/jakarta.faces/'),
-            libraryTarget: libraryTarget,
+            library: { type: libraryTarget },
             filename: (argv.mode == "production") ? "faces.js" : "faces-development.js"
         },
         resolve: {

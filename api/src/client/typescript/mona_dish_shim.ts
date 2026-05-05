@@ -1,4 +1,4 @@
-/*!
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,28 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-{
-  "compilerOptions": {
-    "target": "es2015",
-    "lib": [
-      "es2015.collection",
-      "dom"
-    ],
 
-    "outDir": "../../../target",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "module": "esnext",
-    "sourceMap": true,
-    "ignoreDeprecations": "6.0",
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "noImplicitThis": false,
-    "strictFunctionTypes": false,
-    "useUnknownInCatchVariables": false,
-    "typeRoots": [
-      "../../build/npm/node_modules/@types",
-      "./@types/"
-    ]
-  }
-}
+/**
+ * Shim to provide a default export for mona-dish.
+ *
+ * index.ts has only named exports, which breaks the pattern:
+ *   import pkg from 'mona-dish'; const { Lang } = pkg;
+ *
+ * Used via tsconfig paths for tests (tsx/ESM). Webpack keeps its own alias
+ * to index_core.ts for the reduced-core production bundle.
+ */
+export * from "./mona_dish/index";
+import * as _monaDish from "./mona_dish/index";
+export default _monaDish;

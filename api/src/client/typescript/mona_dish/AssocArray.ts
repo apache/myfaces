@@ -110,7 +110,7 @@ export function appendIf<T>(condition: boolean, target: {[key: string]: any}, ..
     return append(target, ...accessPath);
 }
 
-export function resolve<T>(target, ...accessPath: string[]): T | null {
+export function resolve<T>(target: {[key: string]: any}, ...accessPath: string[]): T | null {
     let ret = null;
     accessPath = flattenAccessPath(accessPath);
     let currPtr = target;
@@ -123,7 +123,7 @@ export function resolve<T>(target, ...accessPath: string[]): T | null {
         }
         ret = currPtr;
     }
-    return currPtr;
+    return currPtr as T;
 }
 
 
@@ -164,9 +164,9 @@ function alloc(arr: Array<any>, length: number, defaultVal = {}) {
 
 
 function flattenAccessPath(accessPath: string[]) {
-    return new Es2019Array(...accessPath).flatMap(path => path.split("["))
-        .map(path => path.indexOf("]") != -1 ? "[" + path : path)
-        .filter(path => path != "");
+    return new Es2019Array(...accessPath).flatMap((path: string) => path.split("["))
+        .map((path: string) => path.indexOf("]") != -1 ? "[" + path : path)
+        .filter((path: string) => path != "");
 }
 
 /**
@@ -175,12 +175,12 @@ function flattenAccessPath(accessPath: string[]) {
  * @param accessPath
  * @returns the last assignable entry
  */
-export function buildPath(target, ...accessPath: string[]) {
+export function buildPath(target: {[key: string]: any}, ...accessPath: string[]): {target: any, key: string | number} {
     accessPath = flattenAccessPath(accessPath);
     //we now have a pattern of having the array accessors always in separate items
-    let parentPtr = target;
-    let parKeyArrPos = null;
-    let currKey = null;
+    let parentPtr: any = target;
+    let parKeyArrPos: string | number | null = null;
+    let currKey: string | null = null;
     let arrPos = -1;
 
     for (let cnt = 0; cnt < accessPath.length; cnt++) {
@@ -234,7 +234,7 @@ export function buildPath(target, ...accessPath: string[]) {
         }
     }
 
-    return {target: parentPtr, key: parKeyArrPos};
+    return {target: parentPtr, key: parKeyArrPos as string | number};
 
 }
 
@@ -247,11 +247,11 @@ export function deepCopy(fromAssoc: {[key: string]: any}): {[key: string]: any} 
  *
  * @param assocArrays
  */
-export function simpleShallowMerge(...assocArrays) {
+export function simpleShallowMerge(...assocArrays: {[key: string]: any}[]) {
    return shallowMerge(true, false, ...assocArrays);
 }
 
-function _appendWithOverwrite(withAppend: boolean, target: { [p: string]: any }, key, arr, toAssign) {
+function _appendWithOverwrite(withAppend: boolean, target: { [p: string]: any }, key: string, arr: {[key: string]: any}, toAssign: any) {
     if (!withAppend) {
         target[key] = arr[key];
     } else {
@@ -262,10 +262,10 @@ function _appendWithOverwrite(withAppend: boolean, target: { [p: string]: any },
         } else if (!Array.isArray(target[key])) {
 
             let oldVal = target[key];
-            let newVals = [];
+            let newVals: any[] = [];
             //TODO maybe deep deep compare here, but on the other hand it is
             //shallow
-            toAssign.forEach(item => {
+            toAssign.forEach((item: any) => {
                 if (oldVal != item) {
                     newVals.push(item);
                 }
@@ -275,9 +275,9 @@ function _appendWithOverwrite(withAppend: boolean, target: { [p: string]: any },
             target[key].push(...newVals);
         } else {
             let oldVal = target[key];
-            let newVals = [];
+            let newVals: any[] = [];
             //TODO deep compare here
-            toAssign.forEach(item => {
+            toAssign.forEach((item: any) => {
                 if (oldVal.indexOf(item) == -1) {
                     newVals.push(item);
                 }
@@ -288,7 +288,7 @@ function _appendWithOverwrite(withAppend: boolean, target: { [p: string]: any },
     }
 }
 
-function _appendWithoutOverwrite(withAppend: boolean, target: { [p: string]: any }, key, arr, toAssign) {
+function _appendWithoutOverwrite(withAppend: boolean, target: { [p: string]: any }, key: string, arr: {[key: string]: any}, toAssign: any) {
     if (!withAppend) {
         return;
     } else {
@@ -315,12 +315,12 @@ function _appendWithoutOverwrite(withAppend: boolean, target: { [p: string]: any
  * Combination overwrite withappend filters doubles out of merged arrays
  * @param assocArrays array of assoc arres reduced right to left
  */
-export function shallowMerge(overwrite = true, withAppend = false, ...assocArrays) {
+export function shallowMerge(overwrite = true, withAppend = false, ...assocArrays: {[key: string]: any}[]) {
     let target: {[key: string]: any} = {};
-    new Es2019Array(...assocArrays).map(arr => {
+    new Es2019Array(...assocArrays).map((arr: {[key: string]: any}) => {
         return {arr, keys: Object.keys(arr)};
-    }).forEach(({arr, keys}) => {
-        keys.forEach(key => {
+    }).forEach(({arr, keys}: {arr: {[key: string]: any}, keys: string[]}) => {
+        keys.forEach((key: string) => {
             let toAssign = arr[key];
             if(!Array.isArray(toAssign) && withAppend) {
                 toAssign = new Es2019Array(...[toAssign]);
@@ -340,7 +340,7 @@ export function shallowMerge(overwrite = true, withAppend = false, ...assocArray
 
 //TODO test this, slightly altered from https://medium.com/@pancemarko/deep-equality-in-javascript-determining-if-two-objects-are-equal-bf98cf47e934
 //he overlooked some optimizations and a shortcut at typeof!
-export function deepEqual(obj1, obj2) {
+export function deepEqual(obj1: any, obj2: any): boolean | void {
     if(obj1 == obj2) {
         return false;
     }
