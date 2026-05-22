@@ -939,7 +939,7 @@ public abstract class UIComponent
 
     protected abstract FacesContext getFacesContext();
 
-    protected abstract Renderer getRenderer(FacesContext context);
+    protected abstract <T extends UIComponent> Renderer<T> getRenderer(FacesContext context);
 
     /**
      * Note that id, clientId properties

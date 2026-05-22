@@ -28,40 +28,40 @@ import jakarta.faces.convert.ConverterException;
  *
  * @since 2.2
  */
-public abstract class RendererWrapper extends Renderer implements FacesWrapper<Renderer>
+public abstract class RendererWrapper<T extends UIComponent> extends Renderer<T> implements FacesWrapper<Renderer<T>>
 {
-    private Renderer delegate;
+    private Renderer<T> delegate;
 
     @Deprecated
     public RendererWrapper()
     {
     }
 
-    public RendererWrapper(Renderer delegate)
+    public RendererWrapper(Renderer<T> delegate)
     {
         this.delegate = delegate;
     }
 
     @Override
-    public void decode(FacesContext context, UIComponent component)
+    public void decode(FacesContext context, T component)
     {
         getWrapped().decode(context, component);
     }
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component) throws IOException
+    public void encodeBegin(FacesContext context, T component) throws IOException
     {
         getWrapped().encodeBegin(context, component);
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component) throws IOException
+    public void encodeChildren(FacesContext context, T component) throws IOException
     {
         getWrapped().encodeChildren(context, component);
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException
+    public void encodeEnd(FacesContext context, T component) throws IOException
     {
         getWrapped().encodeEnd(context, component);
     }
@@ -79,7 +79,7 @@ public abstract class RendererWrapper extends Renderer implements FacesWrapper<R
     }
 
     @Override
-    public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue)
+    public Object getConvertedValue(FacesContext context, T component, Object submittedValue)
             throws ConverterException
     {
         return getWrapped().getConvertedValue(context, component, submittedValue);
