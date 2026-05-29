@@ -98,6 +98,7 @@ import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.ViewMetadataBase;
+import org.apache.myfaces.view.ViewScopeProxyMap;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
 import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
@@ -1883,6 +1884,23 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                     // Clear the calculated value from the application map
                                     context.getAttributes().remove(SERIALIZED_VIEW_REQUEST_ATTR);
                                 }
+                            }
+                        }
+
+                        // This view was rendered without writing its state (no UIForm, hence no
+                        // view state token), so it can never be restored. Any @ViewScoped beans
+                        // created while building it are unreachable once this request ends, but -
+                        // unlike views whose state is saved - it is never registered in the session
+                        // SerializedViewCollection, so the normal "evict view -> destroy its view
+                        // scope" path never runs and the beans would linger until the session
+                        // expires. Destroy the view scope now (publishes PreDestroyViewMapEvent).
+                        if (!view.isTransient())
+                        {
+                            Map<String, Object> viewMap = view.getViewMap(false);
+                            if (viewMap instanceof ViewScopeProxyMap
+                                    && ((ViewScopeProxyMap) viewMap).getViewScopeId() != null)
+                            {
+                                viewMap.clear();
                             }
                         }
                     }
