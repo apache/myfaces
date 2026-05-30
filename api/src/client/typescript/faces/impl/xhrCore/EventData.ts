@@ -16,7 +16,7 @@
 import {Config, DQ} from "mona-dish";
 import {BEGIN, CTX_PARAM_REQ_PASS_THR, EVENT, P_AJAX_SOURCE, SOURCE} from "../core/Const";
 
-export class EventData implements IEventData{
+export class EventData {
     type!: string;
     status!: string | null;
     source: any;
@@ -24,7 +24,8 @@ export class EventData implements IEventData{
     responseText!: string;
     responseXML!: Document | null;
 
-    static createFromRequest(request: XMLHttpRequest, internalContext: Config, context: Config, /*event name*/ name: string): EventData {
+    /** @internal */
+    static createFromRequest(request: XMLHttpRequest, internalContext: any, context: any, /*event name*/ name: string): EventData {
 
         let eventData = new EventData();
         let internalSource = "_internal._source";

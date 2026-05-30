@@ -39,6 +39,11 @@ describe("ExtLang", function () {
         expect(ExtLang.getMessage("missing.key")).to.eq("missing.key");
     });
 
+    it("must return a message string when the key exists in Messages", function () {
+        // MSG_TEST is defined in Messages.ts as "Testmessage" — covers the left branch of ?? defaultMessage ?? key
+        expect(ExtLang.getMessage("MSG_TEST")).to.eq("Testmessage");
+    });
+
     it("must read global and local myfaces config with local priority", function () {
         window.myfaces.config = {...window.myfaces.config, delay: 50, timeout: 100};
 

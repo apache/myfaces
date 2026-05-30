@@ -25,7 +25,7 @@ import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
 import {Implementation} from "../../impl/AjaxImpl";
 const defaultMyFaces = StandardInits.defaultMyFaces;
 import {XhrQueueController} from "../../impl/util/XhrQueueController";
-import {IAsyncRunnable} from "../../impl/util/AsyncRunnable";
+import {AsyncRunnable, IAsyncRunnable} from "../../impl/util/AsyncRunnable";
 
 class ControlledRunnable implements IAsyncRunnable<boolean> {
     started = 0;
@@ -245,5 +245,53 @@ describe('Asynchronous Queue tests', () => {
         } finally {
             clock.restore();
         }
+    });
+});
+
+class SimpleRunnable extends AsyncRunnable<boolean> {
+    private _shouldResolve: boolean;
+    constructor(resolve = true) { super(); this._shouldResolve = resolve; }
+    cancel() {}
+    start() {
+        if (this._shouldResolve) this.resolve(true);
+        else this.reject(new Error("rejected"));
+    }
+}
+
+describe('AsyncRunnable.finally() tests', () => {
+    it('finally callback must be called on resolve', function () {
+        const r = new SimpleRunnable(true);
+        let finallyCalled = false;
+        r.finally(() => { finallyCalled = true; });
+        r.start();
+        expect(finallyCalled).to.be.true;
+    });
+
+    it('finally callback must be called on reject', function () {
+        const r = new SimpleRunnable(false);
+        let finallyCalled = false;
+        r.catch(() => {}).finally(() => { finallyCalled = true; });
+        r.start();
+        expect(finallyCalled).to.be.true;
+    });
+
+    it('finally callback must be called in addition to then', function () {
+        const r = new SimpleRunnable(true);
+        let thenCalled = false;
+        let finallyCalled = false;
+        r.then(() => { thenCalled = true; }).finally(() => { finallyCalled = true; });
+        r.start();
+        expect(thenCalled).to.be.true;
+        expect(finallyCalled).to.be.true;
+    });
+
+    it('finally callback must be called in addition to catch', function () {
+        const r = new SimpleRunnable(false);
+        let catchCalled = false;
+        let finallyCalled = false;
+        r.catch(() => { catchCalled = true; }).finally(() => { finallyCalled = true; });
+        r.start();
+        expect(catchCalled).to.be.true;
+        expect(finallyCalled).to.be.true;
     });
 });

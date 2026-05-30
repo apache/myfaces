@@ -160,8 +160,9 @@ function waitUntilDom(root: DomQuery, condition: (element: DomQuery) => boolean,
                 observer!.observe(item, observableOpts)
             })
         } else { // fallback for legacy browsers without mutation observer
-
-                let interval: any = setInterval(() => {
+            let interval: any;
+            let timeout: any;
+            interval = setInterval(() => {
                 let found = findElement(root, condition);
                 if (!!found) {
                     if (timeout) {
@@ -172,13 +173,12 @@ function waitUntilDom(root: DomQuery, condition: (element: DomQuery) => boolean,
                     success(new DomQuery(found || root));
                 }
             }, options.interval);
-            let timeout = setTimeout(() => {
+            timeout = setTimeout(() => {
                 if (interval) {
                     clearInterval(interval);
                     error(MUT_ERROR);
                 }
-            }, options.timeout)
-
+            }, options.timeout);
         }
     });
 }
@@ -202,7 +202,6 @@ export class ElementAttribute extends ValueEmbedder<string | null> {
         for (let cnt = 0; cnt < val.length; cnt++) {
             val[cnt].setAttribute(this.name, value);
         }
-        val[0].setAttribute(this.name, value);
     }
 
     protected getClass(): any {
@@ -237,11 +236,11 @@ export class Style extends ValueEmbedder<string | null> {
     }
 
     protected getClass(): any {
-        return ElementAttribute;
+        return Style;
     }
 
     static fromNullable<ElementAttribute, T>(value?: any, valueKey: string = "value"): ElementAttribute {
-        return <any>new ElementAttribute(value, valueKey);
+        return <any>new Style(value, valueKey);
     }
 
 }
@@ -434,11 +433,11 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
 
     get elements(): DomQuery {
         // a simple querySelectorAll should suffice
-        return this.querySelectorAll("input, checkbox, select, textarea, fieldset");
+        return this.querySelectorAll("input, select, textarea, fieldset");
     }
 
     get deepElements(): DomQuery {
-        let elemStr = "input, select, textarea, checkbox, fieldset";
+        let elemStr = "input, select, textarea, fieldset";
         return this.querySelectorAllDeep(elemStr);
     }
 
@@ -602,7 +601,6 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
      */
     static fromMarkup(markup: string): DomQuery {
 
-        // https:// developer.mozilla.org/de/docs/Web/API/DOMParser license creative commons
         const doc = document.implementation.createHTMLDocument("");
         markup = trim(markup);
         let lowerMarkup = markup.toLowerCase();
@@ -622,16 +620,15 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             let dummyPlaceHolder = new DomQuery(document.createElement("div"));
 
             // table needs special treatment due to the browsers auto creation
-            if (startsWithTag(lowerMarkup, "thead") || startsWithTag(lowerMarkup, "tbody")) {
+            if (startsWithTag(lowerMarkup, "thead")
+                || startsWithTag(lowerMarkup, "tbody")
+                || startsWithTag(lowerMarkup, "tfoot")) {
                 dummyPlaceHolder.html(`<table>${markup}</table>`);
                 return dummyPlaceHolder.querySelectorAll("table").get(0).childNodes.detach();
-            } else if (startsWithTag(lowerMarkup, "tfoot")) {
-                dummyPlaceHolder.html(`<table><thead></thead><tbody><tbody${markup}</table>`);
-                return dummyPlaceHolder.querySelectorAll("table").get(2).childNodes.detach();
             } else if (startsWithTag(lowerMarkup, "tr")) {
                 dummyPlaceHolder.html(`<table><tbody>${markup}</tbody></table>`);
                 return dummyPlaceHolder.querySelectorAll("tbody").get(0).childNodes.detach();
-            } else if (startsWithTag(lowerMarkup, "td")) {
+            } else if (startsWithTag(lowerMarkup, "td") || startsWithTag(lowerMarkup, "th")) {
                 dummyPlaceHolder.html(`<table><tbody><tr>${markup}</tr></tbody></table>`);
                 return dummyPlaceHolder.querySelectorAll("tr").get(0).childNodes.detach();
             }
@@ -981,15 +978,15 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     }
 
     firstElem(func: (item: Element, cnt?: number) => any = item => item): DomQuery {
-        if (this.rootNode.length > 1) {
+        if (this.rootNode.length > 0) {
             func(this.rootNode[0], 0);
         }
         return this;
     }
 
     lastElem(func: (item: Element, cnt?: number) => any = item => item): DomQuery {
-        if (this.rootNode.length > 1) {
-            func(this.rootNode[this.rootNode.length - 1], 0);
+        if (this.rootNode.length > 0) {
+            func(this.rootNode[this.rootNode.length - 1], this.rootNode.length - 1);
         }
         return this;
     }
@@ -1922,7 +1919,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         ctrl?.focus ? ctrl?.focus() : null;
         // the selection range is our caret position
 
-        ctrl?.setSelectiongRange ? ctrl?.setSelectiongRange(pos, pos) : null;
+        ctrl?.setSelectionRange ? ctrl?.setSelectionRange(pos, pos) : null;
     }
 
     /**

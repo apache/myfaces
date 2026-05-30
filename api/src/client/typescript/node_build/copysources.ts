@@ -55,5 +55,6 @@ copyFilesRecursively('./node_modules/jsf.js_next_gen/src/main/typescript/myfaces
 copyFilesRecursively('./node_modules/jsf.js_next_gen/src/main/typescript/test', './typescript/faces/test');
 copyFilesRecursively('./node_modules/jsf.js_next_gen/src/main/typescript/@types', './typescript/faces/@types');
 copyFilesRecursively('./node_modules/mona-dish/src/main/typescript', './typescript/mona_dish');
+copyFilesRecursively('./node_modules/jsf.js_next_gen/dist/window/faces.d.ts', './typescript/faces/@types/definitions/faces.d.ts');
 
 
