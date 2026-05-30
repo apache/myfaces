@@ -18,6 +18,7 @@ import * as webpack from 'webpack';
 import * as path from 'path'
 
 let CompressionPlugin = require('compression-webpack-plugin');
+let CopyPlugin = require('copy-webpack-plugin');
 
 /**
  * we need to define the export in a function
@@ -53,6 +54,16 @@ function build(env: {[key:string]: string}, argv: {[key:string]: string}) {
             "rxjs": "RxJS"
         },
 
+        plugins: [
+            new CopyPlugin({
+                patterns: [
+                    {
+                        from: path.resolve(__dirname, './node_modules/jsf.js_next_gen/dist/window/faces.d.ts'),
+                        to: path.resolve(__dirname, '../../target/classes/META-INF/resources/jakarta.faces/faces.d.ts')
+                    }
+                ]
+            })
+        ],
         module: {
             rules: [
                 // all files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'

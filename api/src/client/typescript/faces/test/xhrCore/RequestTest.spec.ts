@@ -18,7 +18,7 @@ import {describe, it} from "mocha";
 import * as sinon from "sinon";
 import {expect} from "chai";
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import {_Es2019Array, DomQuery, DQ$} from "mona-dish";
+import {_Es2019Array, Config, DomQuery, DQ$} from "mona-dish";
 import {
     COMPLETE, EMPTY_STR,
     EMPTY_RESPONSE,
@@ -31,8 +31,17 @@ import {
     P_VIEWSTATE,
     P_WINDOW_ID,
     STATE_EVT_TIMEOUT,
-    SUCCESS
+    SUCCESS,
+    CTX_PARAM_SRC_FRM_ID,
+    CTX_PARAM_REQ_PASS_THR,
+    CTX_PARAM_PPS,
+    IDENT_NONE,
+    REQ_TYPE_GET,
+    SOURCE,
 } from "../../impl/core/Const";
+import {XhrRequest} from "../../impl/xhrCore/XhrRequest";
+import {ExtConfig} from "../../impl/util/ExtDomQuery";
+import {EventData} from "../../impl/xhrCore/EventData";
 const defaultMyFaces = StandardInits.defaultMyFaces;
 const initVirtualElement = StandardInits.initVirtualElement;
 const STD_XML = StandardInits.STD_XML;
@@ -904,6 +913,33 @@ describe('Tests after core when it hits response', function () {
         });
     });
 
+    it("must include a checked checkbox issuing item via appendIssuingItem when not already in form data", () => {
+        // Use a form where name != id so the checkbox is NOT pre-encoded under the issuing item ID
+        const waitForResult = initCheckboxForm();
+        return waitForResult.then(() => {
+            document.body.innerHTML += `
+                <form id="cb-name-id-form">
+                    <input type="checkbox" id="cb-issuing-item" name="cb-group" value="chkval" checked>
+                    <input type="hidden" name="jakarta.faces.ViewState" value="test-viewstate">
+                </form>`;
+
+            const send = sinon.spy(XMLHttpRequest.prototype, "send");
+            try {
+                const element = document.getElementById("cb-issuing-item");
+                faces.ajax.request(element, null, {
+                    execute: "@none",
+                    render: "@none"
+                });
+
+                const body: string = send.args[0][0] as string;
+                // appendIssuingItem must have added the issuing element keyed by its ID
+                expect(body).to.include("cb-issuing-item");
+            } finally {
+                send.restore();
+            }
+        });
+    });
+
     /**
      * https://issues.apache.org/jira/browse/MYFACES-4638
      */
@@ -1163,5 +1199,81 @@ describe('XhrRequest error handling and lifecycle', function () {
             expect(errorFired).to.be.false;
             done();
         }, 0);
+    });
+});
+
+describe('XhrRequest GET method', function () {
+
+    beforeEach(async function () {
+        return defaultMyFaces().then((close) => {
+            this.xhr = nise.fakeXhr.useFakeXMLHttpRequest();
+            this.requests = [];
+            this.xhr.onCreate = (xhr: any) => this.requests.push(xhr);
+            (global as any).XMLHttpRequest = this.xhr;
+            window.XMLHttpRequest = this.xhr;
+            this.closeIt = () => {
+                (global as any).XMLHttpRequest = window.XMLHttpRequest = this.xhr.restore();
+                close();
+            };
+        });
+    });
+
+    afterEach(function () { this.closeIt(); });
+
+    it('must call send(null) for a GET request', function () {
+        const send = sinon.spy(XMLHttpRequest.prototype, "send");
+        try {
+            const internalCtx = new Config({});
+            internalCtx.assign(CTX_PARAM_SRC_FRM_ID).value = "blarg";
+            internalCtx.assign(CTX_PARAM_PPS).value = false;
+
+            const reqCtx = new ExtConfig({});
+            reqCtx.assign(CTX_PARAM_REQ_PASS_THR, P_EXECUTE).value = IDENT_NONE;
+
+            const request = new XhrRequest(reqCtx, internalCtx, 0, REQ_TYPE_GET);
+            request.start();
+
+            expect(this.requests[0].method).to.eq("GET");
+            expect(send.calledOnce).to.be.true;
+            expect(send.firstCall.args[0]).to.be.null;
+        } finally {
+            send.restore();
+        }
+    });
+});
+
+describe('EventData source resolution fallback', function () {
+
+    beforeEach(async function () {
+        return defaultMyFaces().then((close) => {
+            this.closeIt = close;
+        });
+    });
+
+    afterEach(function () { this.closeIt(); });
+
+    it('must resolve source from context when _source._element is absent', function () {
+        const fakeXhr = { status: 200, responseText: "", responseXML: null } as any;
+        const internalCtx = new Config({});
+
+        const reqCtx = new ExtConfig({});
+        reqCtx.assign(SOURCE).value = "input_2";
+
+        const event = EventData.createFromRequest(fakeXhr, internalCtx, reqCtx, "begin");
+
+        expect(event.source).to.not.be.null;
+        expect(event.source).to.not.be.undefined;
+        expect((event.source as HTMLElement).id).to.eq("input_2");
+    });
+
+    it('must store resolved source in internalContext for subsequent calls', function () {
+        const fakeXhr = { status: 200, responseText: "", responseXML: null } as any;
+        const internalCtx = new Config({});
+        const reqCtx = new ExtConfig({});
+        reqCtx.assign(SOURCE).value = "input_2";
+
+        EventData.createFromRequest(fakeXhr, internalCtx, reqCtx, "begin");
+
+        expect(internalCtx.getIf("_source", "_element").value).to.not.be.null;
     });
 });
