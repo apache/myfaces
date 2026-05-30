@@ -779,7 +779,18 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             return;
         }
 
-        if (value instanceof Boolean boolean1)
+        // Fast path: the overwhelming majority of attribute values are already Strings,
+        // so handle them first and skip both the Boolean instanceof check and the
+        // (no-op for String) toString() virtual dispatch.
+        if (value instanceof String strValue)
+        {
+            _currentWriter.write(' ');
+            _currentWriter.write(name);
+            _currentWriter.write("=\"");
+            HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
+            _currentWriter.write('"');
+        }
+        else if (value instanceof Boolean boolean1)
         {
             if (boolean1.booleanValue())
             {
@@ -842,7 +853,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
         _currentWriter.write(' ');
         _currentWriter.write(name);
         _currentWriter.write("=\"");
-        if (strValue.toLowerCase().startsWith("javascript:"))
+        if (strValue.startsWith("javascript:"))
         {
             HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
         }

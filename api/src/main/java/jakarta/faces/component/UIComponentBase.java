@@ -442,21 +442,13 @@ public abstract class UIComponentBase extends UIComponent
     {
         Assert.notNull(context, "context");
 
-        setCachedRenderer(null);
+        // getRenderer() resolves and caches the renderer; keep it cached (do not clear it here) so
+        // a subsequent encode in the same request reuses it instead of looking it up again.
         Renderer renderer = getRenderer(context);
         if (renderer != null)
         {
-            setCachedRenderer(renderer);
-            try
-            {
-                renderer.decode(context, this);
-            }
-            finally
-            {
-                setCachedRenderer(null);
-            }
+            renderer.decode(context, this);
         }
-
     }
 
     @Override
@@ -484,7 +476,8 @@ public abstract class UIComponentBase extends UIComponent
                 setCachedIsRendered(null);
                 return;
             }
-            setCachedRenderer(null);
+            // Do not clear the cache first: if decode() already resolved the renderer this request,
+            // getRenderer() returns the cached instance instead of repeating the RenderKit lookup.
             setCachedRenderer(getRenderer(context));
         }
         finally
@@ -529,7 +522,9 @@ public abstract class UIComponentBase extends UIComponent
         finally
         {
             setCachedIsRendered(null);
-            setCachedRenderer(null);
+            // Note: the cached renderer is intentionally NOT cleared here. It is stable for the
+            // component's life (invalidated by setRendererType() and dropped on restoreState()), so
+            // keeping it lets later renders/phases reuse it, mirroring Mojarra's cached renderer.
         }
     }
 
@@ -1275,6 +1270,15 @@ public abstract class UIComponentBase extends UIComponent
             getFacesContext().getExternalContext().log(logStr);
             log.warning(logStr);
         }
+        else
+        {
+            // Cache the resolved renderer so later lifecycle phases (decode in APPLY_REQUEST_VALUES,
+            // encode in RENDER_RESPONSE, ...) reuse it instead of repeating the RenderKit
+            // family/rendererType lookups on every component. The renderer for a given
+            // family/rendererType is stable for the component's life; the cache is invalidated by
+            // setRendererType() and dropped on restoreState().
+            setCachedRenderer(renderer);
+        }
         return renderer;
     }
 
@@ -1947,7 +1951,19 @@ public abstract class UIComponentBase extends UIComponent
         }
         
         Object[] values = (Object[]) state;
-        
+
+        // The composite-component status is derived from the COMPONENT_RESOURCE_KEY attribute, which
+        // under full state saving is only restored further down in this method (via the StateHelper).
+        // Drop any value cached before that point (e.g. a false latched by a pushComponentToEL during
+        // a PostAddToViewEvent) so it is recomputed lazily once the attributes are in place.
+        resetCachedIsCompositeComponent();
+
+        // restoreState may assign _rendererType directly (full state or rendererType delta) without
+        // going through setRendererType(), so drop any cached renderer here to avoid a stale entry
+        // on reused component instances. restoreState runs in RESTORE_VIEW, before any decode/encode,
+        // so the per-request renderer caching is preserved.
+        setCachedRenderer(null);
+
         if ( values.length == FULL_STATE_ARRAY_SIZE && initialStateMarked())
         {
             //Delta mode is active, but we are restoring a full state.

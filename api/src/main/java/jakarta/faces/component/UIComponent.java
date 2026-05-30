@@ -130,6 +130,7 @@ public abstract class UIComponent
     private transient Map<String, String> _resourceBundleMap = null;
     private boolean _inView = false;
     private _DeltaStateHelper _stateHelper = null;
+    private transient Boolean _cachedIsCompositeComponent = null;
 
     /**
      * In Faces 2.0 bindings map was deprecated, and replaced with a map
@@ -1106,8 +1107,22 @@ public abstract class UIComponent
 
     private boolean _isCompositeComponent()
     {
-        //moved to the static method
-        return UIComponent.isCompositeComponent(this);
+        // The composite-component status is determined once when the
+        // COMPONENT_RESOURCE_KEY attribute is assigned (at component creation) and
+        // does not change afterwards, so cache it to avoid the attribute-map lookup
+        // that otherwise runs on every pushComponentToEL call. The cache is reset by
+        // resetCachedIsCompositeComponent() on restoreState to cover full state saving,
+        // where the attribute may not yet be available when this is first queried.
+        if (_cachedIsCompositeComponent == null)
+        {
+            _cachedIsCompositeComponent = UIComponent.isCompositeComponent(this);
+        }
+        return _cachedIsCompositeComponent;
+    }
+
+    void resetCachedIsCompositeComponent()
+    {
+        _cachedIsCompositeComponent = null;
     }
     
     boolean isCachedFacesContext()
