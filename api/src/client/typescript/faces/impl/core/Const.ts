@@ -206,8 +206,8 @@ export const UNKNOWN = "UNKNOWN";
  * changed to a simple value passthrough
  */
 
-export function $faces(): FacesAPI {
-     return (window?.faces ?? window?.jsf) as FacesAPI;
+export function $faces(): typeof faces {
+     return window?.faces ?? window?.jsf;
 }
 
 export function $nsp(inputNamespace?: any): any {

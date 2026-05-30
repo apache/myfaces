@@ -49,13 +49,17 @@ export namespace PushImpl {
         autoconnect: boolean;
     };
 
+    /** @internal */
     export let sockets: {[key: string]: Socket} = {};
     /* component attributes by clientId */
+    /** @internal */
     export let components: {[key: string]: ComponentData} = {};
     /* client ids by token (share websocket connection) */
+    /** @internal */
     export let clientIdsByTokens: {[key: string]: string[]} = {};
 
     // needed for testing
+    /** @internal */
     export function reset() {
         Object.values(sockets).forEach(s => { try { s.close(); } catch(e) { /* ignore */ } });
         sockets = {};

@@ -151,5 +151,44 @@ describe('Tests on the xhr core when it starts to call the request', function ()
         expect(submit_spy.called).to.eq(false);
     })
 
+    it('setHiddenInput must update the value when the field already exists', function () {
+        let FORM_ID = "blarg";
+        setHiddenInput(FORM_ID, "existing_field", "first_value");
+        setHiddenInput(FORM_ID, "existing_field", "updated_value");
+        const inputs = DomQuery.byId(FORM_ID).querySelectorAll("input[name='existing_field']");
+        expect(inputs.length).to.eq(1, "must not create a duplicate input");
+        expect(inputs.inputValue.value).to.eq("updated_value", "must update the value in-place");
+    });
+
+    it('clearHiddenInput must not throw when the field does not exist', function () {
+        let FORM_ID = "blarg";
+        expect(() => clearHiddenInput(FORM_ID, "nonexistent_field")).not.to.throw();
+    });
+
+    it('submitForm must work with array-style params', function () {
+        let FORM_ID = "blarg";
+        let form = DomQuery.byId(FORM_ID);
+        const submit_spy = Sinon.spy(() => {});
+        (form.value.value as any).submit = submit_spy;
+
+        submitForm(FORM_ID, 'mylink', null, [["arrKey1", "arrVal1"], ["arrKey2", "arrVal2"]]);
+
+        expect(submit_spy.called).to.eq(true);
+        form = DomQuery.byId(FORM_ID);
+        expect(form.querySelectorAll("input[name='arrKey1']").isAbsent()).to.eq(true, "params must be cleaned up after submit");
+        expect(form.querySelectorAll("input[name='arrKey2']").isAbsent()).to.eq(true, "params must be cleaned up after submit");
+    });
+
+    it('submitForm must work when params is null', function () {
+        let FORM_ID = "blarg";
+        let form = DomQuery.byId(FORM_ID);
+        const submit_spy = Sinon.spy(() => {});
+        (form.value.value as any).submit = submit_spy;
+
+        submitForm(FORM_ID, null, null, null);
+
+        expect(submit_spy.called).to.eq(true);
+    });
+
     // further tests will follow if needed, for now the namespace must be restored
 });

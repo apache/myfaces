@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+import type { faces, myfaces } from '../../api/_api';
+
 /**
- * Basic internal types used
- *
- * This file is only there to allow global calls into window, faces and ajax
- * in a typesafe manner, hence eliminating <b>any</b> casts.
+ * Internal utility types used throughout the implementation.
+ * Public API types live in _api.ts; these are build-only helpers.
  */
 declare global {
 
@@ -28,149 +28,38 @@ declare global {
     type AssocArr<T> = { [key: string]: T };
     type EvalFuncs = Array<Function | string>;
 
-
     type Options = {
         render ?: string,
-        execute ?: string,          //space separated list of client ids
-        onevent ?: Function,        // event handler callback
-        onerror ?: Function,        // error handler callback
-        params ?: AssocArr<any>,    // passthrough params
-        delay ?: number,            // delay in milliseconds
-        resetValues ?: boolean,     // if set to true jakarta.faces.partial.resetValues is sent
-        /* @deprecated non-spec conform fallback behavior that anything can be passed and is used as passthrough */
+        execute ?: string,
+        onevent ?: Function,
+        onerror ?: Function,
+        params ?: AssocArr<any>,
+        delay ?: number,
+        resetValues ?: boolean,
         [key: string]: any
     }
 
     type Context = AssocArr<any>;
     type ElemDef = Element | string;
 
-    /**
-     *  * <ul>
-     *     <li> errorData.type : &quot;error&quot;</li>
-     *     <li> errorData.status : the error status message</li>
-     *     <li> errorData.serverErrorName : the server error name in case of a server error</li>
-     *     <li> errorData.serverErrorMessage : the server error message in case of a server error</li>
-     *     <li> errorData.source  : the issuing source element which triggered the request </li>
-     *     <li> eventData.responseCode: the response code (aka http request response code, 401 etc...) </li>
-     *     <li> eventData.responseText: the response text </li>
-     *     <li> eventData.responseXML: the response xml </li>
-     * </ul>
-     */
-    interface IErrorData {
-        type: any;
-        status: string | null;
-        serverErrorName: string;
-        serverErrorMessage: string;
-        source: any;
-        responseCode: number;
-        responseText: string;
-        responseXML: string;
-    }
-
-    /**
-     * <ul>
-     *     <li>status: status of the ajax cycle</li>
-     * </ul>
-     */
-    interface IEventData {
-        status: string | null;
-        source: any;
-    }
-
-    interface Ajax {
-        request(element: Element, event?: Event, options?: Options): void;
-        response(request: XMLHttpRequest, context?: Context): void;
-    }
-
-    interface Util {
-        chain(source, event, ...funcs: Array<Function | string>): boolean;
-    }
-
-    interface Push {
-        init(socketClientId: string,
-             uri: string,
-             channel: string,
-             onopen: Function,
-             onmessage: Function,
-             onerror: Function,
-             onclose: Function,
-             behaviorScripts: any,
-             autoconnect: boolean): void;
-        init(socketClientId: string,
-             uri: string,
-             channel: string,
-             onopen: Function,
-             onmessage: Function,
-             onclose: Function,
-             behaviorScripts: any,
-             autoconnect: boolean): void;
-        open(socketClientId: string);
-        close(socketClientId: string): void;
-    }
-
-    interface FacesAPI {
-        contextpath: string;
-        specversion: number;
-        implversion: number;
-        separatorchar: string;
-
-        getProjectStage(): string;
-        getViewState(formElement: Element | string): string;
-        getClientWindow(rootNode?: Element | string): string;
-        getSeparatorChar(): string;
-        response(request: XMLHttpRequest, context?: Context): void;
-        addOnError(errorFunc: (data: IErrorData) => void): void;
-        addOnEvent(eventFunc: (data: IEventData) => void): void;
-
-        ajax: Ajax;
-        util: Util;
-        push: Push;
-    }
-
-    interface OAM {
-        clearHiddenInput(formName: string, name: string): void;
-        setHiddenInput(formName: string, name: string, value: string): void;
-        submitForm(formName: string, linkId?: string |null, target?: string | null, params?: AssocArr<any> |Tuples<string, any> | null): boolean;
-    }
-
-    interface MyFacesAPI {
-        [key: string]: any;
-        ab(source: Element, event: Event, eventName: string, execute: string, render: string, options?: Context, userParams?: Context): void;
-        reserveNamespace(namespace: string): void;
-
-        config: { [key: string]: any };
-        oam: OAM;
-        core: {
-            config ?: {[key: string]: any};
-        };
-    }
-
-
-
     /*
-     * Global namespaces type definitions
+     * Global namespace type definitions — typed from the canonical _api.ts source.
      */
-    let myfaces: MyFacesAPI;
-    let jsf: FacesAPI;
-    let faces: FacesAPI;
+    let faces: typeof faces;
+    let jsf: typeof faces;
+    let myfaces: typeof myfaces;
 
-    // special "magic", Typescript merges whatever we have
-    // to window. This is a language "hack", but documented.
     // see https://www.typescriptlang.org/docs/handbook/declaration-files/templates/global-modifying-module-d-ts.html
-    // lib.dom.d.ts declares the type Window as being type for window.
     // noinspection JSUnusedGlobalSymbols
     interface Window {
-        [key: string]: any,
-        myfaces: MyFacesAPI,
-        faces: FacesAPI,
-        jsf: FacesAPI,
-        XMLHttpRequest: XMLHttpRequest,
-        called: { [key: string]: any }
+        [key: string]: any;
+        faces: typeof faces;
+        jsf: typeof faces;
+        myfaces: typeof myfaces;
+        XMLHttpRequest: XMLHttpRequest;
+        called: { [key: string]: any };
     }
 }
 
-// this is needed to tell the compiler that we have an ambient
-// module, otherwise the global overload would produce an error
-// https://www.typescriptlang.org/docs/handbook/declaration-files/templates/global-modifying-module-d-ts.html
-// noinspection JSUnusedGlobalSymbols
-export var __my_faces_ambient_module_glob_;
+// needed to make this file a module so the declare global block is valid
+export {};

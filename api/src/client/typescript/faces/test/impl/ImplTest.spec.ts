@@ -20,7 +20,8 @@ import {expect} from 'chai';
 import * as sinon from 'sinon';
 
 import {StandardInits} from "../frameworkBase/_ext/shared/StandardInits";
-import {CTX_PARAM_REQ_PASS_THR, P_EXECUTE, P_RENDER} from "../../impl/core/Const";
+import {CTX_PARAM_REQ_PASS_THR, IDENT_NONE, P_EXECUTE, P_RENDER} from "../../impl/core/Const";
+import {StateHolder} from "../../impl/core/ImplTypes";
 const defaultMyFaces = StandardInits.defaultMyFaces;
 import {_Es2019Array} from "mona-dish";
 
@@ -170,6 +171,22 @@ describe('faces.ajax.request test suite', () => {
 
     })
 
+    it("execute @none must delete P_EXECUTE from the request pass-through context", () => {
+        const addRequestToQueue = sinon.stub(Implementation.queueHandler, "addRequestToQueue");
+        try {
+            DomQuery.byId("input_2").addEventListener("click", (event: Event) => {
+                faces.ajax.request(null, event, {execute: IDENT_NONE, render: IDENT_NONE});
+            }).click();
+
+            expect(addRequestToQueue.called).to.be.true;
+            const context = addRequestToQueue.args[0][2] as Config;
+            // remapDefaultConstants must have deleted P_EXECUTE when execute="@none"
+            expect(context.getIf(CTX_PARAM_REQ_PASS_THR, P_EXECUTE).isAbsent()).to.be.true;
+        } finally {
+            addRequestToQueue.restore();
+        }
+    });
+
     it("sidebehavior chain on undefined must not break the chain only a dedicated false does", function() {
         let called = {};
         window.called = called;
@@ -230,3 +247,60 @@ describe('faces.ajax.request test suite', () => {
 });
 
 
+describe('AjaxImpl.getClientWindow differenceCheck', () => {
+    let oldFlatMap = null;
+
+    beforeEach(async () => {
+        return await StandardInits.defaultMyFaces().then(() => {
+            oldFlatMap = Array.prototype["flatMap"];
+            (window as any)["Es2019Array"] = _Es2019Array;
+            delete Array.prototype["flatMap"];
+        });
+    });
+
+    afterEach(() => {
+        if (oldFlatMap) {
+            Array.prototype["flatMap"] = oldFlatMap;
+            oldFlatMap = null;
+        }
+    });
+
+    it("must throw when two forms have different windowIds", () => {
+        document.body.innerHTML += `
+            <form id="form_wid_a">
+                <input type="hidden" name="jakarta.faces.ClientWindow" value="win1">
+                <input type="hidden" name="jakarta.faces.ViewState" value="vs1">
+            </form>
+            <form id="form_wid_b">
+                <input type="hidden" name="jakarta.faces.ClientWindow" value="win2">
+                <input type="hidden" name="jakarta.faces.ViewState" value="vs2">
+            </form>`;
+
+        expect(() => faces.getClientWindow(document.body)).to.throw();
+    });
+
+    it("must return the windowId when all forms agree", () => {
+        document.body.innerHTML = `
+            <form id="form_wid_ok">
+                <input type="hidden" name="jakarta.faces.ClientWindow" value="samewin">
+                <input type="hidden" name="jakarta.faces.ViewState" value="vs1">
+            </form>`;
+
+        const result = faces.getClientWindow(document.body);
+        expect(result).to.eq("samewin");
+    });
+});
+
+describe('StateHolder.hasNameSpace', () => {
+    it('returns false when id has no namespace prefix', () => {
+        const s = new StateHolder("jakarta.faces.ViewState", "val");
+        expect(s.hasNameSpace).to.be.false;
+        expect(s.nameSpace).to.eq("");
+    });
+
+    it('returns true when id has a namespace prefix', () => {
+        const s = new StateHolder("myForm:jakarta.faces.ViewState", "val");
+        expect(s.hasNameSpace).to.be.true;
+        expect(s.nameSpace).to.eq("myForm");
+    });
+});
