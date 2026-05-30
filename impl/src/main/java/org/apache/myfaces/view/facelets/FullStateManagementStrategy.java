@@ -211,9 +211,10 @@ public class FullStateManagementStrategy extends StateManagementStrategy
                 checkForDuplicateIds(context, facet, ids);
             }
         }
-        for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+        List<UIComponent> children = component.getChildren();
+        for (int i = 0, childCount = children.size(); i < childCount; i++)
         {
-            UIComponent child = component.getChildren().get(i);
+            UIComponent child = children.get(i);
             checkForDuplicateIds(context, child, ids);
         }
     }

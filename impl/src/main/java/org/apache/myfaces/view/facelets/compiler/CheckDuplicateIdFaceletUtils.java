@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.compiler;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.faces.component.UIComponent;
@@ -66,9 +67,10 @@ public final class CheckDuplicateIdFaceletUtils
                 }
             }
         }
-        for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+        List<UIComponent> children = component.getChildren();
+        for (int i = 0, childCount = children.size(); i < childCount; i++)
         {
-            UIComponent child = component.getChildren().get(i);
+            UIComponent child = children.get(i);
             if (!(child instanceof UILeaf))
             {
                 checkIdsStatefulComponents(context, child, existingIds);
@@ -103,9 +105,10 @@ public final class CheckDuplicateIdFaceletUtils
                 checkIds(context, facet, existingIds);
             }
         }
-        for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+        List<UIComponent> children = component.getChildren();
+        for (int i = 0, childCount = children.size(); i < childCount; i++)
         {
-            UIComponent child = component.getChildren().get(i);
+            UIComponent child = children.get(i);
             checkIds(context, child, existingIds);
         }
     }

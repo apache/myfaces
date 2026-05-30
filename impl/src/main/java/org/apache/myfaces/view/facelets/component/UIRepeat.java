@@ -478,11 +478,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
         }
         
-        if (parent.getChildCount() > 0)
+        int childCount = parent.getChildCount();
+        if (childCount > 0)
         {
-            for (int i = 0; i < parent.getChildCount(); i++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent component = parent.getChildren().get(i);
+                UIComponent component = children.get(i);
 
                 // reset the client id (see spec 3.1.6)
                 component.setId(component.getId());
@@ -556,11 +558,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
         }
         
-        if (parent.getChildCount() > 0)
+        int childCount = parent.getChildCount();
+        if (childCount > 0)
         {
-            for (int i = 0; i < parent.getChildCount(); i++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent component = parent.getChildren().get(i);
+                UIComponent component = children.get(i);
 
                 // reset the client id (see spec 3.1.6)
                 component.setId(component.getId());
@@ -675,11 +679,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
         }
         
-        if (parent.getChildCount() > 0)
+        int childCount = parent.getChildCount();
+        if (childCount > 0)
         {
-            for (int i = 0; i < parent.getChildCount(); i++)
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = parent.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (!child.isTransient())
                 {
                     // Add an entry to the collection, being an array of two
@@ -693,7 +699,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         {
                             childStates = new ArrayList<>(
                                     parent.getFacetCount()
-                                    + parent.getChildCount()
+                                    + childCount
                                     - totalChildCount
                                     + childEmptyIndex);
                             for (int ci = 0; ci < childEmptyIndex; ci++)
@@ -729,7 +735,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                             {
                                 childStates = new ArrayList<>(
                                         parent.getFacetCount()
-                                        + parent.getChildCount()
+                                        + childCount
                                         - totalChildCount
                                         + childEmptyIndex);
                                 for (int ci = 0; ci < childEmptyIndex; ci++)
@@ -1702,8 +1708,10 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         }
 
                         // visit the children once per "row"
-                        if (getChildCount() > 0)
+                        int visitChildCount = getChildCount();
+                        if (visitChildCount > 0)
                         {
+                            List<UIComponent> visitChildren = getChildren();
                             int i = getOffset();
                             int end = getSize();
                             int step = getStep();
@@ -1713,9 +1721,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                             setRowIndex(i);
                             while (i < end && _isIndexAvailable())
                             {
-                                for (int j = 0, childCount = getChildCount(); j < childCount; j++)
+                                for (int j = 0; j < visitChildCount; j++)
                                 {
-                                    UIComponent child = getChildren().get(j);
+                                    UIComponent child = visitChildren.get(j);
                                     if (child.visitTree(context, callback))
                                     {
                                         return true;

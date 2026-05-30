@@ -288,9 +288,10 @@ public abstract class UIComponentBase extends UIComponent
         
         if (component.getChildCount() > 0)
         {
-            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, childCount = children.size(); i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 _publishPreRemoveFromViewEvent(context, child);
             }
         }
@@ -309,9 +310,10 @@ public abstract class UIComponentBase extends UIComponent
         
         if (component.getChildCount() > 0)
         {
-            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, childCount = children.size(); i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 _updateInView(child, isInView);
             }
         }
@@ -440,19 +442,12 @@ public abstract class UIComponentBase extends UIComponent
     {
         Assert.notNull(context, "context");
 
-        setCachedRenderer(null);
+        // getRenderer() resolves and caches the renderer; keep it cached (do not clear it here) so
+        // a subsequent encode in the same request reuses it instead of looking it up again.
         Renderer renderer = getRenderer(context);
         if (renderer != null)
         {
-            setCachedRenderer(renderer);
-            try
-            {
-                renderer.decode(context, this);
-            }
-            finally
-            {
-                setCachedRenderer(null);
-            }
+            renderer.decode(context, this);
         }
 
     }
@@ -482,7 +477,8 @@ public abstract class UIComponentBase extends UIComponent
                 setCachedIsRendered(null);
                 return;
             }
-            setCachedRenderer(null);
+            // getRenderer() resolves and caches the renderer; do not clear it first so the
+            // cached value from a prior decode() in the same request is reused when available.
             setCachedRenderer(getRenderer(context));
         }
         finally
@@ -511,21 +507,24 @@ public abstract class UIComponentBase extends UIComponent
             } // let children render itself
             else
             {
-                if (this.getChildCount() > 0)
+            int childCount = this.getChildCount();
+            if (childCount > 0)
+            {
+                List<UIComponent> children = this.getChildren();
+                for (int i = 0; i < childCount; i++)
                 {
-                    for (int i = 0; i < this.getChildCount(); i++)
-                    {
-                        UIComponent comp = this.getChildren().get(i);
-                        comp.encodeAll(context);
-                    }
+                    UIComponent comp = children.get(i);
+                    comp.encodeAll(context);
                 }
+            }
             }
             this.encodeEnd(context);
         }
         finally
         {
             setCachedIsRendered(null);
-            setCachedRenderer(null);
+            // The renderer cache is intentionally kept across the encode lifecycle so that
+            // components sharing a renderer type do not re-resolve it on every call.
         }
     }
 
@@ -589,14 +588,16 @@ public abstract class UIComponentBase extends UIComponent
                 {
                     // If no Renderer is associated with this UIComponent, iterate over each of the children of this
                     // component and call UIComponent.encodeAll(jakarta.faces.context.FacesContext).
-                    if (getChildCount() > 0)
+                int childCount = getChildCount();
+                if (childCount > 0)
+                {
+                    List<UIComponent> children = getChildren();
+                    for (int i = 0; i < childCount; i++)
                     {
-                        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
-                        {
-                            UIComponent child = getChildren().get(i);
-                            child.encodeAll(context);
-                        }
+                        UIComponent child = children.get(i);
+                        child.encodeAll(context);
                     }
+                }
                 }
                 else
                 {
@@ -1270,6 +1271,15 @@ public abstract class UIComponentBase extends UIComponent
             getFacesContext().getExternalContext().log(logStr);
             log.warning(logStr);
         }
+        else
+        {
+            // Cache the resolved renderer so later lifecycle phases (decode in APPLY_REQUEST_VALUES,
+            // encode in RENDER_RESPONSE, ...) reuse it instead of repeating the RenderKit
+            // family/rendererType lookups on every component. The renderer for a given
+            // family/rendererType is stable for the component's life; the cache is invalidated by
+            // setRendererType() and dropped on restoreState().
+            setCachedRenderer(renderer);
+        }
         return renderer;
     }
 
@@ -1317,10 +1327,15 @@ public abstract class UIComponentBase extends UIComponent
                         facet.processDecodes(context);
                     }
                 }
-                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                int childCount = getChildCount();
+                if (childCount > 0)
                 {
-                    UIComponent child = getChildren().get(i);
-                    child.processDecodes(context);
+                    List<UIComponent> children = getChildren();
+                    for (int i = 0; i < childCount; i++)
+                    {
+                        UIComponent child = children.get(i);
+                        child.processDecodes(context);
+                    }
                 }
 
                 try
@@ -1373,10 +1388,15 @@ public abstract class UIComponentBase extends UIComponent
                         }
                     }
     
-                    for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                    int childCount = getChildCount();
+                    if (childCount > 0)
                     {
-                        UIComponent child = getChildren().get(i);
-                        child.processValidators(context);
+                        List<UIComponent> children = getChildren();
+                        for (int i = 0; i < childCount; i++)
+                        {
+                            UIComponent child = children.get(i);
+                            child.processValidators(context);
+                        }
                     }
                 }
                 finally
@@ -1421,10 +1441,15 @@ public abstract class UIComponentBase extends UIComponent
                     }
                 }
 
-                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                int childCount = getChildCount();
+                if (childCount > 0)
                 {
-                    UIComponent child = getChildren().get(i);
-                    child.processUpdates(context);
+                    List<UIComponent> children = getChildren();
+                    for (int i = 0; i < childCount; i++)
+                    {
+                        UIComponent child = children.get(i);
+                        child.processUpdates(context);
+                    }
                 }
             }
         }
@@ -1491,9 +1516,10 @@ public abstract class UIComponentBase extends UIComponent
 
                 // To improve speed and robustness, the facets and children processing is splited to maintain the
                 // facet --> state coherence based on the facet's name
+                List<UIComponent> children = getChildren();
                 for (int i = 0; i < childCount; i++)
                 {
-                    UIComponent child = getChildren().get(i);
+                    UIComponent child = children.get(i);
                     if (!child.isTransient())
                     {
                         if (childrenList == null)
@@ -1570,9 +1596,10 @@ public abstract class UIComponentBase extends UIComponent
                 // To improve speed and robustness, the facets and children processing is splited to maintain the
                 // facet --> state coherence based on the facet's name
                 int idx = 0;
-                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                List<UIComponent> children = getChildren();
+                for (int i = 0, childCount = children.size(); i < childCount; i++)
                 {
-                    UIComponent child = getChildren().get(i);
+                    UIComponent child = children.get(i);
                     if (!child.isTransient())
                     {
                         Object childState = childrenList.get(idx++);
@@ -1930,7 +1957,19 @@ public abstract class UIComponentBase extends UIComponent
         }
         
         Object[] values = (Object[]) state;
-        
+
+        // The composite-component status is derived from the COMPONENT_RESOURCE_KEY attribute, which
+        // under full state saving is only restored further down in this method (via the StateHelper).
+        // Drop any value cached before that point (e.g. a false latched by a pushComponentToEL during
+        // a PostAddToViewEvent) so it is recomputed lazily once the attributes are in place.
+        resetCachedIsCompositeComponent();
+
+        // restoreState may assign _rendererType directly (full state or rendererType delta) without
+        // going through setRendererType(), so drop any cached renderer here to avoid a stale entry
+        // on reused component instances. restoreState runs in RESTORE_VIEW, before any decode/encode,
+        // so the per-request renderer caching is preserved.
+        setCachedRenderer(null);
+
         if ( values.length == FULL_STATE_ARRAY_SIZE && initialStateMarked())
         {
             //Delta mode is active, but we are restoring a full state.

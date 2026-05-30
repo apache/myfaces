@@ -305,7 +305,8 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     @Override
     public void endDocument() throws IOException
     {
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(FacesContext.getCurrentInstance());
+        FacesContext facesContext = getFacesContext();
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
         if (myfacesConfig.isEarlyFlushEnabled())
         {
             _currentWriter.flush();
@@ -776,7 +777,19 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             return;
         }
 
-        if (value instanceof Boolean)
+        // Fast path: the overwhelming majority of attribute values are already Strings,
+        // so handle them first and skip both the Boolean instanceof check and the
+        // (no-op for String) toString() virtual dispatch.
+        if (value instanceof String)
+        {
+            String strValue = (String) value;
+            _currentWriter.write(' ');
+            _currentWriter.write(name);
+            _currentWriter.write("=\"");
+            HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
+            _currentWriter.write('"');
+        }
+        else if (value instanceof Boolean)
         {
             if (((Boolean) value).booleanValue())
             {
@@ -868,7 +881,8 @@ public class HtmlResponseWriterImpl extends ResponseWriter
 
         closeStartTagIfNecessary();
 
-        String strValue = value.toString();
+        // Avoid a virtual dispatch when the value is already a String (the common case).
+        String strValue = value instanceof String ? (String) value : value.toString();
 
         if (isScriptOrStyle())
         {

@@ -19,6 +19,7 @@
 package jakarta.faces.component;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.faces.component.visit.VisitCallback;
@@ -178,12 +179,17 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
                                 }
                             }
                         }
-                        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                        int childCount = getChildCount();
+                        if (childCount > 0)
                         {
-                            UIComponent child = getChildren().get(i);
-                            if (child.visitTree(context, callback))
+                            List<UIComponent> children = getChildren();
+                            for (int i = 0; i < childCount; i++)
                             {
-                                return true;
+                                UIComponent child = children.get(i);
+                                if (child.visitTree(context, callback))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }

@@ -530,9 +530,10 @@ public final class RendererUtils
         int childCount = component.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = component.getChildren();
             for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 child.encodeAll(facesContext);
             }
         }

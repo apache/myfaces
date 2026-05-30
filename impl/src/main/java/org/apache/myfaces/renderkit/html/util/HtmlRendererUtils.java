@@ -108,10 +108,10 @@ public final class HtmlRendererUtils
         {
             return;
         }
-        if (paramMap.containsKey(clientId))
+        String submittedValue = (String) paramMap.get(clientId);
+        if (submittedValue != null)
         {
-            ((EditableValueHolder) component).setSubmittedValue(paramMap
-                    .get(clientId));
+            ((EditableValueHolder) component).setSubmittedValue(submittedValue);
         }
         else
         {
@@ -139,9 +139,9 @@ public final class HtmlRendererUtils
         }
         Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
         String clientId = component.getClientId(facesContext);
-        if (paramMap.containsKey(clientId))
+        String reqValue = (String) paramMap.get(clientId);
+        if (reqValue != null)
         {
-            String reqValue = (String) paramMap.get(clientId);
             if ((reqValue.equalsIgnoreCase("on")
                     || reqValue.equalsIgnoreCase("yes")
                     || reqValue.equalsIgnoreCase("true")))
@@ -209,9 +209,10 @@ public final class HtmlRendererUtils
             return;
         }
         
-        if (paramValuesMap.containsKey(clientId))
+        String[] paramValues = (String[]) paramValuesMap.get(clientId);
+        if (paramValues != null)
         {
-            ArrayList<String> reqValues = new ArrayList<String>(Arrays.asList((String[]) paramValuesMap.get(clientId)));
+            ArrayList<String> reqValues = new ArrayList<String>(Arrays.asList(paramValues));
 
             List<SelectItemInfo> selections = SelectItemsUtils.getSelectItemInfoList(
                 (UISelectMany) component, facesContext);
@@ -269,10 +270,11 @@ public final class HtmlRendererUtils
                 UIForm form = ComponentUtils.findClosest(UIForm.class, component);
                 String fullGroupId = form.getClientId(facesContext) +
                         facesContext.getNamingContainerSeparatorChar() + group;
-                if (paramMap.containsKey(fullGroupId))
+                String submittedValue = (String) paramMap.get(fullGroupId);
+                if (submittedValue != null)
                 {
-                    String submittedValue = (String) paramMap.get(fullGroupId);
-                    String submittedValueNamespace = component.getClientId(facesContext) +
+                    String componentClientId = component.getClientId(facesContext);
+                    String submittedValueNamespace = componentClientId +
                             facesContext.getNamingContainerSeparatorChar();
                     if (submittedValue.startsWith(submittedValueNamespace))
                     {
@@ -280,7 +282,7 @@ public final class HtmlRendererUtils
                         SelectOneGroupSetSubmittedValueCallback callback = 
                                 new SelectOneGroupSetSubmittedValueCallback(group,
                                         submittedValue,
-                                        component.getClientId(facesContext),
+                                        componentClientId,
                                         component.getValueExpression("value") != null);
                         form.visitTree(VisitContext.createVisitContext(facesContext,
                                 null, MyFacesVisitHints.SET_SKIP_UNRENDERED),
@@ -298,9 +300,9 @@ public final class HtmlRendererUtils
         }
         
         String clientId = component.getClientId(facesContext);
-        if (paramMap.containsKey(clientId))
+        String submittedValue = (String) paramMap.get(clientId);
+        if (submittedValue != null)
         {
-            String submittedValue = (String) paramMap.get(clientId); 
             List<SelectItemInfo> selections = SelectItemsUtils.getSelectItemInfoList(
                 (UISelectOne) component, facesContext);
 
@@ -522,11 +524,14 @@ public final class HtmlRendererUtils
     public static boolean renderHTMLAttributes(ResponseWriter writer,
             UIComponent component, String[] attributes) throws IOException
     {
+        // Resolve the attributes map once instead of per attribute name: this loop runs for
+        // every rendered element and getAttributes() is a (cheap but non-free) virtual call.
+        Map<String, Object> attributeMap = component.getAttributes();
         boolean somethingDone = false;
         for (int i = 0, len = attributes.length; i < len; i++)
         {
             String attrName = attributes[i];
-            if (renderHTMLAttribute(writer, component, attrName, attrName))
+            if (renderHTMLAttribute(writer, attrName, attrName, attributeMap.get(attrName)))
             {
                 somethingDone = true;
             }
@@ -555,11 +560,12 @@ public final class HtmlRendererUtils
             ResponseWriter writer, UIComponent component, String elementName,
             String[] attributes) throws IOException
     {
+        Map<String, Object> attributeMap = component.getAttributes();
         boolean startElementWritten = false;
         for (int i = 0, len = attributes.length; i < len; i++)
         {
             String attrName = attributes[i];
-            Object value = component.getAttributes().get(attrName);
+            Object value = attributeMap.get(attrName);
             if (!RendererUtils.isDefaultAttributeValue(value))
             {
                 if (!startElementWritten)

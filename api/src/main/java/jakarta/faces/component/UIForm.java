@@ -32,6 +32,7 @@ import jakarta.faces.event.PreValidateEvent;
 import jakarta.faces.view.Location;
 
 import java.util.Collection;
+import java.util.List;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
@@ -143,10 +144,14 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                     }
                 }
                 
-                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                int childCount = getChildCount();
+                if (childCount > 0)
                 {
-                    UIComponent child = getChildren().get(i);
-                    child.processDecodes(context);
+                    List<UIComponent> children = getChildren();
+                    for (int i = 0; i < childCount; i++)
+                    {
+                        children.get(i).processDecodes(context);
+                    }
                 }
             }
             finally
@@ -194,10 +199,14 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                     }
                 }
                 
-                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                int childCount = getChildCount();
+                if (childCount > 0)
                 {
-                    UIComponent child = getChildren().get(i);
-                    child.processValidators(context);
+                    List<UIComponent> children = getChildren();
+                    for (int i = 0; i < childCount; i++)
+                    {
+                        children.get(i).processValidators(context);
+                    }
                 }
                 
             }
@@ -244,10 +253,14 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                     }
                 }
                 
-                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                int childCount = getChildCount();
+                if (childCount > 0)
                 {
-                    UIComponent child = getChildren().get(i);
-                    child.processUpdates(context);
+                    List<UIComponent> children = getChildren();
+                    for (int i = 0; i < childCount; i++)
+                    {
+                        children.get(i).processUpdates(context);
+                    }
                 }
 
             }
@@ -337,12 +350,16 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                                     }
                                 }
                             }
-                            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                            int childCount = getChildCount();
+                            if (childCount > 0)
                             {
-                                UIComponent child = getChildren().get(i);
-                                if (child.visitTree(context, callback))
+                                List<UIComponent> children = getChildren();
+                                for (int i = 0; i < childCount; i++)
                                 {
-                                    return true;
+                                    if (children.get(i).visitTree(context, callback))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
                         }

@@ -1002,9 +1002,10 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                     
                     ComponentState componentAddedAfterBuildView
                             = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+                    UIComponent parent = target.getParent();
                     
                     //Note if UIViewRoot has this marker, Faces 1.2 like state saving is used.
-                    if (componentAddedAfterBuildView != null && (target.getParent() != null))
+                    if (componentAddedAfterBuildView != null && (parent != null))
                     {
                         if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
                         {
@@ -1024,12 +1025,12 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                         //Save all required info to restore the subtree.
                         //This includes position, structure and state of subtree
                         
-                        int childIndex = target.getParent().getChildren().indexOf(target);
+                        int childIndex = parent.getChildren().indexOf(target);
                         if (childIndex >= 0)
                         {
                             states.put(target.getClientId(facesContext), new AttachedFullStateWrapper( 
                                     new Object[]{
-                                        target.getParent().getClientId(facesContext),
+                                        parent.getClientId(facesContext),
                                         null,
                                         childIndex,
                                         internalBuildTreeStructureToSave(target),
@@ -1038,9 +1039,9 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                         else
                         {
                             String facetName = null;
-                            if (target.getParent().getFacetCount() > 0)
+                            if (parent.getFacetCount() > 0)
                             {
-                                for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet()) 
+                                for (Map.Entry<String, UIComponent> entry : parent.getFacets().entrySet()) 
                                 {
                                     if (target.equals(entry.getValue()))
                                     {
@@ -1050,7 +1051,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                                 }
                             }
                             states.put(target.getClientId(facesContext),new AttachedFullStateWrapper(new Object[]{
-                                    target.getParent().getClientId(facesContext),
+                                    parent.getClientId(facesContext),
                                     facetName,
                                     null,
                                     internalBuildTreeStructureToSave(target),
@@ -1058,7 +1059,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                         }
                         return VisitResult.REJECT;
                     }
-                    else if (target.getParent() != null)
+                    else if (parent != null)
                     {
                         state = target.saveState (facesContext);
                         if (state != null)
@@ -1230,9 +1231,10 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
 
             ComponentState componentAddedAfterBuildView
                     = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+            UIComponent parent = target.getParent();
 
             //Note if UIViewRoot has this marker, Faces 1.2 like state saving is used.
-            if (componentAddedAfterBuildView != null && (target.getParent() != null))
+            if (componentAddedAfterBuildView != null && (parent != null))
             {
                 //Set this view as not resetable.
                 //setViewResetable(false);
@@ -1272,12 +1274,12 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 //Save all required info to restore the subtree.
                 //This includes position, structure and state of subtree
 
-                int childIndex = target.getParent().getChildren().indexOf(target);
+                int childIndex = parent.getChildren().indexOf(target);
                 if (childIndex >= 0)
                 {
                     states.put(target.getClientId(facesContext), new AttachedFullStateWrapper( 
                             new Object[]{
-                                target.getParent().getClientId(facesContext),
+                                parent.getClientId(facesContext),
                                 null,
                                 childIndex,
                                 internalBuildTreeStructureToSave(target),
@@ -1286,9 +1288,9 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 else
                 {
                     String facetName = null;
-                    if (target.getParent().getFacetCount() > 0)
+                    if (parent.getFacetCount() > 0)
                     {
-                        for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet()) 
+                        for (Map.Entry<String, UIComponent> entry : parent.getFacets().entrySet()) 
                         {
                             if (target.equals(entry.getValue()))
                             {
@@ -1298,7 +1300,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                         }
                     }
                     states.put(target.getClientId(facesContext), new AttachedFullStateWrapper(new Object[]{
-                            target.getParent().getClientId(facesContext),
+                            parent.getClientId(facesContext),
                             facetName,
                             null,
                             internalBuildTreeStructureToSave(target),
@@ -1306,7 +1308,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 }
                 return VisitResult.REJECT;
             }
-            else if (target.getParent() != null)
+            else if (parent != null)
             {
                 if (forceHardReset)
                 {

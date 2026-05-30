@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.component;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.faces.component.UIComponent;
@@ -72,9 +73,10 @@ public class RepeatRenderer extends Renderer
                 }
             }
             
-            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, childCount = children.size(); i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 child.encodeAll(context);
             }
 

@@ -546,9 +546,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         int childCount = view.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = view.getChildren();
             for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = view.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (!child.isTransient())
                 {
                     _markInitialState(child);
@@ -577,9 +578,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         final int childCount = component.getChildCount();
         if (childCount > 0)
         {
+            List<UIComponent> children = component.getChildren();
             for (int i = 0; i < childCount; i++)
             {
-                UIComponent child = component.getChildren().get(i);
+                UIComponent child = children.get(i);
                 if (!child.isTransient())
                 {
                     _markInitialState(child);

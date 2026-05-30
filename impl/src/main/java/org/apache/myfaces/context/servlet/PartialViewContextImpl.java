@@ -657,10 +657,15 @@ public class PartialViewContextImpl extends PartialViewContext
         }
         
         writer.startUpdate(PartialResponseWriter.RENDER_ALL_MARKER);
-        for (int i = 0, childCount = viewRoot.getChildCount(); i < childCount; i++)
+        int childCount = viewRoot.getChildCount();
+        if (childCount > 0)
         {
-            UIComponent comp = viewRoot.getChildren().get(i);
-            comp.encodeAll(context);
+            List<UIComponent> children = viewRoot.getChildren();
+            for (int i = 0; i < childCount; i++)
+            {
+                UIComponent comp = children.get(i);
+                comp.encodeAll(context);
+            }
         }
         writer.endUpdate();
     }

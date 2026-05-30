@@ -130,6 +130,7 @@ public abstract class UIComponent
     private transient Map<String, String> _resourceBundleMap = null;
     private boolean _inView = false;
     private _DeltaStateHelper _stateHelper = null;
+    private transient Boolean _cachedIsCompositeComponent = null;
 
     /**
      * In Faces 2.0 bindings map was deprecated, and replaced with a map
@@ -228,11 +229,13 @@ public abstract class UIComponent
                     found = it.next().invokeOnComponent(context, clientId, callback);
                 }                
             }
-            if (this.getChildCount() > 0)
+            int childCount = getChildCount();
+            if (childCount > 0)
             {
-                for (int i = 0, childCount = getChildCount(); !found && (i < childCount); i++)
+                List<UIComponent> children = getChildren();
+                for (int i = 0; !found && (i < childCount); i++)
                 {
-                    UIComponent child = getChildren().get(i);
+                    UIComponent child = children.get(i);
                     found = child.invokeOnComponent(context, clientId, callback);
                 }
             }
@@ -682,11 +685,13 @@ public abstract class UIComponent
         } // let children render itself
         else
         {
-            if (this.getChildCount() > 0)
+            int childCount = this.getChildCount();
+            if (childCount > 0)
             {
-                for (int i = 0; i < this.getChildCount(); i++)
+                List<UIComponent> children = this.getChildren();
+                for (int i = 0; i < childCount; i++)
                 {
-                    UIComponent comp = this.getChildren().get(i);
+                    UIComponent comp = children.get(i);
                     comp.encodeAll(context);
                 }
             }
@@ -902,10 +907,11 @@ public abstract class UIComponent
                     int childCount = getChildCount();
                     if (childCount > 0)
                     {
-                        for (int i = 0; i < childCount; i++)
-                        {
-                            UIComponent child = getChildren().get(i);
-                            if (child.visitTree(context, callback))
+                    List<UIComponent> children = getChildren();
+                    for (int i = 0; i < childCount; i++)
+                    {
+                        UIComponent child = children.get(i);
+                        if (child.visitTree(context, callback))
                             {
                                 return true;
                             }
@@ -1022,7 +1028,19 @@ public abstract class UIComponent
         UIComponent oldCurrent = null;
         if (componentStack != null && !componentStack.isEmpty())
         {
-            int componentIndex = componentStack.lastIndexOf(this);
+            int size = componentStack.size();
+            int componentIndex;
+            // Fast path: in the normal (non-error) case this component is always at the top
+            // of the stack, so check the last slot with an O(1) identity test before falling
+            // back to the O(n) lastIndexOf scan.
+            if (componentStack.get(size - 1) == this)
+            {
+                componentIndex = size - 1;
+            }
+            else
+            {
+                componentIndex = componentStack.lastIndexOf(this);
+            }
             if (componentIndex >= 0)
             {
                 for (int i = componentStack.size()-1; i >= componentIndex ; i--)
@@ -1090,8 +1108,22 @@ public abstract class UIComponent
 
     private boolean _isCompositeComponent()
     {
-        //moved to the static method
-        return UIComponent.isCompositeComponent(this);
+        // The composite-component status is determined once when the
+        // COMPONENT_RESOURCE_KEY attribute is assigned (at component creation) and
+        // does not change afterwards, so cache it to avoid the attribute-map lookup
+        // that otherwise runs on every pushComponentToEL call. The cache is reset by
+        // resetCachedIsCompositeComponent() on restoreState to cover full state saving,
+        // where the attribute may not yet be available when this is first queried.
+        if (_cachedIsCompositeComponent == null)
+        {
+            _cachedIsCompositeComponent = UIComponent.isCompositeComponent(this);
+        }
+        return _cachedIsCompositeComponent;
+    }
+
+    void resetCachedIsCompositeComponent()
+    {
+        _cachedIsCompositeComponent = null;
     }
     
     boolean isCachedFacesContext()
