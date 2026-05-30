@@ -15,16 +15,34 @@
  */
 // AI-generated: this file was created with assistance from Claude (Anthropic) — see AI_CONTRIBUTIONS.md
 
+import type { faces } from '../../api/_api';
+
 /**
- * Compile-time type compatibility check for Push.init() overloads.
- *
- * This file is never executed. Its only purpose is to make the TypeScript
- * compiler verify that both supported call signatures of Push.init() are
- * accepted: the 4-callback form (onopen, onmessage, onerror, onclose) and
- * the legacy 3-callback form (onmessage, onerror, onclose). If either
- * overload is accidentally broken, tsc will reject this file.
+ * Compatibility interface covering both the faces 9-param form (with onerror)
+ * and the JSF 2.3 8-param form (without onerror). Both must be callable so
+ * that the runtime implementation works correctly in both the faces and JSF realms.
+ * This file is never executed — tsc rejecting it signals a broken signature.
  */
-function verifyPushInitTypeCompatibility(push: Push): void {
+interface PushCompat {
+    init(socketClientId: string, url: string, channel: string,
+         onopen: faces.push.OnOpenHandler | string | null,
+         onmessage: faces.push.OnMessageHandler | string | null,
+         onerror: faces.push.OnErrorHandler | string | null,
+         onclose: faces.push.OnCloseHandler | string | null,
+         behaviors: Record<string, Array<() => void>>,
+         autoConnect: boolean): void;
+    init(socketClientId: string, url: string, channel: string,
+         onopen: faces.push.OnOpenHandler | string | null,
+         onmessage: faces.push.OnMessageHandler | string | null,
+         onclose: faces.push.OnCloseHandler | string | null,
+         behaviors: Record<string, Array<() => void>>,
+         autoConnect: boolean): void;
+    open(socketClientId: string): void;
+    close(socketClientId: string): void;
+}
+
+function verifyPushInitTypeCompatibility(push: PushCompat): void {
+    // faces 4.0 form — with onerror
     push.init("clientId1", "booga.ws", "mychannel",
         () => {},
         () => {},
@@ -34,6 +52,7 @@ function verifyPushInitTypeCompatibility(push: Push): void {
         true
     );
 
+    // JSF 2.3 legacy form — without onerror
     push.init("clientId1", "booga.ws", "mychannel",
         () => {},
         () => {},
