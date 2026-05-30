@@ -46,7 +46,7 @@ export enum ErrorType {
  * everything into the same attributes,
  * I will add deprecated myfaces backwards compatibility attributes as well
  */
-export class ErrorData extends EventData implements IErrorData {
+export class ErrorData extends EventData {
 
     type: string = "error";
     source: string | Element;
@@ -64,6 +64,7 @@ export class ErrorData extends EventData implements IErrorData {
     serverErrorMessage!: string;
     description: string;
 
+    /** @internal */
     constructor(source: string | Element, errorName: string, errorMessage: string, responseText: string | null = null, responseXML: Document | null = null, responseCode: number = -1, statusOverride: string | null = null,  type = ErrorType.CLIENT_ERROR) {
         super();
 
@@ -91,15 +92,18 @@ export class ErrorData extends EventData implements IErrorData {
         }
     }
 
+    /** @internal */
     static fromClient(e: Error): ErrorData {
         return new ErrorData((e as any)?.source ?? "client", e?.name ?? EMPTY_STR, e?.message ?? EMPTY_STR, e?.stack ?? EMPTY_STR);
     }
 
+    /** @internal */
     static fromHttpConnection(source: any, name: string, message: string, responseText: string, responseXML: Document | null, responseCode: number, status: string = EMPTY_STR): ErrorData {
         return new ErrorData(source, name, message, responseText, responseXML, responseCode, status, ErrorType.HTTP_ERROR);
     }
 
-    static fromGeneric(context: Config, errorCode: number, errorType: ErrorType = ErrorType.SERVER_ERROR): ErrorData {
+    /** @internal */
+    static fromGeneric(context: any, errorCode: number, errorType: ErrorType = ErrorType.SERVER_ERROR): ErrorData {
 
         let getMsg = this.getMsg;
 
@@ -114,11 +118,12 @@ export class ErrorData extends EventData implements IErrorData {
         return new ErrorData(source, errorName, errorMessage, responseText, responseXML, errorCode, status, errorType);
     }
 
-    private static getMsg(context: Config, param: string) {
+    private static getMsg(context: any, param: string) {
         return getMessage(context.getIf(param).orElse(EMPTY_STR).value);
     }
 
-    static fromServerError(context: Config): ErrorData {
+    /** @internal */
+    static fromServerError(context: any): ErrorData {
         return this.fromGeneric(context, -1);
     }
 

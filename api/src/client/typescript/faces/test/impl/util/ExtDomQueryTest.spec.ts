@@ -85,6 +85,36 @@ describe('ExtDomQuery test suite', () => {
         const text = document.createTextNode("inline text");
         expect(() => new ExtDomQuery(text as any).runHeadInserts()).not.to.throw();
     });
+
+    it('runHeadInserts with suppressDoubleIncludes=false inserts duplicate link resources', () => {
+        const href = "/test-res-no-dedup.css";
+        const existing = document.createElement("link");
+        existing.setAttribute("href", href);
+        document.head.appendChild(existing);
+
+        const before = document.head.querySelectorAll(`link[href="${href}"]`).length;
+
+        const dup = document.createElement("link");
+        dup.setAttribute("href", href);
+        new ExtDomQuery(dup as any).runHeadInserts(false);
+
+        expect(document.head.querySelectorAll(`link[href="${href}"]`).length).to.be.gt(before);
+    });
+
+    it('runHeadInserts with suppressDoubleIncludes=true skips duplicate link resources', () => {
+        const href = "/test-res-with-dedup.css";
+        const existing = document.createElement("link");
+        existing.setAttribute("href", href);
+        document.head.appendChild(existing);
+
+        const before = document.head.querySelectorAll(`link[href="${href}"]`).length;
+
+        const dup = document.createElement("link");
+        dup.setAttribute("href", href);
+        new ExtDomQuery(dup as any).runHeadInserts(true);
+
+        expect(document.head.querySelectorAll(`link[href="${href}"]`).length).to.eq(before);
+    });
 });
 
 describe('ExtConfig', () => {
@@ -124,4 +154,5 @@ describe('ExtConfig', () => {
         copy.assign("name").value = "Bob";
         expect(config.getIf("name").value).to.eq("Alice");
     });
+
 });

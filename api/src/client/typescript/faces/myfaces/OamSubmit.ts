@@ -78,7 +78,7 @@ export namespace oam {
      * @param target
      * @param params
      */
-    export const submitForm = function (formName: string, linkId: string | null = null, target: string |null = null, params: AssocArr<any> | Tuples<string, any> | null = {} ): boolean {
+    export const submitForm = function (formName: string, linkId: string | null = null, target: string |null = null, params: Record<string, any> | [string, any][] | null = {} ): boolean {
 
 
         //handle a possible incoming null, not sure if this is used that way anywhere, but we allow it
