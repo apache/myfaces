@@ -209,9 +209,10 @@ public final class HtmlRendererUtils
             return;
         }
         
-        if (paramValuesMap.containsKey(clientId))
+        String[] paramValues = (String[]) paramValuesMap.get(clientId);
+        if (paramValues != null)
         {
-            ArrayList<String> reqValues = new ArrayList<String>(Arrays.asList((String[]) paramValuesMap.get(clientId)));
+            ArrayList<String> reqValues = new ArrayList<String>(Arrays.asList(paramValues));
 
             List<SelectItemInfo> selections = SelectItemsUtils.getSelectItemInfoList(
                 (UISelectMany) component, facesContext);
