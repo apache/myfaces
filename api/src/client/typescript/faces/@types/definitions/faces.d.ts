@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Implementation} from "../impl/AjaxImpl";
-import {PushImpl} from "../impl/PushImpl";
-import {oam as _oam} from "../myfaces/OamSubmit";
-import {$nsp, CTX_OPTIONS_EXECUTE, CTX_OPTIONS_PARAMS, CTX_PARAM_RENDER, P_BEHAVIOR_EVENT} from "../impl/core/Const";
 
-//we use modules to get a proper jsdoc and static/map structure in the calls
-//as per spec requirement
-export namespace faces {
-
+declare namespace faces {
     /**
      * Project stage values, mirroring jakarta.faces.application.ProjectStage.
      */
     export type ProjectStage = "Development" | "UnitTest" | "SystemTest" | "Production";
-
     /**
      * Status values sent to ajax event callbacks.
      */
     export type AjaxEventStatus = "begin" | "complete" | "success";
-
     /**
      * Status values sent to ajax error callbacks.
      */
     export type AjaxErrorStatus = "httpError" | "emptyResponse" | "malformedXML" | "serverError";
-
     /**
      * Common shape for the data passed to ajax callbacks.
      */
@@ -46,7 +36,6 @@ export namespace faces {
         responseText?: string;
         responseXML?: XMLDocument;
     }
-
     /**
      * Data passed to ajax event callbacks.
      */
@@ -54,7 +43,6 @@ export namespace faces {
         type: "event";
         status: AjaxEventStatus;
     }
-
     /**
      * Data passed to ajax error callbacks.
      */
@@ -72,8 +60,6 @@ export namespace faces {
         /** MyFaces compatibility detail. */
         typeDetails?: unknown;
     }
-
-
     /**
      * Version of the implementation for the faces.ts.
      * <p />
@@ -84,7 +70,7 @@ export namespace faces {
      * <li>right two digits bug release number</li>
      * </ul>
      */
-    export const specversion: number = 400000;
+    export const specversion: number;
     /**
      * Implementation version as specified within the jsf specification.
      * <p />
@@ -92,20 +78,15 @@ export namespace faces {
      * and reset by moving to a new spec release number
      *
      */
-    export const implversion: number = 0;
-
+    export const implversion: number;
     /**
      * SeparatorChar as defined by facesContext.getNamingContainerSeparatorChar()
      */
-    export const separatorchar: string = getSeparatorChar();
-
-    // noinspection JSUnusedGlobalSymbols
+    export const separatorchar: string;
     /**
      * Context Path as defined externalContext.requestContextPath
      */
-    export const contextpath: string = '#{facesContext.externalContext.requestContextPath}';
-    // we do not have a fallback here, for now
-
+    export const contextpath: string;
     /**
      * This method is responsible for the return of a given project stage as defined
      * by the jsf specification.
@@ -121,10 +102,7 @@ export namespace faces {
      * @return {String} the current project state emitted by the server side method:
      * <i>jakarta.faces.application.Application.getProjectStage()</i>
      */
-    export function getProjectStage(): ProjectStage {
-        return Implementation.getProjectStage() as ProjectStage;
-    }
-
+    export function getProjectStage(): ProjectStage;
     /**
      * collect and encode data for a given form element (must be of type form)
      * find the jakarta.faces.ViewState element and encode its value as well!
@@ -133,44 +111,22 @@ export namespace faces {
      * @throws an exception in case of the given element not being of type form!
      * https://issues.apache.org/jira/browse/MYFACES-2110
      */
-    export function getViewState(formElement: Element | string): string {
-        return Implementation.getViewState(formElement);
-    }
-
+    export function getViewState(formElement: Element | string): string;
     /**
      * returns the window identifier for the given node / window
      * @return the window identifier or null if none is found
      * @param rootNode
      */
-    export function getClientWindow(rootNode?: Element | string): string | null {
-        return Implementation.getClientWindow(rootNode);
-    }
-
-    // private helper functions
-    function getSeparatorChar(): string {
-        const sep = '#{facesContext.namingContainerSeparatorChar}';
-        //We now enable standalone mode, the separator char was not mapped we make a fallback to 2.3 behavior
-        //the idea is that the separator char is provided from the underlying container, but if not then we
-        //will perform a fallback (aka 2.3 has the url fallback behavior)
-        return (sep.match(/\#\{facesContext.namingContainerSeparatorChar\}/gi)) ? Implementation.getSeparatorChar() : sep;
-    }
-
-
-
-
+    export function getClientWindow(rootNode?: Element | string): string | null;
     export namespace ajax {
-        "use strict";
-
         /**
          * Callback signature for ajax lifecycle events.
          */
         export type OnEventCallback = (data: AjaxEvent) => void;
-
         /**
          * Callback signature for ajax errors.
          */
         export type OnErrorCallback = (data: AjaxError) => void;
-
         /**
          * Options object for faces.ajax.request.
          */
@@ -185,7 +141,6 @@ export namespace faces {
             /** MyFaces extension/pass-through compatibility. */
             [key: string]: any;
         }
-
         /**
          * Per-request context object passed to faces.ajax.response.
          */
@@ -196,7 +151,6 @@ export namespace faces {
             /** MyFaces extension/pass-through compatibility. */
             [key: string]: any;
         }
-
         /**
          * this function has to send the ajax requests
          *
@@ -212,20 +166,14 @@ export namespace faces {
          * @param {EVENT} event: any javascript event supported by that object
          * @param {Map} options : map of options being pushed into the ajax cycle
          */
-        export function request(element: Element | string, event?: Event | null, options?: RequestOptions): void {
-            Implementation.request(element, event as any, options as any)
-        }
-
+        export function request(element: Element | string, event?: Event | null, options?: RequestOptions): void;
         /**
          * response handler
          * @param request the request object having triggered this response
          * @param context the request context
          *
          */
-        export function response(request: XMLHttpRequest, context?: RequestContext): void {
-            Implementation.response(request, context as any);
-        }
-
+        export function response(request: XMLHttpRequest, context?: RequestContext): void;
         /**
          * Adds an error handler to our global error queue.
          * the error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
@@ -243,23 +191,16 @@ export namespace faces {
          *
          * @param errorFunc error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
          */
-        export function addOnError(errorFunc: OnErrorCallback): void {
-            Implementation.addOnError(errorFunc as any);
-        }
-
+        export function addOnError(errorFunc: OnErrorCallback): void;
         /**
          * Adds a global event listener to the ajax event queue. The event listener must be a function
          * of following format: <i>function eventListener(&lt;eventData&gt;)</i>
          *
          * @param eventFunc event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
          */
-        export function addOnEvent(eventFunc: OnEventCallback): void {
-            Implementation.addOnEvent(eventFunc as any);
-        }
+        export function addOnEvent(eventFunc: OnEventCallback): void;
     }
-
     export namespace util {
-
         /**
          * varargs function which executes a chain of code (functions or any other code)
          *
@@ -271,32 +212,25 @@ export namespace faces {
          * @param funcs ... arbitrary array of functions or strings
          * @returns true if the chain has succeeded false otherwise
          */
-        export function chain(source: HTMLElement | string, event?: Event | null, ...funcs: Array<Function | string>): boolean {
-            return Implementation.chain(source, event ?? null, ...(funcs as EvalFuncs));
-        }
+        export function chain(source: HTMLElement | string, event?: Event | null, ...funcs: Array<Function | string>): boolean;
     }
-
     export namespace push {
         /**
          * Invoked when the websocket is opened.
          */
         export type OnOpenHandler = (channel: string) => void;
-
         /**
          * Invoked when a message is received from the server.
          */
         export type OnMessageHandler = (message: unknown, channel: string, event: MessageEvent) => void;
-
         /**
          * Invoked when a connection error occurs and the websocket will attempt to reconnect.
          */
         export type OnErrorHandler = (code: number, channel: string, event: CloseEvent) => void;
-
         /**
          * Invoked when the websocket is closed and will not attempt to reconnect.
          */
         export type OnCloseHandler = (code: number, channel: string, event: CloseEvent) => void;
-
         /**
          * @param socketClientId the sockets client identifier
          * @param url the uri to reach the socket
@@ -308,40 +242,23 @@ export namespace faces {
          * @param behaviors functions which are invoked whenever a message is received
          * @param autoConnect Whether or not to automatically open the socket. Defaults to <code>false</code>.
          */
-        export function init(socketClientId: string,
-                             url: string,
-                             channel: string,
-                             onopen: OnOpenHandler | string | null,
-                             onmessage: OnMessageHandler | string | null,
-                             onerror: OnErrorHandler | string | null,
-                             onclose: OnCloseHandler | string | null,
-                             behaviors: Record<string, Array<() => void>>,
-                             autoConnect: boolean): void {
-            PushImpl.init(socketClientId, url, channel, onopen as any, onmessage as any, onerror as any, onclose as any, behaviors, autoConnect);
-        }
-
+        export function init(socketClientId: string, url: string, channel: string, onopen: OnOpenHandler | string | null, onmessage: OnMessageHandler | string | null, onerror: OnErrorHandler | string | null, onclose: OnCloseHandler | string | null, behaviors: Record<string, Array<() => void>>, autoConnect: boolean): void;
         /**
          * Open the web socket on the given channel.
          * @param  socketClientId The name of the web socket channel.
          * @throws  Error is thrown, if the channel is unknown.
          */
-        export function open(socketClientId: string): void {
-            PushImpl.open(socketClientId);
-        }
-
+        export function open(socketClientId: string): void;
         /**
          * Close the web socket on the given channel.
          * @param  socketClientId The id of the web socket client.
          * @throws  Error is thrown, if the channel is unknown.
          */
-        export function close(socketClientId: string): void {
-            PushImpl.close(socketClientId);
-        }
-
+        export function close(socketClientId: string): void;
     }
 }
 
-export namespace myfaces {
+declare namespace myfaces {
     /**
      * AB function similar to mojarra and Primefaces
      * not part of the spec but a convenience accessor method
@@ -355,40 +272,7 @@ export namespace myfaces {
      * @param options the options which need to be merged in
      * @param userParameters a set of user parameters which go into the final options under params, they can override whatever is passed via options
      */
-    export function ab(source: Element, event: Event, eventName: string, execute: string, render: string, options: faces.ajax.RequestOptions = {}, userParameters: faces.ajax.RequestOptions = {}): void {
-        if(!options) {
-            options = {};
-        }
-        if(!userParameters) {
-            userParameters = {};
-        }
-        if (eventName) {
-            options[CTX_OPTIONS_PARAMS] = options?.[CTX_OPTIONS_PARAMS] ?? {};
-            options[CTX_OPTIONS_PARAMS][$nsp(P_BEHAVIOR_EVENT)] = eventName;
-        }
-        if (execute) {
-            options[CTX_OPTIONS_EXECUTE] = execute;
-        }
-        if (render) {
-            options[CTX_PARAM_RENDER] = render;
-        }
-
-        //we push the users parameters in
-        if (!options["params"]) {
-            options["params"] = {};
-        }
-
-        for (let key in userParameters) {
-            options["params"][key] = userParameters[key];
-        }
-
-        (window?.faces ?? window.jsf).ajax.request(source, event, options as any);
-    }
-
-
-    const onReadyChain: Array<() => void> = [];
-    let readyStateListener: (() => void) | null = null;
-    // noinspection JSUnusedGlobalSymbols
+    export function ab(source: Element, event: Event, eventName: string, execute: string, render: string, options?: faces.ajax.RequestOptions, userParameters?: faces.ajax.RequestOptions): void;
     /**
      * Helper function in the myfaces namespace to handle document ready properly for the load case
      * the ajax case, does not need proper treatment, since it is deferred anyway.
@@ -396,46 +280,14 @@ export namespace myfaces {
      *
      * @param executionFunc the function to be executed upon ready
      */
-    export function onDomReady(executionFunc: () => void) {
-        if(document.readyState !== "complete") {
-            onReadyChain.push(executionFunc);
-            if(!readyStateListener) {
-                readyStateListener = () => {
-                    window.removeEventListener("DOMContentLoaded", readyStateListener!);
-                    readyStateListener = null;
-                    try {
-                        onReadyChain.forEach(func => func());
-                    } finally {
-                        //done we clear now the ready chain
-                        onReadyChain.length = 0;
-                    }
-                };
-                window.addEventListener("DOMContentLoaded", readyStateListener);
-            }
-        } else {
-            if(readyStateListener) {
-                readyStateListener();
-            }
-            executionFunc();
-        }
-
-    }
-
+    export function onDomReady(executionFunc: () => void): void;
     /**
      * reserve a namespace for the given string
      * @param namespace the namespace to reserve with '.' as separator
      */
-    export function reserveNamespace(namespace: string): void {
-        let current: any = window;
-        const namespaces = namespace.split(".");
-        for(const part of namespaces) {
-            current[part] = current[part] || {};
-            current = current[part];
-        }
-    }
-
+    export function reserveNamespace(namespace: string): void;
     /**
      * legacy oam functions
      */
-    export const oam = _oam;
+    export const oam: typeof oam;
 }

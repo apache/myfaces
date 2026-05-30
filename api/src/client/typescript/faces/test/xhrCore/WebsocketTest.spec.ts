@@ -722,4 +722,43 @@ describe('Tests the jsf websocket client side api on high level (generic test wi
             done();
         });
     });
+
+    it("must close the socket when all components are gone after an error-close", function () {
+        const channelToken = "booga.ws";
+
+        faces.push.init("clientId_close_test", "booga.ws", "mychannel",
+            () => {},
+            () => {},
+            () => {},
+            () => {},
+            "",
+            true
+        );
+
+        // After push.init with autoConnect=true, Socket.open() has already assigned
+        // its handler to fakeWebsocket.onopen. Invoking it directly marks the socket
+        // as hasEverConnected=true, which is required for the subsequent abnormal close
+        // to take the reconnectable (non-terminal) path.
+        this.fakeWebsocket.onopen({});
+
+        // Remove the component from the registry so the channel has no valid
+        // components. notifyErrorAndPruneMissingComponents will splice the
+        // clientId out, leaving the array empty, then closeIfChannelHasNoComponents
+        // detects this and closes the socket.
+        delete this.pushImpl.components["clientId_close_test"];
+
+        const closeSpy = sinon.spy(this.fakeWebsocket, "close");
+        try {
+            // Abnormal close (1006) is reconnectable — goes through the
+            // notifyErrorAndPruneMissingComponents → closeIfChannelHasNoComponents path.
+            this.fakeWebsocket._close({code: 1006});
+
+            expect(this.pushImpl.clientIdsByTokens[channelToken].length,
+                "clientIds array must be empty after stale component pruning").to.eq(0);
+            expect(closeSpy.called || this.fakeWebsocket.readyState === 3,
+                "socket must be closed when channel has no remaining components").to.be.true;
+        } finally {
+            closeSpy.restore();
+        }
+    });
 });

@@ -161,8 +161,6 @@ export namespace Lang {
         return it instanceof Function || typeof it === "function";
     }
 
-    // code from https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-    // license https://creativecommons.org/licenses/by-sa/2.5/
     export function objAssign(target: any, ...theArgs: any[]) { // .length of function is 2
         if (target == null) { // TypeError if undefined or null
             throw new TypeError('Cannot convert undefined or null to object');
@@ -176,9 +174,11 @@ export namespace Lang {
 
         theArgs.filter(item => item != null).forEach(item => {
             let nextSource = item;
-            Object.keys(nextSource)
-                .filter(nextKey => Object.prototype.hasOwnProperty.call(nextSource, nextKey))
-                .forEach(nextKey => to[nextKey] = nextSource[nextKey]);
+            const stringKeys = Object.keys(nextSource);
+            const symbolKeys = Object.getOwnPropertySymbols(nextSource)
+                .filter(sym => Object.prototype.propertyIsEnumerable.call(nextSource, sym));
+            [...stringKeys, ...symbolKeys]
+                .forEach(key => to[key] = nextSource[key]);
         });
         return to;
     }
