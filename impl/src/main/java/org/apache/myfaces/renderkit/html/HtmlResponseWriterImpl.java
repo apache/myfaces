@@ -853,7 +853,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
         _currentWriter.write(' ');
         _currentWriter.write(name);
         _currentWriter.write("=\"");
-        if (strValue.startsWith("javascript:"))
+        if (strValue.toLowerCase().startsWith("javascript:"))
         {
             HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
         }
