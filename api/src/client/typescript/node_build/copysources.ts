@@ -55,6 +55,7 @@ copyFilesRecursively('./node_modules/jsf.js_next_gen/src/main/typescript/myfaces
 copyFilesRecursively('./node_modules/jsf.js_next_gen/src/main/typescript/test', './typescript/faces/test');
 copyFilesRecursively('./node_modules/jsf.js_next_gen/src/main/typescript/@types', './typescript/faces/@types');
 copyFilesRecursively('./node_modules/mona-dish/src/main/typescript', './typescript/mona_dish');
-copyFilesRecursively('./node_modules/jsf.js_next_gen/dist/window/faces.d.ts', './typescript/faces/@types/definitions/faces.d.ts');
+// faces.d.ts is no longer copied from the prebuilt jsf.js_next_gen package — it is
+// generated from the local sources by the build-dts npm script (tsc + api-extractor).
 
 
