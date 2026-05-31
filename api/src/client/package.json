@@ -5,12 +5,15 @@
     "doc": "npx typedoc --tsconfig ./tsconfig-typedoc.json",
     "test": "cross-env TSX_TSCONFIG_PATH=./tsconfig-myfaces-test.json mocha",
     "copy:npm-sources": "ts-node typescript/node_build/copysources.ts",
+    "build-dts-compile": "tsc -p tsconfig.dts.json",
+    "build-dts": "npm run build-dts-compile && node typescript/node_build/build-dts.mjs",
     "build:development": "webpack --mode development --env FILE_NAME=faces-development ",
     "build:production": "webpack --mode production --env FILE_NAME=faces",
-    "build": "npm run build:development && npm run build:production"
+    "build": "npm run build-dts && npm run build:development && npm run build:production"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
+    "@microsoft/api-extractor": "^7.58.7",
     "@types/chai": "^4.3.4",
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^10.0.1",
