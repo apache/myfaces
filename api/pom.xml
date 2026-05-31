@@ -214,6 +214,10 @@
                         <exclude>.gitignore</exclude>
                         <exclude>**/target/**/*</exclude>
                         <exclude>**/dist/**/*</exclude>
+                        <!-- generated declaration tree produced by the build-dts step -->
+                        <exclude>**/client/dts-build/**/*</exclude>
+                        <!-- local Claude Code settings, not part of the sources -->
+                        <exclude>**/.claude/**</exclude>
                         <!-- node modules is only used by the build -->
                         <exclude>**/node_modules/**/*</exclude>
                         <exclude>**/client/**/*.md</exclude>
