@@ -935,6 +935,304 @@ public class UIDataTest extends AbstractFacesTestCase
         }
     }
     
+    // -------------------------------------------------------------------------
+    // Stateful (EVH) flat-list save / restore — UIData-specific
+    // -------------------------------------------------------------------------
+
+    /**
+     * Core correctness test for the flat-list stateful path in UIData.
+     *
+     * <p>UIData → UIColumn → UIInput. Sets a per-row submitted value, then revisits each row
+     * and verifies the saved state is correctly restored via
+     * {@code saveChildStates} / {@code restoreChildStates}.
+     */
+    @Test
+    public void testStatefulRowStateIsPreservedOnRevisit()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("a", "b", "c"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIInput input = new UIInput();
+        input.setId("inp");
+        column.getChildren().add(input);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        // First pass: visit every row and set a per-row submitted value.
+        for (int i = 0; i < 3; i++)
+        {
+            table.setRowIndex(i);
+            input.setSubmittedValue("submitted_" + i);
+        }
+        table.setRowIndex(-1);
+
+        // Second pass: revisit rows and verify the submitted values were preserved.
+        for (int i = 0; i < 3; i++)
+        {
+            table.setRowIndex(i);
+            Assertions.assertEquals("submitted_" + i, input.getSubmittedValue(),
+                    "Row " + i + ": submitted value should be restored from Integer row-index-keyed _rowStates");
+        }
+        table.setRowIndex(-1);
+    }
+
+    /**
+     * After visiting rows with state, moving to index -1 must reset all EVH
+     * components to their initial (empty) state.
+     */
+    @Test
+    public void testStatefulResetToInitialStateAtIndexMinusOne()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("a", "b"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIInput input = new UIInput();
+        input.setId("inp");
+        column.getChildren().add(input);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        table.setRowIndex(0);
+        input.setSubmittedValue("dirty");
+        table.setRowIndex(1);
+        input.setSubmittedValue("also_dirty");
+
+        // Reset to -1: components must be in their clean template state.
+        table.setRowIndex(-1);
+        Assertions.assertNull(input.getSubmittedValue(),
+                "After reset to -1, submitted value must be cleared to initial state");
+        Assertions.assertTrue(input.isValid(),
+                "After reset to -1, valid flag must be restored to true");
+    }
+
+    /**
+     * Multiple UIColumn/UIInput siblings must each have independent per-row state.
+     */
+    @Test
+    public void testStatefulMultipleEVHColumnsHaveIndependentState()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("x", "y"));
+
+        UIColumn colA = new UIColumn();
+        colA.setId("colA");
+        UIInput inputA = new UIInput();
+        inputA.setId("a");
+        colA.getChildren().add(inputA);
+
+        UIColumn colB = new UIColumn();
+        colB.setId("colB");
+        UIInput inputB = new UIInput();
+        inputB.setId("b");
+        colB.getChildren().add(inputB);
+
+        table.getChildren().add(colA);
+        table.getChildren().add(colB);
+        root.getChildren().add(table);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        table.setRowIndex(0);
+        inputA.setSubmittedValue("a0");
+        inputB.setSubmittedValue("b0");
+
+        table.setRowIndex(1);
+        inputA.setSubmittedValue("a1");
+        inputB.setSubmittedValue("b1");
+
+        table.setRowIndex(-1);
+
+        // Revisit row 0 — both inputs must have their row-0 values.
+        table.setRowIndex(0);
+        Assertions.assertEquals("a0", inputA.getSubmittedValue());
+        Assertions.assertEquals("b0", inputB.getSubmittedValue());
+
+        // Revisit row 1 — both inputs must have their row-1 values.
+        table.setRowIndex(1);
+        Assertions.assertEquals("a1", inputA.getSubmittedValue());
+        Assertions.assertEquals("b1", inputB.getSubmittedValue());
+    }
+
+    /**
+     * UIInput nested two levels deep (UIColumn → UIPanel → UIInput) must still be
+     * found in {@code _iterationEVHList} via depth-first traversal.
+     */
+    @Test
+    public void testStatefulNestedEVHStateIsPreserved()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("x", "y"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIOutput panel = new UIOutput();
+        panel.setId("panel");
+        UIInput input = new UIInput();
+        input.setId("inp");
+        panel.getChildren().add(input);
+        column.getChildren().add(panel);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        table.setRowIndex(0);
+        input.setSubmittedValue("nested_0");
+
+        table.setRowIndex(1);
+        input.setSubmittedValue("nested_1");
+
+        table.setRowIndex(-1);
+
+        table.setRowIndex(0);
+        Assertions.assertEquals("nested_0", input.getSubmittedValue(),
+                "Nested UIInput row-0 state must be restored");
+
+        table.setRowIndex(1);
+        Assertions.assertEquals("nested_1", input.getSubmittedValue(),
+                "Nested UIInput row-1 state must be restored");
+    }
+
+    // -------------------------------------------------------------------------
+    // Read-only (no EVH) flat-list clientId reset
+    // -------------------------------------------------------------------------
+
+    /**
+     * For a read-only table (UIColumn → UIOutput only), {@code setRowIndex} must
+     * reset clientIds correctly so each row produces unique clientIds.
+     */
+    @Test
+    public void testReadOnlyClientIdResetPerRow()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("x", "y", "z"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIOutput out = new UIOutput();
+        out.setId("out");
+        column.getChildren().add(out);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        table.setRowIndex(0);
+        String clientId0 = out.getClientId(facesContext);
+
+        table.setRowIndex(1);
+        String clientId1 = out.getClientId(facesContext);
+
+        table.setRowIndex(2);
+        String clientId2 = out.getClientId(facesContext);
+
+        Assertions.assertNotEquals(clientId0, clientId1, "ClientIds must differ between rows");
+        Assertions.assertNotEquals(clientId1, clientId2, "ClientIds must differ between rows");
+
+        // After resetting, the IDs must match the first pass.
+        table.setRowIndex(-1);
+        table.setRowIndex(0);
+        Assertions.assertEquals(clientId0, out.getClientId(facesContext),
+                "ClientId for row 0 must be stable across iteration sequences");
+    }
+
+    /**
+     * Transient components must also have their clientId reset even though their
+     * state is not saved ({@code _iterationResetList} includes them).
+     */
+    @Test
+    public void testReadOnlyTransientComponentClientIdIsReset()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("x", "y"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIOutput transientOut = new UIOutput();
+        transientOut.setId("tout");
+        transientOut.setTransient(true);
+        column.getChildren().add(transientOut);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        table.setRowIndex(0);
+        String id0 = transientOut.getClientId(facesContext);
+
+        table.setRowIndex(1);
+        String id1 = transientOut.getClientId(facesContext);
+
+        Assertions.assertNotEquals(id0, id1,
+                "Transient component clientId must be reset per row");
+    }
+
+    // -------------------------------------------------------------------------
+    // Iteration list lifecycle
+    // -------------------------------------------------------------------------
+
+    /**
+     * After {@code encodeBegin} the iteration lists are cleared.  A subsequent
+     * iteration sequence must still work correctly (no NPE, correct clientIds).
+     */
+    @Test
+    public void testIterationListsAreRebuiltAfterEncodeBegin() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        root.setRenderKitId("HTML_BASIC");
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("a", "b"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIInput input = new UIInput();
+        input.setId("inp");
+        column.getChildren().add(input);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        // First iteration sequence (simulates APPLY_REQUEST_VALUES)
+        table.setRowIndex(0);
+        input.setSubmittedValue("v0");
+        table.setRowIndex(1);
+        input.setSubmittedValue("v1");
+        table.setRowIndex(-1);
+
+        // encodeBegin clears the iteration lists and _rowStates
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        table.encodeBegin(facesContext);
+
+        // Second iteration sequence (simulates RENDER_RESPONSE row walk)
+        // must rebuild lists without NPE and show clean initial state
+        table.setRowIndex(0);
+        Assertions.assertNull(input.getSubmittedValue(),
+                "After encodeBegin, _rowStates is cleared and initial state is clean");
+
+        table.setRowIndex(1);
+        Assertions.assertNull(input.getSubmittedValue());
+
+        table.setRowIndex(-1);
+    }
+
     private void createSimpleTable(UIViewRoot root)
     {
         createSimpleTable(root, false);

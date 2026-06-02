@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UIRepeatTest extends AbstractFacesTestCase
@@ -223,40 +224,293 @@ public class UIRepeatTest extends AbstractFacesTestCase
         }
     }
     
-    private void createSimpleTable(UIViewRoot root)
-    {
-        createSimpleTable(root, false);
-    }
-    
-    private void createSimpleTable(UIViewRoot root, boolean rowStatePreserved)
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    private UIRepeat createRepeat(UIViewRoot root, List<?> model)
     {
         UIRepeat table = new UIRepeat();
-        //UIColumn column = new UIColumn();
-        UIInput text = new UIInput();
-        
-        //This is only required if markInitiaState fix is not used 
         root.setId(root.createUniqueId());
         table.setId(root.createUniqueId());
-        //column.setId(root.createUniqueId());
-        text.setId(root.createUniqueId());
-        
         table.setVar("row");
-        /*
-        if (rowStatePreserved)
-        {
-            table.setRowStatePreserved(true);
-        }*/
-        table.setValueExpression("value", application.
-                getExpressionFactory().createValueExpression(
-                        facesContext.getELContext(),"#{list}",List.class));
-        
-        text.setValueExpression("value", application.
-                getExpressionFactory().createValueExpression(
-                        facesContext.getELContext(),"#{row.text}",String.class));
-        
+        table.setValue(model);
         root.getChildren().add(table);
-        //table.getChildren().add(column);
-        //column.getChildren().add(text);
+        return table;
+    }
+
+    private void createSimpleTable(UIViewRoot root)
+    {
+        UIRepeat table = new UIRepeat();
+        UIInput text = new UIInput();
+
+        root.setId(root.createUniqueId());
+        table.setId(root.createUniqueId());
+        text.setId(root.createUniqueId());
+
+        table.setVar("row");
+        table.setValueExpression("value", application
+                .getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(), "#{list}", List.class));
+
+        text.setValueExpression("value", application
+                .getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(), "#{row.text}", String.class));
+
+        root.getChildren().add(table);
         table.getChildren().add(text);
+    }
+
+    // -------------------------------------------------------------------------
+    // Stateful (EVH) flat-list save / restore
+    // -------------------------------------------------------------------------
+
+    /**
+     * Core correctness test for the flat-list stateful path.
+     *
+     * <p>Iterates 3 rows setting a submitted value on the UIInput, then revisits
+     * each row and verifies the saved submitted value is correctly restored.
+     * This exercises {@code saveChildStates} / {@code restoreChildStates}.
+     */
+    @Test
+    public void testStatefulRowStateIsPreservedOnRevisit()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIRepeat repeat = createRepeat(root, Arrays.asList("a", "b", "c"));
+
+        UIInput input = new UIInput();
+        input.setId("inp");
+        repeat.getChildren().add(input);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        // First pass: visit every row and set a per-row submitted value.
+        for (int i = 0; i < 3; i++)
+        {
+            repeat.setRowIndex(i);
+            input.setSubmittedValue("submitted_" + i);
+        }
+        repeat.setRowIndex(-1);
+
+        // Second pass: revisit rows and verify the submitted values were preserved.
+        for (int i = 0; i < 3; i++)
+        {
+            repeat.setRowIndex(i);
+            Assertions.assertEquals("submitted_" + i, input.getSubmittedValue(),
+                    "Row " + i + ": submitted value should be restored from Integer row-index-keyed _rowStates");
+        }
+        repeat.setRowIndex(-1);
+    }
+
+    /**
+     * After visiting rows with state, moving to index -1 must reset all EVH
+     * components to their initial (empty) state.
+     */
+    @Test
+    public void testStatefulResetToInitialStateAtIndexMinusOne()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIRepeat repeat = createRepeat(root, Arrays.asList("a", "b"));
+
+        UIInput input = new UIInput();
+        input.setId("inp");
+        repeat.getChildren().add(input);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        repeat.setRowIndex(0);
+        input.setSubmittedValue("dirty");
+        repeat.setRowIndex(1);
+        input.setSubmittedValue("also_dirty");
+
+        // Reset to -1: components must be in their clean template state.
+        repeat.setRowIndex(-1);
+        Assertions.assertNull(input.getSubmittedValue(),
+                "After reset to -1, submitted value must be cleared to initial state");
+        Assertions.assertTrue(input.isValid(),
+                "After reset to -1, valid flag must be restored to true");
+    }
+
+    /**
+     * Multiple UIInput siblings must each have independent per-row state.
+     */
+    @Test
+    public void testStatefulMultipleEVHSiblingsHaveIndependentState()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIRepeat repeat = createRepeat(root, Arrays.asList("x", "y"));
+
+        UIInput inputA = new UIInput();
+        inputA.setId("a");
+        UIInput inputB = new UIInput();
+        inputB.setId("b");
+        repeat.getChildren().add(inputA);
+        repeat.getChildren().add(inputB);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        repeat.setRowIndex(0);
+        inputA.setSubmittedValue("a0");
+        inputB.setSubmittedValue("b0");
+
+        repeat.setRowIndex(1);
+        inputA.setSubmittedValue("a1");
+        inputB.setSubmittedValue("b1");
+
+        repeat.setRowIndex(-1);
+
+        // Revisit row 0 — both inputs must have their row-0 values.
+        repeat.setRowIndex(0);
+        Assertions.assertEquals("a0", inputA.getSubmittedValue());
+        Assertions.assertEquals("b0", inputB.getSubmittedValue());
+
+        // Revisit row 1 — both inputs must have their row-1 values.
+        repeat.setRowIndex(1);
+        Assertions.assertEquals("a1", inputA.getSubmittedValue());
+        Assertions.assertEquals("b1", inputB.getSubmittedValue());
+    }
+
+    /**
+     * UIInput nested inside a UIOutput panel must still be found in
+     * {@code _iterationEVHList} (depth-first traversal).
+     */
+    @Test
+    public void testStatefulNestedEVHStateIsPreserved()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIRepeat repeat = createRepeat(root, Arrays.asList("x", "y"));
+
+        UIOutput panel = new UIOutput();
+        panel.setId("panel");
+        UIInput input = new UIInput();
+        input.setId("inp");
+        panel.getChildren().add(input);
+        repeat.getChildren().add(panel);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        repeat.setRowIndex(0);
+        input.setSubmittedValue("nested_0");
+
+        repeat.setRowIndex(1);
+        input.setSubmittedValue("nested_1");
+
+        repeat.setRowIndex(-1);
+
+        repeat.setRowIndex(0);
+        Assertions.assertEquals("nested_0", input.getSubmittedValue(),
+                "Nested UIInput row-0 state must be restored");
+
+        repeat.setRowIndex(1);
+        Assertions.assertEquals("nested_1", input.getSubmittedValue(),
+                "Nested UIInput row-1 state must be restored");
+    }
+
+    // -------------------------------------------------------------------------
+    // Read-only (no EVH) flat-list clientId reset
+    // -------------------------------------------------------------------------
+
+    /**
+     * For a read-only repeat (UIOutput children only), {@code setRowIndex} must
+     * reset clientIds correctly so each row produces unique clientIds.
+     */
+    @Test
+    public void testReadOnlyClientIdResetPerRow()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIRepeat repeat = createRepeat(root, Arrays.asList("x", "y", "z"));
+        repeat.setId("repeat");
+
+        UIOutput out = new UIOutput();
+        out.setId("out");
+        repeat.getChildren().add(out);
+
+        repeat.setRowIndex(0);
+        String clientId0 = out.getClientId(facesContext);
+
+        repeat.setRowIndex(1);
+        String clientId1 = out.getClientId(facesContext);
+
+        repeat.setRowIndex(2);
+        String clientId2 = out.getClientId(facesContext);
+
+        Assertions.assertNotEquals(clientId0, clientId1, "ClientIds must differ between rows");
+        Assertions.assertNotEquals(clientId1, clientId2, "ClientIds must differ between rows");
+
+        // After resetting, the IDs must match the first pass.
+        repeat.setRowIndex(-1);
+        repeat.setRowIndex(0);
+        Assertions.assertEquals(clientId0, out.getClientId(facesContext),
+                "ClientId for row 0 must be stable across iteration sequences");
+    }
+
+    /**
+     * Transient components must also have their clientId reset even though their
+     * state is not saved ({@code _iterationResetList} includes them).
+     */
+    @Test
+    public void testReadOnlyTransientComponentClientIdIsReset()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIRepeat repeat = createRepeat(root, Arrays.asList("x", "y"));
+        repeat.setId("repeat");
+
+        UIOutput transientOut = new UIOutput();
+        transientOut.setId("tout");
+        transientOut.setTransient(true);
+        repeat.getChildren().add(transientOut);
+
+        repeat.setRowIndex(0);
+        String id0 = transientOut.getClientId(facesContext);
+
+        repeat.setRowIndex(1);
+        String id1 = transientOut.getClientId(facesContext);
+
+        Assertions.assertNotEquals(id0, id1,
+                "Transient component clientId must be reset per row");
+    }
+
+    // -------------------------------------------------------------------------
+    // Iteration list lifecycle
+    // -------------------------------------------------------------------------
+
+    /**
+     * After {@code encodeBegin} the iteration lists are cleared.  A subsequent
+     * iteration sequence (simulating RENDER_RESPONSE) must still work correctly.
+     */
+    @Test
+    public void testIterationListsAreRebuiltAfterEncodeBegin() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        root.setRenderKitId("HTML_BASIC");
+        UIRepeat repeat = createRepeat(root, Arrays.asList("a", "b"));
+
+        UIInput input = new UIInput();
+        input.setId("inp");
+        repeat.getChildren().add(input);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        // First iteration sequence (simulates APPLY_REQUEST_VALUES)
+        repeat.setRowIndex(0);
+        input.setSubmittedValue("v0");
+        repeat.setRowIndex(1);
+        input.setSubmittedValue("v1");
+        repeat.setRowIndex(-1);
+
+        // encodeBegin clears the iteration lists
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        repeat.encodeBegin(facesContext);
+
+        // Second iteration sequence (simulates RENDER_RESPONSE row walk)
+        // must still reset clientIds without NPE or stale state
+        repeat.setRowIndex(0);
+        Assertions.assertNull(input.getSubmittedValue(),
+                "After encodeBegin, _rowStates is cleared and initial state is clean");
+
+        repeat.setRowIndex(1);
+        Assertions.assertNull(input.getSubmittedValue());
+
+        repeat.setRowIndex(-1);
     }
 }
