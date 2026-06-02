@@ -99,6 +99,8 @@ public abstract class UIComponentBase extends UIComponent
     private UIComponent _parent = null;
     private boolean _transient = false;
 
+    private transient UIComponent _closestNamingContainer;
+
     private String _rendererType;
     private String _markCreated;
     private String _facetName;
@@ -170,6 +172,11 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void setParent(UIComponent parent)
     {
+        // The parent chain is changing — the cached NamingContainer ancestor is no longer valid.
+        // setId must NOT clear it: UIData/UIRepeat call setId(getId()) per row on every descendant,
+        // and the ancestor depends only on the parent chain which setId never changes.
+        _closestNamingContainer = null;
+
         // removing kids OR this is UIViewRoot
         if (parent == null)
         {
@@ -906,7 +913,7 @@ public abstract class UIComponentBase extends UIComponent
             setId(id);
         }
 
-        UIComponent namingContainer = ComponentUtils.findClosestNamingContainer(this, false);
+        UIComponent namingContainer = getClosestNamingContainer();
         if (namingContainer != null)
         {
             String containerClientId = namingContainer.getContainerClientId(context);
@@ -947,7 +954,26 @@ public abstract class UIComponentBase extends UIComponent
 
         return _clientId;
     }
-    
+
+    /**
+     * Returns the closest NamingContainer ancestor, caching the result so that repeated calls
+     * (e.g. once per UIRepeat/UIData row after setId clears _clientId) skip the parent-chain walk.
+     * Invalidated in setParent only — setId must NOT clear it.
+     */
+    private UIComponent getClosestNamingContainer()
+    {
+        if (_closestNamingContainer != null)
+        {
+            return _closestNamingContainer;
+        }
+        UIComponent closestNamingContainer = ComponentUtils.findClosestNamingContainer(this, false);
+        if (closestNamingContainer != null)
+        {
+            _closestNamingContainer = closestNamingContainer;
+        }
+        return closestNamingContainer;
+    }
+
     /**
      * 
      * @return
