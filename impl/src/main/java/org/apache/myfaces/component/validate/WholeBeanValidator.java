@@ -42,7 +42,7 @@ import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
-import static jakarta.faces.validator.BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN;
+import static jakarta.faces.validator.BeanValidator.EMPTY_VALIDATION_GROUPS;
 import static jakarta.faces.validator.BeanValidator.MESSAGE_ID;
 import static jakarta.faces.validator.BeanValidator.VALIDATION_GROUPS_DELIMITER;
 import static jakarta.faces.validator.BeanValidator.VALIDATOR_FACTORY_KEY;
@@ -296,7 +296,7 @@ public class WholeBeanValidator implements Validator
     private void postSetValidationGroups(ValidateWholeBeanComponent component)
     {
         String validationGroups = getValidationGroups(component);
-        if (validationGroups == null || validationGroups.matches(EMPTY_VALIDATION_GROUPS_PATTERN))
+        if (validationGroups == null || EMPTY_VALIDATION_GROUPS.matcher(validationGroups).matches())
         {
             this.validationGroupsArray = DEFAULT_VALIDATION_GROUPS_ARRAY;
         }
