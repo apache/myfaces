@@ -584,10 +584,11 @@ public final class HtmlRendererUtils
             throws IOException
     {
         boolean endElementNeeded = false;
+        Map<String, Object> attributeMap = component.getAttributes();
         for (int i = 0, len = attributes.length; i < len; i++)
         {
             String attrName = attributes[i];
-            Object value = component.getAttributes().get(attrName);
+            Object value = attributeMap.get(attrName);
             if (!RendererUtils.isDefaultAttributeValue(value))
             {
                 endElementNeeded = true;
@@ -694,12 +695,7 @@ public final class HtmlRendererUtils
             throws IOException
     {
         String value = (String) component.getAttributes().get(componentProperty);
-        if (value != null && !value.isEmpty())
-        {
-            writer.writeAttribute(htmlAttrName, value, componentProperty);
-            return true;
-        }
-        return false;
+        return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName, value);
     }
 
     /**
