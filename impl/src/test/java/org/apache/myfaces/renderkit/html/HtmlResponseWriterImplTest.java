@@ -292,6 +292,93 @@ public class HtmlResponseWriterImplTest extends AbstractFacesTestCase
     }
     
     /**
+     * writeText(char[]) inside a textarea must NOT map successive spaces to &amp;nbsp;
+     * or newlines to &lt;br/&gt; — this is the key purpose of the _isTextArea flag.
+     */
+    @Test
+    public void testTextareaWriteTextPreservesSpacesAndNewlines() throws IOException
+    {
+        _writer.startDocument();
+        _writer.startElement("form", null);
+        _writer.startElement(HTML.TEXTAREA_ELEM, null);
+        _writer.writeText("hello   world\nfoo".toCharArray(), 0, 17);
+        _writer.endElement(HTML.TEXTAREA_ELEM);
+        _writer.endElement("form");
+        _writer.endDocument();
+
+        String output = _stringWriter.toString();
+        // Spaces must not be turned into &nbsp; inside a textarea
+        Assertions.assertFalse(output.contains("&nbsp;"),
+                "textarea: spaces must not be encoded as &nbsp;");
+        // Newlines must not be turned into <br/> inside a textarea
+        Assertions.assertFalse(output.contains("<br"),
+                "textarea: newlines must not be encoded as <br/>");
+        // The original characters must appear verbatim
+        Assertions.assertTrue(output.contains("hello   world"),
+                "textarea: original spaces must be present in output");
+    }
+
+    /**
+     * Same as testTextareaWriteTextPreservesSpacesAndNewlines but with uppercase element name
+     * to verify case-insensitive textarea detection.
+     */
+    @Test
+    public void testTextareaWriteTextUppercase() throws IOException
+    {
+        _writer.startDocument();
+        _writer.startElement("form", null);
+        _writer.startElement("TEXTAREA", null);
+        _writer.writeText("hello   world".toCharArray(), 0, 13);
+        _writer.endElement("TEXTAREA");
+        _writer.endElement("form");
+        _writer.endDocument();
+
+        String output = _stringWriter.toString();
+        Assertions.assertFalse(output.contains("&nbsp;"),
+                "TEXTAREA (uppercase): spaces must not be encoded as &nbsp;");
+    }
+
+    /**
+     * writeText(Object) with a non-String value must produce the same output as
+     * writeText(Object) with the equivalent String — exercises the toString() fallback path.
+     */
+    @Test
+    public void testWriteTextObjectNonString() throws IOException
+    {
+        _writer.startDocument();
+        _writer.startElement("body", null);
+        _writer.writeText(Integer.valueOf(42), null);
+        _writer.endElement("body");
+        _writer.endDocument();
+
+        Assertions.assertTrue(_stringWriter.toString().contains("42"),
+                "Non-String value (Integer 42) must be rendered as its toString()");
+    }
+
+    /**
+     * Style content on plain text/html must be written verbatim without toString() overhead
+     * (exercises the StreamCharBuffer.writeTo path in writeStyleContent).
+     */
+    @Test
+    public void testStyleOnHtmlWritesContentVerbatim() throws IOException
+    {
+        _writer = new HtmlResponseWriterImpl(_stringWriter, "text/html", "UTF-8", false);
+        String css = "body { color: red; }";
+        _writer.startDocument();
+        _writer.startElement(HTML.STYLE_ELEM, null);
+        _writer.write(css);
+        _writer.endElement(HTML.STYLE_ELEM);
+        _writer.endDocument();
+
+        String output = _stringWriter.toString();
+        Assertions.assertTrue(output.contains(css),
+                "Plain HTML style content must appear verbatim in output");
+        // In plain text/html there is no CDATA wrapping
+        Assertions.assertFalse(output.contains(CommentUtils.CDATA_SIMPLE_START),
+                "Plain HTML style must not be wrapped in CDATA");
+    }
+
+    /**
      * In html, it is not valid to have an empty tag with content
      * 
      * @throws IOException
