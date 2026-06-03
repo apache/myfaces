@@ -119,7 +119,13 @@ public abstract class UIComponent
 
     private static final String _CURRENT_COMPOSITE_COMPONENT_KEY = "compositeComponent:" + UIComponent.class.getName();
 
-    Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
+    Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListeners;
+
+    // Cached unmodifiable views of _systemEventListeners entries.
+    // Created lazily; the whole cache is cleared whenever a backing list reference is
+    // replaced (full restore or non-delta entry in delta restore) — see UIComponentBase.
+    // Package-private so UIComponentBase can reset it after those restore operations.
+    transient Map<Class<? extends SystemEvent>, List<SystemEventListener>> _unmodifiableSystemEventListeners;
 
     /**
      * Used to cache the map created using getResourceBundleMap() method, since this method could be called several
@@ -138,12 +144,6 @@ public abstract class UIComponent
      * to be implemented from here and internally it depends from this property.
      */
     private boolean _initialStateMarked = false;
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    protected Map<String, ValueExpression> bindings;
 
     public UIComponent()
     {
@@ -341,7 +341,7 @@ public abstract class UIComponent
 
         if (expression == null)
         {
-            getStateHelper().remove(PropertyKeys.bindings, name);
+            getStateHelper().remove(PropertyKeys.valueExpressions, name);
         }
         else
         {
@@ -359,7 +359,7 @@ public abstract class UIComponent
                 }
             }
 
-            getStateHelper().put(PropertyKeys.bindings, name, expression);
+            getStateHelper().put(PropertyKeys.valueExpressions, name, expression);
         }
     }
 
@@ -448,25 +448,26 @@ public abstract class UIComponent
     @Override
     public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> eventClass)
     {
-        List<SystemEventListener> listeners;
-        if (_systemEventListenerClassMap == null)
+        if (_systemEventListeners == null)
         {
-            listeners = Collections.emptyList();
+            return Collections.emptyList();
         }
-        else
+        List<SystemEventListener> listeners = _systemEventListeners.get(eventClass);
+        if (listeners == null)
         {
-            listeners = _systemEventListenerClassMap.get(eventClass);
-            if (listeners == null)
-            {
-                listeners = Collections.emptyList();
-            }
-            else
-            {
-                listeners = Collections.unmodifiableList(listeners);
-            }
+            return Collections.emptyList();
         }
-
-        return listeners;
+        if (_unmodifiableSystemEventListeners == null)
+        {
+            _unmodifiableSystemEventListeners = new HashMap<>(4, 1f);
+        }
+        List<SystemEventListener> unmodifiableList = _unmodifiableSystemEventListeners.get(eventClass);
+        if (unmodifiableList == null)
+        {
+            unmodifiableList = Collections.unmodifiableList(listeners);
+            _unmodifiableSystemEventListeners.put(eventClass, unmodifiableList);
+        }
+        return unmodifiableList;
     }
 
     /**
@@ -617,10 +618,11 @@ public abstract class UIComponent
     {
         Assert.notNull(name, "name");
 
-        Map<String, Object> bindings = (Map<String, Object>) getStateHelper().get(PropertyKeys.bindings);
-        if (bindings != null)
+        Map<String, Object> valueExpressions = (Map<String, Object>)
+                getStateHelper().get(PropertyKeys.valueExpressions);
+        if (valueExpressions != null)
         {
-            return (ValueExpression) bindings.get(name);
+            return (ValueExpression) valueExpressions.get(name);
         }
 
         return null;
@@ -635,6 +637,22 @@ public abstract class UIComponent
     public abstract Map<String, UIComponent> getFacets();
 
     public abstract UIComponent getFacet(String name);
+
+    /**
+     * <p>
+     * Convenience method to return the named facet using an enum identifier, if it exists, or <code>null</code>
+     * otherwise. This method delegates to {@link #getFacet(String)} using the result of calling
+     * <code>identifier.toString()</code>. If the requested facet does not exist, the facets Map must not be created.
+     * </p>
+     *
+     * @param identifier Enum identifier of the desired facet
+     * @return the component, or <code>null</code>.
+     * @since 5.0
+     */
+    public UIComponent getFacet(Enum<?> identifier)
+    {
+        return getFacet(identifier.toString());
+    }
 
     public abstract Iterator<UIComponent> getFacetsAndChildren();
 
@@ -701,7 +719,7 @@ public abstract class UIComponent
 
     protected abstract void addFacesListener(FacesListener listener);
 
-    protected abstract FacesListener[] getFacesListeners(Class clazz);
+    protected abstract FacesListener[] getFacesListeners(Class<? extends FacesListener> clazz);
 
     protected abstract void removeFacesListener(FacesListener listener);
 
@@ -756,8 +774,8 @@ public abstract class UIComponent
                         // Check if the listener points again to the component, to
                         // avoid StackoverflowException
                         boolean shouldProcessEvent = true;
-                        if (listener instanceof _EventListenerWrapper && 
-                            ((_EventListenerWrapper) listener).getListenerCapability() ==
+                        if (listener instanceof _EventListenerWrapper wrapper && 
+                            wrapper.getListenerCapability() ==
                                 _EventListenerWrapper.LISTENER_TYPE_COMPONENT)
                         {
                             shouldProcessEvent = false;
@@ -790,16 +808,16 @@ public abstract class UIComponent
         SystemEventListener listener = new _EventListenerWrapper(this, componentListener);
 
         // Make sure the map exists
-        if (_systemEventListenerClassMap == null)
+        if (_systemEventListeners == null)
         {
-            _systemEventListenerClassMap = new HashMap<>(4, 1f);
+            _systemEventListeners = new HashMap<>(4, 1f);
         }
 
-        List<SystemEventListener> listeners = _systemEventListenerClassMap.get(eventClass);
+        List<SystemEventListener> listeners = _systemEventListeners.get(eventClass);
         if (listeners == null)
         {
             listeners = new _DeltaList<>(3);
-            _systemEventListenerClassMap.put(eventClass, listeners);
+            _systemEventListeners.put(eventClass, listeners);
             listeners.add(listener);
         }
         else
@@ -829,9 +847,9 @@ public abstract class UIComponent
         Assert.notNull(eventClass, "eventClass");
         Assert.notNull(componentListener, "componentListener");
 
-        if (_systemEventListenerClassMap != null)
+        if (_systemEventListeners != null)
         {
-            List<SystemEventListener> listeners = _systemEventListenerClassMap.get(eventClass);
+            List<SystemEventListener> listeners = _systemEventListeners.get(eventClass);
             if (listeners != null && !listeners.isEmpty())
             {
                 for (Iterator<SystemEventListener> it = listeners.iterator(); it.hasNext(); )
@@ -907,11 +925,11 @@ public abstract class UIComponent
                     int childCount = getChildCount();
                     if (childCount > 0)
                     {
-                    List<UIComponent> children = getChildren();
-                    for (int i = 0; i < childCount; i++)
-                    {
-                        UIComponent child = children.get(i);
-                        if (child.visitTree(context, callback))
+                        List<UIComponent> children = getChildren();
+                        for (int i = 0; i < childCount; i++)
+                        {
+                            UIComponent child = children.get(i);
+                            if (child.visitTree(context, callback))
                             {
                                 return true;
                             }
@@ -929,7 +947,7 @@ public abstract class UIComponent
 
     protected abstract FacesContext getFacesContext();
 
-    protected abstract Renderer getRenderer(FacesContext context);
+    protected abstract <T extends UIComponent> Renderer<T> getRenderer(FacesContext context);
 
     /**
      * Note that id, clientId properties
@@ -956,7 +974,7 @@ public abstract class UIComponent
         rendered,
         rendererType,
         attributesMap,
-        bindings,
+        valueExpressions,
         facesListeners,
         passThroughAttributesMap
     }
@@ -1028,29 +1046,27 @@ public abstract class UIComponent
         UIComponent oldCurrent = null;
         if (componentStack != null && !componentStack.isEmpty())
         {
-            int size = componentStack.size();
-            int componentIndex;
-            // Fast path: in the normal (non-error) case this component is always at the top
-            // of the stack, so check the last slot with an O(1) identity test before falling
-            // back to the O(n) lastIndexOf scan.
-            if (componentStack.get(size - 1) == this)
+            int lastIndex = componentStack.size() - 1;
+            if (componentStack.get(lastIndex) == this)
             {
-                componentIndex = size - 1;
+                // Fast path: balanced push/pop — this component is the top of the stack.
+                oldCurrent = componentStack.remove(lastIndex);
             }
             else
             {
-                componentIndex = componentStack.lastIndexOf(this);
-            }
-            if (componentIndex >= 0)
-            {
-                for (int i = componentStack.size()-1; i >= componentIndex ; i--)
+                // Slow path: unbalanced pop (e.g. an intervening error skipped some pops).
+                int componentIndex = componentStack.lastIndexOf(this);
+                if (componentIndex >= 0)
                 {
-                    oldCurrent = componentStack.remove(componentStack.size()-1);
+                    for (int i = lastIndex; i >= componentIndex; i--)
+                    {
+                        oldCurrent = componentStack.remove(componentStack.size() - 1);
+                    }
                 }
-            }
-            else
-            {
-                return;
+                else
+                {
+                    return;
+                }
             }
         }
 
