@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
@@ -75,7 +76,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     public static final String PROPERTY_DESCRIPTOR_MAP_KEY = "oam.cc.beanInfo.PDM";
     
     /**
-     * This variable works as a check to indicate the minimun lenght we need to check
+     * This variable works as a check to indicate the minimum length we need to check
      * for the special attributes, and save some time in get(), containsKey() and 
      * put() operations.
      */
@@ -318,8 +319,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         }
         else
         {
+            // Hoist the underlying map once; it may be needed up to 3 times below.
+            Map<String, Object> underlyingMap = getUnderlyingMap();
+
             // is there a literal value to read?
-            value = getUnderlyingMap().get(key);
+            value = underlyingMap.get(key);
             if (value == null)
             {
                 // is there a value-binding to read?
@@ -332,15 +336,18 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 {
                     if (!_isCompositeComponentSet)
                     {
-                        _isCompositeComponent = getUnderlyingMap().containsKey(Resource.COMPONENT_RESOURCE_KEY);
+                        _isCompositeComponent = underlyingMap.containsKey(Resource.COMPONENT_RESOURCE_KEY);
                         _isCompositeComponentSet = true;
                     }
                     if (_isCompositeComponent)
                     {
                         BeanInfo ccBeanInfo = _ccBeanInfo != null ? _ccBeanInfo :
-                            (BeanInfo) getUnderlyingMap().get(UIComponent.BEANINFO_KEY);
+                            (BeanInfo) underlyingMap.get(UIComponent.BEANINFO_KEY);
                         if (ccBeanInfo != null)
                         {
+                            // Hoist ELContext once for all composite attribute evaluations below.
+                            ELContext elContext = _component.getFacesContext().getELContext();
+
                             //Fast shortcut to allow fast lookup.
                             Map<String, PropertyDescriptor> attributeMap = (Map<String, PropertyDescriptor>) 
                                 ccBeanInfo.getBeanDescriptor().getValue(
@@ -366,8 +373,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                                         // Check if the value expression holds a method signature
                                         // Note that it could be null, so in that case we don't have to 
                                         // do anything
-                                        methodSignature = methodSignatureExpression.getValue(
-                                                                    _component.getFacesContext().getELContext());
+                                        methodSignature = methodSignatureExpression.getValue(elContext);
                                     }
 
                                     // either the attributeName has to be a knownMethod
@@ -406,8 +412,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                                             // Check if the value expression holds a method signature
                                             // Note that it could be null, so in that case we don't have to 
                                             // do anything
-                                            methodSignature = methodSignatureExpression.getValue(
-                                                                        _component.getFacesContext().getELContext());
+                                            methodSignature = methodSignatureExpression.getValue(elContext);
                                         }
 
                                         // either the attributeName has to be a knownMethod
@@ -431,7 +436,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                             // always stored as (Tag-)ValueExpressions.
                             if (value != null && value instanceof ValueExpression)
                             {
-                                return ((ValueExpression) value).getValue(_component.getFacesContext().getELContext());
+                                return ((ValueExpression) value).getValue(elContext);
                             }
                         }
                     }
@@ -618,7 +623,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         if (_propertyDescriptorMap == null)
         {
             _propertyDescriptorMap = PropertyDescriptorUtils.getCachedPropertyDescriptors(
-                    _component.getFacesContext().getExternalContext(), 
+                    _component.getFacesContext().getExternalContext(),
                     _component.getClass());
         }
         return _propertyDescriptorMap.get(key);
@@ -688,7 +693,6 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             BiConsumer<Object, Object> writeFunction = null;
             if (propertyDescriptor instanceof LambdaPropertyDescriptor)
             {
-                ((LambdaPropertyDescriptor) propertyDescriptor).getWriteFunction().accept(_component, value);
                 writeFunction = ((LambdaPropertyDescriptor) propertyDescriptor).getWriteFunction();
             }
 

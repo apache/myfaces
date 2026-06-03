@@ -623,10 +623,11 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     @Override
     public Object saveState(FacesContext context)
     {
-        Map serializableMap = (isInitialStateMarked()) ? _deltas : _fullState;
+        boolean initialStateMarked = isInitialStateMarked();
+        Map serializableMap = initialStateMarked ? _deltas : _fullState;
 
         if (_initialState != null && _deltas != null && !_deltas.isEmpty()
-            && isInitialStateMarked())
+            && initialStateMarked)
         {
             // Before save the state, check if the property was changed from the
             // initial state value. If the property was changed but it has the
@@ -645,9 +646,9 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                 // Check only if there is delta state for that property, in other
                 // case it is not necessary. Remember it is possible to have
                 // null values inside the Map.
-                if (_deltas.containsKey(key))
+                Object deltaValue = _deltas.get(key);
+                if (deltaValue != null || _deltas.containsKey(key))
                 {
-                    Object deltaValue = _deltas.get(key);
                     if (deltaValue == null && defaultValue == null)
                     {
                         _deltas.remove(key);
@@ -713,8 +714,9 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         }
 
         Object[] serializedState = (Object[]) state;
-        
-        if (!isInitialStateMarked() && !_fullState.isEmpty())
+
+        boolean initialStateMarked = isInitialStateMarked();
+        if (!initialStateMarked && !_fullState.isEmpty())
         {
             _fullState.clear();
             if(_deltas != null)
@@ -728,7 +730,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             Serializable key = (Serializable) serializedState[cnt];
             Object savedValue = UIComponentBase.restoreAttachedState(context, serializedState[cnt + 1]);
 
-            if (isInitialStateMarked())
+            if (initialStateMarked)
             {
                 if (savedValue instanceof InternalDeltaListMap)
                 {
