@@ -35,7 +35,6 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
-import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.ContentTypeUtils;
 import org.apache.myfaces.renderkit.html.util.UnicodeEncoder;
@@ -309,7 +308,6 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     public void endDocument() throws IOException
     {
         FacesContext facesContext = getFacesContext();
-        CommonHtmlEventsUtil.flushDeferredCspBehaviorScripts(facesContext, this);
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
         if (myfacesConfig.isEarlyFlushEnabled())
         {
@@ -340,9 +338,9 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             Object value = _passThroughAttributesMap.get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
             if (value != null)
             {
-                if (value instanceof ValueExpression expression)
+                if (value instanceof ValueExpression)
                 {
-                    value = expression.getValue(getFacesContext().getELContext());
+                    value = ((ValueExpression) value).getValue(getFacesContext().getELContext());
                 }
                 String elementName = value.toString().trim();
                 
@@ -427,9 +425,9 @@ public class HtmlResponseWriterImpl extends ResponseWriter
                     }
                     
                     Object value = entry.getValue();
-                    if (value instanceof ValueExpression expression)
+                    if (value instanceof ValueExpression)
                     {
-                        value = expression.getValue(getFacesContext().getELContext());
+                        value = ((ValueExpression) value).getValue(getFacesContext().getELContext());
                     }
                     // encodeAndWriteURIAttribute(key, value, key);
                     // Faces 2.2 In the renderkit javadoc of jsf 2.2 spec says this 
@@ -790,17 +788,17 @@ public class HtmlResponseWriterImpl extends ResponseWriter
         // Fast path: the overwhelming majority of attribute values are already Strings,
         // so handle them first and skip both the Boolean instanceof check and the
         // (no-op for String) toString() virtual dispatch.
-        if (value instanceof String strValue)
+        if (value instanceof String)
         {
             _currentWriter.write(' ');
             _currentWriter.write(name);
             _currentWriter.write("=\"");
-            HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
+            HTMLEncoder.encode(_currentWriter, (String) value, false, false, !_isUTF8);
             _currentWriter.write('"');
         }
-        else if (value instanceof Boolean boolean1)
+        else if (value instanceof Boolean)
         {
-            if (boolean1.booleanValue())
+            if ((Boolean) value)
             {
                 // name as value for XHTML compatibility
                 _currentWriter.write(' ');
@@ -890,7 +888,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
 
         closeStartTagIfNecessary();
 
-        String strValue = (value instanceof String s) ? s : value.toString();
+        String strValue = (value instanceof String) ? (String) value : value.toString();
 
         if (isScriptOrStyle())
         {
