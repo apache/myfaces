@@ -237,7 +237,13 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         UIForm form = ComponentUtils.findClosest(UIForm.class, component);
         
         boolean disabled = HtmlRendererUtils.isDisabled(component);
-        
+
+        // Hoist optimization flags — always true in production; avoid repeated virtual dispatch.
+        boolean commonPropertiesOptimization = isCommonPropertiesOptimizationEnabled(facesContext);
+        boolean commonEventsOptimization = isCommonEventsOptimizationEnabled(facesContext);
+        long commonPropertiesMarked = commonPropertiesOptimization
+                ? CommonHtmlAttributesUtil.getMarkedAttributes(component) : 0L;
+
         if (disabled || form == null)
         {
             writer.startElement(HTML.SPAN_ELEM, component);
@@ -252,16 +258,11 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 {
                     HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                 }
-                long commonPropertiesMarked = 0L;
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
-                {
-                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
-                }
                 
                 // only render onclick if != disabled
                 if (!disabled)
                 {
-                    if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                    if (behaviors.isEmpty() && commonPropertiesOptimization)
                     {
                         CommonHtmlAttributesUtil.renderEventProperties(writer, 
                                 commonPropertiesMarked, component);
@@ -270,7 +271,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                     }
                     else
                     {
-                        if (isCommonEventsOptimizationEnabled(facesContext))
+                        if (commonEventsOptimization)
                         {
                             long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
                             CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
@@ -289,7 +290,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 else
                 {
-                    if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                    if (behaviors.isEmpty() && commonPropertiesOptimization)
                     {
                         CommonHtmlAttributesUtil.renderEventPropertiesWithoutOnclick(writer, 
                                 commonPropertiesMarked, component);
@@ -298,7 +299,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                     }
                     else
                     {
-                        if (isCommonEventsOptimizationEnabled(facesContext))
+                        if (commonEventsOptimization)
                         {
                             long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
                             CommonHtmlEventsUtil.renderBehaviorizedEventHandlersWithoutOnclick(facesContext, writer, 
@@ -315,7 +316,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                         }
                     }
                 }
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesOptimization)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
                             commonPropertiesMarked, component);
@@ -329,10 +330,10 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             else
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesOptimization)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabled(writer, 
-                            CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
+                            commonPropertiesMarked, component);
                 }
                 else
                 {
@@ -377,12 +378,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                         HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                     }
                 }
-                long commonPropertiesMarked = 0L;
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
-                {
-                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
-                }
-                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                if (behaviors.isEmpty() && commonPropertiesOptimization)
                 {
                     CommonHtmlAttributesUtil.renderEventPropertiesWithoutOnclick(writer,
                         commonPropertiesMarked, component);
@@ -396,7 +392,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                     HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
                             facesContext, writer, component, behaviors);
                 }
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesOptimization)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesWithoutStyleAndEvents(writer, 
                             commonPropertiesMarked, component);
@@ -411,10 +407,10 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             {
                 renderJavaScriptAnchorStart(facesContext, writer, component, clientId, form);
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesOptimization)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesWithoutOnclickAndStyle(writer, 
-                            CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
+                            commonPropertiesMarked, component);
                 }
                 else
                 {

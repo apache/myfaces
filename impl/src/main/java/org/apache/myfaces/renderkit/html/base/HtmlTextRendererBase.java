@@ -243,17 +243,16 @@ public class HtmlTextRendererBase
 
         renderValue(facesContext, component, writer);
 
+        boolean commonPropertiesOptimization = isCommonPropertiesOptimizationEnabled(facesContext);
+        long commonPropertiesMarked = commonPropertiesOptimization
+                ? CommonHtmlAttributesUtil.getMarkedAttributes(component) : 0L;
+
         Map<String, List<ClientBehavior>> behaviors = null;
         if (component instanceof ClientBehaviorHolder holder)
         {
             behaviors = holder.getClientBehaviors();
-            
-            long commonPropertiesMarked = 0L;
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
-            }
-            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+
+            if (behaviors.isEmpty() && commonPropertiesOptimization)
             {
                 CommonHtmlAttributesUtil.renderChangeEventProperty(writer, 
                         commonPropertiesMarked, component);
@@ -280,7 +279,7 @@ public class HtmlTextRendererBase
                             facesContext, writer, component, behaviors);
                 }
             }
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            if (commonPropertiesOptimization)
             {
                 CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
                         commonPropertiesMarked, component);
@@ -293,10 +292,10 @@ public class HtmlTextRendererBase
         }
         else
         {
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            if (commonPropertiesOptimization)
             {
                 CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabled(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
+                        commonPropertiesMarked, component);
             }
             else
             {

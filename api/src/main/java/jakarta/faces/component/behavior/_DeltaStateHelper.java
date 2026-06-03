@@ -561,8 +561,9 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
         }
 
         Object[] serializedState = (Object[]) state;
-        
-        if (!isInitialStateMarked() && !_fullState.isEmpty())
+
+        boolean initialStateMarked = isInitialStateMarked();
+        if (!initialStateMarked && !_fullState.isEmpty())
         {
             _fullState.clear();
             if(_deltas != null)
@@ -576,7 +577,7 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
             Serializable key = (Serializable) serializedState[cnt];
             Object savedValue = restoreAttachedState(context, serializedState[cnt + 1]);
 
-            if (isInitialStateMarked())
+            if (initialStateMarked)
             {
                 if (savedValue instanceof InternalDeltaListMap)
                 {

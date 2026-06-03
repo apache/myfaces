@@ -47,17 +47,29 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.startElement(HTML.SELECT_ELEM, uiComponent);
-        if (uiComponent instanceof ClientBehaviorHolder holder
-                && !holder.getClientBehaviors().isEmpty())
+
+        // Hoist client ID and optimization flags once; both are used multiple times below.
+        String clientId = uiComponent.getClientId(facesContext);
+        boolean commonPropertiesOptimization = isCommonPropertiesOptimizationEnabled(facesContext);
+        long commonPropertiesMarked = commonPropertiesOptimization
+                ? CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent) : 0L;
+
+        Map<String, List<ClientBehavior>> behaviors = null;
+        if (uiComponent instanceof ClientBehaviorHolder holder)
         {
-            writer.writeAttribute(HTML.ID_ATTR, uiComponent.getClientId(facesContext), null);
+            behaviors = holder.getClientBehaviors();
+        }
+
+        if (behaviors != null && !behaviors.isEmpty())
+        {
+            writer.writeAttribute(HTML.ID_ATTR, clientId, null);
         }
         else
         {
             HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
         }
         
-        writer.writeAttribute(HTML.NAME_ATTR, uiComponent.getClientId(facesContext), null);
+        writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
         
         List<SelectItemInfo> selectItemList;
         if (selectMany)
@@ -81,16 +93,9 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.SIZE_ATTR, Integer.toString(size), null);
         }
 
-        Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder holder)
+        if (behaviors != null)
         {
-            behaviors = holder.getClientBehaviors();
-            long commonPropertiesMarked = 0L;
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
-            }
-            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            if (behaviors.isEmpty() && commonPropertiesOptimization)
             {
                 CommonHtmlAttributesUtil.renderChangeEventProperty(writer, commonPropertiesMarked, uiComponent);
                 CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
@@ -118,10 +123,10 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
                 }
             }
             
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            if (commonPropertiesOptimization)
             {
                 CommonHtmlAttributesUtil.renderSelectPassthroughPropertiesWithoutDisabledAndEvents(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
+                        commonPropertiesMarked, uiComponent);
             }
             else
             {
@@ -133,10 +138,10 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         }
         else
         {
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            if (commonPropertiesOptimization)
             {
                 CommonHtmlAttributesUtil.renderSelectPassthroughPropertiesWithoutDisabled(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
+                        commonPropertiesMarked, uiComponent);
             }
             else
             {

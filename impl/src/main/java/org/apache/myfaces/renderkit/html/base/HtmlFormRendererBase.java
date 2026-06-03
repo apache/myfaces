@@ -105,18 +105,17 @@ public class HtmlFormRendererBase extends HtmlRenderer
         
         if (htmlForm instanceof ClientBehaviorHolder holder)
         {
-            behaviors = holder.getClientBehaviors();
+            long marked = CommonHtmlAttributesUtil.getMarkedAttributes(htmlForm);
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonHtmlAttributesUtil.renderEventProperties(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(htmlForm), htmlForm);
+                CommonHtmlAttributesUtil.renderEventProperties(writer, marked, htmlForm);
             }
             else
             {
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
                     CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
-                           CommonHtmlAttributesUtil.getMarkedAttributes(htmlForm),
+                           marked,
                            CommonHtmlEventsUtil.getMarkedEvents(htmlForm), htmlForm, behaviors);
                 }
                 else
@@ -127,7 +126,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
+                        marked, component);
                 HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_ATTRIBUTES);
             }
             else

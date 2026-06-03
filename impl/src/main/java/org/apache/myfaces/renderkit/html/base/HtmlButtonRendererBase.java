@@ -97,13 +97,13 @@ public class HtmlButtonRendererBase extends HtmlRenderer
     private static boolean isSubmitted(FacesContext facesContext, UIComponent uiComponent)
     {
         String clientId = uiComponent.getClientId(facesContext);
-        Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
+        Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
         String hiddenLink = null;
 
         UIForm form = ComponentUtils.findClosest(UIForm.class, uiComponent);
         if (form != null)
         {
-            hiddenLink = facesContext.getExternalContext().getRequestParameterMap().get(
+            hiddenLink = paramMap.get(
                 HtmlRendererUtils.getHiddenCommandLinkFieldName(form, facesContext));
         }
         return paramMap.containsKey(clientId) || paramMap.containsKey(clientId + IMAGE_BUTTON_SUFFIX_X) 
@@ -186,7 +186,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
             {
                 String onClick = buildBehaviorizedOnClick(uiComponent, behaviors, facesContext, writer,
                         form, validParams);
-                if (onClick.length() != 0)
+                if (!onClick.isEmpty())
                 {
                     if (!CommonHtmlEventsUtil.deferClientBehaviorScriptIfCspNonceActive(
                             facesContext, clientId, HTML.ONCLICK_ATTR, onClick))
@@ -204,7 +204,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
                 String onClick = ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, uiComponent,
                         ClientBehaviorEvents.CLICK, paramList, ClientBehaviorEvents.ACTION, paramList, behaviors,
                         commandOnclick , null);
-                if (onClick.length() != 0)
+                if (!onClick.isEmpty())
                 {
                     if (!CommonHtmlEventsUtil.deferClientBehaviorScriptIfCspNonceActive(
                             facesContext, clientId, HTML.ONCLICK_ATTR, onClick))
@@ -225,7 +225,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
             if (!reset && !button)
             {
                 StringBuilder onClick = buildOnClick(uiComponent, facesContext, writer, validParams);
-                if (onClick.length() != 0)
+                if (!onClick.isEmpty())
                 {
                     writer.writeAttribute(HTML.ONCLICK_ATTR, onClick.toString(), null);
                 }
