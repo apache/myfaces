@@ -579,13 +579,9 @@ public abstract class UIComponentBase extends UIComponent
     {
         Assert.notNull(context, "context");
 
-        boolean isCachedFacesContext = isCachedFacesContext();
         try
         {
-            if (!isCachedFacesContext)
-            {
-                setCachedFacesContext(context);
-            }
+            setCachedFacesContext(context);
             if (isRendered())
             {
                 // If our rendered property is true, render the child UIComponents of this UIComponent.
@@ -616,10 +612,7 @@ public abstract class UIComponentBase extends UIComponent
         }
         finally
         {
-            if (!isCachedFacesContext)
-            {
-                setCachedFacesContext(null);
-            }
+            setCachedFacesContext(null);
         }
     }
 
