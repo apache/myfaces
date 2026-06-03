@@ -428,10 +428,10 @@ public abstract class UIComponentBase extends UIComponent
                 ((PartialStateHolder) entry.getValue()).clearInitialState();
             }
         }
-        if (_systemEventListenerClassMap != null)
+        if (_systemEventListeners != null)
         {
             for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener>> entry : 
-                _systemEventListenerClassMap.entrySet())
+                _systemEventListeners.entrySet())
             {
                 ((PartialStateHolder) entry.getValue()).clearInitialState();
             }
@@ -1186,10 +1186,10 @@ public abstract class UIComponentBase extends UIComponent
                 ((PartialStateHolder) entry.getValue()).markInitialState();
             }
         }
-        if (_systemEventListenerClassMap != null)
+        if (_systemEventListeners != null)
         {
             for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener>> entry : 
-                _systemEventListenerClassMap.entrySet())
+                _systemEventListeners.entrySet())
             {
                 ((PartialStateHolder) entry.getValue()).markInitialState();
             }
@@ -2173,19 +2173,21 @@ public abstract class UIComponentBase extends UIComponent
     @SuppressWarnings("unchecked")
     private void restoreFullSystemEventListenerClassMap(FacesContext facesContext, Object stateObj)
     {
+        // All list references are replaced — drop the entire view cache.
+        _unmodifiableSystemEventListeners = null;
         if (stateObj != null)
         {
             Map<Class<? extends SystemEvent>, Object> stateMap = (Map<Class<? extends SystemEvent>, Object>) stateObj;
-            _systemEventListenerClassMap = new HashMap<>(stateMap.size(), 1f);
+            _systemEventListeners = new HashMap<>(stateMap.size(), 1f);
             for (Map.Entry<Class<? extends SystemEvent>, Object> entry : stateMap.entrySet())
             {
-                _systemEventListenerClassMap.put(entry.getKey(),
+                _systemEventListeners.put(entry.getKey(),
                         (List<SystemEventListener>) restoreAttachedState(facesContext, entry.getValue()));
             }
         }
         else
         {
-            _systemEventListenerClassMap = null;
+            _systemEventListeners = null;
         }        
     }
     
@@ -2195,23 +2197,27 @@ public abstract class UIComponentBase extends UIComponent
         if (stateObj != null)
         {
             Map<Class<? extends SystemEvent>, Object> stateMap = (Map<Class<? extends SystemEvent>, Object>) stateObj;
-            if (_systemEventListenerClassMap == null)
+            if (_systemEventListeners == null)
             {
-                _systemEventListenerClassMap = new HashMap<>(stateMap.size(), 1f);
+                _systemEventListeners = new HashMap<>(stateMap.size(), 1f);
             }
             for (Map.Entry<Class<? extends SystemEvent>, Object> entry : stateMap.entrySet())
             {
                 Object savedObject = entry.getValue(); 
                 if (savedObject instanceof _AttachedDeltaWrapper wrapper)
                 {
-                    StateHolder holderList = (StateHolder) _systemEventListenerClassMap.get(entry.getKey());
+                    // In-place delta restore: the existing list reference is kept, its contents
+                    // are mutated. The cached UnmodifiableList view delegates reads to the
+                    // backing list, so no cache invalidation is needed.
+                    StateHolder holderList = (StateHolder) _systemEventListeners.get(entry.getKey());
                     holderList.restoreState(facesContext,
                                             wrapper.getWrappedStateObject());
                 }
                 else
                 {
-                    _systemEventListenerClassMap.put(entry.getKey(),
+                    _systemEventListeners.put(entry.getKey(),
                             (List<SystemEventListener>) restoreAttachedState(facesContext, savedObject));
+                    _unmodifiableSystemEventListeners = null;
                 }
             }
         }
@@ -2219,15 +2225,15 @@ public abstract class UIComponentBase extends UIComponent
     
     private Object saveSystemEventListenerClassMap(FacesContext facesContext)
     {
-        if (_systemEventListenerClassMap != null)
+        if (_systemEventListeners != null)
         {
             if (initialStateMarked())
             {
                 HashMap<Class<? extends SystemEvent>, Object> stateMap
-                        = new HashMap<>(_systemEventListenerClassMap.size(), 1);
+                        = new HashMap<>(_systemEventListeners.size(), 1);
                 boolean nullDelta = true;
                 for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener> > entry
-                        : _systemEventListenerClassMap.entrySet())
+                        : _systemEventListeners.entrySet())
                 {
                     // The list is always an instance of _DeltaList so we can cast to
                     // PartialStateHolder 
@@ -2238,7 +2244,7 @@ public abstract class UIComponentBase extends UIComponent
                         if (attachedState != null)
                         {
                             stateMap.put(entry.getKey(),
-                                    new _AttachedDeltaWrapper(_systemEventListenerClassMap.getClass(), attachedState));
+                                    new _AttachedDeltaWrapper(_systemEventListeners.getClass(), attachedState));
                             nullDelta = false;
                         }
                     }
@@ -2258,9 +2264,9 @@ public abstract class UIComponentBase extends UIComponent
             {
                 //Save it in the traditional way
                 HashMap<Class<? extends SystemEvent>, Object> stateMap = 
-                    new HashMap<>(_systemEventListenerClassMap.size(), 1);
+                    new HashMap<>(_systemEventListeners.size(), 1);
                 for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener>> entry
-                        : _systemEventListenerClassMap.entrySet())
+                        : _systemEventListeners.entrySet())
                 {
                     stateMap.put(entry.getKey(), saveAttachedState(facesContext, entry.getValue()));
                 }
