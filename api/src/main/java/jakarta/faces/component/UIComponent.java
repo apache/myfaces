@@ -145,6 +145,9 @@ public abstract class UIComponent
      */
     private boolean _initialStateMarked = false;
 
+    @Deprecated
+    protected Map<String, ValueExpression> bindings;
+
     public UIComponent()
     {
     }
@@ -341,7 +344,7 @@ public abstract class UIComponent
 
         if (expression == null)
         {
-            getStateHelper().remove(PropertyKeys.valueExpressions, name);
+            getStateHelper().remove(PropertyKeys.bindings, name);
         }
         else
         {
@@ -359,7 +362,7 @@ public abstract class UIComponent
                 }
             }
 
-            getStateHelper().put(PropertyKeys.valueExpressions, name, expression);
+            getStateHelper().put(PropertyKeys.bindings, name, expression);
         }
     }
 
@@ -618,11 +621,10 @@ public abstract class UIComponent
     {
         Assert.notNull(name, "name");
 
-        Map<String, Object> valueExpressions = (Map<String, Object>)
-                getStateHelper().get(PropertyKeys.valueExpressions);
-        if (valueExpressions != null)
+        Map<String, Object> bindings = (Map<String, Object>) getStateHelper().get(PropertyKeys.bindings);
+        if (bindings != null)
         {
-            return (ValueExpression) valueExpressions.get(name);
+            return (ValueExpression) bindings.get(name);
         }
 
         return null;
@@ -637,22 +639,6 @@ public abstract class UIComponent
     public abstract Map<String, UIComponent> getFacets();
 
     public abstract UIComponent getFacet(String name);
-
-    /**
-     * <p>
-     * Convenience method to return the named facet using an enum identifier, if it exists, or <code>null</code>
-     * otherwise. This method delegates to {@link #getFacet(String)} using the result of calling
-     * <code>identifier.toString()</code>. If the requested facet does not exist, the facets Map must not be created.
-     * </p>
-     *
-     * @param identifier Enum identifier of the desired facet
-     * @return the component, or <code>null</code>.
-     * @since 5.0
-     */
-    public UIComponent getFacet(Enum<?> identifier)
-    {
-        return getFacet(identifier.toString());
-    }
 
     public abstract Iterator<UIComponent> getFacetsAndChildren();
 
@@ -719,7 +705,7 @@ public abstract class UIComponent
 
     protected abstract void addFacesListener(FacesListener listener);
 
-    protected abstract FacesListener[] getFacesListeners(Class<? extends FacesListener> clazz);
+    protected abstract FacesListener[] getFacesListeners(Class clazz);
 
     protected abstract void removeFacesListener(FacesListener listener);
 
@@ -974,7 +960,7 @@ public abstract class UIComponent
         rendered,
         rendererType,
         attributesMap,
-        valueExpressions,
+        bindings,
         facesListeners,
         passThroughAttributesMap
     }
