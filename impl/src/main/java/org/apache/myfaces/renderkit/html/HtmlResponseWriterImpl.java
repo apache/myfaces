@@ -35,6 +35,7 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.ContentTypeUtils;
 import org.apache.myfaces.renderkit.html.util.UnicodeEncoder;
@@ -64,6 +65,8 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     private static final String CDATA_END_NO_LINE_RETURN = "]]>";
     private static final String COMMENT_COMMENT_END = "\n//-->";
     private static final String COMMENT_END = "\n-->";
+
+    private static final String JAVASCRIPT_SCHEME = "javascript:";
 
     static private final String[][] EMPTY_ELEMENT_ARR = new String[256][];
 
@@ -183,7 +186,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     private String _startElementName;
     private boolean _isInsideScript = false;
     private boolean _isStyle = false;
-    private Boolean _isTextArea;
+    private boolean _isTextArea = false;
     private UIComponent _startElementUIComponent;
     private boolean _startTagOpen;
     private Map<String, Object> _passThroughAttributesMap;
@@ -306,6 +309,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     public void endDocument() throws IOException
     {
         FacesContext facesContext = getFacesContext();
+        CommonHtmlEventsUtil.flushDeferredCspBehaviorScripts(facesContext, this);
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
         if (myfacesConfig.isEarlyFlushEnabled())
         {
@@ -336,9 +340,9 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             Object value = _passThroughAttributesMap.get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
             if (value != null)
             {
-                if (value instanceof ValueExpression)
+                if (value instanceof ValueExpression expression)
                 {
-                    value = ((ValueExpression)value).getValue(getFacesContext().getELContext());
+                    value = expression.getValue(getFacesContext().getELContext());
                 }
                 String elementName = value.toString().trim();
                 
@@ -366,21 +370,23 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             _startedElementsCount.set(i, _startedElementsCount.get(i)+1);
         }
         
-        // Each time we start a element, it is necessary to check <script> or <style>,
-        // because we need to buffer all content to post process it later when it reach its end
-        // according to the initialization properties used.
-        if(isScript(_startElementName))
+        // Each time we start an element, check for <script>, <style>, or <textarea>
+        // so that writeText() can make the right encoding choice without lazy detection.
+        if (isScript(_startElementName))
         {
-            // handle a <script> start
             _isInsideScript = true;
             _isStyle = false;
-            _isTextArea = Boolean.FALSE;
+            _isTextArea = false;
         }
         else if (isStyle(_startElementName))
         {
             _isInsideScript = false;
             _isStyle = true;
-            _isTextArea = Boolean.FALSE;
+            _isTextArea = false;
+        }
+        else
+        {
+            _isTextArea = HTML.TEXTAREA_ELEM.equalsIgnoreCase(_startElementName);
         }
     }
 
@@ -421,9 +427,9 @@ public class HtmlResponseWriterImpl extends ResponseWriter
                     }
                     
                     Object value = entry.getValue();
-                    if (value instanceof ValueExpression)
+                    if (value instanceof ValueExpression expression)
                     {
-                        value = ((ValueExpression)value).getValue(getFacesContext().getELContext());
+                        value = expression.getValue(getFacesContext().getELContext());
                     }
                     // encodeAndWriteURIAttribute(key, value, key);
                     // Faces 2.2 In the renderkit javadoc of jsf 2.2 spec says this 
@@ -437,7 +443,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
                     // Note here it says "as if they were passed", instead say "... attributes are
                     // encoded and rendered as if ...". Black box testing against RI shows that there
                     // is no URI encoding at all in this part, so in this case the best is do the
-                    // same here. After all, it is resposibility of the one who set the passthrough
+                    // same here. After all, it is responsibility of the one who set the passthrough
                     // attribute to do the proper encoding in cases when a URI is provided. However,
                     // that does not means the attribute should not be encoded as other attributes.
                     encodeAndWriteAttribute(key, value);
@@ -495,7 +501,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
         _startElementUIComponent = null;
         _passThroughAttributesMap = null;
         _isStyle = false;
-        _isTextArea = null;
+        _isTextArea = false;
     }
 
     @Override
@@ -507,9 +513,10 @@ public class HtmlResponseWriterImpl extends ResponseWriter
 
         if (!_startedElementsCount.isEmpty())
         {
-            int i = _startedElementsCount.size()-1;
-            _startedElementsCount.set(i, _startedElementsCount.get(i)-1);
-            if (_startedElementsCount.get(i) == 0)
+            int i = _startedElementsCount.size() - 1;
+            int count = _startedElementsCount.get(i) - 1;
+            _startedElementsCount.set(i, count);
+            if (count == 0)
             {
                 elementName = _startedChangedElements.get(i);
                 _startedChangedElements.remove(i);
@@ -582,9 +589,9 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     
     private void writeStyleContent() throws IOException
     {
-        String content = getInternalBuffer().toString();
-        
-        if(_isXhtmlContentType)
+        StreamCharBuffer buffer = getInternalBuffer();
+
+        if (_isXhtmlContentType)
         {
             // In xhtml, the content inside <style> tag is PCDATA, but
             // in html the content is CDATA, so in order to preserve 
@@ -592,7 +599,9 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             // CDATA tags.
             // Since the response content type is xhtml, we can use
             // simple CDATA without comments, but note we need to check
-            // when we are using any valid notation (simple CDATA, commented CDATA, xml comment) 
+            // when we are using any valid notation (simple CDATA, commented CDATA, xml comment)
+            // toString() is only called here because we need trim()/startsWith() inspection.
+            String content = buffer.toString();
             String trimmedContent = content.trim();
             if (trimmedContent.startsWith(CommentUtils.CDATA_SIMPLE_START) && trimmedContent.endsWith(
                     CommentUtils.CDATA_SIMPLE_END))
@@ -618,27 +627,28 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             else
             {
                 _outputWriter.write(CDATA_START);
-                _outputWriter.write(content);
+                buffer.writeTo(_outputWriter);
                 _outputWriter.write(CDATA_END);
                 return;                
             }
         }
-        // If the response is handled as text/html, 
-        // it is not necessary to wrap with xml comment tag,
-        // so we can just write the content as is.
-        _outputWriter.write(content);
+        // If the response is handled as text/html,
+        // it is not necessary to wrap with xml comment tag, so write the buffer directly
+        // without materialising it to a String first.
+        buffer.writeTo(_outputWriter);
     }
     
     private void writeScriptContent() throws IOException
     {
-        String content = getInternalBuffer().toString();
-        String trimmedContent = null;
-        
-        if(_isXhtmlContentType)
+        StreamCharBuffer buffer = getInternalBuffer();
+
+        if (_isXhtmlContentType)
         {
-            trimmedContent = content.trim();
+            // toString() needed here for trim()/startsWith() inspection
+            String content = buffer.toString();
+            String trimmedContent = content.trim();
             
-            if ( trimmedContent.startsWith(CommentUtils.COMMENT_SIMPLE_START) && 
+            if (trimmedContent.startsWith(CommentUtils.COMMENT_SIMPLE_START) &&
                     CommentUtils.isEndMatchtWithInlineCommentedXmlCommentTag(trimmedContent))
             {
                 // In xhtml use xml comment to wrap is invalid, so it is only required to remove the <!--
@@ -690,7 +700,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
                    _outputWriter.write(CDATA_COMMENT_START);
                 }
 
-                _outputWriter.write(content);
+                buffer.writeTo(_outputWriter);
 
                 if (_cdataOpen)
                 {
@@ -704,42 +714,42 @@ public class HtmlResponseWriterImpl extends ResponseWriter
                 return;
             }
         }
-        else
+        else if (_wrapScriptContentWithXmlCommentTag)
         {
-            if (_wrapScriptContentWithXmlCommentTag)
+            // toString() needed here for trim()/startsWith() inspection
+            String content = buffer.toString();
+            String trimmedContent = content.trim();
+
+            if (trimmedContent.startsWith(CommentUtils.COMMENT_SIMPLE_START) &&
+                    CommentUtils.isEndMatchtWithInlineCommentedXmlCommentTag(trimmedContent))
             {
-                trimmedContent = content.trim();
-                
-                if ( trimmedContent.startsWith(CommentUtils.COMMENT_SIMPLE_START) && 
-                        CommentUtils.isEndMatchtWithInlineCommentedXmlCommentTag(trimmedContent))
-                {
-                    _outputWriter.write(content);
-                    return;
-                }
-                else if (CommentUtils.isStartMatchWithCommentedCDATA(trimmedContent) && 
-                        CommentUtils.isEndMatchWithCommentedCDATA(trimmedContent))
-                {
-                    _outputWriter.write(content);
-                    return;
-                }
-                else if (CommentUtils.isStartMatchWithInlineCommentedCDATA(trimmedContent) && 
-                        CommentUtils.isEndMatchWithInlineCommentedCDATA(trimmedContent))
-                {
-                    _outputWriter.write(content);
-                    return;
-                }
-                else
-                {
-                    _outputWriter.write(COMMENT_START);
-                    _outputWriter.write(content);
-                    _outputWriter.write(COMMENT_COMMENT_END);
-                    return;
-                }
+                _outputWriter.write(content);
+                return;
+            }
+            else if (CommentUtils.isStartMatchWithCommentedCDATA(trimmedContent) &&
+                    CommentUtils.isEndMatchWithCommentedCDATA(trimmedContent))
+            {
+                _outputWriter.write(content);
+                return;
+            }
+            else if (CommentUtils.isStartMatchWithInlineCommentedCDATA(trimmedContent) &&
+                    CommentUtils.isEndMatchWithInlineCommentedCDATA(trimmedContent))
+            {
+                _outputWriter.write(content);
+                return;
+            }
+            else
+            {
+                _outputWriter.write(COMMENT_START);
+                buffer.writeTo(_outputWriter);
+                _outputWriter.write(COMMENT_COMMENT_END);
+                return;
             }
         }
-        
-        //If no return, just write everything
-        _outputWriter.write(content);
+
+        // Common path: plain HTML without script wrapping — write buffer directly,
+        // avoiding a full String materialisation of the script content.
+        buffer.writeTo(_outputWriter);
     }
     
 
@@ -780,18 +790,17 @@ public class HtmlResponseWriterImpl extends ResponseWriter
         // Fast path: the overwhelming majority of attribute values are already Strings,
         // so handle them first and skip both the Boolean instanceof check and the
         // (no-op for String) toString() virtual dispatch.
-        if (value instanceof String)
+        if (value instanceof String strValue)
         {
-            String strValue = (String) value;
             _currentWriter.write(' ');
             _currentWriter.write(name);
             _currentWriter.write("=\"");
             HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
             _currentWriter.write('"');
         }
-        else if (value instanceof Boolean)
+        else if (value instanceof Boolean boolean1)
         {
-            if (((Boolean) value).booleanValue())
+            if (boolean1.booleanValue())
             {
                 // name as value for XHTML compatibility
                 _currentWriter.write(' ');
@@ -852,7 +861,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
         _currentWriter.write(' ');
         _currentWriter.write(name);
         _currentWriter.write("=\"");
-        if (strValue.toLowerCase().startsWith("javascript:"))
+        if (strValue.regionMatches(true, 0, JAVASCRIPT_SCHEME, 0, JAVASCRIPT_SCHEME.length()))
         {
             HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
         }
@@ -881,8 +890,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
 
         closeStartTagIfNecessary();
 
-        // Avoid a virtual dispatch when the value is already a String (the common case).
-        String strValue = value instanceof String ? (String) value : value.toString();
+        String strValue = (value instanceof String s) ? s : value.toString();
 
         if (isScriptOrStyle())
         {
@@ -916,15 +924,14 @@ public class HtmlResponseWriterImpl extends ResponseWriter
 
         if (isScriptOrStyle())
         {
-            String strValue = new String(cbuf, off, len);
             // Don't bother encoding anything if chosen character encoding is UTF-8
             if (_isUTF8)
             {
-                _currentWriter.write(strValue);
+                _currentWriter.write(cbuf, off, len);
             }
             else
             {
-                UnicodeEncoder.encode(_currentWriter, strValue);
+                UnicodeEncoder.encode(_currentWriter, cbuf, off, len);
             }
         }
         else if (isTextarea())
@@ -971,27 +978,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
 
     private boolean isTextarea()
     {
-        initializeStartedTagInfo();
-
-        return _isTextArea != null && _isTextArea;
-    }
-
-    private void initializeStartedTagInfo()
-    {
-        if (_startElementName != null)
-        {
-            if (_isTextArea == null)
-            {
-                if (_startElementName.equalsIgnoreCase(HTML.TEXTAREA_ELEM))
-                {
-                    _isTextArea = Boolean.TRUE;
-                }
-                else
-                {
-                    _isTextArea = Boolean.FALSE;
-                }
-            }
-        }
+        return _isTextArea;
     }
 
     @Override
