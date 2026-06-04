@@ -865,4 +865,119 @@ describe('Tests of the various aspects of the response protocol functionality', 
         done();
     });
 
+    // ── caret preservation on partial updates (Tobago regression) ─────────────
+
+    it('must keep the caret of a focused input when a partial response re-renders only a different component', function (done) {
+        // Reproduces the Tobago "<tc:in> triggers ajax, renders only <tc:out>" case.
+        // Every keystroke fires an ajax request that re-renders ONLY the output component,
+        // not the focused input. The caret of the input must survive each update so the
+        // next typed digit lands behind the previous one ("123") and not in front ("321").
+        const form = document.getElementById("form1");
+        const input = document.createElement("input");
+        input.setAttribute("type", "text");
+        input.id = "inputAjax";
+        input.setAttribute("name", "inputAjax");
+        form.appendChild(input);
+        const output = document.createElement("span");
+        output.id = "outputAjax";
+        form.appendChild(output);
+
+        (input as HTMLInputElement).focus();
+        (input as HTMLInputElement).setSelectionRange(0, 0);
+
+        // simulates the browser inserting a character at the current caret position
+        const typeChar = (ch: string) => {
+            const el = input as HTMLInputElement;
+            const pos = el.selectionStart ?? el.value.length;
+            el.value = el.value.slice(0, pos) + ch + el.value.slice(pos);
+            el.setSelectionRange(pos + 1, pos + 1);
+        };
+
+        // ajax request that re-renders only the output, followed by the matching partial response
+        const fireAjaxRenderingOnlyOutput = () => {
+            faces.ajax.request(input, null, {execute: "inputAjax", render: "outputAjax"});
+            this.respond(`<?xml version="1.0" encoding="UTF-8"?>
+                <partial-response>
+                    <changes>
+                        <update id="outputAjax"><![CDATA[<span id='outputAjax'>${(input as HTMLInputElement).value}</span>]]></update>
+                    </changes>
+                </partial-response>`);
+        };
+
+        typeChar("1");
+        fireAjaxRenderingOnlyOutput();
+        // the focused input is untouched by the output update -> caret stays behind the "1"
+        expect(document.activeElement?.id).to.eq("inputAjax");
+        expect((input as HTMLInputElement).selectionStart).to.eq(1);
+
+        typeChar("2");
+        fireAjaxRenderingOnlyOutput();
+        expect((input as HTMLInputElement).selectionStart).to.eq(2);
+
+        typeChar("3");
+        fireAjaxRenderingOnlyOutput();
+
+        expect((input as HTMLInputElement).value).to.eq("123");
+        expect((input as HTMLInputElement).selectionStart).to.eq(3);
+        expect(document.getElementById("outputAjax").innerHTML).to.eq("123");
+        done();
+    });
+
+    it('must keep the caret of a focused input when the partial response re-renders the input itself', function (done) {
+        // Same as above, but now the focused input IS part of the re-rendered markup, so the
+        // DOM node gets replaced. The caret must be re-applied to the freshly inserted node
+        // (this is what the getCaretPosition/selectionStart fix guards) so the next typed digit
+        // still lands behind the previous one ("123") and not in front ("321").
+        const form = document.getElementById("form1");
+        const input = document.createElement("input");
+        input.setAttribute("type", "text");
+        input.id = "inputAjax";
+        input.setAttribute("name", "inputAjax");
+        form.appendChild(input);
+
+        (input as HTMLInputElement).focus();
+        (input as HTMLInputElement).setSelectionRange(0, 0);
+
+        // the input node is recreated on every update, so we always re-read the live element
+        const current = () => document.getElementById("inputAjax") as HTMLInputElement;
+
+        const typeChar = (ch: string) => {
+            const el = current();
+            const pos = el.selectionStart ?? el.value.length;
+            el.value = el.value.slice(0, pos) + ch + el.value.slice(pos);
+            el.setSelectionRange(pos + 1, pos + 1);
+        };
+
+        // ajax request that re-renders the input itself, echoing back the typed value
+        const fireAjaxRerenderingInput = () => {
+            const value = current().value;
+            faces.ajax.request(current(), null, {execute: "inputAjax", render: "inputAjax"});
+            this.respond(`<?xml version="1.0" encoding="UTF-8"?>
+                <partial-response>
+                    <changes>
+                        <update id="inputAjax"><![CDATA[<input type='text' id='inputAjax' name='inputAjax' value='${value}'>]]></update>
+                    </changes>
+                </partial-response>`);
+        };
+
+        typeChar("1");
+        fireAjaxRerenderingInput();
+        // the input node was replaced, but it must still be focused with the caret behind the "1"
+        expect(document.activeElement?.id).to.eq("inputAjax");
+        expect(current().value).to.eq("1");
+        expect(current().selectionStart).to.eq(1);
+
+        typeChar("2");
+        fireAjaxRerenderingInput();
+        expect(current().value).to.eq("12");
+        expect(current().selectionStart).to.eq(2);
+
+        typeChar("3");
+        fireAjaxRerenderingInput();
+
+        expect(current().value).to.eq("123");
+        expect(current().selectionStart).to.eq(3);
+        done();
+    });
+
 });
