@@ -1333,11 +1333,16 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             return undefined as any;
         }
 
-        let focusElementId = document?.activeElement?.id;
-        let caretPosition = (focusElementId) ? DomQuery.getCaretPosition(document.activeElement) : null;
+        let toReplace = this.getAsElem(0).value;
+        let activeElement = document?.activeElement;
+        let focusElementId = activeElement?.id;
+        // only save/restore the caret if the focused element is actually part of the
+        // subtree that gets replaced. Otherwise updating an unrelated component would
+        // reset the caret of a different, still focused input field.
+        let restoreFocus = !!focusElementId && !!(toReplace as any)?.contains?.(activeElement);
+        let caretPosition = restoreFocus ? DomQuery.getCaretPosition(activeElement) : null;
         let nodes = DomQuery.fromMarkup(markup);
         let res: DomQuery[] = [];
-        let toReplace = this.getAsElem(0).value;
         let firstInsert = nodes.get(0);
         let parentNode = toReplace.parentNode;
         let replaced = firstInsert.getAsElem(0).value;
@@ -1362,10 +1367,12 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             this.runCss();
         }
 
-        let focusElement = DomQuery.byId(focusElementId as any);
-        if (focusElementId && focusElement.isPresent() &&
-            caretPosition != null && "undefined" != typeof caretPosition) {
-            focusElement.eachElem(item => DomQuery.setCaretPosition(item, caretPosition));
+        if (restoreFocus) {
+            let focusElement = DomQuery.byId(focusElementId as any);
+            if (focusElement.isPresent() &&
+                caretPosition != null && "undefined" != typeof caretPosition) {
+                focusElement.eachElem(item => DomQuery.setCaretPosition(item, caretPosition));
+            }
         }
 
         return nodes;
@@ -1890,7 +1897,11 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         let caretPos = 0;
 
         try {
-            if ((document as any)?.selection) {
+            if (typeof ctrl?.selectionStart === "number") {
+                // modern browsers expose the caret position directly via selectionStart
+                caretPos = ctrl.selectionStart;
+            } else if ((document as any)?.selection) {
+                // legacy IE fallback
                 ctrl.focus();
                 let selection = (document as any).selection.createRange();
                 // the selection now is start zero
