@@ -31,8 +31,6 @@ import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
-
 import jakarta.el.ELManager;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.Application;
@@ -328,9 +326,6 @@ public class FacesInitializerImpl implements FacesInitializer
         _dispatchApplicationEvent(servletContext, PreDestroyApplicationEvent.class);
 
         _callPreDestroyOnInjectedJSFArtifacts(facesContext);
-        
-        // clear the cache of MetaRulesetImpl in order to prevent a memory leak
-        MetaRulesetImpl.clearMetadataTargetCache();
 
         if (facesContext.getExternalContext().getApplicationMap().containsKey(PUSH_INITIALIZED))
         {

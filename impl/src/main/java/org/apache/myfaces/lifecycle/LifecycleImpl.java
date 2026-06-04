@@ -119,7 +119,7 @@ public class LifecycleImpl extends Lifecycle
             new FacesConfigurator(facesContext.getExternalContext()).update();
         }
 
-        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
+        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, phaseListeners);
         for (PhaseExecutor executor : lifecycleExecutors)
         {
             if (executePhase(facesContext, executor, phaseListenerMgr))
@@ -219,7 +219,7 @@ public class LifecycleImpl extends Lifecycle
             log.finest("Entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
         }
 
-        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
+        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, phaseListeners);
         Flash flash = facesContext.getExternalContext().getFlash();
 
         try

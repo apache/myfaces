@@ -1766,9 +1766,9 @@ public class ResourceHandlerImpl extends ResourceHandler
                 {
                     for (Annotation anno : bean.getBeanClass().getAnnotations())
                     {
-                        if (anno instanceof View view)
+                        if (anno instanceof View)
                         {
-                            views.add(view.value());
+                            views.add(((View) anno).value());
                         }
                     }
                 }
