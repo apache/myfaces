@@ -70,27 +70,27 @@ public class PropertyDescriptorUtils
     
     private static Map<String, Map<String, ? extends PropertyDescriptorWrapper>> getCache(ExternalContext ec)
     {
-        Map<String, Map<String, ? extends PropertyDescriptorWrapper>> cache = 
-                (Map<String, Map<String, ? extends PropertyDescriptorWrapper>>) ec.getApplicationMap().get(CACHE_KEY);
-        if (cache == null)
+        Map<String, Object> appMap = ec.getApplicationMap();
+        Map<String, Map<String, ? extends PropertyDescriptorWrapper>> cache =
+                (Map<String, Map<String, ? extends PropertyDescriptorWrapper>>) appMap.get(CACHE_KEY);
+        if (cache != null)
         {
-            cache = new ConcurrentHashMap<>(1000);
-            ec.getApplicationMap().put(CACHE_KEY, cache);
+            return cache;
         }
-
-        return cache;
+        return (Map<String, Map<String, ? extends PropertyDescriptorWrapper>>) appMap.computeIfAbsent(CACHE_KEY,
+                k -> new ConcurrentHashMap<>(1000));
     }
 
     public static Map<String, ? extends PropertyDescriptorWrapper> getCachedPropertyDescriptors(ExternalContext ec,
             Class<?> target)
     {
-        Map<String, ? extends PropertyDescriptorWrapper> cache = getCache(ec).get(target.getName());
-        if (cache == null)
+        Map<String, Map<String, ? extends PropertyDescriptorWrapper>> outer = getCache(ec);
+        Map<String, ? extends PropertyDescriptorWrapper> cache = outer.get(target.getName());
+        if (cache != null)
         {
-            cache = getCache(ec).computeIfAbsent(target.getName(), k -> getPropertyDescriptors(ec, target));
+            return cache;
         }
-
-        return cache;
+        return outer.computeIfAbsent(target.getName(), k -> getPropertyDescriptors(ec, target));
     }
 
     public static boolean isUseLambdaMetafactory(ExternalContext ec)

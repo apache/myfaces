@@ -73,7 +73,7 @@ public class ClientBehaviorRendererUtils
                             clientId = componentClientId;
                         }
                     }
-                    if (component.getClientId(facesContext).equals(clientId))
+                    if (componentClientId.equals(clientId))
                     {
                         if (clientBehaviorList instanceof RandomAccess)
                         {
