@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
@@ -180,11 +181,23 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     {
         super();
         this._component = component;
-        _fullState = new HashMap<Serializable, Object>();
         _deltas = null;
         _transientState = null;
         _initialFullState = null;
         _copyFullInitialState = false;
+    }
+
+    /**
+     * Returns {@code _fullState}, allocating it on first write.
+     * Read paths guard with {@code if (_fullState != null)} instead of calling this.
+     */
+    private Map<Serializable, Object> _ensureFullState()
+    {
+        if (_fullState == null)
+        {
+            _fullState = new HashMap<>();
+        }
+        return _fullState;
     }
 
     /**
@@ -201,8 +214,11 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                 if (_initialState == null)
                 {
                     // Copy it directly
-                    _initialFullState = new HashMap<Serializable, Object>();
-                    copyMap(_component.getFacesContext(), _fullState, _initialFullState);
+                    _initialFullState = new HashMap<>();
+                    if (_fullState != null)
+                    {
+                        copyMap(_component.getFacesContext(), _fullState, _initialFullState);
+                    }
                 }
                 else
                 {
@@ -223,14 +239,17 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                         // contains some key already defined in initialState, this key must be
                         // overriden. It is better to do in that way, because it is possible
                         // to skip resetState() if the view cannot be recycled.
-                        _initialFullState = new HashMap<Serializable, Object>();
-                        copyMap(_component.getFacesContext(), _fullState, _initialFullState);
+                        _initialFullState = new HashMap<>();
+                        if (_fullState != null)
+                        {
+                            copyMap(_component.getFacesContext(), _fullState, _initialFullState);
+                        }
                     }
                 }
             }
             if (_deltas == null)
             {
-                _deltas = new HashMap<Serializable, Object>(2);
+                _deltas = new HashMap<>();
             }
             return true;
         }
@@ -315,11 +334,11 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         }
 
         //Handle change on full map
-        List<Object> fullListValues = (List<Object>) _fullState.get(key);
+        List<Object> fullListValues = _fullState != null ? (List<Object>) _fullState.get(key) : null;
         if (fullListValues == null)
         {
             fullListValues = new InternalList<>(3);
-            _fullState.put(key, fullListValues);
+            _ensureFullState().put(key, fullListValues);
         }
 
         fullListValues.add(value);
@@ -328,12 +347,17 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     @Override
     public Object eval(Serializable key)
     {
+        if (_fullState == null)
+        {
+            return null;
+        }
         Object returnValue = _fullState.get(key);
         if (returnValue != null)
         {
             return returnValue;
         }
-        ValueExpression expression = _component.getValueExpression(key.toString());
+        String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
+        ValueExpression expression = _component.getValueExpression(name);
         if (expression != null)
         {
             return expression.getValue(_component.getFacesContext().getELContext());
@@ -344,59 +368,54 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     @Override
     public Object eval(Serializable key, Object defaultValue)
     {
+        if (_fullState == null)
+        {
+            return defaultValue;
+        }
         Object returnValue = _fullState.get(key);
-
         if (returnValue == null)
         {
-            ValueExpression expression = _component.getValueExpression(key.toString());
+            String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
+            ValueExpression expression = _component.getValueExpression(name);
             if (expression != null)
             {
                 returnValue = expression.getValue(_component.getFacesContext().getELContext());
             }
         }
-        
-        if (returnValue == null)
-        {
-            returnValue = defaultValue;
-        }
-
-        return returnValue;
+        return returnValue != null ? returnValue : defaultValue;
     }
-    
 
     /**
-     * 
-     * @param key
-     * @param defaultValueSupplier
-     * @return 
-     * 
      * @since 4.0
      */
     @Override
     public Object eval(Serializable key, Supplier<Object> defaultValueSupplier)
     {
+        if (_fullState == null)
+        {
+            return defaultValueSupplier != null ? defaultValueSupplier.get() : null;
+        }
         Object returnValue = _fullState.get(key);
-        
-        if (returnValue == null) {
-            ValueExpression expression = _component.getValueExpression(key.toString());
+        if (returnValue == null)
+        {
+            String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
+            ValueExpression expression = _component.getValueExpression(name);
             if (expression != null)
             {
                 returnValue = expression.getValue(_component.getFacesContext().getELContext());
             }
         }
-
         if (returnValue == null && defaultValueSupplier != null)
         {
             returnValue = defaultValueSupplier.get();
         }
-
         return returnValue;
     }
 
     @Override
     public Object get(Serializable key)
     {
-        return _fullState.get(key);
+        return _fullState != null ? _fullState.get(key) : null;
     }
 
     @Override
@@ -408,21 +427,21 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             if (_deltas.containsKey(key))
             {
                 returnValue = _deltas.put(key, value);
-                _fullState.put(key, value);
+                _ensureFullState().put(key, value);
             }
-            else if (value == null && !_fullState.containsKey(key))
+            else if (value == null && (_fullState == null || !_fullState.containsKey(key)))
             {
                 returnValue = null;
             }
             else
             {
                 _deltas.put(key, value);
-                returnValue = _fullState.put(key, value);
+                returnValue = _ensureFullState().put(key, value);
             }
         }
         else
         {
-            returnValue = _fullState.put(key, value);
+            returnValue = _ensureFullState().put(key, value);
         }
         return returnValue;
     }
@@ -454,11 +473,11 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         }
 
         //Handle change on full map
-        Map<String, Object> mapValues = (Map<String, Object>) _fullState.get(key);
+        Map<String, Object> mapValues = _fullState != null ? (Map<String, Object>) _fullState.get(key) : null;
         if (mapValues == null)
         {
             mapValues = new InternalMap<>();
-            _fullState.put(key, mapValues);
+            _ensureFullState().put(key, mapValues);
         }
 
         if (returnSet)
@@ -482,18 +501,21 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             {
                 // Keep track of the removed values using key/null pair on the delta map
                 returnValue = _deltas.put(key, null);
-                _fullState.remove(key);
+                if (_fullState != null)
+                {
+                    _fullState.remove(key);
+                }
             }
             else
             {
                 // Keep track of the removed values using key/null pair on the delta map
                 _deltas.put(key, null);
-                returnValue = _fullState.remove(key);
+                returnValue = _fullState != null ? _fullState.remove(key) : null;
             }
         }
         else
         {
-            returnValue = _fullState.remove(key);
+            returnValue = _fullState != null ? _fullState.remove(key) : null;
         }
         return returnValue;
     }
@@ -507,7 +529,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         // InternalMap and InternalList to prevent mixing, so to be 
         // consistent we'll cast to those classes here.
         
-        Object collectionOrMap = _fullState.get(key);
+        Object collectionOrMap = _fullState != null ? _fullState.get(key) : null;
         Object returnValue = null;
         if (collectionOrMap instanceof InternalMap)
         {
@@ -716,7 +738,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         Object[] serializedState = (Object[]) state;
 
         boolean initialStateMarked = isInitialStateMarked();
-        if (!initialStateMarked && !_fullState.isEmpty())
+        if (!initialStateMarked && _fullState != null && !_fullState.isEmpty())
         {
             _fullState.clear();
             if(_deltas != null)
@@ -806,7 +828,14 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         if (_initialFullState != null)
         {
             // If there is no delta, fullState is not required to be cleared.
-            _fullState.clear();
+            if (_fullState != null)
+            {
+                _fullState.clear();
+            }
+            else
+            {
+                _fullState = new HashMap<>();
+            }
             copyMap(context, _initialFullState, _fullState);
         }
         if (_initialState != null)
@@ -816,7 +845,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             {
                 Serializable key2 = (Serializable) _initialState[i];
                 Object defaultValue = _initialState[i+1];
-                if (_fullState.containsKey(key2))
+                if (_fullState != null && _fullState.containsKey(key2))
                 {
                     _fullState.put(key2, defaultValue);
                 }
@@ -1039,7 +1068,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         for (int i = 0; i < defaultInitialState.length; i+=2)
         {
             Serializable key = (Serializable) defaultInitialState[i];
-            if (_fullState.containsKey(key))
+            if (_fullState != null && _fullState.containsKey(key))
             {
                 canApplyDefaultInitialState = false;
                 break;
@@ -1058,7 +1087,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             {
                 Serializable key = (Serializable) defaultInitialState[i];
                 initialState[i] = key;
-                if (_fullState.containsKey(key))
+                if (_fullState != null && _fullState.containsKey(key))
                 {
                     initialState[i+1] = _fullState.get(key);
                 }
