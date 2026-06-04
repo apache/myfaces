@@ -163,8 +163,16 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
     {
         super();
         this._target = target;
-        this._fullState = new HashMap<>();
         this._deltas = null;
+    }
+
+    private Map<Serializable, Object> _ensureFullState()
+    {
+        if (_fullState == null)
+        {
+            _fullState = new HashMap<>();
+        }
+        return _fullState;
     }
 
     /**
@@ -208,11 +216,11 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
         }
 
         //Handle change on full map
-        List<Object> fullListValues = (List<Object>) _fullState.get(key);
+        List<Object> fullListValues = _fullState != null ? (List<Object>) _fullState.get(key) : null;
         if (fullListValues == null)
         {
             fullListValues = new InternalList<>(3);
-            _fullState.put(key, fullListValues);
+            _ensureFullState().put(key, fullListValues);
         }
 
         fullListValues.add(value);
@@ -221,12 +229,17 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
     @Override
     public <T> T eval(Serializable key)
     {
+        if (_fullState == null)
+        {
+            return null;
+        }
         T returnValue = (T) _fullState.get(key);
         if (returnValue != null)
         {
             return returnValue;
         }
-        ValueExpression expression = _target.getValueExpression(key.toString());
+        String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
+        ValueExpression expression = _target.getValueExpression(name);
         if (expression != null)
         {
             return expression.getValue(_target.getFacesContext().getELContext());
@@ -237,59 +250,54 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
     @Override
     public <T> T eval(Serializable key, T defaultValue)
     {
+        if (_fullState == null)
+        {
+            return defaultValue;
+        }
         T returnValue = (T) _fullState.get(key);
-
         if (returnValue == null)
         {
-            ValueExpression expression = _target.getValueExpression(key.toString());
+            String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
+            ValueExpression expression = _target.getValueExpression(name);
             if (expression != null)
             {
                 returnValue = expression.getValue(_target.getFacesContext().getELContext());
             }
         }
-
-        if (returnValue == null)
-        {
-            returnValue = defaultValue;
-        }
-
-        return returnValue;
+        return returnValue != null ? returnValue : defaultValue;
     }
 
     /**
-     *
-     * @param key
-     * @param defaultValueSupplier
-     * @return
-     *
      * @since 4.0
      */
     @Override
     public <T> T eval(Serializable key, Supplier<T> defaultValueSupplier)
     {
+        if (_fullState == null)
+        {
+            return defaultValueSupplier != null ? defaultValueSupplier.get() : null;
+        }
         T returnValue = (T) _fullState.get(key);
-        
         if (returnValue == null)
         {
-            ValueExpression expression = _target.getValueExpression(key.toString());
+            String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
+            ValueExpression expression = _target.getValueExpression(name);
             if (expression != null)
             {
                 returnValue = expression.getValue(_target.getFacesContext().getELContext());
             }
         }
-
         if (returnValue == null && defaultValueSupplier != null)
         {
             returnValue = defaultValueSupplier.get();
         }
-
         return returnValue;
     }
 
     @Override
     public <T> T get(Serializable key)
     {
-        return (T) _fullState.get(key);
+        return _fullState != null ? (T) _fullState.get(key) : null;
     }
 
     @Override
@@ -301,21 +309,21 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
             if (_deltas.containsKey(key))
             {
                 returnValue = (T) _deltas.put(key, value);
-                _fullState.put(key, value);
+                _ensureFullState().put(key, value);
             }
-            else if (value == null && !_fullState.containsKey(key))
+            else if (value == null && (_fullState == null || !_fullState.containsKey(key)))
             {
                 returnValue = null;
             }
             else
             {
                 _deltas.put(key, value);
-                returnValue = (T) _fullState.put(key, value);
+                returnValue = (T) _ensureFullState().put(key, value);
             }
         }
         else
         {
-            returnValue = (T) _fullState.put(key, value);
+            returnValue = (T) _ensureFullState().put(key, value);
         }
         return returnValue;
     }
@@ -346,11 +354,11 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
         }
 
         //Handle change on full map
-        Map<String, Object> mapValues = (Map<String, Object>) _fullState.get(key);
+        Map<String, Object> mapValues = _fullState != null ? (Map<String, Object>) _fullState.get(key) : null;
         if (mapValues == null)
         {
             mapValues = new InternalMap<>();
-            _fullState.put(key, mapValues);
+            _ensureFullState().put(key, mapValues);
         }
 
         if (returnSet)
@@ -374,18 +382,21 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
             {
                 // Keep track of the removed values using key/null pair on the delta map
                 returnValue = _deltas.put(key, null);
-                _fullState.remove(key);
+                if (_fullState != null)
+                {
+                    _fullState.remove(key);
+                }
             }
             else
             {
                 // Keep track of the removed values using key/null pair on the delta map
                 _deltas.put(key, null);
-                returnValue = _fullState.remove(key);
+                returnValue = _fullState != null ? _fullState.remove(key) : null;
             }
         }
         else
         {
-            returnValue = _fullState.remove(key);
+            returnValue = _fullState != null ? _fullState.remove(key) : null;
         }
         return returnValue;
     }
@@ -399,7 +410,7 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
         // InternalMap and InternalList to prevent mixing, so to be 
         // consistent we'll cast to those classes here.
         
-        Object collectionOrMap = _fullState.get(key);
+        Object collectionOrMap = _fullState != null ? _fullState.get(key) : null;
         Object returnValue = null;
         if (collectionOrMap instanceof InternalMap)
         {
@@ -563,7 +574,7 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
         Object[] serializedState = (Object[]) state;
 
         boolean initialStateMarked = isInitialStateMarked();
-        if (!initialStateMarked && !_fullState.isEmpty())
+        if (!initialStateMarked && _fullState != null && !_fullState.isEmpty())
         {
             _fullState.clear();
             if(_deltas != null)
