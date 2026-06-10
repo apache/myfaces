@@ -90,7 +90,11 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
     {
         if (containsNamespace(ns))
         {
-            Map<String, TagHandlerFactory> map = _factories.computeIfAbsent(ns, k -> new HashMap<>());
+            Map<String, TagHandlerFactory> map = _factories.get(ns);
+            if (map == null)
+            {
+                map = _factories.computeIfAbsent(ns, k -> new HashMap<>());
+            }
             TagHandlerFactory f = map.get(localName);
             if (f != null)
             {

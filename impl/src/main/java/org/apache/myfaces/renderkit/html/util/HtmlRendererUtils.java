@@ -176,15 +176,15 @@ public final class HtmlRendererUtils
 
     private static boolean isTrue(Object obj)
     {
+        if (obj instanceof Boolean)
+        {
+            return (Boolean) obj;
+        }
         if (obj instanceof String)
         {
-            return Boolean.valueOf((String) obj);
+            return Boolean.parseBoolean((String) obj);
         }
-        if (!(obj instanceof Boolean))
-        {
-            return false;
-        }
-        return ((Boolean) obj);
+        return false;
     }
 
     /**
