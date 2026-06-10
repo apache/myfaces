@@ -110,8 +110,13 @@ public class RequestViewContext
     
     public static void setCurrentInstance(FacesContext ctx, UIViewRoot root, RequestViewContext rvc)
     {
-        Map<UIViewRoot, RequestViewContext> map = (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes()
-                .computeIfAbsent(VIEW_CONTEXT_KEY, k -> new HashMap<>(5));
+        Map<UIViewRoot, RequestViewContext> map =
+                (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes().get(VIEW_CONTEXT_KEY);
+        if (map == null)
+        {
+            map = (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes()
+                    .computeIfAbsent(VIEW_CONTEXT_KEY, k -> new HashMap<>());
+        }
         map.put(root, rvc);
     }
 
@@ -157,7 +162,11 @@ public class RequestViewContext
             renderTargetMapComponents = new HashMap<>(8);
         }
         
-        List<UIComponent> componentList = renderTargetMapComponents.computeIfAbsent(target, k -> new ArrayList<>(8));
+        List<UIComponent> componentList = renderTargetMapComponents.get(target);
+        if (componentList == null)
+        {
+            componentList = renderTargetMapComponents.computeIfAbsent(target, k -> new ArrayList<>(8));
+        }
         if (!componentList.contains(component))
         {
             componentList.add(component);

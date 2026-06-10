@@ -176,15 +176,15 @@ public final class HtmlRendererUtils
 
     private static boolean isTrue(Object obj)
     {
-        if (obj instanceof String string)
+        if (obj instanceof Boolean)
         {
-            return Boolean.valueOf(string);
+            return (Boolean) obj;
         }
-        if (!(obj instanceof Boolean))
+        if (obj instanceof String)
         {
-            return false;
+            return Boolean.parseBoolean((String) obj);
         }
-        return ((Boolean) obj);
+        return false;
     }
 
     /**
@@ -1646,7 +1646,7 @@ public final class HtmlRendererUtils
         // check hideNoSelectionOption for literal value (String) or ValueExpression (Boolean)
         Object hideNoSelectionOptionAttr = component.getAttributes().get(ComponentAttrs.HIDE_NO_SELECTION_OPTION_ATTR);
         return ((hideNoSelectionOptionAttr instanceof String s && "true"
-                .equalsIgnoreCase(s)) || 
+                .equalsIgnoreCase(s)) ||
                 (hideNoSelectionOptionAttr instanceof Boolean b &&b));
     }
 
