@@ -84,7 +84,20 @@ public class EditableValueHolderState implements Serializable
 
     public void restoreState(EditableValueHolder evh)
     {
-        evh.setValue(localValue);
+        // UIInput.setValue always calls setLocalValueSet(true) per spec, even when value is null.
+        // When the snapshot has localValueSet=false that forces a transient-state add followed
+        // immediately by a remove — wasteful in tight UIRepeat loops.
+        //
+        // Optimisation: skip setValue entirely when both the snapshot localValue and the
+        // component's current localValue are null — the StateHelper is already in the correct
+        // state and no write is needed. This is the common case in APPLY_REQUEST_VALUES and
+        // UPDATE_MODEL_VALUES where no conversion has happened yet.
+        // When either side is non-null, the normal setValue path is required to push/clear the
+        // value through the StateHelper.
+        if (localValue != null || evh.getLocalValue() != null)
+        {
+            evh.setValue(localValue);
+        }
         evh.setLocalValueSet(localValueSet);
         evh.setValid(valid);
         evh.setSubmittedValue(submittedValue);
@@ -102,10 +115,11 @@ public class EditableValueHolderState implements Serializable
 
     public static boolean isEmpty(EditableValueHolder evh)
     {
-        return evh.getLocalValue() == null
-                && evh.isValid()
+        // Check transient values first
+        return evh.isValid()
                 && !evh.isLocalValueSet()
-                && evh.getSubmittedValue() == null;
+                && evh.getSubmittedValue() == null
+                && evh.getLocalValue() == null;
     }
 
     public static class ImmutableEditableValueHolderState extends EditableValueHolderState

@@ -28,6 +28,8 @@ import java.util.Map;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.SimpleTransientStateHelper;
+
 import java.util.function.Supplier;
 
 /**
@@ -134,7 +136,7 @@ import java.util.function.Supplier;
  * 
  * </p>
  */
-class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientStateHolder
+class _DeltaStateHelper extends SimpleTransientStateHelper implements StateHelper
 {
 
     /**
@@ -154,8 +156,6 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
      * This map only keep track of delta changes to be saved
      */
     private Map<Serializable, Object> _deltas;
-    
-    private Map<Object, Object> _transientState;
 
     private Object[] _initialState;
 
@@ -164,7 +164,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     /**
      * This is a copy-on-write map of the full state after markInitialState()
      * was called, but before any delta is written that is not part of
-     * the initial state (value, localValueSet, submittedValue, valid).
+     * the initial state.
      * The intention is allow to reset the StateHelper when copyFullInitialState
      * is set to true.
      */
@@ -181,11 +181,14 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         super();
         this._component = component;
         _deltas = null;
-        _transientState = null;
         _initialFullState = null;
         _copyFullInitialState = false;
     }
 
+    /**
+     * Returns {@code _fullState}, allocating it on first write.
+     * Read paths guard with {@code if (_fullState != null)} instead of calling this.
+     */
     private Map<Serializable, Object> _ensureFullState()
     {
         if (_fullState == null)
@@ -244,7 +247,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             }
             if (_deltas == null)
             {
-                _deltas = new HashMap<Serializable, Object>(2);
+                _deltas = new HashMap<>();
             }
             return true;
         }
@@ -260,7 +263,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     private static void copyMap(FacesContext context, Map<Serializable, Object> sourceMap,
             Map<Serializable, Object> targetMap)
     {
-        Map serializableMap = sourceMap;
+        Map<Serializable, Object> serializableMap = sourceMap;
         Map.Entry<Serializable, Object> entry;
 
         Iterator<Map.Entry<Serializable, Object>> it = serializableMap.entrySet().iterator();
@@ -280,25 +283,6 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                 Object savedValue = UIComponentBase.saveAttachedState(context, value);
 
                 targetMap.put(key, UIComponentBase.restoreAttachedState(context, savedValue));
-            }
-            else if (!(value instanceof Serializable))
-            {
-                Object newInstance;
-                try
-                {
-                    newInstance = entry.getValue().getClass().newInstance();
-                }
-                catch (InstantiationException e)
-                {
-                    throw new RuntimeException("Could not restore StateHolder of type " + 
-                            entry.getValue().getClass().getName()
-                            + " (missing no-args constructor?)", e);
-                }
-                catch (IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                targetMap.put(key, newInstance);
             }
             else
             {
@@ -573,7 +557,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             Map<Serializable, Object> stateMap, Serializable key, Object valueOrKey)
     {
         Object returnValue = null;
-        Collection c = (Collection) stateMap.get(key);
+        Collection<?> c = (Collection<?>) stateMap.get(key);
         if (c != null)
         {
             if (c.remove(valueOrKey))
@@ -641,7 +625,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     public Object saveState(FacesContext context)
     {
         boolean initialStateMarked = isInitialStateMarked();
-        Map serializableMap = initialStateMarked ? _deltas : _fullState;
+        Map<Serializable, Object> serializableMap = initialStateMarked ? _deltas : _fullState;
 
         if (_initialState != null && _deltas != null && !_deltas.isEmpty()
             && initialStateMarked)
@@ -691,7 +675,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         }
 
         Map.Entry<Serializable, Object> entry;
-        Object[] retArr = new Object[serializableMap.entrySet().size() * 2];
+        Object[] retArr = new Object[serializableMap.size() * 2];
 
         Iterator<Map.Entry<Serializable, Object>> it = serializableMap.entrySet().iterator();
         int cnt = 0;
@@ -791,10 +775,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
      */
     public Object resetHardState(FacesContext context)
     {
-        if (_transientState != null)
-        {
-            _transientState.clear();
-        }
+        super.resetTransientState();
         if (_deltas != null && !_deltas.isEmpty() && isInitialStateMarked())
         {
             clearFullStateMap(context);
@@ -807,10 +788,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
      */
     public Object resetSoftState(FacesContext context)
     {
-        if (_transientState != null)
-        {
-            _transientState.clear();
-        }
+        super.resetTransientState();
         return null;
     }
     
@@ -1010,46 +988,6 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             }
             return values;
         }
-    }
-
-    @Override
-    public Object getTransient(Object key)
-    {
-        return (_transientState == null) ? null : _transientState.get(key);
-    }
-
-    @Override
-    public Object getTransient(Object key, Object defaultValue)
-    {
-        Object returnValue = _transientState == null ? null : _transientState.get(key);
-        if (returnValue != null)
-        {
-            return returnValue;
-        }
-        return defaultValue;
-    }
-
-    @Override
-    public Object putTransient(Object key, Object value)
-    {
-        if (_transientState == null)
-        {
-            _transientState = new HashMap<>();
-        }
-        return _transientState.put(key, value);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void restoreTransientState(FacesContext context, Object state)
-    {
-        _transientState = (Map<Object, Object>) state;
-    }
-    
-    @Override
-    public Object saveTransientState(FacesContext context)
-    {
-        return _transientState;
     }
 
     public void markPropertyInInitialState(Object[] defaultInitialState)

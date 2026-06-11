@@ -73,6 +73,14 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     
     private final static String COMPONENT_ADDED_BY_HANDLER_MARKER = "oam.vf.addedByHandler";
     
+    /**
+     * Framework marker written by PartialStateManagementStrategy to track per-component dynamic
+     * add/remove state across requests. Never a JavaBean property, so skipping
+     * {@code getPropertyDescriptor} for it avoids a full introspection-cache lookup that always
+     * misses. The value is stored directly in the underlying StateHelper attribute map.
+     */
+    private final static String COMPONENT_ADDED_AFTER_BUILD_VIEW = "oam.COMPONENT_ADDED_AFTER_BUILD_VIEW";
+
     public static final String PROPERTY_DESCRIPTOR_MAP_KEY = "oam.cc.beanInfo.PDM";
     
     /**
@@ -191,6 +199,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             {
                 return _component.isOamVfFacetCreatedUIPanel();
             }
+            else if (COMPONENT_ADDED_AFTER_BUILD_VIEW.length() == keyLength &&
+                COMPONENT_ADDED_AFTER_BUILD_VIEW.equals(key))
+            {
+                return getUnderlyingMap().containsKey(key);
+            }
 
             // The most common call to this method comes from UIComponent.isCompositeComponent()
             // to reduce the impact. This is better than two lookups, once over property descriptor map
@@ -308,6 +321,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 FACET_CREATED_UIPANEL_MARKER.equals(key))
             {
                 return _component.isOamVfFacetCreatedUIPanel();
+            }
+            else if (COMPONENT_ADDED_AFTER_BUILD_VIEW.length() == keyLength &&
+                COMPONENT_ADDED_AFTER_BUILD_VIEW.equals(key))
+            {
+                return getUnderlyingMap().get(key);
             }
         }
 
@@ -493,6 +511,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 _component.setOamVfFacetCreatedUIPanel(false);
                 return oldValue;
             }
+            else if (COMPONENT_ADDED_AFTER_BUILD_VIEW.length() == keyLength &&
+                COMPONENT_ADDED_AFTER_BUILD_VIEW.equals(key))
+            {
+                return _component.getStateHelper().remove(UIComponentBase.PropertyKeys.attributesMap, key);
+            }
             else if (UIComponent.BEANINFO_KEY.length() == keyLength 
                 && UIComponent.BEANINFO_KEY.equals(key))
             {
@@ -570,6 +593,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 Object oldValue = _component.isOamVfFacetCreatedUIPanel();
                 _component.setOamVfFacetCreatedUIPanel((Boolean)value);
                 return oldValue;
+            }
+            else if (COMPONENT_ADDED_AFTER_BUILD_VIEW.length() == keyLength &&
+                COMPONENT_ADDED_AFTER_BUILD_VIEW.equals(key))
+            {
+                return _component.getStateHelper().put(UIComponentBase.PropertyKeys.attributesMap, key, value);
             }
         }
 

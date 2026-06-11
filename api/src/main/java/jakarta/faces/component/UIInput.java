@@ -18,8 +18,6 @@
  */
 package jakarta.faces.component;
 
-import org.apache.myfaces.core.api.shared.SharedRendererUtils;
-import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFListener;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -53,8 +51,11 @@ import java.util.List;
 import java.util.Map;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude;
 import org.apache.myfaces.core.api.shared.BeanValidationUtils;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.core.api.shared.ExternalSpecifications;
 import org.apache.myfaces.core.api.shared.MessageUtils;
+import org.apache.myfaces.core.api.shared.SharedRendererUtils;
+import org.apache.myfaces.core.api.shared.SimpleTransientStateHelper;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
@@ -994,24 +995,17 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     @Override
     public boolean isValid()
     {
-        Object value = getStateHelper().get(PropertyKeys.valid);
-        if (value != null)
-        {
-            return (Boolean) value;        
-        }
-        return true; 
+        TransientStateHelper tsh = getTransientStateHelper(false);
+        return tsh == null || (Boolean) tsh.getTransient(PropertyKeys.valid, Boolean.TRUE);
     }
 
     @Override
     public void setValid(boolean valid)
     {
-        // default value for valid is true, so if the intention is to save the default
-        // value when nothing else was set before, don't do it. This is done in order to
-        // reduce the size of the saved state of the state helper. Default values won't be
-        // included in the saved state. 
-        if (getStateHelper().get(PropertyKeys.valid) != null || !valid)
+        SimpleTransientStateHelper tsh = (SimpleTransientStateHelper) getTransientStateHelper(!valid);
+        if (tsh != null)
         {
-            getStateHelper().put(PropertyKeys.valid, valid );
+            tsh.setOrRemoveTransient(PropertyKeys.valid, valid ? null : Boolean.FALSE);
         }
     }
 
@@ -1024,24 +1018,17 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     @Override
     public boolean isLocalValueSet()
     {
-        Object value = getStateHelper().get(PropertyKeys.localValueSet);
-        if (value != null)
-        {
-            return (Boolean) value;        
-        }
-        return false;
+        TransientStateHelper tsh = getTransientStateHelper(false);
+        return tsh != null && (Boolean) tsh.getTransient(PropertyKeys.localValueSet, Boolean.FALSE);
     }
 
     @Override
     public void setLocalValueSet(boolean localValueSet)
     {
-        // default value for localValueSet is false, so if the intention is to save the default
-        // value when nothing else was set before, don't do it. This is done in order to
-        // reduce the size of the saved state of the state helper. Default values won't be
-        // included in the saved state.
-        if (getStateHelper().get(PropertyKeys.localValueSet) != null || localValueSet)
+        SimpleTransientStateHelper tsh = (SimpleTransientStateHelper) getTransientStateHelper(localValueSet);
+        if (tsh != null)
         {
-            getStateHelper().put(PropertyKeys.localValueSet, localValueSet );
+            tsh.setOrRemoveTransient(PropertyKeys.localValueSet, localValueSet ? Boolean.TRUE : null);
         }
     }
 
@@ -1055,7 +1042,8 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     @JSFProperty(tagExcluded = true)
     public Object getSubmittedValue()
     {
-        return  getStateHelper().get(PropertyKeys.submittedValue);
+        TransientStateHelper tsh = getTransientStateHelper(false);
+        return tsh == null ? null : tsh.getTransient(PropertyKeys.submittedValue);
     }
 
     @Override
@@ -1066,9 +1054,13 @@ public class    UIInput extends UIOutput implements EditableValueHolder
         {
             // extended debug-info when in Development mode
             _createFieldDebugInfo(facesContext, "submittedValue",
-                    getStateHelper().get(PropertyKeys.submittedValue), submittedValue, 1);
+                    getSubmittedValue(), submittedValue, 1);
         }
-        getStateHelper().put(PropertyKeys.submittedValue, submittedValue );
+        SimpleTransientStateHelper tsh = (SimpleTransientStateHelper) getTransientStateHelper(submittedValue != null);
+        if (tsh != null)
+        {
+            tsh.setOrRemoveTransient(PropertyKeys.submittedValue, submittedValue);
+        }
     }
 
     @Override
@@ -1112,13 +1104,7 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     private static final Object[] INITIAL_STATE_PROPERTIES = new
             Object[]{
                 UIOutput.PropertyKeys.value,
-                null,
-                UIInput.PropertyKeys.localValueSet,
-                false,
-                UIInput.PropertyKeys.submittedValue,
-                null,
-                UIInput.PropertyKeys.valid,
-                true
+                null
             };
     
     @Override
@@ -1203,7 +1189,7 @@ public class    UIInput extends UIOutput implements EditableValueHolder
                 restoreAttachedState(facesContext,values[1]);
         }
     }
-    
+
     private Object saveValidatorList(FacesContext facesContext)
     {
         PartialStateHolder holder = _validatorList;

@@ -172,10 +172,13 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void setParent(UIComponent parent)
     {
-        // The parent chain is changing — the cached NamingContainer ancestor is no longer valid.
-        // setId must NOT clear it: UIData/UIRepeat call setId(getId()) per row on every descendant,
-        // and the ancestor depends only on the parent chain which setId never changes.
+        // The parent chain is changing — the cached NamingContainer ancestor and the cached
+        // clientId (which is derived from the NamingContainer hierarchy) are no longer valid.
+        // setId must NOT clear _closestNamingContainer: UIData/UIRepeat call setId(getId()) per
+        // row on every descendant, and the NamingContainer ancestor depends only on the parent
+        // chain which setId never changes.
         _closestNamingContainer = null;
+        _clientId = null;
 
         // removing kids OR this is UIViewRoot
         if (parent == null)
@@ -1869,19 +1872,19 @@ public abstract class UIComponentBase extends UIComponent
             {
                 stateHelperSaved = stateHelper.saveState(context);
             }
-            
-            if (facesListenersSaved == null && stateHelperSaved == null && 
-                behaviorsMapSaved == null && systemEventListenerClassMapSaved == null &&
-               !((_capabilities & FLAG_IS_RENDERER_TYPE_SET) != 0))
-            {
-                return null;
-            }
-            
+
             Object transientState = null;
-            if (context.getCurrentPhaseId() != null && 
+            if (context.getCurrentPhaseId() != null &&
                 !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
                 transientState = saveTransientState(context);
+            }
+
+            if (facesListenersSaved == null && stateHelperSaved == null &&
+                behaviorsMapSaved == null && systemEventListenerClassMapSaved == null &&
+               !((_capabilities & FLAG_IS_RENDERER_TYPE_SET) != 0) && transientState == null)
+            {
+                return null;
             }
             
             if (transientState != null)
