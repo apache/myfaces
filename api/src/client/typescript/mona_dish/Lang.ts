@@ -16,7 +16,7 @@
  */
 
 import {Optional} from "./Monad";
-import {Es2019Array} from "./Es2019Array";
+import {Es2019ArrayFrom} from "./Es2019Array";
 
 /**
  * Lang helpers crossported from the apache myfaces project
@@ -112,7 +112,7 @@ export namespace Lang {
         //special condition array delivered no offset no pack
         if ((obj) instanceof Array && !offset && !pack as any) return obj;
 
-        return new Es2019Array(...pack.concat(Array.prototype.slice.call(obj, offset)));
+        return Es2019ArrayFrom(pack.concat(Array.prototype.slice.call(obj, offset)));
     }
 
     /**
