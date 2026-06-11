@@ -1,4 +1,4 @@
-import {Es2019Array} from "./Es2019Array";
+import {Es2019ArrayFrom, pushChunked} from "./Es2019Array";
 import {IValueHolder, Optional, ValueEmbedder} from "./Monad";
 import {Lang} from "./Lang";
 const objAssign = Lang.objAssign;
@@ -101,7 +101,7 @@ export class Config extends Optional<any> {
         let newThis = shallowMerge(overwrite, withAppend, this.value, other.value);
         if (Array.isArray(this._value)) {
             this._value.length = 0;
-            this._value.push(...(newThis as any));
+            pushChunked(this._value as any, newThis as any);
         } else {
             Object.getOwnPropertyNames(this._value).forEach(key => delete this._value[key]);
             Object.getOwnPropertyNames(newThis).forEach(key => this._value[key] = newThis[key]);
@@ -224,7 +224,7 @@ export class Config extends Optional<any> {
             if (this.isArray(arrPos)) {
                 if (currKey != "") {
                     currAccessPos = Array.isArray(currAccessPos.value) ?
-                        Optional.fromNullable(new Es2019Array(...currAccessPos.value)
+                        Optional.fromNullable(Es2019ArrayFrom<any>(currAccessPos.value)
                             .find(item => {
                                 return !!(item?.[currKey] ?? false)
                             })?.[currKey]?.[arrPos]) :
@@ -237,7 +237,7 @@ export class Config extends Optional<any> {
                 //we noe store either the current array or the filtered look ahead to go further
             } else {
                 //we now have an array and go further with a singular key
-                currAccessPos = (Array.isArray(currAccessPos.value)) ? Optional.fromNullable(new Es2019Array(...currAccessPos.value)
+                currAccessPos = (Array.isArray(currAccessPos.value)) ? Optional.fromNullable(Es2019ArrayFrom<any>(currAccessPos.value)
                         .find(item => {
                             return !!(item?.[currKey] ?? false);
                         })?.[currKey]) :

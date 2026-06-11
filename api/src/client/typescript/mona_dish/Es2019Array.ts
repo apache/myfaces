@@ -3,6 +3,30 @@
  */
 
 /**
+ * Max number of elements passed per function call.
+ * Spreading or applying a large array into a single call
+ * ("fn(...data)") overflows the argument stack on most browsers
+ * (Chrome throws "RangeError: Maximum call stack size exceeded"
+ * at roughly 65k arguments), so bulk operations must be chunked.
+ */
+export const MAX_ARG_LENGTH = 30000;
+
+/**
+ * Appends the contents of source to target in argument-stack-safe chunks,
+ * the chunk-safe replacement for target.push(...source)
+ *
+ * @param target the array to append to
+ * @param source the elements to append
+ * @returns target for chaining
+ */
+export function pushChunked<T>(target: T[], source: ArrayLike<T>): T[] {
+    for (let start = 0, len = source.length; start < len; start += MAX_ARG_LENGTH) {
+        Array.prototype.push.apply(target, Array.prototype.slice.call(source, start, start + MAX_ARG_LENGTH));
+    }
+    return target;
+}
+
+/**
  * Extended array which adds various es 2019 shim functions to the normal array
  * We must remap all array producing functions in order to keep
  * the delegation active, once we are in!
@@ -11,13 +35,16 @@ class Es2019Array_<T>  extends Array<T>{
 
     _another: T[];
 
-    constructor(...another: T[]) {
-        super(...another);
+    constructor(another: T[] = []) {
+        super();
+        // species constructors and legacy code paths may pass a scalar
+        another = Array.isArray(another) ? another : [another] as T[];
         if((another as any)._another)  {
             this._another = (another as any)._another;
         } else {
             this._another = another;
         }
+        pushChunked(this, another);
 
         //for testing it definitely runs into this branch because we are on es5 level
         //if (!(Array.prototype).flatMap as any) {
@@ -30,32 +57,32 @@ class Es2019Array_<T>  extends Array<T>{
 
     map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): U[] {
         const ret = Array.prototype.map.call(this._another, callbackfn, thisArg);
-        return new (_Es2019Array as any) (... ret);
+        return (_Es2019ArrayFromArr as any)(ret);
     }
 
     concat(...items: any[]): T[] {
-        const ret = Array.prototype.concat.call(this._another, ...items);
-        return new (_Es2019Array as any)(... ret);
+        const ret = Array.prototype.concat.apply(this._another, items);
+        return (_Es2019ArrayFromArr as any)(ret);
     }
 
     reverse(): T[] {
         const ret = Array.prototype.reverse.call(this._another);
-        return new (_Es2019Array as any)(... ret);
+        return (_Es2019ArrayFromArr as any)(ret);
     }
 
     slice(start?: number, end?: number): T[] {
         const ret = Array.prototype.slice.call(this._another, start, end);
-        return new (_Es2019Array as any)(...ret);
+        return (_Es2019ArrayFromArr as any)(ret);
     }
 
     splice(start: number, deleteCount?: number): T[] {
         const ret = Array.prototype.splice.call(this._another, start, deleteCount ?? 0);
-        return new (_Es2019Array as any)(...ret);
+        return (_Es2019ArrayFromArr as any)(ret);
     }
 
     filter<S extends T>(predicate: (value: T, index: number, array: T[]) => any, thisArg?: any): S[] {
         const ret = Array.prototype.filter.call(this._another, predicate, thisArg);
-        return new (_Es2019Array as any)(...ret);
+        return (_Es2019ArrayFromArr as any)(ret);
     }
 
 
@@ -87,7 +114,7 @@ class Es2019Array_<T>  extends Array<T>{
         };
         arr.forEach(reFlat)
 
-        return new Es2019Array(...res);
+        return Es2019ArrayFrom(res);
     }
 
     private _flatMap(mapperFunction: Function): any {
@@ -101,7 +128,15 @@ class Es2019Array_<T>  extends Array<T>{
 //let oldProto = Es2019Array.prototype;
 
 export function _Es2019Array<T>(...data: T[]): Es2019Array_<T> {
-    let ret = new Es2019Array_<T>(...data);
+    return _Es2019ArrayFromArr(data);
+}
+
+/**
+ * chunk-safe variant of _Es2019Array which takes the backing array
+ * directly instead of spreading it into the call
+ */
+export function _Es2019ArrayFromArr<T>(data: T[]): Es2019Array_<T> {
+    let ret = new Es2019Array_<T>(data);
     let proxied = new Proxy<Es2019Array_<T>>(ret, {
         get(target: Es2019Array_<unknown>, p: string | symbol, receiver: any): any {
             if("symbol" == typeof p) {
@@ -141,5 +176,18 @@ export var Es2019Array: Es2019ArrayConstructor = (((Array.prototype as any).flat
     // but has no flatMap function, could be a node issue also or Typescript!
     // we remap that (could be related to: https://github.com/microsoft/TypeScript/issues/31033
     // the check and remap fixes the issue which should not exist in the first place
-    return (data as any)?.flatMap ? data : _Es2019Array(...data);
+    return (data as any)?.flatMap ? data : _Es2019ArrayFromArr(data);
 } : _Es2019Array) as Es2019ArrayConstructor;
+
+/**
+ * chunk-safe variant of new Es2019Array(...source) -
+ * spreading a large array into the constructor call overflows the
+ * argument stack ("Maximum call stack size exceeded"), this builder
+ * copies the data over in safe chunks instead
+ *
+ * @param source an array or array-like holding the initial data
+ */
+export function Es2019ArrayFrom<T>(source: ArrayLike<T>): T[] {
+    const data: T[] = pushChunked([], source);
+    return ((Array.prototype as any).flatMap) ? data : _Es2019ArrayFromArr(data);
+}

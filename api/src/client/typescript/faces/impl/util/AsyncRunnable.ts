@@ -127,7 +127,7 @@ export abstract class AsyncRunnable<T> implements IAsyncRunnable<T>{
 
     /**
      * registers a finally functor
-     * @param func the functor for the finally handling chanin
+     * @param func the functor for the finally handling chain
      */
     finally(func: () => void): IAsyncRunnable<T> {
         // no ie11 support we probably are going to revert to shims for that one
