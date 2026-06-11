@@ -21,7 +21,7 @@
  * The config system, this is similar!
  */
 import {IValueHolder} from "./Monad";
-import {Es2019Array} from "./Es2019Array";
+import {Es2019Array, pushChunked} from "./Es2019Array";
 
 /**
  * A nop as assign functionality (aka ignore assign)
@@ -76,7 +76,7 @@ export function append<T>(target: {[key: string]: any}, ...accessPath: string[])
                 if(!Array.isArray(lastPathItem.target[lastPathItem.key])) {
                     lastPathItem.target[lastPathItem.key] = [lastPathItem.target[lastPathItem.key]];
                 }
-                lastPathItem.target[lastPathItem.key].push(...value);
+                pushChunked(lastPathItem.target[lastPathItem.key], value);
             }
         }
     })();
@@ -159,7 +159,7 @@ function alloc(arr: Array<any>, length: number, defaultVal = {}) {
     let toAdd = [];
     toAdd.length = length;
     toAdd[length - 1] = defaultVal;
-    arr.push(...toAdd);
+    pushChunked(arr, toAdd);
 }
 
 
@@ -272,7 +272,7 @@ function _appendWithOverwrite(withAppend: boolean, target: { [p: string]: any },
             });
             target[key] = new Es2019Array(...[]);
             target[key].push(oldVal);
-            target[key].push(...newVals);
+            pushChunked(target[key], newVals);
         } else {
             let oldVal = target[key];
             let newVals: any[] = [];
@@ -283,7 +283,7 @@ function _appendWithOverwrite(withAppend: boolean, target: { [p: string]: any },
                 }
             });
 
-            target[key].push(...newVals);
+            pushChunked(target[key], newVals);
         }
     }
 }
@@ -300,9 +300,9 @@ function _appendWithoutOverwrite(withAppend: boolean, target: { [p: string]: any
             let oldVal = target[key];
             target[key] = new Es2019Array(...[]);
             target[key].push(oldVal);
-            target[key].push(...toAssign);
+            pushChunked(target[key], toAssign);
         } else {
-            target[key].push(...toAssign);
+            pushChunked(target[key], toAssign);
         }
     }
 }
