@@ -445,7 +445,7 @@ export class XhrRequest extends AsyncRunnable<XMLHttpRequest> {
     private appendIssuingItem(formData: XhrFormData) {
         const issuingItemId = this.internalContext.getIf(CTX_PARAM_SRC_CTL_ID).value;
 
-        //to avoid sideffects with buttons we only can append the issuing item if no behavior event is set
+        //to avoid side effects with buttons we only can append the issuing item if no behavior event is set
         //MYFACES-4679!
         const eventType = formData.getIf($nsp(P_BEHAVIOR_EVENT)).value?.[0] ?? null;
         const isBehaviorEvent = !!eventType && eventType !== 'click';

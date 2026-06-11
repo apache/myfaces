@@ -124,7 +124,7 @@ export class FlatMapStreamDataSource<T, S> implements IStreamDataSource<S> {
     }
 
     private toDatasource(mapped: Array<S> | IStreamDataSource<S>) {
-        let ds = Array.isArray(mapped) ? new ArrayStreamDataSource(...mapped) : mapped;
+        let ds = Array.isArray(mapped) ? ArrayStreamDataSource.ofArray(mapped) : mapped;
         this.walkedDataSources.push(ds)
         return ds;
     }
@@ -320,11 +320,24 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
     }
 
     static of<T>(...data: Array<T>): Stream<T> {
-        return new Stream<T>(...data);
+        return Stream.ofArr(data);
+    }
+
+    /**
+     * chunk-safe factory, takes the backing array directly instead of
+     * spreading it into the call (Stream.of(...largeArray) overflows the
+     * argument stack on large arrays)
+     *
+     * @param data the array to stream over
+     */
+    static ofArr<T>(data: Array<T>): Stream<T> {
+        const ret = new Stream<T>();
+        ret.value = data ?? [];
+        return ret;
     }
 
     static ofAssoc<T>(data: { [key: string]: T }): Stream<[string, T]> {
-        return this.of(...Object.keys(data)).map(key => [key, data[key]]);
+        return this.ofArr(Object.keys(data)).map(key => [key, data[key]]);
     }
 
     static ofDataSource<T>(dataSource: IStreamDataSource<T>) {
@@ -333,15 +346,15 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
             value.push(dataSource.next() as T);
         }
 
-        return new Stream(...value);
+        return Stream.ofArr(value);
     }
 
     static ofDomQuery(value: DomQuery): Stream<DomQuery> {
-        return Stream.of(...value.asArray);
+        return Stream.ofArr(value.asArray);
     }
 
     static ofConfig(value: Config): Stream<[string, any]> {
-        return Stream.of(... Object.keys(value.value)).map(key => [key, value.value[key]])
+        return Stream.ofArr(Object.keys(value.value)).map(key => [key, value.value[key]])
     }
 
     current(): T | ITERATION_STATUS {
@@ -365,7 +378,7 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
      */
     concat(...toAppend: Array<IStream<T>>): Stream<T> {
         let toConcat = [this].concat(toAppend as any);
-        return Stream.of(...toConcat).flatMap(item => item);
+        return Stream.ofArr(toConcat).flatMap(item => item);
     }
 
 
@@ -393,7 +406,7 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
             res.push(fn(item))
         });
 
-        return new Stream<R>(...res);
+        return Stream.ofArr(res);
     }
 
     /*
@@ -407,7 +420,7 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
             let strmR: any = fn!(item);
             ret = Array.isArray(strmR) ? ret.concat(strmR) : ret.concat(strmR.value);
         });
-        return <Stream<any>>Stream.of(...ret);
+        return <Stream<any>>Stream.ofArr(ret);
     }
 
     filter(fn?: (data: T) => boolean): Stream<T> {
@@ -417,7 +430,7 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
                 res.push(data);
             }
         });
-        return new Stream<T>(...res);
+        return Stream.ofArr(res);
     }
 
     reduce<V>(fn: Reducable<T, V | T>, startVal: V | null = null): Optional<V | T> {
@@ -480,7 +493,7 @@ export class Stream<T> implements IMonad<T, Stream<any>>, IValueHolder<Array<T>>
 
     sort(comparator: Comparator<T>): IStream<T> {
         let newArr = this.value.slice().sort(comparator);
-        return Stream.of(...newArr);
+        return Stream.ofArr(newArr);
     }
 
 
@@ -576,11 +589,22 @@ export class LazyStream<T> implements IStreamDataSource<T>, IStream<T>, IMonad<T
     pos = -1;
 
     static of<T>(...values: Array<T>): LazyStream<T> {
-        return new LazyStream<T>(new ArrayStreamDataSource(...values));
+        return LazyStream.ofArr(values);
+    }
+
+    /**
+     * chunk-safe factory, takes the backing array directly instead of
+     * spreading it into the call (LazyStream.of(...largeArray) overflows
+     * the argument stack on large arrays)
+     *
+     * @param data the array to stream over
+     */
+    static ofArr<T>(data: Array<T>): LazyStream<T> {
+        return new LazyStream<T>(ArrayStreamDataSource.ofArray(data));
     }
 
     static ofAssoc<T>(data: { [key: string]: T }): LazyStream<[string, T]> {
-        return this.of(...Object.keys(data)).map(key => [key, data[key]]);
+        return this.ofArr(Object.keys(data)).map(key => [key, data[key]]);
     }
 
     static ofStreamDataSource<T>(value: IStreamDataSource<T>): LazyStream<T> {
@@ -588,11 +612,11 @@ export class LazyStream<T> implements IStreamDataSource<T>, IStream<T>, IMonad<T
     }
 
     static ofDomQuery(value: DomQuery): LazyStream<DomQuery> {
-        return LazyStream.of(...value.asArray);
+        return LazyStream.ofArr(value.asArray);
     }
 
     static ofConfig(value: Config): LazyStream<[string, any]> {
-        return LazyStream.of(... Object.keys(value.value)).map(key => [key, value.value[key]])
+        return LazyStream.ofArr(Object.keys(value.value)).map(key => [key, value.value[key]])
     }
 
     constructor(parent: IStreamDataSource<T>) {
@@ -769,7 +793,7 @@ export class LazyStream<T> implements IStreamDataSource<T>, IStream<T>, IMonad<T
     sort(comparator: Comparator<T>): IStream<T> {
         let arr = this.collect(new ArrayCollector());
         arr = arr.sort(comparator);
-        return LazyStream.of(...arr);
+        return LazyStream.ofArr(arr);
     }
 
     get value(): Array<T> {
