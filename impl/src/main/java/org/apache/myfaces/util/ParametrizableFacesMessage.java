@@ -20,7 +20,9 @@ package org.apache.myfaces.util;
 
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.application.FacesMessage;
@@ -114,6 +116,20 @@ public class ParametrizableFacesMessage extends FacesMessage
     public String getUnformattedSummary()
     {
         return super.getSummary();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(super.hashCode(), Arrays.deepHashCode(_args), _locale);
+    }
+
+    @Override
+    public boolean equals(Object object)
+    {
+        return super.equals(object)
+                && Objects.deepEquals(_args, ((ParametrizableFacesMessage) object)._args)
+                && Objects.equals(_locale, ((ParametrizableFacesMessage) object)._locale);
     }
 
     private void evaluateArgs()
