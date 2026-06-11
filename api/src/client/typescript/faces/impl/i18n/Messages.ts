@@ -47,7 +47,7 @@ export class Messages {
     /** @constant */
     ERR_TRANSPORT = "Transport type {0} does not exist";
     /** @constant */
-    ERR_EVT_PASS = "an event must be passed down (either a an event object null or undefined) ";
+    ERR_EVT_PASS = "an event must be passed down (either an event object null or undefined) ";
     /** @constant */
     ERR_CONSTRUCT = "Parts of the response couldn't be retrieved when constructing the event data= {0} ";
     /** @constant */

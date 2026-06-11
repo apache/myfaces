@@ -16,7 +16,7 @@
  */
 
 import {DomQuery} from "./DomQuery";
-import {Es2019Array} from "./Es2019Array";
+import {Es2019Array, Es2019ArrayFrom, pushChunked} from "./Es2019Array";
 import {Config} from "./Config";
 
 /**
@@ -116,7 +116,16 @@ export class MultiStreamDatasource<T> implements IStreamDataSource<T> {
     private  strms: Array<IStreamDataSource<T>>;
 
     constructor(private first: IStreamDataSource<T>, ...strms: Array<IStreamDataSource<T>>) {
-        this.strms = [first].concat(...strms);
+        // callers may pass single data sources or entire arrays of them,
+        // we flatten one level here (chunk-safe, no spread into a call)
+        this.strms = [first];
+        strms.forEach(strm => {
+            if (Array.isArray(strm)) {
+                pushChunked(this.strms, strm);
+            } else {
+                this.strms.push(strm);
+            }
+        });
         this.activeStrm = this.strms[this.selectedPos];
     }
 
@@ -243,6 +252,19 @@ export class ArrayStreamDataSource<T> implements IStreamDataSource<T> {
 
     constructor(...value: Array<T>) {
         this.value = value;
+    }
+
+    /**
+     * chunk-safe factory, takes the backing array directly instead
+     * of spreading it into the constructor call (spreading large arrays
+     * overflows the argument stack)
+     *
+     * @param data the array to stream over
+     */
+    static ofArray<T>(data: Array<T>): ArrayStreamDataSource<T> {
+        const ret = new ArrayStreamDataSource<T>();
+        ret.value = data ?? [];
+        return ret;
     }
 
     lookAhead(cnt = 1): T | ITERATION_STATUS {
@@ -531,7 +553,7 @@ export class QueryFormStringCollector implements ICollector<DomQuery, string> {
     }
 
     get finalValue(): string {
-        return new Es2019Array(...this.formData)
+        return Es2019ArrayFrom(this.formData)
             .map((keyVal: [string, string]) => keyVal.join("="))
             .reduce((item1: string, item2: string) => [item1, item2].join("&"));
     }
