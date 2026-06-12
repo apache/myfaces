@@ -1896,7 +1896,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         // SerializedViewCollection, so the normal "evict view -> destroy its view
                         // scope" path never runs and the beans would linger until the session
                         // expires. Destroy the view scope now (publishes PreDestroyViewMapEvent).
-                        if (!view.isTransient())
+                        if (!view.isTransient() && !context.getPartialViewContext().isAjaxRequest())
                         {
                             Map<String, Object> viewMap = view.getViewMap(false);
                             if (viewMap instanceof ViewScopeProxyMap
