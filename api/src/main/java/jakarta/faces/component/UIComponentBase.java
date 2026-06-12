@@ -1178,18 +1178,18 @@ public abstract class UIComponentBase extends UIComponent
         // Enable copyFullInitialState behavior when delta is written into this component.
         ((_DeltaStateHelper)getStateHelper()).setCopyFullInitialState(true);
         
-        if (_facesListeners != null)
+        if (_facesListeners != null && !_facesListeners.isEmpty())
         {
             _facesListeners.markInitialState();
         }
-        if (_behaviorsMap != null)
+        if (_behaviorsMap != null && !_behaviorsMap.isEmpty())
         {
             for (Map.Entry<String, List<ClientBehavior>> entry : _behaviorsMap.entrySet())
             {
                 ((PartialStateHolder) entry.getValue()).markInitialState();
             }
         }
-        if (_systemEventListeners != null)
+        if (_systemEventListeners != null && !_systemEventListeners.isEmpty())
         {
             for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener>> entry : 
                 _systemEventListeners.entrySet())
