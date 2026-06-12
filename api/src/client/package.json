@@ -28,7 +28,7 @@
     "global-jsdom": "^29.0.0",
     "html-webpack-plugin": "^5.6.7",
     "jsdom": "^29.1.1",
-    "jsf.js_next_gen": "4.1.0-beta.19",
+    "jsf.js_next_gen": "4.1.0-beta.20",
     "mocha": "^11.7.6",
     "nise": "^6.1.5",
     "npm-check-updates": "^22.2.3",
