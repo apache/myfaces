@@ -29,7 +29,6 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.component.behavior.ClientBehavior;
-import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.Converter;
@@ -50,15 +49,9 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
 
         // Hoist client ID and optimization flags once; both are used multiple times below.
         String clientId = uiComponent.getClientId(facesContext);
-        boolean commonPropertiesOptimization = isCommonPropertiesOptimizationEnabled(facesContext);
-        long commonPropertiesMarked = commonPropertiesOptimization
-                ? CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent) : 0L;
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, uiComponent);
 
-        Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder holder)
-        {
-            behaviors = holder.getClientBehaviors();
-        }
+        Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(uiComponent);
 
         if (behaviors != null && !behaviors.isEmpty())
         {
@@ -95,59 +88,28 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
 
         if (behaviors != null)
         {
-            if (behaviors.isEmpty() && commonPropertiesOptimization)
+            renderSelectEventHandlers(facesContext, writer, uiComponent, behaviors, commonPropertiesMarked);
+        }
+
+        if (commonPropertiesMarked != null)
+        {
+            if (behaviors != null)
             {
-                CommonHtmlAttributesUtil.renderChangeEventProperty(writer, commonPropertiesMarked, uiComponent);
-                CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
-                // Note that on Faces 2.3, selectable components don't need onselect attribute
-                // Please see https://issues.apache.org/jira/browse/MYFACES-4190
-                CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchangeAndOnselect(writer, 
-                        commonPropertiesMarked, uiComponent);
+                CommonHtmlAttributesUtil.renderSelectPassthroughPropertiesWithoutDisabledAndEvents(
+                        writer, commonPropertiesMarked, uiComponent);
             }
             else
             {
-                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
-                if (isCommonEventsOptimizationEnabled(facesContext))
-                {
-                    long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
-                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
-                            commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
-                    CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
-                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
-                }
-                else
-                {
-                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext,
-                            writer, uiComponent, behaviors);
-                }
-            }
-            
-            if (commonPropertiesOptimization)
-            {
-                CommonHtmlAttributesUtil.renderSelectPassthroughPropertiesWithoutDisabledAndEvents(writer, 
-                        commonPropertiesMarked, uiComponent);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(
-                        writer,
-                        uiComponent,
-                        HTML.SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+                CommonHtmlAttributesUtil.renderSelectPassthroughPropertiesWithoutDisabled(
+                        writer, commonPropertiesMarked, uiComponent);
             }
         }
         else
         {
-            if (commonPropertiesOptimization)
-            {
-                CommonHtmlAttributesUtil.renderSelectPassthroughPropertiesWithoutDisabled(writer, 
-                        commonPropertiesMarked, uiComponent);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
-                        HTML.SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
-            }
+            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                    behaviors != null
+                        ? HTML.SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS
+                        : HTML.SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
         }
 
         if (disabled)
@@ -168,5 +130,40 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         writer.writeText(RendererUtils.EMPTY_STRING, null);
         writer.endElement(HTML.SELECT_ELEM);
     }
-    
+
+    /**
+     * Renders event attributes for a select element, merging with any registered client behaviors.
+     * Note: on Faces 2.3+ selectable components don't need the onselect attribute (MYFACES-4190).
+     */
+    private void renderSelectEventHandlers(FacesContext facesContext, ResponseWriter writer,
+            UIComponent uiComponent, Map<String, List<ClientBehavior>> behaviors,
+            Long commonPropertiesMarked) throws IOException
+    {
+        if (behaviors.isEmpty() && commonPropertiesMarked != null)
+        {
+            CommonHtmlAttributesUtil.renderChangeEventProperty(writer, commonPropertiesMarked, uiComponent);
+            CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
+            CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchangeAndOnselect(
+                    writer, commonPropertiesMarked, uiComponent);
+        }
+        else
+        {
+            HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
+            Long commonEventsMarked = getCommonEventsMarked(facesContext, uiComponent);
+            if (commonEventsMarked != null)
+            {
+                CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer,
+                        commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+            }
+            else
+            {
+                HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
+                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        facesContext, writer, uiComponent, behaviors);
+            }
+        }
+    }
+
 }

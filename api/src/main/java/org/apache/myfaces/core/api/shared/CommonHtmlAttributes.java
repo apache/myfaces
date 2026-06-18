@@ -98,13 +98,12 @@ public class CommonHtmlAttributes
     public static final long SIZE        = 0x4000000000L;
     
     public static final long ROLE        = 0x8000000000L;
-    
-    //HTML5
-    public static final long ONINPUT        = 0x1000000000L;
-    public static final long ONINVALID      = 0x2000000000L;
-    public static final long ONRESET        = 0x4000000000L;
-    
-    public static final long ONCONTEXTMENU  = 0x8000000000L;
+
+    public static final long ONINPUT        = 0x20000000000000L;
+    public static final long ONINVALID      = 0x40000000000000L;
+    public static final long ONRESET        = 0x80000000000000L;
+
+    public static final long ONCONTEXTMENU  = 0x100000000000000L;
     
     public static final long ONSUBMIT       = 0x10000000000L;
 

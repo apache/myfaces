@@ -21,7 +21,6 @@ package org.apache.myfaces.renderkit.html.base;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
-import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -61,14 +60,10 @@ public class HtmlImageRendererBase extends HtmlRenderer
 
         ResponseWriter writer = facesContext.getResponseWriter();
         
-        Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder holder)
+        Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(uiComponent);
+        if (behaviors != null && !behaviors.isEmpty())
         {
-            behaviors = holder.getClientBehaviors();
-            if (!behaviors.isEmpty())
-            {
-                ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
-            }
+            ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
         }
         
         writer.startElement(HTML.IMG_ELEM, uiComponent);
@@ -116,51 +111,33 @@ public class HtmlImageRendererBase extends HtmlRenderer
             }
         }
 
-        if (uiComponent instanceof ClientBehaviorHolder)
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, uiComponent);
+
+        if (behaviors != null)
         {
-            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            renderEventHandlers(facesContext, writer, uiComponent, behaviors, commonPropertiesMarked);
+        }
+
+        if (commonPropertiesMarked != null)
+        {
+            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.IMG_ATTRIBUTES);
+            if (behaviors != null)
             {
-                CommonHtmlAttributesUtil.renderEventProperties(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(
+                        writer, commonPropertiesMarked, uiComponent);
             }
             else
             {
-                if (isCommonEventsOptimizationEnabled(facesContext))
-                {
-                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
-                           CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent),
-                           CommonHtmlEventsUtil.getMarkedEvents(uiComponent), uiComponent, behaviors);
-                }
-                else
-                {
-                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-                }
-            }
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.IMG_ATTRIBUTES);
-                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
-                        HTML.IMG_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(
+                        writer, commonPropertiesMarked, uiComponent);
             }
         }
         else
         {
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.IMG_ATTRIBUTES);
-                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
-                        HTML.IMG_PASSTHROUGH_ATTRIBUTES);
-            }
+            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                    behaviors != null
+                        ? HTML.IMG_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS
+                        : HTML.IMG_PASSTHROUGH_ATTRIBUTES);
         }
 
         writer.endElement(HTML.IMG_ELEM);

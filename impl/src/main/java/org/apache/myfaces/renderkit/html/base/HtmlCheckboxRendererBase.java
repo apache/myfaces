@@ -398,39 +398,34 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             if (uiComponent instanceof ClientBehaviorHolder holder)
             {
                 behaviors = holder.getClientBehaviors();
-                
-                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, uiComponent);
+
+                if (behaviors.isEmpty() && commonPropertiesMarked != null)
                 {
-                    long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
-                    CommonHtmlAttributesUtil.renderChangeEventProperty(writer, 
-                            commonPropertiesMarked, uiComponent);
-                    CommonHtmlAttributesUtil.renderEventProperties(writer, 
-                            commonPropertiesMarked, uiComponent);
-                    CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(writer, 
-                            commonPropertiesMarked, uiComponent);
+                    CommonHtmlAttributesUtil.renderChangeEventProperty(writer, commonPropertiesMarked, uiComponent);
+                    CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
+                    CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(
+                            writer, commonPropertiesMarked, uiComponent);
                 }
                 else
                 {
-                    long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
                     HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(
-                            facesContext, writer, uiComponent, itemId != null ? itemId : clientId,  behaviors);
-                    if (isCommonEventsOptimizationEnabled(facesContext))
+                            facesContext, writer, uiComponent, itemId != null ? itemId : clientId, behaviors);
+                    Long commonEventsMarked = getCommonEventsMarked(facesContext, uiComponent);
+                    if (commonEventsMarked != null)
                     {
-                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
-                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
+                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer,
                                 commonPropertiesMarked, commonEventsMarked, uiComponent,
                                 itemId != null ? itemId : clientId, behaviors);
                         CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                            facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, 
+                                facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent,
                                 itemId != null ? itemId : clientId, behaviors);
                     }
                     else
                     {
-                        HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, 
-                                writer, uiComponent, behaviors);
+                        HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
                         HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                                facesContext, writer, uiComponent, 
-                                itemId != null ? itemId : clientId, behaviors);
+                                facesContext, writer, uiComponent, itemId != null ? itemId : clientId, behaviors);
                     }
                 }
                 HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
@@ -447,31 +442,28 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             if (uiComponent instanceof ClientBehaviorHolder holder)
             {
                 behaviors = holder.getClientBehaviors();
-                
-                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, uiComponent);
+
+                if (behaviors.isEmpty() && commonPropertiesMarked != null)
                 {
-                    long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
-                    CommonHtmlAttributesUtil.renderChangeEventProperty(writer, 
-                            commonPropertiesMarked, uiComponent);
-                    CommonHtmlAttributesUtil.renderEventProperties(writer, 
-                            commonPropertiesMarked, uiComponent);
-                    CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(writer, 
-                            commonPropertiesMarked, uiComponent);
+                    CommonHtmlAttributesUtil.renderChangeEventProperty(writer, commonPropertiesMarked, uiComponent);
+                    CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
+                    CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(
+                            writer, commonPropertiesMarked, uiComponent);
                 }
                 else
                 {
-                    long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
                     HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(
                             facesContext, writer, uiComponent, itemId != null ? itemId : clientId, behaviors);
-                    if (isCommonEventsOptimizationEnabled(facesContext))
+                    Long commonEventsMarked = getCommonEventsMarked(facesContext, uiComponent);
+                    if (commonEventsMarked != null)
                     {
-                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
-                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
-                                commonPropertiesMarked, commonEventsMarked, uiComponent, 
+                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer,
+                                commonPropertiesMarked, commonEventsMarked, uiComponent,
                                 itemId != null ? itemId : clientId, behaviors);
                         CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                            facesContext, writer, commonPropertiesMarked, commonEventsMarked,
-                            uiComponent, itemId != null ? itemId : clientId, behaviors);
+                                facesContext, writer, commonPropertiesMarked, commonEventsMarked,
+                                uiComponent, itemId != null ? itemId : clientId, behaviors);
                     }
                     else
                     {

@@ -96,7 +96,7 @@ public class SelectItemsUtils
         ResponseWriter writer = context.getResponseWriter();
         // check for the hideNoSelectionOption attribute
         boolean hideNoSelectionOption = isHideNoSelectionOption(component);
-        boolean componentDisabled = isTrue(component.getAttributes().get("disabled"));
+        boolean componentDisabled = HtmlRendererUtils.isDisabled(component);
 
         for (int i = 0; i < selectItemList.size(); i++)
         {
@@ -230,16 +230,4 @@ public class SelectItemsUtils
         }
     }
 
-    private static boolean isTrue(Object obj)
-    {
-        if (obj instanceof String string)
-        {
-            return Boolean.valueOf(string);
-        }
-        if (!(obj instanceof Boolean))
-        {
-            return false;
-        }
-        return ((Boolean) obj);
-    }
 }

@@ -21,7 +21,6 @@ package org.apache.myfaces.renderkit.html.base;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
-import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.behavior.ClientBehavior;
-import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.component.html.HtmlPanelGrid;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -106,77 +104,51 @@ public class HtmlGridRendererBase extends HtmlRenderer
         }
 
         ResponseWriter writer = facesContext.getResponseWriter();
-        Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder holder)
-        {
-            behaviors = holder.getClientBehaviors();
-        }
+        Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(component);
 
         if (behaviors != null && !behaviors.isEmpty())
         {
             ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
         }
-        
+
         writer.startElement(HTML.TABLE_ELEM, component);
-        
-        if (component instanceof ClientBehaviorHolder)
+
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, component);
+
+        if (behaviors != null && !behaviors.isEmpty())
         {
-            if (!behaviors.isEmpty())
-            {
-                HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
-            }
-            else
-            {
-                HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-            }
-            long commonPropertiesMarked = 0L;
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
-            }
-            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                CommonHtmlAttributesUtil.renderEventProperties(writer, 
-                        commonPropertiesMarked, component);
-            }
-            else
-            {
-                if (isCommonEventsOptimizationEnabled(facesContext))
-                {
-                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
-                           commonPropertiesMarked,
-                           CommonHtmlEventsUtil.getMarkedEvents(component), component, behaviors);
-                }
-                else
-                {
-                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
-                }
-            }
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.TABLE_ATTRIBUTES);
-                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer, 
-                        commonPropertiesMarked, component);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, 
-                        HTML.TABLE_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
-            }
+            HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
         }
         else
         {
             HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
+        }
+
+        if (behaviors != null)
+        {
+            renderEventHandlers(facesContext, writer, component, behaviors, commonPropertiesMarked);
+        }
+
+        if (commonPropertiesMarked != null)
+        {
+            HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.TABLE_ATTRIBUTES);
+            if (behaviors != null)
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.TABLE_ATTRIBUTES);
-                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(
+                        writer, commonPropertiesMarked, component);
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.TABLE_PASSTHROUGH_ATTRIBUTES);
+                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(
+                        writer, commonPropertiesMarked, component);
             }
+        }
+        else
+        {
+            HtmlRendererUtils.renderHTMLAttributes(writer, component,
+                    behaviors != null
+                        ? HTML.TABLE_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS
+                        : HTML.TABLE_PASSTHROUGH_ATTRIBUTES);
         }
 
         writer.flush();

@@ -19,8 +19,6 @@
 package org.apache.myfaces.renderkit.html.base;
 
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
-import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -266,24 +264,8 @@ public abstract class HtmlMessageRendererBase
             if (message instanceof ClientBehaviorHolder holder)
             {
                 behaviors = holder.getClientBehaviors();
-                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
-                {
-                    CommonHtmlAttributesUtil.renderEventProperties(writer, 
-                            CommonHtmlAttributesUtil.getMarkedAttributes(message), message);
-                }
-                else
-                {
-                    if (isCommonEventsOptimizationEnabled(facesContext))
-                    {
-                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
-                               CommonHtmlAttributesUtil.getMarkedAttributes(message),
-                               CommonHtmlEventsUtil.getMarkedEvents(message), message, behaviors);
-                    }
-                    else
-                    {
-                        HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, message, behaviors);
-                    }
-                }
+                renderEventHandlers(facesContext, writer, message, behaviors,
+                        getCommonPropertiesMarked(facesContext, message));
                 HtmlRendererUtils.renderHTMLAttributes(writer, message, 
                         HTML.UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE_AND_TITLE);
             }

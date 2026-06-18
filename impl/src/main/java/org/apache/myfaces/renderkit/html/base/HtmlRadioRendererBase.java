@@ -499,33 +499,27 @@ public class HtmlRadioRendererBase extends HtmlRenderer
         if (uiComponent instanceof ClientBehaviorHolder holder)
         {
             behaviors = holder.getClientBehaviors();
-            
-            long commonPropertiesMarked = 0L;
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, uiComponent);
+
+            if (behaviors.isEmpty() && commonPropertiesMarked != null)
             {
-                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
-            }
-            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                CommonHtmlAttributesUtil.renderChangeEventProperty(writer, 
-                        commonPropertiesMarked, uiComponent);
-                CommonHtmlAttributesUtil.renderEventProperties(writer, 
-                        commonPropertiesMarked, uiComponent);
-                CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(writer, 
-                        commonPropertiesMarked, uiComponent);
+                CommonHtmlAttributesUtil.renderChangeEventProperty(writer, commonPropertiesMarked, uiComponent);
+                CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
+                CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(
+                        writer, commonPropertiesMarked, uiComponent);
             }
             else
             {
-                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, 
+                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent,
                         itemId != null ? itemId : clientId, behaviors);
-                if (isCommonEventsOptimizationEnabled(facesContext))
+                Long commonEventsMarked = getCommonEventsMarked(facesContext, uiComponent);
+                if (commonEventsMarked != null)
                 {
-                    long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
-                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
+                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer,
                             commonPropertiesMarked, commonEventsMarked, uiComponent,
                             itemId != null ? itemId : clientId, behaviors);
                     CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent,
+                            facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent,
                             itemId != null ? itemId : clientId, behaviors);
                 }
                 else
@@ -533,8 +527,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
                     HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent,
                             itemId != null ? itemId : clientId, behaviors);
                     HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                            facesContext, writer, uiComponent,
-                            itemId != null ? itemId : clientId, behaviors);
+                            facesContext, writer, uiComponent, itemId != null ? itemId : clientId, behaviors);
                 }
             }
             HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 

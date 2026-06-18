@@ -22,11 +22,18 @@ package org.apache.myfaces.renderkit.html.base;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
 public abstract class HtmlRenderer
@@ -129,5 +136,115 @@ public abstract class HtmlRenderer
     protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
     {
         return false;
+    }
+
+    /**
+     * Returns the registered client behaviors for {@code component} if it implements
+     * {@link jakarta.faces.component.behavior.ClientBehaviorHolder}, or {@code null}
+     * otherwise. A non-null return value replaces a separate {@code boolean hasClientBehaviors}
+     * flag — callers can do a single null check instead of carrying two variables.
+     */
+    protected Map<String, List<ClientBehavior>> getClientBehaviors(UIComponent component)
+    {
+        return component instanceof ClientBehaviorHolder holder
+                ? holder.getClientBehaviors()
+                : null;
+    }
+
+    /**
+     * Returns the bitmask of common attributes set on {@code component} when the
+     * common-properties optimization is enabled, or {@code null} when the optimization
+     * is disabled (indicating the generic attribute-array path should be used instead).
+     */
+    protected Long getCommonPropertiesMarked(FacesContext facesContext, UIComponent component)
+    {
+        return isCommonPropertiesOptimizationEnabled(facesContext)
+                ? CommonHtmlAttributesUtil.getMarkedAttributes(component)
+                : null;
+    }
+
+    /**
+     * Returns the bitmask of common events registered on {@code component} when the
+     * common-events optimization is enabled, or {@code null} when it is disabled
+     * (indicating the generic behaviorized-event rendering path should be used instead).
+     */
+    protected Long getCommonEventsMarked(FacesContext facesContext, UIComponent component)
+    {
+        return isCommonEventsOptimizationEnabled(facesContext)
+                ? CommonHtmlEventsUtil.getMarkedEvents(component)
+                : null;
+    }
+
+    /**
+     * Renders generic event handlers (onclick, onmouseXxx, onkeyXxx, …) for a component
+     * that may carry client behaviors. Uses the bitmask-only path when no behaviors are
+     * registered and {@code commonPropertiesMarked} is non-null (optimization enabled);
+     * otherwise merges attributes with the registered behaviors.
+     *
+     * @param commonPropertiesMarked bitmask from {@link #getCommonPropertiesMarked}, or
+     *                               {@code null} when the optimization is disabled
+     */
+    protected void renderEventHandlers(FacesContext facesContext, ResponseWriter writer,
+            UIComponent component, Map<String, List<ClientBehavior>> behaviors,
+            Long commonPropertiesMarked) throws IOException
+    {
+        if (behaviors.isEmpty() && commonPropertiesMarked != null)
+        {
+            CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, component);
+        }
+        else
+        {
+            Long commonEventsMarked = getCommonEventsMarked(facesContext, component);
+            if (commonEventsMarked != null)
+            {
+                CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer,
+                        commonPropertiesMarked, commonEventsMarked, component, behaviors);
+            }
+            else
+            {
+                HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
+            }
+        }
+    }
+
+    /**
+     * Renders event handlers for an input/field element: onchange, generic events
+     * (onclick, onmouseXxx, onkeyXxx, …), and field events (onfocus, onblur, onselect).
+     * Uses the bitmask-only path when no behaviors are registered and
+     * {@code commonPropertiesMarked} is non-null (optimization enabled); otherwise merges
+     * attributes with the registered behaviors.
+     *
+     * @param commonPropertiesMarked bitmask from {@link #getCommonPropertiesMarked}, or
+     *                               {@code null} when the optimization is disabled
+     */
+    protected void renderFieldEventHandlers(FacesContext facesContext, ResponseWriter writer,
+            UIComponent component, Map<String, List<ClientBehavior>> behaviors,
+            Long commonPropertiesMarked) throws IOException
+    {
+        if (behaviors.isEmpty() && commonPropertiesMarked != null)
+        {
+            CommonHtmlAttributesUtil.renderChangeEventProperty(writer, commonPropertiesMarked, component);
+            CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, component);
+            CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(
+                    writer, commonPropertiesMarked, component);
+        }
+        else
+        {
+            HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, component, behaviors);
+            Long commonEventsMarked = getCommonEventsMarked(facesContext, component);
+            if (commonEventsMarked != null)
+            {
+                CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer,
+                        commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, component, behaviors);
+            }
+            else
+            {
+                HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
+                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                        facesContext, writer, component, behaviors);
+            }
+        }
     }
 }

@@ -30,7 +30,6 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.behavior.ClientBehavior;
-import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -61,9 +60,11 @@ public class HtmlBodyRendererBase extends HtmlRenderer
         super.encodeBegin(facesContext, component); //check for NP
 
         ResponseWriter writer = facesContext.getResponseWriter();
-        if (component instanceof ClientBehaviorHolder holder)
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, component);
+        Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(component);
+
+        if (behaviors != null)
         {
-            Map<String, List<ClientBehavior>> behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
@@ -72,71 +73,51 @@ public class HtmlBodyRendererBase extends HtmlRenderer
             writer.startElement(HTML.BODY_ELEM, component);
             if (!behaviors.isEmpty())
             {
-                // Note "name" does not exists as attribute in <body> tag.
-                writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext),null);
+                // Note "name" does not exist as an attribute in the <body> tag.
+                writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext), null);
             }
-            else
+            else if (HtmlRendererUtils.isOutputHtml5Doctype(facesContext))
             {
-                if (HtmlRendererUtils.isOutputHtml5Doctype(facesContext))
-                {
-                    HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-                }
+                HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
             }
-            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                CommonHtmlAttributesUtil.renderEventProperties(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
-            }
-            else
-            {
-                if (isCommonEventsOptimizationEnabled(facesContext))
-                {
-                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
-                           CommonHtmlAttributesUtil.getMarkedAttributes(component),
-                           CommonHtmlEventsUtil.getMarkedEvents(component), component, behaviors);
-                }
-                else
-                {
-                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
-                }
-            }
+
+            renderEventHandlers(facesContext, writer, component, behaviors, commonPropertiesMarked);
+
             HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONLOAD_ATTR, component,
                     ClientBehaviorEvents.LOAD, behaviors, HTML.ONLOAD_ATTR);
             HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONUNLOAD_ATTR, component,
                     ClientBehaviorEvents.UNLOAD, behaviors, HTML.ONUNLOAD_ATTR);
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
+
+            if (commonPropertiesMarked != null)
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component,
-                        HTML.BODY_ATTRIBUTES_WITHOUT_EVENTS);
-                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.BODY_ATTRIBUTES_WITHOUT_EVENTS);
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(
+                        writer, commonPropertiesMarked, component);
             }
             else
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, component,
                         HTML.BODY_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
             }
-            HtmlRendererUtils.renderHTMLStringAttribute(writer, component, HTML.XMLNS_ATTR , HTML.XMLNS_ATTR);
-            
         }
         else
         {
             writer.startElement(HTML.BODY_ELEM, component);
             HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
+
+            if (commonPropertiesMarked != null)
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component,
-                        HTML.BODY_ATTRIBUTES);
-                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.BODY_ATTRIBUTES);
+                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(
+                        writer, commonPropertiesMarked, component);
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component,
-                        HTML.BODY_PASSTHROUGH_ATTRIBUTES);
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.BODY_PASSTHROUGH_ATTRIBUTES);
             }
-            HtmlRendererUtils.renderHTMLStringAttribute(writer, component, HTML.XMLNS_ATTR , HTML.XMLNS_ATTR);
         }
+
+        HtmlRendererUtils.renderHTMLStringAttribute(writer, component, HTML.XMLNS_ATTR, HTML.XMLNS_ATTR);
     }
 
     @Override

@@ -388,7 +388,7 @@ public class CommonHtmlEventsUtil
 
     public static void renderBehaviorizedEventHandlers(
             FacesContext facesContext, ResponseWriter writer,
-            long commonAttributesMarked, long commonEventsMarked,
+            Long commonAttributesMarked, Long commonEventsMarked,
             UIComponent uiComponent,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
@@ -400,11 +400,20 @@ public class CommonHtmlEventsUtil
     
     public static void renderBehaviorizedEventHandlers(
             FacesContext facesContext, ResponseWriter writer,
-            long commonAttributesMarked, long commonEventsMarked,
+            Long commonAttributesMarked, Long commonEventsMarked,
             UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
+        if (commonAttributesMarked == null)
+        {
+            commonAttributesMarked = 0L;
+        }
+        if (commonEventsMarked == null)
+        {
+            commonEventsMarked = 0L;
+        }
+
         if (commonAttributesMarked == 0 && commonEventsMarked == 0)
         {
             return;
@@ -487,7 +496,7 @@ public class CommonHtmlEventsUtil
 
     public static void renderBehaviorizedEventHandlersWithoutOnclick(
             FacesContext facesContext, ResponseWriter writer,
-            long commonAttributesMarked, long commonEventsMarked,
+            Long commonAttributesMarked, Long commonEventsMarked,
             UIComponent uiComponent, 
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
@@ -506,11 +515,20 @@ public class CommonHtmlEventsUtil
      */
     public static void renderBehaviorizedEventHandlersWithoutOnclick(
             FacesContext facesContext, ResponseWriter writer,
-            long commonAttributesMarked, long commonEventsMarked,
+            Long commonAttributesMarked, Long commonEventsMarked,
             UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
+        if (commonAttributesMarked == null)
+        {
+            commonAttributesMarked = 0L;
+        }
+        if (commonEventsMarked == null)
+        {
+            commonEventsMarked = 0L;
+        }
+
         if (commonAttributesMarked == 0 && commonEventsMarked == 0)
         {
             return;
@@ -670,7 +688,7 @@ public class CommonHtmlEventsUtil
 
     public static void renderBehaviorizedFieldEventHandlersWithoutOnchange(
             FacesContext facesContext, ResponseWriter writer,
-            long commonAttributesMarked, long commonEventsMarked,
+            Long commonAttributesMarked, Long commonEventsMarked,
             UIComponent uiComponent, 
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
@@ -682,11 +700,20 @@ public class CommonHtmlEventsUtil
     
     public static void renderBehaviorizedFieldEventHandlersWithoutOnchange(
             FacesContext facesContext, ResponseWriter writer,
-            long commonAttributesMarked, long commonEventsMarked,
+            Long commonAttributesMarked, Long commonEventsMarked,
             UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
+        if (commonAttributesMarked == null)
+        {
+            commonAttributesMarked = 0L;
+        }
+        if (commonEventsMarked == null)
+        {
+            commonEventsMarked = 0L;
+        }
+
         if (commonAttributesMarked == 0 && commonEventsMarked == 0)
         {
             return;
@@ -717,7 +744,7 @@ public class CommonHtmlEventsUtil
 
     public static void renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
             FacesContext facesContext, ResponseWriter writer,
-            long commonAttributesMarked, long commonEventsMarked,
+            Long commonAttributesMarked, Long commonEventsMarked,
             UIComponent uiComponent,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
@@ -731,11 +758,20 @@ public class CommonHtmlEventsUtil
     
     public static void renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
             FacesContext facesContext, ResponseWriter writer,
-            long commonAttributesMarked, long commonEventsMarked,
+            Long commonAttributesMarked, Long commonEventsMarked,
             UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
+        if (commonAttributesMarked == null)
+        {
+            commonAttributesMarked = 0L;
+        }
+        if (commonEventsMarked == null)
+        {
+            commonEventsMarked = 0L;
+        }
+
         if (commonAttributesMarked == 0 && commonEventsMarked == 0)
         {
             return;

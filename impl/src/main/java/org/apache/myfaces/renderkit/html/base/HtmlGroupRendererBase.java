@@ -96,9 +96,10 @@ public class HtmlGroupRendererBase extends HtmlRenderer
         {
             return true;
         }
-        if (isCommonPropertiesOptimizationEnabled(context))
+        Long commonPropertiesMarked = getCommonPropertiesMarked(context, component);
+        if (commonPropertiesMarked != null)
         {
-            return CommonHtmlAttributesUtil.getMarkedAttributes(component) > 0;
+            return commonPropertiesMarked > 0;
         }
         return hasAnyPassthroughAttribute(component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
     }
@@ -134,35 +135,34 @@ public class HtmlGroupRendererBase extends HtmlRenderer
             ResourceUtils.renderDefaultJsfJsInlineIfNecessary(context, writer);
         }
 
+        Long commonPropertiesMarked = getCommonPropertiesMarked(context, component);
+
         if (hasClientBehaviors(behaviors) || shouldRenderId(context, component))
         {
             writer.startElement(layoutElement, component);
-
             writer.writeAttribute(HTML.ID_ATTR, component.getClientId(context), null);
 
-            long commonPropertiesMarked = 0L;
-            if (isCommonPropertiesOptimizationEnabled(context))
+            if (commonPropertiesMarked != null)
             {
-                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
-                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer,
-                        commonPropertiesMarked, component);
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(
+                        writer, commonPropertiesMarked, component);
             }
             else
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.UNIVERSAL_ATTRIBUTES);
             }
-            if (!hasClientBehaviors(behaviors) && isCommonPropertiesOptimizationEnabled(context))
+
+            if (!hasClientBehaviors(behaviors) && commonPropertiesMarked != null)
             {
-                CommonHtmlAttributesUtil.renderEventProperties(writer,
-                        commonPropertiesMarked, component);
+                CommonHtmlAttributesUtil.renderEventProperties(writer, commonPropertiesMarked, component);
             }
             else
             {
-                if (isCommonEventsOptimizationEnabled(context))
+                Long commonEventsMarked = getCommonEventsMarked(context, component);
+                if (commonEventsMarked != null)
                 {
                     CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(context, writer,
-                            commonPropertiesMarked,
-                            CommonHtmlEventsUtil.getMarkedEvents(component), component, behaviors);
+                            commonPropertiesMarked, commonEventsMarked, component, behaviors);
                 }
                 else
                 {
@@ -172,24 +172,17 @@ public class HtmlGroupRendererBase extends HtmlRenderer
         }
         else
         {
-            if (isCommonPropertiesOptimizationEnabled(context))
+            if (commonPropertiesMarked != null && commonPropertiesMarked > 0)
             {
-                long commonAttributesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(component);
-                if (commonAttributesMarked > 0)
-                {
-                    writer.startElement(layoutElement, component);
-                    HtmlRendererUtils.writeIdIfNecessary(writer, component, context);
-
-                    CommonHtmlAttributesUtil.renderCommonPassthroughProperties(writer,
-                            commonAttributesMarked, component);
-                }
+                writer.startElement(layoutElement, component);
+                HtmlRendererUtils.writeIdIfNecessary(writer, component, context);
+                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(
+                        writer, commonPropertiesMarked, component);
             }
-            else
+            else if (commonPropertiesMarked == null)
             {
                 HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
-                        component,
-                        layoutElement,
-                        HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+                        component, layoutElement, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
             }
         }
     }

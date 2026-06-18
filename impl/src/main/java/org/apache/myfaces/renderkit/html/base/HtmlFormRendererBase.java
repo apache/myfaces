@@ -22,7 +22,6 @@ import jakarta.faces.application.ProjectStage;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
-import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.behavior.ClientBehavior;
-import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -81,14 +79,10 @@ public class HtmlFormRendererBase extends HtmlRenderer
         String actionURL = getActionUrl(facesContext, htmlForm);
         String method = getMethod(facesContext, htmlForm);
 
-        Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder holder)
+        Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(component);
+        if (behaviors != null && !behaviors.isEmpty())
         {
-            behaviors = holder.getClientBehaviors();
-            if (!behaviors.isEmpty())
-            {
-                ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
-            }
+            ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
         }
         
         writer.startElement(HTML.FORM_ELEM, htmlForm);
@@ -103,50 +97,33 @@ public class HtmlFormRendererBase extends HtmlRenderer
         String encodedActionURL = facesContext.getExternalContext().encodeActionURL(actionURL);
         writer.writeURIAttribute(HTML.ACTION_ATTR, encodedActionURL, null);
         
-        if (htmlForm instanceof ClientBehaviorHolder holder)
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, htmlForm);
+
+        if (behaviors != null)
         {
-            long marked = CommonHtmlAttributesUtil.getMarkedAttributes(htmlForm);
-            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            renderEventHandlers(facesContext, writer, htmlForm, behaviors, commonPropertiesMarked);
+        }
+
+        if (commonPropertiesMarked != null)
+        {
+            if (behaviors != null)
             {
-                CommonHtmlAttributesUtil.renderEventProperties(writer, marked, htmlForm);
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(
+                        writer, commonPropertiesMarked, component);
             }
             else
             {
-                if (isCommonEventsOptimizationEnabled(facesContext))
-                {
-                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
-                           marked,
-                           CommonHtmlEventsUtil.getMarkedEvents(htmlForm), htmlForm, behaviors);
-                }
-                else
-                {
-                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, htmlForm, behaviors);
-                }
+                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(
+                        writer, commonPropertiesMarked, component);
             }
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(writer, 
-                        marked, component);
-                HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_ATTRIBUTES);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, 
-                        HTML.FORM_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
-            }
+            HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_ATTRIBUTES);
         }
         else
         {
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(component), component);
-                HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_ATTRIBUTES);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_PASSTHROUGH_ATTRIBUTES);
-            }
+            HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm,
+                    behaviors != null
+                        ? HTML.FORM_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS
+                        : HTML.FORM_PASSTHROUGH_ATTRIBUTES);
         }
 
         writer.write(""); // force start element tag to be closed

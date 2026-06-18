@@ -47,9 +47,25 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.html.HtmlCommandButton;
+import jakarta.faces.component.html.HtmlCommandLink;
 import jakarta.faces.component.html.HtmlDataTable;
+import jakarta.faces.component.html.HtmlInputFile;
+import jakarta.faces.component.html.HtmlInputSecret;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlInputTextarea;
 import jakarta.faces.component.html.HtmlMessages;
+import jakarta.faces.component.html.HtmlOutcomeTargetButton;
+import jakarta.faces.component.html.HtmlOutcomeTargetLink;
+import jakarta.faces.component.html.HtmlOutputLink;
 import jakarta.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.html.HtmlSelectBooleanCheckbox;
+import jakarta.faces.component.html.HtmlSelectManyCheckbox;
+import jakarta.faces.component.html.HtmlSelectManyListbox;
+import jakarta.faces.component.html.HtmlSelectManyMenu;
+import jakarta.faces.component.html.HtmlSelectOneListbox;
+import jakarta.faces.component.html.HtmlSelectOneMenu;
+import jakarta.faces.component.html.HtmlSelectOneRadio;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitResult;
@@ -166,11 +182,125 @@ public final class HtmlRendererUtils
 
     public static boolean isDisabled(UIComponent component)
     {
+        // Typed getter fast-path for all standard HTML components — avoids the
+        // _ComponentAttributesMap property-descriptor lookup on every decode/render call.
+        if (component instanceof HtmlInputText c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlSelectOneMenu c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlSelectManyMenu c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlSelectBooleanCheckbox c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlSelectManyCheckbox c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlCommandButton c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlCommandLink c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlInputTextarea c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlInputSecret c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlInputFile c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlSelectOneListbox c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlSelectManyListbox c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlSelectOneRadio c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlOutcomeTargetButton c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlOutcomeTargetLink c)
+        {
+            return c.isDisabled();
+        }
+        if (component instanceof HtmlOutputLink c)
+        {
+            return c.isDisabled();
+        }
+        // Custom/composite component: fall back to attributes map
         return isTrue(component.getAttributes().get("disabled"));
     }
 
     public static boolean isReadOnly(UIComponent component)
     {
+        // Typed getter fast-path for all standard HTML components — avoids the
+        // _ComponentAttributesMap property-descriptor lookup on every decode/render call.
+        if (component instanceof HtmlInputText c)
+        {
+            return c.isReadonly();
+        }
+        if (component instanceof HtmlSelectOneMenu c)
+        {
+            return c.isReadonly();
+        }
+        if (component instanceof HtmlSelectManyMenu c)
+        {
+            return c.isReadonly();
+        }
+        if (component instanceof HtmlSelectBooleanCheckbox c)
+        {
+            return c.isReadonly();
+        }
+        if (component instanceof HtmlSelectManyCheckbox c)
+        {
+            return c.isReadonly();
+        }
+        if (component instanceof HtmlCommandButton c)
+        {
+            return c.isReadonly();
+        }
+        if (component instanceof HtmlInputTextarea c)
+        {
+            return c.isReadonly();
+        }
+        if (component instanceof HtmlInputSecret c)
+        {
+            return c.isReadonly();
+        }
+        if (component instanceof HtmlSelectOneListbox c)
+        {
+            return c.isReadonly();
+        }
+        if (component instanceof HtmlSelectManyListbox c)
+        {
+            return c.isReadonly();
+        }
+        if (component instanceof HtmlSelectOneRadio c)
+        {
+            return c.isReadonly();
+        }
+        // Custom/composite component: fall back to attributes map
         return isTrue(component.getAttributes().get("readonly"));
     }
 

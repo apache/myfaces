@@ -238,11 +238,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         
         boolean disabled = HtmlRendererUtils.isDisabled(component);
 
-        // Hoist optimization flags — always true in production; avoid repeated virtual dispatch.
-        boolean commonPropertiesOptimization = isCommonPropertiesOptimizationEnabled(facesContext);
-        boolean commonEventsOptimization = isCommonEventsOptimizationEnabled(facesContext);
-        long commonPropertiesMarked = commonPropertiesOptimization
-                ? CommonHtmlAttributesUtil.getMarkedAttributes(component) : 0L;
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, component);
+        Long commonEventsMarked = getCommonEventsMarked(facesContext, component);
 
         if (disabled || form == null)
         {
@@ -262,7 +259,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 // only render onclick if != disabled
                 if (!disabled)
                 {
-                    if (behaviors.isEmpty() && commonPropertiesOptimization)
+                    if (behaviors.isEmpty() && commonPropertiesMarked != null)
                     {
                         CommonHtmlAttributesUtil.renderEventProperties(writer, 
                                 commonPropertiesMarked, component);
@@ -271,9 +268,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                     }
                     else
                     {
-                        if (commonEventsOptimization)
+                        if (commonEventsMarked != null)
                         {
-                            long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
                             CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                     commonPropertiesMarked, commonEventsMarked, component, behaviors);
                             CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -290,7 +286,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 else
                 {
-                    if (behaviors.isEmpty() && commonPropertiesOptimization)
+                    if (behaviors.isEmpty() && commonPropertiesMarked != null)
                     {
                         CommonHtmlAttributesUtil.renderEventPropertiesWithoutOnclick(writer, 
                                 commonPropertiesMarked, component);
@@ -299,9 +295,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                     }
                     else
                     {
-                        if (commonEventsOptimization)
+                        if (commonEventsMarked != null)
                         {
-                            long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
                             CommonHtmlEventsUtil.renderBehaviorizedEventHandlersWithoutOnclick(facesContext, writer, 
                                     commonPropertiesMarked, commonEventsMarked, component, behaviors);
                             CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -316,7 +311,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                         }
                     }
                 }
-                if (commonPropertiesOptimization)
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
                             commonPropertiesMarked, component);
@@ -330,7 +325,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             else
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-                if (commonPropertiesOptimization)
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabled(writer, 
                             commonPropertiesMarked, component);
@@ -378,7 +373,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                         HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                     }
                 }
-                if (behaviors.isEmpty() && commonPropertiesOptimization)
+                if (behaviors.isEmpty() && commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderEventPropertiesWithoutOnclick(writer,
                         commonPropertiesMarked, component);
@@ -387,12 +382,22 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 else
                 {
-                    HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
-                            facesContext, writer, component, behaviors);
-                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
-                            facesContext, writer, component, behaviors);
+                    if (commonEventsMarked != null)
+                    {
+                        CommonHtmlEventsUtil.renderBehaviorizedEventHandlersWithoutOnclick(facesContext, writer,
+                                commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                        CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                                facesContext, writer, commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                    }
+                    else
+                    {
+                        HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
+                                facesContext, writer, component, behaviors);
+                        HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                                facesContext, writer, component, behaviors);
+                    }
                 }
-                if (commonPropertiesOptimization)
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesWithoutStyleAndEvents(writer, 
                             commonPropertiesMarked, component);
@@ -407,7 +412,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             {
                 renderJavaScriptAnchorStart(facesContext, writer, component, clientId, form);
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-                if (commonPropertiesOptimization)
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesWithoutOnclickAndStyle(writer, 
                             commonPropertiesMarked, component);
@@ -727,6 +732,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
 
         if (HtmlRendererUtils.isDisabled(output))
         {
+            Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, output);
             writer.startElement(HTML.SPAN_ELEM, output);
             if (output instanceof ClientBehaviorHolder holder)
             {
@@ -739,13 +745,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 {
                     HtmlRendererUtils.writeIdIfNecessary(writer, output, facesContext);
                 }
-                long commonPropertiesMarked = 0L;
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
-                {
-                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(output);
-                }
+                Long commonEventsMarked = getCommonEventsMarked(facesContext, output);
 
-                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                if (behaviors.isEmpty() && commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderEventProperties(writer, 
                             commonPropertiesMarked, output);
@@ -754,9 +756,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 else
                 {
-                    if (isCommonEventsOptimizationEnabled(facesContext))
+                    if (commonEventsMarked != null)
                     {
-                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
                         CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
                         CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -769,7 +770,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                                 facesContext, writer, output, behaviors);
                     }
                 }
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
                             commonPropertiesMarked, output);
@@ -783,10 +784,10 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             else
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, output, facesContext);
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabled(writer, 
-                            CommonHtmlAttributesUtil.getMarkedAttributes(output), output);
+                            commonPropertiesMarked, output);
                 }
                 else
                 {
@@ -837,6 +838,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             }
             href = facesContext.getExternalContext().encodeResourceURL(href);    //TODO: or encodeActionURL ?
 
+            Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, output);
             //write anchor
             writer.startElement(HTML.ANCHOR_ELEM, output);
             writer.writeURIAttribute(HTML.HREF_ATTR, href, null);
@@ -851,12 +853,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 {
                     HtmlRendererUtils.writeIdAndNameIfNecessary(writer, output, facesContext);
                 }
-                long commonPropertiesMarked = 0L;
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
-                {
-                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(output);
-                }
-                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                Long commonEventsMarked = getCommonEventsMarked(facesContext, output);
+
+                if (behaviors.isEmpty() && commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderEventProperties(writer, 
                             commonPropertiesMarked, output);
@@ -865,9 +864,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 else
                 {
-                    if (isCommonEventsOptimizationEnabled(facesContext))
+                    if (commonEventsMarked != null)
                     {
-                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
                         CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
                         CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -880,7 +878,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                                 facesContext, writer, output, behaviors);
                     }
                 }
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
                             commonPropertiesMarked, output);
@@ -894,10 +892,10 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             else
             {
                 HtmlRendererUtils.writeIdAndNameIfNecessary(writer, output, facesContext);
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughProperties(writer, 
-                            CommonHtmlAttributesUtil.getMarkedAttributes(output), output);
+                            commonPropertiesMarked, output);
                 }
                 else
                 {
@@ -922,6 +920,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             //output.getAttributes().put(END_LINK_OUTCOME_AS_SPAN, Boolean.TRUE);
             //Note one h:link cannot have a nested h:link as a child, so it is safe
             //to just put this flag on FacesContext attribute map
+            Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, output);
             facesContext.getAttributes().put(END_LINK_OUTCOME_AS_SPAN, Boolean.TRUE);
             writer.startElement(HTML.SPAN_ELEM, output);
             if (output instanceof ClientBehaviorHolder holder)
@@ -935,12 +934,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 {
                     HtmlRendererUtils.writeIdIfNecessary(writer, output, facesContext);
                 }
-                long commonPropertiesMarked = 0L;
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
-                {
-                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(output);
-                }
-                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                Long commonEventsMarked = getCommonEventsMarked(facesContext, output);
+
+                if (behaviors.isEmpty() && commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderEventProperties(writer, 
                             commonPropertiesMarked, output);
@@ -949,9 +945,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 else
                 {
-                    if (isCommonEventsOptimizationEnabled(facesContext))
+                    if (commonEventsMarked != null)
                     {
-                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
                         CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
                         CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -964,7 +959,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                                 facesContext, writer, output, behaviors);
                     }
                 }
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
                             commonPropertiesMarked, output);
@@ -978,10 +973,10 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             else
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, output, facesContext);
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesDisabled(writer, 
-                            CommonHtmlAttributesUtil.getMarkedAttributes(output), output);
+                            commonPropertiesMarked, output);
                 }
                 else
                 {
@@ -998,6 +993,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         }
         else
         {
+            Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, output);
             //write anchor
             writer.startElement(HTML.ANCHOR_ELEM, output);
             writer.writeURIAttribute(HTML.HREF_ATTR, targetHref, null);
@@ -1012,12 +1008,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 {
                     HtmlRendererUtils.writeIdAndNameIfNecessary(writer, output, facesContext);
                 }
-                long commonPropertiesMarked = 0L;
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
-                {
-                    commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(output);
-                }
-                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                Long commonEventsMarked = getCommonEventsMarked(facesContext, output);
+
+                if (behaviors.isEmpty() && commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderEventProperties(writer, 
                             commonPropertiesMarked, output);
@@ -1026,9 +1019,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                 }
                 else
                 {
-                    if (isCommonEventsOptimizationEnabled(facesContext))
+                    if (commonEventsMarked != null)
                     {
-                        long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(output);
                         CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, output, behaviors);
                         CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -1041,7 +1033,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                                 facesContext, writer, output, behaviors);
                     }
                 }
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
                             commonPropertiesMarked, output);
@@ -1055,10 +1047,10 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             else
             {
                 HtmlRendererUtils.writeIdAndNameIfNecessary(writer, output, facesContext);
-                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                if (commonPropertiesMarked != null)
                 {
                     CommonHtmlAttributesUtil.renderAnchorPassthroughProperties(writer, 
-                            CommonHtmlAttributesUtil.getMarkedAttributes(output), output);
+                            commonPropertiesMarked, output);
                 }
                 else
                 {

@@ -45,7 +45,6 @@ import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
-import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
@@ -243,65 +242,33 @@ public class HtmlTextRendererBase
 
         renderValue(facesContext, component, writer);
 
-        boolean commonPropertiesOptimization = isCommonPropertiesOptimizationEnabled(facesContext);
-        long commonPropertiesMarked = commonPropertiesOptimization
-                ? CommonHtmlAttributesUtil.getMarkedAttributes(component) : 0L;
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, component);
+        Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(component);
 
-        Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder holder)
+        if (behaviors != null)
         {
-            behaviors = holder.getClientBehaviors();
+            renderFieldEventHandlers(facesContext, writer, component, behaviors, commonPropertiesMarked);
+        }
 
-            if (behaviors.isEmpty() && commonPropertiesOptimization)
+        if (commonPropertiesMarked != null)
+        {
+            if (behaviors != null)
             {
-                CommonHtmlAttributesUtil.renderChangeEventProperty(writer, 
-                        commonPropertiesMarked, component);
-                CommonHtmlAttributesUtil.renderEventProperties(writer, 
-                        commonPropertiesMarked, component);
-                CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(writer, 
-                        commonPropertiesMarked, component);
+                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabledAndEvents(
+                        writer, commonPropertiesMarked, component);
             }
             else
             {
-                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, component, behaviors);
-                if (isCommonEventsOptimizationEnabled(facesContext))
-                {
-                    long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(component);
-                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
-                            commonPropertiesMarked, commonEventsMarked, component, behaviors);
-                    CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, component, behaviors);
-                }
-                else
-                {
-                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
-                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                            facesContext, writer, component, behaviors);
-                }
-            }
-            if (commonPropertiesOptimization)
-            {
-                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
-                        commonPropertiesMarked, component);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, 
-                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabled(
+                        writer, commonPropertiesMarked, component);
             }
         }
         else
         {
-            if (commonPropertiesOptimization)
-            {
-                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabled(writer, 
-                        commonPropertiesMarked, component);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, 
-                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
-            }
+            HtmlRendererUtils.renderHTMLAttributes(writer, component,
+                    behaviors != null
+                        ? HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS
+                        : HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
         }
 
         if (isDisabled(facesContext, component))
@@ -377,7 +344,7 @@ public class HtmlTextRendererBase
             }
 
             HtmlRendererUtils.decodeUIInput(facesContext, component);
-            if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
+            if (component instanceof ClientBehaviorHolder && !isDisabled(facesContext, component))
             {
                 ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
             }

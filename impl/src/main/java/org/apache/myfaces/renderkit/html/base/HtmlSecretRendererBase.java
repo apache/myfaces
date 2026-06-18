@@ -21,7 +21,6 @@ package org.apache.myfaces.renderkit.html.base;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
-import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
@@ -110,65 +109,33 @@ public class HtmlSecretRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.VALUE_ATTR, strValue, ComponentAttrs.VALUE_ATTR);
         }
 
-        if (uiComponent instanceof ClientBehaviorHolder holder)
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, uiComponent);
+        Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(uiComponent);
+
+        if (behaviors != null)
         {
-            Map<String, List<ClientBehavior>> behaviors = holder.getClientBehaviors();
-            
-            long commonPropertiesMarked = 0L;
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            renderFieldEventHandlers(facesContext, writer, uiComponent, behaviors, commonPropertiesMarked);
+        }
+
+        if (commonPropertiesMarked != null)
+        {
+            if (behaviors != null)
             {
-                commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
-            }
-            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                CommonHtmlAttributesUtil.renderChangeEventProperty(writer, 
-                        commonPropertiesMarked, uiComponent);
-                CommonHtmlAttributesUtil.renderEventProperties(writer, 
-                        commonPropertiesMarked, uiComponent);
-                CommonHtmlAttributesUtil.renderFieldEventPropertiesWithoutOnchange(writer, 
-                        commonPropertiesMarked, uiComponent);
+                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabledAndEvents(
+                        writer, commonPropertiesMarked, uiComponent);
             }
             else
             {
-                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
-                if (isCommonEventsOptimizationEnabled(facesContext))
-                {
-                    long commonEventsMarked = CommonHtmlEventsUtil.getMarkedEvents(uiComponent);
-                    CommonHtmlEventsUtil.renderBehaviorizedEventHandlers(facesContext, writer, 
-                            commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
-                    CommonHtmlEventsUtil.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
-                }
-                else
-                {
-                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                            facesContext, writer, uiComponent, behaviors);
-                }
-            }
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
-                        commonPropertiesMarked, uiComponent);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
-                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabled(
+                        writer, commonPropertiesMarked, uiComponent);
             }
         }
         else
         {
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabled(writer, 
-                        CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent), uiComponent);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
-                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
-            }
+            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                    behaviors != null
+                        ? HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS
+                        : HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
         }
 
         if (isDisabled(facesContext, uiComponent))
@@ -222,7 +189,7 @@ public class HtmlSecretRendererBase extends HtmlRenderer
         RendererUtils.checkParamValidity(facesContext, component, UIInput.class);
 
         HtmlRendererUtils.decodeUIInput(facesContext, component);
-        if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
+        if (component instanceof ClientBehaviorHolder && !isDisabled(facesContext, component))
         {
             ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
         }
