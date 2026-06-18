@@ -199,6 +199,13 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
     protected ELResolver getCDIELResolver(FacesContext facesContext)
     {
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
+        if (ExternalSpecifications.isCDI41Available(facesContext.getExternalContext()))
+        {
+            if (beanManager instanceof jakarta.enterprise.inject.spi.el.ELAwareBeanManager)
+            {
+                return beanManager.getELResolver();
+            }
+        }
         return beanManager.getELResolver();
     }
 

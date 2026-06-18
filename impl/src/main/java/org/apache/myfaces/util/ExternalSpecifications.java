@@ -99,6 +99,21 @@ public final class ExternalSpecifications
         return available;
     });
 
+    private static Lazy<Boolean> cdi41Available = new Lazy<>(() ->
+    {
+        boolean available;
+        try
+        {
+            available = ClassUtils.classForName("jakarta.enterprise.inject.spi.el.ELAwareBeanManager") != null;
+        }
+        catch (Throwable t)
+        {
+            //log.log(Level.FINE, "Error loading class (could be normal)", t);
+            available = false;
+        }
+
+        return available;
+    });
 
     private static Lazy<Boolean> sevlet6Available = new Lazy<>(() ->
     {
@@ -148,6 +163,11 @@ public final class ExternalSpecifications
     {
         return cdiAvailable.get() && 
                 externalContext.getApplicationMap().containsKey(FacesInitializerImpl.CDI_BEAN_MANAGER_INSTANCE);
+    }
+
+    public static boolean isCDI41Available(ExternalContext externalContext)
+    {
+        return cdi41Available.get() && isCDIAvailable(externalContext);
     }
 
     public static boolean isServlet6Available()
