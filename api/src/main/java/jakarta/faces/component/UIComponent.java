@@ -419,8 +419,7 @@ public abstract class UIComponent
      */
     public static UIComponent getCurrentComponent(FacesContext context)
     {
-        List<UIComponent> componentStack
-                = (List<UIComponent>) context.getAttributes().get(UIComponent._COMPONENT_STACK);
+        List<UIComponent> componentStack = (List<UIComponent>) context.getAttributes().get(UIComponent._COMPONENT_STACK);
         if (componentStack != null && !componentStack.isEmpty())
         {
             return componentStack.get(componentStack.size()-1);
@@ -618,8 +617,7 @@ public abstract class UIComponent
     {
         Assert.notNull(name, "name");
 
-        Map<String, Object> valueExpressions = (Map<String, Object>)
-                getStateHelper().get(PropertyKeys.valueExpressions);
+        Map<String, Object> valueExpressions = getStateHelper().get(PropertyKeys.valueExpressions);
         if (valueExpressions != null)
         {
             return (ValueExpression) valueExpressions.get(name);
@@ -775,8 +773,7 @@ public abstract class UIComponent
                         // avoid StackoverflowException
                         boolean shouldProcessEvent = true;
                         if (listener instanceof _EventListenerWrapper wrapper && 
-                            wrapper.getListenerCapability() ==
-                                _EventListenerWrapper.LISTENER_TYPE_COMPONENT)
+                            wrapper.getListenerCapability() == _EventListenerWrapper.LISTENER_TYPE_COMPONENT)
                         {
                             shouldProcessEvent = false;
                         }
@@ -854,8 +851,7 @@ public abstract class UIComponent
             {
                 for (Iterator<SystemEventListener> it = listeners.iterator(); it.hasNext(); )
                 {
-                    ComponentSystemEventListener listener
-                            = ((_EventListenerWrapper) it.next()).getComponentSystemEventListener();
+                    ComponentSystemEventListener listener = ((_EventListenerWrapper) it.next()).getComponentSystemEventListener();
                     if (listener != null && listener.equals(componentListener))
                     {
                         it.remove();

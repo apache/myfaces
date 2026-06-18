@@ -27,5 +27,5 @@ package org.apache.myfaces.renderkit;
  */
 public interface LazyRenderKit
 {
-    public void addRenderer(String componentFamily, String rendererType, String rendererClass);
+    void addRenderer(String componentFamily, String rendererType, String rendererClass);
 }

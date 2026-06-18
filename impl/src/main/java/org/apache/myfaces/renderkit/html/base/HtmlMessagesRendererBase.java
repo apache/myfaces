@@ -45,7 +45,7 @@ import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
-public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
+public abstract class HtmlMessagesRendererBase<T extends UIComponent> extends HtmlMessageRendererBase<T>
 {
     private static final Logger log = Logger.getLogger(HtmlMessagesRendererBase.class.getName());
 

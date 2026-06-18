@@ -20,7 +20,6 @@
 package org.apache.myfaces.push;
 
 import java.io.IOException;
-import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
@@ -29,20 +28,19 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 @JSFRenderer(renderKitId = "HTML_BASIC",
     family = "jakarta.faces.Output",
     type = "org.apache.myfaces.WebsocketInit")
-public class WebsocketInitRenderer extends Renderer
+public class WebsocketInitRenderer extends Renderer<WebsocketInit>
 {
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
+    public void encodeEnd(FacesContext facesContext, WebsocketInit component) throws IOException
     {
         super.encodeEnd(facesContext, component); //check for NP
-        WebsocketInit init = (WebsocketInit) component;
   
         ResponseWriter writer = facesContext.getResponseWriter();
         // If two websocket share the same channel and scope, share init.
-        for (int i = 0; i < init.getUIWebsocketMarkupList().size(); i++)
+        for (int i = 0; i < component.getUIWebsocketMarkupList().size(); i++)
         {
-            String markup = (String) init.getUIWebsocketMarkupList().get(i);
+            String markup = (String) component.getUIWebsocketMarkupList().get(i);
             writer.write(markup);
         }
     }

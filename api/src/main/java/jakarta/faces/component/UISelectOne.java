@@ -229,7 +229,7 @@ public class UISelectOne extends UIInput
 
     public String getGroup()
     {
-        return (String) getStateHelper().eval(PropertyKeys.group);
+        return getStateHelper().eval(PropertyKeys.group);
     }
     
     public void setGroup(String group)

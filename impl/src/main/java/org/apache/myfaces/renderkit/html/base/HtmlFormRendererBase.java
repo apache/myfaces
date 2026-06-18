@@ -41,7 +41,7 @@ import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
-public class HtmlFormRendererBase extends HtmlRenderer
+public class HtmlFormRendererBase<T extends UIForm> extends HtmlRenderer<T>
 {
     private static final Logger LOGGER = Logger.getLogger(HtmlFormRendererBase.class.getName());
 
@@ -52,7 +52,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
     private static final String SCROLL_HIDDEN_INPUT = "org.apache.myfaces.SCROLL_HIDDEN_INPUT";
 
     private static final String SHARED_STRING_BUILDER = HtmlFormRendererBase.class.getName() + ".SHARED_STRING_BUILDER";
-    
+
     private MyfacesConfig myfacesConfig;
     
     public HtmlFormRendererBase()
@@ -61,11 +61,9 @@ public class HtmlFormRendererBase extends HtmlRenderer
     }
     
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
+    public void encodeBegin(FacesContext facesContext, T component) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, component, UIForm.class);
-
-        UIForm htmlForm = (UIForm)component;
 
         if (facesContext.isProjectStage(ProjectStage.Development) && !((UIForm) component).isPrependId())
         {
@@ -74,10 +72,10 @@ public class HtmlFormRendererBase extends HtmlRenderer
         }
 
         ResponseWriter writer = facesContext.getResponseWriter();
-        String clientId = htmlForm.getClientId(facesContext);
-        String acceptCharset = getAcceptCharset(facesContext, htmlForm);
-        String actionURL = getActionUrl(facesContext, htmlForm);
-        String method = getMethod(facesContext, htmlForm);
+        String clientId = component.getClientId(facesContext);
+        String acceptCharset = getAcceptCharset(facesContext, component);
+        String actionURL = getActionUrl(facesContext, component);
+        String method = getMethod(facesContext, component);
 
         Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(component);
         if (behaviors != null && !behaviors.isEmpty())
@@ -85,7 +83,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
             ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
         }
         
-        writer.startElement(HTML.FORM_ELEM, htmlForm);
+        writer.startElement(HTML.FORM_ELEM, component);
         writer.writeAttribute(HTML.ID_ATTR, clientId, null);
         writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
         writer.writeAttribute(HTML.METHOD_ATTR, method, null);
@@ -97,11 +95,11 @@ public class HtmlFormRendererBase extends HtmlRenderer
         String encodedActionURL = facesContext.getExternalContext().encodeActionURL(actionURL);
         writer.writeURIAttribute(HTML.ACTION_ATTR, encodedActionURL, null);
         
-        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, htmlForm);
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, component);
 
         if (behaviors != null)
         {
-            renderEventHandlers(facesContext, writer, htmlForm, behaviors, commonPropertiesMarked);
+            renderEventHandlers(facesContext, writer, component, behaviors, commonPropertiesMarked);
         }
 
         if (commonPropertiesMarked != null)
@@ -116,11 +114,11 @@ public class HtmlFormRendererBase extends HtmlRenderer
                 CommonHtmlAttributesUtil.renderCommonPassthroughProperties(
                         writer, commonPropertiesMarked, component);
             }
-            HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_ATTRIBUTES);
+            HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.FORM_ATTRIBUTES);
         }
         else
         {
-            HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm,
+            HtmlRendererUtils.renderHTMLAttributes(writer, component,
                     behaviors != null
                         ? HTML.FORM_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS
                         : HTML.FORM_PASSTHROUGH_ATTRIBUTES);
@@ -149,23 +147,23 @@ public class HtmlFormRendererBase extends HtmlRenderer
         afterFormElementsStart(facesContext, component);
     }
 
-    protected String getActionUrl(FacesContext facesContext, UIForm form)
+    protected String getActionUrl(FacesContext facesContext, T form)
     {
         return getActionUrl(facesContext);
     }
 
-    protected String getMethod(FacesContext facesContext, UIForm form)
+    protected String getMethod(FacesContext facesContext, T form)
     {
         return "post";
     }
 
-    protected String getAcceptCharset(FacesContext facesContext, UIForm form )
+    protected String getAcceptCharset(FacesContext facesContext, T form)
     {
         return (String)form.getAttributes().get(ComponentAttrs.ACCEPTCHARSET_ATTR );
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
+    public void encodeEnd(FacesContext facesContext, T component) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
 
@@ -181,7 +179,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
         writer.endElement(HTML.FORM_ELEM);
     }
     
-    protected void renderViewStateAndHiddenFields(FacesContext facesContext, UIComponent component) throws IOException
+    protected void renderViewStateAndHiddenFields(FacesContext facesContext, T component) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         
@@ -212,7 +210,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
         }
     }
 
-    private static String getScrollHiddenInputName(FacesContext facesContext, UIComponent form)
+    private static String getScrollHiddenInputName(FacesContext facesContext, UIForm form)
     {
         StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER,
                 SCROLL_HIDDEN_INPUT.length() + 20);
@@ -223,13 +221,11 @@ public class HtmlFormRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void decode(FacesContext facesContext, UIComponent component)
+    public void decode(FacesContext facesContext, T component)
     {
         RendererUtils.checkParamValidity(facesContext, component, UIForm.class);
 
-        UIForm htmlForm = (UIForm)component;
-
-        Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
+        Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
         // Perf: initialize StringBuilder to maximal length used in this renderer, render_response
         // method will re-use it without capacity expanding 
         StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER, 100);
@@ -237,20 +233,19 @@ public class HtmlFormRendererBase extends HtmlRenderer
                 sb.append(component.getClientId(facesContext)).append(HIDDEN_SUBMIT_INPUT_SUFFIX));
         if (submittedValue != null && submittedValue.equals(HIDDEN_SUBMIT_INPUT_VALUE))
         {
-            htmlForm.setSubmitted(true);
+            component.setSubmitted(true);
         }
         else
         {
-            htmlForm.setSubmitted(false);
+            component.setSubmitted(false);
         }
         
         ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
     }
 
 
-    public static void renderScrollHiddenInputIfNecessary(
-            UIComponent form, FacesContext facesContext, ResponseWriter writer)
-        throws IOException
+    public static void renderScrollHiddenInputIfNecessary(UIForm form, FacesContext facesContext, ResponseWriter writer)
+            throws IOException
     {
         if (form == null)
         {
@@ -269,7 +264,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
      * Called before the state and any elements are added to the form tag in the
      * encodeBegin method
      */
-    protected void beforeFormElementsStart(FacesContext facesContext, UIComponent component)
+    protected void beforeFormElementsStart(FacesContext facesContext, T component)
             throws IOException
     {
         
@@ -279,7 +274,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
      * Called after the state and any elements are added to the form tag in the
      * encodeBegin method
      */
-    protected void afterFormElementsStart(FacesContext facesContext, UIComponent component)
+    protected void afterFormElementsStart(FacesContext facesContext, T component)
             throws IOException
     {
         
@@ -289,7 +284,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
      * Called before the state and any elements are added to the form tag in the
      * encodeEnd method
      */
-    protected void beforeFormElementsEnd(FacesContext facesContext, UIComponent component)
+    protected void beforeFormElementsEnd(FacesContext facesContext, T component)
             throws IOException
     {
         

@@ -148,7 +148,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     @JSFProperty
     public int getOffset()
     {
-        return (Integer) getStateHelper().eval(PropertyKeys.offset, 0);
+        return getStateHelper().eval(PropertyKeys.offset, 0);
     }
 
     public void setOffset(int offset)
@@ -159,7 +159,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     @JSFProperty
     public int getSize()
     {
-        return (Integer) getStateHelper().eval(PropertyKeys.size, -1);
+        return getStateHelper().eval(PropertyKeys.size, -1);
     }
 
     public void setSize(int size)
@@ -170,7 +170,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     @JSFProperty
     public int getStep()
     {
-        return (Integer) getStateHelper().eval(PropertyKeys.step, 1);
+        return getStateHelper().eval(PropertyKeys.step, 1);
     }
 
     public void setStep(int step)
@@ -181,7 +181,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     @JSFProperty
     public int getBegin()
     {
-        return (Integer) getStateHelper().eval(PropertyKeys.begin, -1);
+        return getStateHelper().eval(PropertyKeys.begin, -1);
     }
 
     public void setBegin(int begin)
@@ -192,7 +192,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     @JSFProperty
     public int getEnd()
     {
-        return (Integer) getStateHelper().eval(PropertyKeys.end, -1);
+        return getStateHelper().eval(PropertyKeys.end, -1);
     }
 
     public void setEnd(int end)
@@ -203,7 +203,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     @JSFProperty(literalOnly=true)
     public String getVar()
     {
-        return (String) getStateHelper().get(PropertyKeys.var);
+        return getStateHelper().get(PropertyKeys.var);
     }
 
     public void setVar(String var)
@@ -214,7 +214,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     @JSFProperty(literalOnly=true)
     public String getVarStatus()
     {
-        return (String) getStateHelper().get(PropertyKeys.varStatus);
+        return getStateHelper().get(PropertyKeys.varStatus);
     }
     
     public void setVarStatus(String varStatus)
@@ -235,7 +235,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     @JSFProperty(literalOnly = true, faceletsOnly = true)
     public boolean isRowStatePreserved()
     {
-        Boolean b = (Boolean) getStateHelper().get(PropertyKeys.rowStatePreserved);
+        Boolean b = getStateHelper().get(PropertyKeys.rowStatePreserved);
         return b == null ? false : b;
     }
     

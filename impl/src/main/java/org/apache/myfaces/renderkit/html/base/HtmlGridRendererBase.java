@@ -43,7 +43,7 @@ import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
-public class HtmlGridRendererBase extends HtmlRenderer
+public class HtmlGridRendererBase<T extends UIComponent> extends HtmlRenderer<T>
 {
     private static final Logger log = Logger.getLogger(HtmlGridRendererBase.class.getName());
     
@@ -56,7 +56,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void decode(FacesContext context, UIComponent component)
+    public void decode(FacesContext context, T component)
     {
         // Check for npe
         super.decode(context, component);
@@ -65,13 +65,13 @@ public class HtmlGridRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
+    public void encodeBegin(FacesContext facesContext, T component) throws IOException
     {
         // all work done in encodeEnd()
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
+    public void encodeChildren(FacesContext context, T component)
         throws IOException
     {
         // all work done in encodeEnd()

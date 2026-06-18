@@ -51,7 +51,7 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
-public class HtmlButtonRendererBase extends HtmlRenderer
+public class HtmlButtonRendererBase<T extends UIComponent> extends HtmlRenderer<T>
 {
     private static final String SB_BUILD_BEHAVIORIZED_ONCLICK = HtmlButtonRendererBase.class.getName()
             + "#buildBehaviorizedOnClick";
@@ -64,7 +64,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
     private static final String IMAGE_BUTTON_SUFFIX_Y = ".y";
 
     @Override
-    public void decode(FacesContext facesContext, UIComponent uiComponent)
+    public void decode(FacesContext facesContext, T uiComponent)
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UICommand.class);
 
@@ -113,7 +113,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    public void encodeBegin(FacesContext facesContext, T uiComponent) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UICommand.class);
 

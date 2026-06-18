@@ -479,8 +479,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             if (isResourceDependencyUniqueId())
             {
-                Integer uniqueIdCounter = (Integer) getStateHelper().get(
-                        PropertyKeys.resourceDependencyUniqueIdCounter);
+                Integer uniqueIdCounter = getStateHelper().get(PropertyKeys.resourceDependencyUniqueIdCounter);
                 uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
                 getStateHelper().put(PropertyKeys.resourceDependencyUniqueIdCounter, (uniqueIdCounter+1));
                 if (uniqueIdCounter >= ComponentUtils.UNIQUE_COMPONENT_RD_IDS_SIZE)
@@ -495,7 +494,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
             else
             {
-                Integer uniqueIdCounter = (Integer) getStateHelper().get(PropertyKeys.uniqueIdCounter);
+                Integer uniqueIdCounter = getStateHelper().get(PropertyKeys.uniqueIdCounter);
                 uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
                 getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1));
                 if (uniqueIdCounter >= ComponentUtils.UNIQUE_COMPONENT_V_IDS_SIZE)
@@ -655,7 +654,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @JSFProperty(returnSignature = "void", methodSignature = "jakarta.faces.event.PhaseEvent", stateHolder=true)
     public MethodExpression getAfterPhaseListener()
     {
-        return (MethodExpression) getStateHelper().eval(PropertyKeys.afterPhaseListener);
+        return getStateHelper().eval(PropertyKeys.afterPhaseListener);
     }
 
     /**
@@ -667,7 +666,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @JSFProperty(returnSignature = "void", methodSignature = "jakarta.faces.event.PhaseEvent", stateHolder=true)
     public MethodExpression getBeforePhaseListener()
     {
-        return (MethodExpression) getStateHelper().eval(PropertyKeys.beforePhaseListener);
+        return getStateHelper().eval(PropertyKeys.beforePhaseListener);
     }
 
     /**
@@ -832,7 +831,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public List<PhaseListener> getPhaseListeners()
     {
-        List<PhaseListener> listeners = (List<PhaseListener>) getStateHelper().get(PropertyKeys.phaseListeners);
+        List<PhaseListener> listeners = getStateHelper().get(PropertyKeys.phaseListeners);
         if (listeners == null)
         {
             listeners = Collections.emptyList();
@@ -851,7 +850,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @JSFProperty
     public String getRenderKitId()
     {
-        return (String) getStateHelper().eval(PropertyKeys.renderKitId);
+        return getStateHelper().eval(PropertyKeys.renderKitId);
     }
 
     /**
@@ -876,7 +875,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @JSFProperty(tagExcluded = true)
     public String getViewId()
     {
-        return (String) getStateHelper().get(PropertyKeys.viewId);
+        return getStateHelper().get(PropertyKeys.viewId);
     }
 
     /**
@@ -956,7 +955,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
 
         List<FacesEvent> eventsByPhaseId = _events.get(event.getPhaseId());
-        if (eventsByPhaseId == null) {
+        if (eventsByPhaseId == null)
+        {
             eventsByPhaseId = new ArrayList<>(5);
             _events.put(event.getPhaseId(), eventsByPhaseId);
         }
@@ -1001,7 +1001,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     private boolean notifyListeners(FacesContext context, PhaseId phaseId, MethodExpression listener,
                                     boolean beforePhase)
     {
-        List<PhaseListener> phaseListeners = (List<PhaseListener>) getStateHelper().get(PropertyKeys.phaseListeners);
+        List<PhaseListener> phaseListeners = getStateHelper().get(PropertyKeys.phaseListeners);
         // Check if any listener was called
         boolean listenerCalled = false;
         if (listener != null || (phaseListeners != null && !phaseListeners.isEmpty()))
@@ -1708,7 +1708,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         listeners = _systemEventListeners.get(systemEvent);
         if (listeners == null)
         {
-            listeners = new ArrayList<SystemEventListener>();
+            listeners = new ArrayList<>();
 
             _systemEventListeners.put(systemEvent, listeners);
         }

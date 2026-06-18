@@ -36,7 +36,7 @@ import jakarta.faces.component.behavior.ClientBehavior;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
-public class HtmlGroupRendererBase extends HtmlRenderer 
+public class HtmlGroupRendererBase<T extends UIComponent> extends HtmlRenderer<T>
 {
     private static final String LAYOUT_BLOCK_VALUE = "block";
 
@@ -47,7 +47,7 @@ public class HtmlGroupRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void decode(FacesContext context, UIComponent component)
+    public void decode(FacesContext context, T component)
     {
         // Check for npe
         super.decode(context, component);
@@ -56,7 +56,7 @@ public class HtmlGroupRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component) throws IOException
+    public void encodeBegin(FacesContext context, T component) throws IOException
     {
         RendererUtils.checkParamValidity(context, component, UIPanel.class);
         if (!needsWrapper(context, component))
@@ -67,13 +67,13 @@ public class HtmlGroupRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component) throws IOException
+    public void encodeChildren(FacesContext context, T component) throws IOException
     {
         RendererUtils.renderChildren(context, component);
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException
+    public void encodeEnd(FacesContext context, T component) throws IOException
     {
         if (!needsWrapper(context, component))
         {

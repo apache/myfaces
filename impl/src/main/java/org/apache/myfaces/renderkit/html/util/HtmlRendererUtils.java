@@ -118,13 +118,13 @@ public final class HtmlRendererUtils
                     + component.getClientId(facesContext)
                     + " is not an EditableValueHolder");
         }
-        Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
+        Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
         String clientId = component.getClientId(facesContext);
         if (isDisabledOrReadOnly(component))
         {
             return;
         }
-        String submittedValue = (String) paramMap.get(clientId);
+        String submittedValue = paramMap.get(clientId);
         if (submittedValue != null)
         {
             ((EditableValueHolder) component).setSubmittedValue(submittedValue);
@@ -153,9 +153,9 @@ public final class HtmlRendererUtils
         {
             return;
         }
-        Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
+        Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
         String clientId = component.getClientId(facesContext);
-        String reqValue = (String) paramMap.get(clientId);
+        String reqValue = paramMap.get(clientId);
         if (reqValue != null)
         {
             if ((reqValue.equalsIgnoreCase("on")
@@ -331,18 +331,18 @@ public final class HtmlRendererUtils
                     + component.getClientId(facesContext)
                     + " is not an EditableValueHolder");
         }
-        
-        Map paramValuesMap = facesContext.getExternalContext().getRequestParameterValuesMap();
+
+        Map<String, String[]> paramValuesMap = facesContext.getExternalContext().getRequestParameterValuesMap();
         String clientId = component.getClientId(facesContext);
         if (isDisabledOrReadOnly(component))
         {
             return;
         }
         
-        String[] paramValues = (String[]) paramValuesMap.get(clientId);
+        String[] paramValues = paramValuesMap.get(clientId);
         if (paramValues != null)
         {
-            ArrayList<String> reqValues = new ArrayList<String>(Arrays.asList(paramValues));
+            ArrayList<String> reqValues = new ArrayList<>(Arrays.asList(paramValues));
 
             List<SelectItemInfo> selections = SelectItemsUtils.getSelectItemInfoList(
                 (UISelectMany) component, facesContext);
@@ -378,63 +378,54 @@ public final class HtmlRendererUtils
      * @param facesContext
      * @param component
      */
-    public static void decodeUISelectOne(FacesContext facesContext, UIComponent component)
+    public static void decodeUISelectOne(FacesContext facesContext, UISelectOne component)
     {
-        if (!(component instanceof EditableValueHolder))
-        {
-            throw new IllegalArgumentException("Component "
-                    + component.getClientId(facesContext)
-                    + " is not an EditableValueHolder");
-        }
         if (isDisabledOrReadOnly(component))
         {
             return;
         }
         
-        Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
-        if (component instanceof UISelectOne one)
+        Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
+
+        String group = component.getGroup();
+        if (group != null && !group.isEmpty())
         {
-            String group = one.getGroup();
-            if (group != null && !group.isEmpty())
+            UIForm form = ComponentUtils.findClosest(UIForm.class, component);
+            String fullGroupId = form.getClientId(facesContext) +
+                    facesContext.getNamingContainerSeparatorChar() + group;
+            String submittedValue = paramMap.get(fullGroupId);
+            if (submittedValue != null)
             {
-                UIForm form = ComponentUtils.findClosest(UIForm.class, component);
-                String fullGroupId = form.getClientId(facesContext) +
-                        facesContext.getNamingContainerSeparatorChar() + group;
-                String submittedValue = (String) paramMap.get(fullGroupId);
-                if (submittedValue != null)
+                String componentClientId = component.getClientId(facesContext);
+                String submittedValueNamespace = componentClientId +
+                        facesContext.getNamingContainerSeparatorChar();
+                if (submittedValue.startsWith(submittedValueNamespace))
                 {
-                    String componentClientId = component.getClientId(facesContext);
-                    String submittedValueNamespace = componentClientId +
-                            facesContext.getNamingContainerSeparatorChar();
-                    if (submittedValue.startsWith(submittedValueNamespace))
-                    {
-                        submittedValue = submittedValue.substring(submittedValueNamespace.length());
-                        SelectOneGroupSetSubmittedValueCallback callback = 
-                                new SelectOneGroupSetSubmittedValueCallback(group,
-                                        submittedValue,
-                                        componentClientId,
-                                        component.getValueExpression("value") != null);
-                        form.visitTree(VisitContext.createVisitContext(facesContext,
-                                null, MyFacesVisitHints.SET_SKIP_UNRENDERED),
-                                callback);
-                    }
+                    submittedValue = submittedValue.substring(submittedValueNamespace.length());
+                    SelectOneGroupSetSubmittedValueCallback callback =
+                            new SelectOneGroupSetSubmittedValueCallback(group,
+                                    submittedValue,
+                                    componentClientId,
+                                    component.getValueExpression("value") != null);
+                    form.visitTree(VisitContext.createVisitContext(facesContext,
+                            null, MyFacesVisitHints.SET_SKIP_UNRENDERED),
+                            callback);
                 }
-                else 
-                {
-                    // means input was not submitted. set to empty string so we can validate required fields
-                    // if not set, a null value will skip validation -- see beginning of UIInput#validate
-                    one.setSubmittedValue(RendererUtils.EMPTY_STRING);
-                } 
-                return;
             }
+            else
+            {
+                // means input was not submitted. set to empty string so we can validate required fields
+                // if not set, a null value will skip validation -- see beginning of UIInput#validate
+                component.setSubmittedValue(RendererUtils.EMPTY_STRING);
+            }
+            return;
         }
         
         String clientId = component.getClientId(facesContext);
-        String submittedValue = (String) paramMap.get(clientId);
+        String submittedValue = paramMap.get(clientId);
         if (submittedValue != null)
         {
-            List<SelectItemInfo> selections = SelectItemsUtils.getSelectItemInfoList(
-                (UISelectOne) component, facesContext);
+            List<SelectItemInfo> selections = SelectItemsUtils.getSelectItemInfoList(component, facesContext);
 
             // if disabled value is submitted, do not use it
             for(SelectItemInfo itemInfo: selections)
@@ -451,12 +442,12 @@ public final class HtmlRendererUtils
                 }
             }
             //request parameter found, set submitted value
-            ((EditableValueHolder) component).setSubmittedValue(submittedValue);
+            component.setSubmittedValue(submittedValue);
         }
         else
         {
             //see reason for this action at decodeUISelectMany
-            ((EditableValueHolder) component).setSubmittedValue(RendererUtils.EMPTY_STRING);
+            component.setSubmittedValue(RendererUtils.EMPTY_STRING);
         }
     }
     
@@ -483,7 +474,7 @@ public final class HtmlRendererUtils
         {
             if (target instanceof UISelectOne one)
             {
-                UISelectOne targetSelectOneRadio =one;
+                UISelectOne targetSelectOneRadio = one;
                 String targetGroup = targetSelectOneRadio.getGroup();
                 if (group.equals(targetGroup))
                 {
@@ -528,23 +519,20 @@ public final class HtmlRendererUtils
         }
     }
 
-    public static Set getSubmittedOrSelectedValuesAsSet(boolean selectMany,
-            UIComponent uiComponent, FacesContext facesContext, Converter converter)
+    public static Set getSubmittedOrSelectedValuesAsSet(UIComponent uiComponent, FacesContext facesContext,
+                                                        Converter<?> converter)
     {
-        Set lookupSet;
-        if (selectMany)
+        Set lookupSet = null;
+        if (uiComponent instanceof UISelectMany uiSelectMany)
         {
-            UISelectMany uiSelectMany = (UISelectMany) uiComponent;
             lookupSet = RendererUtils.getSubmittedValuesAsSet(facesContext, uiComponent, converter, uiSelectMany);
             if (lookupSet == null)
             {
-                lookupSet = RendererUtils.getSelectedValuesAsSet(facesContext,
-                        uiComponent, converter, uiSelectMany);
+                lookupSet = RendererUtils.getSelectedValuesAsSet(facesContext, uiComponent, converter, uiSelectMany);
             }
         }
-        else
+        else if (uiComponent instanceof UISelectOne uiSelectOne)
         {
-            UISelectOne uiSelectOne = (UISelectOne) uiComponent;
             Object lookup = uiSelectOne.getSubmittedValue();
             if (lookup == null)
             {
@@ -565,44 +553,45 @@ public final class HtmlRendererUtils
         return lookupSet;
     }
 
-    public static Converter findUISelectManyConverterFailsafe(FacesContext facesContext, UIComponent uiComponent)
+    public static <T extends UISelectMany> Converter<?> findUISelectManyConverterFailsafe(FacesContext facesContext,
+                                                                                          T component)
     {
         // invoke with considerValueType = false
-        return findUISelectManyConverterFailsafe(facesContext, uiComponent, false);
+        return findUISelectManyConverterFailsafe(facesContext, component, false);
     }
 
-    public static Converter findUISelectManyConverterFailsafe(FacesContext facesContext, UIComponent uiComponent,
+    public static <T extends UISelectMany> Converter<?> findUISelectManyConverterFailsafe(FacesContext facesContext,
+                                                                                          T component,
             boolean considerValueType)
     {
-        Converter converter;
+        Converter<?> converter;
         try
         {
-            converter = RendererUtils.findUISelectManyConverter(facesContext,
-                    (UISelectMany) uiComponent, considerValueType);
+            converter = RendererUtils.findUISelectManyConverter(facesContext, component, considerValueType);
         }
         catch (FacesException e)
         {
             log.log(Level.SEVERE,
-                    "Error finding Converter for component with id "
-                            + uiComponent.getClientId(facesContext), e);
+                    "Error finding Converter for component with id " + component.getClientId(facesContext), e);
             converter = null;
         }
         return converter;
     }
 
-    public static Converter findUIOutputConverterFailSafe(FacesContext facesContext, UIComponent uiComponent)
+    public static <T extends UIOutput> Converter<?> findUIOutputConverterFailSafe(FacesContext facesContext,
+                                                                                     T component)
     {
-        Converter converter;
+        Converter<?> converter;
         try
         {
-            converter = RendererUtils.findUIOutputConverter(facesContext, (UIOutput) uiComponent);
+            converter = RendererUtils.findUIOutputConverter(facesContext, component);
         }
         catch (FacesException e)
         {
             log.log(Level.SEVERE,
                     "Error finding Converter for component with id "
-                            + uiComponent.getClientId(facesContext) + " "
-                            + ComponentUtils.getPathToComponent(uiComponent), e);
+                            + component.getClientId(facesContext) + " "
+                            + ComponentUtils.getPathToComponent(component), e);
             converter = null;
         }
         return converter;
@@ -887,12 +876,12 @@ public final class HtmlRendererUtils
         ResponseWriter writer = facesContext.getResponseWriter();
 
         List<SelectItem> selectItemList = null;
-        Converter converter = null;
+        Converter<?> converter = null;
         boolean isSelectOne = false;
 
         if (uiComponent instanceof UISelectBoolean boolean1)
         {
-            converter = findUIOutputConverterFailSafe(facesContext, uiComponent);
+            converter = findUIOutputConverterFailSafe(facesContext, boolean1);
 
             writer.startElement(HTML.SPAN_ELEM, uiComponent);
             writeIdIfNecessary(writer, uiComponent, facesContext);
@@ -905,25 +894,23 @@ public final class HtmlRendererUtils
         }
         else
         {
-            if (uiComponent instanceof UISelectMany)
+            if (uiComponent instanceof UISelectMany selectMany)
             {
                 isSelectOne = false;
                 selectItemList = RendererUtils.getSelectItemList(uiComponent, facesContext);
-                converter = findUISelectManyConverterFailsafe(facesContext, uiComponent, considerValueType);
+                converter = findUISelectManyConverterFailsafe(facesContext, selectMany, considerValueType);
             }
-            else if (uiComponent instanceof UISelectOne)
+            else if (uiComponent instanceof UISelectOne selectOne)
             {
                 isSelectOne = true;
                 selectItemList = RendererUtils.getSelectItemList(uiComponent, facesContext);
-                converter = findUIOutputConverterFailSafe(facesContext, uiComponent);
+                converter = findUIOutputConverterFailSafe(facesContext, selectOne);
             }
 
             writer.startElement(isSelectOne ? HTML.SPAN_ELEM : HTML.UL_ELEM, uiComponent);
             writeIdIfNecessary(writer, uiComponent, facesContext);
 
-            Set lookupSet = getSubmittedOrSelectedValuesAsSet(
-                    uiComponent instanceof UISelectMany, uiComponent,
-                    facesContext, converter);
+            Set lookupSet = getSubmittedOrSelectedValuesAsSet(uiComponent, facesContext, converter);
 
             renderSelectOptionsAsText(facesContext, uiComponent, converter,
                     lookupSet, selectItemList, isSelectOne);
@@ -1036,9 +1023,7 @@ public final class HtmlRendererUtils
         HtmlJavaScriptUtils.appendClearHiddenCommandFormParamsFunctionCall(buf, formName);
     }
 
-    @SuppressWarnings("unchecked")
-    public static void renderFormSubmitScript(FacesContext facesContext)
-            throws IOException
+    public static void renderFormSubmitScript(FacesContext facesContext) throws IOException
     {
         HtmlJavaScriptUtils.renderFormSubmitScript(facesContext);
     }
@@ -1088,7 +1073,7 @@ public final class HtmlRendererUtils
         {
             writer.writeAttribute("class", labelClass, "labelClass");
         }
-        if ((item.getLabel() != null) && (item.getLabel().length() > 0))
+        if (item.getLabel() != null && !item.getLabel().isEmpty())
         {
             writer.write(" ");
             if (item.isEscape())
@@ -1119,8 +1104,7 @@ public final class HtmlRendererUtils
         }
         else
         {
-            labelClass = (String) component.getAttributes()
-                    .get(ComponentAttrs.ENABLED_CLASS_ATTR);
+            labelClass = (String) component.getAttributes().get(ComponentAttrs.ENABLED_CLASS_ATTR);
         }
         String labelSelectedClass = null;
         if (selected)
@@ -1146,7 +1130,7 @@ public final class HtmlRendererUtils
         {
             writer.writeAttribute("class", labelClass, "labelClass");
         }
-        if ((item.getLabel() != null) && (item.getLabel().length() > 0))
+        if (item.getLabel() != null && !item.getLabel().isEmpty())
         {
             writer.write(HTML.NBSP_ENTITY);
             if (item.isEscape())

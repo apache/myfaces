@@ -99,7 +99,7 @@ public class UIViewParameter extends UIInput
 
     public String getName()
     {
-        return (String) getStateHelper().eval(PropertyKeys.name);
+        return getStateHelper().eval(PropertyKeys.name);
     }
 
     public String getStringValue(FacesContext context)

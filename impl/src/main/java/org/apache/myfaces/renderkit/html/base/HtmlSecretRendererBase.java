@@ -43,12 +43,12 @@ import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 /**
  * see Spec.1.0 EA - Faces.7.6.4 Renderer Types for UIInput Components
  */
-public class HtmlSecretRendererBase extends HtmlRenderer
+public class HtmlSecretRendererBase<T extends UIInput> extends HtmlRenderer<T>
 {
     private static final String AUTOCOMPLETE_VALUE_OFF = "off";
 
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    public void encodeBegin(FacesContext facesContext, T uiComponent) throws IOException
     {
       RendererUtils.checkParamValidity(facesContext, uiComponent, UIInput.class);
 
@@ -68,7 +68,7 @@ public class HtmlSecretRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
+    public void encodeEnd(FacesContext facesContext, T uiComponent)
             throws IOException
     {
         renderInputEnd(facesContext, uiComponent);
@@ -76,7 +76,7 @@ public class HtmlSecretRendererBase extends HtmlRenderer
 
 
     //Subclasses can set the value of an attribute before, or can render a custom attribute after calling this method
-    protected void renderInputBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    protected void renderInputBegin(FacesContext facesContext, T uiComponent) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         
@@ -184,7 +184,7 @@ public class HtmlSecretRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void decode(FacesContext facesContext, UIComponent component)
+    public void decode(FacesContext facesContext, T component)
     {
         RendererUtils.checkParamValidity(facesContext, component, UIInput.class);
 
@@ -196,7 +196,7 @@ public class HtmlSecretRendererBase extends HtmlRenderer
     }
 
     @Override
-    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
+    public Object getConvertedValue(FacesContext facesContext, T uiComponent, Object submittedValue)
         throws ConverterException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIOutput.class);

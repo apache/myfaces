@@ -40,7 +40,7 @@ import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
-public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
+public class HtmlOutcomeTargetButtonRendererBase<T extends UIComponent> extends HtmlRenderer<T>
 {
     @Override
     public boolean getRendersChildren()
@@ -49,16 +49,16 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    public void encodeBegin(FacesContext facesContext, T component) throws IOException
     {
-        super.encodeBegin(facesContext, uiComponent); //check for NP
+        super.encodeBegin(facesContext, component); //check for NP
 
-        String clientId = uiComponent.getClientId(facesContext);
+        String clientId = component.getClientId(facesContext);
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder holder)
+        if (component instanceof ClientBehaviorHolder holder)
         {
             behaviors = holder.getClientBehaviors();
             if (!behaviors.isEmpty())
@@ -67,12 +67,12 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
             }
         }
 
-        writer.startElement(HTML.INPUT_ELEM, uiComponent);
+        writer.startElement(HTML.INPUT_ELEM, component);
 
         writer.writeAttribute(HTML.ID_ATTR, clientId, ComponentAttrs.ID_ATTR);
         writer.writeAttribute(HTML.NAME_ATTR, clientId, ComponentAttrs.ID_ATTR);
 
-        String image = getImage(uiComponent);
+        String image = getImage(component);
         ExternalContext externalContext = facesContext.getExternalContext();
 
         if (image != null)
@@ -86,7 +86,7 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
         {
             // type="button"
             writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_BUTTON, ComponentAttrs.TYPE_ATTR);
-            Object value = RendererUtils.getStringValue(facesContext, uiComponent);
+            Object value = RendererUtils.getStringValue(facesContext, component);
             if (value != null)
             {
                 writer.writeAttribute(HTML.VALUE_ATTR, value, ComponentAttrs.VALUE_ATTR);
@@ -94,9 +94,9 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
         }
 
         String outcomeTargetHref = HtmlRendererUtils.getOutcomeTargetHref(
-                    facesContext, (UIOutcomeTarget) uiComponent);
+                    facesContext, (UIOutcomeTarget) component);
 
-        if (HtmlRendererUtils.isDisabled(uiComponent) || outcomeTargetHref == null)
+        if (HtmlRendererUtils.isDisabled(component) || outcomeTargetHref == null)
         {
             // disable the button - if disabled is true or no fitting NavigationCase was found
             HtmlRendererUtils.renderHTMLAttribute(writer, HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, true);
@@ -106,13 +106,13 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
             // render onClick attribute
             String href = facesContext.getExternalContext().encodeResourceURL(outcomeTargetHref);
 
-            String commandOnClick = (String) uiComponent.getAttributes().get(HTML.ONCLICK_ATTR);
+            String commandOnClick = (String) component.getAttributes().get(HTML.ONCLICK_ATTR);
             String navigationJavaScript = "window.location.href = '" + href + '\'';
 
             if (behaviors != null && !behaviors.isEmpty())
             {
                 HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONCLICK_ATTR, 
-                        uiComponent, ClientBehaviorEvents.CLICK, null, behaviors, HTML.ONCLICK_ATTR, 
+                        component, ClientBehaviorEvents.CLICK, null, behaviors, HTML.ONCLICK_ATTR,
                         commandOnClick, navigationJavaScript);
             }
             else
@@ -130,75 +130,73 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
             }
         }
 
-        if (isCommonPropertiesOptimizationEnabled(facesContext))
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, component);
+        if (commonPropertiesMarked != null)
         {
-            long commonPropertiesMarked = CommonHtmlAttributesUtil.getMarkedAttributes(uiComponent);
-            
-            if (behaviors != null && !behaviors.isEmpty() && uiComponent instanceof ClientBehaviorHolder)
+            if (behaviors != null && !behaviors.isEmpty() && component instanceof ClientBehaviorHolder)
             {
                 HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
-                        facesContext, writer, uiComponent, behaviors);
+                        facesContext, writer, component, behaviors);
                 HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
-                        facesContext, writer, uiComponent, behaviors);
+                        facesContext, writer, component, behaviors);
             }
             else
             {
                 CommonHtmlAttributesUtil.renderEventPropertiesWithoutOnclick(
-                        writer, commonPropertiesMarked, uiComponent);
-                CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer, commonPropertiesMarked, uiComponent);
+                        writer, commonPropertiesMarked, component);
+                CommonHtmlAttributesUtil.renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
             }
             
             CommonHtmlAttributesUtil.renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(
-                    writer, commonPropertiesMarked, uiComponent);
+                    writer, commonPropertiesMarked, component);
             if ((commonPropertiesMarked & CommonHtmlAttributes.ALT) != 0)
             {
-                HtmlRendererUtils.renderHTMLStringAttribute(writer, uiComponent,
+                HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                         HTML.ALT_ATTR, HTML.ALT_ATTR);
             }
         }
         else
         {
-            if (uiComponent instanceof ClientBehaviorHolder)
+            if (component instanceof ClientBehaviorHolder)
             {
                 HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
-                        facesContext, writer, uiComponent, behaviors);
+                        facesContext, writer, component, behaviors);
                 HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
-                        facesContext, writer, uiComponent, behaviors);
+                        facesContext, writer, component, behaviors);
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                HtmlRendererUtils.renderHTMLAttributes(writer, component,
                         HTML.EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK);
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                HtmlRendererUtils.renderHTMLAttributes(writer, component,
                         HTML.COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE);
-    
             }
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+            HtmlRendererUtils.renderHTMLAttributes(writer, component,
                     HTML.COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
-            HtmlRendererUtils.renderHTMLStringAttribute(writer, uiComponent,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ALT_ATTR, HTML.ALT_ATTR);
         }
 
         writer.flush();
     }
 
-    private String getImage(UIComponent uiComponent)
+    private String getImage(UIComponent component)
     {
-        if (uiComponent instanceof HtmlOutcomeTargetButton button)
+        if (component instanceof HtmlOutcomeTargetButton button)
         {
             return button.getImage();
         }
-        return (String) uiComponent.getAttributes().get(ComponentAttrs.IMAGE_ATTR);
+        return (String) component.getAttributes().get(ComponentAttrs.IMAGE_ATTR);
     }
 
     @Override
-    public void encodeChildren(FacesContext facesContext, UIComponent component) throws IOException
+    public void encodeChildren(FacesContext facesContext, T component) throws IOException
     {
         RendererUtils.renderChildren(facesContext, component);
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
+    public void encodeEnd(FacesContext facesContext, T component) throws IOException
     {
         super.encodeEnd(facesContext, component); //check for NP
 

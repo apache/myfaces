@@ -62,7 +62,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource
     @Override
     public boolean isRendered() 
     {
-        return (Boolean) getStateHelper().eval(PropertyKeys.renderedAttr, true);
+        return getStateHelper().eval(PropertyKeys.renderedAttr, true);
     }
 
     @Override
@@ -204,7 +204,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource
     @Override
     public boolean isImmediate()
     {
-        return (Boolean) getStateHelper().eval(PropertyKeys.immediate, Boolean.FALSE);
+        return getStateHelper().eval(PropertyKeys.immediate, Boolean.FALSE);
     }
 
     @Override
@@ -217,7 +217,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource
     @Override
     public MethodExpression getActionExpression()
     {
-        return (MethodExpression) getStateHelper().eval(PropertyKeys.actionExpression);
+        return getStateHelper().eval(PropertyKeys.actionExpression);
     }
 
     @Override
@@ -249,7 +249,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource
     @JSFProperty
     public String getPhase()
     {
-        return (String) getStateHelper().get(PropertyKeys.phase);
+        return getStateHelper().get(PropertyKeys.phase);
     }
     
     public void setPhase(String phase)
@@ -260,7 +260,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource
     @JSFProperty
     public boolean isOnPostback()
     {
-        return (Boolean) getStateHelper().eval(PropertyKeys.onPostback, Boolean.FALSE);
+        return getStateHelper().eval(PropertyKeys.onPostback, Boolean.FALSE);
     }
 
     public void setOnPostback(boolean onPostback)

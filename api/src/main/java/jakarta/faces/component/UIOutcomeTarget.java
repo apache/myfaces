@@ -49,9 +49,9 @@ public class UIOutcomeTarget extends UIOutput
     @JSFProperty
     public String getOutcome()
     {
-        String outcome = (String) getStateHelper().eval(PropertyKeys.outcome);
+        String outcome = getStateHelper().eval(PropertyKeys.outcome);
         
-        if(outcome == null && isInView())  //default to the view id
+        if (outcome == null && isInView())  //default to the view id
         {
             return getFacesContext().getViewRoot().getViewId();
         }
@@ -67,7 +67,7 @@ public class UIOutcomeTarget extends UIOutput
     @JSFProperty(defaultValue="false")
     public boolean isIncludeViewParams()
     {        
-        return (Boolean) getStateHelper().eval(PropertyKeys.includeViewParams, DEFAULT_INCLUDEVIEWPARAMS);
+        return getStateHelper().eval(PropertyKeys.includeViewParams, DEFAULT_INCLUDEVIEWPARAMS);
     }
 
     public void setIncludeViewParams(boolean includeViewParams)
@@ -82,7 +82,7 @@ public class UIOutcomeTarget extends UIOutput
     @JSFProperty(defaultValue="false")
     public boolean isDisableClientWindow()
     {        
-        return (Boolean) getStateHelper().eval(PropertyKeys.disableClientWindow, DEFAULT_DISABLE_CLIENT_WINDOW);
+        return getStateHelper().eval(PropertyKeys.disableClientWindow, DEFAULT_DISABLE_CLIENT_WINDOW);
     }
 
     /**

@@ -94,7 +94,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         // UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot.
         if(seed == null)
         {
-            Integer uniqueIdCounter = (Integer) getStateHelper().get(PropertyKeys.uniqueIdCounter);
+            Integer uniqueIdCounter = getStateHelper().get(PropertyKeys.uniqueIdCounter);
             uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
             getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1));
             return bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString();    
@@ -427,7 +427,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     @JSFProperty(defaultValue = "true")
     public boolean isPrependId()
     {
-        return (Boolean) getStateHelper().eval(PropertyKeys.prependId, true);
+        return getStateHelper().eval(PropertyKeys.prependId, true);
     }
 
     public void setPrependId(boolean prependId)

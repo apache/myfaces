@@ -46,7 +46,7 @@ public class UIImportConstants extends UIComponentBase
     @JSFProperty
     public String getType()
     {
-        return (String) getStateHelper().eval(PropertyKeys.type);
+        return getStateHelper().eval(PropertyKeys.type);
     }
     
     public void setType(String type)
@@ -57,7 +57,7 @@ public class UIImportConstants extends UIComponentBase
     @JSFProperty
     public String getVar()
     {
-        return (String) getStateHelper().eval(PropertyKeys.var);
+        return getStateHelper().eval(PropertyKeys.var);
     }
     
     public void setVar(String var)

@@ -101,7 +101,7 @@ public class AjaxBehavior extends ClientBehaviorBase
 
     public String getOnerror() 
     {
-        return (String) getStateHelper().eval(ATTR_ON_ERROR);
+        return getStateHelper().eval(ATTR_ON_ERROR);
     }
 
     public void setOnerror(String onError) 
@@ -111,7 +111,7 @@ public class AjaxBehavior extends ClientBehaviorBase
 
     public String getOnevent() 
     {
-        return (String) getStateHelper().eval(ATTR_ON_EVENT);
+        return getStateHelper().eval(ATTR_ON_EVENT);
     }
 
     public void setOnevent(String onEvent) 
@@ -132,13 +132,11 @@ public class AjaxBehavior extends ClientBehaviorBase
         getStateHelper().put(ATTR_RENDER, render);
     }
 
-    @SuppressWarnings("unchecked")
     public ValueExpression getValueExpression(String name) 
     {
         Assert.notNull(name, "name");
 
-        Map<String,Object> bindings = (Map<String,Object>) getStateHelper().
-            get(PropertyKeys.bindings);
+        Map<String,Object> bindings = getStateHelper().get(PropertyKeys.bindings);
         if (bindings != null)
         {
             return (ValueExpression) bindings.get(name);
@@ -165,7 +163,7 @@ public class AjaxBehavior extends ClientBehaviorBase
 
     public boolean isDisabled() 
     {
-        Boolean retVal = (Boolean) getStateHelper().eval(ATTR_DISABLED);
+        Boolean retVal = getStateHelper().eval(ATTR_DISABLED);
         retVal = (retVal == null) ? false : retVal;
         return retVal;
     }
@@ -177,7 +175,7 @@ public class AjaxBehavior extends ClientBehaviorBase
 
     public boolean isImmediate() 
     {
-        Boolean retVal = (Boolean) getStateHelper().eval(ATTR_IMMEDIATE);
+        Boolean retVal = getStateHelper().eval(ATTR_IMMEDIATE);
         retVal = (retVal == null) ? false : retVal;
         return retVal;
     }
@@ -198,7 +196,7 @@ public class AjaxBehavior extends ClientBehaviorBase
      */
     public boolean isResetValues()
     {
-        Boolean retVal = (Boolean) getStateHelper().eval(ATTR_RESET_VALUES);
+        Boolean retVal = getStateHelper().eval(ATTR_RESET_VALUES);
         retVal = (retVal == null) ? false : retVal;
         return retVal;
     }
@@ -226,7 +224,7 @@ public class AjaxBehavior extends ClientBehaviorBase
      */
     public String getDelay()
     {
-        return (String) getStateHelper().eval(ATTR_DELAY);
+        return getStateHelper().eval(ATTR_DELAY);
     }
 
     /**
@@ -249,7 +247,7 @@ public class AjaxBehavior extends ClientBehaviorBase
      */
     public boolean isClearModel()
     {
-        Boolean result = (Boolean) getStateHelper().eval(ATTR_CLEAR_MODEL);
+        Boolean result = getStateHelper().eval(ATTR_CLEAR_MODEL);
         return result != null ? result : false;
     }
 

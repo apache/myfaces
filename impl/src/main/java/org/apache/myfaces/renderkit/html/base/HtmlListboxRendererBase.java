@@ -120,13 +120,13 @@ public class HtmlListboxRendererBase
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
 
-        if (uiComponent instanceof UISelectMany)
+        if (uiComponent instanceof UISelectMany selectMany)
         {
-            HtmlRendererUtils.decodeUISelectMany(facesContext, uiComponent);
+            HtmlRendererUtils.decodeUISelectMany(facesContext, selectMany);
         }
-        else if (uiComponent instanceof UISelectOne)
+        else if (uiComponent instanceof UISelectOne selectOne)
         {
-            HtmlRendererUtils.decodeUISelectOne(facesContext, uiComponent);
+            HtmlRendererUtils.decodeUISelectOne(facesContext, selectOne);
         }
         else
         {
@@ -168,17 +168,15 @@ public class HtmlListboxRendererBase
      * @param component
      * @return
      */
-    protected Converter getConverter(FacesContext facesContext,
-            UIComponent component)
+    protected <T extends UIComponent> Converter<?> getConverter(FacesContext facesContext, T component)
     {
-        if (component instanceof UISelectMany)
+        if (component instanceof UISelectMany selectMany)
         {
-            return HtmlRendererUtils.findUISelectManyConverterFailsafe(facesContext,
-                    component);
+            return HtmlRendererUtils.findUISelectManyConverterFailsafe(facesContext, selectMany);
         }
-        else if (component instanceof UISelectOne)
+        else if (component instanceof UISelectOne selectOne)
         {
-            return HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, component);
+            return HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
         }
         return null;
     }

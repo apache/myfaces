@@ -58,7 +58,7 @@ import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
-public class HtmlRadioRendererBase extends HtmlRenderer
+public class HtmlRadioRendererBase<T extends UIComponent> extends HtmlRenderer<T>
 {
     private static final Logger log = Logger.getLogger(HtmlRadioRendererBase.class.getName());
 
@@ -71,7 +71,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
             Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED, VisitHint.SKIP_ITERATION));
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    public void encodeEnd(FacesContext facesContext, T uiComponent) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UISelectOne.class);
 
@@ -561,12 +561,12 @@ public class HtmlRadioRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void decode(FacesContext facesContext, UIComponent uiComponent)
+    public void decode(FacesContext facesContext, T uiComponent)
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
-        if (uiComponent instanceof UIInput)
+        if (uiComponent instanceof UISelectOne selectOne)
         {
-            HtmlRendererUtils.decodeUISelectOne(facesContext, uiComponent);
+            HtmlRendererUtils.decodeUISelectOne(facesContext, selectOne);
         }
         if (uiComponent instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(uiComponent))
         {
@@ -575,7 +575,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
     }
 
     @Override
-    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
+    public Object getConvertedValue(FacesContext facesContext, T uiComponent, Object submittedValue)
         throws ConverterException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UISelectOne.class);
@@ -608,7 +608,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
         {
             if (target instanceof UISelectOne one)
             {
-                UISelectOne targetSelectOneRadio =one;
+                UISelectOne targetSelectOneRadio = one;
                 String targetGroup = targetSelectOneRadio.getGroup();
                 if (group.equals(targetGroup))
                 {

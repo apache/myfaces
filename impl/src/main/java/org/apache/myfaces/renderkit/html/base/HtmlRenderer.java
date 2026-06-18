@@ -36,8 +36,8 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
-public abstract class HtmlRenderer
-        extends Renderer
+public abstract class HtmlRenderer<T extends UIComponent>
+        extends Renderer<T>
 {
 
     /**

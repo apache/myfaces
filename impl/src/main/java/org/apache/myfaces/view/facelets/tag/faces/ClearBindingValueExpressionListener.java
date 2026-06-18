@@ -57,7 +57,8 @@ public class ClearBindingValueExpressionListener implements ComponentSystemEvent
             Logger log = Logger.getLogger(ClearBindingValueExpressionListener.class.getName());
             if (log.isLoggable(Level.FINE))
             {
-                log.log(Level.FINE, "Cannot reset binding for: " + event.getComponent().getClientId(), e);
+                log.log(Level.FINE,
+                        "Cannot reset binding for: " + event.getComponent().getClientId(event.getFacesContext()), e);
             }
         }
         catch (NullPointerException e)
@@ -65,7 +66,8 @@ public class ClearBindingValueExpressionListener implements ComponentSystemEvent
             Logger log = Logger.getLogger(ClearBindingValueExpressionListener.class.getName());
             if (log.isLoggable(Level.FINE))
             {
-                log.log(Level.FINE, "Cannot reset binding for: " + event.getComponent().getClientId(), e);
+                log.log(Level.FINE,
+                        "Cannot reset binding for: " + event.getComponent().getClientId(event.getFacesContext()), e);
             }
         }
     }

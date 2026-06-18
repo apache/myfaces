@@ -121,10 +121,10 @@ public class SharedRendererUtils
         ValueExpression expression = component.getValueExpression("value");
         Object targetForConvertedValues = null;
 
-        Boolean isCollectionCase = false;
+        boolean isCollectionCase = false;
 
         // if the component has an attached converter, use it
-        Converter converter = component.getConverter();
+        Converter<?> converter = component.getConverter();
         // at this point the valueType attribute is handled in shared.
         if (converter == null && considerValueType)
         {
@@ -410,9 +410,9 @@ public class SharedRendererUtils
      * @param component
      * @return
      */
-    public static Converter getValueTypeConverter(FacesContext facesContext, UISelectMany component)
+    public static <T extends UISelectMany> Converter<?> getValueTypeConverter(FacesContext facesContext, T component)
     {
-        Converter converter = null;
+        Converter<?> converter = null;
         
         Object valueTypeAttr = component.getAttributes().get(VALUE_TYPE_KEY);
         if (valueTypeAttr != null)
@@ -455,13 +455,13 @@ public class SharedRendererUtils
      * @param facesContext
      * @return The first suitable Converter for the given SelectItems or null.
      */
-    public static Converter getSelectItemsValueConverter(Iterator<SelectItem> iterator, FacesContext facesContext)
+    public static Converter<?> getSelectItemsValueConverter(Iterator<SelectItem> iterator, FacesContext facesContext)
     {
         // Attention!
         // This code is duplicated in jsfapi component package.
         // If you change something here please do the same in the other class!
         
-        Converter converter = null;
+        Converter<?> converter = null;
         while (converter == null && iterator.hasNext())
         {
             SelectItem item = iterator.next();

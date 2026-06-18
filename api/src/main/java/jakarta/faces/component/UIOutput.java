@@ -123,7 +123,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
     
     private boolean _isSetConverter()
     {
-        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.converterSet);
+        Boolean value = getStateHelper().get(PropertyKeys.converterSet);
         return value == null ? false : value;
     }
     
@@ -131,8 +131,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
     public void markInitialState()
     {
         super.markInitialState();
-        if (_converter != null && 
-            _converter instanceof PartialStateHolder holder)
+        if (_converter != null && _converter instanceof PartialStateHolder holder)
         {
             holder.markInitialState();
         }

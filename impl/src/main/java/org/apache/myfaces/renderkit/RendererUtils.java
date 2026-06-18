@@ -381,10 +381,10 @@ public final class RendererUtils
      * @return the Converter or null if no Converter specified or needed
      * @throws FacesException if the Converter could not be created
      */
-    public static Converter findUIOutputConverter(FacesContext facesContext,
-            UIOutput component) throws FacesException
+    public static <T extends UIOutput> Converter<?> findUIOutputConverter(FacesContext facesContext,
+            T component) throws FacesException
     {
-        Converter converter = component.getConverter();
+        Converter<?> converter = component.getConverter();
         if (converter != null)
         {
             return converter;
@@ -428,12 +428,12 @@ public final class RendererUtils
      * @return the Converter or null if no Converter specified or needed
      * @throws FacesException if the Converter could not be created
      */
-    public static Converter findUISelectManyConverter(
-            FacesContext facesContext, UISelectMany component,
-            boolean considerValueType)
+    public static <T extends UISelectMany> Converter<?> findUISelectManyConverter(FacesContext facesContext,
+                                                                                  T component,
+                                                                                  boolean considerValueType)
     {
         // If the component has an attached Converter, use it.
-        Converter converter = component.getConverter();
+        Converter<?> converter = component.getConverter();
         if (converter != null)
         {
             return converter;
@@ -472,7 +472,8 @@ public final class RendererUtils
         if (Collection.class.isAssignableFrom(valueType) || Object.class.equals(valueType))
         {
             // try to get the by-type-converter from the type of the SelectItems
-            return SharedRendererUtils.getSelectItemsValueConverter(new SelectItemsIterator(component, facesContext),
+            return SharedRendererUtils.getSelectItemsValueConverter(
+                    new SelectItemsIterator(component, facesContext),
                     facesContext);
         }
 
@@ -494,7 +495,8 @@ public final class RendererUtils
         {
             // There is no converter for Object class
             // try to get the by-type-converter from the type of the SelectItems
-            return SharedRendererUtils.getSelectItemsValueConverter(new SelectItemsIterator(component, facesContext),
+            return SharedRendererUtils.getSelectItemsValueConverter(
+                    new SelectItemsIterator(component, facesContext),
                     facesContext);
         }
 
@@ -504,9 +506,7 @@ public final class RendererUtils
         }
         catch (FacesException e)
         {
-            log.log(Level.SEVERE,
-                    "No Converter for type " + arrayComponentType.getName() + " found",
-                    e);
+            log.log(Level.SEVERE, "No Converter for type " + arrayComponentType.getName() + " found", e);
             return null;
         }
     }
@@ -587,7 +587,7 @@ public final class RendererUtils
      * @return Set containing all currently selected values
      */
     public static Set getSelectedValuesAsSet(FacesContext context,
-            UIComponent component, Converter converter,
+            UIComponent component, Converter<?> converter,
             UISelectMany uiSelectMany)
     {
         Object selectedValues = uiSelectMany.getValue();
@@ -596,7 +596,7 @@ public final class RendererUtils
     }
 
     private static Set internalSubmittedOrSelectedValuesAsSet(
-            FacesContext context, UIComponent component, Converter converter,
+            FacesContext context, UIComponent component, Converter<?> converter,
             UISelectMany uiSelectMany, Object values,
             boolean allowNonArrayOrCollectionValue)
     {
@@ -666,12 +666,12 @@ public final class RendererUtils
             FacesContext facesContext, UISelectOne output, Object submittedValue)
     {
 
-        if(submittedValue == null || "".equals(submittedValue))
+        if (submittedValue == null || "".equals(submittedValue))
         {
             if (log.isLoggable(Level.FINE))
             {
                 log.fine("No conversion necessary for null / empty string UISelectOne value: client id "
-                            + output.getClientId());
+                            + output.getClientId(facesContext));
             }
             return null;
         }
@@ -683,7 +683,7 @@ public final class RendererUtils
                             + ComponentUtils.getPathToComponent(output) + "expected");
         }
 
-        Converter converter;
+        Converter<?> converter;
         try
         {
             converter = findUIOutputConverter(facesContext, output);
@@ -808,14 +808,14 @@ public final class RendererUtils
         // Faces 2.0: if "name" attribute is available, treat as a resource reference.
         final Map<String, Object> attributes = component.getAttributes();
         final String resourceName = (String) attributes.get(ComponentAttrs.NAME_ATTR);
-        if (resourceName != null && (resourceName.length() > 0))
+        if (resourceName != null && !resourceName.isEmpty())
         {
 
             final ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
             final Resource resource;
 
             final String libraryName = (String) attributes.get(ComponentAttrs.LIBRARY_ATTR);
-            if ((libraryName != null) && (libraryName.length() > 0))
+            if (libraryName != null && !libraryName.isEmpty())
             {
                 resource = resourceHandler.createResource(resourceName, libraryName);
             }
@@ -873,7 +873,7 @@ public final class RendererUtils
         // requested resource does not exist)
         // EL implementation turns null into ""
         // see http://www.irian.at/blog/blogid/unifiedElCoercion/#unifiedElCoercion
-        if (uri.length() == 0)
+        if (uri.isEmpty())
         {
             return null;
         }

@@ -41,7 +41,7 @@ import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
  * @version $Revision$ $Date$
  */
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Input", type = "jakarta.faces.Hidden")
-public class HtmlHiddenRenderer extends HtmlRenderer
+public class HtmlHiddenRenderer extends HtmlRenderer<UIComponent>
 {
     @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException

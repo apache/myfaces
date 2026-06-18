@@ -50,7 +50,7 @@ import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
  * @version $Revision$ $Date$
  */
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Output", type = "jakarta.faces.Format")
-public class HtmlFormatRenderer extends HtmlRenderer
+public class HtmlFormatRenderer extends HtmlRenderer<UIOutput>
 {
     private static final Logger log = Logger.getLogger(HtmlFormatRenderer.class.getName());
 
@@ -69,17 +69,17 @@ public class HtmlFormatRenderer extends HtmlRenderer
     }
 
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    public void encodeBegin(FacesContext facesContext, UIOutput uiComponent) throws IOException
     {
     }
 
     @Override
-    public void encodeChildren(FacesContext facescontext, UIComponent uicomponent) throws IOException
+    public void encodeChildren(FacesContext facescontext, UIOutput uicomponent) throws IOException
     {
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
+    public void encodeEnd(FacesContext facesContext, UIOutput component) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, component, UIOutput.class);
 

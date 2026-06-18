@@ -36,7 +36,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
  *
  */
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Output", type = "jakarta.faces.Doctype")
-public class HtmlDoctypeRenderer extends Renderer
+public class HtmlDoctypeRenderer extends Renderer<UIComponent>
 {
 
     @Override

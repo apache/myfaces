@@ -32,7 +32,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 @JSFRenderer(family="facelets",
         renderKitId="HTML_BASIC",
         type="facelets.ui.Repeat")
-public class RepeatRenderer extends Renderer
+public class RepeatRenderer extends Renderer<UIRepeat>
 {
 
     public RepeatRenderer()
@@ -41,13 +41,13 @@ public class RepeatRenderer extends Renderer
     }
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component) throws IOException
+    public void encodeBegin(FacesContext context, UIRepeat component) throws IOException
     {
 
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component) throws IOException
+    public void encodeChildren(FacesContext context, UIRepeat component) throws IOException
     {
         if (component.getChildCount() > 0)
         {
@@ -91,7 +91,7 @@ public class RepeatRenderer extends Renderer
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException
+    public void encodeEnd(FacesContext context, UIRepeat component) throws IOException
     {
         
     }

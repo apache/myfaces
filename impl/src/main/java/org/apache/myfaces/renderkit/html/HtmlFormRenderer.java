@@ -21,6 +21,7 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
 import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
@@ -36,7 +37,7 @@ import org.apache.myfaces.renderkit.html.base.HtmlFormRendererBase;
  */
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Form", type = "jakarta.faces.Form")
 public class HtmlFormRenderer
-        extends HtmlFormRendererBase
+        extends HtmlFormRendererBase<UIForm>
 {
     @Override
     protected void afterFormElementsEnd(FacesContext facesContext, UIComponent component) throws IOException

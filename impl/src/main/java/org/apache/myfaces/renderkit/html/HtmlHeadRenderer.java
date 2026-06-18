@@ -40,7 +40,7 @@ import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
  * @version $Revision$ $Date$
  */
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Output", type = "jakarta.faces.Head")
-public class HtmlHeadRenderer extends Renderer
+public class HtmlHeadRenderer extends Renderer<UIComponent>
 {
     private final static String PROFILE_ATTR = "profile";
 

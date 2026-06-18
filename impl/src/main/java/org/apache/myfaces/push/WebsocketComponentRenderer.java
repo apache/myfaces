@@ -98,7 +98,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         // Render the tag that will be embedded into the DOM tree that helps to detect if the message
         // must be processed or not and if the connection must be closed.
         writer.startElement(HTML.DIV_ELEM, component);
-        writer.writeAttribute(HTML.ID_ATTR, component.getClientId() ,null);
+        writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext) ,null);
         writer.writeAttribute(HTML.STYLE_ATTR, "display:none", null);
         writer.endElement(HTML.DIV_ELEM);
         
@@ -211,7 +211,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         StringBuilder sb = new StringBuilder(50);
         sb.append("faces.push.init(");
         sb.append('\'');
-        sb.append(component.getClientId());
+        sb.append(component.getClientId(facesContext));
         sb.append('\'');
         sb.append(',');
         sb.append('\'');

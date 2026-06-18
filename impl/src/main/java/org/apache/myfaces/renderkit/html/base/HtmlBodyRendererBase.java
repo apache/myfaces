@@ -42,11 +42,11 @@ import org.apache.myfaces.renderkit.html.util.HTML;
  * 
  * @since 2.0
  */
-public class HtmlBodyRendererBase extends HtmlRenderer
+public class HtmlBodyRendererBase<T extends UIComponent> extends HtmlRenderer<T>
 {
 
     @Override
-    public void decode(FacesContext context, UIComponent component)
+    public void decode(FacesContext context, T component)
     {
         // check for npe
         super.decode(context, component);
@@ -55,7 +55,7 @@ public class HtmlBodyRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
+    public void encodeBegin(FacesContext facesContext, T component) throws IOException
     {
         super.encodeBegin(facesContext, component); //check for NP
 
@@ -121,7 +121,7 @@ public class HtmlBodyRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
+    public void encodeEnd(FacesContext facesContext, T component) throws IOException
     {
         super.encodeEnd(facesContext, component); //check for NP
 

@@ -37,7 +37,7 @@ import org.apache.myfaces.renderkit.html.util.SelectItemInfo;
 import org.apache.myfaces.renderkit.html.util.SelectItemsUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
-public class HtmlSelectableRendererBase extends HtmlRenderer
+public class HtmlSelectableRendererBase<T extends UIComponent> extends HtmlRenderer<T>
 {
     
     protected void internalRenderSelect(FacesContext facesContext,
@@ -122,8 +122,7 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.READONLY_ATTR, HTML.READONLY_ATTR, null);
         }
 
-        Set lookupSet = HtmlRendererUtils.getSubmittedOrSelectedValuesAsSet(selectMany,
-                uiComponent, facesContext, converter);
+        Set lookupSet = HtmlRendererUtils.getSubmittedOrSelectedValuesAsSet(uiComponent, facesContext, converter);
 
         SelectItemsUtils.renderSelectOptions(facesContext, uiComponent, converter, lookupSet, selectItemList);
         // bug #970747: force separate end tag

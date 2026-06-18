@@ -834,7 +834,7 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     @Override
     public boolean isImmediate()
     {
-        return (Boolean) getStateHelper().eval(PropertyKeys.immediate, Boolean.FALSE);
+        return getStateHelper().eval(PropertyKeys.immediate, Boolean.FALSE);
     }
 
     @Override
@@ -857,7 +857,7 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     @Override
     public boolean isRequired()
     {
-        return (Boolean) getStateHelper().eval(PropertyKeys.required, Boolean.FALSE);
+        return getStateHelper().eval(PropertyKeys.required, Boolean.FALSE);
     }
 
     @Override
@@ -875,7 +875,7 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     @JSFProperty
     public String getConverterMessage()
     {
-        return (String) getStateHelper().eval(PropertyKeys.converterMessage);
+        return getStateHelper().eval(PropertyKeys.converterMessage);
     }
 
     public void setConverterMessage(String converterMessage)
@@ -890,7 +890,7 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     @JSFProperty
     public String getRequiredMessage()
     {
-        return (String) getStateHelper().eval(PropertyKeys.requiredMessage);
+        return getStateHelper().eval(PropertyKeys.requiredMessage);
     }
 
     public void setRequiredMessage(String requiredMessage)
@@ -979,7 +979,7 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     @JSFProperty
     public String getValidatorMessage()
     {
-        return (String) getStateHelper().eval(PropertyKeys.validatorMessage);
+        return getStateHelper().eval(PropertyKeys.validatorMessage);
     }
 
     public void setValidatorMessage(String validatorMessage)

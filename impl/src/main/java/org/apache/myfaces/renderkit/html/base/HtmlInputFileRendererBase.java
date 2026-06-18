@@ -22,7 +22,6 @@ import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
@@ -51,16 +50,16 @@ import org.apache.myfaces.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
-public class HtmlInputFileRendererBase extends HtmlRenderer
+public class HtmlInputFileRendererBase<T extends HtmlInputFile> extends HtmlRenderer<T>
 {
     private static final Logger log = Logger.getLogger(HtmlInputFileRendererBase.class.getName());
 
     @Override
-    public void decode(FacesContext facesContext, UIComponent component)
+    public void decode(FacesContext facesContext, T component)
     {
         try
         {
-            String clientId = component.getClientId();
+            String clientId = component.getClientId(facesContext);
             HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
             Collection<Part> parts = request.getParts();
             Collection<Part> submittedValues = new ArrayList<>(parts.size());
@@ -72,13 +71,13 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
                     submittedValues.add(wrapper);
                 }
             }
-            if (((HtmlInputFile) component).isMultiple())
+            if (component.isMultiple())
             {
-                ((UIInput) component).setSubmittedValue(submittedValues);
+                component.setSubmittedValue(submittedValues);
             }
             else if (!submittedValues.isEmpty())
             {
-                ((UIInput) component).setSubmittedValue(submittedValues.iterator().next());
+                component.setSubmittedValue(submittedValues.iterator().next());
             }
         }
         catch (IOException | ServletException e)
@@ -93,7 +92,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
     }
     
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component)
+    public void encodeEnd(FacesContext facesContext, T component)
         throws IOException
     {   
         renderInput(facesContext, component);
@@ -104,21 +103,21 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
                     facesContext.getPartialViewContext().isAjaxRequest()))
         {
             UIForm form = ComponentUtils.findClosest(UIForm.class, component);
-            if (form != null && form instanceof HtmlForm htmlForm)
+            if (form instanceof HtmlForm htmlForm)
             {
                 String content = htmlForm.getEnctype();
                 if (content == null || !content.contains("multipart/form-data"))
                 {
                      FacesMessage message = new FacesMessage("file upload requires a form with"+
                             " enctype equal to multipart/form-data");
-                     facesContext.addMessage(component.getClientId(), message);
+                     facesContext.addMessage(component.getClientId(facesContext), message);
                 }
             }
         }
     }
    
     @Override
-    public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue)
+    public Object getConvertedValue(FacesContext context, T component, Object submittedValue)
             throws ConverterException
     {
         Assert.notNull(context, "context");

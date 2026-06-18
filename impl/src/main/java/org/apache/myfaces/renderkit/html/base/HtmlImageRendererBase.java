@@ -28,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.application.ProjectStage;
-import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIGraphic;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
@@ -41,12 +40,12 @@ import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
-public class HtmlImageRendererBase extends HtmlRenderer
+public class HtmlImageRendererBase<T extends UIGraphic> extends HtmlRenderer<T>
 {
     private static final Logger log = Logger.getLogger(HtmlImageRendererBase.class.getName());
     
     @Override
-    public void decode(FacesContext context, UIComponent component)
+    public void decode(FacesContext context, T component)
     {
         super.decode(context, component);
         
@@ -54,30 +53,30 @@ public class HtmlImageRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    public void encodeEnd(FacesContext facesContext, T component) throws IOException
     {
-        RendererUtils.checkParamValidity(facesContext, uiComponent, UIGraphic.class);
+        RendererUtils.checkParamValidity(facesContext, component, UIGraphic.class);
 
         ResponseWriter writer = facesContext.getResponseWriter();
         
-        Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(uiComponent);
+        Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(component);
         if (behaviors != null && !behaviors.isEmpty())
         {
             ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
         }
         
-        writer.startElement(HTML.IMG_ELEM, uiComponent);
+        writer.startElement(HTML.IMG_ELEM, component);
 
-        if (uiComponent instanceof ClientBehaviorHolder && !behaviors.isEmpty())
+        if (component instanceof ClientBehaviorHolder && !behaviors.isEmpty())
         {
-            HtmlRendererUtils.writeIdAndName(writer, uiComponent, facesContext);
+            HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
         }
         else
         {
-            HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
+            HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
         }
 
-        final String url = RendererUtils.getIconSrc(facesContext, uiComponent, ComponentAttrs.URL_ATTR);
+        final String url = RendererUtils.getIconSrc(facesContext, component, ComponentAttrs.URL_ATTR);
         if (url != null)
         {
             writer.writeURIAttribute(HTML.SRC_ATTR, url,ComponentAttrs.VALUE_ATTR);
@@ -89,52 +88,52 @@ public class HtmlImageRendererBase extends HtmlRenderer
                     : Level.WARNING;
             if (log.isLoggable(level))
             {
-                log.log(level, "Component UIGraphic " + uiComponent.getClientId(facesContext) 
+                log.log(level, "Component UIGraphic " + component.getClientId(facesContext)
                         + " has no attribute url, value, name or attribute resolves to null. Path to component " 
-                        + ComponentUtils.getPathToComponent(uiComponent));
+                        + ComponentUtils.getPathToComponent(component));
             }
         }
 
         /* 
          * Warn the user if the ALT attribute is missing.
          */                
-        if (uiComponent.getAttributes().get(HTML.ALT_ATTR) == null) 
+        if (component.getAttributes().get(HTML.ALT_ATTR) == null)
         {
             Level level = facesContext.isProjectStage(ProjectStage.Production)
                     ? Level.FINE
                     : Level.WARNING;
             if (log.isLoggable(level))
             {
-                log.log(level, "Component UIGraphic " + uiComponent.getClientId(facesContext) 
+                log.log(level, "Component UIGraphic " + component.getClientId(facesContext)
                         + " has no attribute alt or attribute resolves to null. Path to component " 
-                        + ComponentUtils.getPathToComponent(uiComponent));
+                        + ComponentUtils.getPathToComponent(component));
             }
         }
 
-        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, uiComponent);
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, component);
 
         if (behaviors != null)
         {
-            renderEventHandlers(facesContext, writer, uiComponent, behaviors, commonPropertiesMarked);
+            renderEventHandlers(facesContext, writer, component, behaviors, commonPropertiesMarked);
         }
 
         if (commonPropertiesMarked != null)
         {
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.IMG_ATTRIBUTES);
+            HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.IMG_ATTRIBUTES);
             if (behaviors != null)
             {
                 CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(
-                        writer, commonPropertiesMarked, uiComponent);
+                        writer, commonPropertiesMarked, component);
             }
             else
             {
                 CommonHtmlAttributesUtil.renderCommonPassthroughProperties(
-                        writer, commonPropertiesMarked, uiComponent);
+                        writer, commonPropertiesMarked, component);
             }
         }
         else
         {
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+            HtmlRendererUtils.renderHTMLAttributes(writer, component,
                     behaviors != null
                         ? HTML.IMG_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS
                         : HTML.IMG_PASSTHROUGH_ATTRIBUTES);

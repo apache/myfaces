@@ -131,7 +131,7 @@ public abstract class UIComponentBase extends UIComponent
     
     private transient FacesContext _facesContext;
     private transient Boolean _cachedIsRendered;
-    private transient Renderer _cachedRenderer;
+    private transient Renderer<? extends UIComponent> _cachedRenderer;
     
     public UIComponentBase()
     {
@@ -608,7 +608,6 @@ public abstract class UIComponentBase extends UIComponent
                 else
                 {
                     // If a Renderer is associated with this UIComponent, the actual encoding will be delegated to
-                    // Renderer.encodeChildren(FacesContext, UIComponent).
                     renderer.encodeChildren(context, this);
                 }
             }
@@ -676,7 +675,7 @@ public abstract class UIComponentBase extends UIComponent
     {
         Assert.notNull(expr, "expr");
 
-        if (expr.length() == 0)
+        if (expr.isEmpty())
         {
             return null;
         }
@@ -929,7 +928,7 @@ public abstract class UIComponentBase extends UIComponent
             _clientId = id;
         }
 
-        Renderer renderer = getRenderer(context);
+        Renderer<?> renderer = getRenderer(context);
         if (renderer != null)
         {
             _clientId = renderer.convertClientId(context, _clientId);
@@ -1100,7 +1099,7 @@ public abstract class UIComponentBase extends UIComponent
     public boolean getRendersChildren()
     {
         Renderer renderer = getRenderer(getFacesContext());
-        return renderer != null ? renderer.getRendersChildren() : false;
+        return renderer != null && renderer.getRendersChildren();
     }
 
     /**
@@ -1158,9 +1157,9 @@ public abstract class UIComponentBase extends UIComponent
     {
         if (_cachedIsRendered != null)
         {
-            return Boolean.TRUE.equals(_cachedIsRendered);
+            return _cachedIsRendered;
         }
-        return (Boolean) getStateHelper().eval(PropertyKeys.rendered, DEFAULT_RENDERED);
+        return getStateHelper().eval(PropertyKeys.rendered, DEFAULT_RENDERED);
     }
 
     @JSFProperty(literalOnly = true, istransient = true, tagExcluded = true)
@@ -1176,7 +1175,7 @@ public abstract class UIComponentBase extends UIComponent
         super.markInitialState();
         
         // Enable copyFullInitialState behavior when delta is written into this component.
-        ((_DeltaStateHelper)getStateHelper()).setCopyFullInitialState(true);
+        ((_DeltaStateHelper) getStateHelper()).setCopyFullInitialState(true);
         
         if (_facesListeners != null && !_facesListeners.isEmpty())
         {
@@ -1264,11 +1263,11 @@ public abstract class UIComponentBase extends UIComponent
     }
 
     @Override
-    protected Renderer getRenderer(FacesContext context)
+    protected <T extends UIComponent> Renderer<T> getRenderer(FacesContext context)
     {
         Assert.notNull(context, "context");
 
-        Renderer renderer = getCachedRenderer();
+        Renderer<T> renderer = (Renderer<T>) getCachedRenderer();
         if (renderer != null)
         {
             return renderer;
@@ -1280,7 +1279,7 @@ public abstract class UIComponentBase extends UIComponent
         }
         
         RenderKit renderKit = context.getRenderKit();
-        renderer = renderKit.getRenderer(getFamily(), rendererType);
+        renderer = (Renderer<T>) renderKit.getRenderer(getFamily(), rendererType);
         if (renderer == null)
         {
             String location = getComponentLocation(this);
@@ -2349,12 +2348,12 @@ public abstract class UIComponentBase extends UIComponent
         _facesContext = facesContext;
     }
     
-    Renderer getCachedRenderer()
+    Renderer<? extends UIComponent> getCachedRenderer()
     {
         return _cachedRenderer;
     }
     
-    void setCachedRenderer(Renderer renderer)
+    void setCachedRenderer(Renderer<? extends UIComponent> renderer)
     {
         _cachedRenderer = renderer;
     }

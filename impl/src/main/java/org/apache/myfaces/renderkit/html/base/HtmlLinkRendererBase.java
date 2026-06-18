@@ -55,7 +55,7 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
-public abstract class HtmlLinkRendererBase extends HtmlRenderer
+public abstract class HtmlLinkRendererBase<T extends UIComponent> extends HtmlRenderer<T>
 {
     public static final String END_LINK_OUTCOME_AS_SPAN = 
         "oam.shared.HtmlLinkRendererBase.END_LINK_OUTCOME_AS_SPAN";
@@ -81,7 +81,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void decode(FacesContext facesContext, UIComponent component)
+    public void decode(FacesContext facesContext, T component)
     {
         super.decode(facesContext, component);  //check for NP
 
@@ -123,7 +123,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
+    public void encodeBegin(FacesContext facesContext, T component) throws IOException
     {
         super.encodeBegin(facesContext, component);  //check for NP
 
@@ -194,7 +194,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
+    public void encodeEnd(FacesContext facesContext, T component) throws IOException
     {
         super.encodeEnd(facesContext, component);  //check for NP
 

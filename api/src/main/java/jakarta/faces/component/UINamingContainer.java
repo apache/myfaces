@@ -76,7 +76,7 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
         // and will be unique within this UIViewRoot.
         if(seed == null)
         {
-            Integer uniqueIdCounter = (Integer) getStateHelper().get(PropertyKeys.uniqueIdCounter);
+            Integer uniqueIdCounter = getStateHelper().get(PropertyKeys.uniqueIdCounter);
             uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
             getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1));
             return bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString();    

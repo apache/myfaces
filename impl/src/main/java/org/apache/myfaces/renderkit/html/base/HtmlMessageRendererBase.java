@@ -43,8 +43,8 @@ import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 
-public abstract class HtmlMessageRendererBase
-        extends HtmlRenderer
+public abstract class HtmlMessageRendererBase<T extends UIComponent>
+        extends HtmlRenderer<T>
 {
     private static final Logger log = Logger.getLogger(HtmlMessageRendererBase.class.getName());
 
@@ -329,22 +329,22 @@ public abstract class HtmlMessageRendererBase
         String styleClass = null;
         if (message instanceof HtmlMessage htmlMessage)
         {
-            if (severity == FacesMessage.SEVERITY_INFO)
+            if (severity == FacesMessage.Severity.INFO)
             {
                 style = htmlMessage.getInfoStyle();
                 styleClass = htmlMessage.getInfoClass();
             }
-            else if (severity == FacesMessage.SEVERITY_WARN)
+            else if (severity == FacesMessage.Severity.WARN)
             {
                 style = htmlMessage.getWarnStyle();
                 styleClass = htmlMessage.getWarnClass();
             }
-            else if (severity == FacesMessage.SEVERITY_ERROR)
+            else if (severity == FacesMessage.Severity.ERROR)
             {
                 style = htmlMessage.getErrorStyle();
                 styleClass = htmlMessage.getErrorClass();
             }
-            else if (severity == FacesMessage.SEVERITY_FATAL)
+            else if (severity == FacesMessage.Severity.FATAL)
             {
                 style = htmlMessage.getFatalStyle();
                 styleClass = htmlMessage.getFatalClass();
@@ -363,22 +363,22 @@ public abstract class HtmlMessageRendererBase
         else
         {
             Map<String, Object> attr = message.getAttributes();
-            if (severity == FacesMessage.SEVERITY_INFO)
+            if (severity == FacesMessage.Severity.INFO)
             {
                 style = (String) attr.get(ComponentAttrs.INFO_STYLE_ATTR);
                 styleClass = (String) attr.get(ComponentAttrs.INFO_CLASS_ATTR);
             }
-            else if (severity == FacesMessage.SEVERITY_WARN)
+            else if (severity == FacesMessage.Severity.WARN)
             {
                 style = (String) attr.get(ComponentAttrs.WARN_STYLE_ATTR);
                 styleClass = (String) attr.get(ComponentAttrs.WARN_CLASS_ATTR);
             }
-            else if (severity == FacesMessage.SEVERITY_ERROR)
+            else if (severity == FacesMessage.Severity.ERROR)
             {
                 style = (String) attr.get(ComponentAttrs.ERROR_STYLE_ATTR);
                 styleClass = (String) attr.get(ComponentAttrs.ERROR_CLASS_ATTR);
             }
-            else if (severity == FacesMessage.SEVERITY_FATAL)
+            else if (severity == FacesMessage.Severity.FATAL)
             {
                 style = (String) attr.get(ComponentAttrs.FATAL_STYLE_ATTR);
                 styleClass = (String) attr.get(ComponentAttrs.FATAL_CLASS_ATTR);
