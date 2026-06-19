@@ -1415,7 +1415,7 @@
         <p>The "if" element defines a condition that must resolve
         to true in order for the navigation case on which it is
         defined to be matched, with the existing match criteria
-        (action method and outcome) as a prerequiste, if present.
+        (action method and outcome) as a prerequisite, if present.
         The condition is defined declaratively using a value
         expression in the body of this element. The expression is
         evaluated at the time the navigation case is being matched.

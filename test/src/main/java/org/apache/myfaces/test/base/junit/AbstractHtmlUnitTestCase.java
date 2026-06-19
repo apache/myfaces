@@ -299,7 +299,7 @@ public abstract class AbstractHtmlUnitTestCase
      *
      * @exception IllegalArgumentException if the context relative path
      *  does not begin with a '/' character
-     * @exception Exception if a different error ocurs
+     * @exception Exception if a different error occurs
      */
     protected URL url(String path) throws Exception
     {
