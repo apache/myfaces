@@ -122,11 +122,11 @@ public class ApplicationImplEventManager
         Assert.notNull(systemEventClass, "systemEventClass");
         Assert.notNull(listener, "listener");
 
-        List<EventInfo> eventInfos = globalListeners.get(systemEventClass);
+        // MYFACES-4757 use computeIfAbsent to prevent multiple threads from creating different lists
+        List eventInfos = globalListeners.get(systemEventClass);
         if (eventInfos == null)
         {
-            eventInfos = new CopyOnWriteArrayList<>();
-            globalListeners.put(systemEventClass, eventInfos);
+            eventInfos = globalListeners.computeIfAbsent(systemEventClass, k -> new CopyOnWriteArrayList<>());
         }
 
         EventInfo eventInfo = new EventInfo();
@@ -239,9 +239,9 @@ public class ApplicationImplEventManager
             return event;
         }
 
-        for (int i  = 0, size = listeners.size(); i < size; i++)
+        // MYFACES-4757: Use for each to prevent race condition
+        for (SystemEventListener listener : listeners)
         {
-            SystemEventListener listener = listeners.get(i);
             if (listener.isListenerForSource(source))
             {
                 // Lazy construct the event; zhis same event instance must be passed to all listener instances.
@@ -353,9 +353,9 @@ public class ApplicationImplEventManager
             return event;
         }
         
-        for (int i  = 0, size = eventInfos.size(); i < size; i++)
+        // MYFACES-4757: Use for each to prevent race condition
+        for (EventInfo eventInfo : eventInfos)
         {
-            EventInfo eventInfo = eventInfos.get(i);
             if (eventInfo.sourceClass != null && !eventInfo.sourceClass.isAssignableFrom(sourceBaseType))
             {
                 continue;
