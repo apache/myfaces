@@ -123,7 +123,7 @@ public class ApplicationImplEventManager
         Assert.notNull(listener, "listener");
 
         // MYFACES-4757 use computeIfAbsent to prevent multiple threads from creating different lists
-        List eventInfos = globalListeners.get(systemEventClass);
+        List<EventInfo> eventInfos = globalListeners.get(systemEventClass);
         if (eventInfos == null)
         {
             eventInfos = globalListeners.computeIfAbsent(systemEventClass, k -> new CopyOnWriteArrayList<>());
