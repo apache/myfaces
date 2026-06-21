@@ -29,6 +29,7 @@ import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.lang.StringUtils;
 
@@ -191,7 +192,8 @@ public class AjaxScriptBuilder
             seHandler = context.getApplication().getSearchExpressionHandler();
             seContext = SearchExpressionContext.createSearchExpressionContext(
                     context, component,
-                    MyFacesSearchExpressionHints.SET_RESOLVE_CLIENT_SIDE_RESOLVE_SINGLE_COMPONENT, null);
+                    MyFacesSearchExpressionHints.SET_RESOLVE_CLIENT_SIDE_RESOLVE_SINGLE_COMPONENT,
+                    MyFacesVisitHints.SET_SKIP_UNRENDERED);
         }
 
         appendIds(sb, execute, seHandler, seContext);
