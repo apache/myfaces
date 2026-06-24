@@ -138,9 +138,10 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
                 null);
         }
         responseWriter.writeAttribute(HTML.VALUE_ATTR, serializedState, null);
-        if (myfacesConfig.isAutocompleteOffViewState())
+        String autoCompleteValue = myfacesConfig.getAutocompleteOffViewState();
+        if (!autoCompleteValue.equals("disable"))
         {
-            responseWriter.writeAttribute(HTML.AUTOCOMPLETE_ATTR, "off", null);
+            responseWriter.writeAttribute(HTML.AUTOCOMPLETE_ATTR, autoCompleteValue, null);
         }
         responseWriter.endElement(HTML.INPUT_ELEM);
     }
