@@ -23,11 +23,20 @@ import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessObserverMethod;
 import jakarta.faces.event.AfterPhase;
 import jakarta.faces.event.BeforePhase;
+import jakarta.faces.event.PhaseEvent;
 
 public class PhaseEventBroadcasterExtension implements Extension
 {
+    /**
+     * Whether any CDI observer observes a Faces {@link PhaseEvent}. Lets
+     * {@link PhaseEventBroadcasterPhaseListener} skip all four CDI phase event dispatches
+     * (and their qualifier allocations) when no observer can receive them (the common case).
+     */
+    private volatile boolean phaseEventObserved;
+
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
         event.addQualifier(AfterPhase.class);
@@ -36,5 +45,18 @@ public class PhaseEventBroadcasterExtension implements Extension
         AnnotatedType<PhaseEventBroadcasterPhaseListener.PhaseEventBroadcaster> annotatedType =
                 beanManager.createAnnotatedType(PhaseEventBroadcasterPhaseListener.PhaseEventBroadcaster.class);
         event.addAnnotatedType(annotatedType, annotatedType.getJavaClass().getName());
+    }
+
+    public void processPhaseEventObserver(@Observes ProcessObserverMethod<PhaseEvent, ?> event)
+    {
+        phaseEventObserved = true;
+    }
+
+    /**
+     * @return whether the application defines any CDI observer of a Faces {@link PhaseEvent}.
+     */
+    public boolean isPhaseEventObserved()
+    {
+        return phaseEventObserved;
     }
 }

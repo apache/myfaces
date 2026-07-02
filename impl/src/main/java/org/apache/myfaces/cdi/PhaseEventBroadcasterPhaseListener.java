@@ -40,6 +40,17 @@ public class PhaseEventBroadcasterPhaseListener implements PhaseListener
         {
             return null;
         }
+        try
+        {
+            if (!beanManager.getExtension(PhaseEventBroadcasterExtension.class).isPhaseEventObserved())
+            {
+                return null;
+            }
+        }
+        catch (IllegalArgumentException e)
+        {
+            return null;
+        }
         return CDIUtils.get(beanManager, PhaseEventBroadcaster.class);
     });
 
