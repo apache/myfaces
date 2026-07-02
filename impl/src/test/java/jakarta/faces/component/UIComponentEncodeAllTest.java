@@ -18,9 +18,12 @@
  */
 package jakarta.faces.component;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import jakarta.faces.context.FacesContext;
 
@@ -29,6 +32,7 @@ import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -121,5 +125,60 @@ public class UIComponentEncodeAllTest extends AbstractJsfTestCase
         _testimpl.encodeAll(facesContext);
         _mocksControl.verify();
         */
+    }
+
+    /**
+     * Regression test for the frozen-childCount bug (equivalent to Mojarra issue eclipse-ee4j/mojarra#5807).
+     *
+     * When a child component appends a new sibling to the parent during its own encode,
+     * the parent's encodeAll must visit that late-appended sibling in the same pass.
+     * The bug manifested when the child count was captured once before the loop
+     * ("int childCount = getChildCount()") and the loop bound was never updated,
+     * silently dropping any children added mid-iteration.
+     */
+    @Test
+    public void testEncodeAllChildAppendedDuringParentEncodeIsVisited() throws Exception
+    {
+        final List<String> encoded = new ArrayList<String>();
+
+        // A panel with no renderer → getRendersChildren() returns false,
+        // so encodeAll iterates children directly rather than delegating to the renderer.
+        final UIPanel parent = new UIPanel();
+        parent.setRendererType(null);
+
+        // The late child is appended by firstChild during encode and must also be visited.
+        final UIOutput lateChild = new UIOutput()
+        {
+            @Override
+            public void encodeBegin(FacesContext ctx) throws IOException
+            {
+                encoded.add("late");
+            }
+
+            @Override
+            public void encodeEnd(FacesContext ctx) throws IOException { }
+        };
+        lateChild.setRendererType(null);
+
+        // The first child appends lateChild to the shared parent during its own encodeBegin.
+        UIOutput firstChild = new UIOutput()
+        {
+            @Override
+            public void encodeBegin(FacesContext ctx) throws IOException
+            {
+                encoded.add("first");
+                parent.getChildren().add(lateChild);
+            }
+
+            @Override
+            public void encodeEnd(FacesContext ctx) throws IOException { }
+        };
+        firstChild.setRendererType(null);
+
+        parent.getChildren().add(firstChild);
+        parent.encodeAll(facesContext);
+
+        Assertions.assertEquals(Arrays.asList("first", "late"), encoded,
+                "A child appended to the parent during encodeAll must be visited in the same pass");
     }
 }

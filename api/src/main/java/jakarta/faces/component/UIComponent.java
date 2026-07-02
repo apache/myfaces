@@ -689,11 +689,10 @@ public abstract class UIComponent
         } // let children render itself
         else
         {
-            int childCount = this.getChildCount();
-            if (childCount > 0)
+            if (this.getChildCount() > 0)
             {
                 List<UIComponent> children = this.getChildren();
-                for (int i = 0; i < childCount; i++)
+                for (int i = 0; i < children.size(); i++)
                 {
                     UIComponent comp = children.get(i);
                     comp.encodeAll(context);

@@ -517,16 +517,15 @@ public abstract class UIComponentBase extends UIComponent
             } // let children render itself
             else
             {
-            int childCount = this.getChildCount();
-            if (childCount > 0)
-            {
-                List<UIComponent> children = this.getChildren();
-                for (int i = 0; i < childCount; i++)
+                if (this.getChildCount() > 0)
                 {
-                    UIComponent comp = children.get(i);
-                    comp.encodeAll(context);
+                    List<UIComponent> children = this.getChildren();
+                    for (int i = 0; i < children.size(); i++)
+                    {
+                        UIComponent comp = children.get(i);
+                        comp.encodeAll(context);
+                    }
                 }
-            }
             }
             this.encodeEnd(context);
         }
@@ -1349,11 +1348,10 @@ public abstract class UIComponentBase extends UIComponent
                         facet.processDecodes(context);
                     }
                 }
-                int childCount = getChildCount();
-                if (childCount > 0)
+                if (getChildCount() > 0)
                 {
                     List<UIComponent> children = getChildren();
-                    for (int i = 0; i < childCount; i++)
+                    for (int i = 0; i < children.size(); i++)
                     {
                         UIComponent child = children.get(i);
                         child.processDecodes(context);
@@ -1410,11 +1408,10 @@ public abstract class UIComponentBase extends UIComponent
                         }
                     }
     
-                    int childCount = getChildCount();
-                    if (childCount > 0)
+                    if (getChildCount() > 0)
                     {
                         List<UIComponent> children = getChildren();
-                        for (int i = 0; i < childCount; i++)
+                        for (int i = 0; i < children.size(); i++)
                         {
                             UIComponent child = children.get(i);
                             child.processValidators(context);
@@ -1463,11 +1460,10 @@ public abstract class UIComponentBase extends UIComponent
                     }
                 }
 
-                int childCount = getChildCount();
-                if (childCount > 0)
+                if (getChildCount() > 0)
                 {
                     List<UIComponent> children = getChildren();
-                    for (int i = 0; i < childCount; i++)
+                    for (int i = 0; i < children.size(); i++)
                     {
                         UIComponent child = children.get(i);
                         child.processUpdates(context);
