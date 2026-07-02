@@ -335,8 +335,7 @@ class _DeltaStateHelper extends SimpleTransientStateHelper implements StateHelpe
         {
             return returnValue;
         }
-        String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
-        ValueExpression expression = _component.getValueExpression(name);
+        ValueExpression expression = _component.getValueExpression(key.toString());
         if (expression != null)
         {
             return expression.getValue(_component.getFacesContext().getELContext());
@@ -354,8 +353,7 @@ class _DeltaStateHelper extends SimpleTransientStateHelper implements StateHelpe
         Object returnValue = _fullState.get(key);
         if (returnValue == null)
         {
-            String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
-            ValueExpression expression = _component.getValueExpression(name);
+            ValueExpression expression = _component.getValueExpression(key.toString());
             if (expression != null)
             {
                 returnValue = expression.getValue(_component.getFacesContext().getELContext());
@@ -377,8 +375,7 @@ class _DeltaStateHelper extends SimpleTransientStateHelper implements StateHelpe
         Object returnValue = _fullState.get(key);
         if (returnValue == null)
         {
-            String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
-            ValueExpression expression = _component.getValueExpression(name);
+            ValueExpression expression = _component.getValueExpression(key.toString());
             if (expression != null)
             {
                 returnValue = expression.getValue(_component.getFacesContext().getELContext());

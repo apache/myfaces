@@ -142,8 +142,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         {
             return returnValue;
         }
-        String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
-        ValueExpression expression = _target.getValueExpression(name);
+        ValueExpression expression = _target.getValueExpression(key.toString());
         if (expression != null)
         {
             return expression.getValue(FacesContext.getCurrentInstance().getELContext());
@@ -161,8 +160,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         Object returnValue = _fullState.get(key);
         if (returnValue == null)
         {
-            String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
-            ValueExpression expression = _target.getValueExpression(name);
+            ValueExpression expression = _target.getValueExpression(key.toString());
             if (expression != null)
             {
                 returnValue = expression.getValue(_target.getFacesContext().getELContext());
@@ -181,8 +179,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         Object returnValue = _fullState.get(key);
         if (returnValue == null)
         {
-            String name = (key instanceof Enum) ? ((Enum<?>) key).name() : key.toString();
-            ValueExpression expression = _target.getValueExpression(name);
+            ValueExpression expression = _target.getValueExpression(key.toString());
             if (expression != null)
             {
                 returnValue = expression.getValue(_target.getFacesContext().getELContext());
