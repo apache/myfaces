@@ -51,6 +51,10 @@ public class PhaseEventBroadcasterPhaseListener implements PhaseListener
         {
             return null;
         }
+        catch (UnsupportedOperationException e)
+        {
+            // Quarkus... just always fire it there
+        }
         return CDIUtils.get(beanManager, PhaseEventBroadcaster.class);
     });
 
