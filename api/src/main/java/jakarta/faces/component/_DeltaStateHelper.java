@@ -193,7 +193,7 @@ class _DeltaStateHelper extends SimpleTransientStateHelper implements StateHelpe
     {
         if (_fullState == null)
         {
-            _fullState = new HashMap<>();
+            _fullState = new HashMap<>(8, 1f);
         }
         return _fullState;
     }
@@ -247,7 +247,7 @@ class _DeltaStateHelper extends SimpleTransientStateHelper implements StateHelpe
             }
             if (_deltas == null)
             {
-                _deltas = new HashMap<>();
+                _deltas = new HashMap<>(4, 1f);
             }
             return true;
         }
@@ -433,7 +433,7 @@ class _DeltaStateHelper extends SimpleTransientStateHelper implements StateHelpe
             Map<String, Object> mapValues = (Map<String, Object>) _deltas.get(key);
             if (mapValues == null)
             {
-                mapValues = new InternalMap<>();
+                mapValues = new InternalMap<>(4, 1f);
                 _deltas.put(key, mapValues);
             }
 
@@ -452,7 +452,7 @@ class _DeltaStateHelper extends SimpleTransientStateHelper implements StateHelpe
         Map<String, Object> mapValues = _fullState != null ? (Map<String, Object>) _fullState.get(key) : null;
         if (mapValues == null)
         {
-            mapValues = new InternalMap<>();
+            mapValues = new InternalMap<>(4, 1f);
             _ensureFullState().put(key, mapValues);
         }
 
