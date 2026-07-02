@@ -170,7 +170,7 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
     {
         if (_fullState == null)
         {
-            _fullState = new HashMap<>();
+            _fullState = new HashMap<>(8, 1f);
         }
         return _fullState;
     }
@@ -335,7 +335,7 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
             Map<String, Object> mapValues = (Map<String, Object>) _deltas.get(key);
             if (mapValues == null)
             {
-                mapValues = new InternalMap<>();
+                mapValues = new InternalMap<>(4, 1f);
                 _deltas.put(key, mapValues);
             }
 
@@ -354,7 +354,7 @@ class _DeltaStateHelper<A extends AjaxBehavior> implements StateHelper
         Map<String, Object> mapValues = _fullState != null ? (Map<String, Object>) _fullState.get(key) : null;
         if (mapValues == null)
         {
-            mapValues = new InternalMap<>();
+            mapValues = new InternalMap<>(4, 1f);
             _ensureFullState().put(key, mapValues);
         }
 
