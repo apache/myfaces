@@ -53,8 +53,8 @@ public class TreeStructureManager
         int childCount = component.getChildCount();
         if (childCount > 0)
         {
-            List<TreeStructComponent> structChildList = new ArrayList<>();
             List<UIComponent> children = component.getChildren();
+            List<TreeStructComponent> structChildList = new ArrayList<>(childCount);
             for (int i = 0; i < childCount; i++)
             {
                 UIComponent child = children.get(i);
@@ -71,10 +71,11 @@ public class TreeStructureManager
         }
 
         //facets
-        if (component.getFacetCount() > 0)
+        int facetCount = component.getFacetCount();
+        if (facetCount > 0)
         {
             Map<String, UIComponent> facetMap = component.getFacets();
-            List<Object[]> structFacetList = new ArrayList<>();
+            List<Object[]> structFacetList = new ArrayList<>(facetCount);
             for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
             {
                 UIComponent child = entry.getValue();
@@ -96,9 +97,9 @@ public class TreeStructureManager
 
     public static UIViewRoot restoreTreeStructure(Object treeStructRoot)
     {
-        if (treeStructRoot instanceof TreeStructComponent)
+        if (treeStructRoot instanceof TreeStructComponent component)
         {
-            return (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent) treeStructRoot, true);
+            return (UIViewRoot) internalRestoreTreeStructure(component, true);
         }
         
         throw new IllegalArgumentException("TreeStructure of type " + treeStructRoot.getClass().getName() + 
@@ -112,9 +113,9 @@ public class TreeStructureManager
         UIComponent component = (UIComponent)ClassUtils.newInstance(compClass);
         component.setId(compId);
 
-        if (checkViewRoot && component instanceof UIViewRoot)
+        if (checkViewRoot && component instanceof UIViewRoot root)
         {
-            FacesContext.getCurrentInstance().setViewRoot((UIViewRoot) component);
+            FacesContext.getCurrentInstance().setViewRoot(root);
         }
 
         //children

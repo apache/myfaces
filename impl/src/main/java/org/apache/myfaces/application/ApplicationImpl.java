@@ -167,6 +167,8 @@ public class ApplicationImpl extends Application
     private StateManager _stateManager;
     private FlowHandler _flowHandler;
 
+    private static final ELContextListener[] EMPTY_EL_CONTEXT_LISTENERS = new ELContextListener[0];
+
     private ArrayList<ELContextListener> _elContextListeners;
 
     // components, converters, and validators can be added at runtime--must
@@ -552,7 +554,9 @@ public class ApplicationImpl extends Application
         // this gets called on every request, so I can't afford to synchronize
         // I just have to trust that toArray() with do the right thing if the
         // list is changing (not likely)
-        return _elContextListeners.toArray(new ELContextListener[_elContextListeners.size()]);
+        return _elContextListeners.isEmpty()
+                ? EMPTY_EL_CONTEXT_LISTENERS
+                : _elContextListeners.toArray(new ELContextListener[_elContextListeners.size()]);
     }
 
     @Override
@@ -1681,15 +1685,17 @@ public class ApplicationImpl extends Application
         List<ResourceDependency> dependencyList = _classToResourceDependencyMap.get(inspectedClass);
         if (dependencyList == null)
         {
-            dependencyList = new ArrayList<>(5);
-
             ResourceDependency dependency = inspectedClass.getAnnotation(ResourceDependency.class);
+            ResourceDependencies dependencies = inspectedClass.getAnnotation(ResourceDependencies.class);
+
+            dependencyList = new ArrayList<>((dependency != null ? 1 : 0)
+                    + (dependencies != null ? dependencies.value().length : 0));
+
             if (dependency != null)
             {
                 dependencyList.add(dependency);
             }
 
-            ResourceDependencies dependencies = inspectedClass.getAnnotation(ResourceDependencies.class);
             if (dependencies != null)
             {
                 dependencyList.addAll(Arrays.asList(dependencies.value()));
@@ -2013,15 +2019,17 @@ public class ApplicationImpl extends Application
         List<ListenerFor> listenerForList = _classToListenerForMap.get(inspectedClass);
         if (listenerForList == null)
         {
-            listenerForList = new ArrayList<>(5);
-
             ListenerFor listener = inspectedClass.getAnnotation(ListenerFor.class);
+            ListenersFor listeners = inspectedClass.getAnnotation(ListenersFor.class);
+
+            listenerForList = new ArrayList<>((listener != null ? 1 : 0)
+                    + (listeners != null ? listeners.value().length : 0));
+
             if (listener != null)
             {
                 listenerForList.add(listener);
             }
 
-            ListenersFor listeners = inspectedClass.getAnnotation(ListenersFor.class);
             if (listeners != null)
             {
                 listenerForList.addAll(Arrays.asList(listeners.value()));
@@ -2148,7 +2156,8 @@ public class ApplicationImpl extends Application
             if(dependency != null || dependencies != null)
             {
                 //resource dependencies were found using one or both annotations, create and build a new list
-                dependencyList = new ArrayList<>();
+                dependencyList = new ArrayList<>((dependency != null ? 1 : 0)
+                        + (dependencies != null ? dependencies.value().length : 0));
                 
                 if(dependency != null)
                 {

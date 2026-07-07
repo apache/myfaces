@@ -40,6 +40,8 @@ public class FacesServletMappingUtils
     private static final String SERVLET_REGISTRATIONS = "org.apache.myfaces.SERVLET_REGISTRATIONS";
     
     private static final String CURRENT_REQUEST_FACES_SERVLET = "org.apache.myfaces.CURRENT_FACES_SERVLET_MAPPING";
+
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
     
     /**
      * Wrapper for better performance
@@ -58,11 +60,9 @@ public class FacesServletMappingUtils
             this.registration = registration;
 
             Collection<String> mappingsCollection = registration.getMappings();
-            mappings = mappingsCollection.toArray(new String[mappingsCollection.size()]);
-            if (mappings == null)
-            {
-                mappings = new String[]{ };
-            }
+            mappings = mappingsCollection.isEmpty()
+                    ? EMPTY_STRING_ARRAY
+                    : mappingsCollection.toArray(new String[mappingsCollection.size()]);
         }
 
         public String getClassName()
@@ -115,9 +115,9 @@ public class FacesServletMappingUtils
                 (List<ServletRegistrationInfo>) applicationMap.get(SERVLET_REGISTRATIONS);
         if (infos == null)
         {
-            infos = new ArrayList<>();
-            
             Map<String, ? extends ServletRegistration> registrations = servletContext.getServletRegistrations();
+            infos = new ArrayList<>(registrations != null ? registrations.size() : 0);
+
             if (registrations != null)
             {
                 for (ServletRegistration servletRegistration : registrations.values())

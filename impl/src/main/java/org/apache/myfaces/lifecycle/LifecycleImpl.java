@@ -50,6 +50,8 @@ import org.apache.myfaces.util.DebugUtils;
 public class LifecycleImpl extends Lifecycle
 {
     private static final Logger log = Logger.getLogger(LifecycleImpl.class.getName());
+
+    private static final PhaseListener[] EMPTY_PHASE_LISTENERS = new PhaseListener[0];
     
     /**
      * Boolean.TRUE is stored under this key in the application map if
@@ -323,7 +325,9 @@ public class LifecycleImpl extends Lifecycle
     @Override
     public PhaseListener[] getPhaseListeners()
     {
-        return phaseListeners.toArray(new PhaseListener[phaseListeners.size()]);
+        return phaseListeners.isEmpty()
+                ? EMPTY_PHASE_LISTENERS
+                : phaseListeners.toArray(new PhaseListener[phaseListeners.size()]);
     }
     
     private void publishException(Throwable e, PhaseId phaseId, FacesContext facesContext)
