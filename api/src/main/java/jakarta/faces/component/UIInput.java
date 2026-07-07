@@ -227,27 +227,23 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     {
         Assert.notNull(context, "context");
 
+        // perf: do the "rendered" check, the decode of this component/its children and the "immediate"
+        // validation within a single pushComponentToEL()/popComponentFromEL() cycle (and a single
+        // isRendered() evaluation) instead of the three separate cycles used previously - each cycle costs
+        // a FacesContext attribute map lookup plus a List push/pop, and this method runs once per input
+        // component per request.
         try
         {
             setCachedFacesContext(context);
             pushComponentToEL(context, this);
+
             if (!isRendered())
             {
                 return;
             }
-        }
-        finally
-        {
-            setCachedFacesContext(null);
-            popComponentFromEL(context);
-        }
 
-        super.processDecodes(context);
+            _processDecodesChildrenAndSelf(context);
 
-        try
-        {
-            setCachedFacesContext(context);
-            pushComponentToEL(context, this);
             if (isImmediate())
             {
                 //Pre validation event dispatch for component
@@ -283,46 +279,40 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     public void processValidators(FacesContext context)
     {
         Assert.notNull(context, "context");
-        
+
+        // perf: see the comment in processDecodes() - fold the "rendered" check, the recursive
+        // processValidators() of facets/children and the immediate-validation of this component into a
+        // single push/pop cycle instead of two.
         try
         {
             setCachedFacesContext(context);
             pushComponentToEL(context, this);
+
             if (!isRendered())
             {
                 return;
             }
-        }
-        finally
-        {
-            setCachedFacesContext(null);
-            popComponentFromEL(context);
-        }
-        
-        // Call the processValidators() method of all facets and children of this UIComponent, in the order
-        // determined by a call to getFacetsAndChildren().
-        if (getFacetCount() > 0)
-        {
-            for (UIComponent facet : getFacets().values())
-            {
-                facet.processValidators(context);
-            }
-        }
 
-        int childCount = getChildCount();
-        if (childCount > 0)
-        {
-            List<UIComponent> children = getChildren();
-            for (int i = 0; i < childCount; i++)
+            // Call the processValidators() method of all facets and children of this UIComponent, in the
+            // order determined by a call to getFacetsAndChildren().
+            if (getFacetCount() > 0)
             {
-                children.get(i).processValidators(context);
+                for (UIComponent facet : getFacets().values())
+                {
+                    facet.processValidators(context);
+                }
             }
-        }
 
-        try
-        {
-            setCachedFacesContext(context);
-            pushComponentToEL(context, this);
+            int childCount = getChildCount();
+            if (childCount > 0)
+            {
+                List<UIComponent> children = getChildren();
+                for (int i = 0; i < childCount; i++)
+                {
+                    children.get(i).processValidators(context);
+                }
+            }
+
             if (!isImmediate())
             {
                 //Pre validation event dispatch for component
@@ -360,27 +350,20 @@ public class    UIInput extends UIOutput implements EditableValueHolder
     {
         Assert.notNull(context, "context");
 
+        // perf: see the comment in processDecodes() - fold the "rendered" check, the recursive
+        // processUpdates() of children and the updateModel() call into a single push/pop cycle.
         try
         {
             setCachedFacesContext(context);
             pushComponentToEL(context, this);
+
             if (!isRendered())
             {
                 return;
             }
-        }
-        finally
-        {
-            setCachedFacesContext(null);
-            popComponentFromEL(context);
-        }
 
-        super.processUpdates(context);
+            _processUpdatesChildren(context);
 
-        try
-        {
-            setCachedFacesContext(context);
-            pushComponentToEL(context, this);
             try
             {
                 updateModel(context);
@@ -762,12 +745,26 @@ public class    UIInput extends UIOutput implements EditableValueHolder
             return;
         }
 
-        Object previousValue = getValue();
-        setValue(convertedValue);
-        setSubmittedValue(null);
-        if (compareValues(previousValue, convertedValue))
+        // perf: only fetch the previous value (a "value" binding read, which for an EL
+        // expression like #{row.name} means a full ELResolver chain round trip - can be
+        // expensive, e.g. when a CDI implementation is part of the chain) and run
+        // compareValues() when there is at least one ValueChangeListener that could
+        // possibly care about the resulting event; queueEvent() would otherwise just be
+        // discarded (silently, since nothing is registered to receive it) at broadcast time.
+        if (getFacesListeners(ValueChangeListener.class).length == 0)
         {
-            queueEvent(new ValueChangeEvent(this, previousValue, convertedValue));
+            setValue(convertedValue);
+            setSubmittedValue(null);
+        }
+        else
+        {
+            Object previousValue = getValue();
+            setValue(convertedValue);
+            setSubmittedValue(null);
+            if (compareValues(previousValue, convertedValue))
+            {
+                queueEvent(new ValueChangeEvent(this, previousValue, convertedValue));
+            }
         }
     }
 
