@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.core.api.shared.lang.Assert;
@@ -83,6 +84,27 @@ public abstract class UIComponentBase extends UIComponent
 
     private static final String _STRING_BUILDER_KEY
             = "jakarta.faces.component.UIComponentBase.SHARED_STRING_BUILDER";
+
+    // perf: cache of zero-length FacesListener[] arrays keyed by the requested listener class,
+    // so getFacesListeners(Class) does not need to allocate a new array (via reflection) every
+    // time a component has no listeners of the requested type registered, which is the most
+    // common case (e.g. every getActionListeners()/getValueChangeListeners() call, and every
+    // broadcast() check). The array type still matches the requested class exactly (required
+    // because callers cast the result, e.g. to ActionListener[]), and since the arrays are
+    // zero-length there is nothing that could be mutated to leak state between callers.
+    private static final Map<Class<?>, FacesListener[]> EMPTY_FACES_LISTENER_ARRAYS
+            = new ConcurrentHashMap<>(8);
+
+    private static FacesListener[] emptyFacesListenerArray(Class<? extends FacesListener> clazz)
+    {
+        FacesListener[] array = EMPTY_FACES_LISTENER_ARRAYS.get(clazz);
+        if (array == null)
+        {
+            array = EMPTY_FACES_LISTENER_ARRAYS.computeIfAbsent(clazz,
+                    key -> (FacesListener[]) Array.newInstance(key, 0));
+        }
+        return array;
+    }
 
     // See ViewPoolProcessor for comments and usages
     static final int RESET_MODE_OFF = 0;
@@ -1237,7 +1259,7 @@ public abstract class UIComponentBase extends UIComponent
 
         if (_facesListeners == null)
         {
-            return (FacesListener[]) Array.newInstance(clazz, 0);
+            return emptyFacesListenerArray(clazz);
         }
 
         List<FacesListener> lst = null;
@@ -1249,7 +1271,9 @@ public abstract class UIComponentBase extends UIComponent
             {
                 if (lst == null)
                 {
-                    lst = new ArrayList<>(5);
+                    // lst can never hold more than "size" elements, so avoid over-allocating
+                    // the backing array when the component has fewer than 5 listeners in total
+                    lst = new ArrayList<>(Math.min(size, 5));
                 }
                 lst.add(facesListener);
             }
@@ -1257,7 +1281,7 @@ public abstract class UIComponentBase extends UIComponent
 
         if (lst == null || lst.isEmpty())
         {
-            return (FacesListener[]) Array.newInstance(clazz, 0);
+            return emptyFacesListenerArray(clazz);
         }
 
         return lst.toArray((FacesListener[]) Array.newInstance(clazz, lst.size()));
