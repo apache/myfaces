@@ -891,7 +891,9 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 
                 if (paramMap == null)
                 {
-                    paramMap = new HashMap<>(5, 1f);
+                    // nameValuePairs.length is an upper bound on the number of distinct
+                    // parameter names (duplicates just mean fewer), so it never resizes
+                    paramMap = new HashMap<>(nameValuePairs.length, 1f);
                 }
 
                 List<String> values = paramMap.get(currentName);
@@ -926,7 +928,9 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                 {
                     if (paramMap == null)
                     {
-                        paramMap = new HashMap<>(5, 1f);
+                        // parameters.size() is an upper bound on the number of entries
+                        // that will be put into paramMap in this loop
+                        paramMap = new HashMap<>(parameters.size(), 1f);
                     }
                     paramMap.put(key, pair.getValue());
                 }
@@ -937,9 +941,13 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         ClientWindow window = facesContext.getExternalContext().getClientWindow();
         if (window != null && window.isClientWindowRenderModeEnabled(facesContext))
         {
+            Map<String, String> additionalQueryURLParameters = window.getQueryURLParameters(facesContext);
+
             if (paramMap == null)
             {
-                paramMap = new HashMap<>(5, 1f);
+                // upper bound: the client window id param plus any additional query params
+                paramMap = new HashMap<>(1 + (additionalQueryURLParameters != null
+                        ? additionalQueryURLParameters.size() : 0), 1f);
             }
 
             if (!paramMap.containsKey(ResponseStateManager.CLIENT_WINDOW_URL_PARAM))
@@ -947,7 +955,6 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                 paramMap.put(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, Arrays.asList(window.getId()));
             }
 
-            Map<String, String> additionalQueryURLParameters = window.getQueryURLParameters(facesContext);
             if (additionalQueryURLParameters != null)
             {
                 for (Map.Entry<String , String> entry : additionalQueryURLParameters.entrySet())

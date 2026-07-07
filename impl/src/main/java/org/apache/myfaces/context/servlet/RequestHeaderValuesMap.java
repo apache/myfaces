@@ -36,6 +36,8 @@ import org.apache.myfaces.util.lang.AbstractAttributeMap;
  */
 public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
 {
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
     private final HttpServletRequest httpServletRequest;
     private final Map<String, String[]> attributeValueCache = new HashMap<>();
 
@@ -52,7 +54,9 @@ public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
         {
             List<String> attributesList = Collections.list(httpServletRequest.getHeaders(key));
 
-            attributes = attributesList.toArray(new String[attributesList.size()]);
+            attributes = attributesList.isEmpty()
+                    ? EMPTY_STRING_ARRAY
+                    : attributesList.toArray(new String[attributesList.size()]);
             attributeValueCache.put(key, attributes);
         }
 

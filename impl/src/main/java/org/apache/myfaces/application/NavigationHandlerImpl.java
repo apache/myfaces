@@ -186,7 +186,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                         // MYFACES-4504: check isEmpty()
                         if (navigationCaseParameters == null || navigationCaseParameters.isEmpty())
                         {
-                            navigationCaseParameters = new HashMap<>(5, 1f);
+                            navigationCaseParameters = new HashMap<>(3, 1f);
                         }
                         
                         // If current flow (sourceFlow) is not null and new flow (targetFlow) is null,
@@ -1156,7 +1156,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                         List<String> paramValues = params.get(splitParam[0]);
                         if (paramValues == null)
                         {
-                            paramValues = new ArrayList<>(5);
+                            // most parameters only occur once; grows automatically for repeated names
+                            paramValues = new ArrayList<>(1);
                             params.put(splitParam[0], paramValues);
                         }
                         paramValues.add(splitParam[1]);
@@ -1406,7 +1407,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
 
         Map<String, Set<NavigationCase>> cases = new HashMap<>(HashMapUtils.calcCapacity(rulesSize));
 
-        List<_WildcardPattern> wildcardPatterns = new ArrayList<>();
+        // at most one wildcard pattern is added per distinct fromViewId, bounded by rulesSize
+        List<_WildcardPattern> wildcardPatterns = new ArrayList<>(rulesSize);
 
         for (Map.Entry<String, Set<NavigationCase>> entry : rules.entrySet())
         {
@@ -1454,7 +1456,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
 
             Map<String, Set<NavigationCase>> cases = new HashMap<>(HashMapUtils.calcCapacity(rulesSize));
 
-            List<_WildcardPattern> wildcardPatterns = new ArrayList<>();
+            // at most one wildcard pattern is added per distinct fromViewId, bounded by rulesSize
+            List<_WildcardPattern> wildcardPatterns = new ArrayList<>(rulesSize);
             for (NavigationRule rule : rules)
             {
                 String fromViewId = rule.getFromViewId();

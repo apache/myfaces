@@ -54,7 +54,7 @@ public class TreeStructureManager
         if (childCount > 0)
         {
             List<UIComponent> children = component.getChildren();
-            List<TreeStructComponent> structChildList = new ArrayList<>();
+            List<TreeStructComponent> structChildList = new ArrayList<>(childCount);
             for (int i = 0; i < childCount; i++)
             {
                 UIComponent child = children.get(i);
@@ -71,10 +71,11 @@ public class TreeStructureManager
         }
 
         //facets
-        if (component.getFacetCount() > 0)
+        int facetCount = component.getFacetCount();
+        if (facetCount > 0)
         {
             Map<String, UIComponent> facetMap = component.getFacets();
-            List<Object[]> structFacetList = new ArrayList<>();
+            List<Object[]> structFacetList = new ArrayList<>(facetCount);
             for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
             {
                 UIComponent child = entry.getValue();
