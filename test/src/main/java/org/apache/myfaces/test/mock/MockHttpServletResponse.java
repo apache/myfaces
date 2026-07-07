@@ -361,7 +361,7 @@ public class MockHttpServletResponse implements HttpServletResponse
                 throw new IllegalStateException(
                         "Cannot call getWriter() after getOutputStream() was called");
             }
-            writer = new MockPrintWriter(new CharArrayWriter());
+            writer = new MockPrintWriter(new CharArrayWriter(1024));
         }
         return writer;
 
