@@ -97,13 +97,13 @@ public class TreeStructureManager
 
     public static UIViewRoot restoreTreeStructure(Object treeStructRoot)
     {
-        if (treeStructRoot instanceof TreeStructComponent component)
+        if (treeStructRoot instanceof TreeStructComponent)
         {
-            return (UIViewRoot) internalRestoreTreeStructure(component, true);
+            return (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent) treeStructRoot, true);
         }
-        
-        throw new IllegalArgumentException("TreeStructure of type " + treeStructRoot.getClass().getName() + 
-                                           " is not supported.");
+
+        throw new IllegalArgumentException("TreeStructure of type " + treeStructRoot.getClass().getName() +
+                " is not supported.");
     }
 
     private static UIComponent internalRestoreTreeStructure(TreeStructComponent treeStructComp, boolean checkViewRoot)
@@ -113,9 +113,9 @@ public class TreeStructureManager
         UIComponent component = (UIComponent)ClassUtils.newInstance(compClass);
         component.setId(compId);
 
-        if (checkViewRoot && component instanceof UIViewRoot root)
+        if (checkViewRoot && component instanceof UIViewRoot)
         {
-            FacesContext.getCurrentInstance().setViewRoot(root);
+            FacesContext.getCurrentInstance().setViewRoot((UIViewRoot) component);
         }
 
         //children
