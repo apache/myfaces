@@ -1338,38 +1338,7 @@ public abstract class UIComponentBase extends UIComponent
             pushComponentToEL(context, this);
             if (_isPhaseExecutable(context))
             {
-                // Call the processDecodes() method of all facets and children of this UIComponent, in the order
-                // determined by a call to getFacetsAndChildren().
-                int facetCount = getFacetCount();
-                if (facetCount > 0)
-                {
-                    for (UIComponent facet : getFacets().values())
-                    {
-                        facet.processDecodes(context);
-                    }
-                }
-                if (getChildCount() > 0)
-                {
-                    List<UIComponent> children = getChildren();
-                    for (int i = 0; i < children.size(); i++)
-                    {
-                        UIComponent child = children.get(i);
-                        child.processDecodes(context);
-                    }
-                }
-
-                try
-                {
-                    // Call the decode() method of this component.
-                    decode(context);
-                }
-                catch (RuntimeException e)
-                {
-                    // If a RuntimeException is thrown during decode processing, call FacesContext.renderResponse()
-                    // and re-throw the exception.
-                    context.renderResponse();
-                    throw e;
-                }
+                _processDecodesChildrenAndSelf(context);
             }
         }
         finally
@@ -1379,6 +1348,49 @@ public abstract class UIComponentBase extends UIComponent
 
             popComponentFromEL(context);
             setCachedFacesContext(null);
+        }
+    }
+
+    /**
+     * Decodes all facets/children of this component followed by this component itself (the part of
+     * processDecodes() that runs once rendered == true has already been established). Factored out of
+     * processDecodes() so subclasses that need to combine it with extra per-phase logic (e.g. UIInput's
+     * "immediate" validation) can do so within a single pushComponentToEL()/popComponentFromEL() cycle
+     * instead of the caller having to enter/leave the EL component stack an extra time.
+     */
+    void _processDecodesChildrenAndSelf(FacesContext context)
+    {
+        // Call the processDecodes() method of all facets and children of this UIComponent, in the order
+        // determined by a call to getFacetsAndChildren().
+        int facetCount = getFacetCount();
+        if (facetCount > 0)
+        {
+            for (UIComponent facet : getFacets().values())
+            {
+                facet.processDecodes(context);
+            }
+        }
+        if (getChildCount() > 0)
+        {
+            List<UIComponent> children = getChildren();
+            for (int i = 0; i < children.size(); i++)
+            {
+                UIComponent child = children.get(i);
+                child.processDecodes(context);
+            }
+        }
+
+        try
+        {
+            // Call the decode() method of this component.
+            decode(context);
+        }
+        catch (RuntimeException e)
+        {
+            // If a RuntimeException is thrown during decode processing, call FacesContext.renderResponse()
+            // and re-throw the exception.
+            context.renderResponse();
+            throw e;
         }
     }
 
@@ -1449,26 +1461,7 @@ public abstract class UIComponentBase extends UIComponent
             pushComponentToEL(context, this);
             if (_isPhaseExecutable(context))
             {
-                // Call the processUpdates() method of all facets and children of this UIComponent, in the order
-                // determined by a call to getFacetsAndChildren().
-                int facetCount = getFacetCount();
-                if (facetCount > 0)
-                {
-                    for (UIComponent facet : getFacets().values())
-                    {
-                        facet.processUpdates(context);
-                    }
-                }
-
-                if (getChildCount() > 0)
-                {
-                    List<UIComponent> children = getChildren();
-                    for (int i = 0; i < children.size(); i++)
-                    {
-                        UIComponent child = children.get(i);
-                        child.processUpdates(context);
-                    }
-                }
+                _processUpdatesChildren(context);
             }
         }
         finally
@@ -1478,6 +1471,36 @@ public abstract class UIComponentBase extends UIComponent
             popComponentFromEL(context);
             
             setCachedFacesContext(null);
+        }
+    }
+
+    /**
+     * Calls processUpdates() on all facets/children of this component (the part of processUpdates() that
+     * runs once rendered == true has already been established). Factored out for the same reason as
+     * {@link #_processDecodesChildrenAndSelf(FacesContext)} - so UIInput can fold this into a single
+     * pushComponentToEL()/popComponentFromEL() cycle together with its own updateModel() call.
+     */
+    void _processUpdatesChildren(FacesContext context)
+    {
+        // Call the processUpdates() method of all facets and children of this UIComponent, in the order
+        // determined by a call to getFacetsAndChildren().
+        int facetCount = getFacetCount();
+        if (facetCount > 0)
+        {
+            for (UIComponent facet : getFacets().values())
+            {
+                facet.processUpdates(context);
+            }
+        }
+
+        if (getChildCount() > 0)
+        {
+            List<UIComponent> children = getChildren();
+            for (int i = 0; i < children.size(); i++)
+            {
+                UIComponent child = children.get(i);
+                child.processUpdates(context);
+            }
         }
     }
 
