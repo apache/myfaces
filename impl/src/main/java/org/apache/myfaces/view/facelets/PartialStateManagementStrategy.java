@@ -716,7 +716,17 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 {
                     if (MyfacesConfig.CHECK_ID_PRODUCTION_MODE_AUTO.equals(checkIdsProductionMode))
                     {
-                        CheckDuplicateIdFaceletUtils.checkIdsStatefulComponents(context, view);
+                        // On the initial (GET) request always check to catch developer mistakes early.
+                        // On postbacks, Facelets-managed IDs remain structurally stable; only re-check
+                        // when programmatic component additions occurred this request (tracked by
+                        // COMPONENT_ADDED_AFTER_BUILD_VIEW), since those can introduce developer-supplied
+                        // ids that may conflict. This mirrors Mojarra's "skip ID check on static postbacks"
+                        // optimisation and avoids an O(N) tree walk per request in the common case.
+                        if (!context.isPostback()
+                                || view.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
+                        {
+                            CheckDuplicateIdFaceletUtils.checkIdsStatefulComponents(context, view);
+                        }
                     }
                     else if (MyfacesConfig.CHECK_ID_PRODUCTION_MODE_TRUE.equals(checkIdsProductionMode))
                     {
