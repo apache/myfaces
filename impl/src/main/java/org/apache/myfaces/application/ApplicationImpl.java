@@ -278,7 +278,7 @@ public class ApplicationImpl extends Application
         
         elResolver = new Lazy<>(() ->
         {
-            CompositeELResolver celr = new CompositeELResolver();
+            CompositeELResolver celr = new org.apache.myfaces.el.FacesCompositeELResolver();
 
             new DefaultELResolverBuilder(_runtimeConfig, _myfacesConfig)
                     .build(getFacesContext(), celr);
