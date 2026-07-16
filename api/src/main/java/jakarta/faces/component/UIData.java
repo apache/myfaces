@@ -574,6 +574,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
         _rowIndex = rowIndex;
 
+        // Resolve the DataModel once here and reuse it below (setRowIndex + isRowAvailable +
+        // getRowData) instead of calling getDataModel() again inside isRowAvailable(): getDataModel()
+        // recomputes the parent container clientId and does a map lookup, and it must NOT be cached
+        // across rows because a nested table resolves a different model per outer row (its key is the
+        // parent container clientId).
         DataModel dataModel = getDataModel();
         dataModel.setRowIndex(rowIndex);
 
@@ -589,7 +594,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             if (var != null)
             {
-                if (isRowAvailable())
+                if (dataModel.isRowAvailable())
                 {
                     Object rowData = dataModel.getRowData();
                     facesContext.getExternalContext().getRequestMap().put(var, rowData);
@@ -738,18 +743,29 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             return;
         }
         int n = evhList.size();
-        List<EditableValueHolderState> states = new ArrayList<>(n);
-        boolean hasState = false;
+        // Defer the per-row list allocation until an actual (non-default) EVH state is found.
+        // During rendering, inputs bound to EL have no transient state (localValue/submittedValue
+        // null, valid, not localValueSet), so create() returns null for every child and the common
+        // case allocates nothing at all instead of an ArrayList per row that is immediately discarded.
+        List<EditableValueHolderState> states = null;
         for (int i = 0; i < n; i++)
         {
             EditableValueHolderState state = EditableValueHolderState.create((EditableValueHolder) evhList.get(i));
-            states.add(state);
-            if (state != null)
+            if (state != null && states == null)
             {
-                hasState = true;
+                states = new ArrayList<>(n);
+                for (int j = 0; j < i; j++)
+                {
+                    // backfill default (null) entries preceding the first non-default one
+                    states.add(null);
+                }
+            }
+            if (states != null)
+            {
+                states.add(state);
             }
         }
-        if (hasState)
+        if (states != null)
         {
             _rowStates.put(_rowIndex, states);
         }
@@ -835,7 +851,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             if (var != null)
             {
-                if (isRowAvailable())
+                if (dataModel.isRowAvailable())
                 {
                     Object rowData = dataModel.getRowData();
                     facesContext.getExternalContext().getRequestMap().put(var, rowData);
