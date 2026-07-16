@@ -386,7 +386,8 @@ public class HtmlResponseWriterImpl extends ResponseWriter
         }
         else
         {
-            _isTextArea = HTML.TEXTAREA_ELEM.equalsIgnoreCase(_startElementName);
+            _isTextArea = _startElementName.length() == HTML.TEXTAREA_ELEM.length()
+                    && HTML.TEXTAREA_ELEM.equalsIgnoreCase(_startElementName);
         }
     }
 
@@ -484,9 +485,11 @@ public class HtmlResponseWriterImpl extends ResponseWriter
         String[] array = EMPTY_ELEMENT_ARR[elem.charAt(0)];
         if (array != null)
         {
+            int len = elem.length();
             for (int i = array.length - 1; i >= 0; i--)
             {
-                if (elem.equalsIgnoreCase(array[i]))
+                // length pre-check avoids equalsIgnoreCase for the common non-void elements
+                if (len == array[i].length() && elem.equalsIgnoreCase(array[i]))
                 {
                     return true;
                 }
@@ -958,17 +961,20 @@ public class HtmlResponseWriterImpl extends ResponseWriter
      */
     private boolean isScript(String element)
     {
-        return (HTML.SCRIPT_ELEM.equalsIgnoreCase(element));
+        // The length pre-check short-circuits the vast majority of elements (td, tr, div, li, ...)
+        // with a cheap int compare, avoiding a full equalsIgnoreCase char scan. This method is
+        // called for every started/ended element, so it is very hot.
+        return element.length() == HTML.SCRIPT_ELEM.length() && HTML.SCRIPT_ELEM.equalsIgnoreCase(element);
     }
-    
+
     private boolean isScript()
     {
         return _isInsideScript;
     }
-    
+
     private boolean isStyle(String element)
     {
-        return (HTML.STYLE_ELEM.equalsIgnoreCase(element));
+        return element.length() == HTML.STYLE_ELEM.length() && HTML.STYLE_ELEM.equalsIgnoreCase(element);
     }
     
     private boolean isStyle()
