@@ -504,6 +504,22 @@ public abstract class AbstractMyFacesTestCase
     {
         processRemainingExecutePhases(facesContext);
         lifecycle.render(facesContext);
+        // The ExternalContext buffers the response writer (see
+        // ServletExternalContextImpl.getResponseOutputWriter); in a real container that buffer is
+        // drained in ExternalContext.release() before the response is committed. Tests read the
+        // mock container writer directly after render (before release), so drain the buffer here
+        // without committing the response so the rendered content is observable.
+        if (!facesContext.getResponseComplete())
+        {
+            try
+            {
+                facesContext.getExternalContext().getResponseOutputWriter().flush();
+            }
+            catch (IOException e)
+            {
+                throw new FacesException(e);
+            }
+        }
         facesContext.getAttributes().put(LAST_PHASE_PROCESSED, PhaseId.RENDER_RESPONSE);
         facesContext.getAttributes().put(LAST_RENDER_PHASE_STEP, AFTER_RENDER_STEP);
     }
@@ -830,7 +846,17 @@ public abstract class AbstractMyFacesTestCase
         try
         {
             viewHandler.renderView(facesContext, facesContext.getViewRoot());
-            
+
+            // The ExternalContext buffers the response writer (see
+            // ServletExternalContextImpl.getResponseOutputWriter); in a real container that buffer
+            // is drained in ExternalContext.release() before the response is committed. Step-by-step
+            // tests read the mock container writer directly after render (before release), so drain
+            // the buffer here without committing the response so the rendered content is observable.
+            if (!facesContext.getResponseComplete())
+            {
+                facesContext.getExternalContext().getResponseOutputWriter().flush();
+            }
+
             // log all unhandled FacesMessages, don't swallow them
             // perf: org.apache.myfaces.context.servlet.FacesContextImpl.getMessageList() creates
             // new Collections.unmodifiableList with every invocation->  call it only once
@@ -927,7 +953,14 @@ public abstract class AbstractMyFacesTestCase
 
     protected String getRenderedContent(FacesContext facesContext) throws IOException
     {
-        MockPrintWriter writer1 = (MockPrintWriter) 
+        // The ExternalContext wraps the container writer in a BufferedWriter (see
+        // ServletExternalContextImpl.getResponseOutputWriter); in a real container that buffer is
+        // drained in ExternalContext.release() before the response is committed. These tests read
+        // the mock writer before release(), so drain the buffer here (without committing the
+        // response) so the rendered content is observable.
+        facesContext.getExternalContext().getResponseOutputWriter().flush();
+
+        MockPrintWriter writer1 = (MockPrintWriter)
             (((HttpServletResponse) facesContext.getExternalContext().getResponse()).getWriter());
         return String.valueOf(writer1.content());
     }

@@ -43,6 +43,7 @@ import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.lang.EnumerationIterator;
 import org.apache.myfaces.util.lang.StringUtils;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -80,6 +81,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 
     private ServletRequest _servletRequest;
     private ServletResponse _servletResponse;
+    private Writer _responseOutputWriter;
     private Map<String, Object> _sessionMap;
     private Map<String, Object> _requestMap;
     private Map<String, String> _requestParameterMap;
@@ -138,8 +140,23 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     @Override
     public void release()
     {
+        // flush any buffered render output into the container writer before tearing down; a reset
+        // or sendError already nulled the writer, so nothing is flushed for aborted responses
+        if (_responseOutputWriter != null)
+        {
+            try
+            {
+                _responseOutputWriter.flush();
+            }
+            catch (IOException e)
+            {
+                // ignore on release; the container may already have committed/closed the response
+            }
+            _responseOutputWriter = null;
+        }
+
         super.release(); // releases fields on ServletExternalContextImplBase
-        
+
         _currentFacesContext = null;
         _servletRequest = null;
         _servletResponse = null;
@@ -225,7 +242,18 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     @Override
     public Writer getResponseOutputWriter() throws IOException
     {
-        return _servletResponse.getWriter();
+        // Wrap the container writer in a BufferedWriter so the many small render-time writes
+        // (HtmlResponseWriterImpl emits '<', tag names and attribute fragments as individual
+        // char/short-string writes) coalesce into few large writes to the container. On writers
+        // that do not buffer themselves (e.g. Jetty's WriteThroughWriter) every tiny write would
+        // otherwise allocate a CharBuffer and run a UTF-8 encode. Cached so all callers share one
+        // ordered buffer; flushed in responseFlushBuffer()/release(); dropped without flushing on
+        // responseReset()/responseSendError() so aborted output is not re-committed.
+        if (_responseOutputWriter == null)
+        {
+            _responseOutputWriter = new BufferedWriter(_servletResponse.getWriter());
+        }
+        return _responseOutputWriter;
     }
 
     @Override
@@ -608,6 +636,11 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     public void responseFlushBuffer() throws IOException
     {
         checkHttpServletResponse();
+        // drain the buffered render output into the container writer before flushing its buffer
+        if (_responseOutputWriter != null)
+        {
+            _responseOutputWriter.flush();
+        }
         _httpServletResponse.flushBuffer();
     }
 
@@ -618,6 +651,9 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     public void responseReset()
     {
         checkHttpServletResponse();
+        // drop any buffered-but-unflushed output; reset() clears the container buffer, so the
+        // buffered chars must be discarded too (not flushed) to avoid re-committing aborted output
+        _responseOutputWriter = null;
         _httpServletResponse.reset();
     }
 
@@ -628,6 +664,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     public void responseSendError(int statusCode, String message) throws IOException
     {
         checkHttpServletResponse();
+        // discard buffered-but-unflushed output; sendError resets the buffer
+        _responseOutputWriter = null;
         if (message == null)
         {
             _httpServletResponse.sendError(statusCode);
@@ -703,6 +741,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     public void setResponse(final java.lang.Object response)
     {
         this._servletResponse = (ServletResponse) response;
+        // response swapped (e.g. a wrapper installed); recreate the buffered writer lazily
+        this._responseOutputWriter = null;
     }
 
     /**
