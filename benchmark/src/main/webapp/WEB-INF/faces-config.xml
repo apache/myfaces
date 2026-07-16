@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_5_0.xsd"
+              version="5.0">
+    <lifecycle>
+        <phase-listener>org.apache.myfaces.perf.PerfPhaseListener</phase-listener>
+    </lifecycle>
+
+    <!-- Optional: enable MyFaces view pooling (reuses component trees across requests). Off by default.
+         To enable, uncomment this block AND set org.apache.myfaces.CACHE_EL_EXPRESSIONS=alwaysRecompile
+         in web.xml (the prerequisite). Biggest win on c:forEach-heavy views and postback RESTORE_VIEW.
+    <faces-config-extension>
+        <view-pool-mapping>
+            <url-pattern>/*</url-pattern>
+            <parameter>
+                <name>org.apache.myfaces.VIEW_POOL_MAX_POOL_SIZE</name>
+                <value>20</value>
+            </parameter>
+        </view-pool-mapping>
+    </faces-config-extension>
+    -->
+</faces-config>

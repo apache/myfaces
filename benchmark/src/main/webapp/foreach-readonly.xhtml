@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:c="jakarta.tags.core">
+<h:head>
+    <title>foreach-readonly</title>
+</h:head>
+<h:body>
+    <ul>
+        <c:forEach items="#{dataBean.foreachRows}" var="row">
+            <li>#{row.id} - #{row.name} - #{row.description} - #{row.price} - #{row.quantity} - #{row.active}</li>
+        </c:forEach>
+    </ul>
+</h:body>
+</html>

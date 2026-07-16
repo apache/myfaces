@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Standalone benchmark WAR (NOT part of the myfaces reactor) that runs a few
+    Facelets pages under the jetty-maven-plugin, with a PhaseListener recording
+    per-phase wall time. Switch the Faces implementation via -Pmyfaces (default)
+    or -Pmojarra so MyFaces 5.0 and Mojarra 5.0.0-M3 can be compared on the same
+    pages. See README.md.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.apache.myfaces.perf</groupId>
+    <artifactId>myfaces-benchmark</artifactId>
+    <version>1.0</version>
+    <packaging>war</packaging>
+
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <myfaces.version>5.0.0-SNAPSHOT</myfaces.version>
+        <mojarra.version>5.0.0-M3</mojarra.version>
+        <weld.version>6.0.0.Final</weld.version>
+        <jetty.version>12.0.21</jetty.version>
+    </properties>
+
+    <dependencies>
+        <!-- CDI (Weld) — required by Faces 5.0 for @Named beans -->
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-core</artifactId>
+            <version>${weld.version}</version>
+        </dependency>
+        <!-- CDI 4.1 (Weld 6). Mojarra needs an ELAwareBeanManager (CDI 4.1), which Weld 6 provides
+             but Weld 5 (CDI 4.0) does not. MyFaces 5.0 also runs fine on CDI 4.1. -->
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-el-api</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
+        <!-- EL 6.0 API + impl (Jetty provides servlet but not EL). Both impls need EL 6.0
+             (OptionalELResolver); MyFaces 5.0 also builds against EL 6.0 (tomcat-el-api 11). -->
+        <dependency>
+            <groupId>jakarta.el</groupId>
+            <artifactId>jakarta.el-api</artifactId>
+            <version>6.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+
+        <!-- Servlet API (provided by Jetty at runtime) -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>myfaces</id>
+            <activation><activeByDefault>true</activeByDefault></activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-api</artifactId>
+                    <version>${myfaces.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-impl</artifactId>
+                    <version>${myfaces.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>mojarra</id>
+            <dependencies>
+                <dependency>
+                    <groupId>jakarta.faces</groupId>
+                    <artifactId>jakarta.faces-api</artifactId>
+                    <version>${mojarra.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.mojarra</groupId>
+                    <artifactId>mojarra</artifactId>
+                    <version>${mojarra.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <build>
+        <finalName>benchmark</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty.ee10</groupId>
+                <artifactId>jetty-ee10-maven-plugin</artifactId>
+                <version>${jetty.version}</version>
+                <configuration>
+                    <webApp>
+                        <contextPath>/</contextPath>
+                    </webApp>
+                    <httpConnector>
+                        <port>8080</port>
+                    </httpConnector>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

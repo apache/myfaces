@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+<h:head>
+    <title>repeat-readonly</title>
+</h:head>
+<h:body>
+    <ul>
+        <ui:repeat value="#{dataBean.rows}" var="row">
+            <li>#{row.id} - #{row.name} - #{row.description} - #{row.price} - #{row.quantity} - #{row.active}</li>
+        </ui:repeat>
+    </ul>
+</h:body>
+</html>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+    <!-- Production stage so we measure production-mode performance, not dev tooling. -->
+    <context-param>
+        <param-name>jakarta.faces.PROJECT_STAGE</param-name>
+        <param-value>Production</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <!-- Optional MyFaces tuning toggles (off by default so the benchmark measures a neutral baseline).
+         CACHE_EL_EXPRESSIONS=alwaysRecompile is ALSO the prerequisite for view pooling (see faces-config.xml).
+         USE_LAMBDAS_OVER_REFLECTION=true swaps reflective component-property access for MethodHandle lambdas. -->
+    <context-param>
+        <param-name>org.apache.myfaces.CACHE_EL_EXPRESSIONS</param-name>
+        <param-value>noCache</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.apache.myfaces.USE_LAMBDAS_OVER_REFLECTION</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <!-- State-saving / view-pooling knobs pinned to the SAME values for both implementations, matching
+         Mojarra's test/perf web.xml, so neither falls back to a different default (apples-to-apples).
+         Each impl reads only its own param name and ignores the other's. -->
+    <context-param>
+        <param-name>jakarta.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+    <context-param>
+        <param-name>jakarta.faces.SERIALIZE_SERVER_STATE</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.glassfish.mojarra.compressViewState</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.glassfish.mojarra.numberOfLogicalViews</param-name>
+        <param-value>20</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</param-name>
+        <param-value>20</param-value>
+    </context-param>
+
+    <!-- FacesServlet + Faces impl + Weld are auto-registered via their ServletContainerInitializers
+         / web-fragments, so this file stays implementation-agnostic (works on MyFaces and Mojarra). -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.xhtml</welcome-file>
+    </welcome-file-list>
+</web-app>
