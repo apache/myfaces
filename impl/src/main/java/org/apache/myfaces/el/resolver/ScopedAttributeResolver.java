@@ -100,10 +100,63 @@ public class ScopedAttributeResolver extends ELResolver
 
         context.setPropertyResolved(true);
 
-        final Map<String, Object> scopedMap = findScopedMap(facesContext(context), property);
-        if (scopedMap != null)
+        final FacesContext facesContext = facesContext(context);
+        if (facesContext == null)
         {
-            return scopedMap.get(property);
+            return null;
+        }
+        final ExternalContext extContext = facesContext.getExternalContext();
+        if (extContext == null)
+        {
+            return null;
+        }
+
+        final boolean startup = (extContext instanceof StartupServletExternalContextImpl);
+
+        // A single get() per scope instead of findScopedMap()'s containsKey()+get(): servlet
+        // request/session/application attributes are never null, so a non-null get() means the key
+        // is present. This halves the attribute-map lookups for the very hot case of resolving a
+        // UIData/UIRepeat row var (e.g. #{row}) once per cell. Mirrors the reference
+        // ScopedAttributeELResolver. The view map is a plain Map that may legitimately hold a null
+        // value, so it keeps the containsKey() check.
+        Object value;
+
+        // request scope (not available at startup)
+        if (!startup)
+        {
+            value = extContext.getRequestMap().get(property);
+            if (value != null)
+            {
+                return value;
+            }
+        }
+
+        // jsf 2.0 view scope
+        UIViewRoot root = facesContext.getViewRoot();
+        if (root != null)
+        {
+            Map<String, Object> viewMap = root.getViewMap(false);
+            if (viewMap != null && viewMap.containsKey(property))
+            {
+                return viewMap.get(property);
+            }
+        }
+
+        // session scope (not available at startup)
+        if (!startup)
+        {
+            value = extContext.getSessionMap().get(property);
+            if (value != null)
+            {
+                return value;
+            }
+        }
+
+        // application scope
+        value = extContext.getApplicationMap().get(property);
+        if (value != null)
+        {
+            return value;
         }
 
         return null;

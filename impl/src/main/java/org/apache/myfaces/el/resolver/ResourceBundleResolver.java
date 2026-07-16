@@ -124,6 +124,13 @@ public final class ResourceBundleResolver extends ELResolver
         {
             return null;
         }
+        // fast path: when no <resource-bundle> var is configured in faces-config, this resolver can
+        // never resolve anything - skip the per-identifier Application.getResourceBundle/getBundleName
+        // chain that otherwise runs for every EL identifier (e.g. #{row} on every table cell).
+        if (runtimeConfig(context).getResourceBundles().isEmpty())
+        {
+            return null;
+        }
 
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
         if (bundle != null)
@@ -148,6 +155,10 @@ public final class ResourceBundleResolver extends ELResolver
             throw new PropertyNotFoundException();
         }
         if (!(property instanceof String))
+        {
+            return null;
+        }
+        if (runtimeConfig(context).getResourceBundles().isEmpty())
         {
             return null;
         }
@@ -193,12 +204,11 @@ public final class ResourceBundleResolver extends ELResolver
 
     protected RuntimeConfig runtimeConfig(ELContext context)
     {
-        final FacesContext facesContext = facesContext(context);
-
-        // application-level singleton - we can safely cache this
+        // application-level singleton - we can safely cache this (only resolve the FacesContext on
+        // the first call; this runs per EL identifier so avoid the lookup once cached)
         if (this.runtimeConfig == null)
         {
-            this.runtimeConfig = RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
+            this.runtimeConfig = RuntimeConfig.getCurrentInstance(facesContext(context).getExternalContext());
         }
 
         return runtimeConfig;
