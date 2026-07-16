@@ -635,23 +635,31 @@ public class HtmlTableRendererBase extends HtmlRenderer
             UIComponent component,
             Styles styles, int columnStyleIndex) throws IOException
     {
-        // Get the rowHeader attribute from the attribute map, because of MYFACES-1790
-        Object rowHeaderAttr = component.getAttributes().get(ComponentAttrs.ROW_HEADER_ATTR);
-        boolean rowHeader = rowHeaderAttr != null && ((Boolean) rowHeaderAttr);
-        
-        if(rowHeader) 
+        // perf: renderColumnBody runs once per cell (rows x columns). Read rowHeader/styleClass via
+        // the typed getters for the common HtmlColumn case instead of component.getAttributes().get()
+        // - the latter resolves a PropertyDescriptor and reflectively invokes the very same getter.
+        // Fall back to the attribute map for non-HtmlColumn UIColumns (MYFACES-1790).
+        boolean rowHeader;
+        String styleClass = null;
+        if (component instanceof HtmlColumn column)
         {
-            writer.startElement(HTML.TH_ELEM, null); // uiData);   
+            rowHeader = column.isRowHeader();
+            styleClass = column.getStyleClass();
+        }
+        else
+        {
+            Object rowHeaderAttr = component.getAttributes().get(ComponentAttrs.ROW_HEADER_ATTR);
+            rowHeader = rowHeaderAttr != null && ((Boolean) rowHeaderAttr);
+        }
+
+        if(rowHeader)
+        {
+            writer.startElement(HTML.TH_ELEM, null); // uiData);
             writer.writeAttribute(HTML.SCOPE_ATTR, HTML.SCOPE_ROW_VALUE, null);
         }
-        else 
+        else
         {
             writer.startElement(HTML.TD_ELEM, null); // uiData);
-        }
-        String styleClass = null;
-        if (component instanceof HtmlColumn column) 
-        {
-            styleClass = column.getStyleClass();
         }
         if (styles.hasColumnStyle()) 
         {
