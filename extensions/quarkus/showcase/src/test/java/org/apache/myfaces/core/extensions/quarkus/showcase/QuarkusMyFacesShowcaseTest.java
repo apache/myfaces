@@ -92,6 +92,22 @@ public class QuarkusMyFacesShowcaseTest
     }
 
     @Test
+    public void shouldMapExtensionlessSubFolderView() throws Exception
+    {
+        // MYFACES-4729: AUTOMATIC_EXTENSIONLESS_MAPPING must also register views in sub-folders
+        final HtmlPage page = webClient.getPage(url + "/test/subFolder/bar");
+
+        // reachable via the extensionless exact mapping
+        assertThat(page.getUrl().toExternalForm()).endsWith("/test/subFolder/bar");
+        assertThat(page.asXml()).contains("subFolder/bar view");
+
+        // outbound links must render as the extensionless exact mapping, not with .xhtml
+        // (a ;jsessionid may be appended, hence no trailing quote in the match)
+        assertThat(page.asXml()).contains("href=\"/test/subFolder/bar");
+        assertThat(page.asXml()).doesNotContain("href=\"/test/subFolder/bar.xhtml");
+    }
+
+    @Test
     @Disabled("Check HtmlUnit websocket support, for now this test is not working")
     public void shouldCallWebSocket() throws IOException
     {

@@ -481,31 +481,38 @@ class MyFacesProcessor
 
     Set<String> findTopLevelViews()
     {
+        // NOTE: despite the name, this returns ALL Facelet views (including views in sub-folders),
+        // as AUTOMATIC_EXTENSIONLESS_MAPPING requires an exact mapping for every view.
         Set<String> topLevelViews = new HashSet<>();
         visitRuntimeMetaInfResources(visit ->
         {
             if (Files.isDirectory(visit.getPath()))
             {
-                // only root directory
-                if (visit.getRelativePath().contains("META-INF/resources/META-INF")
-                        || visit.getRelativePath().contains("META-INF/resources/WEB-INF")
-                        || visit.getRelativePath().contains("META-INF/resources/resources"))
-                {
-                    visit.stopWalking();
-                }
+                // we must not stopWalking() here: PathVisit#stopWalking() aborts the whole tree walk,
+                // not just the current sub-tree, which would randomly drop views depending on the
+                // (non-deterministic) visit order. We instead filter per-file below.
+                return;
             }
-            else if (!Files.isDirectory(visit.getPath()))
-            {
-                // only .xhtml
-                if (!visit.getRelativePath().endsWith(".xhtml"))
-                {
-                    return;
-                }
 
-                String viewId = "/" + visit.getRelativePath()
-                        .replace("META-INF/resources/", "");
-                topLevelViews.add(viewId);
+            // only .xhtml
+            if (!visit.getRelativePath().endsWith(".xhtml"))
+            {
+                return;
             }
+
+            String viewId = "/" + visit.getRelativePath()
+                    .replace("META-INF/resources/", "");
+
+            // skip infrastructure folders and JSF resources (e.g. composite components),
+            // which must never be registered as navigable views
+            if (viewId.startsWith("/META-INF/")
+                    || viewId.startsWith("/WEB-INF/")
+                    || viewId.startsWith("/resources/"))
+            {
+                return;
+            }
+
+            topLevelViews.add(viewId);
         });
         return topLevelViews;
     }
