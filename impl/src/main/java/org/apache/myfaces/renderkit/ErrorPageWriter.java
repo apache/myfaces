@@ -860,7 +860,7 @@ public final class ErrorPageWriter
                     }
 
                     // Get the component's renderer.
-                    // Note that getRenderer(FacesContext context) is definded in UIComponent,
+                    // Note that getRenderer(FacesContext context) is defined in UIComponent,
                     // but it is protected, so we have to use reflection!
                     Renderer renderer = null;
                     try
@@ -1002,7 +1002,7 @@ public final class ErrorPageWriter
                         // remove the visited facet count from the attribute map
                         removeVisitedFacetCount(context.getFacesContext(), parent);
 
-                        // check for componentes that visit their children multiple times
+                        // check for components that visit their children multiple times
                         if (parent instanceof UIData uidata)
                         {
                             if (uidata.getRowIndex() != uidata.getRowCount() - 1)
