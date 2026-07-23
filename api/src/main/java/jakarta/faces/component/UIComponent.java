@@ -759,8 +759,8 @@ public abstract class UIComponent
                         // Check if the listener points again to the component, to
                         // avoid StackoverflowException
                         boolean shouldProcessEvent = true;
-                        if (listener instanceof _EventListenerWrapper wrapper && 
-                            wrapper.getListenerCapability() ==
+                        if (listener instanceof _EventListenerWrapper &&
+                            ((_EventListenerWrapper) listener).getListenerCapability() ==
                                 _EventListenerWrapper.LISTENER_TYPE_COMPONENT)
                         {
                             shouldProcessEvent = false;
