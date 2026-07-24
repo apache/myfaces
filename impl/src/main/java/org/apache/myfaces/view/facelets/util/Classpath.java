@@ -121,8 +121,8 @@ public final class Classpath
             conn.setUseCaches(false);
             conn.setDefaultUseCaches(false);
 
-            try (JarFile jar = (conn instanceof JarURLConnection jurlc) ?
-                jurlc.getJarFile() : _getAlternativeJarFile(url))
+            try (JarFile jar = (conn instanceof JarURLConnection) ?
+                ((JarURLConnection) conn).getJarFile() : _getAlternativeJarFile(url))
             {
                 if (jar != null)
                 {
@@ -193,7 +193,7 @@ public final class Classpath
             {
                 try
                 {
-                    ZipInputStream zis = (is instanceof ZipInputStream stream) ? stream : new ZipInputStream(is);
+                    ZipInputStream zis = (is instanceof ZipInputStream) ? (ZipInputStream) is : new ZipInputStream(is);
                     try
                     {
                         ZipEntry entry = zis.getNextEntry();
@@ -255,8 +255,8 @@ public final class Classpath
             conn.setUseCaches(false);
             conn.setDefaultUseCaches(false);
 
-            try (JarFile jar = (conn instanceof JarURLConnection jurlc) ?
-                jurlc.getJarFile() : _getAlternativeJarFile(url))
+            try (JarFile jar = (conn instanceof JarURLConnection) ?
+                ((JarURLConnection) conn).getJarFile() : _getAlternativeJarFile(url))
             {
                 if (jar != null)
                 {
