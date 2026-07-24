@@ -64,30 +64,209 @@ public final class Classpath
     {
         Set<URL> all = new LinkedHashSet<>();
 
-        _searchResource(all, loader, prefix, prefix, suffix);
-        _searchResource(all, loader, prefix + "MANIFEST.MF", prefix, suffix);
+        // The two passes below (directory entry + MANIFEST.MF) are both needed because some
+        // classloaders/jars expose only one of them, but for any jar exposed by both we would
+        // otherwise open and fully enumerate its entries twice. Track the jars already scanned
+        // (keyed by the jar file portion of the URL) so each jar is opened and walked only once
+        // per search - startup calls this for every jar on the classpath, several times over.
+        Set<String> scannedJars = new HashSet<>();
+
+        _searchResource(all, loader, prefix, prefix, suffix, scannedJars);
+        _searchResource(all, loader, prefix + "MANIFEST.MF", prefix, suffix, scannedJars);
 
         URL[] urlArray = all.toArray(new URL[all.size()]);
 
         return urlArray;
     }
 
-    private static void _searchResource(Set<URL> result, ClassLoader loader, String resource, String prefix,
-                                        String suffix) throws IOException
+    /**
+     * Collect, in a single classpath walk, the <em>names</em> of every resource entry whose name
+     * starts with the given {@code prefix} (e.g. {@code "META-INF/"}). Unlike
+     * {@link #search(ClassLoader, String, String)} this neither filters by suffix nor resolves URLs;
+     * it only enumerates jar/directory entries once and returns their names.
+     *
+     * <p>Callers that repeatedly search the same prefix for different suffixes (the startup
+     * config/taglib/contract providers all scan {@code META-INF/}) can walk the classpath once, filter
+     * the returned names by suffix, and resolve the handful of matches via
+     * {@link ClassLoader#getResources(String)} - instead of re-opening and re-enumerating every jar
+     * once per suffix. Keeping only names (not eagerly-built URLs) avoids allocating a URL per entry.</p>
+     */
+    public static Set<String> searchResourceNames(ClassLoader loader, String prefix) throws IOException
+    {
+        Set<String> names = new HashSet<>();
+        Set<String> scannedJars = new HashSet<>();
+
+        _collectResourceNames(names, loader, prefix, prefix, scannedJars);
+        _collectResourceNames(names, loader, prefix + "MANIFEST.MF", prefix, scannedJars);
+
+        return names;
+    }
+
+    private static void _collectResourceNames(Set<String> names, ClassLoader loader, String resource,
+                                              String prefix, Set<String> scannedJars) throws IOException
     {
         for (Enumeration<URL> urls = loader.getResources(resource); urls.hasMoreElements();)
         {
             URL url = urls.nextElement();
+
+            String externalForm = url.toExternalForm();
+            int jarSeparator = externalForm.indexOf("!/");
+            String jarKey = jarSeparator != -1 ? externalForm.substring(0, jarSeparator) : null;
+            if (jarKey != null && scannedJars.contains(jarKey))
+            {
+                continue;
+            }
+
             URLConnection conn = url.openConnection();
             conn.setUseCaches(false);
             conn.setDefaultUseCaches(false);
 
-            try (JarFile jar = (conn instanceof JarURLConnection) ? 
-                ((JarURLConnection) conn).getJarFile() : _getAlternativeJarFile(url))
+            try (JarFile jar = (conn instanceof JarURLConnection jurlc) ?
+                jurlc.getJarFile() : _getAlternativeJarFile(url))
+            {
+                if (jar != null)
+                {
+                    Enumeration<JarEntry> entries = jar.entries();
+                    while (entries.hasMoreElements())
+                    {
+                        String name = entries.nextElement().getName();
+                        if (name.startsWith(prefix))
+                        {
+                            names.add(name);
+                        }
+                    }
+                    if (jarKey != null)
+                    {
+                        scannedJars.add(jarKey);
+                    }
+                }
+                else
+                {
+                    File dir = new File(URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8));
+                    if (!_collectDirNames(names, dir, prefix))
+                    {
+                        _collectNamesFromURL(names, prefix, url);
+                    }
+                }
+            }
+            catch (Throwable e)
+            {
+                // See _searchResource: a classloader may report a resource that cannot actually be
+                // opened. Ignore and let the other pass (or other classpath entries) cover it.
+                continue;
+            }
+        }
+    }
+
+    private static boolean _collectDirNames(Set<String> names, File dir, String currentPrefix)
+    {
+        // dir corresponds to `currentPrefix` itself (e.g. .../META-INF for prefix "META-INF/")
+        if (dir.exists() && dir.isDirectory())
+        {
+            File[] files = dir.listFiles();
+            if (files != null)
+            {
+                for (File file : files)
+                {
+                    if (file.isDirectory())
+                    {
+                        _collectDirNames(names, file, currentPrefix + file.getName() + '/');
+                    }
+                    else
+                    {
+                        names.add(currentPrefix + file.getName());
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static void _collectNamesFromURL(Set<String> names, String prefix, URL url) throws IOException
+    {
+        boolean done = false;
+
+        try (InputStream is = _getInputStream(url))
+        {
+            if (is != null)
+            {
+                try
+                {
+                    ZipInputStream zis = (is instanceof ZipInputStream stream) ? stream : new ZipInputStream(is);
+                    try
+                    {
+                        ZipEntry entry = zis.getNextEntry();
+                        done = entry != null;
+                        while (entry != null)
+                        {
+                            String entryName = entry.getName();
+                            if (entryName.startsWith(prefix))
+                            {
+                                names.add(entryName);
+                            }
+                            entry = zis.getNextEntry();
+                        }
+                    }
+                    finally
+                    {
+                        zis.close();
+                    }
+                }
+                catch (Exception ignore)
+                {
+                }
+            }
+        }
+
+        if (!done && prefix.length() > 0)
+        {
+            String urlString = url.toExternalForm() + '/';
+            String[] split = prefix.split("/");
+            String parentPrefix = _join(split, true);
+            String end = _join(split, false);
+            urlString = urlString.substring(0, urlString.lastIndexOf(end));
+            if (isExcludedPrefix(urlString))
+            {
+                return;
+            }
+            _collectNamesFromURL(names, parentPrefix, new URL(urlString));
+        }
+    }
+
+    private static void _searchResource(Set<URL> result, ClassLoader loader, String resource, String prefix,
+                                        String suffix, Set<String> scannedJars) throws IOException
+    {
+        for (Enumeration<URL> urls = loader.getResources(resource); urls.hasMoreElements();)
+        {
+            URL url = urls.nextElement();
+
+            // If this URL points inside a jar we already scanned in a previous pass, skip it:
+            // the jar's entries are identical regardless of which META-INF resource led us here.
+            String externalForm = url.toExternalForm();
+            int jarSeparator = externalForm.indexOf("!/");
+            String jarKey = jarSeparator != -1 ? externalForm.substring(0, jarSeparator) : null;
+            if (jarKey != null && scannedJars.contains(jarKey))
+            {
+                continue;
+            }
+
+            URLConnection conn = url.openConnection();
+            conn.setUseCaches(false);
+            conn.setDefaultUseCaches(false);
+
+            try (JarFile jar = (conn instanceof JarURLConnection jurlc) ?
+                jurlc.getJarFile() : _getAlternativeJarFile(url))
             {
                 if (jar != null)
                 {
                     _searchJar(loader, result, jar, prefix, suffix);
+                    // Only mark as scanned once we have actually enumerated it, so that a jar which
+                    // fails the directory-entry pass can still be picked up by the MANIFEST.MF pass.
+                    if (jarKey != null)
+                    {
+                        scannedJars.add(jarKey);
+                    }
                 }
                 else
                 {
@@ -220,7 +399,7 @@ public final class Classpath
     }
 
     /**
-     * Join tokens, exlude last if param equals true.
+     * Join tokens, exclude last if param equals true.
      * 
      * @param tokens
      *            the tokens
