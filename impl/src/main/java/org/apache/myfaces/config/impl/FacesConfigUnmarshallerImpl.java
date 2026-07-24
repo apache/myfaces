@@ -79,11 +79,42 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
 {
     private static final Logger log = Logger.getLogger(FacesConfigUnmarshallerImpl.class.getName());
 
+    /**
+     * Shared, immutably-configured factory reused across all faces-config parses to skip the
+     * JAXP provider lookup ({@link DocumentBuilderFactory#newInstance()}) on every startup file.
+     * Access to {@link DocumentBuilderFactory#newDocumentBuilder()} is synchronized on this
+     * instance since the factory is not guaranteed thread-safe.
+     */
+    private static final DocumentBuilderFactory FACTORY = createFactory();
+
     private ExternalContext externalContext;
     
     public FacesConfigUnmarshallerImpl(ExternalContext externalContext)
     {
         this.externalContext = externalContext;
+    }
+
+    private static DocumentBuilderFactory createFactory()
+    {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(false);
+        factory.setNamespaceAware(true);
+
+        try
+        {
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            factory.setXIncludeAware(false);
+            factory.setExpandEntityReferences(false);
+        }
+        catch (Throwable e)
+        {
+            log.log(Level.WARNING, "DocumentBuilderFactory#setFeature not implemented. Skipping...", e);
+        }
+
+        return factory;
     }
 
     @Override
@@ -100,25 +131,16 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
 
         try
         {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setValidating(false);
-            factory.setNamespaceAware(true);
-            
-            try
-            {
-                factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
-                factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-                factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-                factory.setXIncludeAware(false);
-                factory.setExpandEntityReferences(false);
-            }
-            catch (Throwable e)
-            {
-                log.log(Level.WARNING, "DocumentBuilderFactory#setFeature not implemented. Skipping...", e);
-            }
+            // The factory is configured identically for every faces-config, so build it once and
+            // reuse it to avoid the JAXP provider lookup (DocumentBuilderFactory#newInstance) on
+            // every file parsed at startup. newDocumentBuilder() is still called per parse.
+            DocumentBuilderFactory factory = FACTORY;
 
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            DocumentBuilder builder;
+            synchronized (factory)
+            {
+                builder = factory.newDocumentBuilder();
+            }
             builder.setEntityResolver(new FacesConfigEntityResolver(externalContext));
             Document document;
             if (systemId == null)
@@ -129,8 +151,11 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             {
                 document = builder.parse(in, systemId);
             }
-            document.getDocumentElement().normalize();
-            
+            // Note: intentionally no Element#normalize() here. Text is always read via
+            // Node#getTextContent() (see getTextContent()), which concatenates all descendant
+            // text regardless of whether adjacent text nodes were coalesced, so normalizing the
+            // whole document tree would only add a full-tree walk at startup with no effect.
+
             onAttribute("metadata-complete", document.getDocumentElement(),
                     (v) -> { facesConfig.setMetadataComplete(v); });
             onAttribute("version", document.getDocumentElement(),

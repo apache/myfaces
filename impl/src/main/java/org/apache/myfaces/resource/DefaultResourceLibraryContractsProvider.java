@@ -19,15 +19,13 @@
 package org.apache.myfaces.resource;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.context.ExternalContext;
-import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.config.MetaInfResourceCache;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
-import org.apache.myfaces.view.facelets.util.Classpath;
 
 /**
  *
@@ -78,17 +76,18 @@ public class DefaultResourceLibraryContractsProvider extends ResourceLibraryCont
     {
         Set<String> contracts = new HashSet<>();
 
-        URL[] urls = Classpath.search(ClassUtils.getCurrentLoader(this),
-                META_INF_CONTRACTS_PREFIX,
-                META_INF_CONTRACTS_SUFFIX);
-        for (int i = 0; i < urls.length; i++)
+        // Reuse the shared cached META-INF/ name scan and pick entries under META-INF/contracts/ ending
+        // with jakarta.faces.contract.xml, deriving the contract name from the entry path.
+        for (String name : MetaInfResourceCache.getMetaInfEntryNames(context))
         {
-            String urlString = urls[i].toExternalForm();
-            int suffixPos = urlString.lastIndexOf(META_INF_CONTRACTS_FILE);
-            int slashPos = urlString.lastIndexOf('/', suffixPos-1);
-            if (suffixPos > 0 && slashPos > 0)
+            if (name.startsWith(META_INF_CONTRACTS_PREFIX) && name.endsWith(META_INF_CONTRACTS_SUFFIX))
             {
-                contracts.add(urlString.substring(slashPos+1, suffixPos));
+                int suffixPos = name.lastIndexOf(META_INF_CONTRACTS_FILE);
+                int slashPos = name.lastIndexOf('/', suffixPos - 1);
+                if (suffixPos > 0 && slashPos > 0)
+                {
+                    contracts.add(name.substring(slashPos + 1, suffixPos));
+                }
             }
         }
 
