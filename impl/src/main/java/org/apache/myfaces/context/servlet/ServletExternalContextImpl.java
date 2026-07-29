@@ -43,7 +43,6 @@ import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.util.lang.EnumerationIterator;
 import org.apache.myfaces.util.lang.StringUtils;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -81,7 +80,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 
     private ServletRequest _servletRequest;
     private ServletResponse _servletResponse;
-    private Writer _responseOutputWriter;
+    private ResettableBufferedWriter _responseOutputWriter;
     private Map<String, Object> _sessionMap;
     private Map<String, Object> _requestMap;
     private Map<String, String> _requestParameterMap;
@@ -140,8 +139,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     @Override
     public void release()
     {
-        // flush any buffered render output into the container writer before tearing down; a reset
-        // or sendError already nulled the writer, so nothing is flushed for aborted responses
+        // drain any buffered render output into the container writer before tearing down; a reset
+        // or sendError already discarded the buffer, so aborted output is not written
         if (_responseOutputWriter != null)
         {
             try
@@ -242,16 +241,15 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     @Override
     public Writer getResponseOutputWriter() throws IOException
     {
-        // Wrap the container writer in a BufferedWriter so the many small render-time writes
-        // (HtmlResponseWriterImpl emits '<', tag names and attribute fragments as individual
-        // char/short-string writes) coalesce into few large writes to the container. On writers
-        // that do not buffer themselves (e.g. Jetty's WriteThroughWriter) every tiny write would
-        // otherwise allocate a CharBuffer and run a UTF-8 encode. Cached so all callers share one
-        // ordered buffer; flushed in responseFlushBuffer()/release(); dropped without flushing on
-        // responseReset()/responseSendError() so aborted output is not re-committed.
+        // Buffer the many small render-time writes (HtmlResponseWriterImpl emits '<', tag names and
+        // attribute fragments as individual char/short-string writes) into few large writes to the
+        // container. On writers that do not buffer themselves (e.g. Jetty's WriteThroughWriter) every
+        // tiny write would otherwise allocate a CharBuffer and run a UTF-8 encode. Cached so all
+        // callers share one ordered buffer; drained in responseFlushBuffer()/release(); discarded
+        // without draining on responseReset()/responseSendError() so aborted output is not written.
         if (_responseOutputWriter == null)
         {
-            _responseOutputWriter = new BufferedWriter(_servletResponse.getWriter());
+            _responseOutputWriter = new ResettableBufferedWriter(_servletResponse);
         }
         return _responseOutputWriter;
     }
@@ -651,9 +649,12 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     public void responseReset()
     {
         checkHttpServletResponse();
-        // drop any buffered-but-unflushed output; reset() clears the container buffer, so the
-        // buffered chars must be discarded too (not flushed) to avoid re-committing aborted output
-        _responseOutputWriter = null;
+        // discard any buffered-but-unflushed output; reset() clears the container buffer, so the
+        // buffered chars must be dropped too (not flushed) to avoid re-committing aborted output
+        if (_responseOutputWriter != null)
+        {
+            _responseOutputWriter.reset();
+        }
         _httpServletResponse.reset();
     }
 
@@ -665,7 +666,10 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     {
         checkHttpServletResponse();
         // discard buffered-but-unflushed output; sendError resets the buffer
-        _responseOutputWriter = null;
+        if (_responseOutputWriter != null)
+        {
+            _responseOutputWriter.reset();
+        }
         if (message == null)
         {
             _httpServletResponse.sendError(statusCode);
@@ -1121,5 +1125,109 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             _currentFacesContext = FacesContext.getCurrentInstance();
         }
         return _currentFacesContext;
+    }
+
+    /**
+     * Coalesces the many small render-time writes into few large writes to the container writer, like a
+     * {@link java.io.BufferedWriter} does, but additionally allows the buffered chars to be discarded again by
+     * {@link #reset()} and resolves the container writer per drain instead of holding on to it.
+     * <p>
+     * Both are required because a {@link jakarta.faces.context.ResponseWriter} keeps writing into the very instance it
+     * obtained from {@link jakarta.faces.context.ExternalContext#getResponseOutputWriter()}. Replacing this instance on
+     * {@link jakarta.faces.context.ExternalContext#responseReset()} would therefore silently route everything
+     * rendered afterwards, such as an error page, into a buffer which is never drained.
+     */
+    static final class ResettableBufferedWriter extends Writer
+    {
+        private static final int BUFFER_SIZE = 8192;
+
+        private final ServletResponse response;
+        private final char[] buffer = new char[BUFFER_SIZE];
+        private int count;
+
+        ResettableBufferedWriter(ServletResponse response)
+        {
+            this.response = response;
+        }
+
+        @Override
+        public void write(int c) throws IOException
+        {
+            if (count >= BUFFER_SIZE)
+            {
+                drain();
+            }
+            buffer[count++] = (char) c;
+        }
+
+        @Override
+        public void write(char[] chars, int offset, int length) throws IOException
+        {
+            if (length >= BUFFER_SIZE)
+            {
+                drain();
+                response.getWriter().write(chars, offset, length);
+                return;
+            }
+            if (length > BUFFER_SIZE - count)
+            {
+                drain();
+            }
+            System.arraycopy(chars, offset, buffer, count, length);
+            count += length;
+        }
+
+        @Override
+        public void write(String string, int offset, int length) throws IOException
+        {
+            if (length >= BUFFER_SIZE)
+            {
+                drain();
+                response.getWriter().write(string, offset, length);
+                return;
+            }
+            if (length > BUFFER_SIZE - count)
+            {
+                drain();
+            }
+            string.getChars(offset, offset + length, buffer, count);
+            count += length;
+        }
+
+        /**
+         * Drains the buffered chars into the container writer, but deliberately does not flush the container writer:
+         * committing the response is up to the container, or to an explicit
+         * {@link jakarta.faces.context.ExternalContext#responseFlushBuffer()}. Committing it here would break error
+         * page handling, which relies on being able to still reset a not yet committed response.
+         */
+        @Override
+        public void flush() throws IOException
+        {
+            drain();
+        }
+
+        @Override
+        public void close() throws IOException
+        {
+            drain();
+        }
+
+        /**
+         * Discards the buffered chars without writing them, mirroring {@link ServletResponse#reset()} which clears the
+         * container buffer.
+         */
+        void reset()
+        {
+            count = 0;
+        }
+
+        private void drain() throws IOException
+        {
+            if (count > 0)
+            {
+                response.getWriter().write(buffer, 0, count);
+                count = 0;
+            }
+        }
     }
 }

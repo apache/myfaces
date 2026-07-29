@@ -18,7 +18,11 @@
  */
 package org.apache.myfaces.context.servlet;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
+import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -145,5 +149,23 @@ public class ServletExternalContextImplTest extends AbstractFacesTestCase
         Assertions.assertTrue(redirectUrl.contains("par=test1"));
         Assertions.assertTrue(redirectUrl.contains("par=test2"));
 
+    }
+
+    /**
+     * A writer obtained before responseReset() must stay usable afterwards, because that is exactly what a
+     * ResponseWriter created earlier in the render phase holds on to. Everything buffered before the reset must be
+     * discarded, everything written after it must still reach the container writer.
+     */
+    @Test
+    public void testResponseResetDiscardsBufferedOutputButKeepsWriterUsable() throws IOException
+    {
+        Writer writer = _testExternalContext.getResponseOutputWriter();
+        writer.write("aborted response");
+
+        _testExternalContext.responseReset();
+        writer.write("error page");
+        writer.flush();
+
+        Assertions.assertEquals("error page", String.valueOf(((MockPrintWriter) response.getWriter()).content()));
     }
 }
