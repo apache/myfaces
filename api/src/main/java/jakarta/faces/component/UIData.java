@@ -166,13 +166,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private int _rowIndex = -1;
 
     /**
-     * Per-row EVH state.  Outer key is the row index; value is the list of per-EVH states
-     * indexed by position in {@link #_iterationEVHList} (null entry = component in default
-     * empty state).  A missing outer entry also means all EVH components are in default state.
-     * Using an Integer row-index key avoids string concatenation and leverages the JVM Integer
-     * cache for typical row counts, making map operations cheaper than string-key alternatives.
+     * Per-row EVH state.  Outer key is {@link #getContainerClientId(FacesContext)}, i.e. this table's clientId plus
+     * its current row index, which for a table nested inside another iterating component also carries the enclosing
+     * rows' indices; value is the list of per-EVH states indexed by position in {@link #_iterationEVHList} (null
+     * entry = component in default empty state).  A missing outer entry also means all EVH components are in default
+     * state.
      */
-    private Map<Integer, List<EditableValueHolderState>> _rowStates = new HashMap<>();
+    private Map<String, List<EditableValueHolderState>> _rowStates = new HashMap<>();
     private Map<String, Map<String, Object>> _rowDeltaStates = new HashMap<>();
     private Map<String, Map<String, Object>> _rowTransientStates = new HashMap<>();
 
@@ -765,13 +765,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 states.add(state);
             }
         }
+        String key = getContainerClientId(getFacesContext());
         if (states != null)
         {
-            _rowStates.put(_rowIndex, states);
+            _rowStates.put(key, states);
         }
         else
         {
-            _rowStates.remove(_rowIndex);
+            _rowStates.remove(key);
         }
     }
 
@@ -789,7 +790,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             return;
         }
-        List<EditableValueHolderState> states = _rowStates.get(_rowIndex);
+        List<EditableValueHolderState> states = _rowStates.get(getContainerClientId(getFacesContext()));
         for (int i = 0, n = evhList.size(); i < n; i++)
         {
             EditableValueHolderState state = (states != null && i < states.size()) ? states.get(i) : null;
@@ -1228,7 +1229,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
             else
             {
-                _rowStates = (Map<Integer, List<EditableValueHolderState>>) rs;
+                _rowStates = (Map<String, List<EditableValueHolderState>>) rs;
             }
         }
         if (values.length > 3)
