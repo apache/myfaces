@@ -229,6 +229,64 @@ public class UIRepeatTest extends AbstractJsfTestCase
         }
     }
     
+    /**
+     * A UIRepeat nested inside another UIRepeat keeps its per-row state per enclosing row: the inner repeat's row 0
+     * in outer row 0 is a different cell from the inner repeat's row 0 in outer row 1. Keying the inner repeat's
+     * state by its own row index alone lets each enclosing row overwrite the previous one, which silently drops the
+     * submitted values of every enclosing row but the last.
+     */
+    @Test
+    public void testNestedRepeatRowStateIsScopedPerOuterRow()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        root.setId(root.createUniqueId());
+
+        UIRepeat outer = new UIRepeat();
+        outer.setId(root.createUniqueId());
+        outer.setVar("group");
+        outer.setValue(Arrays.asList("g0", "g1"));
+
+        UIRepeat inner = new UIRepeat();
+        inner.setId(root.createUniqueId());
+        inner.setVar("row");
+        inner.setValue(Arrays.asList("r0", "r1"));
+
+        UIInput input = new UIInput();
+        input.setId(root.createUniqueId());
+
+        inner.getChildren().add(input);
+        outer.getChildren().add(inner);
+        root.getChildren().add(outer);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        for (int outerRow = 0; outerRow < 2; outerRow++)
+        {
+            outer.setRowIndex(outerRow);
+            for (int innerRow = 0; innerRow < 2; innerRow++)
+            {
+                inner.setRowIndex(innerRow);
+                input.setSubmittedValue("v" + outerRow + innerRow);
+            }
+            inner.setRowIndex(-1);
+        }
+        outer.setRowIndex(-1);
+
+        for (int outerRow = 0; outerRow < 2; outerRow++)
+        {
+            outer.setRowIndex(outerRow);
+            for (int innerRow = 0; innerRow < 2; innerRow++)
+            {
+                inner.setRowIndex(innerRow);
+                Assertions.assertEquals("v" + outerRow + innerRow, input.getSubmittedValue(),
+                        "outer row " + outerRow + ", inner row " + innerRow
+                                + " must keep the value submitted into it");
+            }
+            inner.setRowIndex(-1);
+        }
+        outer.setRowIndex(-1);
+    }
+
     // -------------------------------------------------------------------------
     // Helpers
     // -------------------------------------------------------------------------

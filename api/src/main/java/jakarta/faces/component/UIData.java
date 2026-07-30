@@ -167,13 +167,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private int _rowIndex = -1;
 
     /**
-     * Per-row EVH state.  Outer key is the row index; value is the list of per-EVH states
-     * indexed by position in {@link #_iterationEVHList} (null entry = component in default
-     * empty state).  A missing outer entry also means all EVH components are in default state.
-     * Using an Integer row-index key avoids string concatenation and leverages the JVM Integer
-     * cache for typical row counts, making map operations cheaper than string-key alternatives.
+     * Per-row EVH state.  Outer key is {@link #getContainerClientId(FacesContext)}, i.e. this table's clientId plus
+     * its current row index, which for a table nested inside another iterating component also carries the enclosing
+     * rows' indices; value is the list of per-EVH states indexed by position in {@link #_iterationEVHList} (null
+     * entry = component in default empty state).  A missing outer entry also means all EVH components are in default
+     * state.
      */
-    private Map<Integer, List<EditableValueHolderState>> _rowStates = new HashMap<>();
+    private Map<String, List<EditableValueHolderState>> _rowStates = new HashMap<>();
     private Map<String, Map<String, Object>> _rowDeltaStates = new HashMap<>();
     private Map<String, Map<String, Object>> _rowTransientStates = new HashMap<>();
 
@@ -575,6 +575,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
         _rowIndex = rowIndex;
 
+        // Resolve the DataModel once here and reuse it below (setRowIndex + isRowAvailable +
+        // getRowData) instead of calling getDataModel() again inside isRowAvailable(): getDataModel()
+        // recomputes the parent container clientId and does a map lookup, and it must NOT be cached
+        // across rows because a nested table resolves a different model per outer row (its key is the
+        // parent container clientId).
         DataModel dataModel = getDataModel();
         dataModel.setRowIndex(rowIndex);
 
@@ -590,7 +595,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             if (var != null)
             {
-                if (isRowAvailable())
+                if (dataModel.isRowAvailable())
                 {
                     Object rowData = dataModel.getRowData();
                     facesContext.getExternalContext().getRequestMap().put(var, rowData);
@@ -739,24 +744,36 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             return;
         }
         int n = evhList.size();
-        List<EditableValueHolderState> states = new ArrayList<>(n);
-        boolean hasState = false;
+        // Defer the per-row list allocation until an actual (non-default) EVH state is found.
+        // During rendering, inputs bound to EL have no transient state (localValue/submittedValue
+        // null, valid, not localValueSet), so create() returns null for every child and the common
+        // case allocates nothing at all instead of an ArrayList per row that is immediately discarded.
+        List<EditableValueHolderState> states = null;
         for (int i = 0; i < n; i++)
         {
             EditableValueHolderState state = EditableValueHolderState.create((EditableValueHolder) evhList.get(i));
-            states.add(state);
-            if (state != null)
+            if (state != null && states == null)
             {
-                hasState = true;
+                states = new ArrayList<>(n);
+                for (int j = 0; j < i; j++)
+                {
+                    // backfill default (null) entries preceding the first non-default one
+                    states.add(null);
+                }
+            }
+            if (states != null)
+            {
+                states.add(state);
             }
         }
-        if (hasState)
+        String key = getContainerClientId(getFacesContext());
+        if (states != null)
         {
-            _rowStates.put(_rowIndex, states);
+            _rowStates.put(key, states);
         }
         else
         {
-            _rowStates.remove(_rowIndex);
+            _rowStates.remove(key);
         }
     }
 
@@ -774,7 +791,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             return;
         }
-        List<EditableValueHolderState> states = _rowStates.get(_rowIndex);
+        List<EditableValueHolderState> states = _rowStates.get(getContainerClientId(getFacesContext()));
         for (int i = 0, n = evhList.size(); i < n; i++)
         {
             EditableValueHolderState state = (states != null && i < states.size()) ? states.get(i) : null;
@@ -836,7 +853,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             if (var != null)
             {
-                if (isRowAvailable())
+                if (dataModel.isRowAvailable())
                 {
                     Object rowData = dataModel.getRowData();
                     facesContext.getExternalContext().getRequestMap().put(var, rowData);
@@ -882,11 +899,54 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
 
     }
-    
 
-    
-    
-    
+    /**
+     * Just call component.setId(component.getId()) to reset all client ids and
+     * ensure they will be calculated for the current row, but do not waste time
+     * dealing with row state code.
+     *
+     * @param parent
+     * @param iterateFacets
+     * @param restoreChildFacets
+     */
+    private void restoreDescendantComponentWithoutRestoreState(UIComponent parent, boolean iterateFacets,
+                                                               boolean restoreChildFacets)
+    {
+        if (iterateFacets && parent.getFacetCount() > 0)
+        {
+            Iterator<UIComponent> childIterator = parent.getFacets().values().iterator();
+
+            while (childIterator.hasNext())
+            {
+                UIComponent component = childIterator.next();
+
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+                if (!component.isTransient())
+                {
+                    restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                }
+            }
+        }
+
+        int childCount = parent.getChildCount();
+        if (childCount > 0)
+        {
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0; i < childCount; i++)
+            {
+                UIComponent component = children.get(i);
+
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+                if (!component.isTransient())
+                {
+                    restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                }
+            }
+        }
+    }
+
     @Override
     public void markInitialState()
     {
@@ -1170,7 +1230,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
             else
             {
-                _rowStates = (Map<Integer, List<EditableValueHolderState>>) rs;
+                _rowStates = (Map<String, List<EditableValueHolderState>>) rs;
             }
         }
         if (values.length > 3)
@@ -1429,7 +1489,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         for (int i = 0, size = messageList.size(); i < size;  i++)
         {
             FacesMessage message = messageList.get(i);
-            if (FacesMessage.SEVERITY_ERROR.compareTo(message.getSeverity()) <= 0)
+            if (message.getSeverity() == FacesMessage.SEVERITY_ERROR ||
+                    message.getSeverity() == FacesMessage.SEVERITY_FATAL)
             {
                 return true;
             }
@@ -1800,7 +1861,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 {
                     return new IterableDataModel<>((Iterable<?>) value);
                 } 
-                else if (value instanceof Map) 
+                else if (value instanceof Map)
                 {
                     return new IterableDataModel<>(((Map<?, ?>) value).entrySet());
                 }
@@ -2020,19 +2081,24 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                                     return false;
                                 }
                                 // visit the children of every child of the UIData that is an instance of UIColumn
-                                for (int i = 0; i < colChildCount; i++)
+                                int rowChildCount = getChildCount();
+                                List<UIComponent> rowChildren = rowChildCount > 0 ? getChildren() : null;
+                                for (int i = 0; i < rowChildCount; i++)
                                 {
-                                    UIComponent child = colChildren.get(i);
+                                    UIComponent child = rowChildren.get(i);
                                     if (child instanceof UIColumn)
                                     {
-                                        List<UIComponent> grandChildren = child.getChildren();
-                                        for (int j = 0, grandChildCount = grandChildren.size();
-                                             j < grandChildCount; j++)
+                                        int grandChildCount = child.getChildCount();
+                                        if (grandChildCount > 0)
                                         {
-                                            UIComponent grandchild = grandChildren.get(j);
-                                            if (grandchild.visitTree(context, callback))
+                                            List<UIComponent> grandChildren = child.getChildren();
+                                            for (int j = 0; j < grandChildCount; j++)
                                             {
-                                                return true;
+                                                UIComponent grandchild = grandChildren.get(j);
+                                                if (grandchild.visitTree(context, callback))
+                                                {
+                                                    return true;
+                                                }
                                             }
                                         }
                                     }

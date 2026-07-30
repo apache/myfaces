@@ -103,13 +103,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     protected Map<String, Map<String, Object>> _rowTransientStates = new HashMap<>();
 
     /**
-     * Per-row EVH state.  Outer key is the row index; value is the list of per-EVH states
-     * indexed by position in {@link #_iterationEVHList} (null entry = component in default
-     * empty state).  A missing outer entry also means all EVH components are in default state.
-     * Using an Integer row-index key avoids string concatenation and leverages the JVM Integer
-     * cache for typical row counts, making map operations cheaper than string-key alternatives.
+     * Per-row EVH state.  Outer key is {@link #getContainerClientId(FacesContext)}, i.e. this repeat's clientId plus
+     * its current row index, which for a repeat nested inside another iterating component also carries the enclosing
+     * rows' indices; value is the list of per-EVH states indexed by position in {@link #_iterationEVHList} (null
+     * entry = component in default empty state).  A missing outer entry also means all EVH components are in default
+     * state.
      */
-    private Map<Integer, List<EditableValueHolderState>> _rowStates = new HashMap<>();
+    private Map<String, List<EditableValueHolderState>> _rowStates = new HashMap<>();
     
     /**
      * Handle case where this table is nested inside another table. See method getDataModel for more details.
@@ -769,11 +769,11 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
         if (hasState)
         {
-            _rowStates.put(_index, states);
+            _rowStates.put(getContainerClientId(getFacesContext()), states);
         }
         else
         {
-            _rowStates.remove(_index);
+            _rowStates.remove(getContainerClientId(getFacesContext()));
         }
     }
 
@@ -791,7 +791,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         {
             return;
         }
-        List<EditableValueHolderState> states = _rowStates.get(_index);
+        List<EditableValueHolderState> states = _rowStates.get(getContainerClientId(getFacesContext()));
         for (int i = 0, n = evhList.size(); i < n; i++)
         {
             EditableValueHolderState state = (states != null && i < states.size()) ? states.get(i) : null;
@@ -1787,7 +1787,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
             else
             {
-                _rowStates = (Map<Integer, List<EditableValueHolderState>>) rs;
+                _rowStates = (Map<String, List<EditableValueHolderState>>) rs;
             }
         }
         if (values.length > 3)
