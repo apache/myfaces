@@ -1109,6 +1109,72 @@ public class UIDataTest extends AbstractFacesTestCase
                 "Nested UIInput row-1 state must be restored");
     }
 
+    /**
+     * A UIData nested inside another UIData keeps its per-row state per enclosing row: the inner table's row 0 in
+     * outer row 0 is a different cell from the inner table's row 0 in outer row 1. Keying the inner table's state by
+     * its own row index alone lets each enclosing row overwrite the previous one, which silently drops the submitted
+     * values of every enclosing row but the last.
+     */
+    @Test
+    public void testNestedTableRowStateIsScopedPerOuterRow()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+
+        UIData outer = new UIData();
+        outer.setId("outer");
+        outer.setVar("group");
+        outer.setValue(java.util.Arrays.asList("g0", "g1"));
+
+        UIColumn outerColumn = new UIColumn();
+        outerColumn.setId("outerCol");
+
+        UIData inner = new UIData();
+        inner.setId("inner");
+        inner.setVar("row");
+        inner.setValue(java.util.Arrays.asList("r0", "r1"));
+
+        UIColumn innerColumn = new UIColumn();
+        innerColumn.setId("innerCol");
+        UIInput input = new UIInput();
+        input.setId("inp");
+
+        innerColumn.getChildren().add(input);
+        inner.getChildren().add(innerColumn);
+        outerColumn.getChildren().add(inner);
+        outer.getChildren().add(outerColumn);
+        root.getChildren().add(outer);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        // Submit a distinct value into every cell of the 2x2 grid.
+        for (int outerRow = 0; outerRow < 2; outerRow++)
+        {
+            outer.setRowIndex(outerRow);
+            for (int innerRow = 0; innerRow < 2; innerRow++)
+            {
+                inner.setRowIndex(innerRow);
+                input.setSubmittedValue("v" + outerRow + innerRow);
+            }
+            inner.setRowIndex(-1);
+        }
+        outer.setRowIndex(-1);
+
+        // Every cell must still hold its own value.
+        for (int outerRow = 0; outerRow < 2; outerRow++)
+        {
+            outer.setRowIndex(outerRow);
+            for (int innerRow = 0; innerRow < 2; innerRow++)
+            {
+                inner.setRowIndex(innerRow);
+                Assertions.assertEquals("v" + outerRow + innerRow, input.getSubmittedValue(),
+                        "outer row " + outerRow + ", inner row " + innerRow
+                                + " must keep the value submitted into it");
+            }
+            inner.setRowIndex(-1);
+        }
+        outer.setRowIndex(-1);
+    }
+
     // -------------------------------------------------------------------------
     // Read-only (no EVH) flat-list clientId reset
     // -------------------------------------------------------------------------
