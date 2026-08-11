@@ -21,11 +21,15 @@ package jakarta.faces.convert;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.MonthDay;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
@@ -83,7 +87,15 @@ public class DateTimeConverter
     private static final String TYPE_OFFSET_TIME = "offsetTime";
     private static final String TYPE_OFFSET_DATE_TIME = "offsetDateTime";
     private static final String TYPE_ZONED_DATE_TIME = "zonedDateTime";
-            
+    private static final String TYPE_INSTANT = "instant";
+    private static final String TYPE_YEAR = "year";
+    private static final String TYPE_YEAR_MONTH = "yearMonth";
+    private static final String TYPE_MONTH_DAY = "monthDay";
+
+    private static final String PATTERN_YEAR = "uuuu";
+    private static final String PATTERN_YEAR_MONTH = "uuuu-MM";
+    private static final String PATTERN_MONTH_DAY = "--MM-dd";
+
     private static final String STYLE_DEFAULT = "default";
     private static final String STYLE_MEDIUM = "medium";
     private static final String STYLE_SHORT = "short";
@@ -158,7 +170,8 @@ public class DateTimeConverter
                         Object[] args = new Object[]{toParse,
                                 format.format(currentDate),MessageUtils.getLabel(facesContext, uiComponent)};
 
-                        if(type.equals(TYPE_LOCAL_DATE))
+                        if(type.equals(TYPE_LOCAL_DATE) || type.equals(TYPE_YEAR)
+                                || type.equals(TYPE_YEAR_MONTH) || type.equals(TYPE_MONTH_DAY))
                         {
                             throw new ConverterException(MessageUtils.getErrorMessage(facesContext, DATE_ID, args));
                         }
@@ -166,8 +179,8 @@ public class DateTimeConverter
                         {
                             throw new ConverterException(MessageUtils.getErrorMessage(facesContext, TIME_ID, args));
                         }
-                        else if (type.equals(TYPE_LOCAL_DATE_TIME) || type.equals(TYPE_OFFSET_DATE_TIME) 
-                                || type.equals(TYPE_ZONED_DATE_TIME))
+                        else if (type.equals(TYPE_LOCAL_DATE_TIME) || type.equals(TYPE_OFFSET_DATE_TIME)
+                                || type.equals(TYPE_ZONED_DATE_TIME) || type.equals(TYPE_INSTANT))
                         {
                             throw new ConverterException(
                                     MessageUtils.getErrorMessage(facesContext, DATETIME_ID, args));
@@ -333,7 +346,9 @@ public class DateTimeConverter
             {
                 formatter = DateTimeFormatter.ofPattern(pattern, locale);
             }
-            return formatter;
+            // Instant carries no zone, so a custom pattern with date/time fields can only be
+            // resolved when the configured time zone is applied to the formatter.
+            return applyInstantZone(formatter, type);
         }
 
         if (forParsing
@@ -398,6 +413,22 @@ public class DateTimeConverter
         {
             formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
         }
+        else if (TYPE_INSTANT.equals(type))
+        {
+            formatter = DateTimeFormatter.ISO_INSTANT;
+        }
+        else if (TYPE_YEAR.equals(type))
+        {
+            formatter = DateTimeFormatter.ofPattern(PATTERN_YEAR);
+        }
+        else if (TYPE_YEAR_MONTH.equals(type))
+        {
+            formatter = DateTimeFormatter.ofPattern(PATTERN_YEAR_MONTH);
+        }
+        else if (TYPE_MONTH_DAY.equals(type))
+        {
+            formatter = DateTimeFormatter.ofPattern(PATTERN_MONTH_DAY);
+        }
         else
         {
             throw new ConverterException("invalid type '" + _type + '\'');
@@ -406,6 +437,20 @@ public class DateTimeConverter
         if (locale != null)
         {
             formatter = formatter.withLocale(locale);
+        }
+        return applyInstantZone(formatter, type);
+    }
+
+    /**
+     * {@link Instant} has no time zone of its own, so when a time zone is configured it is applied to the
+     * formatter. This lets {@link DateTimeFormatter#ISO_INSTANT} and custom patterns resolve the local
+     * date/time fields against that zone. For all other types this is a no-op.
+     */
+    private DateTimeFormatter applyInstantZone(DateTimeFormatter formatter, String type)
+    {
+        if (TYPE_INSTANT.equals(type) && _timeZone != null)
+        {
+            formatter = formatter.withZone(_timeZone.toZoneId());
         }
         return formatter;
     }
@@ -465,6 +510,22 @@ public class DateTimeConverter
         else if (TYPE_ZONED_DATE_TIME.equals(type))
         {
             return ZonedDateTime::from;
+        }
+        else if (TYPE_INSTANT.equals(type))
+        {
+            return Instant::from;
+        }
+        else if (TYPE_YEAR.equals(type))
+        {
+            return Year::from;
+        }
+        else if (TYPE_YEAR_MONTH.equals(type))
+        {
+            return YearMonth::from;
+        }
+        else if (TYPE_MONTH_DAY.equals(type))
+        {
+            return MonthDay::from;
         }
         return null;
     }
@@ -531,7 +592,11 @@ public class DateTimeConverter
                     TYPE_LOCAL_DATE_TIME.equals(type) ||
                     TYPE_OFFSET_TIME.equals(type) ||
                     TYPE_OFFSET_DATE_TIME.equals(type) ||
-                    TYPE_ZONED_DATE_TIME.equals(type);
+                    TYPE_ZONED_DATE_TIME.equals(type) ||
+                    TYPE_INSTANT.equals(type) ||
+                    TYPE_YEAR.equals(type) ||
+                    TYPE_YEAR_MONTH.equals(type) ||
+                    TYPE_MONTH_DAY.equals(type);
         }
         else
         {
@@ -679,9 +744,15 @@ public class DateTimeConverter
      * Specifies whether the date, time, or both should be
      * parsed/formatted.
      * Valid values are: "date", "time", "both", "localDate", "localDateTime", "localTime", "offsetTime",
-     * "offsetDateTime", and "zonedDateTime".
+     * "offsetDateTime", "zonedDateTime", "instant", "year", "yearMonth", and "monthDay".
      * The prefixes "local", "offset", "zoned" are used, when the type of the value is
      * one of the corresponding Java 8 Date Time API classes.
+     * The values "instant", "year", "yearMonth" and "monthDay" map to {@link java.time.Instant},
+     * {@link java.time.Year}, {@link java.time.YearMonth} and {@link java.time.MonthDay} respectively.
+     * These cannot use the localized date/time styles; when no pattern is given they use their ISO 8601
+     * representation ({@code ISO_INSTANT} for "instant", {@code uuuu} for "year", {@code uuuu-MM} for
+     * "yearMonth" and {@code --MM-dd} for "monthDay"). As {@link java.time.Instant} carries no time zone,
+     * the configured timeZone is applied so a custom pattern can resolve its date/time fields.
      * Default is "date".
      */
     @JSFProperty
