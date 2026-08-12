@@ -28,11 +28,11 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.config.RuntimeConfig;
 
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusELResolverBuilder;
+import org.apache.myfaces.util.lang.Lazy;
 
 public class QuarkusApplication extends ApplicationWrapper
 {
-    private CompositeELResolver elResolver;
-
+    private final Lazy<CompositeELResolver> elResolver;
     private final RuntimeConfig runtimeConfig;
     private final MyfacesConfig myfacesConfig;
 
@@ -42,18 +42,19 @@ public class QuarkusApplication extends ApplicationWrapper
 
         runtimeConfig = RuntimeConfig.getCurrentInstance(FacesContext.getCurrentInstance());
         myfacesConfig = MyfacesConfig.getCurrentInstance(FacesContext.getCurrentInstance());
+        elResolver = new Lazy<>(() ->
+        {
+            CompositeELResolver celr = new CompositeELResolver();
+
+            new QuarkusELResolverBuilder(runtimeConfig, myfacesConfig).build(celr);
+
+            return celr;
+        });
     }
 
     @Override
     public final ELResolver getELResolver()
     {
-        if (elResolver == null)
-        {
-            elResolver = new CompositeELResolver();
-            new QuarkusELResolverBuilder(runtimeConfig, myfacesConfig).build(elResolver);
-        }
-
-        return elResolver;
+        return elResolver.get();
     }
-
 }
