@@ -162,7 +162,7 @@ public class IntegrationTest
     {
         webDriver.get(contextPath + "foo");
 
-        // nagivate to non-exact-mapping (bar.xhtml)
+        // navigate to non-exact-mapping (bar.xhtml)
         WebElement element = webDriver.findElement(By.id("form:button"));
         element.click();
 
