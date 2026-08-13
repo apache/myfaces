@@ -20,59 +20,27 @@ package org.apache.myfaces.context;
 
 import java.io.IOException;
 
-/**
- * Thrown when a Facelet resource path is rejected by the security or mapping
- * validation checks in the Facelet factory.
- * <p>
- * The {@link Reason} enum identifies which specific check triggered the rejection,
- * allowing callers to distinguish between a blocked URI scheme, a path that escapes
- * the application base, a protected WEB-INF config file, and an extension that is
- * not a configured Facelet suffix.
- */
+/** Exception thrown when a Facelet resource path fails security or mapping validation. */
 public class InvalidFileException extends IOException
 {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Categorises why a resource path was rejected.
-     */
+    /** Categorizes rejection reasons. */
     public enum Reason
     {
-        /** The path contains a remote or otherwise disallowed URI scheme (e.g. {@code http:}, {@code ftp:}). */
         DISALLOWED_SCHEME,
-
-        /** The resolved URL escapes the application's WAR/EAR base directory (path-traversal attempt). */
         PATH_TRAVERSAL,
-
-        /** The path targets an XML configuration file under {@code WEB-INF/} (e.g. {@code web.xml}). */
-        // WEBINF_CONFIG_FILE, // Likely not needed?
-
-        /** The file extension is not among the configured Facelet suffixes. */
         INVALID_EXTENSION
     }
 
     private final Reason reason;
 
-    /**
-     * Constructs an {@code InvalidFileException} with the given rejection reason and detail message.
-     *
-     * @param reason  the specific cause of the rejection; must not be {@code null}
-     * @param message a human-readable description of the rejected path and why it was blocked
-     */
     public InvalidFileException(Reason reason, String message)
     {
         super(message);
         this.reason = reason;
     }
 
-    /**
-     * Constructs an {@code InvalidFileException} with the given rejection reason, detail message,
-     * and underlying cause.
-     *
-     * @param reason  the specific cause of the rejection; must not be {@code null}
-     * @param message a human-readable description of the rejected path and why it was blocked
-     * @param cause   the original exception that triggered this rejection, or {@code null}
-     */
     public InvalidFileException(Reason reason, String message, Throwable cause)
     {
         super(message);
@@ -80,11 +48,6 @@ public class InvalidFileException extends IOException
         this.reason = reason;
     }
 
-    /**
-     * Returns the reason this file path was considered invalid.
-     *
-     * @return the rejection {@link Reason}; never {@code null}
-     */
     public Reason getReason()
     {
         return reason;
