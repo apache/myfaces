@@ -293,22 +293,17 @@ public final class DefaultFaceletFactory extends FaceletFactory
     }
 
     /**
-     * Resolves a path based on the passed URL. If the path starts with '/', then resolve the path against
-     * {@link jakarta.faces.context.ExternalContext#getResource(java.lang.String)
-     * jakarta.faces.context.ExternalContext#getResource(java.lang.String)}. Otherwise create a new URL via
-     * {@link URL#URL(java.net.URL, java.lang.String) URL(URL, String)}.
-     * 
-     * @param source
-     *            base to resolve from
-     * @param path
-     *            relative path to the source
+     * Resolves a path to a URL, validating scheme, traversal, and extension.
+     * Absolute paths (starting with '/') are resolved via ExternalContext;
+     * relative paths are resolved against the source URL.
+     * @param context FacesContext
+     * @param source base URL for relative resolution
+     * @param path path to resolve
      * @return resolved URL
-     * @throws IOException
+     * @throws IOException if path is invalid or not found
      */
     public URL resolveURL(FacesContext context, URL source, String path) throws IOException
     {
-        // --- 1. Reject remote/network schemes (http, ftp, etc.) up front.
-        //        OSGi/container schemes (wsjar, jar, file, zip) are allowed and pass through.
         if (!isAllowedScheme(path))
         {
             throw new InvalidFileException(InvalidFileException.Reason.DISALLOWED_SCHEME,
@@ -321,8 +316,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         if (absoluteContextPath)
         {
-            // Absolute context-relative path — resolved through ExternalContext.
-            // The container already scopes the lookup to the WAR, so no traversal is possible.
+            // Absolute context-relative path via ExternalContext (scoped to WAR by container)
             context.getAttributes().put(LAST_RESOURCE_RESOLVED, null);
             resolved = resolveURL(context, path);
             if (resolved == null)
@@ -333,49 +327,27 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
         else
         {
-            // Relative path — resolved against the current source URL.
+            // Relative path resolved against source URL
             resolved = new URL(source, path);
             normalizedPath = resolved.getPath();
         }
 
-        // UnitTest stage skips content-validation guards; tests use synthetic paths
-        // that are not backed by a real WAR layout.
+        // Skip validation in UnitTest stage (uses synthetic paths)
         if (context.isProjectStage(ProjectStage.UnitTest))
         {
             return resolved;
         }
 
-        // --- 2. File must be inside the WAR/EAR (traversal guard for relative paths only).
-        //        Absolute context paths are already scoped by ExternalContext.
+        // Traversal guard: relative paths must stay within base (absolute paths already scoped by container)
         if (!absoluteContextPath && !isWithinBase(resolved))
         {
-            if (log.isLoggable(Level.FINE))
-            {
-                log.fine("Path not allowed [" + path + "] -> resolved URL escapes application base");
-            }
             throw new InvalidFileException(InvalidFileException.Reason.PATH_TRAVERSAL,
                     "Path escapes application base: " + path);
         }
 
-        // --- 3. WEB-INF XML config files must not be directly served as Facelets.
-        //  check mark is disabled 
-        // Reason: .xml is not a facelet file unless specified via suffix / mapping parameters
-        // if (isWebInfConfigFile(normalizedPath))
-        // {
-        //     if (log.isLoggable(Level.FINE))
-        //     {
-        //         log.fine("Path not allowed [" + path + "] -> WEB-INF XML config file");
-        //     }
-        //     throw new MalformedURLException("Access to WEB-INF XML config files is not allowed: " + path);
-        // }
-
-        // --- 4. Extension must be a configured Facelet suffix (e.g. .xhtml, .jspx).
+        // Extension must be a configured Facelet suffix
         if (!mappingAllowed(context, normalizedPath))
         {
-            if (log.isLoggable(Level.FINE))
-            {
-                log.fine("Path not allowed [" + path + "] -> extension not a configured Facelet suffix");
-            }
             throw new InvalidFileException(InvalidFileException.Reason.INVALID_EXTENSION,
                     "Invalid path provided: " + path);
         }
@@ -383,32 +355,15 @@ public final class DefaultFaceletFactory extends FaceletFactory
         return resolved;
     }
 
-    // ---------------------------------------------------------------------------
     // Path-validation helpers
-    // ---------------------------------------------------------------------------
 
-    /**
-     * Remote/network URI schemes that must never be used as Facelet resource paths.
-     * OSGi container schemes (wsjar, jar, file, zip) are intentionally absent —
-     * they reference in-archive resources and are therefore safe.
-     */
     private static final Set<String> BLOCKED_SCHEMES = new HashSet<>(
             Arrays.asList("http", "https", "ftp", "ftps", "mailto", "tel",
                           "imap", "irc", "nntp", "acap", "icap", "mtqp", "wss"));
 
-    /**
-     * Returns {@code false} when {@code path} is an absolute URI whose scheme is on the
-     * {@link #BLOCKED_SCHEMES} list. Purely relative paths (no scheme) and OSGi/container
-     * schemes (wsjar, jar, file, zip) always return {@code true}.
-     * <p>
-     * Uses a fast colon-index pre-check to avoid {@code URI} allocation for the common case
-     * of relative or context-root paths (e.g. {@code /views/page.xhtml}).
-     */
+    /** Returns false if path has a blocked scheme; true for relative/container schemes. */
     private boolean isAllowedScheme(String path)
     {
-        // Fast path: a scheme requires at least one letter before ":", so the colon must
-        // appear at index >= 1. Relative paths and "/"-absolute paths never have a colon
-        // in this position and are immediately allowed.
         int colon = path.indexOf(':');
         if (colon < 1)
         {
@@ -426,11 +381,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         return true;
     }
 
-    /**
-     * Returns {@code true} when {@code normalizedPath} refers to an XML file located under
-     * {@code /WEB-INF/}. Such files are server configuration descriptors and must never be
-     * exposed as Facelet templates.
-     */
+    /** Returns true if normalizedPath refers to a WEB-INF XML config file. */
     private boolean isWebInfConfigFile(String normalizedPath)
     {
         if (normalizedPath == null)
@@ -441,16 +392,13 @@ public final class DefaultFaceletFactory extends FaceletFactory
         return lower.contains("/web-inf/") && lower.endsWith(".xml");
     }
 
-    /**
-     * Verifies that {@code resolved} is contained within the application base URL
-     * (i.e. the WAR/EAR root), preventing directory traversal outside the archive.
-     */
+    /** Verifies that resolved URL is contained within the application base. */
     private boolean isWithinBase(URL resolved)
     {
         URL base = getBaseUrl();
         if (base == null)
         {
-            return true; // cannot determine base — allow and let the container decide
+            return true;
         }
         String baseStr = base.toExternalForm();
         String resolvedStr = resolved.toExternalForm();
@@ -458,73 +406,37 @@ public final class DefaultFaceletFactory extends FaceletFactory
         {
             baseStr = baseStr + "/";
         }
-        // For jar:/wsjar: URLs the in-archive path follows "!/"; the shared jar
-        // file prefix is enough to confirm containment.
         return resolvedStr.startsWith(baseStr);
     }
 
-    /**
-     * Returns {@code true} when {@code normalizedPath} ends with a suffix that is configured
-     * as an allowed Facelet extension. Built from {@code jakarta.faces.FACELETS_SUFFIX}
-     * (default {@code .xhtml}) and suffix entries in {@code jakarta.faces.FACELETS_VIEW_MAPPINGS}.
-     * {@code .jspx} is always included for legacy JSP-XML views.
-     * <p>
-     * Note: {@code .xml} is intentionally <em>not</em> added here; XML files under
-     * {@code WEB-INF/} are blocked by {@link #isWebInfXml(String)} and plain {@code .xml}
-     * outside that directory is not a valid Facelet extension.
-     */
+    /** Returns true if normalizedPath ends with a configured Facelet extension. */
     private boolean mappingAllowed(FacesContext context, String normalizedPath)
     {
         if (normalizedPath == null || normalizedPath.isEmpty())
         {
-            if (log.isLoggable(Level.FINE))
-            {
-                log.fine("Mapping not allowed [" + normalizedPath + "] -> Empty or null path");
-            }
             return false;
         }
         int dotIndex = normalizedPath.lastIndexOf('.');
         if (dotIndex < 0)
         {
-            if (log.isLoggable(Level.FINE))
-            {
-                log.fine("Mapping not allowed [" + normalizedPath + "] -> No extension");
-            }
             return false;
         }
         String ext = normalizedPath.substring(dotIndex);
 
         if (!getAllowedSuffixes(context).contains(ext))
         {
-            if (log.isLoggable(Level.FINE))
-            {
-                log.fine("Mapping not allowed [" + normalizedPath + "] -> Extension not a Facelet suffix: " + ext);
-            }
             return false;
         }
         return true;
     }
 
-    /**
-     * Returns the set of allowed Facelet file suffixes, computed once from the application's
-     * init parameters and cached for the lifetime of this factory.
-     * <p>
-     * The set is built from:
-     * <ul>
-     *   <li>{@code jakarta.faces.FACELETS_SUFFIX} (whitespace-separated, default {@code .xhtml})</li>
-     *   <li>Suffix entries in {@code jakarta.faces.FACELETS_VIEW_MAPPINGS} (semicolon-separated;
-     *       entries beginning with {@code *.} contribute the extension part)</li>
-     *   <li>{@code .jspx} — always included for legacy JSP-XML views</li>
-     * </ul>
-     * Init parameters are read only on the first call; subsequent calls return the cached set.
-     */
+    /** Returns cached set of allowed Facelet suffixes built from init parameters. */
     private Set<String> getAllowedSuffixes(FacesContext context)
     {
         if (_allowedSuffixes == null)
         {
             ExternalContext ec = context.getExternalContext();
 
-            // Suffixes from jakarta.faces.FACELETS_SUFFIX (whitespace-separated, default ".xhtml")
             String suffixParam = ec.getInitParameter(ViewHandler.FACELETS_SUFFIX_PARAM_NAME);
             if (suffixParam == null)
             {
@@ -532,7 +444,6 @@ public final class DefaultFaceletFactory extends FaceletFactory
             }
             Set<String> allowed = new HashSet<>(Arrays.asList(suffixParam.trim().split("\\s+")));
 
-            // Suffixes from jakarta.faces.FACELETS_VIEW_MAPPINGS (semicolon-separated; strip leading "*")
             String mappingsParam = ec.getInitParameter(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
             if (mappingsParam == null)
             {
@@ -545,15 +456,10 @@ public final class DefaultFaceletFactory extends FaceletFactory
                     token = token.trim();
                     if (token.startsWith("*."))
                     {
-                        // suffix mapping e.g. "*.xhtml" -> ".xhtml"
                         allowed.add(token.substring(1));
                     }
-                    // Prefix mappings like "/faces/*" carry no extension — skipped.
                 }
             }
-
-            // Legacy JSP-XML view support
-            // allowed.add(".jspx");
 
             if (log.isLoggable(Level.FINE))
             {
