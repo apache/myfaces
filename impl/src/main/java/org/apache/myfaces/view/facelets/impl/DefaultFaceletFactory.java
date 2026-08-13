@@ -40,7 +40,7 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewResource;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import java.net.MalformedURLException;
+import org.apache.myfaces.context.InvalidFileException;
 import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
@@ -275,7 +275,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         //        OSGi/container schemes (wsjar, jar, file, zip) are allowed and pass through.
         if (!isAllowedScheme(path))
         {
-            throw new MalformedURLException(
+            throw new InvalidFileException(InvalidFileException.Reason.DISALLOWED_SCHEME,
                     "Remote or disallowed scheme in path: " + path);
         }
 
@@ -317,7 +317,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             {
                 log.fine("Path not allowed [" + path + "] -> resolved URL escapes application base");
             }
-            throw new MalformedURLException(
+            throw new InvalidFileException(InvalidFileException.Reason.PATH_TRAVERSAL,
                     "Path escapes application base: " + path);
         }
 
@@ -340,7 +340,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             {
                 log.fine("Path not allowed [" + path + "] -> extension not a configured Facelet suffix");
             }
-            throw new MalformedURLException(
+            throw new InvalidFileException(InvalidFileException.Reason.INVALID_EXTENSION,
                     "Invalid path provided: " + path);
         }
 
