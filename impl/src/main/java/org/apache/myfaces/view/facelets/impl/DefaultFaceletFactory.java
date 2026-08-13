@@ -328,8 +328,21 @@ public final class DefaultFaceletFactory extends FaceletFactory
         else
         {
             // Relative path resolved against source URL
-            resolved = new URL(source, path);
-            normalizedPath = resolved.getPath();
+            if (source == null)
+            {
+                // Fall back to ExternalContext if no base URL available
+                resolved = resolveURL(context, path);
+                if (resolved == null)
+                {
+                    throw new FileNotFoundException("Cannot resolve relative path '" + path);
+                }
+                normalizedPath = path;
+            }
+            else
+            {
+                resolved = new URL(source, path);
+                normalizedPath = resolved.getPath();
+            }
         }
 
         // Skip validation in UnitTest stage (uses synthetic paths)
@@ -339,7 +352,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
 
         // Traversal guard: relative paths must stay within base (absolute paths already scoped by container)
-        if (!absoluteContextPath && !isWithinBase(resolved))
+        if (!absoluteContextPath && source != null && !isWithinBase(resolved))
         {
             throw new InvalidFileException(InvalidFileException.Reason.PATH_TRAVERSAL,
                     "Path escapes application base: " + path);
@@ -381,17 +394,6 @@ public final class DefaultFaceletFactory extends FaceletFactory
         return true;
     }
 
-    /** Returns true if normalizedPath refers to a WEB-INF XML config file. */
-    private boolean isWebInfConfigFile(String normalizedPath)
-    {
-        if (normalizedPath == null)
-        {
-            return false;
-        }
-        String lower = normalizedPath.replace('\\', '/').toLowerCase();
-        return lower.contains("/web-inf/") && lower.endsWith(".xml");
-    }
-
     /** Verifies that resolved URL is contained within the application base. */
     private boolean isWithinBase(URL resolved)
     {
@@ -400,13 +402,34 @@ public final class DefaultFaceletFactory extends FaceletFactory
         {
             return true;
         }
-        String baseStr = base.toExternalForm();
-        String resolvedStr = resolved.toExternalForm();
-        if (!baseStr.endsWith("/"))
+        
+        // Compare path components (scheme-agnostic): extract path after "!" for jar URLs
+        String basePath = extractResourcePath(base.toExternalForm());
+        String resolvedPath = extractResourcePath(resolved.toExternalForm());
+        
+        if (!basePath.endsWith("/"))
         {
-            baseStr = baseStr + "/";
+            basePath = basePath + "/";
         }
-        return resolvedStr.startsWith(baseStr);
+        return resolvedPath.startsWith(basePath);
+    }
+    
+    /** Extract the in-archive path from jar/wsjar/file URLs (path after "!" for jar URLs). */
+    private String extractResourcePath(String urlStr)
+    {
+        int jarSep = urlStr.indexOf('!');
+        if (jarSep >= 0)
+        {
+            // jar: or wsjar: URL — extract path after "!"
+            return urlStr.substring(jarSep + 1);
+        }
+        // Regular file: URL — extract path component
+        int fileIdx = urlStr.indexOf("file:");
+        if (fileIdx >= 0)
+        {
+            return urlStr.substring(fileIdx + 5);
+        }
+        return urlStr;
     }
 
     /** Returns true if normalizedPath ends with a configured Facelet extension. */
