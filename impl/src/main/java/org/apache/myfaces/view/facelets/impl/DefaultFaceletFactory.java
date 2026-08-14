@@ -338,31 +338,23 @@ public final class DefaultFaceletFactory extends FaceletFactory
         return resolved;
     }
 
-    // Path-validation helpers
+    // Path-validation helpers    
+    private static final Set<String> ALLOWED_SCHEMES = Set.of(
+                        "file","jar","wsjar","zip");
 
-    private static final Set<String> BLOCKED_SCHEMES = new HashSet<>(
-            Arrays.asList("http", "https", "ftp", "ftps", "mailto", "tel",
-                          "imap", "irc", "nntp", "acap", "icap", "mtqp", "wss"));
-
-    /** Returns false if path has a blocked scheme; true for relative/container schemes. */
+    /** Returns true for relative/container schemes; false for all others */
     private boolean isAllowedScheme(String path)
     {
         int colon = path.indexOf(':');
+
         if (colon < 1)
         {
-            return true;
+            return true; // relative path
         }
+
         String scheme = path.substring(0, colon).toLowerCase();
-        if (BLOCKED_SCHEMES.contains(scheme))
-        {
-            if (log.isLoggable(Level.FINE))
-            {
-                log.fine("Path not allowed [" + path + "] -> Blocked scheme: " + scheme);
-            }
-            return false;
-        }
-        return true;
-    }
+        return ALLOWED_SCHEMES.contains(scheme);
+    } 
 
     /** Verifies that resolved URL is contained within the application base. */
     private boolean isWithinBase(URL resolved)
