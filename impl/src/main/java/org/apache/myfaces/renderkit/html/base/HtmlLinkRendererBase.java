@@ -428,6 +428,9 @@ public abstract class HtmlLinkRendererBase<T extends UIComponent> extends HtmlRe
             HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_CLASS_ATTR, HTML.STYLE_CLASS_ATTR, styleClass);
         }
 
+        CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, component, behaviors,
+                CommonHtmlEventsUtil.RENDERER_HANDLED_LINK_EVENTS);
+
         // render value as required by Faces 1.1 renderkitdocs
         if(value != null)
         {
@@ -794,9 +797,12 @@ public abstract class HtmlLinkRendererBase<T extends UIComponent> extends HtmlRe
                     HtmlRendererUtils.renderHTMLAttributes(writer, output, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_DISABLED);
                 }
             }
+
+            CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, output, behaviors,
+                    CommonHtmlEventsUtil.RENDERER_HANDLED_LINK_EVENTS);
         }
         else
-        { 
+        {
             //calculate href
             String href = RendererUtils.getStringValue(facesContext, output);
             
@@ -902,6 +908,10 @@ public abstract class HtmlLinkRendererBase<T extends UIComponent> extends HtmlRe
                     HtmlRendererUtils.renderHTMLAttributes(writer, output, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES);
                 }
             }
+
+            CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, output, behaviors,
+                    CommonHtmlEventsUtil.RENDERER_HANDLED_LINK_EVENTS);
+
             writer.flush();
         }
     }
@@ -984,6 +994,9 @@ public abstract class HtmlLinkRendererBase<T extends UIComponent> extends HtmlRe
                 }
             }
 
+            CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, output, behaviors,
+                    CommonHtmlEventsUtil.RENDERER_HANDLED_LINK_EVENTS);
+
             Object value = output.getValue();
 
             if(value != null)
@@ -1054,10 +1067,13 @@ public abstract class HtmlLinkRendererBase<T extends UIComponent> extends HtmlRe
                 }
                 else
                 {
-                    HtmlRendererUtils.renderHTMLAttributes(writer, output, 
+                    HtmlRendererUtils.renderHTMLAttributes(writer, output,
                             HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES);
                 }
             }
+
+            CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, output, behaviors,
+                    CommonHtmlEventsUtil.RENDERER_HANDLED_LINK_EVENTS);
 
             writer.flush();
         }

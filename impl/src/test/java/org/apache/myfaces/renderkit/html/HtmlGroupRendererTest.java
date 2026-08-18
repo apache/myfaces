@@ -117,7 +117,7 @@ public class HtmlGroupRendererTest extends AbstractFacesTestCase
     @Test
     public void testHtmlPropertyPassTruNotRendered() throws Exception
     { 
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();        
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnlyButBehaviorEvents();        
 
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 panelGroup, facesContext, writer, attrs);

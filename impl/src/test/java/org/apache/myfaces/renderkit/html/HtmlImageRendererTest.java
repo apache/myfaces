@@ -105,7 +105,7 @@ public class HtmlImageRendererTest extends AbstractFacesTestCase
     @Test
     public void testHtmlPropertyPassTruNotRendered() throws Exception
     { 
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnlyButBehaviorEvents();
         
         graphicImage.setId("img1");
         graphicImage.setValue("http://www.apache.org/images/feather.gif");

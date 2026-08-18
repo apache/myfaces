@@ -223,19 +223,23 @@ public class CommonHtmlAttributes
 
     public static void markAttribute(UIComponent component, String name)
     {
+        // A ValueExpression bound to a behavior event attribute, e.g. oninput="#{bean.script}", is neither a
+        // component property nor part of the component attribute map key set, so it would be invisible at render
+        // time when the renderer has no matching renderer specific attribute. Remember its name here.
+        if (CommonHtmlEvents.isBehaviorEventAttribute(name))
+        {
+            CommonHtmlEvents.markEventAttribute(component, name);
+        }
+
         Long propertyConstant = COMMONERTIES_KEY_BY_NAME.get(name);
         if (propertyConstant == null)
         {
             return;
         }
-        Long commonPropertiesSet = (Long) component.getAttributes().get(ATTRIBUTES_MARKED);
-        if (commonPropertiesSet == null)
-        {
-            commonPropertiesSet = 0L;
-        }
-        component.getAttributes().put(ATTRIBUTES_MARKED, commonPropertiesSet | propertyConstant);
+
+        markAttribute(component, propertyConstant);
     }
-    
+
     public static void markAttribute(UIComponent component, long propertyConstant)
     {
         Long commonPropertiesSet = (Long) component.getAttributes().get(ATTRIBUTES_MARKED);

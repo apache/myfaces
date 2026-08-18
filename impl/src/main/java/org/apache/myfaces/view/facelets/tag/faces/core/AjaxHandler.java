@@ -29,6 +29,7 @@ import static jakarta.faces.component.UINamingContainer.getSeparatorChar;
 import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlEvents;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.event.AjaxBehaviorListener;
@@ -357,7 +358,11 @@ public class AjaxHandler extends TagHandler implements
             else
             {
                 throw new TagAttributeException(event,
-                        "event it is not a valid eventName defined for this component");
+                        "'" + eventName + "' is not a valid eventName defined for this component."
+                        + " Supported event names are " + cvh.getEventNames() + "."
+                        + " In case you wish to add new ones, then you can specify them as space-separated value"
+                        + " of the context-param with name "
+                        + HtmlEvents.ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME);
             }
         }
 

@@ -20,12 +20,18 @@ package org.apache.myfaces.renderkit.html.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.ResponseWriter;
@@ -44,6 +50,242 @@ public class CommonHtmlEventsUtil
     public static long getMarkedEvents(UIComponent component)
     {
         return CommonHtmlEvents.getMarkedEvents(component);
+    }
+
+    /**
+     * The event names always rendered by the standard HTML renderers via the various
+     * <code>renderBehaviorizedEventHandlers</code> flavors: the generic mouse, key and click events.
+     * Building block for the per-renderer sets below, which name the events the respective renderer takes care of
+     * itself; every other event has to go through {@link #renderAdditionalBehaviorEventHandlers}.
+     */
+    private static final Set<String> COMMON_DOM_EVENTS = Set.of(
+            ClientBehaviorEvents.CLICK, ClientBehaviorEvents.DBLCLICK,
+            ClientBehaviorEvents.MOUSEDOWN, ClientBehaviorEvents.MOUSEUP, ClientBehaviorEvents.MOUSEOVER,
+            ClientBehaviorEvents.MOUSEMOVE, ClientBehaviorEvents.MOUSEOUT,
+            ClientBehaviorEvents.KEYPRESS, ClientBehaviorEvents.KEYDOWN, ClientBehaviorEvents.KEYUP);
+
+    /**
+     * Events handled by renderers of plain elements: div/span/table/form/img and alike.
+     * See {@link org.apache.myfaces.renderkit.html.base.HtmlRenderer#renderEventHandlers}.
+     */
+    public static final Set<String> RENDERER_HANDLED_COMMON_EVENTS = COMMON_DOM_EVENTS;
+
+    /**
+     * Events handled by renderers of input fields: change, focus, blur, select on top of the common ones,
+     * plus the virtual valueChange which is rendered on the change attribute.
+     * See {@link org.apache.myfaces.renderkit.html.base.HtmlRenderer#renderFieldEventHandlers}.
+     */
+    public static final Set<String> RENDERER_HANDLED_FIELD_EVENTS = merge(COMMON_DOM_EVENTS,
+            ClientBehaviorEvents.CHANGE, ClientBehaviorEvents.FOCUS, ClientBehaviorEvents.BLUR,
+            ClientBehaviorEvents.SELECT, ClientBehaviorEvents.VALUECHANGE);
+
+    /**
+     * Events handled by the listbox/menu renderers: like the field events, but without select
+     * (renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect).
+     */
+    public static final Set<String> RENDERER_HANDLED_SELECTABLE_EVENTS = merge(COMMON_DOM_EVENTS,
+            ClientBehaviorEvents.CHANGE, ClientBehaviorEvents.FOCUS, ClientBehaviorEvents.BLUR,
+            ClientBehaviorEvents.VALUECHANGE);
+
+    /**
+     * Events handled by the label/outcome target button renderers: only focus and blur on top of the common ones.
+     */
+    public static final Set<String> RENDERER_HANDLED_FOCUS_BLUR_EVENTS = merge(COMMON_DOM_EVENTS,
+            ClientBehaviorEvents.FOCUS, ClientBehaviorEvents.BLUR);
+
+    /**
+     * Events handled by the command button renderer: the field events plus the virtual action, which is rendered
+     * on the click attribute.
+     */
+    public static final Set<String> RENDERER_HANDLED_COMMAND_BUTTON_EVENTS = merge(COMMON_DOM_EVENTS,
+            ClientBehaviorEvents.CHANGE, ClientBehaviorEvents.FOCUS, ClientBehaviorEvents.BLUR,
+            ClientBehaviorEvents.SELECT, ClientBehaviorEvents.ACTION);
+
+    /**
+     * Events handled by the link renderers: focus and blur plus the virtual action, which is rendered
+     * on the click attribute.
+     */
+    public static final Set<String> RENDERER_HANDLED_LINK_EVENTS = merge(COMMON_DOM_EVENTS,
+            ClientBehaviorEvents.FOCUS, ClientBehaviorEvents.BLUR, ClientBehaviorEvents.ACTION);
+
+    /**
+     * Events handled by the body renderer: load and unload on top of the common ones.
+     */
+    public static final Set<String> RENDERER_HANDLED_BODY_EVENTS = merge(COMMON_DOM_EVENTS,
+            ClientBehaviorEvents.LOAD, ClientBehaviorEvents.UNLOAD);
+
+    /**
+     * Events handled by the jsf:element renderer: focus, blur, change, select, load and unload
+     * on top of the common ones.
+     */
+    public static final Set<String> RENDERER_HANDLED_PASSTHROUGH_ELEMENT_EVENTS = merge(COMMON_DOM_EVENTS,
+            ClientBehaviorEvents.FOCUS, ClientBehaviorEvents.BLUR, ClientBehaviorEvents.CHANGE,
+            ClientBehaviorEvents.SELECT, ClientBehaviorEvents.LOAD, ClientBehaviorEvents.UNLOAD);
+
+    private static Set<String> merge(Set<String> events, String... moreEvents)
+    {
+        Set<String> merged = new HashSet<>(events);
+        merged.addAll(Arrays.asList(moreEvents));
+        return Collections.unmodifiableSet(merged);
+    }
+
+    /**
+     * Renders every behavior event attribute which is <em>not</em> handled by the calling renderer itself,
+     * as required since Faces 5.0 (spec issue 1507).
+     * <p>
+     * A {@link ClientBehaviorHolder} exposes every HTML event name via {@link ClientBehaviorHolder#getEventNames()},
+     * not only those which happen to have a matching component property. So both
+     * <code>&lt;h:inputText oninput="..."/&gt;</code> and
+     * <code>&lt;h:inputText&gt;&lt;f:ajax event="input"/&gt;&lt;/h:inputText&gt;</code> have to end up as an
+     * <code>oninput</code> attribute, chained together when both are present. Each renderer only takes care of the
+     * events for which the component has a matching property, hence this generic pass for all the others.
+     * <p>
+     * This must be invoked <em>after</em> the renderer specific event attributes have been rendered, with
+     * <code>rendererHandledEvents</code> naming exactly the events the calling renderer renders itself
+     * (one of the <code>RENDERER_HANDLED_*</code> constants of this class).
+     *
+     * @param facesContext The involved faces context.
+     * @param writer The involved response writer.
+     * @param component The component being rendered.
+     * @param clientBehaviors The client behaviors of the component, may be <code>null</code> or empty.
+     * @param rendererHandledEvents The events the calling renderer renders itself, to be skipped here.
+     */
+    public static void renderAdditionalBehaviorEventHandlers(FacesContext facesContext, ResponseWriter writer,
+            UIComponent component, Map<String, List<ClientBehavior>> clientBehaviors,
+            Set<String> rendererHandledEvents) throws IOException
+    {
+        if (!(component instanceof ClientBehaviorHolder holder))
+        {
+            return;
+        }
+
+        Set<String> additionalEventNames =
+                collectAdditionalEventNames(component, clientBehaviors, rendererHandledEvents);
+        if (additionalEventNames == null)
+        {
+            return;
+        }
+
+        Map<String, Object> attributes = component.getAttributes();
+        Collection<String> eventNames = holder.getEventNames();
+
+        for (String eventName : additionalEventNames)
+        {
+            // as required by the standard HTML RenderKit, the name after "on" must be a supported event name
+            if (eventNames == null || !eventNames.contains(eventName))
+            {
+                continue;
+            }
+
+            String attributeName = CommonHtmlEvents.BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + eventName;
+            Object attributeValue = attributes.get(attributeName);
+
+            renderBehaviorizedAttribute(facesContext, writer, attributeName, component, null, eventName, null,
+                    clientBehaviors, attributeName,
+                    attributeValue == null ? null : attributeValue.toString());
+        }
+    }
+
+    /**
+     * @return whether {@link #renderAdditionalBehaviorEventHandlers} would render anything for the given component.
+     *         Intended for renderers which have to decide upfront whether an element has to be started at all.
+     */
+    public static boolean hasAdditionalBehaviorEventHandlers(UIComponent component,
+            Map<String, List<ClientBehavior>> clientBehaviors, Set<String> rendererHandledEvents)
+    {
+        if (!(component instanceof ClientBehaviorHolder holder))
+        {
+            return false;
+        }
+
+        Set<String> additionalEventNames =
+                collectAdditionalEventNames(component, clientBehaviors, rendererHandledEvents);
+        if (additionalEventNames == null)
+        {
+            return false;
+        }
+
+        Collection<String> eventNames = holder.getEventNames();
+        if (eventNames == null)
+        {
+            return false;
+        }
+
+        for (String eventName : additionalEventNames)
+        {
+            if (eventNames.contains(eventName))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Collects the names of all behavior events of the given component which the calling renderer does not handle
+     * itself, or <code>null</code> if there are none, which is the common case that has to stay cheap.
+     */
+    @SuppressWarnings("unchecked") // the marker entry is stored under an Object-valued component attribute
+    private static Set<String> collectAdditionalEventNames(UIComponent component,
+            Map<String, List<ClientBehavior>> clientBehaviors, Set<String> rendererHandledEvents)
+    {
+        Set<String> additionalEventNames = null;
+
+        // 1) <f:ajax event="input"> and friends; any behavior whose event is not rendered by the renderer itself.
+        // Usually empty or holds a single renderer handled event, so this loop is a no-op in practice.
+        if (clientBehaviors != null && !clientBehaviors.isEmpty())
+        {
+            for (String eventName : clientBehaviors.keySet())
+            {
+                if (!rendererHandledEvents.contains(eventName))
+                {
+                    additionalEventNames = add(additionalEventNames, eventName);
+                }
+            }
+        }
+
+        // 2) + 3) in a SINGLE pass over the component attribute map, which is the only part of this method that
+        // every rendered component has to pay for. That map is the plain state helper map (no property descriptor
+        // lookups, no ValueExpression evaluation) and normally holds no more than the oam.* markers. It gives us
+        //   - the literal on* attributes without matching property, e.g. oninput="...", which the facelets
+        //     tag handler stores as plain attributes
+        //   - the EVENT_ATTRIBUTES_MARKED entry naming the ValueExpression bound ones, e.g. oninput="#{...}",
+        //     as those are not part of the attribute map at all
+        for (Map.Entry<String, Object> attribute : component.getAttributes().entrySet())
+        {
+            String name = attribute.getKey();
+            if (CommonHtmlEvents.isBehaviorEventAttribute(name))
+            {
+                String eventName = CommonHtmlEvents.getEventName(name);
+                if (!rendererHandledEvents.contains(eventName))
+                {
+                    additionalEventNames = add(additionalEventNames, eventName);
+                }
+            }
+            else if (CommonHtmlEvents.EVENT_ATTRIBUTES_MARKED.equals(name))
+            {
+                for (String markedName : (Set<String>) attribute.getValue())
+                {
+                    String eventName = CommonHtmlEvents.getEventName(markedName);
+                    if (!rendererHandledEvents.contains(eventName))
+                    {
+                        additionalEventNames = add(additionalEventNames, eventName);
+                    }
+                }
+            }
+        }
+
+        return additionalEventNames;
+    }
+
+    /**
+     * Lazily creates the collector; a sorted set keeps the rendered attribute order deterministic.
+     */
+    private static Set<String> add(Set<String> eventNames, String eventName)
+    {
+        Set<String> result = eventNames == null ? new TreeSet<>() : eventNames;
+        result.add(eventName);
+        return result;
     }
 
     public static boolean renderBehaviorizedAttribute(

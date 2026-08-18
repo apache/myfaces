@@ -272,6 +272,9 @@ public class HtmlButtonRendererBase<T extends UIComponent> extends HtmlRenderer<
             }
         }
 
+        CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, uiComponent, behaviors,
+                CommonHtmlEventsUtil.RENDERER_HANDLED_COMMAND_BUTTON_EVENTS);
+
         if (isDisabled(facesContext, uiComponent))
         {
             writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, ComponentAttrs.DISABLED_ATTR);

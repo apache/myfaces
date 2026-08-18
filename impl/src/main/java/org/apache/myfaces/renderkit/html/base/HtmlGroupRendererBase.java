@@ -96,6 +96,11 @@ public class HtmlGroupRendererBase<T extends UIComponent> extends HtmlRenderer<T
         {
             return true;
         }
+        if (CommonHtmlEventsUtil.hasAdditionalBehaviorEventHandlers(component, behaviors,
+                CommonHtmlEventsUtil.RENDERER_HANDLED_COMMON_EVENTS))
+        {
+            return true;
+        }
         Long commonPropertiesMarked = getCommonPropertiesMarked(context, component);
         if (commonPropertiesMarked != null)
         {
@@ -169,20 +174,39 @@ public class HtmlGroupRendererBase<T extends UIComponent> extends HtmlRenderer<T
                     HtmlRendererUtils.renderBehaviorizedEventHandlers(context, writer, component, behaviors);
                 }
             }
+
+            CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(context, writer, component, behaviors,
+                    CommonHtmlEventsUtil.RENDERER_HANDLED_COMMON_EVENTS);
         }
         else
         {
+            boolean elementStarted = false;
             if (commonPropertiesMarked != null && commonPropertiesMarked > 0)
             {
                 writer.startElement(layoutElement, component);
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, context);
                 CommonHtmlAttributesUtil.renderCommonPassthroughProperties(
                         writer, commonPropertiesMarked, component);
+                elementStarted = true;
             }
             else if (commonPropertiesMarked == null)
             {
-                HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
+                elementStarted = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
                         component, layoutElement, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+            }
+
+            // behavior event attributes without matching property, e.g. oninput="...";
+            // when present, needsWrapper() has already forced the wrapper element, so it must be started here
+            if (CommonHtmlEventsUtil.hasAdditionalBehaviorEventHandlers(component, behaviors,
+                    CommonHtmlEventsUtil.RENDERER_HANDLED_COMMON_EVENTS))
+            {
+                if (!elementStarted)
+                {
+                    writer.startElement(layoutElement, component);
+                    HtmlRendererUtils.writeIdIfNecessary(writer, component, context);
+                }
+                CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(context, writer, component, behaviors,
+                        CommonHtmlEventsUtil.RENDERER_HANDLED_COMMON_EVENTS);
             }
         }
     }

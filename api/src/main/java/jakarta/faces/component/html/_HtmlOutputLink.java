@@ -33,7 +33,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
         clazz = "jakarta.faces.component.html.HtmlOutputLink",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlOutputLinkTag",
         defaultRendererType = "jakarta.faces.Link",
-        implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder")
+        implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
+        defaultEventName = "click")
 abstract class _HtmlOutputLink extends UIOutput implements _AccesskeyProperty,
 _UniversalProperties, _FocusBlurProperties, _EventProperties, _StyleProperties,
 _TabindexProperty, _LinkProperties, _RoleProperty

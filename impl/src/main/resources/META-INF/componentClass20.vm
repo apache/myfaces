@@ -102,6 +102,15 @@ $innersource
 ## and csv implements
 #if ($component.implements)
 #if ($component.implements == "jakarta.faces.component.behavior.ClientBehaviorHolder")
+## Spec issue 1507: jsf:element mirrors the standard HTML components and must expose every HTML event name,
+## equivalent to the spec's jakarta.faces.component.html components. See api componentClass20.vm.
+#if (${utils.getClassFromFullClass($component.className)} == "JsfElement")
+    @Override
+    public java.util.Collection<String> getEventNames()
+    {
+        return jakarta.faces.component.html.HtmlEvents.getHtmlBodyElementEventNames(getFacesContext());
+    }
+#else
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST =
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(
@@ -120,6 +129,7 @@ $innersource
     {
         return CLIENT_EVENTS_LIST;
     }
+#end
 
     @Override
     public void addClientBehavior(String eventName, jakarta.faces.component.behavior.ClientBehavior behavior)

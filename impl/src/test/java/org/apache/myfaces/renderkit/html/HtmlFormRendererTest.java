@@ -91,7 +91,7 @@ public class HtmlFormRendererTest extends AbstractFacesTestCase
     @Test
     public void testHtmlPropertyPassTruNotRendered() throws Exception 
     { 
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnlyButBehaviorEvents();
 
         try {
             HtmlCheckAttributesUtil.checkRenderedAttributes(

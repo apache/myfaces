@@ -97,7 +97,7 @@ public class HtmlTableRendererTest extends AbstractFacesTestCase
     @Test
     public void testHtmlPropertyPassTruNotRendered() throws Exception
     {
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnlyButBehaviorEvents();
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 dataTable, facesContext, writer, attrs);

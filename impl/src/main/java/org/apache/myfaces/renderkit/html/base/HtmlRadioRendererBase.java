@@ -530,7 +530,9 @@ public class HtmlRadioRendererBase<T extends UIComponent> extends HtmlRenderer<T
                             facesContext, writer, uiComponent, itemId != null ? itemId : clientId, behaviors);
                 }
             }
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
+            CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, uiComponent, behaviors,
+                    CommonHtmlEventsUtil.RENDERER_HANDLED_FIELD_EVENTS);
+            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
                     HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS);
         }
         else

@@ -118,6 +118,8 @@ public class JsfElementRenderer extends HtmlRenderer
                 ClientBehaviorEvents.LOAD, behaviors, HTML.ONLOAD_ATTR);
         HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONUNLOAD_ATTR, component,
                 ClientBehaviorEvents.UNLOAD, behaviors, HTML.ONUNLOAD_ATTR);
+        CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, component, behaviors,
+                CommonHtmlEventsUtil.RENDERER_HANDLED_PASSTHROUGH_ELEMENT_EVENTS);
         
     }
 

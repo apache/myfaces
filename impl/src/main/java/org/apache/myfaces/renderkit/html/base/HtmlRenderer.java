@@ -30,6 +30,7 @@ import jakarta.faces.render.Renderer;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
 import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.renderkit.html.util.HTML;
@@ -205,6 +206,19 @@ public abstract class HtmlRenderer<T extends UIComponent>
                 HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
             }
         }
+
+        CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, component, behaviors,
+                getRendererHandledEvents());
+    }
+
+    /**
+     * The behavior events {@link #renderEventHandlers} takes care of itself; every other supported event
+     * is rendered generically afterwards. Renderers which render further event attributes on their own
+     * (like the body renderer with onload/onunload) must override this accordingly.
+     */
+    protected Set<String> getRendererHandledEvents()
+    {
+        return CommonHtmlEventsUtil.RENDERER_HANDLED_COMMON_EVENTS;
     }
 
     /**
@@ -246,5 +260,8 @@ public abstract class HtmlRenderer<T extends UIComponent>
                         facesContext, writer, component, behaviors);
             }
         }
+
+        CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, component, behaviors,
+                CommonHtmlEventsUtil.RENDERER_HANDLED_FIELD_EVENTS);
     }
 }

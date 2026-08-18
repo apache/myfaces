@@ -19,13 +19,29 @@
 package org.apache.myfaces.core.api.shared;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import jakarta.faces.component.UIComponent;
 
 public class CommonHtmlEvents
 {
     public static final String EVENTS_MARKED = "oam.EVENTS_MARKED";
-    
+
+    /**
+     * Prefix of the HTML attribute which carries the script of a behavior event, e.g. "onclick" for "click".
+     */
+    public static final String BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "on";
+
+    /**
+     * Component attribute under which the names of all behavior event attributes bound to a
+     * <code>ValueExpression</code>, e.g. <code>oninput="#{bean.script}"</code>, are remembered as a
+     * <code>Set&lt;String&gt;</code>. Such an attribute is neither a component property nor part of the component
+     * attribute map key set, so this marker is the only cheap way for a renderer to find it at render time; see
+     * <code>CommonHtmlEventsUtil#renderAdditionalBehaviorEventHandlers</code>.
+     */
+    public static final String EVENT_ATTRIBUTES_MARKED = "oam.EVENT_ATTRIBUTES_MARKED";
+
     public static final long ACTION        = 0x1L;
     public static final long CLICK         = 0x2L;
     public static final long DBLCLICK      = 0x4L;
@@ -129,5 +145,41 @@ public class CommonHtmlEvents
             commonEvents = 0L;
         }
         return commonEvents;
+    }
+
+    /**
+     * @param name The attribute name to check.
+     * @return <code>true</code> if the given attribute name denotes a behavior event attribute, i.e. it starts with
+     *         "on" and has at least one more character.
+     */
+    public static boolean isBehaviorEventAttribute(String name)
+    {
+        return name.length() > BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length()
+                && name.charAt(0) == 'o'
+                && name.charAt(1) == 'n';
+    }
+
+    /**
+     * @param name The behavior event attribute name, as accepted by {@link #isBehaviorEventAttribute(String)}.
+     * @return The event name of the given behavior event attribute name, e.g. "input" for "oninput".
+     */
+    public static String getEventName(String name)
+    {
+        return name.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length());
+    }
+
+    /**
+     * Remembers that a <code>ValueExpression</code> has been bound to the given behavior event attribute,
+     * see {@link #EVENT_ATTRIBUTES_MARKED}. Mirrors the copy-on-write pattern of {@link #markEvent} so that
+     * partial state saving picks up the change.
+     */
+    @SuppressWarnings("unchecked") // the marker entry is stored under an Object-valued component attribute
+    public static void markEventAttribute(UIComponent component, String name)
+    {
+        Map<String, Object> attributes = component.getAttributes();
+        Set<String> marked = (Set<String>) attributes.get(EVENT_ATTRIBUTES_MARKED);
+        Set<String> newMarked = marked == null ? new HashSet<>(4) : new HashSet<>(marked);
+        newMarked.add(name);
+        attributes.put(EVENT_ATTRIBUTES_MARKED, newMarked);
     }
 }

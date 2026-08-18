@@ -125,7 +125,7 @@ public class HtmlGridRendererTest extends AbstractFacesTestCase
     @Test
     public void testHtmlPropertyPassTruNotRendered() throws Exception 
     { 
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnlyButBehaviorEvents();
 
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 panelGrid, facesContext, writer, attrs);

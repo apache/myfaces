@@ -105,6 +105,31 @@ $innersource
 #if ($component.implements)
 #if ( ($component.implements == "jakarta.faces.component.behavior.ClientBehaviorHolder")
      && (${utils.getClassFromFullClass($component.className)} != "UIWebsocket"))
+## Spec issue 1507: the standard HTML components must expose every HTML event name, so that both
+## <f:ajax event="input"> and a plain oninput="..." attribute work without the component having to
+## declare a matching property. See jakarta.faces.component.html.HtmlEvents.
+#if ($component.className.startsWith("jakarta.faces.component.html"))
+#if (${utils.getClassFromFullClass($component.className)} == "HtmlBody")
+## the <body> element forwards blur/error/focus/load/resize/scroll/scrollend to the Window object,
+## hence they must not be exposed as behavior events of the component itself.
+#set ($htmlEventNamesMethod = "getHtmlDocumentElementEventNames")
+#else
+#if ($component.defaultEventName == "action")
+#set ($htmlEventNamesMethod = "getFacesActionSourceEventNames")
+#else
+#if ($component.defaultEventName == "valueChange")
+#set ($htmlEventNamesMethod = "getFacesEditableValueHolderEventNames")
+#else
+#set ($htmlEventNamesMethod = "getHtmlBodyElementEventNames")
+#end
+#end
+#end
+    @Override
+    public java.util.Collection<String> getEventNames()
+    {
+        return jakarta.faces.component.html.HtmlEvents.${htmlEventNamesMethod}(getFacesContext());
+    }
+#else
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST =
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(
@@ -123,6 +148,7 @@ $innersource
     {
         return CLIENT_EVENTS_LIST;
     }
+#end
 
     @Override
     public void addClientBehavior(String eventName, jakarta.faces.component.behavior.ClientBehavior behavior)

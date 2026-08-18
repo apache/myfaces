@@ -257,17 +257,39 @@ public class HtmlCheckAttributesUtil
         return attrs;
     }
     
-    public static HtmlRenderedAttr[] generateAttrsNotRenderedForReadOnly() 
+    public static HtmlRenderedAttr[] generateAttrsNotRenderedForReadOnly()
     {
         HtmlRenderedAttr[] attrs = {
             //_AccesskeyProperty
             new HtmlRenderedAttr("accesskey", 0),
             //_FocusBlurProperties
-            new HtmlRenderedAttr("onfocus", 0), 
+            new HtmlRenderedAttr("onfocus", 0),
             new HtmlRenderedAttr("onblur", 0),
             //_ChangeSelectProperties
-            new HtmlRenderedAttr("onchange", 0), 
+            new HtmlRenderedAttr("onchange", 0),
             new HtmlRenderedAttr("onselect", 0),
+            //_TabindexProperty
+            new HtmlRenderedAttr("tabindex", 0)
+        };
+        return attrs;
+    }
+
+    /**
+     * Since Faces 5.0 (spec issue 1507) behavior event attributes pass through generically on every
+     * ClientBehaviorHolder component, even without a matching component property. So on such components only the
+     * non-event attributes stay unrendered.
+     */
+    public static HtmlRenderedAttr[] generateAttrsNotRenderedForReadOnlyButBehaviorEvents()
+    {
+        HtmlRenderedAttr[] attrs = {
+            //_AccesskeyProperty
+            new HtmlRenderedAttr("accesskey", 0),
+            //_FocusBlurProperties
+            new HtmlRenderedAttr("onfocus"),
+            new HtmlRenderedAttr("onblur"),
+            //_ChangeSelectProperties
+            new HtmlRenderedAttr("onchange"),
+            new HtmlRenderedAttr("onselect"),
             //_TabindexProperty
             new HtmlRenderedAttr("tabindex", 0)
         };

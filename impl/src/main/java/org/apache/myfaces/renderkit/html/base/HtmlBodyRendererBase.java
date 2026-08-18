@@ -25,6 +25,7 @@ import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
@@ -50,8 +51,17 @@ public class HtmlBodyRendererBase<T extends UIComponent> extends HtmlRenderer<T>
     {
         // check for npe
         super.decode(context, component);
-        
+
         ClientBehaviorRendererUtils.decodeClientBehaviors(context, component);
+    }
+
+    /**
+     * On top of the common events, this renderer takes care of onload/onunload itself, see encodeBegin.
+     */
+    @Override
+    protected Set<String> getRendererHandledEvents()
+    {
+        return CommonHtmlEventsUtil.RENDERER_HANDLED_BODY_EVENTS;
     }
 
     @Override

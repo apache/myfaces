@@ -29,7 +29,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 @JSFComponent(name="h:link",
         clazz = "jakarta.faces.component.html.HtmlOutcomeTargetLink",template=true,
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
-        defaultRendererType = "jakarta.faces.Link")
+        defaultRendererType = "jakarta.faces.Link",
+        defaultEventName = "click")
 abstract class _HtmlOutcomeTargetLink extends UIOutcomeTarget implements _FocusBlurProperties,
 _EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,
 _TabindexProperty, _LinkProperties, _RoleProperty

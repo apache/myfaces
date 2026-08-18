@@ -136,6 +136,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
                             writer, uiComponent, behaviors);
                 }
             }
+            CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, uiComponent, behaviors,
+                    CommonHtmlEventsUtil.RENDERER_HANDLED_FOCUS_BLUR_EVENTS);
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonHtmlAttributesUtil.renderLabelPassthroughPropertiesWithoutEvents(writer, 

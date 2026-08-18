@@ -163,6 +163,9 @@ public class HtmlSelectableRendererBase<T extends UIComponent> extends HtmlRende
                         facesContext, writer, uiComponent, behaviors);
             }
         }
+
+        CommonHtmlEventsUtil.renderAdditionalBehaviorEventHandlers(facesContext, writer, uiComponent, behaviors,
+                CommonHtmlEventsUtil.RENDERER_HANDLED_SELECTABLE_EVENTS);
     }
 
 }
