@@ -138,4 +138,48 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
 //
 //        Assertions.assertTrue("Value match", pprContext.getExecuteIds().get(3).equals("component4"));
     }
+
+    /**
+     * a single, implausibly long execute id must not be expanded.
+     */
+    @Test
+    public void testOverlongClientIdIsRejected() {
+        StringBuilder colons = new StringBuilder();
+        for (int i = 0; i < 100000; i++) {
+            colons.append(':');
+        }
+        Map<String, String> requestParamMap = new HashMap<String, String>();
+        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, colons.toString());
+        ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
+
+        FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
+
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        Assertions.assertTrue(pprContext.getExecuteIds().isEmpty());
+    }
+
+    /**
+     * the attacker-controlled jakarta.faces.source parameter must be
+     * length-bounded too, otherwise it bypasses the execute-id cap.
+     */
+    @Test
+    public void testOverlongSourceIsRejected() {
+        StringBuilder colons = new StringBuilder();
+        for (int i = 0; i < 100000; i++) {
+            colons.append(':');
+        }
+        Map<String, String> requestParamMap = new HashMap<String, String>();
+        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, "form:input");
+        requestParamMap.put("jakarta.faces.source", colons.toString());
+        ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
+
+        FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
+
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        // only the valid execute id survives; the oversized source is dropped
+        Assertions.assertEquals(1, pprContext.getExecuteIds().size());
+        Assertions.assertTrue(pprContext.getExecuteIds().contains("form:input"));
+    }
 }
