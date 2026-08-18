@@ -25,11 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-<<<<<<< HEAD
-=======
-import java.util.Optional;
 import java.util.Set;
->>>>>>> bbc80533a ([bug fix] Add resource path validation to DefaultFaceletFactory)
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -37,12 +33,8 @@ import java.util.regex.Pattern;
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
-<<<<<<< HEAD
-=======
-import jakarta.faces.annotation.View;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ViewHandler;
->>>>>>> bbc80533a ([bug fix] Add resource path validation to DefaultFaceletFactory)
 import jakarta.faces.application.ViewResource;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
