@@ -25,6 +25,8 @@ import javax.faces.context.PartialViewContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
@@ -132,5 +134,49 @@ public class ExecutePhaseClientIdsTest extends AbstractJsfTestCase {
 //
 //
 //        assertTrue("Value match", pprContext.getExecuteIds().get(3).equals("component4"));
+    }
+
+    /**
+     * a single, implausibly long execute id must not be expanded.
+     */
+    @Test
+    public void testOverlongClientIdIsRejected() {
+        StringBuilder colons = new StringBuilder();
+        for (int i = 0; i < 100000; i++) {
+            colons.append(':');
+        }
+        Map<String, String> requestParamMap = new HashMap<String, String>();
+        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, colons.toString());
+        ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
+
+        FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
+
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        Assert.assertTrue(pprContext.getExecuteIds().isEmpty());
+    }
+
+    /**
+     * the attacker-controlled javax.faces.source parameter must be
+     * length-bounded too, otherwise it bypasses the execute-id cap.
+     */
+    @Test
+    public void testOverlongSourceIsRejected() {
+        StringBuilder colons = new StringBuilder();
+        for (int i = 0; i < 100000; i++) {
+            colons.append(':');
+        }
+        Map<String, String> requestParamMap = new HashMap<String, String>();
+        requestParamMap.put(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME, "form:input");
+        requestParamMap.put("javax.faces.source", colons.toString());
+        ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
+
+        FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
+
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        // only the valid execute id survives; the oversized source is dropped
+        Assert.assertEquals(1, pprContext.getExecuteIds().size());
+        Assert.assertTrue(pprContext.getExecuteIds().contains("form:input"));
     }
 }
