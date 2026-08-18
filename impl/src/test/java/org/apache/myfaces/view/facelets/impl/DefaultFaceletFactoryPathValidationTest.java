@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets.impl;
 import jakarta.faces.application.ProjectStage;
 import org.apache.myfaces.context.InvalidFileException;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Verifies that {@link DefaultFaceletFactory#resolveURL(jakarta.faces.context.FacesContext, java.net.URL, String)}
@@ -52,13 +52,16 @@ public class DefaultFaceletFactoryPathValidationTest extends FaceletTestCase
 
         DefaultFaceletFactory factory = getFactory();
 
-        InvalidFileException ex = Assertions.assertThrows(
-                InvalidFileException.class,
-                () -> factory.resolveURL(facesContext, null, "http://someverybadmaliciouswebsite.com/attack.xhtml"),
-                "Expected InvalidFileException for external http: URL");
-
-        Assertions.assertEquals(InvalidFileException.Reason.DISALLOWED_SCHEME, ex.getReason(),
-                "Rejection reason should be DISALLOWED_SCHEME");
+        try
+        {
+            factory.resolveURL(facesContext, null, "http://someverybadmaliciouswebsite.com/attack.xhtml");
+            Assert.fail("Expected InvalidFileException for external http: URL");
+        }
+        catch (InvalidFileException ex)
+        {
+            Assert.assertEquals("Rejection reason should be DISALLOWED_SCHEME",
+                    InvalidFileException.Reason.DISALLOWED_SCHEME, ex.getReason());
+        }
     }
 
     /**
@@ -81,12 +84,15 @@ public class DefaultFaceletFactoryPathValidationTest extends FaceletTestCase
         java.net.URL base = getContext().toURL();
         java.net.URL source = new java.net.URL(base, "views/index.xhtml");
 
-        InvalidFileException ex = Assertions.assertThrows(
-                InvalidFileException.class,
-                () -> factory.resolveURL(facesContext, source, "template.html"),
-                "Expected InvalidFileException for a .html path");
-
-        Assertions.assertEquals(InvalidFileException.Reason.INVALID_EXTENSION, ex.getReason(),
-                "Rejection reason should be INVALID_EXTENSION");
+        try
+        {
+            factory.resolveURL(facesContext, source, "template.html");
+            Assert.fail("Expected InvalidFileException for a .html path");
+        }
+        catch (InvalidFileException ex)
+        {
+            Assert.assertEquals("Rejection reason should be INVALID_EXTENSION",
+                    InvalidFileException.Reason.INVALID_EXTENSION, ex.getReason());
+        }
     }
 }

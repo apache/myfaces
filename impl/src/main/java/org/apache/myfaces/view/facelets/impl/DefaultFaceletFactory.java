@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -361,8 +362,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
     }
 
     // Path-validation helpers    
-    private static final Set<String> ALLOWED_SCHEMES = Set.of(
-                        "file","jar","wsjar","zip");
+    private static final Set<String> ALLOWED_SCHEMES = Collections.unmodifiableSet(
+                        new HashSet<>(Arrays.asList("file", "jar", "wsjar", "zip")));
 
     /** Returns true for relative/container schemes; false for all others */
     private boolean isAllowedScheme(String path)
