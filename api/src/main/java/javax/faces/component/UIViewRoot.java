@@ -564,7 +564,13 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         PartialViewContext pContext = context.getPartialViewContext();
         
         // If PartialViewContext.isAjaxRequest() returns true
-        if (pContext.isAjaxRequest())
+        // Additionally require a postback: a genuine ajax request is always a postback and carries a
+        // jakarta.faces.ViewState. A request flagged as ajax but without any view state is not restoring a
+        // view, so partial-rendering it is meaningless - it would only build a PartialVisitContext from the
+        // attacker-controlled jakarta.faces.partial.render parameter against a freshly created view. Treating
+        // it as a normal (full) render keeps that parameter from being parsed on a non-postback and hardens
+        // the pre-authentication resource-exhaustion path.
+        if (pContext.isAjaxRequest() && context.isPostback())
         {
             // Perform partial rendering by calling PartialViewContext.processPartial() with PhaseId.RENDER_RESPONSE.
             //sectin 13.4.3 of the jsf2 specification
