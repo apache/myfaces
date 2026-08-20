@@ -23,6 +23,7 @@ import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.component.html.HtmlBody;
 import jakarta.faces.component.html.HtmlEvents;
+import jakarta.faces.component.html.HtmlPanelGroup;
 
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.html.util.HTML;
@@ -44,11 +45,16 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
     public void setUp() throws Exception
     {
         super.setUp();
-        // NOTE: "load" and "unload" are deliberately absent here. Since Faces 5.0 (spec issue 1507) a component
-        // representing the HTML <body> element exposes HtmlEvents#getHtmlDocumentElementEventNames(), which excludes
-        // the events that the <body> element forwards to the Window object instead of firing on the element itself.
-        // See testWindowEventsAreNoBehaviorEvents() and testWindowEventsCanBeReAddedViaContextParam() below.
-        attrs = HtmlClientEventAttributesUtil.generateClientBehaviorEventAttrs();
+        // NOTE: since Faces 5.0 (spec issue 1507) a component representing the HTML <body> element exposes
+        // HtmlEvents#getHtmlBodyEventNames(), which are all element level events plus the window level events which
+        // only the <body> element supports. See testWindowEventsAreBehaviorEvents() below.
+        attrs = (HtmlRenderedClientEventAttr[])
+            org.apache.myfaces.util.lang.ArrayUtils.concat(
+                    HtmlClientEventAttributesUtil.generateClientBehaviorEventAttrs(),
+                new HtmlRenderedClientEventAttr[]{
+                    new HtmlRenderedClientEventAttr(HTML.ONLOAD_ATTR, ClientBehaviorEvents.LOAD),
+                    new HtmlRenderedClientEventAttr(HTML.ONUNLOAD_ATTR, ClientBehaviorEvents.UNLOAD)
+                });
     }
 
     @Override
@@ -100,18 +106,26 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
     }
 
     /**
-     * Spec issue 1507: the events which the HTML &lt;body&gt; element forwards to the Window object must not be
-     * exposed as behavior events of the component, so &lt;f:ajax event="load"/&gt; is no longer supported on
-     * &lt;h:body&gt;. The plain onload attribute is unaffected, it is still a property of the component.
+     * Spec issue 1507: the HTML &lt;body&gt; element is the only element which supports the window level events, so
+     * only a component representing it exposes them as behavior events. &lt;f:ajax event="load"/&gt; on
+     * &lt;h:body&gt; therefore keeps working, and so do e.g. "unload", "pagehide" and "popstate".
      */
     @Test
-    public void testWindowEventsAreNoBehaviorEvents()
+    public void testWindowEventsAreBehaviorEvents()
     {
         HtmlBody body = new HtmlBody();
 
-        Assertions.assertFalse(body.getEventNames().contains(ClientBehaviorEvents.LOAD));
-        Assertions.assertFalse(body.getEventNames().contains(ClientBehaviorEvents.UNLOAD));
         Assertions.assertTrue(body.getEventNames().contains(ClientBehaviorEvents.CLICK));
+        Assertions.assertTrue(body.getEventNames().contains(ClientBehaviorEvents.LOAD));
+        Assertions.assertTrue(body.getEventNames().contains(ClientBehaviorEvents.UNLOAD));
+        Assertions.assertTrue(body.getEventNames().contains(HtmlEvents.HtmlWindowEvent.pagehide.name()));
+        Assertions.assertTrue(body.getEventNames().contains(HtmlEvents.HtmlWindowEvent.popstate.name()));
+
+        // but not on any other component
+        HtmlPanelGroup group = new HtmlPanelGroup();
+        Assertions.assertTrue(group.getEventNames().contains(ClientBehaviorEvents.LOAD));
+        Assertions.assertFalse(group.getEventNames().contains(ClientBehaviorEvents.UNLOAD));
+        Assertions.assertFalse(group.getEventNames().contains(HtmlEvents.HtmlWindowEvent.pagehide.name()));
 
         // still supported as a plain attribute
         body.setOnload("alert('load')");
@@ -127,28 +141,42 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
     }
 
     /**
-     * Spec issue 1507: whatever HtmlEvents does not know about can be added via a context-param, which is also the
-     * migration path for applications relying on &lt;f:ajax event="load"/&gt; on &lt;h:body&gt;.
+     * The body renderer renders onload/onunload itself, so the generic behavior event pass must not render them a
+     * second time.
      */
     @Test
-    public void testWindowEventsCanBeReAddedViaContextParam()
+    public void testRendererHandledWindowEventIsRenderedOnce()
     {
-        servletContext.addInitParameter(HtmlEvents.ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME, "load unload");
-
         HtmlBody body = new HtmlBody();
-
-        Assertions.assertTrue(body.getEventNames().contains(ClientBehaviorEvents.LOAD));
-        Assertions.assertTrue(body.getEventNames().contains(ClientBehaviorEvents.UNLOAD));
-
         body.addClientBehavior(ClientBehaviorEvents.LOAD, new AjaxBehavior());
+
         try
         {
             body.encodeAll(facesContext);
             String output = outputWriter.toString();
             Assertions.assertTrue(output.contains(HTML.ONLOAD_ATTR + "=\""), output);
-            // the body renderer renders onload itself; the generic pass must not render it a second time
             Assertions.assertEquals(output.indexOf(HTML.ONLOAD_ATTR + "=\""),
                     output.lastIndexOf(HTML.ONLOAD_ATTR + "=\""), output);
+        }
+        catch (Exception e)
+        {
+            Assertions.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * The window level events which the renderer does not handle itself are rendered generically.
+     */
+    @Test
+    public void testGenericWindowEventIsRendered()
+    {
+        HtmlBody body = new HtmlBody();
+        body.addClientBehavior(HtmlEvents.HtmlWindowEvent.pagehide.name(), new AjaxBehavior());
+
+        try
+        {
+            body.encodeAll(facesContext);
+            Assertions.assertTrue(outputWriter.toString().contains(" onpagehide=\""), outputWriter.toString());
         }
         catch (Exception e)
         {

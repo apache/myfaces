@@ -330,16 +330,23 @@ public class AdditionalHtmlEventsClientBehaviorRendererTest extends AbstractClie
     {
         Assertions.assertTrue(HtmlEvents.getAdditionalHtmlEventNames(facesContext).isEmpty());
 
-        Assertions.assertTrue(HtmlEvents.getHtmlBodyElementEventNames(facesContext)
-                .containsAll(HtmlEvents.getHtmlDocumentElementEventNames(facesContext)));
+        Assertions.assertTrue(HtmlEvents.getHtmlBodyEventNames(facesContext)
+                .containsAll(HtmlEvents.getHtmlElementEventNames(facesContext)));
+        Assertions.assertTrue(HtmlEvents.getHtmlBodyEventNames(facesContext)
+                .containsAll(HtmlEvents.getHtmlWindowEventNames(facesContext)));
         Assertions.assertTrue(HtmlEvents.getFacesActionSourceEventNames(facesContext)
-                .containsAll(HtmlEvents.getHtmlBodyElementEventNames(facesContext)));
+                .containsAll(HtmlEvents.getHtmlElementEventNames(facesContext)));
         Assertions.assertTrue(HtmlEvents.getFacesEditableValueHolderEventNames(facesContext)
-                .containsAll(HtmlEvents.getHtmlBodyElementEventNames(facesContext)));
+                .containsAll(HtmlEvents.getHtmlElementEventNames(facesContext)));
+
+        // the events which are forwarded to the Window object on the body element are still element level events
+        Assertions.assertTrue(HtmlEvents.getHtmlElementEventNames(facesContext).contains("load"));
+        Assertions.assertFalse(HtmlEvents.getHtmlWindowEventNames(facesContext).contains("load"));
 
         // the window level events are exclusive to the body element event names
-        Assertions.assertFalse(HtmlEvents.getHtmlDocumentElementEventNames(facesContext).contains("load"));
-        Assertions.assertTrue(HtmlEvents.getHtmlBodyElementEventNames(facesContext).contains("load"));
+        Assertions.assertFalse(HtmlEvents.getHtmlElementEventNames(facesContext).contains("unload"));
+        Assertions.assertTrue(HtmlEvents.getHtmlWindowEventNames(facesContext).contains("unload"));
+        Assertions.assertTrue(HtmlEvents.getHtmlBodyEventNames(facesContext).contains("unload"));
 
         String previous = null;
         for (String eventName : HtmlEvents.getFacesEditableValueHolderEventNames(facesContext))

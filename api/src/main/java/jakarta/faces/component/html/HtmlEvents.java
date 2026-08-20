@@ -43,13 +43,17 @@ import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
  * {@link ClientBehaviorHolder#getDefaultEventName()}.
  * </p>
  * <p>
- * The events are split into two enums: {@link HtmlDocumentElementEvent} lists the events that fire on the element
- * itself, while {@link HtmlBodyElementEvent} lists the events that are also part of the HTML spec's
- * <code>GlobalEventHandlers</code> but have special behavior on the HTML <code>&lt;body&gt;</code> element where they
- * are forwarded to the <code>Window</code> object instead of firing on the element. Components that represent the HTML
- * <code>&lt;body&gt;</code> element should use {@link #getHtmlDocumentElementEventNames(FacesContext)} to avoid
- * exposing these window-level events as component behavior events, while all other components should use
- * {@link #getHtmlBodyElementEventNames(FacesContext)} or one of its supersets.
+ * The events are split into three enums, following the three tables of the HTML spec:
+ * {@link HtmlElementEvent} lists the events which are supported by all HTML elements and fire on the element itself,
+ * {@link HtmlBodyEvent} lists the events which are supported by all HTML elements as well, but are forwarded to the
+ * <code>Window</code> object when they are declared on the HTML <code>&lt;body&gt;</code> element, and
+ * {@link HtmlWindowEvent} lists the events which are supported by the HTML <code>&lt;body&gt;</code> element only and
+ * always fire on the <code>Window</code> object.
+ * </p>
+ * <p>
+ * Components which represent the HTML <code>&lt;body&gt;</code> element should therefore use
+ * {@link #getHtmlBodyEventNames(FacesContext)}, while all other components should use
+ * {@link #getHtmlElementEventNames(FacesContext)} or one of its supersets.
  * </p>
  *
  * @since 5.0
@@ -58,11 +62,9 @@ public final class HtmlEvents
 {
 
     /**
-     * Events supported by all HTML document elements that always fire on the element itself.
-     * See {@link HtmlBodyElementEvent} for events that are forwarded to the <code>Window</code> object on the HTML
-     * <code>&lt;body&gt;</code> element.
+     * Events supported by all HTML elements which fire on the element itself.
      */
-    public enum HtmlDocumentElementEvent
+    public enum HtmlElementEvent
     {
         abort,
         auxclick,
@@ -116,6 +118,7 @@ public final class HtmlEvents
         progress,
         ratechange,
         reset,
+        scrollend,
         securitypolicyviolation,
         seeked,
         seeking,
@@ -132,25 +135,49 @@ public final class HtmlEvents
     }
 
     /**
-     * Events from the HTML spec's <code>GlobalEventHandlers</code> that have special behavior on the HTML body element:
-     * instead of firing on the element itself, they are forwarded to the <code>Window</code> object.
-     * These events are valid on all HTML elements, but are listed separately here because of this distinction.
+     * Events supported by all HTML elements which are forwarded to the <code>Window</code> object instead of firing on
+     * the element itself when they are declared on the HTML <code>&lt;body&gt;</code> element.
      */
-    public enum HtmlBodyElementEvent
+    public enum HtmlBodyEvent
     {
         blur,
         error,
         focus,
         load,
         resize,
-        scroll,
-        scrollend;
+        scroll;
+    }
+
+    /**
+     * Events supported by the HTML <code>&lt;body&gt;</code> element only, which always fire on the
+     * <code>Window</code> object.
+     */
+    public enum HtmlWindowEvent
+    {
+        afterprint,
+        beforeprint,
+        beforeunload,
+        hashchange,
+        languagechange,
+        message,
+        messageerror,
+        offline,
+        online,
+        pagehide,
+        pagereveal,
+        pageshow,
+        pageswap,
+        popstate,
+        rejectionhandled,
+        storage,
+        unhandledrejection,
+        unload;
     }
 
     /**
      * The name of the context-param whose value must represent a space-separated list of additional HTML event names.
-     * All supported HTML event names are defined in the enums {@link HtmlDocumentElementEvent} and
-     * {@link HtmlBodyElementEvent}. Any HTML event name which you wish to add to these enums can be supplied via this
+     * All supported HTML event names are defined in the enums {@link HtmlElementEvent}, {@link HtmlBodyEvent} and
+     * {@link HtmlWindowEvent}. Any HTML event name which you wish to add to these enums can be supplied via this
      * context-param. Duplicates will be automatically filtered, case sensitive.
      */
     public static final String ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME = "jakarta.faces.ADDITIONAL_HTML_EVENT_NAMES";
@@ -158,8 +185,9 @@ public final class HtmlEvents
     private enum CacheKey
     {
         ADDITIONAL_HTML_EVENT_NAMES,
-        HTML_DOCUMENT_ELEMENT_EVENT_NAMES,
-        HTML_BODY_ELEMENT_EVENT_NAMES,
+        HTML_ELEMENT_EVENT_NAMES,
+        HTML_WINDOW_EVENT_NAMES,
+        HTML_BODY_EVENT_NAMES,
         FACES_ACTION_SOURCE_EVENT_NAMES,
         FACES_EDITABLE_VALUE_HOLDER_EVENT_NAMES;
     }
@@ -180,44 +208,56 @@ public final class HtmlEvents
 
     /**
      * @param context The involved faces context.
-     * @return All supported event names for HTML document elements, including additional HTML event names.
+     * @return All supported event names for HTML elements, including additional HTML event names.
      */
-    public static Collection<String> getHtmlDocumentElementEventNames(FacesContext context)
+    public static Collection<String> getHtmlElementEventNames(FacesContext context)
     {
-        return cache(context, CacheKey.HTML_DOCUMENT_ELEMENT_EVENT_NAMES,
-                () -> merge(getAdditionalHtmlEventNames(context), HtmlDocumentElementEvent.values()));
+        return cache(context, CacheKey.HTML_ELEMENT_EVENT_NAMES,
+                () -> merge(getAdditionalHtmlEventNames(context),
+                        HtmlElementEvent.values(), HtmlBodyEvent.values()));
     }
 
     /**
      * @param context The involved faces context.
-     * @return All supported event names for HTML body elements, including HTML document element event names.
+     * @return All supported event names for the <code>Window</code> object, including additional HTML event names.
      */
-    public static Collection<String> getHtmlBodyElementEventNames(FacesContext context)
+    public static Collection<String> getHtmlWindowEventNames(FacesContext context)
     {
-        return cache(context, CacheKey.HTML_BODY_ELEMENT_EVENT_NAMES,
-                () -> merge(getHtmlDocumentElementEventNames(context), HtmlBodyElementEvent.values()));
+        return cache(context, CacheKey.HTML_WINDOW_EVENT_NAMES,
+                () -> merge(getAdditionalHtmlEventNames(context), HtmlWindowEvent.values()));
+    }
+
+    /**
+     * @param context The involved faces context.
+     * @return All supported event names for the HTML body element, being all HTML element event names and all
+     *         <code>Window</code> event names.
+     */
+    public static Collection<String> getHtmlBodyEventNames(FacesContext context)
+    {
+        return cache(context, CacheKey.HTML_BODY_EVENT_NAMES,
+                () -> merge(getHtmlElementEventNames(context), getHtmlWindowEventNames(context)));
     }
 
     /**
      * @param context The involved faces context.
      * @return All supported event names for HTML implementations of Faces {@link ActionSource} components, including
-     *         HTML body element event names.
+     *         HTML element event names.
      */
     public static Collection<String> getFacesActionSourceEventNames(FacesContext context)
     {
         return cache(context, CacheKey.FACES_ACTION_SOURCE_EVENT_NAMES,
-                () -> merge(getHtmlBodyElementEventNames(context), FacesComponentEvent.action));
+                () -> merge(getHtmlElementEventNames(context), FacesComponentEvent.action));
     }
 
     /**
      * @param context The involved faces context.
      * @return All supported event names for HTML implementations of Faces {@link EditableValueHolder} components,
-     *         including HTML body element event names.
+     *         including HTML element event names.
      */
     public static Collection<String> getFacesEditableValueHolderEventNames(FacesContext context)
     {
         return cache(context, CacheKey.FACES_EDITABLE_VALUE_HOLDER_EVENT_NAMES,
-                () -> merge(getHtmlBodyElementEventNames(context), FacesComponentEvent.valueChange));
+                () -> merge(getHtmlElementEventNames(context), FacesComponentEvent.valueChange));
     }
 
     private static Collection<String> getContextParam(FacesContext context)
@@ -239,14 +279,31 @@ public final class HtmlEvents
         return Collections.unmodifiableList(eventNames);
     }
 
-    private static Collection<String> merge(Collection<String> eventNames, Enum<?>... enumValues)
+    private static Collection<String> merge(Collection<String> eventNames, Enum<?>[]... enumValueArrays)
     {
         // a TreeSet gives us the sorted + distinct semantics in one go.
         TreeSet<String> merged = new TreeSet<>(eventNames);
-        for (Enum<?> enumValue : enumValues)
+        for (Enum<?>[] enumValues : enumValueArrays)
         {
-            merged.add(enumValue.name());
+            for (Enum<?> enumValue : enumValues)
+            {
+                merged.add(enumValue.name());
+            }
         }
+        return new EventNameCollection(merged);
+    }
+
+    private static Collection<String> merge(Collection<String> eventNames, Enum<?> enumValue)
+    {
+        TreeSet<String> merged = new TreeSet<>(eventNames);
+        merged.add(enumValue.name());
+        return new EventNameCollection(merged);
+    }
+
+    private static Collection<String> merge(Collection<String> eventNames, Collection<String> moreEventNames)
+    {
+        TreeSet<String> merged = new TreeSet<>(eventNames);
+        merged.addAll(moreEventNames);
         return new EventNameCollection(merged);
     }
 

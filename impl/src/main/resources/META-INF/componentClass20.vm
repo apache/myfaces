@@ -108,7 +108,7 @@ $innersource
     @Override
     public java.util.Collection<String> getEventNames()
     {
-        return jakarta.faces.component.html.HtmlEvents.getHtmlBodyElementEventNames(getFacesContext());
+        return jakarta.faces.component.html.HtmlEvents.getHtmlElementEventNames(getFacesContext());
     }
 #else
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST =

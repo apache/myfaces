@@ -110,9 +110,9 @@ $innersource
 ## declare a matching property. See jakarta.faces.component.html.HtmlEvents.
 #if ($component.className.startsWith("jakarta.faces.component.html"))
 #if (${utils.getClassFromFullClass($component.className)} == "HtmlBody")
-## the <body> element forwards blur/error/focus/load/resize/scroll/scrollend to the Window object,
-## hence they must not be exposed as behavior events of the component itself.
-#set ($htmlEventNamesMethod = "getHtmlDocumentElementEventNames")
+## the <body> element additionally supports the window level events like unload/pagehide/popstate,
+## which no other element supports; the other way round it also supports all element level events.
+#set ($htmlEventNamesMethod = "getHtmlBodyEventNames")
 #else
 #if ($component.defaultEventName == "action")
 #set ($htmlEventNamesMethod = "getFacesActionSourceEventNames")
@@ -120,7 +120,7 @@ $innersource
 #if ($component.defaultEventName == "valueChange")
 #set ($htmlEventNamesMethod = "getFacesEditableValueHolderEventNames")
 #else
-#set ($htmlEventNamesMethod = "getHtmlBodyElementEventNames")
+#set ($htmlEventNamesMethod = "getHtmlElementEventNames")
 #end
 #end
 #end
