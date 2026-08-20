@@ -140,4 +140,64 @@ public class RenderPhaseClientIdsTest extends AbstractFacesTestCase {
 //
 //        Assertions.assertTrue("Value match",pprContext.getRenderIds().get(3).equals("component4"));
     }
+
+    /**
+     * duplicate client ids must be collapsed so the parameter
+     * cannot be inflated with repeated ids.
+     */
+    @Test
+    public void testDuplicateClientIdsAreCollapsed() {
+        String params = "form:input form:input form:input";
+        Map<String, String> requestParamMap = new HashMap<String, String>();
+        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, params);
+        ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
+
+        FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
+
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        Assertions.assertEquals(1, pprContext.getRenderIds().size());
+        Assertions.assertTrue(pprContext.getRenderIds().contains("form:input"));
+    }
+
+    /**
+     * a single, implausibly long client id (e.g. a run of thousands
+     * of NamingContainer separators) must not be expanded into a PartialVisitContext.
+     */
+    @Test
+    public void testOverlongClientIdIsRejected() {
+        StringBuilder colons = new StringBuilder();
+        for (int i = 0; i < 100000; i++) {
+            colons.append(':');
+        }
+        Map<String, String> requestParamMap = new HashMap<String, String>();
+        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, colons.toString());
+        ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
+
+        FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
+
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        Assertions.assertTrue(pprContext.getRenderIds().isEmpty());
+    }
+
+    /**
+     * the number of client ids read from the request is capped.
+     */
+    @Test
+    public void testClientIdCountIsCapped() {
+        StringBuilder params = new StringBuilder();
+        for (int i = 0; i < 5000; i++) {
+            params.append("id").append(i).append(' ');
+        }
+        Map<String, String> requestParamMap = new HashMap<String, String>();
+        requestParamMap.put(PartialViewContext.PARTIAL_RENDER_PARAM_NAME, params.toString());
+        ContextTestRequestWrapper wrapper = new ContextTestRequestWrapper(request, requestParamMap);
+
+        FacesContext context = new FacesContextImpl(servletContext, wrapper, response);
+
+        PartialViewContext pprContext = context.getPartialViewContext();
+
+        Assertions.assertEquals(256, pprContext.getRenderIds().size());
+    }
 }
