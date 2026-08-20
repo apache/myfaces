@@ -40,6 +40,8 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
@@ -593,6 +595,59 @@ public class UIViewRootTest extends AbstractJsfTestCase
             return PhaseId.RENDER_RESPONSE;
         }
     }
+
+
+    /**
+     * a request flagged as ajax but without a jakarta.faces.ViewState
+     * is not a postback. UIViewRoot.encodeChildren must NOT trigger partial rendering for it, otherwise the
+     * attacker-controlled jakarta.faces.partial.render parameter would be parsed on a non-postback. It must
+     * fall back to a normal (full) render instead.
+     */
+    @Test
+    public void testEncodeChildrenSkipsPartialRenderingWhenNotPostback() throws Exception
+    {
+        IMocksControl ctrl = EasyMock.createControl();
+        FacesContext ctx = ctrl.createMock(FacesContext.class);
+        PartialViewContext pvc = ctrl.createMock(PartialViewContext.class);
+
+        expect(ctx.getResponseComplete()).andReturn(false);
+        expect(ctx.getPartialViewContext()).andReturn(pvc);
+        expect(pvc.isAjaxRequest()).andReturn(true);
+        expect(ctx.isPostback()).andReturn(false);
+        // processPartial() is intentionally not expected: the strict mock fails the test if it is called.
+        ctrl.replay();
+
+        // rendered=false makes the full-render fallback (super.encodeChildren) a clean no-op,
+        // so only the gate's calls hit the mock.
+        _testimpl.setRendered(false);
+        _testimpl.encodeChildren(ctx);
+
+        ctrl.verify();
+    }
+
+    /**
+     * Counterpart to {@link #testEncodeChildrenSkipsPartialRenderingWhenNotPostback()}: a genuine ajax
+     * postback (ViewState present) must still be partial-rendered.
+     */
+    @Test
+    public void testEncodeChildrenDoesPartialRenderingOnAjaxPostback() throws Exception
+    {
+        IMocksControl ctrl = EasyMock.createControl();
+        FacesContext ctx = ctrl.createMock(FacesContext.class);
+        PartialViewContext pvc = ctrl.createMock(PartialViewContext.class);
+
+        expect(ctx.getResponseComplete()).andReturn(false);
+        expect(ctx.getPartialViewContext()).andReturn(pvc);
+        expect(pvc.isAjaxRequest()).andReturn(true);
+        expect(ctx.isPostback()).andReturn(true);
+        pvc.processPartial(PhaseId.RENDER_RESPONSE);
+        ctrl.replay();
+
+        _testimpl.encodeChildren(ctx);
+
+        ctrl.verify();
+    }
+
 
     @Test
     public void testBroadcastEvents()
