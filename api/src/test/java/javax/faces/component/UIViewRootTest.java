@@ -42,6 +42,8 @@ import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
@@ -598,9 +600,9 @@ public class UIViewRootTest extends AbstractJsfTestCase
     }
 
     /**
-     * a request flagged as ajax but without a jakarta.faces.ViewState
+     * a request flagged as ajax but without a javax.faces.ViewState
      * is not a postback. UIViewRoot.encodeChildren must NOT trigger partial rendering for it, otherwise the
-     * attacker-controlled jakarta.faces.partial.render parameter would be parsed on a non-postback. It must
+     * attacker-controlled javax.faces.partial.render parameter would be parsed on a non-postback. It must
      * fall back to a normal (full) render instead.
      */
     @Test
