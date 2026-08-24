@@ -192,19 +192,7 @@
             </releases>
         </pluginRepository>
     </pluginRepositories>
-
-    <repositories>
-
-        <!-- NOTE that apache.snapshots is defined in apache-parent -->
-
-        <!-- tomcat el-impl for test cases (see related tomcat-dependencies) -->
-        <repository>
-            <id>tomcat</id>
-            <url>http://tomcat.apache.org/dev/dist/m2-repository</url>
-        </repository>
-
-    </repositories>
-    
+        
     <!-- 
     <distributionManagement>
         <site>
