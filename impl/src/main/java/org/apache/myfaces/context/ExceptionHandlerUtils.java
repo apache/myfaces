@@ -89,7 +89,7 @@ public class ExceptionHandlerUtils
 
         if (component != null)
         {
-            if (!location.isBlank())
+            if (!location.trim().isEmpty())
             {
                 location += ", ";
             }
