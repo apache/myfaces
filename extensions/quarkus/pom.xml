@@ -43,6 +43,9 @@
     <properties>
         <quarkus.version>3.2.9.Final</quarkus.version>
         <xml-combiner.version>3.0.0</xml-combiner.version>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <build>
