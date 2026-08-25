@@ -35,7 +35,7 @@
     <url>https://myfaces.apache.org/#/core40</url>
 
     <properties>
-        <openwebbeans.version>2.0.19</openwebbeans.version>
+        <openwebbeans.version>2.0.27</openwebbeans.version>
     </properties>
 
     <build>
@@ -579,7 +579,7 @@
                             <value>COMPAT</value>
                         </property>
                     </systemProperties>
-                    <argLine>-Djava.locale.providers=COMPAT</argLine>
+                    <argLine>-Djava.locale.providers=COMPAT --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.security=ALL-UNNAMED</argLine>
                 </configuration>
 
                 <executions>
