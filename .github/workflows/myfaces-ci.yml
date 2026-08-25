@@ -25,6 +25,7 @@ on:
     branches:
       - master
       - main
+      - 4.0.x
       - 3.0.x
       - 2.3-next
       - 2.3.x
@@ -36,6 +37,7 @@ on:
     branches:
       - master
       - main
+      - 4.0.x
       - 3.0.x
       - 2.3-next
       - 2.3.x
