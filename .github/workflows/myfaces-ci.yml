@@ -69,6 +69,8 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
+        run: mvn -B -V clean install
+      - name: Build with Maven
         # CHROMEWEBDRIVER env variable https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md#environment-variables-1
         run: |
           if ! mvn -B -V clean verify checkstyle:check apache-rat:check -Dformats=XML "-Dwebdriver.chrome.driver=$CHROMEWEBDRIVER/chromedriver" -f pom.xml; then
