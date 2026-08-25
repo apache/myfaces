@@ -22,7 +22,7 @@ JavaServer Faces 2.3 implementation
 
 ## Minimum Requirements (trunk / 2.3-next)
 
-- Java 1.8
+- Java 11
 - Servlet 3.0
 - EL 2.2
 - CDI 1.2
