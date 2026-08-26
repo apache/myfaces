@@ -229,6 +229,88 @@ describe('Tests of the various aspects of the response protocol functionality', 
 
     });
 
+    it("must handle table cell, row insert/delete and header/footer replacement", function () {
+        window.document.body.innerHTML = `
+<form id="form1" action="boog.html">
+    <input type="hidden" id="jakarta.faces.ViewState" name="jakarta.faces.ViewState" value="blubbblubblubb"></input>
+    <table id="dataTable">
+        <thead id="dataTable_header">
+        <tr id="header_row">
+            <th id="header_cell">Name</th>
+            <th id="header_cell2">Value</th>
+        </tr>
+        </thead>
+        <tbody id="dataTable_body">
+        <tr id="row_0"><td id="cell_0">name0</td><td id="cell_0b">value0</td></tr>
+        <tr id="row_1"><td id="cell_1">name1</td><td id="cell_1b">value1</td></tr>
+        <tr id="row_2"><td id="cell_2">name2</td><td id="cell_2b">value2</td></tr>
+        <tr id="row_3"><td id="cell_3">name3</td><td id="cell_3b">value3</td></tr>
+        <tr id="row_4"><td id="cell_4">name4</td><td id="cell_4b">value4</td></tr>
+        <tr id="row_5"><td id="cell_5">name5</td><td id="cell_5b">value5</td></tr>
+        <tr id="row_6"><td id="cell_6">name6</td><td id="cell_6b">value6</td></tr>
+        <tr id="row_7"><td id="cell_7">name7</td><td id="cell_7b">value7</td></tr>
+        <tr id="row_8"><td id="cell_8">name8</td><td id="cell_8b">value8</td></tr>
+        <tr id="row_9"><td id="cell_9">name9</td><td id="cell_9b">value9</td></tr>
+        </tbody>
+        <tfoot id="dataTable_footer">
+        <tr id="footer_row">
+            <td id="footer_cell">Footer</td>
+            <td id="footer_cell2">&nbsp;</td>
+        </tr>
+        </tfoot>
+    </table>
+    <input type="button" id="cmd_table_update" value="table update"></input>
+</form>`;
+
+        expect(DQ.byId("row_0").isPresent(), "sanity check, 10 rows present before the update").to.be.true;
+        expect(DQ.byId("row_9").isPresent(), "sanity check, 10 rows present before the update").to.be.true;
+
+        faces.ajax.request(window.document.getElementById("cmd_table_update"), null, {
+            execute: "cmd_table_update",
+            render: "dataTable"
+        });
+
+        this.respond(XmlResponses.TABLE_ROW_CELL_HEADER_FOOTER_UPDATE);
+
+        // cell replacement, only the targeted cell changed, the row and the sibling cell survived
+        expect(DQ.byId("cell_5").innerHTML).to.eq("name5-updated");
+        expect(DQ.byId("row_5").isPresent()).to.be.true;
+        expect(DQ.byId("cell_5b").innerHTML).to.eq("value5");
+
+        // row delete
+        expect(DQ.byId("row_9").isAbsent()).to.be.true;
+
+        // untouched rows must still be present and unchanged
+        expect(DQ.byId("row_0").isPresent()).to.be.true;
+        expect(DQ.byId("cell_0").innerHTML).to.eq("name0");
+
+        // row insert before an existing row, order must be preserved
+        expect(DQ.byId("row_inserted_before").isPresent()).to.be.true;
+        expect(DQ.byId("row_2").isPresent()).to.be.true;
+        let bodyHtml = DQ.byId(document.body).html().value as string;
+        let posInsertedBefore = bodyHtml.indexOf("insertedBeforeRow2");
+        let posRow1 = bodyHtml.indexOf("id=\"row_1\"");
+        let posRow2 = bodyHtml.indexOf("id=\"row_2\"");
+        expect(posRow1 < posInsertedBefore && posInsertedBefore < posRow2).to.be.true;
+
+        // row insert after an existing row, order must be preserved
+        expect(DQ.byId("row_inserted_after").isPresent()).to.be.true;
+        let posInsertedAfter = bodyHtml.indexOf("insertedAfterRow7");
+        let posRow7 = bodyHtml.indexOf("id=\"row_7\"");
+        let posRow8 = bodyHtml.indexOf("id=\"row_8\"");
+        expect(posRow7 < posInsertedAfter && posInsertedAfter < posRow8).to.be.true;
+
+        // header (thead) replacement
+        expect(DQ.byId("header_cell").innerHTML).to.eq("NameUpdated");
+        expect(DQ.byId("header_cell2").innerHTML).to.eq("ValueUpdated");
+
+        // footer (tfoot) replacement
+        expect(DQ.byId("footer_cell").innerHTML).to.eq("FooterUpdated");
+
+        // the table element itself must not have been replaced wholesale, still exists exactly once
+        expect(DQ.querySelectorAll("#dataTable").length).to.eq(1);
+    });
+
     it("must have processed a proper eval of a script given in the eval tag", function () {
         DQ.byId("cmd_eval").click();
         this.respond(XmlResponses.EVAL_1);
@@ -236,6 +318,44 @@ describe('Tests of the various aspects of the response protocol functionality', 
         let resultHTML: string = DQ.byId(document.body).html().value as string;
         expect(resultHTML.indexOf('eval test succeeded') != -1).to.be.true;
 
+    });
+
+    it("must forward an explicit nonce attribute on the eval node to the generated script element", function () {
+        const createElementSpy = sinon.spy(document, "createElement");
+
+        DQ.byId("cmd_eval").click();
+        this.respond(XmlResponses.EVAL_WITH_EXPLICIT_NONCE);
+
+        const evalScript: any = createElementSpy.returnValues.find((el: any) =>
+            el?.tagName === "SCRIPT" && (el.innerHTML ?? "").indexOf("eval test succeeded") != -1);
+
+        expect(evalScript, "the eval code must have run through a generated script element").to.exist;
+        expect(evalScript.nonce).to.eq("serverSuppliedNonce");
+
+        createElementSpy.restore();
+    });
+
+    it("must fall back to the page's own CSP nonce when the eval node carries none", function () {
+        // window.myfaces is a shared module-level singleton, not per-jsdom-window state,
+        // so this mutation must be restored or it leaks into unrelated tests later in the run
+        const originalConfig = window.myfaces.config;
+        window.myfaces.config = {...window.myfaces.config, cspMeta: {nonce: "fallbackNonce"}};
+
+        const createElementSpy = sinon.spy(document, "createElement");
+
+        try {
+            DQ.byId("cmd_eval").click();
+            this.respond(XmlResponses.EVAL_1);
+
+            const evalScript: any = createElementSpy.returnValues.find((el: any) =>
+                el?.tagName === "SCRIPT" && (el.innerHTML ?? "").indexOf("eval test succeeded") != -1);
+
+            expect(evalScript, "the eval code must have run through a generated script element").to.exist;
+            expect(evalScript.nonce).to.eq("fallbackNonce");
+        } finally {
+            createElementSpy.restore();
+            window.myfaces.config = originalConfig;
+        }
     });
 
     it("must have updated the viewstates properly", function (done) {

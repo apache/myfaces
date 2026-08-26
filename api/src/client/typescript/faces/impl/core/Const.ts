@@ -156,6 +156,7 @@ export const ATTR_URL = "url";
 export const ATTR_NAME = "name";
 export const ATTR_VALUE = "value";
 export const ATTR_ID = "id";
+export const ATTR_NONCE = "nonce";
 
 /*partial response types*/
 export const XML_TAG_PARTIAL_RESP = "partial-response";
