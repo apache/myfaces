@@ -23,24 +23,14 @@ name: MyFaces CI
 on:
   push:
     branches:
-      - master
-      - main
       - 4.0.x
-      - 3.0.x
-      - 2.3-next
-      - 2.3.x
     paths-ignore:
       - '**.md'
       - '.travis.yml'
       - 'Jenkinsfile'
   pull_request:
     branches:
-      - master
-      - main
       - 4.0.x
-      - 3.0.x
-      - 2.3-next
-      - 2.3.x
     paths-ignore:
       - '**.md'
       - '.travis.yml'
