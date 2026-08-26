@@ -28,7 +28,6 @@ import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.I
 import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.Insert2;
 import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.PartialResponse;
 import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.Update;
-import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.responses.TableResponseMockups;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -198,44 +197,6 @@ public class ResponseMockup extends HttpServlet
             {
                 illegalResponse2(out);
             }
-            else if (op.trim().equalsIgnoreCase(TABLE_REPLACE_HEAD))
-            {
-                TableResponseMockups.tableReplaceHead(viewData, out, root);
-
-            }
-            else if (op.trim().equalsIgnoreCase(TABLE_REPLACE_BODY))
-            {
-                TableResponseMockups.tableReplaceBody(viewData, out, root);
-            }
-            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_ROW_HEAD))
-            {
-                TableResponseMockups.tableInsertRowHead(viewData, out, root);
-            }
-            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_ROW_BODY))
-            {
-                TableResponseMockups.tableInsertRowBody(viewData, out, root);
-            }
-            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_COLUMN_HEAD))
-            {
-                TableResponseMockups.tableInsetColumnHead(viewData, out, root);
-            }
-            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_COLUMN_BODY))
-            {
-                TableResponseMockups.tableInsertColumnBody(viewData, out, root);
-            }
-            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_FOOTER))
-            {
-                TableResponseMockups.tableInsertFooter(out, root);
-            }
-            else if (op.trim().equalsIgnoreCase(TABLE_INSERT_BODY))
-            {
-                TableResponseMockups.tableInsertBody(out, root);
-            }
-            else if (op.trim().equalsIgnoreCase(EXECUTE_NONE))
-            {
-                TableResponseMockups.execteNone(request, out, root);
-            }
-
         }
         finally
         {

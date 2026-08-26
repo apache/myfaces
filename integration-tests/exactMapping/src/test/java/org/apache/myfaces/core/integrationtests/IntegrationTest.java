@@ -114,6 +114,18 @@ public class IntegrationTest
         Assert.assertTrue(webDriver.getPageSource().contains("foo-view"));
     }
 
+    /**
+     * element.click() on a plain (non-AJAX) submit/link element returns as soon as the click event
+     * is dispatched, not once the resulting navigation/postback has actually completed - so a click
+     * can intermittently be followed by a findElement/getPageSource call that still sees the previous
+     * page. Waiting for a condition that only holds true on the new page (as testAjaxPostBack already
+     * does for its AJAX request) avoids that race.
+     */
+    private void waitUntil(ExpectedCondition<Boolean> condition)
+    {
+        new WebDriverWait(webDriver, Duration.ofSeconds(5)).until(condition);
+    }
+
     @Test
     public void testPostBack()
     {
@@ -125,10 +137,11 @@ public class IntegrationTest
         // post to foo.xhtml
         WebElement element = webDriver.findElement(By.id("form:commandButton"));
         element.click();
+        waitUntil(driver -> driver.getPageSource().contains("foo invoked"));
 
         // check if method was invoked
         Assert.assertTrue(webDriver.getPageSource().contains("foo invoked"));
-        
+
         // check that the exact mapping is still used after post
         Assert.assertTrue(webDriver.getCurrentUrl().equals(url));
     }
@@ -144,6 +157,7 @@ public class IntegrationTest
         // navigate to bar.xhtml
         WebElement element = webDriver.findElement(By.id("form:button"));
         element.click();
+        waitUntil(driver -> driver.getPageSource().contains("bar-view"));
 
         // check if we are on bar.xhtml
         Assert.assertTrue(webDriver.getPageSource().contains("bar-view"));
@@ -156,7 +170,7 @@ public class IntegrationTest
                 || webDriver.getCurrentUrl().endsWith("/faces/bar")
                 || webDriver.getCurrentUrl().endsWith("/faces/bar.xhtml"));
     }
-    
+
     @Test
     public void testPostBackOnNonExactMapping()
     {
@@ -165,14 +179,16 @@ public class IntegrationTest
         // nagivate to non-exact-mapping (bar.xhtml)
         WebElement element = webDriver.findElement(By.id("form:button"));
         element.click();
+        waitUntil(driver -> driver.getPageSource().contains("bar-view"));
 
         // post to bar.xhtml
         WebElement element1 = webDriver.findElement(By.id("form:commandButton"));
         element1.click();
+        waitUntil(driver -> driver.getPageSource().contains("foo invoked"));
 
         // check if post was successful
         Assert.assertTrue(webDriver.getPageSource().contains("foo invoked"));
-        
+
         // check if we are on bar.xhtml
         Assert.assertTrue(webDriver.getCurrentUrl().endsWith("/bar.jsf")
                 || webDriver.getCurrentUrl().endsWith("/faces/bar")
