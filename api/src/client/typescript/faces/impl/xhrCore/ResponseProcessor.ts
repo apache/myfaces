@@ -29,6 +29,7 @@ import {
     APPLIED_VST,
     ATTR_ID,
     ATTR_NAME,
+    ATTR_NONCE,
     ATTR_URL,
     ATTR_VALUE,
     DEFERRED_HEAD_INSERTS,
@@ -154,10 +155,16 @@ export class ResponseProcessor implements IResponseProcessor {
     /**
      * Leaf Tag eval... process whatever is in the eval cdata block
      *
+     * if the eval node carries an explicit nonce attribute (Jakarta Faces 5.0 CSP proposal,
+     * see https://github.com/jakartaee/faces/issues/1590) it is used, otherwise this falls
+     * back to the page's own CSP nonce, the same one applied to embedded scripts in update/insert
+     * blocks, so evaluated code is never silently dropped under a strict CSP script-src policy
+     *
      * @param node the node to eval
      */
     eval(node: XMLQuery) {
-        ExtDomQuery.globalEval(node.cDATAAsString);
+        const nonce = (node.attr(ATTR_NONCE).value ?? ExtDomQuery.nonce.value) as string;
+        ExtDomQuery.globalEval(node.cDATAAsString, nonce);
     }
 
     /**
