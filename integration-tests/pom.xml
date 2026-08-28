@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>4.0.4-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -28,7 +28,7 @@
 
     <artifactId>myfaces-integration-tests</artifactId>
     <name>Apache MyFaces Core 4.0 - Integration Tests</name>
-    <version>4.0.2-SNAPSHOT</version>
+    <version>4.0.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <build>
@@ -68,9 +68,6 @@
                             <includes>
                                 <include>**/*IntegrationTest</include>
                             </includes>
-                            <systemPropertyVariables>
-                                <webdriver.http.factory>jdk-http-client</webdriver.http.factory>
-                            </systemPropertyVariables>
                         </configuration>
                     </execution>
                 </executions>
@@ -129,13 +126,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.7.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-http-jdk-client</artifactId>
-            <version>4.7.2</version>
+            <version>4.47.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -263,6 +254,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
         <tomcat.version>10.1.5</tomcat.version>
-        <arquillian-drone.version>3.0.0-alpha.7</arquillian-drone.version>
+        <arquillian-drone.version>3.0.1.Final</arquillian-drone.version>
     </properties>
 </project>
