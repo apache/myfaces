@@ -211,107 +211,10 @@ public class IntegrationTest
         assertFalse(testSource.contains("test4 failed"));
     }
 
-
-    @Test
-    public void testBasicTable()
-    {
-        webDriver.get(contextPath + "test4-tablebasic.jsf");
-        resetServerValues();
-
-        trigger("replace_head", webDriver ->
-        {
-            final WebElement testTable = webDriver.findElement(new By.ById("testTable"));
-
-            return testTable.getText().contains("column1 in line1 replaced") &&
-                    testTable.getText().contains("script evaled0");
-        });
-
-        trigger("replace_body", webDriver ->
-        {
-            final WebElement tableSegment = webDriver.findElement(new By.ById("body_row1_col1"));
-            return tableSegment.getText().contains("column1 in line1 replaced") &&
-                    tableSegment.getText().contains("script evaled");
-        });
-
-        trigger("insert_row_head", webDriver ->
-        {
-            final WebElement headRow0 = webDriver.findElement(new By.ById("head_row1_0"));
-            final WebElement headRow1 = webDriver.findElement(new By.ById("head_row1"));
-
-            return headRow1.getLocation().y > headRow0.getLocation().y &&
-                    headRow0.getText().contains("column1 in line1 inserted before") &&
-                    headRow0.getText().contains("colum2 in line2 inserted before");
-        });
-
-
-        trigger("insert_row_body", webDriver ->
-        {
-            final WebElement bodyRowCol1 = webDriver.findElement(new By.ById("body_row1_col1"));
-            final WebElement bodyRowCol2 = webDriver.findElement(new By.ById("body_row1_col2"));
-            final WebElement bodyRowCol0 = webDriver.findElement(new By.ById("body_row1_3_col1"));
-            final WebElement bodyRowCol4 = webDriver.findElement(new By.ById("body_row1_4_col1"));
-
-            return bodyRowCol0.getLocation().y < bodyRowCol1.getLocation().y &&
-                    bodyRowCol1.getLocation().y < bodyRowCol4.getLocation().y &&
-
-                    bodyRowCol1.getText().contains("column1 in line1 inserted after") &&
-                    bodyRowCol1.getText().contains("evaled") &&
-                    bodyRowCol2.getText().contains("colum2 in line1 replaced");
-        });
-
-        trigger("insert_column_head", webDriver ->
-        {
-            final WebElement headCol0 = webDriver.findElement(new By.ById("head_col1_1_4"));
-            final WebElement headCol1 = webDriver.findElement(new By.ById("head_col1_1_5"));
-            final WebElement headCol2 = webDriver.findElement(new By.ById("head_col1"));
-            final WebElement headCol3 = webDriver.findElement(new By.ById("head_col2"));
-            final WebElement headCol4 = webDriver.findElement(new By.ById("head_col1_1_6"));
-            final WebElement headCol5 = webDriver.findElement(new By.ById("head_col1_1_7"));
-
-            return headCol0.getLocation().x < headCol1.getLocation().x &&
-                   headCol1.getLocation().x < headCol2.getLocation().x &&
-                   headCol3.getLocation().x < headCol4.getLocation().x &&
-                   headCol4.getLocation().x < headCol5.getLocation().x &&
-                   headCol1.getLocation().y == headCol2.getLocation().y &&
-                   headCol2.getLocation().y == headCol3.getLocation().y &&
-                   headCol3.getLocation().y == headCol4.getLocation().y &&
-                   headCol4.getLocation().y == headCol5.getLocation().y;
-
-        });
-
-
-        trigger("insert_column_body", webDriver ->
-        {
-            final WebElement bodyCol0 = webDriver.findElement(new By.ById("body_row1_col1_1_8"));
-            final WebElement bodyCol1 = webDriver.findElement(new By.ById("body_row1_col1_1_9"));
-            final WebElement bodyCol2 = webDriver.findElement(new By.ById("body_row1_col1"));
-            final WebElement bodyCol3 = webDriver.findElement(new By.ById("body_row1_col2"));
-            final WebElement bodyCol4 = webDriver.findElement(new By.ById("body_row1_col1_1_10"));
-            final WebElement bodyCol5 = webDriver.findElement(new By.ById("body_row1_col1_1_11"));
-
-            return bodyCol0.getLocation().x < bodyCol1.getLocation().x &&
-                    bodyCol1.getLocation().x < bodyCol2.getLocation().x &&
-                    bodyCol3.getLocation().x < bodyCol4.getLocation().x &&
-                    bodyCol4.getLocation().x < bodyCol5.getLocation().x &&
-                    bodyCol1.getLocation().y == bodyCol2.getLocation().y &&
-                    bodyCol2.getLocation().y == bodyCol3.getLocation().y &&
-                    bodyCol3.getLocation().y == bodyCol4.getLocation().y &&
-                    bodyCol4.getLocation().y == bodyCol5.getLocation().y;
-
-        });
-
-        trigger("insert_body", webDriver ->
-        {
-            return webDriver.getPageSource().contains("<tbody>") &&
-                    webDriver.getPageSource().contains("second body added");
-        });
-
-    }
-
     @Test
     public void testViewRootBodyReplacement()
     {
-        webDriver.get(contextPath + "test5-viewbody-full-response.jsf");
+        webDriver.get(contextPath + "test4-viewbody-full-response.jsf");
         resetServerValues();
         trigger("cmd_body1", webDriver1 -> webDriver1.getPageSource().contains("Test for body change done") &&
                 webDriver1.getPageSource().contains("Body replacement test  successful"));

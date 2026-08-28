@@ -472,14 +472,45 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
         if (queryRes.length) {
             found.push(queryRes);
         }
-        let shadowRoots = this.querySelectorAll("*").shadowRoot;
+        let shadowRoots = this._collectShadowRoots();
         if (shadowRoots.length) {
-            let shadowRes = shadowRoots.querySelectorAllDeep(queryStr);
+            let shadowRes = new DomQuery(shadowRoots).querySelectorAllDeep(queryStr);
             if (shadowRes.length) {
                 found.push(shadowRes);
             }
         }
         return new DomQuery(found);
+    }
+
+    /**
+     * Collects the shadow roots hosted by the light-DOM descendants of each root
+     * node in a single pass.
+     *
+     * This replaces the prior `querySelectorAll("*").shadowRoot`, which
+     * materialized a DomQuery wrapping every element on the page and then walked
+     * that throwaway collection a second time through the shadowRoot getter. We
+     * still have to inspect every element - there is no CSS selector for "has a
+     * shadow root", so the cost stays O(number of elements) - but we drop the
+     * intermediate all-elements DomQuery and the redundant second traversal.
+     *
+     * @private
+     */
+    private _collectShadowRoots(): ShadowRoot[] {
+        let shadowRoots: ShadowRoot[] = [];
+        for (let cnt = 0; cnt < (this?.rootNode?.length ?? 0); cnt++) {
+            let root: any = this.rootNode[cnt];
+            if (!root?.querySelectorAll) {
+                continue;
+            }
+            let all = root.querySelectorAll("*");
+            for (let i = 0, len = all.length; i < len; i++) {
+                let shadowRoot = (all[i] as Element).shadowRoot;
+                if (shadowRoot) {
+                    shadowRoots.push(shadowRoot);
+                }
+            }
+        }
+        return shadowRoots;
     }
 
 
@@ -507,7 +538,11 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     get childNodes(): DomQuery {
         let childNodeArr: Array<Element> = [];
         this.eachElem((item: Element) => {
-            childNodeArr = childNodeArr.concat(objToArray(item.childNodes));
+            // push the live childNodes list straight into the single target in
+            // chunks instead of concat(objToArray(...)) per root, which both
+            // copied each child list and reallocated the growing accumulator
+            // (O(roots * total children))
+            pushChunked(childNodeArr, item.childNodes as ArrayLike<any>);
         });
         return new DomQuery(childNodeArr);
     }
@@ -793,6 +828,11 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
             );
         }
 
+        // a "deep" id search must collect matches across every scope: ids are
+        // unique only within a single node-tree, so the same id may legitimately
+        // exist in the light DOM and inside one or more shadow roots at once.
+        // We therefore cannot short-circuit on a light-DOM hit and must run the
+        // full deep search.
         let subItems = this.querySelectorAllDeep(`[id="${id}"]`);
         if (subItems.length) {
             res.push(subItems);
@@ -810,9 +850,12 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
     byTagName(tagName: string, includeRoot ?: boolean, deep ?: boolean): DomQuery {
         let res: Array<Element | DomQuery> = [];
         if (includeRoot) {
-            res = Es2019ArrayFrom(this?.rootNode ?? [])
-                .filter(element => element?.tagName == tagName)
-                .reduce((reduction: any, item: Element) => reduction.concat([item]), res);
+            // append the matching roots in a single pass; the prior
+            // reduce(reduction.concat([item])) reallocated the accumulator on
+            // every match (O(matches^2))
+            let matchingRoots = Es2019ArrayFrom(this?.rootNode ?? [])
+                .filter(element => element?.tagName == tagName);
+            pushChunked(res, matchingRoots);
         }
 
         (deep) ? res.push(this.querySelectorAllDeep(tagName)) : res.push(this.querySelectorAll(tagName));
@@ -1449,7 +1492,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                         && null != src
                         && src.length > 0
                     ) {
-                        let nonce = item?.nonce ?? (item.getAttribute('nonce') as any).value;
+                        let nonce = item?.nonce || item.getAttribute('nonce');
                         // we have to move this into an inner if because chrome otherwise chokes
                         // due to changing the and order instead of relying on left to right
                         // if jsf.js is already registered we do not replace it anymore
@@ -1488,7 +1531,7 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                                 go = true;
                             }
                         }
-                        let nonce = item?.nonce ?? (item.getAttribute('nonce') as any).value ?? '';
+                        let nonce = item?.nonce || item.getAttribute('nonce') || '';
                         // we have to run the script under a global context
                         // we store the script for fewer calls to eval
                         finalScripts.push({
@@ -2023,7 +2066,11 @@ export class DomQuery implements IDomQuery, IStreamDataSource<DomQuery>, Iterabl
                 continue;
             }
             let res = this.rootNode[cnt].querySelectorAll(selector);
-            nodes = nodes.concat(objToArray<Element>(res));
+            // push the NodeList straight into the single target array in
+            // argument-stack-safe chunks; this avoids the objToArray copy plus
+            // the concat reallocation, which doubled a large result set (e.g. the
+            // querySelectorAll("*") shadow scan) on every root iteration
+            pushChunked(nodes, res as ArrayLike<Element>);
         }
 
         return new DomQuery(nodes);
