@@ -419,6 +419,30 @@ public class SearchExpressionImplTest extends AbstractMyFacesCDIRequestTestCase
         processRemainingPhases();
     }
 
+    /**
+     * Regression test for MYFACES-4764.
+     */
+    @Test
+    public void testMyFaces4764() throws Exception
+    {
+        startViewRequest("/search_myfaces4764.xhtml");
+        processLifecycleExecute();
+        executeBeforeRender();
+        executeBuildViewCycle();
+
+        SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
+
+        UIComponent body = facesContext.getViewRoot().findComponent("body");
+        Assertions.assertNotNull(body, "body component must exist");
+
+        SearchExpressionContext ctx1 = SearchExpressionContext.createSearchExpressionContext(facesContext, body);
+
+        Assertions.assertEquals("first", handler.resolveClientId(ctx1, "@child(1)"),
+                "@child(1) must resolve to 'first'");
+
+        processRemainingPhases();
+    }
+
     /*
     @Test
     public void testCompositeComponentExpression() throws Exception
