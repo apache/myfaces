@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import jakarta.el.ValueExpression;
 import jakarta.el.ValueReference;
@@ -110,13 +109,6 @@ public class BeanValidator implements Validator, PartialStateHolder
      * Currently, a string containing only whitespace is classified as empty.
      */
     public static final String EMPTY_VALIDATION_GROUPS_PATTERN = "^[\\W,]*$";
-
-    /**
-     * Precompiled form of {@link #EMPTY_VALIDATION_GROUPS_PATTERN}; use this instead of
-     * {@code String.matches(EMPTY_VALIDATION_GROUPS_PATTERN)} to avoid recompiling the
-     * pattern on every postback.
-     */
-    public static final Pattern EMPTY_VALIDATION_GROUPS = Pattern.compile(EMPTY_VALIDATION_GROUPS_PATTERN);
     
     /**
      * Enable f:validateWholeBean use.
@@ -345,7 +337,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      */
     private void postSetValidationGroups()
     {
-        if (this.validationGroups == null || EMPTY_VALIDATION_GROUPS.matcher(this.validationGroups).matches())
+        if (this.validationGroups == null || this.validationGroups.matches(EMPTY_VALIDATION_GROUPS_PATTERN))
         {
             this.validationGroupsArray = DEFAULT_VALIDATION_GROUPS_ARRAY;
         }

@@ -744,7 +744,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             // check the validationGroups
             String validationGroups =  beanValidator.getValidationGroups();
             if (validationGroups == null 
-                    || BeanValidator.EMPTY_VALIDATION_GROUPS.matcher(validationGroups).matches())
+                    || validationGroups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN))
             {
                 // no validationGroups available
                 // --> get the validationGroups from the stack
@@ -854,7 +854,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                     // check the validationGroups
                     String validationGroups =  beanValidator.getValidationGroups();
                     if (validationGroups == null 
-                            || BeanValidator.EMPTY_VALIDATION_GROUPS.matcher(validationGroups).matches())
+                            || validationGroups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN))
                     {
                         // no validationGroups available
                         // --> get the validationGroups from the stack
