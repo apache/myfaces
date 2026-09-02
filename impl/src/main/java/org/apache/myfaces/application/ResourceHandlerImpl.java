@@ -512,7 +512,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             return;
         }
 
-        // We neet to get an instance of HttpServletResponse, but sometimes
+        // We need to get an instance of HttpServletResponse, but sometimes
         // the response object is wrapped by several instances of 
         // ServletResponseWrapper (like ResponseSwitch).
         // Since we are handling a resource, we can expect to get an 

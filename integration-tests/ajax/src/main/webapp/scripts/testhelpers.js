@@ -18,19 +18,19 @@
  */
 
 /**
- * varius helper scripts to ease our testing
+ * various helper scripts to ease our testing
  */
 
 /**
  * /**
  * ppr emitting function, which encapsules
- * faces.ajax.request with additioonal helpers
+ * faces.ajax.request with additional helpers
  *
  * @param source the source item triggering the event
  * @param event an outer html event object
  * @param action the action to perform on the jsf side (additional parameter which can be interpreted on the server)
  * @param formId formName for the issuing form
- * @param target the action target (ootional)
+ * @param target the action target (optional)
  * @param onError onError handler
  * @param onEvent onEvent handler
  */
@@ -101,7 +101,7 @@ var logError = function () {
 
 /**
  * we log our console error output into an array
- * to have later referemnces to that one
+ * to have later references to that one
  * @type {Array}
  */
 
@@ -114,7 +114,7 @@ if (console.error) {
 }
 
 /**
- * we add a stanardized reset button to our firsat form to reset the counters
+ * we add a standardized reset button to our first form to reset the counters
  */
 window.addEventListener("DOMContentLoaded", function () {
     if (document.body.querySelectorAll("#_reset_all").length == 0) {

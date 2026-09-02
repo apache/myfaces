@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 /**
  * Quarkus does not support servletContext.getResourcePaths("/"), which is used for
  * AUTOMATIC_EXTENSIONLESS_MAPPING.
- * Therefor we scan for views on build time and reuse it here.
+ * Therefore we scan for views on build time and reuse it here.
  */
 public class QuarkusResourceHandler extends ResourceHandlerWrapper
 {

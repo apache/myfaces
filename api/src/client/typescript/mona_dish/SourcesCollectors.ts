@@ -47,7 +47,7 @@ export function calculateSkips(next_strm: IStreamDataSource<any>) {
  * Every data source which feeds data into the lazy stream
  * or stream generally must implement this interface
  *
- * It is basically an iteratable to the core
+ * It is basically an iterable to the core
  */
 export interface IStreamDataSource<T> {
 

@@ -161,7 +161,7 @@ public class IntegrationTest
     }
 
     /*
-     * MYFACES-4644: Ensure Programmatic Views can be accesssed without extensions
+     * MYFACES-4644: Ensure Programmatic Views can be accessed without extensions
      */
     @Test
     public void testExtensionlessProgrammaticView()

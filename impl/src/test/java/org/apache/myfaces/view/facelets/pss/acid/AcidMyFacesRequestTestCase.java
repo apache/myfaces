@@ -440,7 +440,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
      * <code>&lt;h:panelGroup id="panel" binding="#{componentBindingBean.panel}"&gt;</code>
      * 
      * The solution is if a binding returns a component that has children or facets
-     * attached, it is not elegible for PSS algorithm because the additional components
+     * attached, it is not eligible for PSS algorithm because the additional components
      * are created outside facelets control, and there is no warrant that the same structure
      * will be generated across requests, violating PSS base principle (it is possible to
      * restore to the initial state calling vdl.buildView).

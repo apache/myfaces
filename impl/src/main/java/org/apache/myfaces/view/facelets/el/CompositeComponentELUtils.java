@@ -69,7 +69,7 @@ public final class CompositeComponentELUtils
      * - [^\\w\\.\\(] - There must be no word character, dot, or left parenthesis directly before cc.attrs
      * - cc\\.attrs\\. - "cc.attrs." must occur
      * - [^\\.]* - There must be no dot after cc.attrs to indicate a method invocation on cc.attrs
-     * - (\\(.*)? - If there is a left paranthesis after cc.attrs, a dot is allowed again
+     * - (\\(.*)? - If there is a left parenthesis after cc.attrs, a dot is allowed again
      */
     public static final Pattern CC_ATTRS_METHOD_EXPRESSION_REGEX
             = Pattern.compile("[^\\(]*[^\\w\\.\\(]cc\\.attrs\\.[^\\.]*(\\(.*)?");
@@ -417,7 +417,7 @@ public final class CompositeComponentELUtils
     }
     
     /**
-     * Trys to get the composite component using getCompositeComponentBasedOnLocation()
+     * Tries to get the composite component using getCompositeComponentBasedOnLocation()
      * and saves it in an attribute on the FacesContext, which is then used by 
      * CompositeComponentImplicitObject.
      * @param facesContext
