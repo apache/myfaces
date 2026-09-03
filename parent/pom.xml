@@ -447,7 +447,7 @@
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-catalina</artifactId>
-                <version>9.0.118</version>
+                <version>9.0.121</version>
                 <scope>provided</scope>
             </dependency>
 
