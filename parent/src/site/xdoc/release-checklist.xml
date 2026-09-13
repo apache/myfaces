@@ -355,7 +355,7 @@ mvn site:site # this will generate the site under the target directory
                 <li><p>Checkout the MyFaces 2.3.x tag to be released from <a class="externalLink" href="https://github.com/apache/myfaces/tags">https://github.com/apache/myfaces/tags</a></p></li>
                 <b>NOTE:</b> The MyFaces 2.3.x tag is what you want to use to generate the rest of the website if no changes are needed in the development branch (files below). 
                 <br/>
-                <b>NOTE:</b> If changes are needed in the files below, you have to do modify and commit these changes to the MyFaces 2.3.x development branch (currently the 2.3.x branch in GitHub) in <a class="externalLink" href="https://github.com/apache/myfaces">https://github.com/apache/myfaces</a> repository to keep the dev repo up to date. Also consider commiting the files (changes) in the main branch (MyFaces 4.0.x).
+                <b>NOTE:</b> If changes are needed in the files below, you have to do modify and commit these changes to the MyFaces 2.3.x development branch (currently the 2.3.x branch in GitHub) in <a class="externalLink" href="https://github.com/apache/myfaces">https://github.com/apache/myfaces</a> repository to keep the dev repo up to date. Also consider committing the files (changes) in the main branch (MyFaces 4.0.x).
                 
                 <div class="source">
                     <pre>

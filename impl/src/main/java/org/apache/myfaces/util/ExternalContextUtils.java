@@ -131,8 +131,8 @@ public final class ExternalContextUtils
     }
     
     /**
-     * Trys to obtain a HttpServletResponse from the Response.
-     * Note that this method also trys to unwrap any ServletResponseWrapper
+     * Tries to obtain a HttpServletResponse from the Response.
+     * Note that this method also tries to unwrap any ServletResponseWrapper
      * in order to retrieve a valid HttpServletResponse.
      * @param response
      * @return if found, the HttpServletResponse, null otherwise
