@@ -29,6 +29,8 @@ import javax.faces.view.facelets.MetadataTarget;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
 
+import org.apache.myfaces.util.lang.Lazy;
+
 /**
  * 
  * @author Jacob Hookom
@@ -85,8 +87,7 @@ public final class BeanPropertyTagRule extends MetaRule
         private final Method method;
         private final BiConsumer<Object, Object> function;
         private final TagAttribute attribute;
-        private Object value;
-        private volatile boolean valueInitialized;
+        private volatile Lazy<Object> value;
 
         public LiteralPropertyMetadata(Class<?> propertyType, Method method, TagAttribute attribute)
         {
@@ -131,19 +132,22 @@ public final class BeanPropertyTagRule extends MetaRule
 
         private Object getValue(FaceletContext ctx)
         {
-            if (!valueInitialized)
+            Lazy<Object> lazyValue = value;
+            if (lazyValue == null)
             {
                 synchronized (this)
                 {
-                    if (!valueInitialized)
+                    lazyValue = value;
+                    if (lazyValue == null)
                     {
                         String str = this.attribute.getValue();
-                        value = ctx.getExpressionFactory().coerceToType(str, propertyType);
-                        valueInitialized = true;
+                        lazyValue = new Lazy<>(() ->
+                                ctx.getExpressionFactory().coerceToType(str, propertyType));
+                        value = lazyValue;
                     }
                 }
             }
-            return value;
+            return lazyValue.get();
         }
     }
 
