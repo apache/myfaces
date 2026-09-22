@@ -86,7 +86,7 @@ public final class BeanPropertyTagRule extends MetaRule
         private final BiConsumer<Object, Object> function;
         private final TagAttribute attribute;
         private Object value;
-        private Object[] valueArgs;
+        private volatile boolean valueInitialized;
 
         public LiteralPropertyMetadata(Class<?> propertyType, Method method, TagAttribute attribute)
         {
@@ -112,21 +112,11 @@ public final class BeanPropertyTagRule extends MetaRule
             {
                 if (function != null)
                 {
-                    if (value == null)
-                    {
-                        String str = this.attribute.getValue();
-                        value = ctx.getExpressionFactory().coerceToType(str, propertyType);
-                    }
-                    function.accept(instance, value);
+                    function.accept(instance, getValue(ctx));
                 }
                 else if (method != null)
                 {
-                    if (valueArgs == null)
-                    {
-                        String str = this.attribute.getValue();
-                        valueArgs = new Object[] { ctx.getExpressionFactory().coerceToType(str, propertyType) };
-                    }
-                    method.invoke(instance, valueArgs);
+                    method.invoke(instance, new Object[] { getValue(ctx) });
                 }
             }
             catch (InvocationTargetException e)
@@ -139,6 +129,22 @@ public final class BeanPropertyTagRule extends MetaRule
             }
         }
 
+        private Object getValue(FaceletContext ctx)
+        {
+            if (!valueInitialized)
+            {
+                synchronized (this)
+                {
+                    if (!valueInitialized)
+                    {
+                        String str = this.attribute.getValue();
+                        value = ctx.getExpressionFactory().coerceToType(str, propertyType);
+                        valueInitialized = true;
+                    }
+                }
+            }
+            return value;
+        }
     }
 
     final static class DynamicPropertyMetadata extends Metadata
