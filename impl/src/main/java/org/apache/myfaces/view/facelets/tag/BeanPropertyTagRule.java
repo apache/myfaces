@@ -88,8 +88,8 @@ public final class BeanPropertyTagRule extends MetaRule
         private final Method method;
         private final BiConsumer<Object, Object> function;
         private final TagAttribute attribute;
-        private final Lazy<Object> value = new Lazy<>(this::createValue);
-        private final Lazy<Object[]> valueArgs = new Lazy<>(() -> new Object[] { createValue() });
+        private final Lazy<Object> value;
+        private final Lazy<Object[]> valueArgs;
 
         public LiteralPropertyMetadata(Class<?> propertyType, Method method, TagAttribute attribute)
         {
@@ -97,6 +97,8 @@ public final class BeanPropertyTagRule extends MetaRule
             this.method = method;
             this.function = null;
             this.attribute = attribute;
+            this.value = null;
+            this.valueArgs = new Lazy<>(() -> new Object[] { createValue() });
         }
 
         public LiteralPropertyMetadata(Class<?> propertyType, BiConsumer<Object, Object> function,
@@ -106,6 +108,8 @@ public final class BeanPropertyTagRule extends MetaRule
             this.method = null;
             this.function = function;
             this.attribute = attribute;
+            this.value = new Lazy<>(this::createValue);
+            this.valueArgs = null;
         }
 
         @Override
@@ -157,14 +161,14 @@ public final class BeanPropertyTagRule extends MetaRule
         }
 
         public DynamicPropertyMetadata(Class<?> propertyType, BiConsumer<Object, Object> function,
-                TagAttribute attribute)
+                                       TagAttribute attribute)
         {
             this.propertyType = propertyType;
             this.method = null;
             this.function = function;
             this.attribute = attribute;
         }
-        
+
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
