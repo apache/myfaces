@@ -33,7 +33,7 @@ import javax.faces.view.facelets.TagAttributeException;
 import org.apache.myfaces.util.lang.Lazy;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -81,14 +81,15 @@ public final class BeanPropertyTagRule extends MetaRule
 
         return null;
     }
-    
+
     final static class LiteralPropertyMetadata extends Metadata
     {
         private final Class<?> propertyType;
         private final Method method;
         private final BiConsumer<Object, Object> function;
         private final TagAttribute attribute;
-        private final Lazy<Object[]> valueArgs = new Lazy<>(this::createValueArgs);
+        private final Lazy<Object> value = new Lazy<>(this::createValue);
+        private final Lazy<Object[]> valueArgs = new Lazy<>(() -> new Object[] { createValue() });
 
         public LiteralPropertyMetadata(Class<?> propertyType, Method method, TagAttribute attribute)
         {
@@ -97,9 +98,9 @@ public final class BeanPropertyTagRule extends MetaRule
             this.function = null;
             this.attribute = attribute;
         }
-        
+
         public LiteralPropertyMetadata(Class<?> propertyType, BiConsumer<Object, Object> function,
-                TagAttribute attribute)
+                                       TagAttribute attribute)
         {
             this.propertyType = propertyType;
             this.method = null;
@@ -114,7 +115,7 @@ public final class BeanPropertyTagRule extends MetaRule
             {
                 if (function != null)
                 {
-                    function.accept(instance, valueArgs.get()[0]);
+                    function.accept(instance, value.get());
                 }
                 else if (method != null)
                 {
@@ -131,12 +132,12 @@ public final class BeanPropertyTagRule extends MetaRule
             }
         }
 
-        private Object[] createValueArgs()
+        private Object createValue()
         {
             // Resolve the active context only during initialization; do not retain request state.
             FaceletContext ctx = (FaceletContext) FacesContext.getCurrentInstance()
                     .getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-            return new Object[] { ctx.getExpressionFactory().coerceToType(attribute.getValue(), propertyType) };
+            return ctx.getExpressionFactory().coerceToType(attribute.getValue(), propertyType);
         }
     }
 
