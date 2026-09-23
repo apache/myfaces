@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.BiConsumer;
 
+import javax.el.ExpressionFactory;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.Metadata;
@@ -87,7 +88,7 @@ public final class BeanPropertyTagRule extends MetaRule
         private final Method method;
         private final BiConsumer<Object, Object> function;
         private final TagAttribute attribute;
-        private volatile Lazy<Object> value;
+        private Lazy<Object> value;
 
         public LiteralPropertyMetadata(Class<?> propertyType, Method method, TagAttribute attribute)
         {
@@ -130,24 +131,15 @@ public final class BeanPropertyTagRule extends MetaRule
             }
         }
 
-        private Object getValue(FaceletContext ctx)
+        private synchronized Object getValue(FaceletContext ctx)
         {
-            Lazy<Object> lazyValue = value;
-            if (lazyValue == null)
+            if (value == null)
             {
-                synchronized (this)
-                {
-                    lazyValue = value;
-                    if (lazyValue == null)
-                    {
-                        String str = this.attribute.getValue();
-                        lazyValue = new Lazy<>(() ->
-                                ctx.getExpressionFactory().coerceToType(str, propertyType));
-                        value = lazyValue;
-                    }
-                }
+                String str = this.attribute.getValue();
+                ExpressionFactory expressionFactory = ctx.getExpressionFactory();
+                value = new Lazy<>(() -> expressionFactory.coerceToType(str, propertyType));
             }
-            return lazyValue.get();
+            return value.get();
         }
     }
 
