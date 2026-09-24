@@ -64,7 +64,7 @@ public class WebXmlParser
     }
 
     /**
-     * Parses the web.xml and web-fragements.xml for error pages.
+     * Parses the web.xml and web-fragments.xml for error pages.
      * "null" as key represents the default error page. Otherwise, the key is the exception class.
      * 
      * @param context the External Context or NULL if checking current classload
