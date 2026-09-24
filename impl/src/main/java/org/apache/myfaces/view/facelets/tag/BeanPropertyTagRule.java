@@ -102,7 +102,7 @@ public final class BeanPropertyTagRule extends MetaRule
         }
 
         public LiteralPropertyMetadata(Class<?> propertyType, BiConsumer<Object, Object> function,
-                                       TagAttribute attribute)
+                TagAttribute attribute)
         {
             this.propertyType = propertyType;
             this.method = null;
@@ -161,7 +161,7 @@ public final class BeanPropertyTagRule extends MetaRule
         }
 
         public DynamicPropertyMetadata(Class<?> propertyType, BiConsumer<Object, Object> function,
-                                       TagAttribute attribute)
+                TagAttribute attribute)
         {
             this.propertyType = propertyType;
             this.method = null;
