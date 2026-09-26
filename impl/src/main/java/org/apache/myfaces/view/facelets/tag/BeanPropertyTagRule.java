@@ -21,12 +21,15 @@ package org.apache.myfaces.view.facelets.tag;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.Metadata;
 import javax.faces.view.facelets.MetadataTarget;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
+
+import org.apache.myfaces.util.Lazy;
 
 /**
  * 
@@ -64,24 +67,20 @@ public final class BeanPropertyTagRule extends MetaRule
 
         private final TagAttribute attribute;
 
-        private Object[] value;
+        private final Lazy<Object[]> value;
 
         public LiteralPropertyMetadata(Method method, TagAttribute attribute)
         {
             this.method = method;
             this.attribute = attribute;
+            this.value = new Lazy<>(() -> new Object[] { createValue() });
         }
 
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            if (value == null)
-            {
-                String str = this.attribute.getValue();
-                value = new Object[] { ctx.getExpressionFactory().coerceToType(str, method.getParameterTypes()[0]) };
-            }
             try
             {
-                method.invoke(instance, this.value);
+                method.invoke(instance, value.get());
             }
             catch (InvocationTargetException e)
             {
@@ -91,6 +90,14 @@ public final class BeanPropertyTagRule extends MetaRule
             {
                 throw new TagAttributeException(this.attribute, e);
             }
+        }
+
+        private Object createValue()
+        {
+            // Resolve the active context only during initialization; do not retain request state.
+            FaceletContext ctx = (FaceletContext) FacesContext.getCurrentInstance()
+                    .getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
+            return ctx.getExpressionFactory().coerceToType(attribute.getValue(), method.getParameterTypes()[0]);
         }
 
     }
