@@ -22,12 +22,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.BiConsumer;
 
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.MetaRule;
 import jakarta.faces.view.facelets.Metadata;
 import jakarta.faces.view.facelets.MetadataTarget;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
+
+import org.apache.myfaces.util.lang.Lazy;
 
 /**
  * 
@@ -85,8 +88,8 @@ public final class BeanPropertyTagRule extends MetaRule
         private final Method method;
         private final BiConsumer<Object, Object> function;
         private final TagAttribute attribute;
-        private Object value;
-        private Object[] valueArgs;
+        private final Lazy<Object> value;
+        private final Lazy<Object[]> valueArgs;
 
         public LiteralPropertyMetadata(Class<?> propertyType, Method method, TagAttribute attribute)
         {
@@ -94,6 +97,8 @@ public final class BeanPropertyTagRule extends MetaRule
             this.method = method;
             this.function = null;
             this.attribute = attribute;
+            this.value = null;
+            this.valueArgs = new Lazy<>(() -> new Object[] { createValue() });
         }
         
         public LiteralPropertyMetadata(Class<?> propertyType, BiConsumer<Object, Object> function,
@@ -103,6 +108,8 @@ public final class BeanPropertyTagRule extends MetaRule
             this.method = null;
             this.function = function;
             this.attribute = attribute;
+            this.value = new Lazy<>(this::createValue);
+            this.valueArgs = null;
         }
 
         @Override
@@ -112,21 +119,11 @@ public final class BeanPropertyTagRule extends MetaRule
             {
                 if (function != null)
                 {
-                    if (value == null)
-                    {
-                        String str = this.attribute.getValue();
-                        value = ctx.getExpressionFactory().coerceToType(str, propertyType);
-                    }
-                    function.accept(instance, value);
+                    function.accept(instance, value.get());
                 }
                 else if (method != null)
                 {
-                    if (valueArgs == null)
-                    {
-                        String str = this.attribute.getValue();
-                        valueArgs = new Object[] { ctx.getExpressionFactory().coerceToType(str, propertyType) };
-                    }
-                    method.invoke(instance, valueArgs);
+                    method.invoke(instance, valueArgs.get());
                 }
             }
             catch (InvocationTargetException e)
@@ -137,6 +134,14 @@ public final class BeanPropertyTagRule extends MetaRule
             {
                 throw new TagAttributeException(this.attribute, e);
             }
+        }
+
+        private Object createValue()
+        {
+            // Resolve the active context only during initialization; do not retain request state.
+            FaceletContext ctx = (FaceletContext) FacesContext.getCurrentInstance()
+                    .getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
+            return ctx.getExpressionFactory().coerceToType(attribute.getValue(), propertyType);
         }
 
     }
