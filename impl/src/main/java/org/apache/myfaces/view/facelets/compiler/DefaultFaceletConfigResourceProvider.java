@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
 
 import jakarta.faces.context.ExternalContext;
 
@@ -48,23 +46,8 @@ public class DefaultFaceletConfigResourceProvider extends FaceletConfigResourceP
     public Collection<URL> getFaceletTagLibConfigurationResources(
             ExternalContext context) throws IOException
     {
-        List<URL> urlSet = new ArrayList<>();
-
-        // Files inside META-INF ending with .taglib.xml, reusing the shared cached META-INF/ name scan;
-        // only the matches are resolved to URLs via getResources (as before).
-        ClassLoader loader = MetaInfResourceCache.getClassLoader();
-        for (String name : MetaInfResourceCache.getMetaInfEntryNames(context))
-        {
-            if (name.endsWith(FACELET_TAGLIB_SUFFIX))
-            {
-                for (Enumeration<URL> resources = loader.getResources(name); resources.hasMoreElements();)
-                {
-                    urlSet.add(resources.nextElement());
-                }
-            }
-        }
-
-        return urlSet;
+        // Files inside META-INF ending with .taglib.xml, reusing the shared cached META-INF/ scan.
+        return new ArrayList<>(MetaInfResourceCache.findResources(context, FACELET_TAGLIB_SUFFIX));
     }
 
 }

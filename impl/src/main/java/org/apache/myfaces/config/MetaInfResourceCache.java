@@ -19,6 +19,10 @@
 package org.apache.myfaces.config;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,35 +48,66 @@ public final class MetaInfResourceCache
 {
     public static final String META_INF_PREFIX = "META-INF/";
 
-    private static final String CACHE_KEY = MetaInfResourceCache.class.getName() + ".META_INF_NAMES";
+    private static final String CACHE_KEY = MetaInfResourceCache.class.getName() + ".META_INF_ENTRIES";
 
     private MetaInfResourceCache()
     {
     }
 
     /**
-     * Returns the names of all classpath resource entries under {@code META-INF/}, scanning the
-     * classpath once per web application and caching the result. Callers filter the returned names by
-     * suffix and resolve matches via {@link ClassLoader#getResources(String)}.
+     * Returns all classpath resource entries under {@code META-INF/}, scanning the classpath once per
+     * web application and caching the result. Callers filter the names by suffix and resolve matches via
+     * {@link ClassLoader#getResources(String)}; the already resolved URLs (see
+     * {@link Classpath.ResourceEntries}) are filtered directly.
      */
-    @SuppressWarnings("unchecked")
-    public static Set<String> getMetaInfEntryNames(ExternalContext externalContext)
+    public static Classpath.ResourceEntries getMetaInfEntries(ExternalContext externalContext)
     {
         Map<String, Object> applicationMap = externalContext.getApplicationMap();
-        Set<String> names = (Set<String>) applicationMap.get(CACHE_KEY);
-        if (names == null)
+        Classpath.ResourceEntries entries = (Classpath.ResourceEntries) applicationMap.get(CACHE_KEY);
+        if (entries == null)
         {
             try
             {
-                names = Classpath.searchResourceNames(getClassLoader(), META_INF_PREFIX);
+                entries = Classpath.searchResourceEntries(getClassLoader(), META_INF_PREFIX);
             }
             catch (IOException e)
             {
                 throw new FacesException(e);
             }
-            applicationMap.put(CACHE_KEY, names);
+            applicationMap.put(CACHE_KEY, entries);
         }
-        return names;
+        return entries;
+    }
+
+    /**
+     * Returns the URLs of all classpath resources under {@code META-INF/} whose name ends with the given
+     * suffix.
+     */
+    public static Collection<URL> findResources(ExternalContext externalContext, String suffix) throws IOException
+    {
+        Classpath.ResourceEntries entries = getMetaInfEntries(externalContext);
+        Set<URL> urls = new LinkedHashSet<>();
+
+        ClassLoader loader = getClassLoader();
+        for (String name : entries.getNames())
+        {
+            if (name.endsWith(suffix))
+            {
+                for (Enumeration<URL> resources = loader.getResources(name); resources.hasMoreElements();)
+                {
+                    urls.add(resources.nextElement());
+                }
+            }
+        }
+        for (URL url : entries.getUrls())
+        {
+            if (url.toExternalForm().endsWith(suffix))
+            {
+                urls.add(url);
+            }
+        }
+
+        return urls;
     }
 
     /**

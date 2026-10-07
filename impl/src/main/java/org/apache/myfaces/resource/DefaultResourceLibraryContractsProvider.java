@@ -19,6 +19,7 @@
 package org.apache.myfaces.resource;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import jakarta.faces.application.ResourceHandler;
@@ -26,6 +27,7 @@ import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.config.MetaInfResourceCache;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
+import org.apache.myfaces.view.facelets.util.Classpath;
 
 /**
  *
@@ -78,19 +80,33 @@ public class DefaultResourceLibraryContractsProvider extends ResourceLibraryCont
 
         // Reuse the shared cached META-INF/ name scan and pick entries under META-INF/contracts/ ending
         // with jakarta.faces.contract.xml, deriving the contract name from the entry path.
-        for (String name : MetaInfResourceCache.getMetaInfEntryNames(context))
+        Classpath.ResourceEntries entries = MetaInfResourceCache.getMetaInfEntries(context);
+        for (String name : entries.getNames())
         {
             if (name.startsWith(META_INF_CONTRACTS_PREFIX) && name.endsWith(META_INF_CONTRACTS_SUFFIX))
             {
-                int suffixPos = name.lastIndexOf(META_INF_CONTRACTS_FILE);
-                int slashPos = name.lastIndexOf('/', suffixPos - 1);
-                if (suffixPos > 0 && slashPos > 0)
-                {
-                    contracts.add(name.substring(slashPos + 1, suffixPos));
-                }
+                addContract(contracts, name);
+            }
+        }
+        for (URL url : entries.getUrls())
+        {
+            String location = url.toExternalForm();
+            if (location.contains(META_INF_CONTRACTS_PREFIX) && location.endsWith(META_INF_CONTRACTS_SUFFIX))
+            {
+                addContract(contracts, location);
             }
         }
 
         return contracts;
+    }
+
+    private static void addContract(Set<String> contracts, String location)
+    {
+        int suffixPos = location.lastIndexOf(META_INF_CONTRACTS_FILE);
+        int slashPos = location.lastIndexOf('/', suffixPos - 1);
+        if (suffixPos > 0 && slashPos > 0)
+        {
+            contracts.add(location.substring(slashPos + 1, suffixPos));
+        }
     }
 }
