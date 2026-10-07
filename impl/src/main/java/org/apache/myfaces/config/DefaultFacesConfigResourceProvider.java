@@ -55,21 +55,16 @@ public class DefaultFacesConfigResourceProvider extends FacesConfigResourceProvi
     {
         List<URL> urlSet = new ArrayList<>();
 
-        // Filter the shared, cached META-INF/ name scan instead of walking every jar again:
-        // - META-INF/faces-config.xml (the standard implicit name), and
-        // - META-INF/*.faces-config.xml (custom names, e.g. maven-jetty-plugin layouts).
-        // Only the handful of matches are resolved to URLs via getResources (as before).
-        ClassLoader loader = MetaInfResourceCache.getClassLoader();
-        for (String name : MetaInfResourceCache.getMetaInfEntryNames(context))
+        // The standard implicit name is looked up directly, it does not depend on any jar scanning.
+        Enumeration<URL> resources = MetaInfResourceCache.getClassLoader().getResources(FACES_CONFIG_IMPLICIT);
+        while (resources.hasMoreElements())
         {
-            if (name.equals(FACES_CONFIG_IMPLICIT) || name.endsWith(FACES_CONFIG_SUFFIX))
-            {
-                for (Enumeration<URL> resources = loader.getResources(name); resources.hasMoreElements();)
-                {
-                    urlSet.add(resources.nextElement());
-                }
-            }
+            urlSet.add(resources.nextElement());
         }
+
+        // META-INF/*.faces-config.xml (custom names, e.g. maven-jetty-plugin layouts), filtered from the
+        // shared, cached META-INF/ scan instead of walking every jar again.
+        urlSet.addAll(MetaInfResourceCache.findResources(context, FACES_CONFIG_SUFFIX));
 
         return urlSet;
     }

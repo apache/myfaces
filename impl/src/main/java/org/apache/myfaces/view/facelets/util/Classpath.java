@@ -80,10 +80,10 @@ public final class Classpath
     }
 
     /**
-     * Collect, in a single classpath walk, the <em>names</em> of every resource entry whose name
-     * starts with the given {@code prefix} (e.g. {@code "META-INF/"}). Unlike
-     * {@link #search(ClassLoader, String, String)} this neither filters by suffix nor resolves URLs;
-     * it only enumerates jar/directory entries once and returns their names.
+     * Collect, in a single classpath walk, every resource entry whose name starts with the given
+     * {@code prefix} (e.g. {@code "META-INF/"}). Unlike {@link #search(ClassLoader, String, String)}
+     * this does not filter by suffix; it only enumerates jar/directory entries once and returns their
+     * names (see {@link ResourceEntries} for the one case where URLs are returned instead).
      *
      * <p>Callers that repeatedly search the same prefix for different suffixes (the startup
      * config/taglib/contract providers all scan {@code META-INF/}) can walk the classpath once, filter
@@ -91,20 +91,46 @@ public final class Classpath
      * {@link ClassLoader#getResources(String)} - instead of re-opening and re-enumerating every jar
      * once per suffix. Keeping only names (not eagerly-built URLs) avoids allocating a URL per entry.</p>
      */
-    public static Set<String> searchResourceNames(ClassLoader loader, String prefix) throws IOException
+    public static ResourceEntries searchResourceEntries(ClassLoader loader, String prefix) throws IOException
     {
-        Set<String> names = new HashSet<>();
+        ResourceEntries entries = new ResourceEntries();
         Set<String> scannedJars = new HashSet<>();
 
-        _collectResourceNames(names, loader, prefix, prefix, scannedJars);
-        _collectResourceNames(names, loader, prefix + "MANIFEST.MF", prefix, scannedJars);
+        _collectResourceNames(entries, loader, prefix, prefix, scannedJars);
+        _collectResourceNames(entries, loader, prefix + "MANIFEST.MF", prefix, scannedJars);
 
-        return names;
+        return entries;
     }
 
-    private static void _collectResourceNames(Set<String> names, ClassLoader loader, String resource,
+    /**
+     * Result of {@link #searchResourceEntries(ClassLoader, String)}.
+     *
+     * <p>{@link #getNames()} holds entry names relative to a classpath root (from jars and directories),
+     * which callers resolve via {@link ClassLoader#getResources(String)}. {@link #getUrls()} holds
+     * entries found by reading a non-jar URL as a zip stream (e.g. VFS-like containers): their names
+     * are relative to whatever the stream was opened on, not to a classpath root, so they cannot be
+     * resolved via {@code getResources} and are kept as already resolved URLs instead.</p>
+     */
+    public static final class ResourceEntries
+    {
+        private final Set<String> names = new LinkedHashSet<>();
+        private final Set<URL> urls = new LinkedHashSet<>();
+
+        public Set<String> getNames()
+        {
+            return names;
+        }
+
+        public Set<URL> getUrls()
+        {
+            return urls;
+        }
+    }
+
+    private static void _collectResourceNames(ResourceEntries entries, ClassLoader loader, String resource,
                                               String prefix, Set<String> scannedJars) throws IOException
     {
+        Set<String> names = entries.names;
         for (Enumeration<URL> urls = loader.getResources(resource); urls.hasMoreElements();)
         {
             URL url = urls.nextElement();
@@ -126,10 +152,10 @@ public final class Classpath
             {
                 if (jar != null)
                 {
-                    Enumeration<JarEntry> entries = jar.entries();
-                    while (entries.hasMoreElements())
+                    Enumeration<JarEntry> jarEntries = jar.entries();
+                    while (jarEntries.hasMoreElements())
                     {
-                        String name = entries.nextElement().getName();
+                        String name = jarEntries.nextElement().getName();
                         if (name.startsWith(prefix))
                         {
                             names.add(name);
@@ -145,7 +171,7 @@ public final class Classpath
                     File dir = new File(URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8));
                     if (!_collectDirNames(names, dir, prefix))
                     {
-                        _collectNamesFromURL(names, prefix, url);
+                        _collectUrlsFromURL(entries.urls, prefix, prefix, url);
                     }
                 }
             }
@@ -183,7 +209,14 @@ public final class Classpath
         return false;
     }
 
-    private static void _collectNamesFromURL(Set<String> names, String prefix, URL url) throws IOException
+    /**
+     * Like {@link #_searchFromURL}: the entry names of such a stream are relative to the URL the stream
+     * was opened on (which may be the {@code rootPrefix} directory itself, the jar, or an enclosing
+     * archive), so they are resolved against that URL right away instead of being collected as classpath
+     * names. {@code prefix} is the part of {@code rootPrefix} still to be walked up in the fallback.
+     */
+    private static void _collectUrlsFromURL(Set<URL> urls, String rootPrefix, String prefix, URL url)
+            throws IOException
     {
         boolean done = false;
 
@@ -198,12 +231,13 @@ public final class Classpath
                     {
                         ZipEntry entry = zis.getNextEntry();
                         done = entry != null;
+                        String base = url.toExternalForm();
                         while (entry != null)
                         {
-                            String entryName = entry.getName();
-                            if (entryName.startsWith(prefix))
+                            String location = base + entry.getName();
+                            if (location.contains(rootPrefix) && !entry.isDirectory())
                             {
-                                names.add(entryName);
+                                urls.add(new URL(url, location));
                             }
                             entry = zis.getNextEntry();
                         }
@@ -230,7 +264,7 @@ public final class Classpath
             {
                 return;
             }
-            _collectNamesFromURL(names, parentPrefix, new URL(urlString));
+            _collectUrlsFromURL(urls, rootPrefix, parentPrefix, new URL(url, urlString));
         }
     }
 
