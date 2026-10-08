@@ -577,22 +577,17 @@
                         <exclude>**/ApplicationImplTest*</exclude>
                         <exclude>**/FactoryFinderProviderTest*</exclude>
                     </excludes>
-                    <systemProperties>
-                        <!--
-                        Java 9 introduce CLDR locales as defaults
-                        some tests however fail because the local
-                        checks follow the java conventions.
-                        Setting it to provider should enable locale behavior
-                        across all supported JDKs
-                        -->
-                        <property>
-                            <name>java.locale.providers</name>
-                            <value>COMPAT</value>
-                        </property>
-                    </systemProperties>
-                    <argLine>-Djava.locale.providers=COMPAT</argLine>
-                    <!-- We need this for EasyMock :/ -->
-                    <argLine>--add-opens java.base/java.lang=ALL-UNNAME --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.text=ALL-UNNAMED</argLine>
+                    <!--
+                    Java 9 introduce CLDR locales as defaults
+                    some tests however fail because the local
+                    checks follow the java conventions.
+                    Setting it to provider should enable locale behavior
+                    across all supported JDKs.
+                    It belongs on the command line and not into systemPropertyVariables, because the JDK reads it
+                    while it boots, before surefire could apply a system property.
+                    The add-opens are needed for EasyMock :/
+                    -->
+                    <argLine>-Djava.locale.providers=COMPAT --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.text=ALL-UNNAMED</argLine>
                 </configuration>
 
                 <executions>
