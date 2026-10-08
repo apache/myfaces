@@ -18,22 +18,20 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.runtime.producer;
 
-import java.util.Map;
-
-import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 
 import io.quarkus.arc.BeanCreator;
+import io.quarkus.arc.SyntheticCreationalContext;
 
 public class ManagedPropertyBeanCreator implements BeanCreator<Object>
 {
     public static final String EXPRESSION = "expression";
 
     @Override
-    public Object create(CreationalContext<Object> cc, Map<String, Object> map)
+    public Object create(SyntheticCreationalContext<Object> context)
     {
-        String expression = (String) map.get(EXPRESSION);
+        String expression = (String) context.getParams().get(EXPRESSION);
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext == null)
