@@ -116,7 +116,7 @@ class SerializedViewCollection implements Serializable
                     // Note when the session is invalidated, _serializedViews map is empty,
                     // but we could have a not null previousRestoredKey (the last one before
                     // invalidate the session), so we need to check that condition before
-                    // set the precence. In that way, we ensure the precedence map will always
+                    // set the precedence. In that way, we ensure the precedence map will always
                     // have valid keys.
                     previousRestoredKey = null;
                 }

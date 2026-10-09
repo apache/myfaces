@@ -30,7 +30,7 @@ import org.apache.myfaces.view.facelets.pool.ViewEntry;
  * <ol>
  * <li>There is no need to put a hard limit about the max number of views stored
  * in the pool. Remember ViewEntry internally has a Soft or Weak reference over
- * the view. The maxCount is just a way to limit the max footprint fo the pool
+ * the view. The maxCount is just a way to limit the max footprint of the pool
  * in memory, but if the limit is exceed, the vm can always reclaim the memory space.</li>
  * <li>View creation is quite fast, so according to previous tests done,
  * include any synchronized method in this code will produce worse performance.</li>

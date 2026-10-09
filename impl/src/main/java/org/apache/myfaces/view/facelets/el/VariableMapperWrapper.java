@@ -52,7 +52,7 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
     }
 
     /**
-     * First tries to resolve agains the inner Map, then the wrapped ValueExpression.
+     * First tries to resolve against the inner Map, then the wrapped ValueExpression.
      * 
      * @see jakarta.el.VariableMapper#resolveVariable(java.lang.String)
      */

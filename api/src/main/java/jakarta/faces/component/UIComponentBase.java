@@ -1554,7 +1554,7 @@ public abstract class UIComponentBase extends UIComponent
                 // Call the processSaveState() method of all facets and children of this UIComponent in the order
                 // determined by a call to getFacetsAndChildren(), skipping children and facets that are transient.
 
-                // To improve speed and robustness, the facets and children processing is splited to maintain the
+                // To improve speed and robustness, the facets and children processing is split to maintain the
                 // facet --> state coherence based on the facet's name
                 for (Map.Entry<String, UIComponent> entry : getFacets().entrySet())
                 {
@@ -1577,7 +1577,7 @@ public abstract class UIComponentBase extends UIComponent
                 // Call the processSaveState() method of all facets and children of this UIComponent in the order
                 // determined by a call to getFacetsAndChildren(), skipping children and facets that are transient.
 
-                // To improve speed and robustness, the facets and children processing is splited to maintain the
+                // To improve speed and robustness, the facets and children processing is split to maintain the
                 // facet --> state coherence based on the facet's name
                 List<UIComponent> children = getChildren();
                 for (int i = 0; i < childCount; i++)
@@ -1635,7 +1635,7 @@ public abstract class UIComponentBase extends UIComponent
                 // Call the processRestoreState() method of all facets and children of this UIComponent in the order
                 // determined by a call to getFacetsAndChildren().
 
-                // To improve speed and robustness, the facets and children processing is splited to maintain the
+                // To improve speed and robustness, the facets and children processing is split to maintain the
                 // facet --> state coherence based on the facet's name
                 for (Map.Entry<String, UIComponent> entry : getFacets().entrySet())
                 {
@@ -1656,7 +1656,7 @@ public abstract class UIComponentBase extends UIComponent
                 // Call the processRestoreState() method of all facets and children of this UIComponent in the order
                 // determined by a call to getFacetsAndChildren().
 
-                // To improve speed and robustness, the facets and children processing is splited to maintain the
+                // To improve speed and robustness, the facets and children processing is split to maintain the
                 // facet --> state coherence based on the facet's name
                 int idx = 0;
                 List<UIComponent> children = getChildren();

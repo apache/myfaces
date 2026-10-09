@@ -156,7 +156,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         {
             /*
              * If we get into this code block the application contains some Faces artifacts, either a faces-config.xml
-             * or one ore more classes from @HandlesTypes. However if classes from @HandlesTypes or a faces-config.xml
+             * or one or more classes from @HandlesTypes. However if classes from @HandlesTypes or a faces-config.xml
              * is available a FacesServlet definition might not be defined.
              *
              * If a FacesServet definition was not found then add it dynamically.

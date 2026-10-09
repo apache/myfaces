@@ -119,7 +119,7 @@ public class ViewPoolProcessor
     /**
      * Indicates a hard reset should be done when saveState(...) is performed,
      * which means all transient and delta state should be cleared, destroying
-     * all existing state in the process. If something cannot be reseted, the 
+     * all existing state in the process. If something cannot be reset, the 
      * state should return non null, so the algorithm can remove the component
      * from the tree and mark the tree as partial (requires refresh before
      * reuse).

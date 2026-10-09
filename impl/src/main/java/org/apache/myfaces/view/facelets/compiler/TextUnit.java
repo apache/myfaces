@@ -451,9 +451,9 @@ final class TextUnit extends CompilationUnit
         //int firstCharLocation = getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
         int firstCharLocation = -1;
         int leftChar = 0; // 0=first char on left 1=\n 2=\r 3=\r\n
-        int lenght = text.length();
+        int length = text.length();
         String leftText = null;
-        for (int j = 0; j < lenght; j++)
+        for (int j = 0; j < length; j++)
         {
             char c = text.charAt(j);
             if (leftChar == 0)
@@ -461,7 +461,7 @@ final class TextUnit extends CompilationUnit
                 if (c == '\r')
                 {
                     leftChar = 2;
-                    if (j+1 < lenght)
+                    if (j+1 < length)
                     {
                         if (text.charAt(j+1) == '\n')
                         {
@@ -486,7 +486,7 @@ final class TextUnit extends CompilationUnit
         }
         if (firstCharLocation == -1)
         {
-            firstCharLocation = lenght;
+            firstCharLocation = length;
         }
         // Define the character on the left
         if (firstCharLocation > 0)
@@ -503,7 +503,7 @@ final class TextUnit extends CompilationUnit
                     leftText = "\r\n";
                     break;
                 default:
-                    leftText = (lenght > 1) ? text.substring(0,1) : text;
+                    leftText = (length > 1) ? text.substring(0,1) : text;
                     break;
             }                
         }
@@ -584,9 +584,9 @@ final class TextUnit extends CompilationUnit
             {
                 int firstCharLocation = -1;
                 int leftChar = 0; // 0=first char on left 1=\n 2=\r 3=\r\n
-                int lenght = text.length();
+                int length = text.length();
                 String leftText = null;
-                for (int j = 0; j < lenght; j++)
+                for (int j = 0; j < length; j++)
                 {
                     char c = text.charAt(j);
                     if (leftChar == 0)
@@ -594,7 +594,7 @@ final class TextUnit extends CompilationUnit
                         if (c == '\r')
                         {
                             leftChar = 2;
-                            if (j+1 < lenght)
+                            if (j+1 < length)
                             {
                                 if (text.charAt(j+1) == '\n')
                                 {
@@ -619,7 +619,7 @@ final class TextUnit extends CompilationUnit
                 }
                 if (firstCharLocation == -1)
                 {
-                    firstCharLocation = lenght;
+                    firstCharLocation = length;
                 }
                 // Define the character on the left
                 if (firstCharLocation > 0)
@@ -636,7 +636,7 @@ final class TextUnit extends CompilationUnit
                             leftText = "\r\n";
                             break;
                         default:
-                            leftText = (lenght > 1) ? text.substring(0,1) : text;
+                            leftText = (length > 1) ? text.substring(0,1) : text;
                             break;
                     }                
                 }
@@ -645,7 +645,7 @@ final class TextUnit extends CompilationUnit
                     leftText = "";
                 }
                 
-                if (firstCharLocation == lenght && lenght > 1)
+                if (firstCharLocation == length && length > 1)
                 {
                     // All the instruction is space, replace with an instruction 
                     // with only one space

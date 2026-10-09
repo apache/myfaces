@@ -39,7 +39,7 @@ public class SecretKeyConfigurationTest extends AbstractFacesTestCase
         try{
             StateUtils.encrypt("serialized objects".getBytes(), externalContext);
             Assertions.fail("An exception should be thrown if there" +
-                    " is no SecretKey in application scope and cacheing is enabled ");
+                    " is no SecretKey in application scope and caching is enabled ");
         }catch(Exception e){
         }
         
@@ -54,7 +54,7 @@ public class SecretKeyConfigurationTest extends AbstractFacesTestCase
             
             StateUtils.encrypt("serialized objects".getBytes(), externalContext);
             Assertions.fail("An exception should be thrown if there" +
-                    " is no SecretKey in application scope and cacheing is enabled ");
+                    " is no SecretKey in application scope and caching is enabled ");
         }catch(Exception cce){
         }
         
@@ -77,7 +77,7 @@ public class SecretKeyConfigurationTest extends AbstractFacesTestCase
             
             StateUtils.decrypt("serialized objects".getBytes(), externalContext);
             Assertions.fail("An exception should be thrown if there" +
-                    " is no SecretKey in application scope and cacheing is enabled ");
+                    " is no SecretKey in application scope and caching is enabled ");
         }catch(Exception cce){
         }
         

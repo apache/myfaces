@@ -75,7 +75,7 @@ public class DoubleConverterTest extends AbstractFacesTestCase {
         }
 
         {
-            // values with a dot as decimal seperator should still work...
+            // values with a dot as decimal separator should still work...
             Double d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, "0.3443e3");
             Assertions.assertNotNull(d);
             Assertions.assertEquals(344.3d, d.doubleValue(), 0);

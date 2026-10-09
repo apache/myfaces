@@ -107,7 +107,7 @@ public @interface FacesRenderer
 
     /**
      * <p class="changed_added_2_0">
-     * The value of this annotation attribute is taken to be the <em>render-kit-id</em> in which an instance of thi
+     * The value of this annotation attribute is taken to be the <em>render-kit-id</em> in which an instance of this
      * class of <code>Renderer</code> must be installed.
      * </p>
      *

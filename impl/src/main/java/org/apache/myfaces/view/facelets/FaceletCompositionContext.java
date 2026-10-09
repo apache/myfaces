@@ -456,7 +456,7 @@ abstract public class FaceletCompositionContext
     }
     
     /**
-     * Activater record unique id mode, so an structure will be
+     * Activate record unique id mode, so a structure will be
      * used to hold those values.
      * 
      * since 2.1.7, 2.0.13

@@ -49,7 +49,7 @@ public @interface NamedEvent
     /**
      * <p class="changed_added_2_0">
      * The value of this annotation attribute is taken to be the short name for the
-     * {@link jakarta.faces.event.ComponentSystemEvent}. If the value of this attribute is ommitted, the followin
+     * {@link jakarta.faces.event.ComponentSystemEvent}. If the value of this attribute is omitted, the following
      * algorithm must be used by the code that processes this annotation to determine its value.
      * </p>
      *

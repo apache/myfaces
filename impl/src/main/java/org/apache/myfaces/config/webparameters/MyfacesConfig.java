@@ -80,7 +80,7 @@ public class MyfacesConfig
      * <ul><li>true - to render Faces 1.2 compliant id attributes (that might cause invalid XHTML), or</li>
      * <li>false - to omit rendering of the id attribute (which is only needed for very special 
      * AJAX/Javascript components)</li></ul>
-     * Default value is: true (for backwards compatibility and Faces 1.2 compliancy) 
+     * Default value is: true (for backwards compatibility and Faces 1.2 compliance) 
      */
     @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1", 
             ignoreUpperLowerCase=true, group="state")

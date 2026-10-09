@@ -33,7 +33,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * </p>
  * <p>
  * UISelectItems should be nested inside a UISelectMany or UISelectOne component,
- * and results in  the addition of one ore more SelectItem instance to the list of available options
+ * and results in  the addition of one or more SelectItem instance to the list of available options
  * for the parent component
  * </p>
  */

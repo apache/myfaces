@@ -1133,7 +1133,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
             
             // Check if the view has removed components. If that so, it
             // means there is some manipulation over the component tree that
-            // can be rollback, so it is ok to set the view as resetable.
+            // can be rollback, so it is ok to set the view as resettable.
             if (callback.isViewResetable())
             {
                 List<String> removedIds = getClientIdsRemoved(uiViewRoot);
@@ -1250,7 +1250,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
             //Note if UIViewRoot has this marker, Faces 1.2 like state saving is used.
             if (componentAddedAfterBuildView != null && parent != null)
             {
-                //Set this view as not resetable.
+                //Set this view as not resettable.
                 //setViewResetable(false);
                 // Enable flag to remove added components later
                 setRemoveAddedComponents(true);
@@ -1268,7 +1268,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 }
                 if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
                 {
-                    //If the view has removed components, set the view as non resetable
+                    //If the view has removed components, set the view as non resettable
                     setViewResetable(false);
                     registerOnAddRemoveList(facesContext, targetClientId);
                     target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
@@ -1281,7 +1281,7 @@ public class PartialStateManagementStrategy extends StateManagementStrategy
                 else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
                 {
                     // Later on the check of removed components we'll see if the view
-                    // is resetable or not.
+                    // is resettable or not.
                     registerOnAddList(facesContext, targetClientId);
                 }
                 ensureClearInitialState(target);

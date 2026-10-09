@@ -247,7 +247,7 @@ public class ApplicationImpl extends Application
     {
         if (runtimeConfig == null)
         {
-            throw new IllegalArgumentException("runtimeConfig must mot be null");
+            throw new IllegalArgumentException("runtimeConfig must not be null");
         }
         // set default implementation in constructor
         // pragmatic approach, no synchronizing will be needed in get methods

@@ -241,7 +241,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractFacesCon
         servletContext.setDocumentRoot(documentRoot);
         
         // set the right faces-config files.
-        // we want that default-required-validator.xml is feeded before
+        // we want that default-required-validator.xml is fed before
         // empty-default-validators.xml and since the FacesConfigurator
         // will change the order when no ordering information is present, 
         // we have to specify them the other way round!
@@ -282,7 +282,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractFacesCon
         servletContext.setDocumentRoot(documentRoot);
         
         // set the right faces-config files.
-        // we want that default-required-validator.xml is feeded before
+        // we want that default-required-validator.xml is fed before
         // no-default-validators.xml and since the FacesConfigurator
         // will change the order when no ordering information is present, 
         // we have to specify them the other way round!
@@ -323,7 +323,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractFacesCon
         servletContext.setDocumentRoot(documentRoot);
         
         // set the right faces-config files.
-        // we want that default-required-validator.xml is feeded before
+        // we want that default-required-validator.xml is fed before
         // default-length-validator.xml and since the FacesConfigurator
         // will change the order when no ordering information is present, 
         // we have to specify them the other way round!
