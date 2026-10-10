@@ -79,6 +79,6 @@ abstract class _UIMessage extends UIComponentBase
    * @return
    */
   @JSFProperty
-  (defaultValue = "true", tagExcluded=true)  
+  (defaultValue = "true")  
   public abstract boolean isRedisplay();
 }
