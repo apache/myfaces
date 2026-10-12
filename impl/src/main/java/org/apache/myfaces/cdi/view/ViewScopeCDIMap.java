@@ -133,7 +133,8 @@ public class ViewScopeCDIMap implements Map<String, Object>
 
         ContextualInstanceInfo info = new ContextualInstanceInfo();
         info.setContextualInstance(value);
-        return getCreationalContextInstances().put(beanKey, info);
+        ContextualInstanceInfo previous = getCreationalContextInstances().put(beanKey, info);
+        return previous == null ? null : previous.getContextualInstance();
     }
 
     @Override
