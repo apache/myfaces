@@ -46,19 +46,30 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+
       - name: Set up JDK 8
         uses: actions/setup-java@v5
         with:
           distribution: 'adopt'
           java-version: 8
+
+      - name: Set up Maven 3.8.8
+        run: |
+          MAVEN_VERSION=3.8.8
+          curl -fsSL https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
+            | tar -xz -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/apache-maven-${MAVEN_VERSION}/bin" >> "$GITHUB_PATH"
+          
       - name: Cache Maven packages
         uses: actions/cache@v6
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
       - name: Build with Maven
         run: mvn -B -V clean install
+
       - name: Verify with Maven
         run: |
           if ! mvn -B clean checkstyle:check org.apache.rat:apache-rat-plugin:check verify -Dformats=XML -f pom.xml; then
