@@ -18,6 +18,7 @@
  */
 package jakarta.faces.validator;
 
+import jakarta.enterprise.inject.Stereotype;
 import jakarta.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -48,6 +49,7 @@ import java.util.Objects;
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Inherited
 @Qualifier
+@Stereotype
 public @interface FacesValidator
 {
     /**
