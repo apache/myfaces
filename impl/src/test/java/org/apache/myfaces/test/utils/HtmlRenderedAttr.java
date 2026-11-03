@@ -36,9 +36,9 @@ public class HtmlRenderedAttr
         expectedOccurrences = 1;
     }
     
-    public HtmlRenderedAttr(String name, int expectedOccurences) {
+    public HtmlRenderedAttr(String name, int expectedOccurrences) {
         this(name);
-        this.expectedOccurrences = expectedOccurences;
+        this.expectedOccurrences = expectedOccurrences;
     }
     
     public HtmlRenderedAttr(String name, String value)

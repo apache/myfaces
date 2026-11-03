@@ -101,10 +101,10 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
     }
 
     /**
-     * Test of isInitalStateMarked method, of class _DeltaStateHelper.
+     * Test of isInitialStateMarked method, of class _DeltaStateHelper.
      */
     @Test
-    public void testIsInitalStateMarked()
+    public void testIsInitialStateMarked()
     {
         Assertions.assertTrue(_instance.isInitialStateMarked());
         _instance.setInitialStateMarked(false);
