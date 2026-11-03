@@ -29,7 +29,7 @@
     "html-webpack-plugin": "^5.6.8",
     "jsdom": "^29.1.1",
     "jsf.js_next_gen": "4.1.1",
-    "mocha": "^11.8.0",
+    "mocha": "^12.0.3",
     "nise": "^6.1.5",
     "npm-check-updates": "^23.1.0",
     "nyc": "^18.0.0",
@@ -54,7 +54,7 @@
   },
   "overrides": {
     "diff": ">=8.0.3",
-    "serialize-javascript": ">=7.0.5",
+    "serialize-javascript": ">=7.1.4",
     "uuid": ">=14.0.0"
   },
   "allowScripts": {
