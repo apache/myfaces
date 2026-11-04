@@ -962,17 +962,20 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public boolean isValid()
     {
-        TransientStateHelper tsh = getTransientStateHelper(false);
-        return tsh == null || (Boolean) tsh.getTransient(PropertyKeys.valid, Boolean.TRUE);
+        Object value = getStateHelper().get(PropertyKeys.valid);
+        if (value != null)
+        {
+            return (Boolean) value;        
+        }
+        return true; 
     }
 
     @Override
     public void setValid(boolean valid)
     {
-        SimpleTransientStateHelper tsh = (SimpleTransientStateHelper) getTransientStateHelper(!valid);
-        if (tsh != null)
+        if (getStateHelper().get(PropertyKeys.valid) != null || !valid)
         {
-            tsh.setOrRemoveTransient(PropertyKeys.valid, valid ? null : Boolean.FALSE);
+            getStateHelper().put(PropertyKeys.valid, valid );
         }
     }
 
@@ -985,17 +988,20 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public boolean isLocalValueSet()
     {
-        TransientStateHelper tsh = getTransientStateHelper(false);
-        return tsh != null && (Boolean) tsh.getTransient(PropertyKeys.localValueSet, Boolean.FALSE);
+        Object value = getStateHelper().get(PropertyKeys.localValueSet);
+        if (value != null)
+        {
+            return (Boolean) value;        
+        }
+        return false;
     }
 
     @Override
     public void setLocalValueSet(boolean localValueSet)
     {
-        SimpleTransientStateHelper tsh = (SimpleTransientStateHelper) getTransientStateHelper(localValueSet);
-        if (tsh != null)
+        if (getStateHelper().get(PropertyKeys.localValueSet) != null || localValueSet)
         {
-            tsh.setOrRemoveTransient(PropertyKeys.localValueSet, localValueSet ? Boolean.TRUE : null);
+            getStateHelper().put(PropertyKeys.localValueSet, localValueSet );
         }
     }
 
@@ -1071,7 +1077,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
     private static final Object[] INITIAL_STATE_PROPERTIES = new
             Object[]{
                 UIOutput.PropertyKeys.value,
-                null
+                null,
+                UIInput.PropertyKeys.localValueSet,
+                false,
+                UIInput.PropertyKeys.valid,
+                true
             };
     
     @Override
