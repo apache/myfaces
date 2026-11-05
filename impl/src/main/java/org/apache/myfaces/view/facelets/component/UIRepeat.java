@@ -1790,6 +1790,10 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 _rowStates = (Map<String, List<EditableValueHolderState>>) rs;
             }
         }
+        else if (!_rowStates.isEmpty())
+        {
+            _rowStates.clear();
+        }
         if (values.length > 3)
         {
             Object rs = UIComponentBase.restoreAttachedState(context, values[3]);
@@ -1851,16 +1855,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
             else
             {
-                if (parentSaved == null &&_rowDeltaStates.isEmpty())
+                if (parentSaved == null && _rowDeltaStates.isEmpty() && _rowStates.isEmpty())
                 {
                     return null;
                 }
                 else
                 {
-                    Object[] values = new Object[2];
-                    values[0] = super.saveState(context);
-                    values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
-                    return values;
+                    return saveRenderResponseState(context);
                 }
             }
         }
@@ -1878,14 +1879,30 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
             else
             {
-                Object[] values = new Object[2];
-                values[0] = super.saveState(context);
-                values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
-                return values;
+                return saveRenderResponseState(context);
             }
         }
     }
-    
+
+    /**
+     * Saves the state at the end of RENDER_RESPONSE. {@link #_rowTransientStates} is request scoped and
+     * left out, but {@link #_rowStates} is kept: the per-row state of the child inputs must survive until
+     * the page is rerendered without errors, which may be a later request that does not execute this
+     * component. encodeBegin() clears it when there are no ERROR or FATAL messages, so it is empty in the
+     * common case and adds nothing to the state.
+     */
+    private Object[] saveRenderResponseState(FacesContext context)
+    {
+        Object[] values = new Object[_rowStates.isEmpty() ? 2 : 3];
+        values[0] = super.saveState(context);
+        values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+        if (!_rowStates.isEmpty())
+        {
+            values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+        }
+        return values;
+    }
+
     @Override
     public void encodeBegin(FacesContext context) throws IOException
     {
