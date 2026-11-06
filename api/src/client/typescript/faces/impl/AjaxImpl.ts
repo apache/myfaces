@@ -707,6 +707,12 @@ export namespace Implementation {
          * @param componentIdToTransform the componentId which needs post-processing
          */
         const remapNamingContainer = (componentIdToTransform: string) => {
+            // without a namespaced view root the ids are client ids which already were
+            // resolved on the server, remapping them against the form's naming container
+            // can point them to the wrong element
+            if (!rootNamingContainerId) {
+                return componentIdToTransform;
+            }
             // pattern :<anything> must be prepended by viewRoot if there is one,
             // otherwise we are in a not namespaced then only the id has to match
             const rootNamingContainerPrefix = (rootNamingContainerId.length) ? rootNamingContainerId+SEP : EMPTY_STR;

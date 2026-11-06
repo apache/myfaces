@@ -266,6 +266,50 @@ describe("test for proper request param patterns identical to the old implementa
     });
 
     /**
+     * MYFACES-4771: render and execute ids are client ids already resolved by the server,
+     * a form inside a naming container must not remap them to an element with the same id
+     * inside that naming container
+     */
+    it("must not remap resolved ids to the form's naming container", function (done) {
+        window.document.body.innerHTML = `
+<div id="messages"></div>
+<div id="comp">
+    <form id="comp:form" action="/test.xhtml" method="post">
+        <input type="hidden" name="jakarta.faces.ViewState" id="j_id__v_0:jakarta.faces.ViewState:1" value="viewStateValue">
+        <button type="button" id="comp:form:btn" name="comp:form:btn">go</button>
+        <div id="comp:messages"></div>
+    </form>
+</div>
+`;
+
+        try {
+            let event = {
+                isTrusted: true,
+                type: 'click',
+                target: document.getElementById("comp:form:btn"),
+                currentTarget: document.getElementById("comp:form:btn")
+            };
+            faces.ajax.request(document.getElementById("comp:form:btn"), event as any, {
+                execute: "@this",
+                render: "messages"
+            });
+        } catch (err) {
+            console.error(err);
+            expect(false).to.eq(true);
+        }
+        const requestBody = this.requests[0].requestBody;
+        let resultsMap = {};
+        for (let val of requestBody.split("&")) {
+            let keyVal = val.split("=");
+            resultsMap[keyVal[0]] = keyVal[1];
+        }
+
+        expect(resultsMap["jakarta.faces.partial.render"]).to.eq("messages");
+        expect(resultsMap["jakarta.faces.partial.execute"]).to.eq(encodeURIComponent("comp:form:btn"));
+        done();
+    });
+
+    /**
      * This test is based on Tobago 6.0.0 (Jakarte EE 10).
      */
     it("tobago tree select", function (done) {
