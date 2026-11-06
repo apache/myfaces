@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import jakarta.el.ELException;
@@ -142,10 +141,12 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         int e = this.getEnd(ctx);
         Object src = null;
         ValueExpression srcVE = null;
+        IterationItems iterationItems = null;
         if (this.items != null)
         {
             srcVE = this.items.getValueExpression(ctx, Object.class);
             src = srcVE.getValue(ctx);
+            iterationItems = new IterationItems(srcVE, ctx.getFacesContext(), src);
         }
         else
         {
@@ -178,18 +179,20 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                 if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
                 {
                     // Refresh, evaluate and synchronize state
-                    applyOnRefresh(ctx, fcc, pctx, parent, uniqueId, src, srcVE, restoredSavedOption);
+                    applyOnRefresh(ctx, fcc, pctx, parent, uniqueId, src, srcVE, iterationItems,
+                            restoredSavedOption);
                 }
                 else
                 {
                     // restore view, don't record iteration, use the saved value
-                    applyOnRestore(ctx, fcc, pctx, parent, uniqueId, src, srcVE, restoredSavedOption);
+                    applyOnRestore(ctx, fcc, pctx, parent, uniqueId, src, srcVE, iterationItems,
+                            restoredSavedOption);
                 }
             }
             else
             {
                 // First time         
-                applyFirstTime(ctx, fcc, pctx, parent, uniqueId, src, srcVE);
+                applyFirstTime(ctx, fcc, pctx, parent, uniqueId, src, srcVE, iterationItems);
             }
         }
 
@@ -205,11 +208,12 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
     }
     
     private void setVar(FaceletContext ctx, UIComponent parent, String uniqueId, String base,
-            boolean t, Object src, ValueExpression srcVE, Object value, String v, int i)
+            boolean t, Object src, Object value, String v, int i, IterationItems iterationItems)
     {
         // set the var
         if (v != null)
         {
+            ValueExpression srcVE = iterationItems == null ? null : iterationItems.getItems();
             ValueExpression ve;
             if (t || srcVE == null)
             {
@@ -224,7 +228,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
             }
             else
             {
-                ve = this.getVarExpr(srcVE, src, value, i);
+                ve = this.getVarExpr(srcVE, iterationItems, src, value, i);
             }
             setVar(ctx, parent, uniqueId, base, v, ve, srcVE);
         }
@@ -251,7 +255,8 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
     }
     
     private void applyFirstTime(FaceletContext ctx, FaceletCompositionContext fcc, PageContext pctx, 
-        UIComponent parent, String uniqueId, Object src, ValueExpression srcVE) throws IOException
+        UIComponent parent, String uniqueId, Object src, ValueExpression srcVE, IterationItems iterationItems)
+        throws IOException
     {
         int s = this.getBegin(ctx);
         int e = this.getEnd(ctx);
@@ -306,7 +311,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                     {
                         fcc.startComponentUniqueIdSection(base);
 
-                        setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, i);
+                        setVar(ctx, parent, uniqueId, base, t, src, value, v, i, iterationItems);
                         boolean last = !itr.hasNext();
                         // set the varStatus
                         if (vs != null)
@@ -365,7 +370,8 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
     }
     
     private void applyOnRestore(FaceletContext ctx, FaceletCompositionContext fcc, PageContext pctx, 
-        UIComponent parent, String uniqueId, Object src, ValueExpression srcVE, IterationState restoredSavedOption)
+        UIComponent parent, String uniqueId, Object src, ValueExpression srcVE, IterationItems iterationItems,
+        IterationState restoredSavedOption)
         throws IOException
     {
         int s = this.getBegin(ctx);
@@ -385,6 +391,22 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         try
         {
             int size = restoredSavedOption.getValueList().size();
+
+            // MYFACES-4775 create the var of every restored row before any row body is applied: a row
+            // already resolves its var while its body is built (e.g. id="#{item.id}") and needs to know
+            // the elements all other rows were rendered with to tell whether its own element vanished.
+            ValueExpression[] varExprs = null;
+            if (v != null && !t && srcVE != null)
+            {
+                varExprs = new ValueExpression[size];
+                for (int si = 0; si < size; si++)
+                {
+                    Object[] stateValue = restoredSavedOption.getValueList().get(si);
+                    varExprs[si] = this.getVarExpr(srcVE, iterationItems, src, stateValue[1],
+                            (Integer) stateValue[2]);
+                }
+            }
+
             for (int si = 0; si < size; si++)
             {
                 Object[] stateValue = restoredSavedOption.getValueList().get(si);
@@ -395,7 +417,15 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                 {
                     fcc.startComponentUniqueIdSection(base);
 
-                    setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, (Integer) stateValue[2]);
+                    if (varExprs != null)
+                    {
+                        setVar(ctx, parent, uniqueId, base, v, varExprs[si], srcVE);
+                    }
+                    else
+                    {
+                        setVar(ctx, parent, uniqueId, base, t, src, value, v, (Integer) stateValue[2],
+                                iterationItems);
+                    }
 
                     boolean first = (si == 0);
                     boolean last = (si == size-1);
@@ -439,7 +469,8 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
     }
     
     private void applyOnRefresh(FaceletContext ctx, FaceletCompositionContext fcc, PageContext pctx, 
-        UIComponent parent, String uniqueId, Object src, ValueExpression srcVE, IterationState restoredSavedOption)
+        UIComponent parent, String uniqueId, Object src, ValueExpression srcVE, IterationItems iterationItems,
+        IterationState restoredSavedOption)
         throws IOException
     {
         int s = this.getBegin(ctx);
@@ -519,7 +550,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                     {
                         fcc.startComponentUniqueIdSection(base);
 
-                        setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, i);
+                        setVar(ctx, parent, uniqueId, base, t, src, value, v, i, iterationItems);
 
                         boolean last = !itr.hasNext();
                         // set the varStatus
@@ -674,20 +705,18 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         return false;
     }
 
-    private ValueExpression getVarExpr(ValueExpression ve, Object src, Object value, int i)
+    private ValueExpression getVarExpr(ValueExpression ve, IterationItems iterationItems, Object src, Object value,
+            int i)
     {
-        if (src instanceof List || src.getClass().isArray())
+        // MYFACES-4775 bind to the live element of the model instead of the element saved with the
+        // view state: the rendered element is located in the live items, the position is the fallback.
+        if (src instanceof Collection || src.getClass().isArray())
         {
-            //return new IndexedValueExpression(ve, i);
-            return new IteratedValueExpression(ve, value);
+            return new IndexedValueExpression(iterationItems, i, value);
         }
         else if (src instanceof Map && value instanceof Map.Entry entry)
         {
             return new MappedValueExpression(ve, entry);
-        }
-        else if (src instanceof Collection)
-        {
-            return new IteratedValueExpression(ve, value);
         }
         throw new IllegalStateException("Cannot create VE for: " + src);
     }

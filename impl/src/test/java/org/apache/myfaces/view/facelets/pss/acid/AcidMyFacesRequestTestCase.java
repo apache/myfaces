@@ -18,8 +18,11 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UICommand;
@@ -40,6 +43,10 @@ import org.apache.myfaces.view.facelets.pss.acid.managed.ComponentBindingBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ComponentBindingFormBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.CustomSessionBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachBean;
+import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachInputItem;
+import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachInputKeyedItem;
+import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachInputRequestBean;
+import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachInputSessionBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ResourceDependencyBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.AcidTestBean;
 import org.junit.jupiter.api.Assertions;
@@ -2111,6 +2118,279 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         Assertions.assertNotNull(itemX_4);
         Assertions.assertEquals("x", itemX_4.getValue());
 
+        endRequest();
+    }
+
+    /**
+     * MYFACES-4775: inputs bound to a c:forEach var must update the live item of the model,
+     * not a copy of the element saved with the view state.
+     */
+    @Test
+    public void testCForEachInputUpdatesLiveItem() throws Exception
+    {
+        startViewRequest("/forEachInput.xhtml");
+        processLifecycleExecuteAndRender();
+
+        client.inputText("mainForm:session_a", "edited session a");
+        client.inputText("mainForm:session_b", "edited session b");
+        client.inputText("mainForm:request_a", "edited request a");
+        client.inputText("mainForm:request_b", "edited request b");
+        client.submit("mainForm:postback");
+
+        processLifecycleExecute();
+
+        Assertions.assertFalse(facesContext.getMessages().hasNext());
+
+        ForEachInputSessionBean sessionBean = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{forEachInputSessionBean}", ForEachInputSessionBean.class);
+        Assertions.assertEquals("edited session a", sessionBean.getItems().get(0).getName());
+        Assertions.assertEquals("edited session b", sessionBean.getItems().get(1).getName());
+
+        ForEachInputRequestBean requestBean = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{forEachInputRequestBean}", ForEachInputRequestBean.class);
+        Assertions.assertEquals("edited request a", requestBean.getItems().get(0).getName());
+        Assertions.assertEquals("edited request b", requestBean.getItems().get(1).getName());
+
+        executeBeforeRender();
+        executeBuildViewCycle();
+        executeViewHandlerRender();
+
+        String content = new String(((MockPrintWriter) response.getWriter()).content());
+        Assertions.assertTrue(content.contains("edited session a"));
+        Assertions.assertTrue(content.contains("edited request b"));
+
+        endRequest();
+    }
+
+    /**
+     * MYFACES-4775: the first item was removed between render and postback. The row of the
+     * remaining item follows its item, the value of the vanished item goes nowhere.
+     */
+    @Test
+    public void testCForEachInputItemRemovedBeforePostback() throws Exception
+    {
+        ForEachInputSessionBean bean = renderForEachInputAndEdit(items -> items.remove(0));
+
+        Assertions.assertFalse(facesContext.getMessages().hasNext());
+        Assertions.assertEquals(1, bean.getItems().size());
+        Assertions.assertEquals("b", bean.getItems().get(0).getId());
+        Assertions.assertEquals("edited session b", bean.getItems().get(0).getName());
+
+        // the restored rows keep the ids of their rendered items, also while the view is built
+        Assertions.assertNotNull(facesContext.getViewRoot().findComponent("mainForm:session_a"));
+        Assertions.assertNotNull(facesContext.getViewRoot().findComponent("mainForm:session_b"));
+
+        renderAndEndRequest();
+    }
+
+    /**
+     * MYFACES-4775: an item was added in front between render and postback. Every row follows its
+     * item, the new item stays untouched.
+     */
+    @Test
+    public void testCForEachInputItemAddedBeforePostback() throws Exception
+    {
+        ForEachInputSessionBean bean = renderForEachInputAndEdit(
+                items -> items.add(0, new ForEachInputKeyedItem("z", "original z")));
+
+        Assertions.assertFalse(facesContext.getMessages().hasNext());
+        Assertions.assertEquals(3, bean.getItems().size());
+        Assertions.assertEquals("original z", bean.getItems().get(0).getName());
+        Assertions.assertEquals("edited session a", bean.getItems().get(1).getName());
+        Assertions.assertEquals("edited session b", bean.getItems().get(2).getName());
+
+        // the restored rows keep the ids of their rendered items, the new item gets no row yet
+        Assertions.assertNotNull(facesContext.getViewRoot().findComponent("mainForm:session_a"));
+        Assertions.assertNotNull(facesContext.getViewRoot().findComponent("mainForm:session_b"));
+        Assertions.assertNull(facesContext.getViewRoot().findComponent("mainForm:session_z"));
+
+        renderAndEndRequest();
+    }
+
+    /**
+     * MYFACES-4775: the last item was removed between render and postback. The row of the vanished
+     * item must neither fail nor write anything.
+     */
+    @Test
+    public void testCForEachInputLastItemRemovedBeforePostback() throws Exception
+    {
+        ForEachInputSessionBean bean = renderForEachInputAndEdit(items -> items.remove(1));
+
+        Assertions.assertFalse(facesContext.getMessages().hasNext());
+        Assertions.assertEquals(1, bean.getItems().size());
+        Assertions.assertEquals("edited session a", bean.getItems().get(0).getName());
+
+        renderAndEndRequest();
+    }
+
+    /**
+     * MYFACES-4775: all items vanished between render and postback. The postback must neither
+     * fail nor write anything.
+     */
+    @Test
+    public void testCForEachInputItemsClearedBeforePostback() throws Exception
+    {
+        ForEachInputSessionBean bean = renderForEachInputAndEdit(List::clear);
+
+        Assertions.assertFalse(facesContext.getMessages().hasNext());
+        Assertions.assertTrue(bean.getItems().isEmpty());
+
+        renderAndEndRequest();
+    }
+
+    /**
+     * MYFACES-4775: a Set and nested c:forEach loops must update the live items as well.
+     */
+    @Test
+    public void testCForEachInputSetAndNestedUpdateLiveItems() throws Exception
+    {
+        startViewRequest("/forEachInput.xhtml");
+        processLifecycleExecuteAndRender();
+
+        client.inputText("mainForm:set_s1", "edited s1");
+        client.inputText("mainForm:set_s2", "edited s2");
+        client.inputText("mainForm:nested_g1", "edited g1");
+        client.inputText("mainForm:nested_g2", "edited g2");
+        client.submit("mainForm:postback");
+
+        processLifecycleExecute();
+
+        Assertions.assertFalse(facesContext.getMessages().hasNext());
+
+        ForEachInputSessionBean bean = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{forEachInputSessionBean}", ForEachInputSessionBean.class);
+        List<ForEachInputItem> setItems = List.copyOf(bean.getItemSet());
+        Assertions.assertEquals("edited s1", setItems.get(0).getName());
+        Assertions.assertEquals("edited s2", setItems.get(1).getName());
+        Assertions.assertEquals("edited g1", bean.getGroups().get(0).get(0).getName());
+        Assertions.assertEquals("edited g2", bean.getGroups().get(1).get(0).getName());
+
+        renderAndEndRequest();
+    }
+
+    /**
+     * MYFACES-4775: rows with generated ids are tied to their rendered position, not to their item.
+     * Items with their own equals are located in the live items anyway: the row of the removed
+     * first item writes nowhere, the row of the second item still updates it.
+     */
+    @Test
+    public void testCForEachGeneratedIdsItemRemovedBeforePostback() throws Exception
+    {
+        ForEachInputSessionBean bean = renderGeneratedIdsAndEdit("keyed", items -> items.remove(0));
+
+        Assertions.assertFalse(facesContext.getMessages().hasNext());
+        Assertions.assertEquals(1, bean.getItems().size());
+        Assertions.assertEquals("b", bean.getItems().get(0).getId());
+        Assertions.assertEquals("edited 2", bean.getItems().get(0).getName());
+
+        renderAndEndRequest();
+    }
+
+    /**
+     * MYFACES-4775: rows with generated ids, an item with its own equals was added in front. Every
+     * row follows its item, the new item stays untouched.
+     */
+    @Test
+    public void testCForEachGeneratedIdsItemAddedBeforePostback() throws Exception
+    {
+        ForEachInputSessionBean bean = renderGeneratedIdsAndEdit("keyed",
+                items -> items.add(0, new ForEachInputKeyedItem("z", "original z")));
+
+        Assertions.assertFalse(facesContext.getMessages().hasNext());
+        Assertions.assertEquals(3, bean.getItems().size());
+        Assertions.assertEquals("original z", bean.getItems().get(0).getName());
+        Assertions.assertEquals("edited 1", bean.getItems().get(1).getName());
+        Assertions.assertEquals("edited 2", bean.getItems().get(2).getName());
+
+        renderAndEndRequest();
+    }
+
+    /**
+     * MYFACES-4775: items without their own equals, unchanged between render and postback. The
+     * rendered items saved with the view state are copies, the rows update the live items by position.
+     */
+    @Test
+    public void testCForEachIdentityItemsUpdateLiveItems() throws Exception
+    {
+        ForEachInputSessionBean bean = renderGeneratedIdsAndEdit("identity", items -> { });
+
+        Assertions.assertFalse(facesContext.getMessages().hasNext());
+        Assertions.assertEquals("edited 1", bean.getIdentityItems().get(0).getName());
+        Assertions.assertEquals("edited 2", bean.getIdentityItems().get(1).getName());
+
+        renderAndEndRequest();
+    }
+
+    /**
+     * MYFACES-4775: items without their own equals cannot be told apart from the copies saved with
+     * the view state, so a row falls back to its rendered position, like ui:repeat: after the first
+     * item was removed, the row of the removed item updates the item that moved to its position and
+     * the row of the vanished position writes nowhere.
+     */
+    @Test
+    public void testCForEachIdentityItemsFallBackToPosition() throws Exception
+    {
+        ForEachInputSessionBean bean = renderGeneratedIdsAndEdit("identity", items -> items.remove(0));
+
+        Assertions.assertFalse(facesContext.getMessages().hasNext());
+        Assertions.assertEquals(1, bean.getIdentityItems().size());
+        Assertions.assertEquals("b", bean.getIdentityItems().get(0).getId());
+        Assertions.assertEquals("edited 1", bean.getIdentityItems().get(0).getName());
+
+        renderAndEndRequest();
+    }
+
+    private ForEachInputSessionBean renderForEachInputAndEdit(Consumer<List<ForEachInputItem>> changeItems)
+            throws Exception
+    {
+        startViewRequest("/forEachInput.xhtml");
+        processLifecycleExecuteAndRender();
+
+        ForEachInputSessionBean bean = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{forEachInputSessionBean}", ForEachInputSessionBean.class);
+        changeItems.accept(bean.getItems());
+
+        client.inputText("mainForm:session_a", "edited session a");
+        client.inputText("mainForm:session_b", "edited session b");
+        client.submit("mainForm:postback");
+
+        processLifecycleExecute();
+        return bean;
+    }
+
+    /**
+     * Renders forEachInputGeneratedIds.xhtml, applies the change to the items of the given group
+     * ("keyed" or "identity") and submits "edited 1" and "edited 2" into its two rendered rows.
+     */
+    private ForEachInputSessionBean renderGeneratedIdsAndEdit(String group,
+            Consumer<List<ForEachInputItem>> changeItems) throws Exception
+    {
+        startViewRequest("/forEachInputGeneratedIds.xhtml");
+        processLifecycleExecuteAndRender();
+
+        List<String> clientIds = new ArrayList<>();
+        facesContext.getViewRoot().findComponent("mainForm:" + group).getChildren().stream()
+                .filter(UIInput.class::isInstance)
+                .forEach(input -> clientIds.add(input.getClientId(facesContext)));
+        Assertions.assertEquals(2, clientIds.size());
+
+        ForEachInputSessionBean bean = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{forEachInputSessionBean}", ForEachInputSessionBean.class);
+        changeItems.accept("keyed".equals(group) ? bean.getItems() : bean.getIdentityItems());
+
+        client.inputText(clientIds.get(0), "edited 1");
+        client.inputText(clientIds.get(1), "edited 2");
+        client.submit("mainForm:postback");
+
+        processLifecycleExecute();
+        return bean;
+    }
+
+    private void renderAndEndRequest() throws Exception
+    {
+        executeBeforeRender();
+        executeBuildViewCycle();
+        executeViewHandlerRender();
         endRequest();
     }
 
