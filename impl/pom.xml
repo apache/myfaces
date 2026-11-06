@@ -35,7 +35,7 @@
     <url>https://myfaces.apache.org/#/core50</url>
 
     <properties>
-        <openwebbeans.version>4.0.1</openwebbeans.version>
+        <openwebbeans.version>4.1.1</openwebbeans.version>
     </properties>
 
     <build>
