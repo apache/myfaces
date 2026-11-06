@@ -519,6 +519,12 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * @private
      */
     _remapNamingContainer: function(issuingElementId, form, rootNamingContainerId, elements) {
+        // without a namespaced view root the elements are client ids which already were
+        // resolved on the server, remapping them against the form's naming container
+        // would point them to non existing elements
+        if (!rootNamingContainerId) {
+            return elements;
+        }
         var SEP = jsf.separatorchar;
         function remapViewId(toTransform) {
             var EMPTY_STR = "";
