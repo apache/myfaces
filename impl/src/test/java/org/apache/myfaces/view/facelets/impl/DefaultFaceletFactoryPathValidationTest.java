@@ -89,4 +89,74 @@ public class DefaultFaceletFactoryPathValidationTest extends FaceletTestCase
         Assertions.assertEquals(InvalidFileException.Reason.INVALID_EXTENSION, ex.getReason(),
                 "Rejection reason should be INVALID_EXTENSION");
     }
+
+    /**
+     * With no source URL, a relative traversal path must still be rejected (the guard must not
+     * fail open when {@code source == null}).
+     */
+    @Test
+    public void testRelativeTraversalWithNullSourceIsRejected() throws Exception
+    {
+        setProjectStage(ProjectStage.Development);
+
+        java.io.IOException ex = Assertions.assertThrows(
+                java.io.IOException.class,
+                () -> getFactory().resolveURL(facesContext, null, "../../etc/passwd.xhtml"));
+        System.out.println("null-source rejection: " + ex);
+    }
+
+
+    /**
+     * Reproducer: a facelet packaged in {@code WEB-INF/lib/templates.jar!/META-INF/resources/} that
+     * includes a sibling with a relative path (<code>&lt;ui:include src="breadcrumbs.xhtml"/&gt;</code>)
+     * must not be rejected as {@code PATH_TRAVERSAL}.
+     */
+    @Test
+    public void testRelativeIncludeBetweenSiblingsInJarIsAllowed() throws Exception
+    {
+        setProjectStage(ProjectStage.Development);
+
+        java.net.URL source = createTemplatesJar("includeOnly.xhtml");
+
+        java.net.URL resolved = getFactory().resolveURL(facesContext, source, "breadcrumbs.xhtml");
+
+        Assertions.assertTrue(resolved.toExternalForm().endsWith("!/META-INF/resources/breadcrumbs.xhtml"),
+                "Unexpected URL: " + resolved);
+    }
+
+    /**
+     * A relative path that climbs out of the jar's {@code META-INF/resources} root must still be rejected.
+     */
+    @Test
+    public void testRelativePathEscapingJarResourceRootIsRejected() throws Exception
+    {
+        setProjectStage(ProjectStage.Development);
+
+        java.net.URL source = createTemplatesJar("includeOnly.xhtml");
+
+        InvalidFileException ex = Assertions.assertThrows(
+                InvalidFileException.class,
+                () -> getFactory().resolveURL(facesContext, source, "../../escaped.xhtml"));
+
+        Assertions.assertEquals(InvalidFileException.Reason.PATH_TRAVERSAL, ex.getReason());
+    }
+
+    /** Creates templates.jar with META-INF/resources/{includeOnly,breadcrumbs}.xhtml; returns URL of 'entry'. */
+    private java.net.URL createTemplatesJar(String entry) throws Exception
+    {
+        java.io.File jar = java.io.File.createTempFile("templates", ".jar");
+        jar.deleteOnExit();
+        try (java.util.jar.JarOutputStream out = new java.util.jar.JarOutputStream(
+                new java.io.FileOutputStream(jar)))
+        {
+            for (String name : new String[] {"includeOnly.xhtml", "breadcrumbs.xhtml"})
+            {
+                out.putNextEntry(new java.util.jar.JarEntry("META-INF/resources/" + name));
+                out.write("<ui:composition xmlns:ui=\"http://xmlns.jcp.org/jsf/facelets\"/>"
+                        .getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                out.closeEntry();
+            }
+        }
+        return new java.net.URL("jar:" + jar.toURI().toURL() + "!/META-INF/resources/" + entry);
+    }
 }
