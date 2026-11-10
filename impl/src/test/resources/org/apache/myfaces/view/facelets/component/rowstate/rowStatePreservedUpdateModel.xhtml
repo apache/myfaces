@@ -1,0 +1,36 @@
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+<h:head></h:head>
+<h:body>
+    <h:form id="form">
+        <h:dataTable id="preserved" value="#{rowStateStaleBean.preserved}" var="i" rowStatePreserved="true">
+            <h:column><h:inputText id="in" value="#{i.name}" /></h:column>
+        </h:dataTable>
+        <ui:repeat id="repeated" value="#{rowStateStaleBean.repeated}" var="i" rowStatePreserved="true">
+            <h:inputText id="in" value="#{i.name}" />
+        </ui:repeat>
+        <h:dataTable id="plain" value="#{rowStateStaleBean.plain}" var="i">
+            <h:column><h:inputText id="in" value="#{i.name}" /></h:column>
+        </h:dataTable>
+        <h:commandButton id="submit" value="Submit" />
+        <h:commandButton id="change" value="Change">
+            <f:ajax execute="@this" render="@form" listener="#{rowStateStaleBean.change}" />
+        </h:commandButton>
+    </h:form>
+</h:body>
+</html>

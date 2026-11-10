@@ -21,7 +21,7 @@ package jakarta.faces.component;
 import jakarta.el.ValueExpression;
 import jakarta.faces.event.PhaseId;
 
-import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
  * The state is saved during Render Response, as it is for the view state, because outside that phase
  * {@link UIComponentBase#saveState} also saves the transient state.
  */
-public class UIInputPSSTest extends AbstractFacesTestCase
+public class UIInputPSSTest extends AbstractJsfTestCase
 {
 
     @Override

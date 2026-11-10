@@ -58,6 +58,7 @@ import jakarta.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.cdi.model.FacesDataModelManager;
+import org.apache.myfaces.core.api.shared.CopyOnWriteStateMap;
 import org.apache.myfaces.core.api.shared.EditableValueHolderState;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
@@ -99,8 +100,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     protected Object _initialDescendantFullComponentState = null;
 
-    protected Map<String, Map<String, Object>> _rowDeltaStates = new HashMap<>();
-    protected Map<String, Map<String, Object>> _rowTransientStates = new HashMap<>();
+    protected final CopyOnWriteStateMap<Map<String, Object>> _rowDeltaStates = new CopyOnWriteStateMap<>();
+    protected final CopyOnWriteStateMap<Map<String, Object>> _rowTransientStates = new CopyOnWriteStateMap<>();
 
     /**
      * Per-row EVH state.  Outer key is {@link #getContainerClientId(FacesContext)}, i.e. this repeat's clientId plus
@@ -109,7 +110,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
      * entry = component in default empty state).  A missing outer entry also means all EVH components are in default
      * state.
      */
-    private Map<String, List<EditableValueHolderState>> _rowStates = new HashMap<>();
+    private final CopyOnWriteStateMap<List<EditableValueHolderState>> _rowStates = new CopyOnWriteStateMap<>();
     
     /**
      * Handle case where this table is nested inside another table. See method getDataModel for more details.
@@ -484,15 +485,22 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
        if (_initialDescendantFullComponentState != null)
        {
            //Just save the row
+           String rowKey = getContainerClientId(facesContext);
            Map<String, Object> sm = saveFullDescendantComponentStates(facesContext, null,
                                                                       getChildren().iterator(), false);
            if (sm != null && !sm.isEmpty())
            {
-               _rowDeltaStates.put(getContainerClientId(facesContext), sm);
+               _rowDeltaStates.put(rowKey, sm);
+           }
+           else
+           {
+               // The row is back in its initial state (e.g. Update Model Values cleared the local values),
+               // so drop what an earlier exit of this row saved.
+               _rowDeltaStates.remove(rowKey);
            }
            if (index != -1)
            {
-               _rowTransientStates.put(getContainerClientId(facesContext),
+               _rowTransientStates.put(rowKey,
                        saveTransientDescendantComponentStates(facesContext, null, getChildren().iterator(), false));
            }
        }
@@ -526,7 +534,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
        if (_initialDescendantFullComponentState != null)
        {
-           Map<String, Object> rowState = _rowDeltaStates.get(getContainerClientId(facesContext));
+           String rowKey = getContainerClientId(facesContext);
+           Map<String, Object> rowState = _rowDeltaStates.get(rowKey);
            if (rowState == null)
            {
                //Restore as original
@@ -545,7 +554,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
            }
            else
            {
-               rowState = _rowTransientStates.get(getContainerClientId(facesContext));
+               rowState = _rowTransientStates.get(rowKey);
                if (rowState == null)
                {
                    restoreTransientDescendantComponentStates(facesContext, getChildren().iterator(), null, false);
@@ -1762,52 +1771,12 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         Object[] values = (Object[]) state;
         super.restoreState(context, values[0]);
 
-        Object restoredRowStates = UIComponentBase.restoreAttachedState(context, values[1]);
-        if (restoredRowStates == null)
-        {
-            if (!_rowDeltaStates.isEmpty())
-            {
-                _rowDeltaStates.clear();
-            }
-        }
-        else
-        {
-            _rowDeltaStates = (Map<String, Map<String, Object> >) restoredRowStates;
-        }
-
-        if (values.length > 2)
-        {
-            Object rs = UIComponentBase.restoreAttachedState(context, values[2]);
-            if (rs == null)
-            {
-                if (!_rowStates.isEmpty())
-                {
-                    _rowStates.clear();
-                }
-            }
-            else
-            {
-                _rowStates = (Map<String, List<EditableValueHolderState>>) rs;
-            }
-        }
-        else if (!_rowStates.isEmpty())
-        {
-            _rowStates.clear();
-        }
+        // not copied here, but on the first change: see CopyOnWriteStateMap
+        _rowDeltaStates.restore(UIComponentBase.restoreAttachedState(context, values[1]));
+        _rowStates.restore(values.length > 2 ? UIComponentBase.restoreAttachedState(context, values[2]) : null);
         if (values.length > 3)
         {
-            Object rs = UIComponentBase.restoreAttachedState(context, values[3]);
-            if (rs == null)
-            {
-                if (!_rowTransientStates.isEmpty())
-                {
-                    _rowTransientStates.clear();
-                }
-            }
-            else
-            {
-                _rowTransientStates = (Map<String, Map<String, Object> >) rs;
-            }
+            _rowTransientStates.restore(UIComponentBase.restoreAttachedState(context, values[3]));
         }
     }
 
@@ -1819,18 +1788,20 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             if (context.getViewRoot().getAttributes().get(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY)
                     == ViewPoolProcessor.RESET_MODE_SOFT)
             {
+                // soft: only the transient state, the delta state is kept (as in UIData)
+                _dataModelMap.clear();
+                _isValidChilds = true;
+                _rowTransientStates.clear();
+            }
+            else if (context.getViewRoot().getAttributes().get(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY)
+                    == ViewPoolProcessor.RESET_MODE_HARD)
+            {
+                // hard: all state (as in UIData)
                 _dataModelMap.clear();
                 _isValidChilds = true;
                 _rowTransientStates.clear();
                 _rowStates.clear();
                 _rowDeltaStates.clear();
-            }
-            else if (context.getViewRoot().getAttributes().get(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY)
-                    == ViewPoolProcessor.RESET_MODE_HARD)
-            {
-                _dataModelMap.clear();
-                _isValidChilds = true;
-                _rowStates.clear();
             }
         }
         if (initialStateMarked())
@@ -1845,12 +1816,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 }
                 else
                 {
-                    Object[] values = new Object[4];
-                    values[0] = super.saveState(context);
-                    values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
-                    values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
-                    values[3] = UIComponentBase.saveAttachedState(context, _rowTransientStates);
-                    return values;
+                    return saveFullRowStates(context, parentSaved);
                 }
             }
             else
@@ -1861,27 +1827,35 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 }
                 else
                 {
-                    return saveRenderResponseState(context);
+                    return saveRenderResponseState(context, parentSaved);
                 }
             }
         }
         else
         {
-            if (context.getCurrentPhaseId() != null && 
+            if (context.getCurrentPhaseId() != null &&
                 !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
-                Object[] values = new Object[4];
-                values[0] = super.saveState(context);
-                values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
-                values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
-                values[3] = UIComponentBase.saveAttachedState(context, _rowTransientStates);
-                return values; 
+                return saveFullRowStates(context, super.saveState(context));
             }
             else
             {
-                return saveRenderResponseState(context);
+                return saveRenderResponseState(context, super.saveState(context));
             }
         }
+    }
+
+    /**
+     * Saves the state outside of RENDER_RESPONSE, with all per-row state.
+     */
+    private Object[] saveFullRowStates(FacesContext context, Object parentSaved)
+    {
+        Object[] values = new Object[4];
+        values[0] = parentSaved;
+        values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates.save());
+        values[2] = UIComponentBase.saveAttachedState(context, _rowStates.save());
+        values[3] = UIComponentBase.saveAttachedState(context, _rowTransientStates.save());
+        return values;
     }
 
     /**
@@ -1891,14 +1865,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
      * component. encodeBegin() clears it when there are no ERROR or FATAL messages, so it is empty in the
      * common case and adds nothing to the state.
      */
-    private Object[] saveRenderResponseState(FacesContext context)
+    private Object[] saveRenderResponseState(FacesContext context, Object parentSaved)
     {
         Object[] values = new Object[_rowStates.isEmpty() ? 2 : 3];
-        values[0] = super.saveState(context);
-        values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+        values[0] = parentSaved;
+        values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates.save());
         if (!_rowStates.isEmpty())
         {
-            values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+            values[2] = UIComponentBase.saveAttachedState(context, _rowStates.save());
         }
         return values;
     }

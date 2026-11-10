@@ -30,6 +30,6 @@ public class RowStateRerenderClientStateTest extends RowStateRerenderTest
     {
         super.setUpWebConfigParams();
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME,
-                StateManager.StateSavingMethod.CLIENT.name());
+                StateManager.STATE_SAVING_METHOD_CLIENT);
     }
 }
