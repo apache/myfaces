@@ -314,7 +314,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
 
         // Traversal guard: relative paths must stay within base (absolute paths already scoped by container)
-        if (!absoluteContextPath && source != null && !isWithinBase(resolved))
+        if (!absoluteContextPath
+                && !isWithinBase(resolved)
+                && (source == null || !isWithinResourceRoot(source, resolved)))
         {
             throw new InvalidFileException(InvalidFileException.Reason.PATH_TRAVERSAL,
                     "Path escapes application base: " + path);
@@ -368,6 +370,23 @@ public final class DefaultFaceletFactory extends FaceletFactory
         return resolvedPath.startsWith(basePath);
     }
     
+    /**
+     * Verifies that resolved URL stays within the same "META-INF/resources" root as the source URL.
+     * Adde under MYFACES-4780
+     */
+    private boolean isWithinResourceRoot(URL source, URL resolved)
+    {
+        String marker = "/META-INF/resources/";
+        String sourceStr = source.toExternalForm();
+        int idx = sourceStr.indexOf(marker);
+        if (idx < 0)
+        {
+            return false;
+        }
+        String root = sourceStr.substring(0, idx + marker.length());
+        return resolved.toExternalForm().startsWith(root);
+    }
+
     /** Extract the in-archive path from jar/wsjar/file URLs (path after "!" for jar URLs). */
     private String extractResourcePath(String urlStr)
     {
