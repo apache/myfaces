@@ -1862,6 +1862,8 @@ public abstract class UIComponentBase extends UIComponent
     
     private static final int FULL_STATE_ARRAY_SIZE = 10;
 
+    private static final Object[] EMPTY_STATE_HELPER_STATE = new Object[0];
+
     /**
      * Invoked after the render phase has completed, this method returns an object which can be passed to the
      * restoreState of some other instance of UIComponentBase to reset that object's state to the same values as this
@@ -2054,8 +2056,16 @@ public abstract class UIComponentBase extends UIComponent
         // We can do this here because _facesListeners instance once
         // is created is never replaced or set to null.
         
-        getStateHelper().restoreState(context, values[1]);
-        
+        Object stateHelperState = values[1];
+        if (stateHelperState == null && values.length == FULL_STATE_ARRAY_SIZE)
+        {
+            // A full state with nothing in its state helper: reset the state helper to empty, otherwise it keeps
+            // what was put in it before, e.g. the local value of the previous row of a UIData/UIRepeat with
+            // rowStatePreserved="true". For a delta, null still means "no change".
+            stateHelperState = EMPTY_STATE_HELPER_STATE;
+        }
+        getStateHelper().restoreState(context, stateHelperState);
+
         if (values.length == FULL_STATE_ARRAY_SIZE)
         {
             _id = (String) values[4];
