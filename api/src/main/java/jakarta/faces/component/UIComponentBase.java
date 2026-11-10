@@ -47,6 +47,7 @@ import jakarta.faces.view.Location;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1704,12 +1705,41 @@ public abstract class UIComponentBase extends UIComponent
     }
 
     /**
+     * Whether restoreAttachedState() can create a new instance of a collection class: it is not abstract, and has a
+     * zero-argument constructor which is accessible from here. Cached per class, as saveAttachedState() is called for
+     * every saved collection. ClassValue keeps the value at the class itself, so it does not hold application classes.
+     */
+    private static final ClassValue<Boolean> INSTANTIABLE_COLLECTION = new ClassValue<>()
+    {
+        @Override
+        protected Boolean computeValue(Class<?> clazz)
+        {
+            if (Modifier.isAbstract(clazz.getModifiers()))
+            {
+                return Boolean.FALSE;
+            }
+            try
+            {
+                return clazz.getDeclaredConstructor().canAccess(null);
+            }
+            catch (NoSuchMethodException | SecurityException e)
+            {
+                return Boolean.FALSE;
+            }
+        }
+    };
+
+    /**
      * Serializes objects which are "attached" to this component but which are not UIComponent children of it. Examples
      * are validator and listener objects. To be precise, it returns an object which implements java.io.Serializable,
      * and which when serialized will persist the state of the provided object.
      * <p>
      * If the attachedObject is a List then every object in the list is saved via a call to this method, and the
      * returned wrapper object contains a List object.
+     * <p>
+     * If the attachedObject is a Collection whose class cannot be instantiated (no accessible zero-argument
+     * constructor), such as List.of(), and it implements java.io.Serializable, it is returned as it is, the same as any
+     * other Serializable object, so it is restored with its exact type. Its items are then not saved via this method.
      * <p>
      * If the object implements StateHolder then the object's saveState is called immediately, and a wrapper is returned
      * which contains both this saved state and the original class name. However in the case where the
@@ -1759,6 +1789,14 @@ public abstract class UIComponentBase extends UIComponent
                     }
                 }
                 return new _AttachedListStateWrapper(lst);
+            }
+            else if (attachedObject instanceof Serializable
+                    && !INSTANTIABLE_COLLECTION.get(attachedObject.getClass()))
+            {
+                // A collection whose class cannot be instantiated, such as List.of() or
+                // Collections.unmodifiableList(), cannot be restored item by item into a new instance of its class,
+                // so it is saved whole, as any other Serializable object, and restored with its exact type.
+                return attachedObject;
             }
             else
             {
