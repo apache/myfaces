@@ -149,6 +149,138 @@ public class UIRepeatTest extends AbstractJsfTestCase
         
     }
 
+    /**
+     * With rowStatePreserved=true, the UIInput state that lives in the transient state helper (submittedValue,
+     * valid and localValueSet) must survive the reset to row index -1 and be restored per row on revisit.
+     */
+    @Test
+    public void testPreserveRowComponentStateWithUIInput() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIRepeat table = createRepeat(root, Arrays.asList("a", "b", "c"));
+        table.setRowStatePreserved(true);
+        UIInput input = new UIInput();
+        input.setId(root.createUniqueId());
+        table.getChildren().add(input);
+
+        markInitialState(root, table, input);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        for (int i = 0; i < 3; i++)
+        {
+            table.setRowIndex(i);
+            input.setSubmittedValue("submitted_" + i);
+            input.setValid(false);
+            input.setLocalValueSet(true);
+        }
+        table.setRowIndex(-1);
+
+        Assertions.assertNull(input.getSubmittedValue(), "Row state must be reset at index -1");
+
+        for (int i = 0; i < 3; i++)
+        {
+            table.setRowIndex(i);
+            Assertions.assertEquals("submitted_" + i, input.getSubmittedValue(), "submittedValue of row " + i);
+            Assertions.assertFalse(input.isValid(), "valid of row " + i);
+            Assertions.assertTrue(input.isLocalValueSet(), "localValueSet of row " + i);
+        }
+        table.setRowIndex(-1);
+    }
+
+    /**
+     * Standalone reproduction of the 4.1.4 regression: submittedValue and valid are transient state and must be
+     * preserved per row when rowStatePreserved=true.
+     */
+    @Test
+    public void testPreserveRowComponentStateWithUIInputStandalone() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIRepeat table = new UIRepeat();
+        UIInput input = new UIInput();
+
+        root.setId(root.createUniqueId());
+        table.setId(root.createUniqueId());
+        input.setId(root.createUniqueId());
+
+        table.setVar("row");
+        table.setRowStatePreserved(true);
+        table.setValue(Arrays.asList("a", "b", "c"));
+        root.getChildren().add(table);
+        table.getChildren().add(input);
+
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        input.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        for (int i = 0; i < 3; i++)
+        {
+            table.setRowIndex(i);
+            input.setSubmittedValue("submitted_" + i);   // transient in 4.1.4
+            input.setValid(false);                       // transient in 4.1.4
+        }
+        table.setRowIndex(-1);
+
+        for (int i = 0; i < 3; i++)
+        {
+            table.setRowIndex(i);
+            Assertions.assertEquals("submitted_" + i, input.getSubmittedValue());
+            Assertions.assertFalse(input.isValid());
+        }
+    }
+
+
+    /**
+     * Rows that were never modified must not inherit the transient state of a neighbour row.
+     */
+    @Test
+    public void testPreserveRowComponentStateWithUIInputOnlyModifiedRow() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIRepeat table = createRepeat(root, Arrays.asList("a", "b", "c"));
+        table.setRowStatePreserved(true);
+        UIInput input = new UIInput();
+        input.setId(root.createUniqueId());
+        table.getChildren().add(input);
+
+        markInitialState(root, table, input);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        table.setRowIndex(1);
+        input.setSubmittedValue("only_1");
+        input.setValid(false);
+        table.setRowIndex(-1);
+
+        for (int i = 0; i < 3; i++)
+        {
+            table.setRowIndex(i);
+            if (i == 1)
+            {
+                Assertions.assertEquals("only_1", input.getSubmittedValue());
+                Assertions.assertFalse(input.isValid());
+            }
+            else
+            {
+                Assertions.assertNull(input.getSubmittedValue(), "row " + i);
+            }
+        }
+        table.setRowIndex(-1);
+    }
+
+    private void markInitialState(UIViewRoot root, UIRepeat table, UIInput input)
+    {
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        input.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
+    }
+
 
     /**
      * Test state save and restore cycle taking in consideration portlet case.

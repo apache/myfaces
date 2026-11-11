@@ -661,6 +661,58 @@ public class UIDataTest extends AbstractJsfTestCase
         }
         
     }
+
+    /**
+     * With rowStatePreserved=true, the UIInput state held in the transient state helper (submittedValue, valid and
+     * localValueSet) must survive the reset to row index -1 and be restored per row on revisit.
+     */
+    @Test
+    public void testPreserveRowComponentStateWithUIInput() throws Exception
+    {
+        List<RowData> model = new ArrayList<RowData>();
+        model.add(new RowData("text1", "style1"));
+        model.add(new RowData("text2", "style2"));
+        model.add(new RowData("text3", "style3"));
+        request.setAttribute("list", model);
+
+        UIViewRoot root = facesContext.getViewRoot();
+        createSimpleTable(root, true);
+        UIData table = (UIData) root.getChildren().get(0);
+        UIColumn column = (UIColumn) table.getChildren().get(0);
+        UIInput input = (UIInput) column.getChildren().get(0);
+
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        input.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        for (int i = 0; i < model.size(); i++)
+        {
+            table.setRowIndex(i);
+            input.setSubmittedValue("submitted_" + i);
+            input.setValid(false);
+            input.setLocalValueSet(true);
+        }
+        table.setRowIndex(-1);
+
+        Assertions.assertNull(input.getSubmittedValue());
+        Assertions.assertTrue(input.isValid());
+        Assertions.assertFalse(input.isLocalValueSet());
+
+        for (int i = 0; i < model.size(); i++)
+        {
+            table.setRowIndex(i);
+            Assertions.assertEquals("submitted_" + i, input.getSubmittedValue(), "submittedValue of row " + i);
+            Assertions.assertFalse(input.isValid(), "valid of row " + i);
+            Assertions.assertTrue(input.isLocalValueSet(), "localValueSet of row " + i);
+        }
+        table.setRowIndex(-1);
+    }
+
         
     @Test
     public void testCollectionDataModel() throws Exception

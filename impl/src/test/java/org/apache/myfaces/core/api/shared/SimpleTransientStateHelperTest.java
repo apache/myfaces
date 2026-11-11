@@ -270,6 +270,23 @@ class SimpleTransientStateHelperTest
     }
 
     @Test
+    void restore_snapshotIsIndependentOfInPlaceUpdates()
+    {
+        helper.putTransient(Key.A, "original");
+        Object snapshot = helper.saveTransientState(null);
+
+        helper.restoreTransientState(null, snapshot);
+
+        // update of an existing key must not write through to the snapshot
+        helper.putTransient(Key.A, "changed");
+        assertEquals("changed", helper.getTransient(Key.A));
+
+        helper.restoreTransientState(null, snapshot);
+        assertEquals("original", helper.getTransient(Key.A),
+                "snapshot must not be mutated by an in-place update after restoreTransientState");
+    }
+
+    @Test
     void growth_doesNotLoseEntries()
     {
         // FIX 3: doubling growth must not drop entries across multiple resizes
