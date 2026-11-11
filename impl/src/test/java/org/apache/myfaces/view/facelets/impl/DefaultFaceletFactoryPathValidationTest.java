@@ -68,7 +68,8 @@ public class DefaultFaceletFactoryPathValidationTest extends FaceletTestCase
      * A relative path whose extension is not a configured Facelet suffix must
      * be rejected with {@link InvalidFileException.Reason#INVALID_EXTENSION}.
      *
-     * <p>The default Facelet suffix is {@code .xhtml}; {@code .html} is not allowed.
+     * <p>The default Facelet suffixes are {@code .xhtml}, {@code .html}, {@code .jsf} and
+     * {@code .faces}; {@code .properties} is not allowed.
      * A non-null {@code source} URL is supplied so the code resolves via
      * {@code new URL(source, path)} — pure string arithmetic, no I/O — and reaches
      * the {@code mappingAllowed} check.</p>
@@ -86,8 +87,8 @@ public class DefaultFaceletFactoryPathValidationTest extends FaceletTestCase
 
         try
         {
-            factory.resolveURL(facesContext, source, "template.html");
-            Assert.fail("Expected InvalidFileException for a .html path");
+            factory.resolveURL(facesContext, source, "template.properties");
+            Assert.fail("Expected InvalidFileException for a .properties path");
         }
         catch (InvalidFileException ex)
         {
