@@ -498,7 +498,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                // so drop what an earlier exit of this row saved.
                _rowDeltaStates.remove(rowKey);
            }
-           if (index != -1)
+           if (_index != -1)
            {
                _rowTransientStates.put(rowKey,
                        saveTransientDescendantComponentStates(facesContext, null, getChildren().iterator(), false));

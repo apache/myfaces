@@ -184,17 +184,11 @@ public class SimpleTransientStateHelper implements TransientStateHelper
         }
         else
         {
-            // Assign the snapshot directly — no clone needed here because
-            // saveTransientState already returns a trimmed copy (Arrays.copyOf),
-            // not the live _data reference.  As a result:
-            //   • mutations to the previous live _data do not touch this snapshot
-            //   • the first putTransient with a NEW key always triggers growth
-            //     (trimmed capacity == _size * 2, no slack), reallocating _data
-            //     and leaving the snapshot object unaffected
-            //   • in-place updates (putTransient on an existing key) do mutate the
-            //     snapshot array, but UIRepeat always overwrites its stored reference
-            //     with the next saveTransientState() call before reusing it
-            _data = (Object[]) state;
+            // Copy the snapshot: putTransient on an existing key updates _data in place, which would
+            // otherwise write through to the caller's snapshot (e.g. UIRepeat._rowTransientStates)
+            // and corrupt it for the next restore.
+            Object[] snapshot = (Object[]) state;
+            _data = Arrays.copyOf(snapshot, snapshot.length);
             _size = _data.length >> 1;
         }
     }
