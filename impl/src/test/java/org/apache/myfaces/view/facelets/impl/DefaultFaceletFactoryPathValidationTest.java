@@ -68,7 +68,8 @@ public class DefaultFaceletFactoryPathValidationTest extends FaceletTestCase
      * A relative path whose extension is not a configured Facelet suffix must
      * be rejected with {@link InvalidFileException.Reason#INVALID_EXTENSION}.
      *
-     * <p>The default Facelet suffix is {@code .xhtml}; {@code .html} is not allowed.
+     * <p>The default Facelet suffixes are {@code .xhtml}, {@code .html}, {@code .jsf} and
+     * {@code .faces}; {@code .properties} is not allowed.
      * A non-null {@code source} URL is supplied so the code resolves via
      * {@code new URL(source, path)} — pure string arithmetic, no I/O — and reaches
      * the {@code mappingAllowed} check.</p>
@@ -86,8 +87,8 @@ public class DefaultFaceletFactoryPathValidationTest extends FaceletTestCase
 
         try
         {
-            factory.resolveURL(facesContext, source, "template.html");
-            Assert.fail("Expected InvalidFileException for a .html path");
+            factory.resolveURL(facesContext, source, "template.properties");
+            Assert.fail("Expected InvalidFileException for a .properties path");
         }
         catch (InvalidFileException ex)
         {
@@ -105,10 +106,15 @@ public class DefaultFaceletFactoryPathValidationTest extends FaceletTestCase
     {
         setProjectStage(ProjectStage.Development);
 
-        java.io.IOException ex = Assertions.assertThrows(
-                java.io.IOException.class,
-                () -> getFactory().resolveURL(facesContext, null, "../../etc/passwd.xhtml"));
-        System.out.println("null-source rejection: " + ex);
+        try
+        {
+            getFactory().resolveURL(facesContext, null, "../../etc/passwd.xhtml");
+            Assert.fail("Expected IOException for null-source traversal");
+        }
+        catch (java.io.IOException ex)
+        {
+            System.out.println("null-source rejection: " + ex);
+        }
     }
 
 
@@ -126,8 +132,8 @@ public class DefaultFaceletFactoryPathValidationTest extends FaceletTestCase
 
         java.net.URL resolved = getFactory().resolveURL(facesContext, source, "breadcrumbs.xhtml");
 
-        Assertions.assertTrue(resolved.toExternalForm().endsWith("!/META-INF/resources/breadcrumbs.xhtml"),
-                "Unexpected URL: " + resolved);
+        Assert.assertTrue("Unexpected URL: " + resolved,
+                resolved.toExternalForm().endsWith("!/META-INF/resources/breadcrumbs.xhtml"));
     }
 
     /**
@@ -140,11 +146,15 @@ public class DefaultFaceletFactoryPathValidationTest extends FaceletTestCase
 
         java.net.URL source = createTemplatesJar("includeOnly.xhtml");
 
-        InvalidFileException ex = Assertions.assertThrows(
-                InvalidFileException.class,
-                () -> getFactory().resolveURL(facesContext, source, "../../escaped.xhtml"));
-
-        Assertions.assertEquals(InvalidFileException.Reason.PATH_TRAVERSAL, ex.getReason());
+        try
+        {
+            getFactory().resolveURL(facesContext, source, "../../escaped.xhtml");
+            Assert.fail("Expected InvalidFileException");
+        }
+        catch (InvalidFileException ex)
+        {
+            Assert.assertEquals(InvalidFileException.Reason.PATH_TRAVERSAL, ex.getReason());
+        }
     }
 
     /** Creates templates.jar with META-INF/resources/{includeOnly,breadcrumbs}.xhtml; returns URL of 'entry'. */
