@@ -615,6 +615,45 @@ class MyFacesProcessor
 
         // Java Core
         classNames.add("java.util.Collections$EmptySet");
+        // JDK internal collections returned by List.of(), Set.of(), Map.of(), Stream.toList(), Arrays.asList(), ...
+        // They are not in the Jandex index, so collectImplementors() below does not find them, and
+        // EL method calls such as #{bean.items.size()} fail in native with MethodNotFoundException
+        classNames.addAll(Arrays.asList(
+                "java.util.ImmutableCollections$List12",
+                "java.util.ImmutableCollections$ListN",
+                "java.util.ImmutableCollections$SubList",
+                "java.util.ImmutableCollections$Set12",
+                "java.util.ImmutableCollections$SetN",
+                "java.util.ImmutableCollections$Map1",
+                "java.util.ImmutableCollections$MapN",
+                "java.util.KeyValueHolder",
+                "java.util.Arrays$ArrayList",
+                "java.util.Collections$EmptyList",
+                "java.util.Collections$EmptyMap",
+                "java.util.Collections$SingletonList",
+                "java.util.Collections$SingletonSet",
+                "java.util.Collections$SingletonMap",
+                "java.util.Collections$UnmodifiableCollection",
+                "java.util.Collections$UnmodifiableList",
+                "java.util.Collections$UnmodifiableRandomAccessList",
+                "java.util.Collections$UnmodifiableSet",
+                "java.util.Collections$UnmodifiableSortedSet",
+                "java.util.Collections$UnmodifiableMap",
+                "java.util.Collections$UnmodifiableSortedMap",
+                // those classes are not public, so EL looks the method up on their public supertypes
+                "java.util.ImmutableCollections$AbstractImmutableCollection",
+                "java.util.ImmutableCollections$AbstractImmutableList",
+                "java.util.ImmutableCollections$AbstractImmutableSet",
+                "java.util.ImmutableCollections$AbstractImmutableMap",
+                java.util.List.class.getName(),
+                java.util.Set.class.getName(),
+                java.util.SortedSet.class.getName(),
+                java.util.Map.class.getName(),
+                java.util.SortedMap.class.getName(),
+                java.util.AbstractCollection.class.getName(),
+                java.util.AbstractList.class.getName(),
+                java.util.AbstractSet.class.getName(),
+                java.util.AbstractMap.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, java.util.Collection.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, java.time.temporal.TemporalAccessor.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, java.util.Map.Entry.class.getName()));
@@ -656,6 +695,8 @@ class MyFacesProcessor
                 io.undertow.servlet.spec.HttpServletRequestImpl.class,
                 io.undertow.servlet.spec.HttpServletResponseImpl.class,
                 io.undertow.servlet.spec.HttpSessionImpl.class));
+        // #{request.userPrincipal.name}: Principal implementations from Quarkus Security (QuarkusPrincipal, OIDC, ...)
+        classNames.addAll(collectImplementors(combinedIndex, java.security.Principal.class.getName()));
 
         // MyFaces
         classes.addAll(Arrays.asList(
