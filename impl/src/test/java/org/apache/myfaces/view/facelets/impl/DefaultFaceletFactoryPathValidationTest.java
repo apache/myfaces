@@ -125,12 +125,10 @@ public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIR
     {
         setProjectStage(ProjectStage.Development);
 
-        java.io.IOException ex = Assertions.assertThrows(
+        Assertions.assertThrows(
                 java.io.IOException.class,
                 () -> getFactory().resolveURL(facesContext, null, "../../etc/passwd.xhtml"));
-        System.out.println("null-source rejection: " + ex);
     }
-
 
     /**
      * Reproducer: a facelet packaged in {@code WEB-INF/lib/templates.jar!/META-INF/resources/} that
