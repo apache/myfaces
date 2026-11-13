@@ -435,8 +435,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
     }
 
     /** Suffixes always accepted in addition to the configured Facelet suffixes and view mappings. */
-    private static final Set<String> DEFAULT_ALLOWED_SUFFIXES = Set.of(
-            ".html", ".jsf", ".faces", ".jsp", ".jspx", ".xhtml");
+    private static final Set<String> DEFAULT_ALLOWED_SUFFIXES = Set.of(".html", ".jsf", ".faces", ".xhtml");
 
     /** Returns cached set of allowed Facelet suffixes built from init parameters. */
     private Set<String> getAllowedSuffixes(FacesContext context)
