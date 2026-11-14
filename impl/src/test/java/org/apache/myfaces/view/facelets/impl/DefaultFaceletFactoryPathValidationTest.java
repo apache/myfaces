@@ -123,7 +123,7 @@ public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIR
     @Test
     public void testRelativeTraversalWithNullSourceIsRejected() throws Exception
     {
-        setProjectStage(ProjectStage.Development);
+        startViewRequest(null);
 
         Assertions.assertThrows(
                 java.io.IOException.class,
@@ -138,7 +138,7 @@ public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIR
     @Test
     public void testRelativeIncludeBetweenSiblingsInJarIsAllowed() throws Exception
     {
-        setProjectStage(ProjectStage.Development);
+        startViewRequest(null);
 
         java.net.URL source = createTemplatesJar("includeOnly.xhtml");
 
@@ -154,7 +154,7 @@ public class DefaultFaceletFactoryPathValidationTest extends AbstractMyFacesCDIR
     @Test
     public void testRelativePathEscapingJarResourceRootIsRejected() throws Exception
     {
-        setProjectStage(ProjectStage.Development);
+        startViewRequest(null);
 
         java.net.URL source = createTemplatesJar("includeOnly.xhtml");
 
