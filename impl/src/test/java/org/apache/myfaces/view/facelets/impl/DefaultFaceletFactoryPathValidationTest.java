@@ -113,7 +113,7 @@ public class DefaultFaceletFactoryPathValidationTest extends FaceletTestCase
         }
         catch (java.io.IOException ex)
         {
-            System.out.println("null-source rejection: " + ex);
+            // expected;
         }
     }
 
