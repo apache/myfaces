@@ -90,6 +90,7 @@ public class AjaxHandler extends TagHandler implements
 {
 
     public final static Class<?>[] AJAX_BEHAVIOR_LISTENER_SIG = new Class<?>[] { AjaxBehaviorEvent.class };
+    private final static Class<?>[] AJAX_BEHAVIOR_LISTENER_ZERO_ARG_SIG = new Class<?>[0];
     
     /**
      * Constant used to check if in the current build view it has been rendered the standard jsf javascript
@@ -378,9 +379,13 @@ public class AjaxHandler extends TagHandler implements
         setAttribute(faceletContext, ajaxBehavior, clearModel, Boolean.class, (v) -> ajaxBehavior.setClearModel(v));
         if (listener != null)
         {
-            MethodExpression expr = listener.getMethodExpression(
+            // The listener attribute can either take the AjaxBehaviorEvent or no arguments,
+            // thus we need two different MethodExpressions (same as f:event, see MYFACES-2503).
+            MethodExpression exprOneArg = listener.getMethodExpression(
                     faceletContext, Void.TYPE, AJAX_BEHAVIOR_LISTENER_SIG);
-            AjaxBehaviorListener abl = new AjaxBehaviorListenerImpl(expr);
+            MethodExpression exprZeroArg = listener.getMethodExpression(
+                    faceletContext, Void.TYPE, AJAX_BEHAVIOR_LISTENER_ZERO_ARG_SIG);
+            AjaxBehaviorListener abl = new AjaxBehaviorListenerImpl(exprOneArg, exprZeroArg);
             ajaxBehavior.addAjaxBehaviorListener(abl);
         }
 

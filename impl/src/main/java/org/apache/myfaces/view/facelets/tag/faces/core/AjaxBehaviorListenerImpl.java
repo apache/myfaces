@@ -18,7 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.faces.core;
 
+import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
+import jakarta.el.MethodNotFoundException;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
@@ -26,11 +28,18 @@ import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.event.AjaxBehaviorListener;
 
 /**
- * Wraps a method expression in a AjaxBehaviorListener
+ * Wraps a method expression in a AjaxBehaviorListener.
+ *
+ * The listener attribute can either point to a method taking an {@link AjaxBehaviorEvent} or
+ * to a method taking no arguments. The method taking the event is invoked first; only if that throws a
+ * {@link MethodNotFoundException}, the method taking no arguments is invoked.
  */
 public final class AjaxBehaviorListenerImpl implements AjaxBehaviorListener, PartialStateHolder
 {
-    private MethodExpression _expr;
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+
+    private MethodExpression _exprOneArg;
+    private MethodExpression _exprZeroArg;
     private boolean _transient;
     private boolean _initialStateMarked;
 
@@ -38,15 +47,44 @@ public final class AjaxBehaviorListenerImpl implements AjaxBehaviorListener, Par
     {
     }
 
-    public AjaxBehaviorListenerImpl(MethodExpression expr)
+    public AjaxBehaviorListenerImpl(MethodExpression exprOneArg)
     {
-        _expr = expr;
+        this(exprOneArg, null);
+    }
+
+    public AjaxBehaviorListenerImpl(MethodExpression exprOneArg, MethodExpression exprZeroArg)
+    {
+        _exprOneArg = exprOneArg;
+        _exprZeroArg = exprZeroArg;
     }
 
     @Override
     public void processAjaxBehavior(AjaxBehaviorEvent event) throws AbortProcessingException
     {
-        _expr.invoke(FacesContext.getCurrentInstance().getELContext(), new Object[] { event });
+        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+        try
+        {
+            // first try to invoke the MethodExpression with one argument
+            _exprOneArg.invoke(elContext, new Object[] { event });
+        }
+        catch (MethodNotFoundException mnfeOneArg)
+        {
+            if (_exprZeroArg == null)
+            {
+                throw mnfeOneArg;
+            }
+
+            try
+            {
+                // if that fails try to invoke the MethodExpression with zero arguments
+                _exprZeroArg.invoke(elContext, EMPTY_OBJECT_ARRAY);
+            }
+            catch (MethodNotFoundException mnfeZeroArg)
+            {
+                // if that fails too rethrow the original MethodNotFoundException
+                throw mnfeOneArg;
+            }
+        }
     }
 
     @Override
@@ -62,7 +100,16 @@ public final class AjaxBehaviorListenerImpl implements AjaxBehaviorListener, Par
         {
             return;
         }
-        _expr = (MethodExpression) state;
+        if (state instanceof Object[] values)
+        {
+            _exprOneArg = (MethodExpression) values[0];
+            _exprZeroArg = (MethodExpression) values[1];
+        }
+        else
+        {
+            _exprOneArg = (MethodExpression) state;
+            _exprZeroArg = null;
+        }
     }
 
     @Override
@@ -72,7 +119,7 @@ public final class AjaxBehaviorListenerImpl implements AjaxBehaviorListener, Par
         {
             return null;
         }
-        return _expr;
+        return new Object[] { _exprOneArg, _exprZeroArg };
     }
 
     @Override
