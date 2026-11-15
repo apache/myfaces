@@ -167,4 +167,36 @@ public class MethodExpressionActionListenerTest extends AbstractFacesTestCase
         Assertions.assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionActionListener));
     }
 
+    @Test
+    public void testSaveStateWhileInitialStateMarked()
+    {
+        methodExpressionActionListener = new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg);
+        methodExpressionActionListener.markInitialState();
+        Assertions.assertTrue(methodExpressionActionListener.initialStateMarked());
+        Assertions.assertNull(methodExpressionActionListener.saveState(facesContext),
+                "No state must be saved while the initial state is marked.");
+
+        methodExpressionActionListener.clearInitialState();
+        Assertions.assertFalse(methodExpressionActionListener.initialStateMarked());
+        Object[] expectedState = new Object [] {methodExpressionOneArg, methodExpressionZeroArg};
+        Assertions.assertTrue(Arrays.deepEquals(expectedState, (Object[]) methodExpressionActionListener.saveState(facesContext)),
+                "Both MethodExpression instances must be saved after clearInitialState().");
+    }
+
+    @Test
+    public void testRestoreNullState() throws IllegalAccessException, NoSuchFieldException
+    {
+        methodExpressionActionListener = new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg);
+        methodExpressionActionListener.markInitialState();
+        methodExpressionActionListener.restoreState(facesContext, null);
+
+        Field oneArgField = MethodExpressionActionListener.class.getDeclaredField("methodExpressionOneArg");
+        oneArgField.setAccessible(true);
+        Assertions.assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionActionListener));
+
+        Field zeroArgField = MethodExpressionActionListener.class.getDeclaredField("methodExpressionZeroArg");
+        zeroArgField.setAccessible(true);
+        Assertions.assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionActionListener));
+    }
+
 }

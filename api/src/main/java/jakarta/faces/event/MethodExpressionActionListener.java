@@ -24,21 +24,28 @@ import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.MethodExpression;
 import jakarta.el.MethodNotFoundException;
-import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.context.FacesContext;
 
 /**
- * 
+ * {@link ActionListener} which wraps a {@link MethodExpression}.
+ * <p>
+ * Since Faces 5.0, this class implements {@link PartialStateHolder}. Its state is set only by its constructor, or by
+ * {@link #restoreState(FacesContext, Object)} from a full state. It does not change after the build of the view, so
+ * while {@link #initialStateMarked()} returns <code>true</code>, {@link #saveState(FacesContext)} returns
+ * <code>null</code>.
+ * </p>
  */
-public class MethodExpressionActionListener implements ActionListener, StateHolder
+public class MethodExpressionActionListener implements ActionListener, PartialStateHolder
 {
-    
+
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
     private static final Object[] EMPTY_PARAMS = new Object[0];
-    
+
     private MethodExpression methodExpressionOneArg;
     private MethodExpression methodExpressionZeroArg;
     private boolean isTransient = false;
+    private boolean initialStateMarked = false;
 
     /** Creates a new instance of MethodExpressionActionListener */
     public MethodExpressionActionListener()
@@ -122,17 +129,51 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
         }
     }
     
+    /**
+     * Restores both <code>MethodExpression</code> instances described in the constructor. A <code>null</code>
+     * state is ignored, as returned by {@link #saveState(FacesContext)} while the initial state is marked.
+     */
     @Override
     public void restoreState(FacesContext context, Object state)
     {
+        if (state == null)
+        {
+            return;
+        }
         methodExpressionOneArg = (MethodExpression) ((Object[]) state)[0];
         methodExpressionZeroArg = (MethodExpression) ((Object[]) state)[1];
     }
 
+    /**
+     * Returns <code>null</code> while {@link #initialStateMarked()} returns <code>true</code>. Otherwise both
+     * <code>MethodExpression</code> instances described in the constructor are saved.
+     */
     @Override
     public Object saveState(FacesContext context)
     {
+        if (initialStateMarked)
+        {
+            return null;
+        }
         return new Object[] {methodExpressionOneArg, methodExpressionZeroArg};
+    }
+
+    @Override
+    public void markInitialState()
+    {
+        initialStateMarked = true;
+    }
+
+    @Override
+    public boolean initialStateMarked()
+    {
+        return initialStateMarked;
+    }
+
+    @Override
+    public void clearInitialState()
+    {
+        initialStateMarked = false;
     }
 
     @Override

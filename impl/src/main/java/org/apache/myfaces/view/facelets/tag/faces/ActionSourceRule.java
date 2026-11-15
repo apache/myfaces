@@ -28,8 +28,6 @@ import jakarta.faces.view.facelets.Metadata;
 import jakarta.faces.view.facelets.MetadataTarget;
 import jakarta.faces.view.facelets.TagAttribute;
 
-import org.apache.myfaces.view.facelets.FaceletCompositionContext;
-
 /**
  * 
  * @author Jacob Hookom
@@ -80,16 +78,8 @@ public final class ActionSourceRule extends MetaRule
                     = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
             final MethodExpression methodExpressionZeroArg
                     = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
-            if (FaceletCompositionContext.getCurrentInstance(ctx).isUsingPSSOnThisView())
-            {
-                ((ActionSource) instance).addActionListener(
-                        new PartialMethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
-            }
-            else
-            {
-                ((ActionSource) instance).addActionListener(
-                        new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
-            }
+            ((ActionSource) instance).addActionListener(
+                    new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
         }
     }
 

@@ -167,4 +167,36 @@ public class MethodExpressionValueChangeListenerTest extends AbstractFacesTestCa
         Assertions.assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionValueChangeListener));
     }
 
+    @Test
+    public void testSaveStateWhileInitialStateMarked()
+    {
+        methodExpressionValueChangeListener = new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg);
+        methodExpressionValueChangeListener.markInitialState();
+        Assertions.assertTrue(methodExpressionValueChangeListener.initialStateMarked());
+        Assertions.assertNull(methodExpressionValueChangeListener.saveState(facesContext),
+                "No state must be saved while the initial state is marked.");
+
+        methodExpressionValueChangeListener.clearInitialState();
+        Assertions.assertFalse(methodExpressionValueChangeListener.initialStateMarked());
+        Object[] expectedState = new Object [] {methodExpressionOneArg, methodExpressionZeroArg};
+        Assertions.assertTrue(Arrays.deepEquals(expectedState, (Object[]) methodExpressionValueChangeListener.saveState(facesContext)),
+                "Both MethodExpression instances must be saved after clearInitialState().");
+    }
+
+    @Test
+    public void testRestoreNullState() throws IllegalAccessException, NoSuchFieldException
+    {
+        methodExpressionValueChangeListener = new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg);
+        methodExpressionValueChangeListener.markInitialState();
+        methodExpressionValueChangeListener.restoreState(facesContext, null);
+
+        Field oneArgField = MethodExpressionValueChangeListener.class.getDeclaredField("methodExpressionOneArg");
+        oneArgField.setAccessible(true);
+        Assertions.assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionValueChangeListener));
+
+        Field zeroArgField = MethodExpressionValueChangeListener.class.getDeclaredField("methodExpressionZeroArg");
+        zeroArgField.setAccessible(true);
+        Assertions.assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionValueChangeListener));
+    }
+
 }

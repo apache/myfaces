@@ -20,6 +20,12 @@ package jakarta.faces.component;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
+ * <p>
+ * Since Faces 5.0: an object attached to a component, such as a converter, validator, listener or behavior, which
+ * implements only this interface, is saved in every view state with the full result of its {@link #saveState}
+ * method, because the runtime cannot tell whether it changed after the build of the view. To save only its changes
+ * after the build of the view, it should implement {@link PartialStateHolder} instead.
+ * </p>
  */
 public interface StateHolder
 {

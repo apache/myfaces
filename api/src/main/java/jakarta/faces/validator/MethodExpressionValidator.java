@@ -21,20 +21,28 @@ package jakarta.faces.validator;
 
 import jakarta.el.ELException;
 import jakarta.el.MethodExpression;
-import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">Faces Specification</a>
+ * {@link Validator} which wraps a {@link MethodExpression}.
+ * <p>
+ * Since Faces 5.0, this class implements {@link PartialStateHolder}. Its state is set only by its constructor, or by
+ * {@link #restoreState(FacesContext, Object)} from a full state. It does not change after the build of the view, so
+ * while {@link #initialStateMarked()} returns <code>true</code>, {@link #saveState(FacesContext)} returns
+ * <code>null</code>.
+ * </p>
  */
-public class MethodExpressionValidator implements Validator<Object>, StateHolder
+public class MethodExpressionValidator implements Validator<Object>, PartialStateHolder
 {
 
     private MethodExpression methodExpression;
 
     private boolean isTransient = false;
+
+    private boolean initialStateMarked = false;
 
     /** Creates a new instance of MethodExpressionValidator */
     public MethodExpressionValidator()
@@ -87,20 +95,54 @@ public class MethodExpressionValidator implements Validator<Object>, StateHolder
         }
     }
 
+    /**
+     * Restores the <code>MethodExpression</code>. A <code>null</code> state is ignored, as returned by
+     * {@link #saveState(FacesContext)} while the initial state is marked.
+     */
     @Override
     public void restoreState(FacesContext context, Object state)
     {
         Assert.notNull(context, "context");
 
-        methodExpression = (MethodExpression)state;
+        if (state == null)
+        {
+            return;
+        }
+        methodExpression = (MethodExpression) state;
     }
 
+    /**
+     * Returns <code>null</code> while {@link #initialStateMarked()} returns <code>true</code>. Otherwise the
+     * <code>MethodExpression</code> is saved.
+     */
     @Override
     public Object saveState(FacesContext context)
     {
         Assert.notNull(context, "context");
 
+        if (initialStateMarked)
+        {
+            return null;
+        }
         return methodExpression;
+    }
+
+    @Override
+    public void markInitialState()
+    {
+        initialStateMarked = true;
+    }
+
+    @Override
+    public boolean initialStateMarked()
+    {
+        return initialStateMarked;
+    }
+
+    @Override
+    public void clearInitialState()
+    {
+        initialStateMarked = false;
     }
 
     @Override

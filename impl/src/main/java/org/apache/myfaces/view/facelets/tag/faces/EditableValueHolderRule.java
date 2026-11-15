@@ -31,8 +31,6 @@ import jakarta.faces.view.facelets.Metadata;
 import jakarta.faces.view.facelets.MetadataTarget;
 import jakarta.faces.view.facelets.TagAttribute;
 
-import org.apache.myfaces.view.facelets.FaceletCompositionContext;
-
 /**
  * 
  * @author Jacob Hookom
@@ -78,16 +76,8 @@ public final class EditableValueHolderRule extends MetaRule
             // facelets context and thus variable mapping will work.
             final MethodExpression methodExpressionOneArg = attr.getMethodExpression(ctx, null, VALUECHANGE_SIG);
             final MethodExpression methodExpressionZeroArg = attr.getMethodExpression(ctx, null, EMPTY_CLASS_ARRAY);
-            if (FaceletCompositionContext.getCurrentInstance(ctx).isUsingPSSOnThisView())
-            {
-                ((EditableValueHolder) instance).addValueChangeListener(
-                      new PartialMethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg));
-            }
-            else
-            {
-                ((EditableValueHolder) instance).addValueChangeListener(
-                        new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg));
-            }
+            ((EditableValueHolder) instance).addValueChangeListener(
+                    new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg));
         }
     }
 
@@ -103,16 +93,8 @@ public final class EditableValueHolderRule extends MetaRule
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            if (FaceletCompositionContext.getCurrentInstance(ctx).isUsingPSSOnThisView())
-            {
-                ((EditableValueHolder) instance).addValidator(new PartialMethodExpressionValidator(this.attr
-                        .getMethodExpression(ctx, null, VALIDATOR_SIG)));
-            }
-            else
-            {
-                ((EditableValueHolder) instance).addValidator(new MethodExpressionValidator(this.attr
-                        .getMethodExpression(ctx, null, VALIDATOR_SIG)));
-            }
+            ((EditableValueHolder) instance).addValidator(new MethodExpressionValidator(this.attr
+                    .getMethodExpression(ctx, null, VALIDATOR_SIG)));
         }
     }
 

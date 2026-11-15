@@ -128,9 +128,6 @@ import org.apache.myfaces.view.facelets.pool.ViewEntry;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 import org.apache.myfaces.view.facelets.pool.ViewStructureMetadata;
 import org.apache.myfaces.view.facelets.tag.composite.CreateDynamicCompositeComponentListener;
-import org.apache.myfaces.view.facelets.tag.faces.PartialMethodExpressionActionListener;
-import org.apache.myfaces.view.facelets.tag.faces.PartialMethodExpressionValidator;
-import org.apache.myfaces.view.facelets.tag.faces.PartialMethodExpressionValueChangeListener;
 import org.apache.myfaces.view.facelets.util.FaceletsTemplateMappingUtils;
 import org.apache.myfaces.view.facelets.util.FaceletsViewDeclarationLanguageUtils;
 
@@ -1389,14 +1386,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     createMethodExpression(elContext,
                             attributeExpressionString, Void.TYPE, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
 
-            if (mctx.isUsingPSSOnThisView())
-            {
-                actionListener = new PartialMethodExpressionActionListener(methodExpression, methodExpression2);
-            }
-            else
-            {
-                actionListener = new MethodExpressionActionListener(methodExpression, methodExpression2);
-            }
+            actionListener = new MethodExpressionActionListener(methodExpression, methodExpression2);
         }
         ((ActionSource) innerComponent).addActionListener(actionListener);
         mctx.addMethodExpressionTargeted(innerComponent, targetAttributeName, actionListener);
@@ -1433,14 +1423,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                             attributeExpressionString, Void.TYPE,
                             VALIDATOR_SIGNATURE), attributeNameValueExpression);
 
-            if (mctx.isUsingPSSOnThisView())
-            {
-                validator = new PartialMethodExpressionValidator(methodExpression);
-            }
-            else
-            {
-                validator = new MethodExpressionValidator(methodExpression);
-            }
+            validator = new MethodExpressionValidator(methodExpression);
         }
         ((EditableValueHolder) innerComponent).addValidator(validator);
         mctx.addMethodExpressionTargeted(innerComponent, targetAttributeName, validator);
@@ -1483,15 +1466,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                             attributeExpressionString, Void.TYPE,
                             EMPTY_CLASS_ARRAY), attributeNameValueExpression);
 
-            if (mctx.isUsingPSSOnThisView())
-            {
-                valueChangeListener = new PartialMethodExpressionValueChangeListener(methodExpression,
-                        methodExpression2);
-            }
-            else
-            {
-                valueChangeListener = new MethodExpressionValueChangeListener(methodExpression, methodExpression2);
-            }
+            valueChangeListener = new MethodExpressionValueChangeListener(methodExpression, methodExpression2);
         }
         ((EditableValueHolder) innerComponent).addValueChangeListener(valueChangeListener);
         mctx.addMethodExpressionTargeted(innerComponent, targetAttributeName, valueChangeListener);
