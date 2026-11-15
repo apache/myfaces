@@ -19,7 +19,6 @@
 package org.apache.myfaces.view.facelets.pool;
 
 import jakarta.faces.application.ProjectStage;
-import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
@@ -42,7 +41,6 @@ public class ViewPoolFaceletsTestCase extends AbstractFaceletTestCase
     protected void setUpServletObjects() throws Exception
     {
         super.setUpServletObjects();
-        servletContext.addInitParameter(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, "true");
         servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
         servletContext.addInitParameter("jakarta.faces.FACELETS_LIBRARIES", "/test-facelet.taglib.xml");
         //servletContext.addInitParameter(ViewPoolProcessor.INIT_PARAM_VIEW_POOL_ENABLED, "true");

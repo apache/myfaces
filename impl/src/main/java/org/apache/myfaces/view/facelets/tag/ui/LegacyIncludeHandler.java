@@ -236,7 +236,7 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
             {
                 fcc.endComponentUniqueIdSection();
                 
-                if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() &&
+                if (fcc.isBuildingView() && fcc.isRefreshTransientBuildOnPSS() &&
                     !fcc.isRefreshingTransientBuild())
                 {
                     //Mark the parent component to be saved and restored fully.

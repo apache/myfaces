@@ -28,10 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -168,7 +166,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     public final static String REFRESH_TRANSIENT_BUILD_ON_PSS = "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS";
 
-    public final static String USING_PSS_ON_THIS_VIEW = "org.apache.myfaces.USING_PSS_ON_THIS_VIEW";
+    /**
+     * Set while buildView() applies the facelet to the view, see {@link FaceletCompositionContext#isBuildingView()}.
+     */
+    public final static String BUILDING_VIEW = "org.apache.myfaces.BUILDING_VIEW";
 
     public final static String REMOVING_COMPONENTS_BUILD = "org.apache.myfaces.REMOVING_COMPONENTS_BUILD";
     
@@ -211,9 +212,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private final ViewPoolProcessor viewPoolProcessor;
     private final ViewIdSupport viewIdSupport;
     
-    private StateManagementStrategy partialSMS;
-    private StateManagementStrategy fullSMS;
-    private Set<String> fullStateSavingViewIds;
+    private final PartialStateManagementStrategy partialSMS;
     private Map<String, List<String>> _contractMappings;
     private List<String> _prefixWildcardKeys;
 
@@ -241,16 +240,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         faceletFactory = createFaceletFactory(context, compiler);
 
         partialSMS = new PartialStateManagementStrategy(context);
-        fullSMS = new FullStateManagementStrategy(context);
 
         ExternalContext externalContext = context.getExternalContext();
-        
-        String[] fullStateSavingViewIds = config.getFullStateSavingViewIds();
-        if (fullStateSavingViewIds != null && fullStateSavingViewIds.length > 0)
-        {
-            this.fullStateSavingViewIds = new HashSet<>(fullStateSavingViewIds.length, 1.0f);
-            Collections.addAll(this.fullStateSavingViewIds, fullStateSavingViewIds);
-        }
 
         _initializeContractMappings(externalContext);
         
@@ -331,9 +322,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             log.finest("Building View: " + viewId);
         }
 
-        boolean usePartialStateSavingOnThisView = _usePartialStateSavingOnThisView(viewId);
         boolean refreshTransientBuild = view.getChildCount() > 0;
-        boolean refreshTransientBuildOnPSS = usePartialStateSavingOnThisView && config.isRefreshTransientBuildOnPSS();
+        boolean refreshTransientBuildOnPSS = config.isRefreshTransientBuildOnPSS();
         boolean refreshPartialView = false;
 
         if (viewPoolProcessor != null && !refreshTransientBuild)
@@ -347,9 +337,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 {
                     if (!PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
                     {
-                        ((PartialStateManagementStrategy) 
-                                getStateManagementStrategy(context, view.getViewId())).
-                                subscribeListeners(view);
+                        partialSMS.subscribeListeners(view);
                     }
                     // If the result is complete, the view restored here is static. 
                     // static views can be marked as filled.
@@ -376,35 +364,32 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             }
         }
         
-        if (usePartialStateSavingOnThisView)
+        // Before apply we need to make sure the current view has
+        // a clientId that will be used as a key to save and restore
+        // the current view. Note that getClientId is never called (or used)
+        // from UIViewRoot.
+        if (view.getId() == null)
         {
-            // Before apply we need to make sure the current view has
-            // a clientId that will be used as a key to save and restore
-            // the current view. Note that getClientId is never called (or used)
-            // from UIViewRoot.
-            if (view.getId() == null)
-            {
-                view.setId(view.createUniqueId(context, null));
-            }
+            view.setId(view.createUniqueId(context, null));
+        }
 
-            context.getAttributes().put(USING_PSS_ON_THIS_VIEW, Boolean.TRUE);
-            //Add a key to indicate ComponentTagHandlerDelegate to 
-            //call UIComponent.markInitialState after it is populated
-            if (!refreshTransientBuild || refreshPartialView)
-            {
-                context.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
-                context.getAttributes().put(IS_BUILDING_INITIAL_STATE_KEY_ALIAS, Boolean.TRUE);
-            }
-            if (!refreshTransientBuild && config.isMarkInitialStateWhenApplyBuildView())
-            {
-                context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
-            }
-            if (refreshTransientBuildOnPSS)
-            {
-                //This value is only set when _refreshTransientBuildOnPSSMode is "auto" or "true" 
-                context.getAttributes().put(REFRESH_TRANSIENT_BUILD_ON_PSS,
-                                            config.isRefreshTransientBuildOnPSSAuto() ? "auto" : "true");
-            }
+        context.getAttributes().put(BUILDING_VIEW, Boolean.TRUE);
+        //Add a key to indicate ComponentTagHandlerDelegate to
+        //call UIComponent.markInitialState after it is populated
+        if (!refreshTransientBuild || refreshPartialView)
+        {
+            context.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+            context.getAttributes().put(IS_BUILDING_INITIAL_STATE_KEY_ALIAS, Boolean.TRUE);
+        }
+        if (!refreshTransientBuild && config.isMarkInitialStateWhenApplyBuildView())
+        {
+            context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
+        }
+        if (refreshTransientBuildOnPSS)
+        {
+            //This value is only set when _refreshTransientBuildOnPSSMode is "auto" or "true"
+            context.getAttributes().put(REFRESH_TRANSIENT_BUILD_ON_PSS,
+                                        config.isRefreshTransientBuildOnPSSAuto() ? "auto" : "true");
         }
 
         try
@@ -436,17 +421,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         getVisitContext(context, null, MyFacesVisitHints.SET_SKIP_ITERATION);
                     view.visitTree(visitContext, PublishDynamicComponentRefreshTransientBuildCallback.INSTANCE);
                 }
-                if (!usePartialStateSavingOnThisView || refreshTransientBuildOnPSS)
-                {
-                    // When the facelet is applied, all components are removed and added from view,
-                    // but the difference resides in the ordering. Since the view is
-                    // being refreshed, if we don't do this manually, some tags like
-                    // cc:insertChildren or cc:insertFacet will not work correctly, because
-                    // we expect PostAddToViewEvent will be propagated from parent to child, and
-                    // facelets refreshing algorithm do the opposite.
-                    //FaceletViewDeclarationLanguage._publishPreRemoveFromViewEvent(context, view);
-                    //FaceletViewDeclarationLanguage._publishPostAddToViewEvent(context, view);
-                }
 
                 context.getAttributes().remove(REFRESHING_TRANSIENT_BUILD);
             }
@@ -460,9 +434,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // set this view as filled
         if (refreshTransientBuild)
         {
-            //This option will be true on this cases:
-            //- pss is false, but we are refreshing
-            //- pss is true, and we are refreshing a view already filled
+            // we are refreshing a view already filled
             setFilledView(context, view);
         }
         else if (!refreshTransientBuildOnPSS)
@@ -478,55 +450,50 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             setFilledView(context, view);
         }
 
-        // Subscribe listeners if we are using partialStateSaving
-        if (usePartialStateSavingOnThisView)
+        // UIViewRoot.markInitialState() is not called because it does
+        // not have a facelet tag handler class that create it, instead
+        // new instances are created programmatically.
+        if (!refreshTransientBuild || refreshPartialView)
         {
-            // UIViewRoot.markInitialState() is not called because it does
-            // not have a facelet tag handler class that create it, instead
-            // new instances are created programmatically.
-            if (!refreshTransientBuild || refreshPartialView)
+            // Save the state
+            if (viewPoolProcessor != null &&
+                viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
             {
-                // Save the state
-                if (viewPoolProcessor != null &&
-                    viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
-                {
-                    viewPoolProcessor.storeViewStructureMetadata(context, view);
-                }
-                if (config.isMarkInitialStateWhenApplyBuildView())
-                {
-                    if (!refreshTransientBuildOnPSS ||
-                        !view.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
-                    {
-                        view.markInitialState();
-                    }
-
-                    //Remove the key that indicate we need to call UIComponent.markInitialState
-                    //on the current tree
-                    context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
-                }
-                else
-                {
-                    context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
-                    _markInitialStateOnView(view, refreshTransientBuildOnPSS);
-                    context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
-                }
-                context.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
-                context.getAttributes().remove(IS_BUILDING_INITIAL_STATE_KEY_ALIAS);
+                viewPoolProcessor.storeViewStructureMetadata(context, view);
             }
-
-            // We need to subscribe the listeners of changes in the component tree
-            // only the first time here. Later we subscribe this listeners on
-            // DefaultFaceletsStateManagement.restoreView, to ensure 
-            // relocated components are not retrieved later on getClientIdsRemoved().
-            if (!(refreshTransientBuild && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
-                    && !view.isTransient())
+            if (config.isMarkInitialStateWhenApplyBuildView())
             {
-                ((PartialStateManagementStrategy) getStateManagementStrategy(context, view.getViewId())).
-                        subscribeListeners(view);
-            }
+                if (!refreshTransientBuildOnPSS ||
+                    !view.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
+                {
+                    view.markInitialState();
+                }
 
-            context.getAttributes().remove(USING_PSS_ON_THIS_VIEW);
+                //Remove the key that indicate we need to call UIComponent.markInitialState
+                //on the current tree
+                context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
+            }
+            else
+            {
+                context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
+                _markInitialStateOnView(view, refreshTransientBuildOnPSS);
+                context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
+            }
+            context.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
+            context.getAttributes().remove(IS_BUILDING_INITIAL_STATE_KEY_ALIAS);
         }
+
+        // We need to subscribe the listeners of changes in the component tree
+        // only the first time here. Later we subscribe this listeners on
+        // DefaultFaceletsStateManagement.restoreView, to ensure 
+        // relocated components are not retrieved later on getClientIdsRemoved().
+        if (!(refreshTransientBuild && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
+                && !view.isTransient())
+        {
+            partialSMS.subscribeListeners(view);
+        }
+
+        context.getAttributes().remove(BUILDING_VIEW);
 
         // Remove this var from faces context because this one prevent AjaxHandler
         // register the standard script library on Post-Redirect-Get pattern or
@@ -747,9 +714,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         context.getAttributes().put(CLEAN_TRANSIENT_BUILD_ON_RESTORE, Boolean.TRUE);
     }
 
-    public static boolean isUsingPSSOnThisView(FacesContext context)
+    public static boolean isBuildingView(FacesContext context)
     {
-        return context.getAttributes().containsKey(USING_PSS_ON_THIS_VIEW);
+        return context.getAttributes().containsKey(BUILDING_VIEW);
     }
 
     /**
@@ -846,7 +813,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         {
                             currentHandler.applyAttachedObject(context, component);
                         }
-                        if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                        if (mctx.isBuildingView() && mctx.isMarkInitialState())
                         {
                             component.markInitialState();
                         }
@@ -907,7 +874,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                     currentHandler.applyAttachedObject(context, component);
                                 }
                             }
-                            if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                            if (mctx.isBuildingView() && mctx.isMarkInitialState())
                             {
                                 component.markInitialState();
                             }
@@ -1122,7 +1089,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                 mctx.clearMethodExpressionAttribute(innerComponent, targetAttributeName);
 
                                 retargetMethodExpressions(context, innerComponent);
-                                if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                if (mctx.isBuildingView() && mctx.isMarkInitialState())
                                 {
                                     innerComponent.markInitialState();
                                 }
@@ -1136,7 +1103,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                             attributeName, targetAttributeName, 
                                             attributeExpressionString, attributeNameValueExpression, 
                                             ccAttrMeRedirection);
-                                    if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                    if (mctx.isBuildingView() && mctx.isMarkInitialState())
                                     {
                                         innerComponent.markInitialState();
                                     }
@@ -1148,7 +1115,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                             attributeName, targetAttributeName, 
                                             attributeExpressionString, attributeNameValueExpression, 
                                             ccAttrMeRedirection);
-                                    if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                    if (mctx.isBuildingView() && mctx.isMarkInitialState())
                                     {
                                         innerComponent.markInitialState();
                                     }
@@ -1160,7 +1127,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                             attributeName, targetAttributeName, 
                                             attributeExpressionString, attributeNameValueExpression, 
                                             ccAttrMeRedirection);
-                                    if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                    if (mctx.isBuildingView() && mctx.isMarkInitialState())
                                     {
                                         innerComponent.markInitialState();
                                     }
@@ -1172,7 +1139,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                             attributeName, targetAttributeName,
                                             attributeExpressionString, attributeNameValueExpression,
                                             ccAttrMeRedirection);
-                                    if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                    if (mctx.isBuildingView() && mctx.isMarkInitialState())
                                     {
                                         innerComponent.markInitialState();
                                     }
@@ -1502,7 +1469,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
                 retargetMethodExpressions(context, innerComponent);
                 
-                if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                if (mctx.isBuildingView() && mctx.isMarkInitialState())
                 {
                     //retargetMethodExpression occur on build view time, so it is safe to call markInitialState here
                     innerComponent.markInitialState();
@@ -1522,7 +1489,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 {
                     innerComponent.getAttributes().put(targetAttributeName, methodExpression);
                 }
-                if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                if (mctx.isBuildingView() && mctx.isMarkInitialState())
                 {
                     innerComponent.markInitialState();
                 }
@@ -1669,12 +1636,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     public StateManagementStrategy getStateManagementStrategy(FacesContext context, String viewId)
     {
-        if (config.isPartialStateSaving() || _usePartialStateSavingOnThisView(viewId))
-        {
-            return partialSMS;
-        }
-
-        return fullSMS;
+        return partialSMS;
     }
 
     /**
@@ -1969,10 +1931,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         context.setResourceLibraryContracts(contracts);
         
         // Faces 2.2 stateless views
-        // We need to check if the incoming view is stateless or not and if that so rebuild it here
-        // note we cannot do this in PartialStateManagementStrategy because it is only used
-        // when PSS is enabled, but stateless views can be used without PSS. If the view is stateless,
-        // there is no need to ask to the StateManager.
+        // We need to check if the incoming view is stateless or not and if that so rebuild it here.
+        // If the view is stateless, there is no need to ask the StateManager.
         String renderKitId = viewHandler.calculateRenderKitId(context);
 
         ResponseStateManager manager = getRenderKitFactory().getRenderKit(context, renderKitId)
@@ -2354,12 +2314,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         
         this._prefixWildcardKeys = prefixWildcardKeys;
         this._contractMappings = contractMappings;
-    }
-
-    private boolean _usePartialStateSavingOnThisView(String viewId)
-    {
-        return config.isPartialStateSaving()
-                && !(fullStateSavingViewIds != null && fullStateSavingViewIds.contains(viewId));
     }
 
     @Override

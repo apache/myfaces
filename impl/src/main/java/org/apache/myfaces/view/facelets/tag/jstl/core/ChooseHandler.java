@@ -216,7 +216,7 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
         }
 
         ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, savedOption);
-        if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
+        if (fcc.isBuildingView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);

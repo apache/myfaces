@@ -71,8 +71,8 @@ import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
  * 
  * The following considerations apply for this class:
  * 
- * 1. This StateManagementStrategy should only be active if jakarta.faces.PARTIAL_STATE_SAVING
- *    config param is active(true). See javadoc on StateManager for details.
+ * 1. This is the only StateManagementStrategy. Full state saving (jakarta.faces.PARTIAL_STATE_SAVING
+ *    and jakarta.faces.FULL_STATE_SAVING_VIEW_IDS) has been removed in Faces 5.0.
  * 2. A map using component clientId as keys are used to hold the state.
  * 3. Each component has a valid id after ViewDeclarationLanguage.buildView().
  *    This implies that somewhere, every TagHandler that create an UIComponent 

@@ -722,6 +722,11 @@ public abstract class UIComponent
 
     public abstract void queueEvent(FacesEvent event);
 
+    /**
+     * @deprecated Full state saving has been removed. Use
+     * {@link jakarta.faces.view.StateManagementStrategy#restoreView} instead.
+     */
+    @Deprecated(since = "5.0", forRemoval = true)
     public abstract void processRestoreState(FacesContext context, Object state);
 
     public abstract void processDecodes(FacesContext context);
@@ -790,6 +795,11 @@ public abstract class UIComponent
 
     public abstract void processUpdates(FacesContext context);
 
+    /**
+     * @deprecated Full state saving has been removed. Use
+     * {@link jakarta.faces.view.StateManagementStrategy#saveView} instead.
+     */
+    @Deprecated(since = "5.0", forRemoval = true)
     public abstract java.lang.Object processSaveState(FacesContext context);
 
     public void subscribeToEvent(Class<? extends SystemEvent> eventClass,

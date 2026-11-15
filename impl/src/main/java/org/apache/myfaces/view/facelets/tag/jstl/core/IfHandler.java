@@ -158,7 +158,7 @@ public final class IfHandler extends TagHandler implements ComponentContainerHan
 
         ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, b);
 
-        if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
+        if (fcc.isBuildingView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);

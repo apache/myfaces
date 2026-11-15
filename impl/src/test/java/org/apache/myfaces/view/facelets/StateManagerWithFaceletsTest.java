@@ -51,7 +51,6 @@ public class StateManagerWithFaceletsTest extends AbstractFaceletMultipleRequest
     {
         super.setUpServletContextAndSession();
         
-        servletContext.addInitParameter(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, "true");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
     }
 

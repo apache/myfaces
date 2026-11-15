@@ -1527,7 +1527,12 @@ public abstract class UIComponentBase extends UIComponent
         }
     }
 
+    /**
+     * @deprecated Full state saving has been removed. Use
+     * {@link jakarta.faces.view.StateManagementStrategy#saveView} instead.
+     */
     @Override
+    @Deprecated(since = "5.0", forRemoval = true)
     public Object processSaveState(FacesContext context)
     {
         Assert.notNull(context, "context");
@@ -1614,8 +1619,13 @@ public abstract class UIComponentBase extends UIComponent
         return new Object[] { savedState, facetMap, childrenList };
     }
 
+    /**
+     * @deprecated Full state saving has been removed. Use
+     * {@link jakarta.faces.view.StateManagementStrategy#restoreView} instead.
+     */
     @SuppressWarnings("unchecked")
     @Override
+    @Deprecated(since = "5.0", forRemoval = true)
     public void processRestoreState(FacesContext context, Object state)
     {
         Assert.notNull(context, "context");

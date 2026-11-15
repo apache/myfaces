@@ -557,7 +557,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                         FaceletViewDeclarationLanguageBase.resetDynamicComponentNeedsRefreshFlag(
                                 ctx.getFacesContext());
                         FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
-                        if (mctx.isUsingPSSOnThisView())
+                        if (mctx.isBuildingView())
                         {
                             FaceletViewDeclarationLanguage.cleanTransientBuildOnRestore(faces);
                         }

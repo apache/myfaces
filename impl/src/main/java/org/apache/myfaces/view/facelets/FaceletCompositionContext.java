@@ -217,12 +217,16 @@ abstract public class FaceletCompositionContext
     }
     
     /**
-     * Check if we are using partial state saving on this view
+     * Check if the facelet is currently applied by ViewDeclarationLanguage.buildView(), either
+     * building the view the first time or refreshing it. In that case the created components take
+     * part in partial state saving (initial state marking, saved facelet tag state). It returns
+     * false when a facelet is applied outside buildView, e.g. while creating the view metadata, the
+     * composite component metadata or a component via ViewDeclarationLanguage.createComponent().
      * 
-     * @return
+     * @return true if the facelet is applied by buildView
      * @since 2.0.1
      */
-    public abstract boolean isUsingPSSOnThisView();
+    public abstract boolean isBuildingView();
     
     /**
      * @since 2.0.1

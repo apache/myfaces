@@ -928,8 +928,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
     /**
      * @since 2.0
+     * @deprecated Full state saving has been removed. Use
+     * {@link jakarta.faces.view.StateManagementStrategy#restoreView} instead.
      */
     @Override
+    @Deprecated(since = "5.0", forRemoval = true)
     public void processRestoreState(FacesContext context, Object state)
     {
         // The default implementation must call UIComponentBase.processRestoreState(jakarta.faces.context.FacesContext,

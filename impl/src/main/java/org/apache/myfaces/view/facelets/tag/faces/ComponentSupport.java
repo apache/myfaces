@@ -711,7 +711,7 @@ public final class ComponentSupport
                                                 UIComponent parent, String uniqueId)
     {
         Object value = null;
-        if (fcc.isUsingPSSOnThisView() && !fcc.isRefreshTransientBuildOnPSSPreserveState())
+        if (fcc.isBuildingView() && !fcc.isRefreshTransientBuildOnPSSPreserveState())
         {
             UIViewRoot root = getViewRoot(ctx, parent);
             FaceletState map = (FaceletState) root.getAttributes().get(FACELET_STATE_INSTANCE);
@@ -733,14 +733,14 @@ public final class ComponentSupport
         // Only save the value when the view was built the first time, to ensure PSS algorithm 
         // work correctly. If preserve state is enabled, just ignore it, because this tag will
         // force full restore over the parent
-        //if (fcc.isUsingPSSOnThisView()) {
+        //if (fcc.isBuildingView()) {
         //    if (!fcc.isRefreshingTransientBuild() && !ctx.getFacesContext().isPostback()
         //        && !MyfacesConfig.getCurrentInstance(
         //            ctx.getFacesContext().getExternalContext()).isRefreshTransientBuildOnPSSPreserveState())
         
         // If we save the value each time the view is updated, we can use PSS on the dynamic parts,
         // just calling markInitialState() on the required components, simplifying the algorithm.
-        if (fcc.isUsingPSSOnThisView() && !fcc.isRefreshTransientBuildOnPSSPreserveState())
+        if (fcc.isBuildingView() && !fcc.isRefreshTransientBuildOnPSSPreserveState())
         {
             UIViewRoot root = getViewRoot(ctx, parent);
             FaceletState map = (FaceletState) root.getAttributes().get(FACELET_STATE_INSTANCE);

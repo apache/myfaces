@@ -169,7 +169,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         if (src != null)
         {
             PageContext pctx = actx.getPageContext();
-            // c:forEach is special because it requires FaceletState even if no pss is used.
+            // c:forEach is special because it always requires the FaceletState, even outside buildView.
             FaceletState restoredFaceletState = ComponentSupport.getFaceletState(ctx, parent, false);
             IterationState restoredSavedOption = (restoredFaceletState == null) ? null : 
                 (IterationState) restoredFaceletState.getState(uniqueId);
@@ -196,7 +196,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
             }
         }
 
-        if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
+        if (fcc.isBuildingView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
@@ -583,7 +583,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                         Boolean isBuildingInitialState = null;
                         try
                         {
-                            if (markInitialState && fcc.isUsingPSSOnThisView())
+                            if (markInitialState && fcc.isBuildingView())
                             {
                                 //set markInitialState flag
                                 oldMarkInitialState = fcc.isMarkInitialState();
@@ -595,7 +595,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                         }
                         finally
                         {
-                            if (markInitialState && fcc.isUsingPSSOnThisView())
+                            if (markInitialState && fcc.isBuildingView())
                             {
                                 //unset markInitialState flag
                                 if (isBuildingInitialState == null)

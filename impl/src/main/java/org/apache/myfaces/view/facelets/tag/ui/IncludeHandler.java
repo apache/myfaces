@@ -250,7 +250,7 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
             {
                 fcc.endComponentUniqueIdSection();
                 
-                if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS()
+                if (fcc.isBuildingView() && fcc.isRefreshTransientBuildOnPSS()
                         && !fcc.isRefreshingTransientBuild())
                 {
                     //Mark the parent component to be saved and restored fully.

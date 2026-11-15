@@ -199,7 +199,6 @@ public abstract class AbstractMyFacesTestCase
      * <ul>
      * <li>"org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE", "true"</li>
      * <li>"jakarta.faces.PROJECT_STAGE", "UnitTest"</li>
-     * <li>"jakarta.faces.PARTIAL_STATE_SAVING", "true"</li>
      * <li>"jakarta.faces.FACELETS_REFRESH_PERIOD", "-1"</li>
      * </ul>
      * 
@@ -209,7 +208,6 @@ public abstract class AbstractMyFacesTestCase
     {
         servletContext.addInitParameter("org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE", "true");
         servletContext.addInitParameter("jakarta.faces.PROJECT_STAGE", "UnitTest");
-        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,"-1");
         servletContext.addInitParameter("org.apache.myfaces.spi.InjectionProvider", 
             NoInjectionAnnotationInjectionProvider.class.getName());

@@ -20,22 +20,15 @@ package org.apache.myfaces.view.facelets.impl;
 
 import java.io.IOException;
 import java.util.List;
-import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
 {
-    @Override
-    protected void setUpServletObjects() throws Exception
-    {
-        super.setUpServletObjects();
-        servletContext.addInitParameter(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, "false");
-    }
-
     @Test
     public void test_only_ajs_is_included() throws IOException
     {
@@ -47,7 +40,7 @@ public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
 
         List<UIComponent> resources = root.getComponentResources(facesContext, "head");
 
-        Assertions.assertTrue(resources.size() == 1);
+        Assertions.assertEquals(1, resources.size());
         Assertions.assertTrue(resources.get(0).getAttributes().get("name").equals("a.js"));
     }
 
@@ -63,7 +56,7 @@ public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
 
         List<UIComponent> resources = root.getComponentResources(facesContext, "head");
 
-        Assertions.assertTrue(resources.size() == 2);
+        Assertions.assertEquals(2, resources.size());
     }
 
     @Test
@@ -78,11 +71,15 @@ public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
         {
             List<UIComponent> resources = view.getComponentResources(facesContext, "head");
 
-            Assertions.assertTrue(resources.size() == 1);
+            Assertions.assertEquals(1, resources.size());
         }
 
         // reset 'isFilledView'
         facesContext.getAttributes().remove(view);
+
+        // The view is refreshed before render, like the runtime does. In RESTORE_VIEW the facelet
+        // replays the saved c:if outcome so the restored tree matches the saved state.
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
 
         // Building the view a second time
         // Because 'includeResource' is now set the second resource should be included
@@ -92,7 +89,7 @@ public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
         {
             List<UIComponent> resources = view.getComponentResources(facesContext, "head");
 
-            Assertions.assertTrue(resources.size() == 2);
+            Assertions.assertEquals(2, resources.size());
         }
 
         // reset 'isFilledView'
@@ -106,7 +103,7 @@ public class ResourceMarkDeleteTest  extends AbstractFaceletTestCase
         {
             List<UIComponent> resources = view.getComponentResources(facesContext, "head");
 
-            Assertions.assertTrue(resources.size() == 1);
+            Assertions.assertEquals(1, resources.size());
         }
     }
 }

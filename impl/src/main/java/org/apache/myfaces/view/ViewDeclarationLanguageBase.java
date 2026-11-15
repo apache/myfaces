@@ -21,21 +21,15 @@ package org.apache.myfaces.view;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ViewHandler;
-import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
-import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.StateManagementStrategy;
 import jakarta.faces.view.ViewDeclarationLanguage;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.myfaces.application.InvalidViewIdException;
-import org.apache.myfaces.application.TreeStructureManager;
-import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
@@ -116,51 +110,13 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
             log.finest("Entering restoreView - viewId: " + viewId + " ; renderKitId: " + renderKitId);
         }
 
-        UIViewRoot viewRoot = null;
-        
         StateManagementStrategy sms = getStateManagementStrategy(context, viewId);
-        if (sms != null)
+        if (log.isLoggable(Level.FINEST))
         {
-            if (log.isLoggable(Level.FINEST))
-            {
-                log.finest("Redirect to StateManagementStrategy: " + sms.getClass().getName());
-            }
-            
-            viewRoot = sms.restoreView(context, viewId, renderKitId);
+            log.finest("Redirect to StateManagementStrategy: " + sms.getClass().getName());
         }
-        else
-        {
-            RenderKit renderKit = getRenderKitFactory().getRenderKit(context, renderKitId);
-            ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
 
-            Object state = responseStateManager.getState(context, viewId);
-
-            if (state != null)
-            {
-                Object[] stateArray = (Object[])state;
-                viewRoot = TreeStructureManager.restoreTreeStructure(((Object[]) stateArray[0])[0]);
-
-                if (viewRoot != null)
-                {
-                    context.setViewRoot(viewRoot);
-                    viewRoot.processRestoreState(context, stateArray[1]);
-                    
-                    RequestViewContext.getCurrentInstance(context).refreshRequestViewContext(
-                            context, viewRoot);
-                    
-                    // If state is saved fully, there outer f:view tag handler will not be executed,
-                    // so "contracts" attribute will not be set properly. We need to save it and
-                    // restore it from here. With PSS, the view will always be built so it is not
-                    // necessary to save it on the state.
-                    Object rlc = ((Object[]) stateArray[0])[1];
-                    if (rlc != null)
-                    {
-                        context.setResourceLibraryContracts((List<String>) UIComponentBase.
-                            restoreAttachedState(context, rlc));
-                    }
-                }
-            }            
-        }
+        UIViewRoot viewRoot = sms.restoreView(context, viewId, renderKitId);
         if (log.isLoggable(Level.FINEST))
         {
             log.finest("Exiting restoreView - " + viewId);

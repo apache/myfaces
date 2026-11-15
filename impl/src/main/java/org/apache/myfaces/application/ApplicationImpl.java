@@ -1761,7 +1761,7 @@ public class ApplicationImpl extends Application
                 {
                     root.getAttributes().put(RESOURCE_DEPENDENCY_UNIQUE_ID_KEY, Boolean.FALSE);
                 }
-                if (!mctx.isUsingPSSOnThisView())
+                if (!mctx.isBuildingView())
                 {
                     // Now set the identifier that will help to know which classes has been already inspected.
                     component.getAttributes().put(

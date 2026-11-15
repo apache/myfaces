@@ -20,7 +20,6 @@ package org.apache.myfaces.view.facelets.pss.acid;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 
-import jakarta.faces.application.StateManager;
 
 public class AcidPssRefreshMyFacesRequestTestCase extends AcidMyFacesRequestTestCase
 {
@@ -29,7 +28,6 @@ public class AcidPssRefreshMyFacesRequestTestCase extends AcidMyFacesRequestTest
     protected void setUpWebConfigParams() throws Exception
     {
         super.setUpWebConfigParams();
-        servletContext.addInitParameter(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, "true");
         servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "true");
     }
     

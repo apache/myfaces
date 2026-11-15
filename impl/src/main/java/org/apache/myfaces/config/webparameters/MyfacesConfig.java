@@ -123,8 +123,7 @@ public class MyfacesConfig
      * Indicate if the facelet associated to the view should be reapplied when the view is refreshed.
      *  Default mode is "auto".
      * 
-     * <p>This param is only valid when partial state saving is on.
-     * If this is set as true, the tag-handlers are always reapplied before render view, like in facelets 1.1.x, 
+     * <p>If this is set as true, the tag-handlers are always reapplied before render view, like in facelets 1.1.x, 
      * allowing c:if work correctly to "toggle" components based on a value changed on invoke application phase. 
      * If the param is set as "auto", the implementation check if c:if, c:forEach, 
      * c:choose and ui:include with src=ELExpression is used on the page and if that so, mark the view
@@ -140,8 +139,7 @@ public class MyfacesConfig
      * Enable or disable a special mode that enable full state for parent components containing c:if, c:forEach, 
      * c:choose and ui:include with src=ELExpression. By default is disabled(false).
      * 
-     * <p>This param is only valid when partial state saving is on.
-     * If this is set as true, parent components containing  c:if, c:forEach, 
+     * <p>If this is set as true, parent components containing  c:if, c:forEach, 
      * c:choose and ui:include with src=ELExpression are marked to be restored fully, so state
      * is preserved between request.</p>
      */
@@ -854,8 +852,6 @@ public class MyfacesConfig
     private boolean initializeSkipJarFacesConfigScan = INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN_DEFAULT;
     private String expressionFactory;
     private String checkIdProductionMode = CHECK_ID_PRODUCTION_MODE_DEFAULT;
-    private boolean partialStateSaving = true;
-    private String[] fullStateSavingViewIds;
     private int faceletsBufferSize = 1024;
     private boolean markInitialStateWhenApplyBuildView = MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW_DEFAULT;
     private String[] viewSuffix = new String[] { ViewHandler.DEFAULT_FACELETS_SUFFIX };
@@ -1219,30 +1215,6 @@ public class MyfacesConfig
         
         cfg.checkIdProductionMode = getString(extCtx, CHECK_ID_PRODUCTION_MODE,
                 CHECK_ID_PRODUCTION_MODE_DEFAULT);
-        
-        // Per spec section 11.1.3, the default value for the partial state saving feature needs
-        // to be true if 2.0, false otherwise.
-        // lets ignore this on 3.x
-        cfg.partialStateSaving = getBoolean(extCtx, StateManager.PARTIAL_STATE_SAVING_PARAM_NAME,
-                true);
-        
-        if (cfg.partialStateSaving == false)
-        {
-            Logger.getLogger(MyfacesConfig.class.getName()).warning(
-                "The configuration 'jakarta.faces.PARTIAL_STATE_SAVING' is deprecated " +
-                    "as of Faces 4.1");
-        }
-
-        cfg.fullStateSavingViewIds = StringUtils.splitShortString(
-                getString(extCtx, StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, null),
-                ',');
-
-        if (cfg.fullStateSavingViewIds.length > 0)
-        {
-            Logger.getLogger(MyfacesConfig.class.getName()).warning(
-                "The configuration 'jakarta.faces.FULL_STATE_SAVING_VIEW_IDS' is deprecated " +
-                    "as of Faces 4.1");
-        }
         
         cfg.faceletsBufferSize = getInt(extCtx, ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME,
                 1024);
@@ -1715,16 +1687,6 @@ public class MyfacesConfig
     public String getCheckIdProductionMode()
     {
         return checkIdProductionMode;
-    }
-
-    public boolean isPartialStateSaving()
-    {
-        return partialStateSaving;
-    }
-
-    public String[] getFullStateSavingViewIds()
-    {
-        return fullStateSavingViewIds;
     }
 
     public int getFaceletsBufferSize()

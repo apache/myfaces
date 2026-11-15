@@ -71,7 +71,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     private Boolean _refreshTransientBuildOnPSS;
         
-    private Boolean _usingPSSOnThisView;
+    private Boolean _buildingView;
 
     private List<Map<String, UIComponent>> _componentsMarkedForDeletion;
     
@@ -419,13 +419,13 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     }
 
     @Override
-    public boolean isUsingPSSOnThisView()
+    public boolean isBuildingView()
     {
-        if (_usingPSSOnThisView == null)
+        if (_buildingView == null)
         {
-            _usingPSSOnThisView = FaceletViewDeclarationLanguage.isUsingPSSOnThisView(_facesContext);
+            _buildingView = FaceletViewDeclarationLanguage.isBuildingView(_facesContext);
         }
-        return _usingPSSOnThisView;
+        return _buildingView;
     }
     
     @Override

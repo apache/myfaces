@@ -20,7 +20,6 @@ package org.apache.myfaces.view.facelets.tag.jstl.core;
 
 import java.util.Map;
 
-import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
@@ -38,8 +37,6 @@ public class CifTestCase extends AbstractFaceletTestCase
     {
         super.setUpServletObjects();
         
-        servletContext.addInitParameter(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME,
-                "true");
         servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "true");
     }
     
