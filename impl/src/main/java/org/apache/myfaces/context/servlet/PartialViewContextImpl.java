@@ -661,12 +661,6 @@ public class PartialViewContextImpl extends PartialViewContext
                             component.encodeAll(facesContext);
                             continue;
                         }
-
-                        int index = resourceName.indexOf('?');
-                        if (index >= 0)
-                        {
-                            resourceName = resourceName.substring(0, index);
-                        }
                         // Is resource, render only if it has not been rendered before.
                         if (!context.getApplication().getResourceHandler().isResourceRendered(
                                 context, resourceName, libraryName))

@@ -144,12 +144,6 @@ public class FaceletsViewDeclarationLanguageUtils
                     {
                         continue;
                     }
-
-                    int index = resourceName.indexOf('?');
-                    if (index >= 0)
-                    {
-                        resourceName = resourceName.substring(0, index);
-                    }
                     
                     facesContext.getApplication().getResourceHandler().markResourceRendered(
                             facesContext, resourceName, libraryName);

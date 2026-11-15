@@ -68,7 +68,12 @@ public final class ResourceResolver extends ELResolver
         if (base != null && property != null && base instanceof ResourceHandler handler)
         {
             String reference = (String) property;
-            int colonIndex = (reference).indexOf(':');
+
+            // Faces 5.0: the reference may carry a query string, which is passed along with the resource name.
+            // The library separator must therefore be searched before the first '?' only.
+            int queryIndex = reference.indexOf('?');
+            String referenceWithoutQuery = queryIndex >= 0 ? reference.substring(0, queryIndex) : reference;
+            int colonIndex = referenceWithoutQuery.indexOf(':');
             Resource resource;
             
             if (colonIndex == -1)
@@ -81,7 +86,7 @@ public final class ResourceResolver extends ELResolver
             else
             {
                 String contractName = null;
-                if (reference.lastIndexOf (':') != colonIndex)
+                if (referenceWithoutQuery.lastIndexOf(':') != colonIndex)
                 {
                     // Max of one ":" allowed, so throw an exception.
                     

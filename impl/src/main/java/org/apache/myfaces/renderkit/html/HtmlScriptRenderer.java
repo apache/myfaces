@@ -178,14 +178,6 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
             return;
         }
 
-        String additionalQueryParams = null;
-        int index = resourceName.indexOf('?');
-        if (index >= 0)
-        {
-            additionalQueryParams = resourceName.substring(index + 1);
-            resourceName = resourceName.substring(0, index);
-        }
-
         Resource resource;
         if (libraryName == null)
         {
@@ -234,10 +226,6 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
             HtmlRendererUtils.renderScriptType(facesContext, writer);
             HtmlRendererUtils.renderNonce(facesContext, writer);
             String path = resource.getRequestPath();
-            if (additionalQueryParams != null)
-            {
-                path = path + ((path.indexOf('?') >= 0) ? "&amp;" : "?") + additionalQueryParams;
-            }
             writer.writeURIAttribute(HTML.SRC_ATTR, facesContext.getExternalContext().encodeResourceURL(path), null);
             writer.endElement(HTML.SCRIPT_ELEM);
         }

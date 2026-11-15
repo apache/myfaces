@@ -227,6 +227,7 @@ public abstract class ResourceHandler
      */
     public boolean isResourceRendered(FacesContext facesContext, String resourceName, String libraryName)
     {
+        resourceName = removeQueryString(resourceName);
         return getRenderedResources(facesContext).containsKey(
                 libraryName != null ? libraryName+'/'+resourceName : resourceName);
     }
@@ -239,10 +240,25 @@ public abstract class ResourceHandler
      */
     public void markResourceRendered(FacesContext facesContext, String resourceName, String libraryName)
     {
+        resourceName = removeQueryString(resourceName);
         getRenderedResources(facesContext).put(
                 libraryName != null ? libraryName+'/'+resourceName : resourceName, Boolean.TRUE);
     }
     
+    /**
+     * Removes the query string (everything from the first <code>?</code>) from the given resource name,
+     * as the query string is not part of the resource identifier (Faces 5.0).
+     */
+    private static String removeQueryString(String resourceName)
+    {
+        if (resourceName == null)
+        {
+            return null;
+        }
+        int index = resourceName.indexOf('?');
+        return index >= 0 ? resourceName.substring(0, index) : resourceName;
+    }
+
     /**
      * Return a set of already rendered resources by this renderer on the current
      * request. 

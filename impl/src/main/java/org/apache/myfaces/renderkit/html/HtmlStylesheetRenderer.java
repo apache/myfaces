@@ -154,15 +154,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
         {
             return;
         }
-        
-        String additionalQueryParams = null;
-        int index = resourceName.indexOf('?');
-        if (index >= 0)
-        {
-            additionalQueryParams = resourceName.substring(index + 1);
-            resourceName = resourceName.substring(0, index);
-        }
-        
+
         Resource resource;
         if (libraryName == null)
         {
@@ -228,10 +220,6 @@ public class HtmlStylesheetRenderer extends Renderer implements
             }
 
             String path = resource.getRequestPath();
-            if (additionalQueryParams != null)
-            {
-                path = path + ((path.indexOf('?') >= 0) ? "&amp;" : "?") + additionalQueryParams;
-            }
             writer.writeURIAttribute(HTML.HREF_ATTR,
                     facesContext.getExternalContext().encodeResourceURL(path), null);
             writer.endElement(HTML.LINK_ELEM);

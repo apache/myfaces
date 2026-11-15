@@ -39,6 +39,7 @@ import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.resource.ContractResource;
 import org.apache.myfaces.resource.ContractResourceLoader;
+import org.apache.myfaces.resource.QueryStringResource;
 import org.apache.myfaces.resource.ResourceCachedInfo;
 import org.apache.myfaces.resource.ResourceHandlerCache;
 import org.apache.myfaces.resource.ResourceHandlerCache.ResourceValue;
@@ -131,9 +132,25 @@ public class ResourceHandlerImpl extends ResourceHandler
     public Resource createResource(String resourceName, String libraryName, String contentType)
     {
         Assert.notNull(resourceName, "resourceName");
-        
+
+        // Faces 5.0: the resource name may carry a query string, which is not part of the
+        // resource identifier (and therefore not part of the cache key), but must be appended
+        // to Resource.getRequestPath()
+        int queryIndex = resourceName.indexOf('?');
+        if (queryIndex < 0)
+        {
+            return doCreateResource(resourceName, libraryName, contentType);
+        }
+
+        return QueryStringResource.wrap(
+                doCreateResource(resourceName.substring(0, queryIndex), libraryName, contentType),
+                resourceName.substring(queryIndex + 1));
+    }
+
+    protected Resource doCreateResource(String resourceName, String libraryName, String contentType)
+    {
         Resource resource = null;
-        
+
         if (resourceName.length() == 0)
         {
             return null;
@@ -481,6 +498,7 @@ public class ResourceHandlerImpl extends ResourceHandler
     @Override
     public String getRendererTypeForResourceName(String resourceName)
     {
+        resourceName = QueryStringResource.removeQueryString(resourceName);
         if (resourceName.endsWith(".js"))
         {
             return ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE;
@@ -1008,10 +1026,24 @@ public class ResourceHandlerImpl extends ResourceHandler
     @Override
     public Resource createResourceFromId(String resourceId)
     {
+        Assert.notNull(resourceId, "resourceId");
+
+        // Faces 5.0: the query string is not part of the resource identifier
+        int queryIndex = resourceId.indexOf('?');
+        if (queryIndex < 0)
+        {
+            return doCreateResourceFromId(resourceId);
+        }
+
+        return QueryStringResource.wrap(
+                doCreateResourceFromId(resourceId.substring(0, queryIndex)),
+                resourceId.substring(queryIndex + 1));
+    }
+
+    protected Resource doCreateResourceFromId(String resourceId)
+    {
         Resource resource = null;
 
-        Assert.notNull(resourceId, "resourceId");
-        
         // Later in deriveResourceMeta the resourceId is decomposed and
         // its elements validated properly.
         if (!ResourceValidationUtils.isValidResourceId(resourceId))
@@ -1885,6 +1917,7 @@ public class ResourceHandlerImpl extends ResourceHandler
     @Override
     public boolean isResourceRendered(FacesContext facesContext, String resourceName, String libraryName)
     {
+        resourceName = QueryStringResource.removeQueryString(resourceName);
         return getRenderedResources(facesContext).containsKey(
                 libraryName != null
                         ? contactLibraryAndResource(facesContext, libraryName, resourceName)
@@ -1900,6 +1933,7 @@ public class ResourceHandlerImpl extends ResourceHandler
     @Override
     public void markResourceRendered(FacesContext facesContext, String resourceName, String libraryName)
     {
+        resourceName = QueryStringResource.removeQueryString(resourceName);
         getRenderedResources(facesContext).put(
                 libraryName != null
                         ? contactLibraryAndResource(facesContext, libraryName, resourceName)
