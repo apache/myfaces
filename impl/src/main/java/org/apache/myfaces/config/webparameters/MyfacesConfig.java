@@ -282,6 +282,10 @@ public class MyfacesConfig
      * <p>Only applicable if state saving method is "server" (= default).
      * </p>
      * 
+     * <p>It also defines the max number of active view scopes (the storages of &#064;ViewScoped beans) per session,
+     * for both state saving methods. If the limit is exceeded, the least recently used view scope is destroyed.
+     * </p>
+     *
      */
     @JSFWebConfigParam(defaultValue="20",since="1.1", classType="java.lang.Integer", group="state", tags="performance")
     public static final String NUMBER_OF_VIEWS_IN_SESSION = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
