@@ -22,6 +22,7 @@ import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
@@ -91,7 +92,7 @@ public class UISelectOne extends UIInput
                 public VisitResult visit(VisitContext visitContext, UIComponent target) 
                 {
                     // check they they are of the same group
-                    if (target instanceof UISelectOne  && ((UISelectOne) target).getGroup().equals(group)) 
+                    if (target instanceof UISelectOne  && Objects.equals(group, ((UISelectOne) target).getGroup())) 
                     {
                         // check if the is empty (see ) or if it's not valid (means this path has been taken already)
                         // See conditions listed under spec: uiselectone#processValidators
@@ -204,7 +205,7 @@ public class UISelectOne extends UIInput
                 @Override
                 public VisitResult visit(VisitContext visitContext, UIComponent target) 
                 {
-                    if (target instanceof UISelectOne  && ((UISelectOne) target).getGroup().equals(group)) 
+                    if (target instanceof UISelectOne  && Objects.equals(group, ((UISelectOne) target).getGroup())) 
                     {
                         for (Iterator<SelectItem> iter = new SelectItemsIterator(target, context); iter.hasNext();)
                         {
