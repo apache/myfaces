@@ -180,6 +180,42 @@ public class UISelectOneTest extends AbstractFacesTestCase
         Assertions.assertEquals(0, facesContext.getMessageList().size());
     }
     
+    /**
+     * MYFACES-4783: a grouped radio next to a UISelectOne without a group must not throw a NPE.
+     */
+    @Test
+    public void testGroupedRadioNextToUngroupedSelectOne()
+    {
+        facesContext.getViewRoot().setLocale(_TEST_LOCALE);
+
+        UIForm form = new UIForm();
+        form.setId("form");
+        facesContext.getViewRoot().getChildren().add(form);
+
+        UISelectOne menu = new UISelectOne();
+        menu.setId("menu");
+        menu.setRendererType(null);
+        UISelectItem menuItem = new UISelectItem();
+        menuItem.setItemValue("x");
+        menu.getChildren().add(menuItem);
+        form.getChildren().add(menu);
+
+        UISelectOne radio = new UISelectOne();
+        radio.setId("radio");
+        radio.setRendererType(null);
+        radio.setGroup("group");
+        UISelectItem radioItem = new UISelectItem();
+        radioItem.setItemValue("a");
+        radio.getChildren().add(radioItem);
+        form.getChildren().add(radio);
+
+        Assertions.assertDoesNotThrow(() -> radio.processValidators(facesContext));
+
+        radio.validateValue(facesContext, "a");
+        Assertions.assertTrue(radio.isValid());
+        Assertions.assertEquals(0, facesContext.getMessageList().size());
+    }
+
     static private final Locale _TEST_LOCALE = new Locale("xx", "TEST");
 
 }
