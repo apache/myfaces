@@ -195,8 +195,8 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <groupId>jakarta.cdi</groupId>
+            <artifactId>jakarta.cdi-api</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -261,7 +261,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <tomcat.version>10.1.59</tomcat.version>
         <arquillian-drone.version>3.0.1.Final</arquillian-drone.version>
     </properties>

@@ -19,6 +19,7 @@
 package org.apache.myfaces.el;
 
 import org.apache.myfaces.el.resolver.FlashELResolver;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -199,14 +200,26 @@ public class DefaultELResolverBuilder extends ELResolverBuilder
     protected ELResolver getCDIELResolver(FacesContext facesContext)
     {
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext);
-        if (ExternalSpecifications.isCDI41Available(facesContext.getExternalContext()))
+        if (ExternalSpecifications.isCDI41Available(facesContext.getExternalContext())
+                && beanManager instanceof jakarta.enterprise.inject.spi.el.ELAwareBeanManager elAwareBeanManager)
         {
-            if (beanManager instanceof jakarta.enterprise.inject.spi.el.ELAwareBeanManager)
-            {
-                return beanManager.getELResolver();
-            }
+            return elAwareBeanManager.getELResolver();
         }
-        return beanManager.getELResolver();
+
+        // CDI 5.0+ removed BeanManager#getELResolver(); EL integration lives in the separate
+        // jakarta.cdi-el-api (ELAwareBeanManager). Fall back to reflection for older CDI containers
+        // whose BeanManager still exposes the (deprecated) method directly.
+        try
+        {
+            Method method = beanManager.getClass().getMethod("getELResolver");
+            return (ELResolver) method.invoke(beanManager);
+        }
+        catch (ReflectiveOperationException | RuntimeException e)
+        {
+            throw new IllegalStateException("The CDI BeanManager " + beanManager.getClass().getName()
+                    + " does not provide an ELResolver. A CDI implementation supporting "
+                    + "jakarta.enterprise.inject.spi.el.ELAwareBeanManager is required.", e);
+        }
     }
 
     protected BeanELResolver getBeanELResolver(FacesContext facesContext)

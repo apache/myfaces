@@ -38,7 +38,7 @@ JavaServer Faces 2.3 implementation
 
 ## Minimum Requirements (main)
 
-- Java 17+
+- Java 21+
 - Servlet 5.0+
 - EL 5.0+
 - CDI 4.0+
