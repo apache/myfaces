@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.el;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +29,6 @@ import jakarta.el.ELResolver;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -36,7 +37,7 @@ import org.mockito.Mockito;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ResolverBuilderBaseTest extends AbstractFacesTestCase
+class ResolverBuilderBaseTest extends AbstractFacesTestCase
 {
     private RuntimeConfig runtimeConfig;
     private MyfacesConfig myfacesConfig;
@@ -55,25 +56,25 @@ public class ResolverBuilderBaseTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testGetFacesConfigElResolvers() throws Exception
+    void getFacesConfigElResolvers() throws Exception
     {
         ELResolver resolver = Mockito.mock(ELResolver.class);
         Mockito.when(runtimeConfig.getFacesConfigElResolvers()).thenReturn(Arrays.asList(resolver));
 
         resolverBuilder.addFromRuntimeConfig(resolvers);
 
-        Assertions.assertEquals(Arrays.asList(resolver), resolvers);
+        assertEquals(Arrays.asList(resolver), resolvers);
     }
-    
+
     @Test
-    public void testGetApplicationElResolvers() throws Exception
+    void getApplicationElResolvers() throws Exception
     {
         ELResolver resolver = Mockito.mock(ELResolver.class);
         Mockito.when(runtimeConfig.getApplicationElResolvers()).thenReturn(Arrays.asList(resolver));
  
         resolverBuilder.addFromRuntimeConfig(resolvers);
 
-        Assertions.assertEquals(Arrays.asList(resolver), resolvers);
+        assertEquals(Arrays.asList(resolver), resolvers);
     }
 }
 

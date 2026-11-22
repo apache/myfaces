@@ -18,13 +18,14 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectItem;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.component.html.HtmlSelectOneRadio;
 import org.junit.jupiter.api.AfterEach;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ import org.junit.jupiter.api.Test;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlSelectOneRadioClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
+class HtmlSelectOneRadioClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
 {
     private HtmlRenderedClientEventAttr[] attrs = null;
     
@@ -71,7 +72,7 @@ public class HtmlSelectOneRadioClientBehaviorRendererTest extends AbstractClient
     }
     
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    public void clientBehaviorHolderRendersIdAndName() 
     {
         HtmlRenderedClientEventAttr[] attrs = getClientBehaviorHtmlRenderedAttributes();
         
@@ -80,18 +81,13 @@ public class HtmlSelectOneRadioClientBehaviorRendererTest extends AbstractClient
             UIComponent component = createComponentToTest();
             ClientBehaviorHolder clientBehaviorHolder = (ClientBehaviorHolder) component;
             clientBehaviorHolder.addClientBehavior(attrs[i].getClientEvent(), new AjaxBehavior());
-            try 
-            {
+            Assertions.assertDoesNotThrow(() -> {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
-                Assertions.assertTrue(output.contains("id=\"j_id__"));
-                Assertions.assertTrue(output.contains("name=\"j_id__"));
+                assertTrue(output.contains("id=\"j_id__"));
+                assertTrue(output.contains("name=\"j_id__"));
                 outputWriter.reset();
-            }
-            catch (Exception e)
-            {
-                Assertions.fail(e.getMessage());
-            }
+            });
         }
     }
 }

@@ -25,14 +25,14 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-public class JsonEncodingTest
+class JsonEncodingTest
 {
 
     /*
      * Ensure JSON.encode can encode record objects. 
      */
     @Test
-    public void testRecordEncoding()
+    void recordEncoding()
     {
 
         String expected = "{name:\"Chikorita\",type:\"Grass\",itemHeld:false,moves:[\"Tackle\",\"Growl\",\"Razor Leaf\"]}";

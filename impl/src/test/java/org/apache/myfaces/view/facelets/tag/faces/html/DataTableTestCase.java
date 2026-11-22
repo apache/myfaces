@@ -36,7 +36,7 @@ import org.apache.myfaces.view.facelets.bean.Example;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.jupiter.api.Test;
 
-public class DataTableTestCase extends AbstractFaceletTestCase
+class DataTableTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -71,7 +71,7 @@ public class DataTableTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testDataTable() throws Exception
+    void dataTable() throws Exception
     {
         facesContext.getExternalContext().getRequestMap().put("company",
                 Example.createCompany());

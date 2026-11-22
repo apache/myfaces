@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +46,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlMenuRendererTest extends AbstractFacesTestCase
+class HtmlMenuRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlSelectOneMenu selectOneMenu;
@@ -84,7 +87,7 @@ public class HtmlMenuRendererTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testSelectOneHtmlPropertyPassTru() throws Exception
+    void selectOneHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs(false);
         
@@ -99,12 +102,12 @@ public class HtmlMenuRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 selectOneMenu, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testSelectManyHtmlPropertyPassTru() throws Exception
+    void selectManyHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs(false);
         
@@ -119,15 +122,15 @@ public class HtmlMenuRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 selectManyMenu, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndNameSelectOneMenu() 
+    void clientBehaviorHolderRendersIdAndNameSelectOneMenu() 
     {
         UISelectItem item1 = new UISelectItem();
         item1.setItemLabel("#1");
@@ -138,27 +141,22 @@ public class HtmlMenuRendererTest extends AbstractFacesTestCase
         item2.setItemValue("#2");
         
         selectOneMenu.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             selectOneMenu.getChildren().add(item1);
             selectOneMenu.getChildren().add(item2);
             selectOneMenu.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndNameSelectManyMenu() 
+    void clientBehaviorHolderRendersIdAndNameSelectManyMenu() 
     {
         UISelectItem item1 = new UISelectItem();
         item1.setItemLabel("#1");
@@ -169,19 +167,14 @@ public class HtmlMenuRendererTest extends AbstractFacesTestCase
         item2.setItemValue("#2");
         
         selectManyMenu.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             selectManyMenu.getChildren().add(item1);
             selectManyMenu.getChildren().add(item2);
             selectManyMenu.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
 }

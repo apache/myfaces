@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.behavior.AjaxBehavior;
@@ -37,7 +39,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlImageRendererTest extends AbstractFacesTestCase
+class HtmlImageRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlGraphicImage graphicImage;
@@ -71,7 +73,7 @@ public class HtmlImageRendererTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testRenderDefault() throws Exception
+    void renderDefault() throws Exception
     {
         String imgUrl = "http://www.apache.org/images/feather.gif";
         String src = facesContext.getApplication().getViewHandler().getResourceURL(facesContext, imgUrl);
@@ -84,11 +86,11 @@ public class HtmlImageRendererTest extends AbstractFacesTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        Assertions.assertEquals("<img id=\"img1\" src=\"" + src + "\"/>", output);
+        assertEquals("<img id=\"img1\" src=\"" + src + "\"/>", output);
     }
 
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
         
@@ -98,12 +100,12 @@ public class HtmlImageRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 graphicImage, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTruNotRendered() throws Exception
+    void htmlPropertyPassTruNotRendered() throws Exception
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnlyButBehaviorEvents();
         
@@ -113,28 +115,23 @@ public class HtmlImageRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 graphicImage, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    void clientBehaviorHolderRendersIdAndName() 
     {
         graphicImage.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             graphicImage.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
 }

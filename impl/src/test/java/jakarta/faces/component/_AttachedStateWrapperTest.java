@@ -19,49 +19,51 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class _AttachedStateWrapperTest
+class _AttachedStateWrapperTest
 {
     /*
      * Test method for 'jakarta.faces.component._AttachedStateWrapper._AttachedStateWrapper(Class, Object)'
      */
     @Test
-    public void test_AttachedStateWrapper()
+    void attached_state_wrapper()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(null, null);
-        Assertions.assertNull(subject.getWrappedStateObject());
-        Assertions.assertNull(subject.getClazz());
+        assertNull(subject.getWrappedStateObject());
+        assertNull(subject.getClazz());
     }
 
     /*
      * Test method for 'jakarta.faces.component._AttachedStateWrapper.getClazz()'
      */
     @Test
-    public void testGetClazz()
+    void getClazz()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(String.class, "foo");
-        Assertions.assertEquals(subject.getClazz(), String.class);
+        assertEquals(String.class, subject.getClazz());
     }
 
     /*
      * Test method for 'jakarta.faces.component._AttachedStateWrapper.getWrappedStateObject()'
      */
     @Test
-    public void testGetWrappedStateObject()
+    void getWrappedStateObject()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(String.class, "foo");
-        Assertions.assertEquals(subject.getClazz(), String.class);
+        assertEquals(String.class, subject.getClazz());
     }
 
     @Test
-    public void testSerialize() throws Exception
+    void serialize() throws Exception
     {
         String foo = "foo";
         _AttachedStateWrapper subject = new _AttachedStateWrapper(String.class, foo);
@@ -73,7 +75,7 @@ public class _AttachedStateWrapperTest
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         _AttachedStateWrapper blorg = (_AttachedStateWrapper) ois.readObject();
-        Assertions.assertEquals(blorg.getWrappedStateObject(), subject.getWrappedStateObject());
+        assertEquals(blorg.getWrappedStateObject(), subject.getWrappedStateObject());
         oos.close();
         ois.close();
     }

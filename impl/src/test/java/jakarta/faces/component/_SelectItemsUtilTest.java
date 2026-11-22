@@ -20,7 +20,11 @@ package jakarta.faces.component;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.model.SelectItem;
+
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.myfaces.core.api.shared.SelectItemsIterator;
@@ -29,11 +33,10 @@ import org.apache.myfaces.core.api.shared.SelectItemsUtil;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import  org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class _SelectItemsUtilTest extends AbstractFacesTestCase
+class _SelectItemsUtilTest extends AbstractFacesTestCase
 {
 
     private static final String NO_SELECTION_ITEM_VALUE = "1.0";
@@ -88,20 +91,20 @@ public class _SelectItemsUtilTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testMatchValue()
+    void matchValue()
     {
         
         boolean matchValue = SelectItemsUtil.matchValue(facesContext, uiComponent, value, iterator, null);
         
-        Assertions.assertTrue(matchValue, "Value Float 1.2 must match SelectItem.value \"1.2\" (type of String)");
+        assertTrue(matchValue, "Value Float 1.2 must match SelectItem.value \"1.2\" (type of String)");
         
         Float valueNotInSelectItems = Float.valueOf("2.0");
         matchValue = SelectItemsUtil.matchValue(facesContext, uiComponent, valueNotInSelectItems, iterator, null);
-        Assertions.assertFalse(matchValue);
+        assertFalse(matchValue);
     }
-    
+
     @Test
-    public void testMatchValueWithEnums() throws Exception
+    void matchValueWithEnums() throws Exception
     {
         noSelectionOption.setItemValue("NONE");
         selectItem1.setItemValue("ONE");
@@ -112,15 +115,15 @@ public class _SelectItemsUtilTest extends AbstractFacesTestCase
         Object enumValue = MockEnum.THREE;
         boolean matchValue = SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
         
-        Assertions.assertTrue(matchValue, "Value Enum THREE must match SelectItem.value \"THREE\" (type of String)");
+        assertTrue(matchValue, "Value Enum THREE must match SelectItem.value \"THREE\" (type of String)");
         
         enumValue = MockEnum.FOUR;
         matchValue = SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
-        Assertions.assertFalse(matchValue);
+        assertFalse(matchValue);
     }
-    
-    @Test 
-    public void testMatchValueWithEnumsNoExtends() throws Exception
+
+    @Test
+    void matchValueWithEnumsNoExtends() throws Exception
     {
         noSelectionOption.setItemValue("NONE");
         selectItem1.setItemValue("ONE");
@@ -131,7 +134,7 @@ public class _SelectItemsUtilTest extends AbstractFacesTestCase
         Object enumValue = MockEnum.TWO;
         boolean matchValue = SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
         
-        Assertions.assertTrue(matchValue, "Value Enum TWO must match SelectItem.value \"TWO\" (type of String)");
+        assertTrue(matchValue, "Value Enum TWO must match SelectItem.value \"TWO\" (type of String)");
     }
     
     private static enum MockEnum {
@@ -157,20 +160,20 @@ public class _SelectItemsUtilTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testIsNoSelectionOption()
+    void isNoSelectionOption()
     {
         Float value = Float.parseFloat(NO_SELECTION_ITEM_VALUE);
         boolean noSelectionOption = SelectItemsUtil.isNoSelectionOption(facesContext, uiComponent, value, iterator, null);
-        Assertions.assertTrue(noSelectionOption);
+        assertTrue(noSelectionOption);
         
         Float valueNotInSelectItems = Float.valueOf("2.0");
         noSelectionOption = SelectItemsUtil.isNoSelectionOption(facesContext, uiComponent, valueNotInSelectItems, iterator, null);
-        Assertions.assertFalse(noSelectionOption);
+        assertFalse(noSelectionOption);
         
     }
 
     @Test
-    public void testSelectListAsValue()
+    void selectListAsValue()
     {
         List<SelectItem> values = new ArrayList<>();
 
@@ -202,9 +205,9 @@ public class _SelectItemsUtilTest extends AbstractFacesTestCase
             labels.add(next.getLabel());
             descriptions.add(next.getDescription());
         }
-        Assertions.assertAll(
-                () -> Assertions.assertEquals(values.stream().map(SelectItem::getLabel).collect(Collectors.toList()), options),
-                () -> Assertions.assertEquals(values.stream().map(SelectItem::getValue).collect(Collectors.toList()), labels),
-                () -> Assertions.assertEquals(values.stream().map(SelectItem::getValue).collect(Collectors.toList()), descriptions));
+        assertAll(
+                () -> assertEquals(values.stream().map(SelectItem::getLabel).collect(Collectors.toList()), options),
+                () -> assertEquals(values.stream().map(SelectItem::getValue).collect(Collectors.toList()), labels),
+                () -> assertEquals(values.stream().map(SelectItem::getValue).collect(Collectors.toList()), descriptions));
     }
 }

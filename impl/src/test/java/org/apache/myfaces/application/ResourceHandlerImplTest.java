@@ -18,10 +18,11 @@
  */
 package org.apache.myfaces.application;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import jakarta.faces.application.Resource;
@@ -44,7 +45,7 @@ import org.mockito.Mockito;
  *
  * @author Jakob Korherr
  */
-public class ResourceHandlerImplTest extends AbstractFacesTestCase
+class ResourceHandlerImplTest extends AbstractFacesTestCase
 {
 
     private ResourceHandlerImpl resourceHandler;
@@ -69,15 +70,15 @@ public class ResourceHandlerImplTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testCreateResource_ResourceNotNull() throws Exception
+    void createResourceResourceNotNull() throws Exception
     {
         Resource resource = resourceHandler.createResource("testResource.xhtml");
 
-        Assertions.assertNotNull(resource);
+        assertNotNull(resource);
     }
 
     @Test
-    public void testCreateResource_cacheHonorsLocale() throws Exception
+    void createResourceCacheHonorsLocale() throws Exception
     {
         // setup message bundle to use
         application.setMessageBundle("org/apache/myfaces/application/resourcehandler/messages");
@@ -93,11 +94,11 @@ public class ResourceHandlerImplTest extends AbstractFacesTestCase
         URL urlDe = resourceDe.getURL();
 
         // URLs MUST be different, since there is an english and a german version of the resource
-        Assertions.assertFalse(urlEn.equals(urlDe));
+        assertNotEquals(urlEn, urlDe);
     }
 
     @Test
-    public void testDeriveResourceMeta1() throws Exception
+    void deriveResourceMeta1() throws Exception
     {
         application.setMessageBundle("org/apache/myfaces/application/resourcehandler/messages");
         
@@ -165,64 +166,64 @@ public class ResourceHandlerImplTest extends AbstractFacesTestCase
         
         application.setDefaultLocale(Locale.ENGLISH);
         ResourceMeta resource = resourceHandler.deriveResourceMeta(facesContext, loader, "en/mylib/1_0_2/myres.js/1_3.js");
-        Assertions.assertNotNull(resource);
-        Assertions.assertEquals("en", resource.getLocalePrefix());
-        Assertions.assertEquals("mylib", resource.getLibraryName());
-        Assertions.assertEquals("1_0_2", resource.getLibraryVersion());
-        Assertions.assertEquals("myres.js", resource.getResourceName());
-        Assertions.assertEquals("1_3", resource.getResourceVersion());
+        assertNotNull(resource);
+        assertEquals("en", resource.getLocalePrefix());
+        assertEquals("mylib", resource.getLibraryName());
+        assertEquals("1_0_2", resource.getLibraryVersion());
+        assertEquals("myres.js", resource.getResourceName());
+        assertEquals("1_3", resource.getResourceVersion());
         
         resource = resourceHandler.deriveResourceMeta(facesContext, loader, "en/mylib/1_0_2/myres.js");
-        Assertions.assertNotNull(resource);
-        Assertions.assertEquals("en", resource.getLocalePrefix());
-        Assertions.assertEquals("mylib", resource.getLibraryName());
-        Assertions.assertEquals("1_0_2", resource.getLibraryVersion());
-        Assertions.assertEquals("myres.js", resource.getResourceName());
-        Assertions.assertNull(resource.getResourceVersion());        
+        assertNotNull(resource);
+        assertEquals("en", resource.getLocalePrefix());
+        assertEquals("mylib", resource.getLibraryName());
+        assertEquals("1_0_2", resource.getLibraryVersion());
+        assertEquals("myres.js", resource.getResourceName());
+        assertNull(resource.getResourceVersion());        
         
         resource = resourceHandler.deriveResourceMeta(facesContext, loader, "en/mylib/myres.js/1_3.js");
-        Assertions.assertNotNull(resource);
-        Assertions.assertEquals("en", resource.getLocalePrefix());
-        Assertions.assertEquals("mylib", resource.getLibraryName());
-        Assertions.assertNull(resource.getLibraryVersion());
-        Assertions.assertEquals("myres.js", resource.getResourceName());
-        Assertions.assertEquals("1_3", resource.getResourceVersion());
+        assertNotNull(resource);
+        assertEquals("en", resource.getLocalePrefix());
+        assertEquals("mylib", resource.getLibraryName());
+        assertNull(resource.getLibraryVersion());
+        assertEquals("myres.js", resource.getResourceName());
+        assertEquals("1_3", resource.getResourceVersion());
 
         resource = resourceHandler.deriveResourceMeta(facesContext, loader, "en/mylib/myres.js");
-        Assertions.assertNotNull(resource);
-        Assertions.assertEquals("en", resource.getLocalePrefix());
-        Assertions.assertEquals("mylib", resource.getLibraryName());
-        Assertions.assertEquals("myres.js", resource.getResourceName());
-        Assertions.assertNull(resource.getLibraryVersion());
-        Assertions.assertNull(resource.getResourceVersion());
+        assertNotNull(resource);
+        assertEquals("en", resource.getLocalePrefix());
+        assertEquals("mylib", resource.getLibraryName());
+        assertEquals("myres.js", resource.getResourceName());
+        assertNull(resource.getLibraryVersion());
+        assertNull(resource.getResourceVersion());
 
         resource = resourceHandler.deriveResourceMeta(facesContext, loader, "en/myres.js");
-        Assertions.assertNotNull(resource);
-        Assertions.assertNull(resource.getLibraryName());
-        Assertions.assertNull(resource.getLibraryVersion());
-        Assertions.assertNull(resource.getResourceVersion());
-        Assertions.assertEquals("en", resource.getLocalePrefix());
-        Assertions.assertEquals("myres.js", resource.getResourceName());
+        assertNotNull(resource);
+        assertNull(resource.getLibraryName());
+        assertNull(resource.getLibraryVersion());
+        assertNull(resource.getResourceVersion());
+        assertEquals("en", resource.getLocalePrefix());
+        assertEquals("myres.js", resource.getResourceName());
         
         resource = resourceHandler.deriveResourceMeta(facesContext, loader, "mylib/myres.js");
-        Assertions.assertNotNull(resource);
-        Assertions.assertNull(resource.getLocalePrefix());
-        Assertions.assertNull(resource.getLibraryVersion());
-        Assertions.assertNull(resource.getResourceVersion());
-        Assertions.assertEquals("mylib", resource.getLibraryName());
-        Assertions.assertEquals("myres.js", resource.getResourceName());
+        assertNotNull(resource);
+        assertNull(resource.getLocalePrefix());
+        assertNull(resource.getLibraryVersion());
+        assertNull(resource.getResourceVersion());
+        assertEquals("mylib", resource.getLibraryName());
+        assertEquals("myres.js", resource.getResourceName());
         
         resource = resourceHandler.deriveResourceMeta(facesContext, loader, "myres.js");
-        Assertions.assertNotNull(resource);
-        Assertions.assertNull(resource.getLocalePrefix());
-        Assertions.assertNull(resource.getLibraryName());
-        Assertions.assertNull(resource.getLibraryVersion());
-        Assertions.assertNull(resource.getResourceVersion());        
-        Assertions.assertEquals("myres.js", resource.getResourceName());
+        assertNotNull(resource);
+        assertNull(resource.getLocalePrefix());
+        assertNull(resource.getLibraryName());
+        assertNull(resource.getLibraryVersion());
+        assertNull(resource.getResourceVersion());        
+        assertEquals("myres.js", resource.getResourceName());
     }
 
     @Test
-    public void testCreateResourceNullResourceName() throws Exception
+    void createResourceNullResourceName() throws Exception
     {
         boolean didNPEOccur = false;
         try 
@@ -233,11 +234,11 @@ public class ResourceHandlerImplTest extends AbstractFacesTestCase
             didNPEOccur = true;
         }
         
-        Assertions.assertTrue(didNPEOccur);
+        assertTrue(didNPEOccur);
     }
 
     @Test
-    public void testCache()
+    void cache()
     {
         ResourceLoader loader = Mockito.spy(new ClassLoaderResourceLoader(null));
         Mockito.when(loader.resourceExists(Mockito.any())).thenReturn(true);
@@ -263,9 +264,9 @@ public class ResourceHandlerImplTest extends AbstractFacesTestCase
         Mockito.verify(loader, Mockito.times(1)).createResourceMeta(
                 Mockito.any(), Mockito.eq("test"), Mockito.any(), Mockito.eq("test.png"), Mockito.any());
     }
-    
+
     @Test
-    public void testDisabledCache()
+    void disabledCache()
     {
         ResourceLoader loader = Mockito.spy(new ClassLoaderResourceLoader(null));
         Mockito.when(loader.resourceExists(Mockito.any())).thenReturn(true);
@@ -294,7 +295,7 @@ public class ResourceHandlerImplTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testResourceExistsCache()
+    void resourceExistsCache()
     {
         ResourceLoader loader = Mockito.spy(new ClassLoaderResourceLoader(null));
 

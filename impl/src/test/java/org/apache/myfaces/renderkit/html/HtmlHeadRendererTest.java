@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.html.HtmlHead;
@@ -28,14 +30,13 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author Leonardo Uribe
  */
-public class HtmlHeadRendererTest extends AbstractFacesTestCase
+class HtmlHeadRendererTest extends AbstractFacesTestCase
 {
 
     private MockResponseWriter writer ;
@@ -68,9 +69,9 @@ public class HtmlHeadRendererTest extends AbstractFacesTestCase
         super.tearDown();
         writer = null;
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     { 
         HtmlRenderedAttr[] attrs = {
                 new HtmlRenderedAttr("xmlns"),
@@ -81,7 +82,7 @@ public class HtmlHeadRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 head, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
 }

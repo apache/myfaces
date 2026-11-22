@@ -20,16 +20,18 @@ package org.apache.myfaces.lifecycle;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class test 
  */
-public class RedirectTest extends AbstractMyFacesCDIRequestTestCase
+class RedirectTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Test
-    public void testRedirect1() throws Exception
+    void redirect1() throws Exception
     {
         startViewRequest("/redirect1.xhtml");
         processLifecycleExecute();
@@ -39,6 +41,6 @@ public class RedirectTest extends AbstractMyFacesCDIRequestTestCase
         client.processRedirect();
         processLifecycleExecuteAndRender();
         String redirectedContent = getRenderedContent();
-        Assertions.assertTrue(redirectedContent.contains("Redirected Page"));
+        assertTrue(redirectedContent.contains("Redirected Page"));
     }
 }

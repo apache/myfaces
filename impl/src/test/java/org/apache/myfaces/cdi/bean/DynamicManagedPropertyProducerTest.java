@@ -19,20 +19,21 @@
 
 package org.apache.myfaces.cdi.bean;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UIOutput;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  *  A unit test to test the CDI @ManagedProperty
  */
-public class DynamicManagedPropertyProducerTest extends AbstractMyFacesCDIRequestTestCase
+class DynamicManagedPropertyProducerTest extends AbstractMyFacesCDIRequestTestCase
 {
 
     @Test
-    public void testCDIManagedProperty() throws Exception {
+    void cdiManagedProperty() throws Exception {
         String expectedValue = "numberManagedProperty=0textManagedProperty=zerolistManagedProperty" +
                                    "=zerostringArrayManagedProperty=zerobean=org.apache.myfaces.cdi.bean.TestBean";
         String result;
@@ -46,8 +47,7 @@ public class DynamicManagedPropertyProducerTest extends AbstractMyFacesCDIReques
         result = result.substring(0, result.indexOf('@'));
         result = result.replaceAll("\\s","");
 
-        Assertions.assertTrue(result.equals(expectedValue),
-                "The value output should have matched: " + expectedValue + " but was : " + result);
+        assertEquals(result, expectedValue, "The value output should have matched: " + expectedValue + " but was : " + result);
     }
 
     @Override

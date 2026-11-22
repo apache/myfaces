@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UIViewRoot;
@@ -26,23 +28,22 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author lu4242
  */
-public class CacheELExpressionsTestCase extends AbstractFaceletTestCase
+class CacheELExpressionsTestCase extends AbstractFaceletTestCase
 {
     @Override
     protected ExpressionFactory createExpressionFactory()
     {
         return new org.apache.el.ExpressionFactoryImpl();
     }
-    
+
     @Test
-    public void testUIParamCaching1() throws Exception
+    void uIParamCaching1() throws Exception
     {
         // Works in "none", "allowCset", and "strict" but it does not in always.
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
@@ -57,14 +58,14 @@ public class CacheELExpressionsTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
-    
+
     @Test
-    public void testUIParamCaching2() throws Exception
+    void uIParamCaching2() throws Exception
     {
         // Works in "none", "allowCset", and "strict" but it does not in always.
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
@@ -79,10 +80,10 @@ public class CacheELExpressionsTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains("ALFA"));
-        Assertions.assertTrue(sw.toString().contains("BETA"));
-        Assertions.assertTrue(sw.toString().contains("GAMMA"));
-        Assertions.assertTrue(sw.toString().contains("OMEGA"));
+        assertTrue(sw.toString().contains("ALFA"));
+        assertTrue(sw.toString().contains("BETA"));
+        assertTrue(sw.toString().contains("GAMMA"));
+        assertTrue(sw.toString().contains("OMEGA"));
     }
 
 }

@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.lifecycle;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Locale;
 
 import jakarta.faces.application.ViewHandler;
@@ -26,7 +28,6 @@ import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.application.ViewIdSupport;
 
 import org.apache.myfaces.test.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -60,7 +61,7 @@ public class RestoreViewExecutorTest extends AbstractFacesTestCase
      * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(jakarta.faces.context.FacesContext)}.
      */
     @Test
-    public void testExecuteWithExistingViewRoot()
+    void executeWithExistingViewRoot()
     {
         Mockito.when(_facesContext.getApplication()).thenReturn(_application);
         Mockito.when(_application.getViewHandler()).thenReturn(_viewHandler);
@@ -83,7 +84,7 @@ public class RestoreViewExecutorTest extends AbstractFacesTestCase
      */
     public void testGetPhase()
     {
-        Assertions.assertEquals(PhaseId.RESTORE_VIEW, _testimpl.getPhase());
+        assertEquals(PhaseId.RESTORE_VIEW, _testimpl.getPhase());
     }
 
 }

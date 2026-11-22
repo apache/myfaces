@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -35,7 +38,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class HtmlFormRendererTest extends AbstractFacesTestCase
+class HtmlFormRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlForm form;
@@ -71,7 +74,7 @@ public class HtmlFormRendererTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testHtmlPropertyPassTru() throws Exception 
+    void htmlPropertyPassTru() throws Exception 
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
 
@@ -81,15 +84,15 @@ public class HtmlFormRendererTest extends AbstractFacesTestCase
         } catch(Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
-            Assertions.fail(sw.toString() + "\nHTML.FORM_PASSTHROUGH_ATTRIBUTES: " + printHTMLAttrs(HTML.FORM_PASSTHROUGH_ATTRIBUTES));
+            fail(sw.toString() + "\nHTML.FORM_PASSTHROUGH_ATTRIBUTES: " + printHTMLAttrs(HTML.FORM_PASSTHROUGH_ATTRIBUTES));
         }
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTruNotRendered() throws Exception 
+    void htmlPropertyPassTruNotRendered() throws Exception 
     { 
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnlyButBehaviorEvents();
 
@@ -99,10 +102,10 @@ public class HtmlFormRendererTest extends AbstractFacesTestCase
         } catch(Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
-            Assertions.fail(sw.toString() + "\nHTML.FORM_PASSTHROUGH_ATTRIBUTES: " + printHTMLAttrs(HTML.FORM_PASSTHROUGH_ATTRIBUTES));
+            fail(sw.toString() + "\nHTML.FORM_PASSTHROUGH_ATTRIBUTES: " + printHTMLAttrs(HTML.FORM_PASSTHROUGH_ATTRIBUTES));
         }
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -116,25 +119,20 @@ public class HtmlFormRendererTest extends AbstractFacesTestCase
         }
         return buffer.toString();
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    void clientBehaviorHolderRendersIdAndName() 
     {
         form.addClientBehavior("focus", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             form.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
 }

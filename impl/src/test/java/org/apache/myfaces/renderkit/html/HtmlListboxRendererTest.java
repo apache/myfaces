@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +46,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlListboxRendererTest extends AbstractFacesTestCase
+class HtmlListboxRendererTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlSelectOneListbox selectOneListbox;
@@ -83,7 +86,7 @@ public class HtmlListboxRendererTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testSelectOneHtmlPropertyPassTru() throws Exception
+    void selectOneHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs(false);
         
@@ -98,12 +101,12 @@ public class HtmlListboxRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 selectOneListbox, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testSelectManyHtmlPropertyPassTru() throws Exception
+    void selectManyHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs(false);
         
@@ -118,15 +121,15 @@ public class HtmlListboxRendererTest extends AbstractFacesTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 selectManyListbox, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndNameSelectOneListbox() 
+    void clientBehaviorHolderRendersIdAndNameSelectOneListbox() 
     {
         UISelectItem item1 = new UISelectItem();
         item1.setItemLabel("#1");
@@ -137,27 +140,22 @@ public class HtmlListboxRendererTest extends AbstractFacesTestCase
         item2.setItemValue("#2");
         
         selectOneListbox.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             selectOneListbox.getChildren().add(item1);
             selectOneListbox.getChildren().add(item2);
             selectOneListbox.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndNameSelectManyListbox() 
+    void clientBehaviorHolderRendersIdAndNameSelectManyListbox() 
     {
         UISelectItem item1 = new UISelectItem();
         item1.setItemLabel("#1");
@@ -168,19 +166,14 @@ public class HtmlListboxRendererTest extends AbstractFacesTestCase
         item2.setItemValue("#2");
         
         selectManyListbox.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             selectManyListbox.getChildren().add(item1);
             selectManyListbox.getChildren().add(item2);
             selectManyListbox.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.matches(".+id=\".+\".+"));
-            Assertions.assertTrue(output.matches(".+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+name=\".+\".+"));
+        });
         
     }
 }

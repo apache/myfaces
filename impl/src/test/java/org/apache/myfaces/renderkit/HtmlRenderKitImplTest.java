@@ -18,32 +18,33 @@
  */
 package org.apache.myfaces.renderkit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.StringWriter;
 
-import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Test;
 
-public class HtmlRenderKitImplTest extends AbstractFacesTestCase
+class HtmlRenderKitImplTest extends AbstractFacesTestCase
 {
 
     @Test
-    public void testCreateResponseWriterContentType1()
+    void createResponseWriterContentType1()
     {
         MyfacesConfig config = new MyfacesConfig();
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
-    
+
     @Test
-    public void testCreateResponseWriterContentType2()
+    void createResponseWriterContentType2()
     {
         servletContext.setInitParameter(MyfacesConfig.DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE,
                 ContentTypeUtils.XHTML_CONTENT_TYPE);
@@ -53,12 +54,12 @@ public class HtmlRenderKitImplTest extends AbstractFacesTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assertions.assertEquals(ContentTypeUtils.XHTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assertions.assertEquals(ContentTypeUtils.XHTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        assertEquals(ContentTypeUtils.XHTML_CONTENT_TYPE, responseWriter.getContentType());
+        assertEquals(ContentTypeUtils.XHTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
-    
+
     @Test
-    public void testCreateResponseWriterContentType3()
+    void createResponseWriterContentType3()
     {
         MyfacesConfig config = new MyfacesConfig();
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
@@ -67,12 +68,12 @@ public class HtmlRenderKitImplTest extends AbstractFacesTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
-    
+
     @Test
-    public void testCreateResponseWriterContentType4()
+    void createResponseWriterContentType4()
     {
         MyfacesConfig config = new MyfacesConfig();
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
@@ -81,12 +82,12 @@ public class HtmlRenderKitImplTest extends AbstractFacesTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
-    
+
     @Test
-    public void testCreateResponseWriterContentType5()
+    void createResponseWriterContentType5()
     {
         MyfacesConfig config = new MyfacesConfig();
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
@@ -94,12 +95,12 @@ public class HtmlRenderKitImplTest extends AbstractFacesTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
-    
+
     @Test
-    public void testCreateResponseWriterContentType6()
+    void createResponseWriterContentType6()
     {
         MyfacesConfig config = new MyfacesConfig();
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
@@ -107,12 +108,12 @@ public class HtmlRenderKitImplTest extends AbstractFacesTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
-    
+
     @Test
-    public void testCreateResponseWriterContentType7()
+    void createResponseWriterContentType7()
     {
         MyfacesConfig config = new MyfacesConfig();
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
@@ -121,12 +122,12 @@ public class HtmlRenderKitImplTest extends AbstractFacesTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
-    
+
     @Test
-    public void testCreateResponseWriterContentType8()
+    void createResponseWriterContentType8()
     {
         MyfacesConfig config = new MyfacesConfig();
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
@@ -135,12 +136,12 @@ public class HtmlRenderKitImplTest extends AbstractFacesTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
 
     @Test
-    public void testCreateResponseWriterContentType9()
+    void createResponseWriterContentType9()
     {
         MyfacesConfig config = new MyfacesConfig();
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
@@ -153,7 +154,7 @@ public class HtmlRenderKitImplTest extends AbstractFacesTestCase
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
         HtmlResponseWriterImpl responseWriter = (HtmlResponseWriterImpl) renderKit.createResponseWriter(writer, null, null);
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
-        Assertions.assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getContentType());
+        assertEquals(ContentTypeUtils.HTML_CONTENT_TYPE, responseWriter.getWriterContentTypeMode());
     }
 }

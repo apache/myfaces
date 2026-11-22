@@ -18,7 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 import jakarta.faces.FactoryFinder;
 
@@ -91,7 +92,7 @@ public class HtmlLabelRendererTest extends AbstractFacesConfigurableMockTestCase
     }
 
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = {
             //_AccesskeyProperty
@@ -127,7 +128,7 @@ public class HtmlLabelRendererTest extends AbstractFacesConfigurableMockTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 label, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -139,9 +140,9 @@ public class HtmlLabelRendererTest extends AbstractFacesConfigurableMockTestCase
     {
         return writer.getWriter().toString();
     }
-    
+
     @Test
-    public void testEscapeUntouched() throws IOException
+    void escapeUntouched() throws Exception
     {
         label.setId("labelId");
         label.setValue("<span class=\"required\">field label</span>");
@@ -150,11 +151,11 @@ public class HtmlLabelRendererTest extends AbstractFacesConfigurableMockTestCase
         label.encodeAll(facesContext);
 
         String page = getPageContents();
-        Assertions.assertEquals("<label id=\"labelId\">&lt;span class=&quot;required&quot;&gt;field label&lt;/span&gt;</label>", page);
+        assertEquals("<label id=\"labelId\">&lt;span class=&quot;required&quot;&gt;field label&lt;/span&gt;</label>", page);
     }
 
     @Test
-    public void testEscapeSetToFalse() throws IOException
+    void escapeSetToFalse() throws Exception
     {
         label.setId("labelId");
         label.setValue("<span class=\"required\">field label</span>");
@@ -164,27 +165,22 @@ public class HtmlLabelRendererTest extends AbstractFacesConfigurableMockTestCase
         label.encodeAll(facesContext);
 
         String page = getPageContents();
-        Assertions.assertEquals("<label id=\"labelId\"><span class=\"required\">field label</span></label>", page);
+        assertEquals("<label id=\"labelId\"><span class=\"required\">field label</span></label>", page);
     }
-    
+
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    void clientBehaviorHolderRendersIdAndName() 
     {
         label.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
+        Assertions.assertDoesNotThrow(() -> {
             label.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            Assertions.assertTrue(output.contains("id=\"j_id__"));
-            Assertions.assertTrue(output.contains("name=\"j_id__"));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(output.contains("id=\"j_id__"));
+            assertTrue(output.contains("name=\"j_id__"));
+        });
         
     }
     

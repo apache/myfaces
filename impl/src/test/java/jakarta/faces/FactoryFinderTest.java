@@ -19,6 +19,8 @@
 
 package jakarta.faces;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,7 @@ public class FactoryFinderTest
     }
 
     @BeforeEach
-    public void setUp() throws Exception
+    void setUp() throws Exception
     {
         // this needs to be called *before* the first Test test is run,
         // as there may be left over FactoryFinder configurations from
@@ -46,7 +48,7 @@ public class FactoryFinderTest
     }
 
     @AfterEach
-    public void tearDown() throws Exception
+    void tearDown() throws Exception
     {
         // call this again so there is no possibility of messing up tests that will
         // run after this one
@@ -103,53 +105,43 @@ public class FactoryFinderTest
      * Test method for 'jakarta.faces.FactoryFinder.getFactory(String)'
      */
     @Test
-    public void testGetFactory() throws Exception
+    void getFactory() throws Exception
     {
         // no catch because if this fails the test fails, i.e. not trying to test
         // setFactory here
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-        try
-        {
+        Assertions.assertDoesNotThrow(() -> {
             Object factory = FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            Assertions.assertNotNull(factory);
-            Assertions.assertTrue(factory.getClass().equals(MockApplicationFactory.class));
-        }
-        catch (IllegalStateException e)
-        {
-            Assertions.fail("Should not throw an illegal state exception");
-        }
+            assertNotNull(factory);
+            assertEquals(MockApplicationFactory.class, factory.getClass());
+        }, "Should not throw an illegal state exception");
     }
 
     /*
      * Test method for 'jakarta.faces.FactoryFinder.getFactory(String)'
      */
     @Test
-    public void testGetFactoryTwice() throws Exception
+    void getFactoryTwice() throws Exception
     {
         // this test just makes sure that things work when the get has been called
         // more than once
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-        try
-        {
+        Assertions.assertDoesNotThrow(() -> {
             Object factory1 = FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            Assertions.assertNotNull(factory1);
-            Assertions.assertTrue(factory1.getClass().equals(MockApplicationFactory.class));
+            assertNotNull(factory1);
+            assertEquals(MockApplicationFactory.class, factory1.getClass());
             Object factory2 = FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            Assertions.assertNotNull(factory2);
-            Assertions.assertTrue(factory2.getClass().equals(MockApplicationFactory.class));
-            Assertions.assertEquals(factory1, factory2);
-        }
-        catch (IllegalStateException e)
-        {
-            Assertions.fail("Should not throw an illegal state exception");
-        }
+            assertNotNull(factory2);
+            assertEquals(MockApplicationFactory.class, factory2.getClass());
+            assertEquals(factory1, factory2);
+        }, "Should not throw an illegal state exception");
     }
 
     /*
      * Test method for 'jakarta.faces.FactoryFinder.getFactory(String)'
      */
     @Test
-    public void testGetFactoryNoFactory() throws Exception
+    void getFactoryNoFactory() throws Exception
     {
         // no catch because if this fails the test fails, i.e. not trying to test
         // setFactory here
@@ -157,11 +149,11 @@ public class FactoryFinderTest
         try
         {
             FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-            Assertions.fail("Should have thrown an illegal state exception");
+            fail("Should have thrown an illegal state exception");
         }
         catch (IllegalArgumentException e)
         {
-            Assertions.assertNotNull(e.getMessage());
+            assertNotNull(e.getMessage());
         }
     }
 
@@ -170,17 +162,17 @@ public class FactoryFinderTest
      * 'jakarta.faces.FactoryFinder.getFactory(String)'
      */
     @Test
-    public void testGetFactoryNoConfiguration() throws Exception
+    void getFactoryNoConfiguration() throws Exception
     {
         try
         {
             FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            Assertions.fail("Should have thrown an illegal state exception");
+            fail("Should have thrown an illegal state exception");
         }
         catch (IllegalStateException e)
         {
-            Assertions.assertNotNull(e.getMessage());
-            Assertions.assertTrue(e.getMessage().startsWith("No Factories configured for this Application"));
+            assertNotNull(e.getMessage());
+            assertTrue(e.getMessage().startsWith("No Factories configured for this Application"));
         }
     }
 
@@ -188,16 +180,16 @@ public class FactoryFinderTest
      * Bogus factory name test Test method for 'jakarta.faces.FactoryFinder.setFactory(String, String)'
      */
     @Test
-    public void testSetFactoryBogusName()
+    void setFactoryBogusName()
     {
         try
         {
             FactoryFinder.setFactory("BogusFactoryName", MockApplicationFactory.class.getName());
-            Assertions.fail("Should have thrown an illegal argument exception");
+            fail("Should have thrown an illegal argument exception");
         }
         catch (IllegalArgumentException e)
         {
-            Assertions.assertNotNull(e.getMessage());
+            assertNotNull(e.getMessage());
         }
     }
 
@@ -205,18 +197,13 @@ public class FactoryFinderTest
      * Test method for 'jakarta.faces.FactoryFinder.setFactory(String, String)'
      */
     @Test
-    public void testSetFactory() throws Exception
+    void setFactory() throws Exception
     {
-        try
-        {
+        Assertions.assertDoesNotThrow(() -> {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
-                MockApplicationFactory.class.getName()));
-        }
-        catch (IllegalArgumentException e)
-        {
-            Assertions.fail("Should not throw an illegal argument exception");
-        }
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                    MockApplicationFactory.class.getName()));
+        }, "Should not throw an illegal argument exception");
     }
 
     /*
@@ -224,29 +211,24 @@ public class FactoryFinderTest
      * checks to see if that is true. Test method for 'jakarta.faces.FactoryFinder.setFactory(String, String)'
      */
     @Test
-    public void testSetFactoryNoEffect() throws Exception
+    void setFactoryNoEffect() throws Exception
     {
-        try
-        {
+        Assertions.assertDoesNotThrow(() -> {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
-                MockApplicationFactory.class.getName()));
-            Assertions.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                    MockApplicationFactory.class.getName()));
+            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                     MockApplicationFactory2.class.getName()));
             // getFactory should cause setFactory to stop changing the
             // registered classes
             FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
             // this should essentially be a no-op
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory2.class.getName());
-            Assertions.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                     MockApplicationFactory2.class.getName()));
-            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
-                MockApplicationFactory.class.getName()));
-        }
-        catch (IllegalArgumentException e)
-        {
-            Assertions.fail("Should not throw an illegal argument exception");
-        }
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                    MockApplicationFactory.class.getName()));
+        }, "Should not throw an illegal argument exception");
     }
 
     /*
@@ -254,32 +236,27 @@ public class FactoryFinderTest
      * 'jakarta.faces.FactoryFinder.setFactory(String, String)'
      */
     @Test
-    public void testSetFactoryAdditiveClassNames() throws Exception
+    void setFactoryAdditiveClassNames() throws Exception
     {
-        try
-        {
+        Assertions.assertDoesNotThrow(() -> {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
-                MockApplicationFactory.class.getName()));
-            Assertions.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                    MockApplicationFactory.class.getName()));
+            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                     MockApplicationFactory2.class.getName()));
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory2.class.getName());
-            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                     MockApplicationFactory2.class.getName()));
-            Assertions.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
-                MockApplicationFactory.class.getName()));
-        }
-        catch (IllegalArgumentException e)
-        {
-            Assertions.fail("Should not throw an illegal argument exception");
-        }
+            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+                    MockApplicationFactory.class.getName()));
+        }, "Should not throw an illegal argument exception");
     }
 
     /*
      * Test method for 'jakarta.faces.FactoryFinder.releaseFactories()'
      */
     @Test
-    public void testReleaseFactories()
+    void releaseFactories()
     {
 
     }

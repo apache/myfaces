@@ -19,6 +19,8 @@
 
 package org.apache.myfaces.context;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,7 +35,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -85,7 +86,7 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
         is2.setCharacterStream(new StringReader(output));
         Document doc2 = db.parse(is2);
         doc2.normalizeDocument();
-        Assertions.assertTrue(doc1.isEqualNode(doc2));
+        assertTrue(doc1.isEqualNode(doc2));
     }
 
     /**
@@ -124,9 +125,9 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
                 this.getClass().getName().lastIndexOf('.')).replace('.', '/')
                 + "/";
     }
-    
+
     @Test
-    public void testNestedScriptCDATA() throws Exception {
+    void nestedScriptCDATA() throws Exception {
         _writer = createTestProbe();
         try {
             _writer.startDocument();
@@ -142,12 +143,12 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
             
             checkOutput(new File(getLocalFile("nestedScriptCDATA.xml").toURI()), _contentCollector.toString());
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
-    
+
     @Test
-    public void testBasicWriteTest() {
+    void basicWriteTest() {
         _writer = createTestProbe();
         try {
             //_writer.startCDATA();
@@ -157,14 +158,14 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
             // _writer.endCDATA();
             _writer.flush();
             _writer.close();
-            Assertions.assertTrue(_contentCollector.toString().equals("testing"));
+            assertEquals("testing", _contentCollector.toString());
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
     @Test
-    public void teststandardNestingTest() {
+    void teststandardNestingTest() {
         _writer = createTestProbe();
         try {
             //_writer.startCDATA();
@@ -174,14 +175,14 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
             // _writer.endCDATA();
             _writer.flush();
             _writer.close();
-            Assertions.assertTrue(_contentCollector.toString().equals("<![CDATA[testing]]>"));
+            assertEquals("<![CDATA[testing]]>", _contentCollector.toString());
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
     @Test
-    public void testIllegalNestingResolvementTest() {
+    void illegalNestingResolvementTest() {
         _writer = createTestProbe();
         try {
             _writer.startCDATA();
@@ -191,14 +192,14 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
             _writer.endCDATA();
             _writer.flush();
             _writer.close();
-            Assertions.assertTrue(_contentCollector.toString().equals("<![CDATA[<![CDATA[testing]]><![CDATA[]]]]><![CDATA[>]]>"));
+            assertEquals("<![CDATA[<![CDATA[testing]]><![CDATA[]]]]><![CDATA[>]]>", _contentCollector.toString());
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
     @Test
-    public void testIllegalNestingResolvementTest2() {
+    void illegalNestingResolvementTest2() {
         _writer = createTestProbe();
         try {
             _writer.startCDATA();
@@ -206,28 +207,28 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
             _writer.write("testing");
             _writer.flush();
             _writer.close();
-            Assertions.assertTrue(_contentCollector.toString().equals("<![CDATA[<![CDATA[testing]]>"));
+            assertEquals("<![CDATA[<![CDATA[testing]]>", _contentCollector.toString());
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
 
     @Test
-    public void testStandardUpdate() {
+    void standardUpdate() {
         _writer = createTestProbe();
         try {
             _writer.startUpdate("blaId");
             _writer.write("testing");
             _writer.endUpdate();
-            Assertions.assertTrue(_contentCollector.toString().equals(STD_UPDATE_RESULT));
+            assertEquals(STD_UPDATE_RESULT, _contentCollector.toString());
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
     @Test
-    public void testStandardUpdateNestedCDATA() {
+    void standardUpdateNestedCDATA() {
         _writer = createTestProbe();
         try {
             _writer.startUpdate("blaId");
@@ -235,14 +236,14 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
             _writer.write("testing");
             _writer.endCDATA();
             _writer.endUpdate();
-            Assertions.assertTrue(_contentCollector.toString().equals("<changes><update id=\"blaId\"><![CDATA[<![CDATA[testing]]><![CDATA[]]]]><![CDATA[>]]></update>"));
+            assertEquals("<changes><update id=\"blaId\"><![CDATA[<![CDATA[testing]]><![CDATA[]]]]><![CDATA[>]]></update>", _contentCollector.toString());
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
     @Test
-    public void testComponentAuthorNestingFailureTest() {
+    void componentAuthorNestingFailureTest() {
         _writer = createTestProbe();
         try {
             _writer.startUpdate("blaId");
@@ -250,40 +251,40 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
             _writer.startCDATA();
             _writer.write("testing");
             _writer.endUpdate();
-            Assertions.assertTrue(_contentCollector.toString().equals("<changes><update id=\"blaId\"><![CDATA[<![CDATA[<![CDATA[testing]]></update>"));
+            assertEquals("<changes><update id=\"blaId\"><![CDATA[<![CDATA[<![CDATA[testing]]></update>", _contentCollector.toString());
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
     @Test
-    public void testStandardInsertAfter() {
+    void standardInsertAfter() {
         _writer = createTestProbe();
         try {
             _writer.startInsertAfter("blaId");
             _writer.write("testing");
             _writer.endInsert();
-            Assertions.assertTrue(_contentCollector.toString().equals("<changes><insert><after id=\"blaId\"><![CDATA[testing]]></after></insert>"));
+            assertEquals("<changes><insert><after id=\"blaId\"><![CDATA[testing]]></after></insert>", _contentCollector.toString());
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
     @Test
-    public void testStandardInsertBefore() {
+    void standardInsertBefore() {
         _writer = createTestProbe();
         try {
             _writer.startInsertBefore("blaId");
             _writer.write("testing");
             _writer.endInsert();
-            Assertions.assertTrue(_contentCollector.toString().equals("<changes><insert><before id=\"blaId\"><![CDATA[testing]]></before></insert>"));
+            assertEquals("<changes><insert><before id=\"blaId\"><![CDATA[testing]]></before></insert>", _contentCollector.toString());
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
     @Test
-    public void testBrokenUserInput() {
+    void brokenUserInput() {
         _writer = createTestProbe();
         try {
             _writer.startInsertBefore("blaId");
@@ -292,56 +293,56 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
             _writer.writeAttribute("value","]]>", null);
             _writer.endElement("input");
             _writer.endInsert();
-            Assertions.assertTrue(_contentCollector.toString().contains("value=\"]]&gt;\""));
+            assertTrue(_contentCollector.toString().contains("value=\"]]&gt;\""));
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
 
     @Test
-    public void testDelete() {
+    void delete() {
         _writer = createTestProbe();
         try {
             _writer.delete("blaId");
-            Assertions.assertTrue(_contentCollector.toString().equals("<changes><delete id=\"blaId\"></delete>"));
+            assertEquals("<changes><delete id=\"blaId\"></delete>", _contentCollector.toString());
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
     @Test
-    public void testWriteIllegalXmlUnicodeCharacters() {
+    void writeIllegalXmlUnicodeCharacters() {
         _writer = createTestProbe();
         try {
             String illegalChars = "\u0001\u0002\u0003\u0004\u0005\u0006\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F\uDBFF\uDC00";
             String legalChars = "foo";
             _writer.write(illegalChars + legalChars);
-            Assertions.assertEquals(legalChars, _contentCollector.toString().trim(),
+            assertEquals(legalChars, _contentCollector.toString().trim(),
                     "All illegal XML unicode characters should have been replaced by spaces");
             
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
     @Test
-    public void testWriteTextIllegalXmlUnicodeCharacters() {
+    void writeTextIllegalXmlUnicodeCharacters() {
         _writer = createTestProbe();
         try {
             String illegalChars = "\u0001\u0002\u0003\u0004\u0005\u0006\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F\uDBFF\uDC00";
             String legalChars = "foo";
             _writer.writeText(illegalChars + legalChars, null);
-            Assertions.assertEquals(legalChars, _contentCollector.toString().trim(),
+            assertEquals(legalChars, _contentCollector.toString().trim(),
                     "All illegal XML unicode characters should have been replaced by spaces");
 
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 
     @Test
-    public void testWriteAttributeIllegalXmlUnicodeCharacters() {
+    void writeAttributeIllegalXmlUnicodeCharacters() {
         _writer = createTestProbe();
         try {
             String illegalChars = "\u0001\u0002\u0003\u0004\u0005\u0006\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F\uDBFF\uDC00";
@@ -349,16 +350,16 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
             _writer.startElement(legalChars, null);
             _writer.writeAttribute(legalChars, illegalChars + legalChars, null);
             _writer.endElement(legalChars);
-            Assertions.assertTrue(_contentCollector.toString().matches("<:X: :X:=\"[ ]+:X:\"></:X:>".replace(":X:", legalChars)),
+            assertTrue(_contentCollector.toString().matches("<:X: :X:=\"[ ]+:X:\"></:X:>".replace(":X:", legalChars)),
                     "All illegal XML unicode characters should have been replaced by spaces");
 
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
-    
+
     @Test
-    public void testWriteSkipEmoji() {
+    void writeSkipEmoji() {
         _writer = createTestProbe();
         try {
             String input = "foo😀";
@@ -366,16 +367,16 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
             
             String escaped = _contentCollector.toString();
             
-            Assertions.assertEquals(input, escaped.trim(),
+            assertEquals(input, escaped.trim(),
                     "All illegal XML unicode characters should have been replaced by spaces");
 
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
-    
+
     @Test
-    public void testWriteSkipPictographs() {
+    void writeSkipPictographs() {
         _writer = createTestProbe();
         try {
             String input = "foo🏺";
@@ -383,11 +384,11 @@ public class PartialResponseWriterImplTest extends AbstractFacesTestCase {
             
             String escaped = _contentCollector.toString();
             
-            Assertions.assertEquals(input, escaped.trim(),
+            assertEquals(input, escaped.trim(),
                     "All illegal XML unicode characters should have been replaced by spaces");
 
         } catch (IOException e) {
-            Assertions.fail(e.toString());
+            fail(e.toString());
         }
     }
 

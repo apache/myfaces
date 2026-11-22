@@ -19,8 +19,11 @@
 package jakarta.faces.component;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
+
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +32,7 @@ import org.junit.jupiter.api.Test;
  * 
  * @since 2.0
  */
-public class UIViewParameterTest extends AbstractFacesTestCase
+class UIViewParameterTest extends AbstractFacesTestCase
 {
     
     private UIViewParameter viewParameter = null;
@@ -59,21 +62,21 @@ public class UIViewParameterTest extends AbstractFacesTestCase
      * This is a special validation case only for UIViewParameter, so this has to be tested here.
      */
     @Test
-    public void testValidationErrorTriggersFacesContextValidationFailed()
+    void validationErrorTriggersFacesContextValidationFailed()
     {
         viewParameter.setRequired(true);
         viewParameter.setSubmittedValue(null);
         
-        Assertions.assertFalse(facesContext.isValidationFailed());
+        assertFalse(facesContext.isValidationFailed());
         viewParameter.processValidators(facesContext);
-        Assertions.assertTrue(facesContext.isValidationFailed());
+        assertTrue(facesContext.isValidationFailed());
     }
-    
+
     /**
      * Tests if UIViewParameter.decode() sets the submitted value only if it is not null.
      */
     @Test
-    public void testDecodeSetOnlyNonNullSubmittedValue()
+    void decodeSetOnlyNonNullSubmittedValue()
     {
         String notNull = "not null";
         viewParameter.setSubmittedValue(notNull);
@@ -83,7 +86,7 @@ public class UIViewParameterTest extends AbstractFacesTestCase
         
         viewParameter.decode(facesContext);
         
-        Assertions.assertEquals(viewParameter.getSubmittedValue(), notNull);
+        assertEquals(viewParameter.getSubmittedValue(), notNull);
     }
 
 }

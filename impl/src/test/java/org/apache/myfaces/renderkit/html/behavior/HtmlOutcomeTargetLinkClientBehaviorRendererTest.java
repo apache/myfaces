@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlOutcomeTargetLinkClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
+class HtmlOutcomeTargetLinkClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
 {
     private HtmlRenderedClientEventAttr[] attrs = null;
     

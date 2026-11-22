@@ -15,6 +15,8 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.faces.component.html.HtmlColumn;
@@ -23,11 +25,10 @@ import jakarta.faces.component.html.HtmlInputText;
 import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.model.ListDataModel;
 import jakarta.faces.render.Renderer;
-import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Test;
 
-public class UIDataRowStateTest extends AbstractFacesTestCase
+class UIDataRowStateTest extends AbstractFacesTestCase
 {
     
     public static class Item
@@ -93,12 +94,12 @@ public class UIDataRowStateTest extends AbstractFacesTestCase
         renderKit.addRenderer(HtmlOutputText.COMPONENT_FAMILY, new HtmlOutputText().getRendererType(), new Renderer(){});
         renderKit.addRenderer(HtmlInputText.COMPONENT_FAMILY, new HtmlInputText().getRendererType(), new Renderer(){});
     }
-    
+
     /**
      * 
      */
     @Test
-    public void testChangeIdsAfterSetRowIndex()
+    void changeIdsAfterSetRowIndex()
     {
         List<Item> list = new ArrayList<Item>();
         int rowCount = 10;
@@ -130,14 +131,14 @@ public class UIDataRowStateTest extends AbstractFacesTestCase
         for (int i = 0; i < rowCount ; i++)
         {
             data.setRowIndex(i);
-            Assertions.assertEquals(data.getId()+":"+i+":"+text.getId(), text.getClientId());
+            assertEquals(data.getId()+":"+i+":"+text.getId(), text.getClientId());
         }
         data.setRowIndex(-1);
-        Assertions.assertEquals(data.getId()+":"+text.getId(), text.getClientId());
+        assertEquals(data.getId()+":"+text.getId(), text.getClientId());
     }
-    
+
     @Test
-    public void testChangeIdsAfterSetRowIndex2()
+    void changeIdsAfterSetRowIndex2()
     {
         List<Item> list = new ArrayList<Item>();
         int rowCount = 10;
@@ -176,16 +177,16 @@ public class UIDataRowStateTest extends AbstractFacesTestCase
         for (int i = 0; i < rowCount ; i++)
         {
             data.setRowIndex(i);
-            Assertions.assertEquals(data.getId()+":"+i+":"+text.getId(), text.getClientId());
-            Assertions.assertEquals(data.getId()+":"+i+":"+inputText.getId(), inputText.getClientId());
+            assertEquals(data.getId()+":"+i+":"+text.getId(), text.getClientId());
+            assertEquals(data.getId()+":"+i+":"+inputText.getId(), inputText.getClientId());
         }
         data.setRowIndex(-1);
-        Assertions.assertEquals(data.getId()+":"+text.getId(), text.getClientId());
-        Assertions.assertEquals(data.getId()+":"+inputText.getId(), inputText.getClientId());
+        assertEquals(data.getId()+":"+text.getId(), text.getClientId());
+        assertEquals(data.getId()+":"+inputText.getId(), inputText.getClientId());
     }
-    
+
     @Test
-    public void testAddRowAfterSetRowIndex()
+    void addRowAfterSetRowIndex()
     {
         List<Item> list = new ArrayList<Item>();
         int rowCount = 10;
@@ -221,12 +222,12 @@ public class UIDataRowStateTest extends AbstractFacesTestCase
         
         data.processDecodes(facesContext);
     }
-    
+
     /**
      * Check if EditableValueHolder is being saved and restored.
      */
     @Test
-    public void testEditableValueHolderState()
+    void editableValueHolderState()
     {
         List<Item> list = new ArrayList<Item>();
         int rowCount = 10;
@@ -272,7 +273,7 @@ public class UIDataRowStateTest extends AbstractFacesTestCase
         for (int i = 0; i < rowCount ; i++)
         {
             data.setRowIndex(i);
-            Assertions.assertEquals("someString"+i, inputText.getSubmittedValue());
+            assertEquals("someString"+i, inputText.getSubmittedValue());
         }
     }
 }

@@ -19,16 +19,18 @@
 
 package org.apache.myfaces.view.facelets.tag.ui;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import java.io.StringWriter;
 
 import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class DefineIncludeTestCase extends AbstractFaceletTestCase {
+class DefineIncludeTestCase extends AbstractFaceletTestCase {
 
     @Override
     protected void setupComponents() throws Exception
@@ -48,7 +50,7 @@ public class DefineIncludeTestCase extends AbstractFaceletTestCase {
     }
 
     @Test
-    public void testDefineInclude() throws Exception {
+    void defineInclude() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "defineInclude.xml");
         
@@ -61,9 +63,9 @@ public class DefineIncludeTestCase extends AbstractFaceletTestCase {
         String response = sw.toString();
         //Two Hello World, the first one by a ui:include on defineInclude.xml,
         //the second one injected on subdir/template.xml
-        Assertions.assertEquals("Hello World!Hello World!", response);
+        assertEquals("Hello World!Hello World!", response);
         //the content of subdir/template.xml ui:insert is ignored
-        Assertions.assertFalse(response.contains("Not Found"));
+        assertFalse(response.contains("Not Found"));
         
         //System.out.println("************************");
         //System.out.println(sw.toString());

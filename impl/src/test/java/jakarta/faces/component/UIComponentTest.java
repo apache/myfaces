@@ -19,7 +19,6 @@
 package jakarta.faces.component;
 
 import jakarta.faces.context.FacesContext;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
@@ -30,14 +29,16 @@ import java.util.Map;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.same;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UIComponentTest extends UIComponentTestBase
+class UIComponentTest extends UIComponentTestBase
 {
     /**
      * Test method for {@link jakarta.faces.component.UIComponent#getFacetCount()}.
      */
     @Test
-    public void testGetFacetCount() throws Exception
+    void getFacetCount() throws Exception
     {
         Method[] methods = {UIComponent.class.getDeclaredMethod("getFacets", (Class<?>[])null)};
         UIComponent component = _mocksControl.createMock(UIComponent.class, methods);
@@ -47,13 +48,13 @@ public class UIComponentTest extends UIComponentTestBase
         map.put("xxx3", new UIInput());
         expect(component.getFacets()).andReturn(map);
         _mocksControl.replay();
-        Assertions.assertEquals(3, component.getFacetCount());
+        assertEquals(3, component.getFacetCount());
         _mocksControl.verify();
 
         _mocksControl.reset();
         expect(component.getFacets()).andReturn(null);
         _mocksControl.replay();
-        Assertions.assertEquals(0, component.getFacetCount());
+        assertEquals(0, component.getFacetCount());
         _mocksControl.verify();
     }
 
@@ -64,7 +65,7 @@ public class UIComponentTest extends UIComponentTestBase
      * @throws Exception
      */
     @Test
-    public void testGetContainerClientId() throws Exception
+    void getContainerClientId() throws Exception
     {
         Collection<Method> mockedMethods = new ArrayList<Method>();
         Class<UIComponent> clazz = UIComponent.class;
@@ -73,12 +74,12 @@ public class UIComponentTest extends UIComponentTestBase
                 .size()]));
         _mocksControl.checkOrder(true);
 
-        Assertions.assertThrows(NullPointerException.class,
+        assertThrows(NullPointerException.class,
                 () ->  testimpl.getContainerClientId(null));
 
         expect(testimpl.getClientId(same(_facesContext))).andReturn("xyz");
         _mocksControl.replay();
-        Assertions.assertEquals("xyz", testimpl.getContainerClientId(_facesContext));
+        assertEquals("xyz", testimpl.getContainerClientId(_facesContext));
         _mocksControl.verify();
     }
 }

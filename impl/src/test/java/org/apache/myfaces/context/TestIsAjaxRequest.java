@@ -16,13 +16,15 @@
 
 package org.apache.myfaces.context;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Map;
 
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -52,15 +54,15 @@ public class TestIsAjaxRequest extends AbstractFacesTestCase {
     }
 
     @Test
-    public void testNoEntry() {
+    void noEntry() {
 
-        Assertions.assertFalse(context.getPartialViewContext().isAjaxRequest());
+        assertFalse(context.getPartialViewContext().isAjaxRequest());
     }
 
     public void testEntry() {
         request.addHeader("Faces-Request", "partial/ajax");
         request.addParameter("jakarta.faces.partial.ajax","true");
-        Assertions.assertTrue(context.getPartialViewContext().isAjaxRequest());
+        assertTrue(context.getPartialViewContext().isAjaxRequest());
     }
 
 }

@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,10 +43,9 @@ import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.view.facelets.AbstractFaceletMultipleRequestsTestCase;
 import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTestCase
+class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTestCase
 {
 
     @Override
@@ -64,12 +65,12 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
         servletContext.addInitParameter(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "-1");
         servletContext.setAttribute(MyfacesConfig.class.getName(), new MyfacesConfig());
     }
-    
+
     /**
      * @throws Exception
      */
     @Test
-    public void testUniqueComponentIdCif() throws Exception
+    void uniqueComponentIdCif() throws Exception
     {
         /* For this example:
          * 
@@ -103,13 +104,13 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
@@ -122,8 +123,8 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertNotNull(componentBid);
-            Assertions.assertNotNull(tagBId);
+            assertNotNull(componentBid);
+            assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdCif.xhtml").saveView(facesContext));
             
@@ -153,12 +154,12 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
             }
             
@@ -172,12 +173,12 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
         }
 
     }
-    
+
     /**
      * @throws Exception
      */
     @Test
-    public void testUniqueComponentIdCifSaveCondition() throws Exception
+    void uniqueComponentIdCifSaveCondition() throws Exception
     {
         /* For this example:
          * 
@@ -218,13 +219,13 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
@@ -237,8 +238,8 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertNotNull(componentBid);
-            Assertions.assertNotNull(tagBId);
+            assertNotNull(componentBid);
+            assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdCif.xhtml").saveView(facesContext));
             
@@ -259,7 +260,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
     
             UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdCif.xhtml").restoreView(facesContext, "/testUniqueComponentIdCif.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
-            Assertions.assertNotNull(root);
+            assertNotNull(root);
             
             boolean restoredB = false;
             //1. test unique MARK_CREATED id
@@ -268,12 +269,12 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
@@ -284,7 +285,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertTrue(restoredB);
+            assertTrue(restoredB);
             
             //Now let's refresh the view on render response, to reflect the value on the condition
             tagUniqueIdSet.remove(tagBId);
@@ -300,12 +301,12 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
             }
         }
@@ -314,12 +315,12 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
             tearDownRequest();
         }
     }
-    
+
     /**
      * @throws Exception
      */
     @Test
-    public void testUniqueComponentIdInclude1_1() throws Exception
+    void uniqueComponentIdInclude11() throws Exception
     {
         /* For this example:
          * 
@@ -355,13 +356,13 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
@@ -374,8 +375,8 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertNotNull(componentBid);
-            Assertions.assertNotNull(tagBId);
+            assertNotNull(componentBid);
+            assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
@@ -405,12 +406,12 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
             }
             
@@ -426,7 +427,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
     }
 
     @Test
-    public void testUniqueComponentIdInclude1_2() throws Exception
+    void uniqueComponentIdInclude12() throws Exception
     {
         /* For this example:
          * 
@@ -471,13 +472,13 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
@@ -490,8 +491,8 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertNotNull(componentBid);
-            Assertions.assertNotNull(tagBId);
+            assertNotNull(componentBid);
+            assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
@@ -523,17 +524,17 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (componentBid.equals(componentId))
                 {
-                    Assertions.assertFalse(tagBId.equals(id));
+                    assertNotEquals(tagBId, id);
                 }
                 else
                 {
                     if (!tagUniqueIdSet.contains(id))
                     {
-                        Assertions.fail();
+                        fail();
                     }
                     if (!componentIdSet.contains(componentId))
                     {
-                        Assertions.fail();
+                        fail();
                     }
                 }
             }
@@ -553,7 +554,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
      * @throws Exception
      */
     @Test
-    public void testUniqueComponentIdIncludeSaveCondition() throws Exception
+    void uniqueComponentIdIncludeSaveCondition() throws Exception
     {
         /* For this example:
          * 
@@ -599,13 +600,13 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
@@ -619,8 +620,8 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertNotNull(componentBid);
-            Assertions.assertNotNull(tagBId);
+            assertNotNull(componentBid);
+            assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
@@ -641,7 +642,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
     
             UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").restoreView(facesContext, "/testUniqueComponentIdInclude1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
-            Assertions.assertNotNull(root);
+            assertNotNull(root);
             
             boolean restoredB = false;
             //1. test unique MARK_CREATED id
@@ -650,24 +651,24 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
                     if ("-B-".equals(output.getValue()))
                     {
                         restoredB = true;
-                        Assertions.assertNotNull(child.getAttributes().get("test"));
+                        assertNotNull(child.getAttributes().get("test"));
                     }
                 }
             }
             
-            Assertions.assertTrue(restoredB);
+            assertTrue(restoredB);
             
             //Now let's refresh the view on render response, to reflect the value on the condition
             tagUniqueIdSet.remove(tagBId);
@@ -683,12 +684,12 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
             }
         }
@@ -697,9 +698,9 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
             tearDownRequest();
         }
     }
-    
+
     @Test
-    public void testUniqueComponentIdIncludeSaveCondition2() throws Exception
+    void uniqueComponentIdIncludeSaveCondition2() throws Exception
     {
         /* For this example:
          * 
@@ -748,13 +749,13 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
@@ -768,8 +769,8 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertNotNull(componentBid);
-            Assertions.assertNotNull(tagBId);
+            assertNotNull(componentBid);
+            assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").saveView(facesContext));
             
@@ -790,7 +791,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
     
             UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdInclude1.xhtml").restoreView(facesContext, "/testUniqueComponentIdInclude1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
-            Assertions.assertNotNull(root);
+            assertNotNull(root);
             
             boolean restoredB = false;
             //1. test unique MARK_CREATED id
@@ -799,24 +800,24 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
                     if ("-B-".equals(output.getValue()))
                     {
                         restoredB = true;
-                        Assertions.assertNotNull(child.getAttributes().get("test"));
+                        assertNotNull(child.getAttributes().get("test"));
                     }
                 }
             }
             
-            Assertions.assertTrue(restoredB);
+            assertTrue(restoredB);
             
             //Now let's refresh the view on render response, to reflect the value on the condition
             tagUniqueIdSet.remove(tagBId);
@@ -840,24 +841,24 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                         restoredB = true;
                         //Check if the B component is not the same as before. 
                         //It should have different tag-component id and its state is different.
-                        Assertions.assertFalse(tagBId.equals(id));
-                        Assertions.assertNull(child.getAttributes().get("test"));
+                        assertNotEquals(tagBId, id);
+                        assertNull(child.getAttributes().get("test"));
                     }
                 }
                 else
                 {
                     if (!tagUniqueIdSet.contains(id))
                     {
-                        Assertions.fail();
+                        fail();
                     }
                     if (!componentIdSet.contains(componentId))
                     {
-                        Assertions.fail();
+                        fail();
                     }
                 }
             }
             
-            Assertions.assertTrue(restoredB);
+            assertTrue(restoredB);
         }
         finally
         {
@@ -869,7 +870,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
      * @throws Exception
      */
     @Test
-    public void testUniqueComponentIdDecorate1_1() throws Exception
+    void uniqueComponentIdDecorate11() throws Exception
     {
         String viewStateParam = null;
         String componentBid = null;
@@ -894,13 +895,13 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
@@ -918,10 +919,10 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertNotNull(componentBid);
-            Assertions.assertNotNull(tagBId);
-            Assertions.assertNotNull(componentDid);
-            Assertions.assertNotNull(tagDId);
+            assertNotNull(componentBid);
+            assertNotNull(tagBId);
+            assertNotNull(componentDid);
+            assertNotNull(tagDId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").saveView(facesContext));
             
@@ -959,17 +960,17 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                         //This is a different C, because it the template is different
                         //the final component id could be the same or different, but the
                         //important here is refreshing algorithm should not mix both 
-                        Assertions.assertTrue(!tagUniqueIdSet.contains(id));
+                        assertFalse(tagUniqueIdSet.contains(id));
                     }
                     else
                     {
                         if (!tagUniqueIdSet.contains(id))
                         {
-                            Assertions.fail();
+                            fail();
                         }
                         if (!componentIdSet.contains(componentId))
                         {
-                            Assertions.fail();
+                            fail();
                         }
                     }
                 }
@@ -977,11 +978,11 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 {
                     if (!tagUniqueIdSet.contains(id))
                     {
-                        Assertions.fail();
+                        fail();
                     }
                     if (!componentIdSet.contains(componentId))
                     {
-                        Assertions.fail();
+                        fail();
                     }
                 }
             }
@@ -1001,7 +1002,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
      * @throws Exception
      */
     @Test
-    public void testUniqueComponentIdDecorate1_2() throws Exception
+    void uniqueComponentIdDecorate12() throws Exception
     {
         String viewStateParam = null;
         String componentBid = null;
@@ -1026,13 +1027,13 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
@@ -1050,10 +1051,10 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertNotNull(componentBid);
-            Assertions.assertNotNull(tagBId);
-            Assertions.assertNotNull(componentDid);
-            Assertions.assertNotNull(tagDId);
+            assertNotNull(componentBid);
+            assertNotNull(tagBId);
+            assertNotNull(componentDid);
+            assertNotNull(tagDId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").saveView(facesContext));
             
@@ -1093,17 +1094,17 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                         //This is a different C,B or D, because it the template is different
                         //the final component id could be the same or different, but the
                         //important here is refreshing algorithm should not mix both 
-                        Assertions.assertTrue(!tagUniqueIdSet.contains(id));
+                        assertFalse(tagUniqueIdSet.contains(id));
                     }
                     else
                     {
                         if (!tagUniqueIdSet.contains(id))
                         {
-                            Assertions.fail();
+                            fail();
                         }
                         if (!componentIdSet.contains(componentId))
                         {
-                            Assertions.fail();
+                            fail();
                         }
                     }
                 }
@@ -1111,11 +1112,11 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 {
                     if (!tagUniqueIdSet.contains(id))
                     {
-                        Assertions.fail();
+                        fail();
                     }
                     if (!componentIdSet.contains(componentId))
                     {
-                        Assertions.fail();
+                        fail();
                     }
                 }
             }
@@ -1132,7 +1133,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
     }
 
     @Test
-    public void testUniqueComponentIdDecorateSaveCondition() throws Exception
+    void uniqueComponentIdDecorateSaveCondition() throws Exception
     {
         String viewStateParam = null;
         String componentBid = null;
@@ -1159,13 +1160,13 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
@@ -1179,8 +1180,8 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertNotNull(componentBid);
-            Assertions.assertNotNull(tagBId);
+            assertNotNull(componentBid);
+            assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").saveView(facesContext));
             
@@ -1201,7 +1202,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
     
             UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdDecorate1.xhtml").restoreView(facesContext, "/testUniqueComponentIdDecorate1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
-            Assertions.assertNotNull(root);
+            assertNotNull(root);
             
             boolean restoredB = false;
             //1. test unique MARK_CREATED id
@@ -1212,23 +1213,23 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
                     if ("-B-".equals(output.getValue()))
                     {
                         restoredB = true;
-                        Assertions.assertNotNull(child.getAttributes().get("test"));
+                        assertNotNull(child.getAttributes().get("test"));
                     }
                 }
             }
             
-            Assertions.assertTrue(restoredB);
+            assertTrue(restoredB);
             
             //Now let's refresh the view on render response, to reflect the value on the condition
             tagUniqueIdSet.remove(tagBId);
@@ -1249,17 +1250,17 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                     //This is a different C, because it the template is different
                     //the final component id could be the same or different, but the
                     //important here is refreshing algorithm should not mix both 
-                    Assertions.assertTrue(!tagUniqueIdSet.contains(id));
+                    assertFalse(tagUniqueIdSet.contains(id));
                 }
                 else
                 {
                     if (!tagUniqueIdSet.contains(id))
                     {
-                        Assertions.fail();
+                        fail();
                     }
                     if (!componentIdSet.contains(componentId))
                     {
-                        Assertions.fail();
+                        fail();
                     }
                 }
             }
@@ -1271,7 +1272,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
     }
 
     @Test
-    public void testUniqueComponentIdChoose() throws Exception
+    void uniqueComponentIdChoose() throws Exception
     {
         String viewStateParam = null;
         String componentBid = null;
@@ -1294,13 +1295,13 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
@@ -1313,8 +1314,8 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertNotNull(componentBid);
-            Assertions.assertNotNull(tagBId);
+            assertNotNull(componentBid);
+            assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdChoose.xhtml").saveView(facesContext));
             
@@ -1344,12 +1345,12 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
             }
             
@@ -1365,7 +1366,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
     }
 
     @Test
-    public void testUniqueComponentIdChooseSaveCondition() throws Exception
+    void uniqueComponentIdChooseSaveCondition() throws Exception
     {
         String viewStateParam = null;
         String componentBid = null;
@@ -1392,13 +1393,13 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 tagUniqueIdSet.add(id);
                 String componentId = child.getId();
                 if (componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 componentIdSet.add(componentId);
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
@@ -1411,8 +1412,8 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertNotNull(componentBid);
-            Assertions.assertNotNull(tagBId);
+            assertNotNull(componentBid);
+            assertNotNull(tagBId);
             
             application.getStateManager().writeState(facesContext, getStateManagementStrategy("/testUniqueComponentIdChoose.xhtml").saveView(facesContext));
             
@@ -1433,7 +1434,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
     
             UIViewRoot root = getStateManagementStrategy("/testUniqueComponentIdChoose.xhtml").restoreView(facesContext, "/testUniqueComponentIdChoose.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
-            Assertions.assertNotNull(root);
+            assertNotNull(root);
             
             boolean restoredB = false;
             //1. test unique MARK_CREATED id
@@ -1442,12 +1443,12 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 if (componentId.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && child instanceof UIOutput output)
                 {
@@ -1458,7 +1459,7 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 }
             }
             
-            Assertions.assertTrue(restoredB);
+            assertTrue(restoredB);
             
             //Now let's refresh the view on render response, to reflect the value on the condition
             tagUniqueIdSet.remove(tagBId);
@@ -1474,12 +1475,12 @@ public class UniqueComponentIdTestCase extends AbstractFaceletMultipleRequestsTe
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (!tagUniqueIdSet.contains(id))
                 {
-                    Assertions.fail();
+                    fail();
                 }
                 String componentId = child.getId();
                 if (!componentIdSet.contains(componentId))
                 {
-                    Assertions.fail();
+                    fail();
                 }
             }
         }

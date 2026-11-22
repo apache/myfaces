@@ -18,65 +18,66 @@
  */
 package org.apache.myfaces.renderkit.html.util;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
-public class JavascriptUtilsTest
+class JavascriptUtilsTest
 {
     @Test
-    public void testGetValidJavascriptNameTest_SimpleIdentifierUnchanged()
+    void getValidJavascriptNameTestSimpleIdentifierUnchanged()
     {
-        Assertions.assertEquals("fooBar123",
+        assertEquals("fooBar123",
                 JavascriptUtils.getValidJavascriptName("fooBar123", false));
-        Assertions.assertEquals("fooBar123",
+        assertEquals("fooBar123",
                 JavascriptUtils.getValidJavascriptName("fooBar123", true, false));
     }
 
     @Test
-    public void testGetValidJavascriptNameTest_ReservedWordAppendsUnderscoreWhenChecking()
+    void getValidJavascriptNameTestReservedWordAppendsUnderscoreWhenChecking()
     {
-        Assertions.assertEquals("var_",
+        assertEquals("var_",
                 JavascriptUtils.getValidJavascriptName("var", true));
-        Assertions.assertEquals("var_",
+        assertEquals("var_",
                 JavascriptUtils.getValidJavascriptName("var", true, true));
     }
 
     @Test
-    public void testGetValidJavascriptNameTest_ReservedWordUnchangedWhenNotChecking()
+    void getValidJavascriptNameTestReservedWordUnchangedWhenNotChecking()
     {
-        Assertions.assertEquals("var",
+        assertEquals("var",
                 JavascriptUtils.getValidJavascriptName("var", false));
     }
 
     @Test
-    public void testGetValidJavascriptNameTest_InvalidCharactersBecomeUnderscorePlusHex()
+    void getValidJavascriptNameTestInvalidCharactersBecomeUnderscorePlusHex()
     {
-        Assertions.assertEquals("a_2Db",
+        assertEquals("a_2Db",
                 JavascriptUtils.getValidJavascriptName("a-b", false));
-        Assertions.assertEquals("x_2Ey",
+        assertEquals("x_2Ey",
                 JavascriptUtils.getValidJavascriptName("x.y", false));
     }
 
     @Test
-    public void testGetValidJavascriptNameTest_AllowNamespacesSplitsSegments()
+    void getValidJavascriptNameTestAllowNamespacesSplitsSegments()
     {
-        Assertions.assertEquals("a.b",
+        assertEquals("a.b",
                 JavascriptUtils.getValidJavascriptName("a.b", true, false));
-        Assertions.assertEquals("a_3Ab.c",
+        assertEquals("a_3Ab.c",
                 JavascriptUtils.getValidJavascriptName("a:b.c", true, false));
     }
 
     @Test
-    public void testGetValidJavascriptNameTest_AllowNamespacesFalseTreatsDotsAsInvalid()
+    void getValidJavascriptNameTestAllowNamespacesFalseTreatsDotsAsInvalid()
     {
-        Assertions.assertEquals("a_2Eb",
+        assertEquals("a_2Eb",
                 JavascriptUtils.getValidJavascriptName("a.b", false, false));
     }
 
     @Test
-    public void testGetValidJavascriptNameTest_EmptyString()
+    void getValidJavascriptNameTestEmptyString()
     {
-        Assertions.assertEquals("",
+        assertEquals("",
                 JavascriptUtils.getValidJavascriptName("", false));
     }
 }

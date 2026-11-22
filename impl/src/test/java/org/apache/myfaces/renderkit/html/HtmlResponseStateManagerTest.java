@@ -18,19 +18,21 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import jakarta.faces.render.ResponseStateManager;
 import org.apache.myfaces.test.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class HtmlResponseStateManagerTest extends AbstractFacesTestCase
+class HtmlResponseStateManagerTest extends AbstractFacesTestCase
 {
     @Test
-    public void testIsPostback()
+    void isPostback()
     {
         Mockito.when(_facesContext.getExternalContext()).thenReturn(_externalContext);
         Mockito.when(_externalContext.getApplicationMap()).thenReturn(new ConcurrentHashMap<>());
@@ -41,11 +43,11 @@ public class HtmlResponseStateManagerTest extends AbstractFacesTestCase
         map.put(ResponseStateManager.VIEW_STATE_PARAM, "seomthing");
         Mockito.when(_externalContext.getRequestParameterMap()).thenReturn(map);
 
-        Assertions.assertEquals(true, hrsm.isPostback(_facesContext));
+        assertTrue(hrsm.isPostback(_facesContext));
     }
-    
+
     @Test
-    public void testIsNoPostback()
+    void isNoPostback()
     {
         Mockito.when(_facesContext.getExternalContext()).thenReturn(_externalContext);
         Mockito.when(_externalContext.getApplicationMap()).thenReturn(new ConcurrentHashMap<>());
@@ -53,6 +55,6 @@ public class HtmlResponseStateManagerTest extends AbstractFacesTestCase
         
         HtmlResponseStateManager hrsm = Mockito.spy(HtmlResponseStateManager.class);
 
-        Assertions.assertEquals(false, hrsm.isPostback(_facesContext));
+        assertFalse(hrsm.isPostback(_facesContext));
     }
 }

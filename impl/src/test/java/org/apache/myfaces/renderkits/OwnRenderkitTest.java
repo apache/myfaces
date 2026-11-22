@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkits;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 
 import jakarta.faces.FactoryFinder;
@@ -31,7 +33,6 @@ import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -77,12 +78,12 @@ public class OwnRenderkitTest extends AbstractFacesTestCase {
     }
 
     @Test
-    public void testOwnRenderKit() throws Exception {
+    void ownRenderKit() throws Exception {
 
         inputText.encodeEnd(facesContext);
         facesContext.renderResponse();
 
-        Assertions.assertTrue(isOwnRenderKit);
+        assertTrue(isOwnRenderKit);
     }
 
 

@@ -22,15 +22,17 @@ import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.component.search.*;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockApplication;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Arrays;
 import java.util.List;
 
-public class AjaxScriptBuilderTest extends AbstractFacesTestCase
+class AjaxScriptBuilderTest extends AbstractFacesTestCase
 {
     @BeforeEach
     @Override
@@ -61,7 +63,7 @@ public class AjaxScriptBuilderTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void test()
+    void test()
     {
         UIComponentMock component = new UIComponentMock();
         component.setId("test");
@@ -86,8 +88,8 @@ public class AjaxScriptBuilderTest extends AbstractFacesTestCase
 
         String script = sb.toString();
 
-        Assertions.assertFalse(script.contains("':testJsparams:{"));
-        Assertions.assertTrue(script.contains("':testJs,'params':{"));
-        Assertions.assertEquals("myfaces.ab('j_id_i',event,'click','test','',{'onevent':testJs,'params':{'var1':'NEW VALUE'}})", script);
+        assertFalse(script.contains("':testJsparams:{"));
+        assertTrue(script.contains("':testJs,'params':{"));
+        assertEquals("myfaces.ab('j_id_i',event,'click','test','',{'onevent':testJs,'params':{'var1':'NEW VALUE'}})", script);
     }
 }

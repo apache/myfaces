@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.application.viewstate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -27,14 +30,13 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMultipleRequestsTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleRequestsTestCase
 {
 
     @Test
-    public void testNumberOfSequentialViewsInSession() throws Exception
+    void numberOfSequentialViewsInSession() throws Exception
     {
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
@@ -68,7 +70,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
             
             Object value = stateCache.restoreSerializedView(facesContext, "view1.xhtml", savedToken);
             
-            Assertions.assertEquals(1, value);
+            assertEquals(1, value);
             
             facesContext.getViewRoot().setViewId("view2.xhtml");
             savedToken = stateCache.saveSerializedView(facesContext, 2);
@@ -84,7 +86,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
             
             Object value = stateCache.restoreSerializedView(facesContext, "view2.xhtml", savedToken);
             
-            Assertions.assertEquals(2, value);
+            assertEquals(2, value);
             
             facesContext.getViewRoot().setViewId("view2.xhtml");
             savedToken = stateCache.saveSerializedView(facesContext, 3);
@@ -101,16 +103,16 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
             Object value = stateCache.restoreSerializedView(facesContext, "view1.xhtml", firstSavedToken);
             
             // Since org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION is 2, the first one was already discarded
-            Assertions.assertNull(value);
+            assertNull(value);
         }
         finally
         {
             tearDownRequest();
         }
     }
-    
+
     @Test
-    public void testSaveRestoreStateWrongViewId() throws Exception
+    void saveRestoreStateWrongViewId() throws Exception
     {
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
 
@@ -145,7 +147,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
             // the state, along with a counter.
             Object value = stateCache.restoreSerializedView(facesContext, "/view2.xhtml", firstSavedToken);
             
-            Assertions.assertNull(value);
+            assertNull(value);
         }
         finally
         {
@@ -159,7 +161,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
             // It should restore this:
             Object value = stateCache.restoreSerializedView(facesContext, "/view1.xhtml", firstSavedToken);
             
-            Assertions.assertEquals(1, value);
+            assertEquals(1, value);
         }
         finally
         {
@@ -169,7 +171,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     }
 
     @Test
-    public void testNonExistingViewId() throws Exception
+    void nonExistingViewId() throws Exception
     {
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
@@ -233,7 +235,7 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     }
 
     @Test
-    public void testStateKeySerialization1() throws Exception
+    void stateKeySerialization1() throws Exception
     {
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
@@ -242,9 +244,9 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
         
         tryStateKeySerialization();
     }
-    
+
     @Test
-    public void testStateKeySerialization2() throws Exception
+    void stateKeySerialization2() throws Exception
     {
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
@@ -254,9 +256,9 @@ public class ServerSideStateCacheTest extends AbstractFacesConfigurableMultipleR
         
         tryStateKeySerialization();
     }
-    
+
     @Test
-    public void testStateKeySerialization3() throws Exception
+    void stateKeySerialization3() throws Exception
     {
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.SERVER.name());
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");

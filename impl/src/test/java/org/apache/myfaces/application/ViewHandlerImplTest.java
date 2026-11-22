@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.application;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,14 +35,13 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewMetadata;
 
-import org.junit.jupiter.api.Assertions;
-
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +51,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ViewHandlerImplTest extends AbstractFacesTestCase
+class ViewHandlerImplTest extends AbstractFacesTestCase
 {
     
     private ViewHandlerImpl _viewHandler;
@@ -95,7 +96,7 @@ public class ViewHandlerImplTest extends AbstractFacesTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testGetBookmarkableURLDoesNotChangeParametersMap()
+    void getBookmarkableURLDoesNotChangeParametersMap()
     {
         // set the required path elements
         request.setPathElements("/", null, "/newview.jsf", null);
@@ -109,27 +110,20 @@ public class ViewHandlerImplTest extends AbstractFacesTestCase
         parameters.put("key2", Collections.unmodifiableList(Arrays.asList("value2")));
         parameters = Collections.unmodifiableMap(parameters);
         
-        String url = null;
-        try
-        {
-            url = _viewHandler.getBookmarkableURL(facesContext, "/newview.xhtml", parameters, true);
-        }
-        catch (UnsupportedOperationException uoe)
-        {
-            // an UnsupportedOperationException occurred, which means getBookmarkableURL()
-            // wanted to change the Map or any of the Lists and this is not allowed!
-            Assertions.fail("ViewHandler.getBookmarkableURL() must not change the parameter Map!");
-        }
+        final Map<String, List<String>> finalParameters = parameters;
+        String url = Assertions.assertDoesNotThrow(
+                () -> _viewHandler.getBookmarkableURL(facesContext, "/newview.xhtml", finalParameters, true),
+                "ViewHandler.getBookmarkableURL() must not change the parameter Map!");
         
         // additional checks:
         // the URL must contain all params from the parameters map
         // and from the <f:viewParam> components of the target view
-        Assertions.assertTrue(url.contains("key1=value11"));
-        Assertions.assertTrue(url.contains("key1=value12"));
-        Assertions.assertTrue(url.contains("key2=value2"));
-        Assertions.assertTrue(url.contains("myparam=paramvalue"));
+        assertTrue(url.contains("key1=value11"));
+        assertTrue(url.contains("key1=value12"));
+        assertTrue(url.contains("key2=value2"));
+        assertTrue(url.contains("myparam=paramvalue"));
     }
-    
+
     /**
      *  Checks if ViewHandler.getRedirectURL() wants to change the parameter Map,
      *  which is not allowed, because this Map comes from the NavigationCase and
@@ -139,7 +133,7 @@ public class ViewHandlerImplTest extends AbstractFacesTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testGetRedirectURLDoesNotChangeParametersMap()
+    void getRedirectURLDoesNotChangeParametersMap()
     {
         // set the required path elements
         request.setPathElements("/", null, "/newview.jsf", null);
@@ -153,25 +147,18 @@ public class ViewHandlerImplTest extends AbstractFacesTestCase
         parameters.put("key2", Collections.unmodifiableList(Arrays.asList("value2")));
         parameters = Collections.unmodifiableMap(parameters);
         
-        String url = null;
-        try
-        {
-            url = _viewHandler.getRedirectURL(facesContext, "/newview.xhtml", parameters, true);
-        }
-        catch (UnsupportedOperationException uoe)
-        {
-            // an UnsupportedOperationException occurred, which means getRedirectURL()
-            // wanted to change the Map or any of the Lists and this is not allowed!
-            Assertions.fail("ViewHandler.getRedirectURL() must not change the parameter Map!");
-        }
+        final Map<String, List<String>> finalParameters = parameters;
+        String url = Assertions.assertDoesNotThrow(
+                () -> _viewHandler.getRedirectURL(facesContext, "/newview.xhtml", finalParameters, true),
+                "ViewHandler.getRedirectURL() must not change the parameter Map!");
         
         // additional checks:
         // the URL must contain all params from the parameters map
         // and from the <f:viewParam> components of the target view
-        Assertions.assertTrue(url.contains("key1=value11"));
-        Assertions.assertTrue(url.contains("key1=value12"));
-        Assertions.assertTrue(url.contains("key2=value2"));
-        Assertions.assertTrue(url.contains("myparam=paramvalue"));
+        assertTrue(url.contains("key1=value11"));
+        assertTrue(url.contains("key1=value12"));
+        assertTrue(url.contains("key2=value2"));
+        assertTrue(url.contains("myparam=paramvalue"));
     }
     
     /**

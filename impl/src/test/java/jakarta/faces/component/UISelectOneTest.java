@@ -18,18 +18,19 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UISelectOneTest extends AbstractFacesTestCase
+class UISelectOneTest extends AbstractFacesTestCase
 {
-    
+
     @Test
-    public void testValidateRequiredNull()
+    void validateRequiredNull()
     {
 
         facesContext.getViewRoot().setLocale(_TEST_LOCALE);
@@ -54,12 +55,12 @@ public class UISelectOneTest extends AbstractFacesTestCase
 
         selectOne.validateValue(facesContext, null);
 
-        Assertions.assertFalse(selectOne.isValid());
-        Assertions.assertEquals(1, facesContext.getMessageList().size());
+        assertFalse(selectOne.isValid());
+        assertEquals(1, facesContext.getMessageList().size());
     }
-    
+
     @Test
-    public void testValidateNotRequiredValid()
+    void validateNotRequiredValid()
     {
 
         facesContext.getViewRoot().setLocale(_TEST_LOCALE);
@@ -84,12 +85,12 @@ public class UISelectOneTest extends AbstractFacesTestCase
 
         selectOne.validateValue(facesContext, 1);
 
-        Assertions.assertTrue(selectOne.isValid());
-        Assertions.assertEquals(0, facesContext.getMessageList().size());
+        assertTrue(selectOne.isValid());
+        assertEquals(0, facesContext.getMessageList().size());
     }
-    
+
     @Test
-    public void testValidateNotRequiredNotValid()
+    void validateNotRequiredNotValid()
     {
 
         facesContext.getViewRoot().setLocale(_TEST_LOCALE);
@@ -114,12 +115,12 @@ public class UISelectOneTest extends AbstractFacesTestCase
 
         selectOne.validateValue(facesContext, 4);
 
-        Assertions.assertFalse(selectOne.isValid());
-        Assertions.assertEquals(1, facesContext.getMessageList().size());
+        assertFalse(selectOne.isValid());
+        assertEquals(1, facesContext.getMessageList().size());
     }
-    
+
     @Test
-    public void testValidateRequiredNotSelectOption()
+    void validateRequiredNotSelectOption()
     {
 
         facesContext.getViewRoot().setLocale(_TEST_LOCALE);
@@ -145,12 +146,12 @@ public class UISelectOneTest extends AbstractFacesTestCase
 
         selectOne.validateValue(facesContext, 3);
 
-        Assertions.assertFalse(selectOne.isValid());
-        Assertions.assertEquals(1, facesContext.getMessageList().size());
+        assertFalse(selectOne.isValid());
+        assertEquals(1, facesContext.getMessageList().size());
     }
-    
+
     @Test
-    public void testValidateNotRequiredNotSelectOption()
+    void validateNotRequiredNotSelectOption()
     {
 
         facesContext.getViewRoot().setLocale(_TEST_LOCALE);
@@ -176,15 +177,15 @@ public class UISelectOneTest extends AbstractFacesTestCase
 
         selectOne.validateValue(facesContext, 3);
 
-        Assertions.assertTrue(selectOne.isValid());
-        Assertions.assertEquals(0, facesContext.getMessageList().size());
+        assertTrue(selectOne.isValid());
+        assertEquals(0, facesContext.getMessageList().size());
     }
-    
+
     /**
      * MYFACES-4783: a grouped radio next to a UISelectOne without a group must not throw a NPE.
      */
     @Test
-    public void testGroupedRadioNextToUngroupedSelectOne()
+    void groupedRadioNextToUngroupedSelectOne()
     {
         facesContext.getViewRoot().setLocale(_TEST_LOCALE);
 
@@ -209,11 +210,11 @@ public class UISelectOneTest extends AbstractFacesTestCase
         radio.getChildren().add(radioItem);
         form.getChildren().add(radio);
 
-        Assertions.assertDoesNotThrow(() -> radio.processValidators(facesContext));
+        assertDoesNotThrow(() -> radio.processValidators(facesContext));
 
         radio.validateValue(facesContext, "a");
-        Assertions.assertTrue(radio.isValid());
-        Assertions.assertEquals(0, facesContext.getMessageList().size());
+        assertTrue(radio.isValid());
+        assertEquals(0, facesContext.getMessageList().size());
     }
 
     static private final Locale _TEST_LOCALE = new Locale("xx", "TEST");

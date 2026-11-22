@@ -24,13 +24,17 @@ import org.apache.myfaces.config.impl.element.OrderingImpl;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 
 import jakarta.faces.FacesException;
+
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -66,7 +70,7 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
         System.out.println("]");
 
     }
-    
+
     /**
      * A before others
      * B after C
@@ -79,7 +83,7 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
      * @throws Exception
      */
     @Test
-    public void testSimpleOrdering() throws Exception
+    void simpleOrdering() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
         "empty-config.xml"), "empty-config.xml");
@@ -105,7 +109,7 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
             applyAlgorithm(appConfigResources);
         }
     }
-    
+
     /**
      * A before B
      * A before E
@@ -123,7 +127,7 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
      * @throws Exception
      */
     @Test
-    public void testMiddleOrdering() throws Exception
+    void middleOrdering() throws Exception
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
         "empty-config.xml"), "empty-config.xml");        
@@ -184,7 +188,7 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
             applyAlgorithm(appConfigResources);
         }
     }
-    
+
     /**
      * A before B
      * A before C
@@ -200,7 +204,7 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
      * @throws Exception
      */
     @Test
-    public void testMaxConditionsOrdering() throws Exception
+    void maxConditionsOrdering() throws Exception
     {
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
         "empty-config.xml"), "empty-config.xml");        
@@ -248,9 +252,9 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
             applyAlgorithm(appConfigResources);
         }
     }
-    
+
     @Test
-    public void testEx1()
+    void ex1()
     {      
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
@@ -300,9 +304,9 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
             applyAlgorithm(appConfigResources);
         }
     }
-    
+
     @Test
-    public void testEx2()
+    void ex2()
     {
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfg = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
@@ -347,9 +351,9 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
             applyAlgorithm(appConfigResources);
         }
     }
-    
+
     @Test
-    public void testEx3()
+    void ex3()
     {
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
@@ -383,9 +387,9 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
             applyAlgorithm(appConfigResources);
         }
     }
-    
+
     @Test
-    public void testEx4() throws Exception
+    void ex4() throws Exception
     {
         FacesConfig cfgA = _impl.getFacesConfig(getClass().getResourceAsStream(
             "transitive-a-config.xml"), "transitive-a-config.xml");
@@ -425,7 +429,7 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testBeforeOthers1() throws Exception
+    void beforeOthers1() throws Exception
     {
         FacesConfig cfgA = _impl.getFacesConfig(getClass().getResourceAsStream(
             "no-name-config.xml"), "no-name-config.xml");
@@ -451,12 +455,12 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
             Collections.shuffle(appConfigResources);
             List<FacesConfig> sortedList = applyFullAlgorithm(appConfigResources);
             
-            Assertions.assertEquals(cfgC, sortedList.get(0));
+            assertEquals(cfgC, sortedList.get(0));
         }
     }
 
     @Test
-    public void testAfterOthers1() throws Exception
+    void afterOthers1() throws Exception
     {
         FacesConfig cfgA = _impl.getFacesConfig(getClass().getResourceAsStream(
             "no-name-config.xml"), "no-name-config.xml");
@@ -482,12 +486,12 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
             Collections.shuffle(appConfigResources);
             List<FacesConfig> sortedList = applyFullAlgorithm(appConfigResources);
             
-            Assertions.assertEquals(cfgC, sortedList.get(sortedList.size()-1));
+            assertEquals(cfgC, sortedList.get(sortedList.size()-1));
         }
     }
-    
+
     @Test
-    public void testBeforeOthers2() throws Exception
+    void beforeOthers2() throws Exception
     {
         FacesConfig cfg1 = _impl.getFacesConfig(getClass().getResourceAsStream(
             "no-name-config.xml"), "no-name-config.xml");
@@ -526,9 +530,9 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
             Collections.shuffle(appConfigResources);
             List<FacesConfig> sortedList = applyFullAlgorithm(appConfigResources);
             
-            Assertions.assertEquals(cfg3, sortedList.get(0));
+            assertEquals(cfg3, sortedList.get(0));
             
-            Assertions.assertEquals(cfg6, sortedList.get(sortedList.size()-1));
+            assertEquals(cfg6, sortedList.get(sortedList.size()-1));
         }
     }
     
@@ -863,9 +867,9 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
         }
         System.out.println("]");
     }
-    
+
     @Test
-    public void testAbsoluteOrdering1() throws Exception
+    void absoluteOrdering1() throws Exception
     {
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfgAbs = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
         org.apache.myfaces.config.impl.element.FacesConfigImpl cfgMK = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
@@ -891,7 +895,7 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
         
         //printFacesConfigList("Sorted-List: [", sortedResources);
         
-        Assertions.assertTrue(sortedResources.containsAll(appConfigResources));
+        assertTrue(sortedResources.containsAll(appConfigResources));
 
         appConfigResources = new ArrayList<FacesConfig>();
         appConfigResources.add(cfgOWB);
@@ -903,7 +907,7 @@ public class OrderingFacesConfigTest extends AbstractFacesTestCase
         
         //printFacesConfigList("Sorted-List: [", sortedResources);
         
-        Assertions.assertTrue(sortedResources.containsAll(appConfigResources));
+        assertTrue(sortedResources.containsAll(appConfigResources));
 
     }
     

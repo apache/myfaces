@@ -25,7 +25,7 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Test;
 
-public class ELExprTemplateTestCase extends AbstractFaceletTestCase {
+class ELExprTemplateTestCase extends AbstractFaceletTestCase {
 
     
     
@@ -45,7 +45,7 @@ public class ELExprTemplateTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testELExprTemplate() throws Exception
+    void eLExprTemplate() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "elexpr_main.xhtml");

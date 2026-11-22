@@ -19,9 +19,10 @@
 
 package org.apache.myfaces.config;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.net.URL;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
@@ -29,11 +30,11 @@ import org.xml.sax.SAXException;
  *
  * @author lu4242
  */
-public class ConfigFilesXmlValidationUtilsTestCase extends AbstractFacesTestCase
+class ConfigFilesXmlValidationUtilsTestCase extends AbstractFacesTestCase
 {
 
     @Test
-    public void testCurrentStandardJSFFacesConfig() throws Exception
+    void currentStandardJSFFacesConfig() throws Exception
     {
         URL url = getClass().getResource("/META-INF/standard-faces-config.xml");
         ConfigFilesXmlValidationUtils.validateFacesConfigFile(
@@ -41,7 +42,7 @@ public class ConfigFilesXmlValidationUtilsTestCase extends AbstractFacesTestCase
     }
 
     @Test
-    public void testJSF11Config1() throws Exception
+    void jsf11Config1() throws Exception
     {
         URL url = getClass().getResource("a-config.xml");
         ConfigFilesXmlValidationUtils.validateFacesConfigFile(
@@ -49,14 +50,14 @@ public class ConfigFilesXmlValidationUtilsTestCase extends AbstractFacesTestCase
     }
 
     @Test
-    public void testJSFInvalidConfig1() throws Exception
+    void jsfInvalidConfig1() throws Exception
     {
         try
         {
             URL url = getClass().getResource("invalid-config_1.xml");
             ConfigFilesXmlValidationUtils.validateFacesConfigFile(
                 url , externalContext, ConfigFilesXmlValidationUtils.getFacesConfigVersion(url));
-            Assertions.fail();
+            fail();
         }
         catch (SAXException e)
         {
@@ -67,32 +68,32 @@ public class ConfigFilesXmlValidationUtilsTestCase extends AbstractFacesTestCase
     /*
      *  The four testJSFXXConfig tests below were added under MYFACES-4363
      */
-     @Test
-     public void testJSF22Config() throws Exception
+    @Test
+    void jsf22Config() throws Exception
      {
          URL url = getClass().getResource("jsf22-faces-config.xml");
          ConfigFilesXmlValidationUtils.validateFacesConfigFile(
              url , externalContext, ConfigFilesXmlValidationUtils.getFacesConfigVersion(url));
      }
 
-     @Test
-     public void testJSF23Config() throws Exception
+    @Test
+    void jsf23Config() throws Exception
      {
          URL url = getClass().getResource("jsf23-faces-config.xml");
          ConfigFilesXmlValidationUtils.validateFacesConfigFile(
              url , externalContext, ConfigFilesXmlValidationUtils.getFacesConfigVersion(url));
      }
 
-     @Test
-     public void testJSF30Config() throws Exception
+    @Test
+    void jsf30Config() throws Exception
      {
          URL url = getClass().getResource("jsf30-faces-config.xml");
          ConfigFilesXmlValidationUtils.validateFacesConfigFile(
              url , externalContext, ConfigFilesXmlValidationUtils.getFacesConfigVersion(url));
      }
 
-     @Test
-     public void testJSF40Config() throws Exception
+    @Test
+    void jsf40Config() throws Exception
      {
          URL url = getClass().getResource("jsf40-faces-config.xml");
          ConfigFilesXmlValidationUtils.validateFacesConfigFile(

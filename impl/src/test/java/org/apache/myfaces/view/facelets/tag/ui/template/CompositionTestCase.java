@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui.template;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 import jakarta.faces.application.ViewHandler;
 
@@ -25,10 +28,9 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositionTestCase extends AbstractFaceletTestCase {
+class CompositionTestCase extends AbstractFaceletTestCase {
 
     @Override
     protected void setUpServletObjects() throws Exception
@@ -43,7 +45,7 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testCompositionTrimEffect() throws Exception {
+    void compositionTrimEffect() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "compositionTrim.xhtml");
         
@@ -54,8 +56,8 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
 
     /**
@@ -68,7 +70,7 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testComposition1() throws Exception {
+    void composition1() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "composition1.xhtml");
         
@@ -79,10 +81,10 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("fragmentNumber1"));
-        Assertions.assertTrue(response.contains("compositionContent"));
-        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
-        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        assertTrue(response.contains("fragmentNumber1"));
+        assertTrue(response.contains("compositionContent"));
+        assertFalse(response.contains("This fragment will not be inserted"));
+        assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
 
     /**
@@ -92,7 +94,7 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testComposition2EmptyComposition() throws Exception {
+    void composition2EmptyComposition() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "composition2.xhtml");
         
@@ -103,10 +105,10 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
-        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        assertFalse(response.contains("This fragment will not be inserted"));
+        assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
-    
+
     /**
      * An empty ui:composition does not means the content of a ui:insert without
      * name to be rendered
@@ -114,7 +116,7 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testComposition3EmptyComposition() throws Exception {
+    void composition3EmptyComposition() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "composition3.xhtml");
         
@@ -125,17 +127,17 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
-        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        assertFalse(response.contains("This fragment will not be inserted"));
+        assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
-    
+
     /**
      * A ui:define takes precedence over a ui:insert
      * 
      * @throws Exception
      */
     @Test
-    public void testComposition4DefineOverInsert() throws Exception {
+    void composition4DefineOverInsert() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "composition4.xhtml");
         
@@ -146,11 +148,11 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("fragmentNumber1"));
-        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
-        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        assertTrue(response.contains("fragmentNumber1"));
+        assertFalse(response.contains("This fragment will not be inserted"));
+        assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
-    
+
     /**
      * A ui:insert on nested composition takes the top TemplateClient.
      * 
@@ -160,7 +162,7 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testComposition5() throws Exception {
+    void composition5() throws Exception {
         /*
         composition5.xhtml
 
@@ -201,7 +203,7 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
         
         response = checkStringInOrder(response, "start second composition");
         response = checkStringInOrder(response, "composition5Content");
@@ -211,11 +213,11 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
     private String checkStringInOrder(String response, String token)
     {
         int pos = response.indexOf(token);
-        Assertions.assertTrue(pos > -1);
+        assertTrue(pos > -1);
         return response.substring(pos+token.length());
     }
-    
-    
+
+
     /**
      * An ui:define on the outer most composition takes precedence over
      * the inner one.
@@ -223,7 +225,7 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testCompositionNested1() throws Exception {
+    void compositionNested1() throws Exception {
         /*
 
         compositionNested1.xhtml
@@ -269,14 +271,14 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("fragmentNumber2"));
-        Assertions.assertFalse(response.contains("fragmentNumber1"));
-        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
-        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        assertTrue(response.contains("fragmentNumber2"));
+        assertFalse(response.contains("fragmentNumber1"));
+        assertFalse(response.contains("This fragment will not be inserted"));
+        assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
     }
-    
+
     @Test
-    public void testCompositionNested2() throws Exception
+    void compositionNested2() throws Exception
     {
         /*
         
@@ -331,7 +333,7 @@ public class CompositionTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
+        assertFalse(response.contains("THIS SHOULD NOT BE RENDERED"));
         
         response = checkStringInOrder(response, "start first decoration");
         response = checkStringInOrder(response, "start second composition");

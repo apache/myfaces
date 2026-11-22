@@ -28,7 +28,7 @@ import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.Test;
 
-public class TagTestCase extends AbstractFaceletTestCase {
+class TagTestCase extends AbstractFaceletTestCase {
 
     @Override
     protected void setupComponents() throws Exception
@@ -51,9 +51,9 @@ public class TagTestCase extends AbstractFaceletTestCase {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
                 "jakarta.faces.Text", new HtmlTextRenderer());
     }
-    
+
     @Test
-    public void testTagBody() throws Exception {
+    void tagBody() throws Exception {
         request.setAttribute("name", "Mr. Hookom");
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"userTag.xhtml");
@@ -65,7 +65,7 @@ public class TagTestCase extends AbstractFaceletTestCase {
     }
 
     @Test
-    public void testConditionalInsert() throws Exception {
+    void conditionalInsert() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"userTagConditional.xhtml");
         FastWriter fw = new FastWriter();

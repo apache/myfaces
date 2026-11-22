@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.faces.core;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 
@@ -29,7 +31,6 @@ import jakarta.faces.validator.Validator;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +40,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ValidateBeanTestCase extends AbstractFaceletTestCase
+class ValidateBeanTestCase extends AbstractFaceletTestCase
 {
     
     @Override
@@ -136,7 +137,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testBeanValidatorInstalledManually() throws IOException
+    void beanValidatorInstalledManually() throws Exception
     {
         // put the disabled value on the request scope
         externalContext.getRequestMap().put("validateBeanDisabled", Boolean.FALSE);
@@ -149,9 +150,9 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the UIInput has to have the BeanValidator installed
-        Assertions.assertTrue(_hasValidator(input, BeanValidator.class));
+        assertTrue(_hasValidator(input, BeanValidator.class));
     }
-    
+
     /**
      * Tests the case that the UIInput has no nested <f:validateBean>
      * on the facelet, but the BeanValidator is a default validator.
@@ -159,7 +160,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      * @throws IOException
      */
     @Test
-    public void testBeanValidatorInstalledAutomatically() throws IOException
+    void beanValidatorInstalledAutomatically() throws Exception
     {
         // add the BeanValidator as default-validator
         application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
@@ -172,9 +173,9 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the UIInput has to have the BeanValidator installed
-        Assertions.assertTrue(_hasValidator(input, BeanValidator.class));
+        assertTrue(_hasValidator(input, BeanValidator.class));
     }
-    
+
     /**
      * Tests the case that the BeanValidator is a default validator, but the
      * UIInput has a nested <f:validateBean disabled="true" /> on the facelet.
@@ -183,7 +184,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testDisabledBeanValidatorNotInstalled() throws IOException
+    void disabledBeanValidatorNotInstalled() throws Exception
     {
         // add the BeanValidator as default-validator
         application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
@@ -199,9 +200,9 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the UIInput must not have the BeanValidator installed
-        Assertions.assertFalse(_hasValidator(input, BeanValidator.class));
+        assertFalse(_hasValidator(input, BeanValidator.class));
     }
-    
+
     /**
      * Tests the case when <f:validateBean> is used in wrapping mode
      * and the BeanValidator is not a default-validator.
@@ -212,7 +213,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testNestingValidateBean() throws IOException
+    void nestingValidateBean() throws Exception
     {
         // put the disabled value on the request scope
         externalContext.getRequestMap().put("validateBeanDisabled", Boolean.FALSE);
@@ -228,12 +229,12 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         UIInput nonnestedinput = (UIInput) root.findComponent("form:nonnestedinput");
         
         // all wrapped UIInputs have to have the BeanValidator installed
-        Assertions.assertTrue(_hasValidator(nestedinput, BeanValidator.class));
-        Assertions.assertTrue(_hasValidator(doublenestedinput, BeanValidator.class));
-        Assertions.assertTrue(_hasValidator(nestedinput2, BeanValidator.class));
-        Assertions.assertFalse(_hasValidator(nonnestedinput, BeanValidator.class));
+        assertTrue(_hasValidator(nestedinput, BeanValidator.class));
+        assertTrue(_hasValidator(doublenestedinput, BeanValidator.class));
+        assertTrue(_hasValidator(nestedinput2, BeanValidator.class));
+        assertFalse(_hasValidator(nonnestedinput, BeanValidator.class));
     }
-    
+
     /**
      * Tests the case when <f:validateBean> is used in wrapping mode,
      * its disabled attribute is true and the BeanValidator is a default-validator.
@@ -244,7 +245,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testNestingValidateBeanDisabled() throws IOException
+    void nestingValidateBeanDisabled() throws Exception
     {
         // put the disabled value on the request scope
         externalContext.getRequestMap().put("validateBeanDisabled", Boolean.TRUE);
@@ -263,12 +264,12 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         UIInput nonnestedinput = (UIInput) root.findComponent("form:nonnestedinput");
         
         // all wrapped UIInputs have to have the BeanValidator installed
-        Assertions.assertFalse(_hasValidator(nestedinput, BeanValidator.class));
-        Assertions.assertFalse(_hasValidator(doublenestedinput, BeanValidator.class));
-        Assertions.assertFalse(_hasValidator(nestedinput2, BeanValidator.class));
-        Assertions.assertTrue(_hasValidator(nonnestedinput, BeanValidator.class));
+        assertFalse(_hasValidator(nestedinput, BeanValidator.class));
+        assertFalse(_hasValidator(doublenestedinput, BeanValidator.class));
+        assertFalse(_hasValidator(nestedinput2, BeanValidator.class));
+        assertTrue(_hasValidator(nonnestedinput, BeanValidator.class));
     }
-    
+
     /**
      * Tests the case that there are two <f:validateBean> tags, one disabled and
      * one not. The disabled one should add the validator id of the BeanValidator
@@ -278,7 +279,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      * @throws IOException
      */
     @Test
-    public void testValidateBeanDisabledAndEnabled() throws IOException
+    void validateBeanDisabledAndEnabled() throws Exception
     {
         // build testValidateBeanDisabledAndEnabled.xhtml
         UIViewRoot root = facesContext.getViewRoot();
@@ -288,9 +289,9 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the UIInput has to have the BeanValidator installed
-        Assertions.assertTrue(_hasValidator(input, BeanValidator.class));
+        assertTrue(_hasValidator(input, BeanValidator.class));
     }
-    
+
     /**
      * Tests the case that there are a wrapping f:validateBean with disabled
      * set to true and one nested f:validateBean. Also the BeanValidator is
@@ -302,7 +303,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testValidateBeanNestingAndNested() throws IOException
+    void validateBeanNestingAndNested() throws Exception
     {
         // add the BeanValidator as default-validator
         application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
@@ -321,18 +322,18 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         
         // no wrapped UIInput has to have the BeanValidator installed,
         // except the one nesting <f:validateBean /> itself.
-        Assertions.assertFalse(_hasValidator(nestedinput, BeanValidator.class));
-        Assertions.assertTrue(_hasValidator(nestedinputWithValidator, BeanValidator.class));
-        Assertions.assertTrue(_hasValidator(nonnestedinput, BeanValidator.class));
+        assertFalse(_hasValidator(nestedinput, BeanValidator.class));
+        assertTrue(_hasValidator(nestedinputWithValidator, BeanValidator.class));
+        assertTrue(_hasValidator(nonnestedinput, BeanValidator.class));
     }
-    
+
     /**
      * Tests if the validationGroups are set correctly.
      * @throws IOException
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testValidateBeanValidationGroups() throws IOException
+    void validateBeanValidationGroups() throws Exception
     {
         final String validationGroups = "org.apache.myfaces.beanvalidation.Group1," +
                 "org.apache.myfaces.beanvalidation.Group2";
@@ -348,9 +349,9 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the validationGroups have to match
-        Assertions.assertEquals(validationGroups, _getValidationGroups(input));
+        assertEquals(validationGroups, _getValidationGroups(input));
     }
-    
+
     /**
      * Tests the case that the BeanValidator is a default validator and the
      * UIInput on the facelet does not have a custom <f:validateBean> tag.
@@ -358,7 +359,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      * @throws IOException
      */
     @Test
-    public void testValidateBeanDefaultValidationGroup() throws IOException
+    void validateBeanDefaultValidationGroup() throws Exception
     {
         // add the BeanValidator as default-validator
         application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
@@ -371,10 +372,10 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the validationGroups have to match the Default ones
-        Assertions.assertEquals(jakarta.validation.groups.Default.class.getName(),
+        assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(input));
     }
-    
+
     /**
      * Tests the case that there is a wrapping <f:validateBean> on the facelet
      * with some validationGroups. These validationGroups should be applied to
@@ -385,7 +386,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testValidateBeanValidationGroupsNested() throws IOException
+    void validateBeanValidationGroupsNested() throws Exception
     {
         final String validationGroups = "org.apache.myfaces.beanvalidation.Group1";
         
@@ -408,13 +409,13 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         // the validationGroups in the wrapped components have to match
         // org.apache.myfaces.beanvalidation.Group1 and the non-nested ones
         // have to match the Default group.
-        Assertions.assertEquals(validationGroups, _getValidationGroups(nestedinput));
-        Assertions.assertEquals(validationGroups, _getValidationGroups(doublenestedinput));
-        Assertions.assertEquals(validationGroups, _getValidationGroups(nestedinput2));
-        Assertions.assertEquals(jakarta.validation.groups.Default.class.getName(),
+        assertEquals(validationGroups, _getValidationGroups(nestedinput));
+        assertEquals(validationGroups, _getValidationGroups(doublenestedinput));
+        assertEquals(validationGroups, _getValidationGroups(nestedinput2));
+        assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
-    
+
     /**
      * Tests the case that there is a wrapping <f:validateBean> with some validationGroups
      * and one nested component has its own <f:validateBean> with different validationGroups.
@@ -425,7 +426,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testValidateBeanValidationGroupsNestingAndNested() throws IOException
+    void validateBeanValidationGroupsNestingAndNested() throws Exception
     {
         final String wrappingValidationGroups = "org.apache.myfaces.beanvalidation.Group1";
         final String componentValidationGroups = "org.apache.myfaces.beanvalidation.ACompletelyOtherGroup";
@@ -452,12 +453,12 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         // the nested component without a validator must get the wrapping validationGroups,
         // the nested component with the validator must get the validationGroups from the 
         // validator and the non-nested component must get the Default validationGroups.
-        Assertions.assertEquals(wrappingValidationGroups, _getValidationGroups(nestedinput));
-        Assertions.assertEquals(componentValidationGroups, _getValidationGroups(nestedinputWithValidator));
-        Assertions.assertEquals(jakarta.validation.groups.Default.class.getName(),
+        assertEquals(wrappingValidationGroups, _getValidationGroups(nestedinput));
+        assertEquals(componentValidationGroups, _getValidationGroups(nestedinputWithValidator));
+        assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
-    
+
     /**
      * Tests the case that there are two wrapping <f:validateBean> with different
      * validationGroups.
@@ -468,7 +469,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testValidateBeanValidationGroupsDoubleNesting() throws IOException
+    void validateBeanValidationGroupsDoubleNesting() throws Exception
     {
         final String validationGroupsOuter = "org.apache.myfaces.beanvalidation.OuterGroup";
         final String validationGroupsInner = "org.apache.myfaces.beanvalidation.InnerGroup";
@@ -492,12 +493,12 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         // the nested component must get the outer wrapping validationGroups,
         // the double-nested component must get the inner wrapping validationGroups
         // and the non-nested component must get the Default validationGroups.
-        Assertions.assertEquals(validationGroupsOuter, _getValidationGroups(nestedinput));
-        Assertions.assertEquals(validationGroupsInner, _getValidationGroups(doublenestedinput));
-        Assertions.assertEquals(jakarta.validation.groups.Default.class.getName(),
+        assertEquals(validationGroupsOuter, _getValidationGroups(nestedinput));
+        assertEquals(validationGroupsInner, _getValidationGroups(doublenestedinput));
+        assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
-    
+
     /**
      * Tests the case that the BeanValidator is installed as a default-validator,
      * but bean validation is not available in the classpath.
@@ -506,7 +507,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      * @throws IOException
      */
     @Test
-    public void testValidateBeanWithBeanValidationNotAvailable() throws IOException
+    void validateBeanWithBeanValidationNotAvailable() throws Exception
     {
         // add the BeanValidator as default-validator
         application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
@@ -523,7 +524,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         
         // the UIInput must not have the BeanValidator installed,
         // because bean validation is not available
-        Assertions.assertFalse(_hasValidator(input, BeanValidator.class));
+        assertFalse(_hasValidator(input, BeanValidator.class));
     }
 
     /**
@@ -532,7 +533,7 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testValidateBeanValidationDisabledDoubleNesting() throws IOException
+    void validateBeanValidationDisabledDoubleNesting() throws Exception
     {
         final String validationGroupsOuter = "org.apache.myfaces.beanvalidation.OuterGroup";
         final String validationGroupsInner = "org.apache.myfaces.beanvalidation.InnerGroup";
@@ -557,10 +558,10 @@ public class ValidateBeanTestCase extends AbstractFaceletTestCase
         // the nested component must get the outer wrapping validationGroups,
         // the double-nested component must get the inner wrapping validationGroups
         // and the non-nested component must get the Default validationGroups.
-        Assertions.assertEquals(validationGroupsOuter, _getValidationGroups(nestedinput));
-        Assertions.assertFalse(_hasValidator(doublenestedinput, BeanValidator.class));
-        Assertions.assertEquals(validationGroupsInner, _getValidationGroups(nesteouterdisabledinput));
-        Assertions.assertEquals(jakarta.validation.groups.Default.class.getName(),
+        assertEquals(validationGroupsOuter, _getValidationGroups(nestedinput));
+        assertFalse(_hasValidator(doublenestedinput, BeanValidator.class));
+        assertEquals(validationGroupsInner, _getValidationGroups(nesteouterdisabledinput));
+        assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
 

@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.application;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.beans.BeanInfo;
 
 import jakarta.el.ExpressionFactory;
@@ -36,7 +38,6 @@ import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +47,7 @@ import org.junit.jupiter.api.Test;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revisio$ $Date$
  */
-public class ApplicationImplJsfTest extends AbstractFacesTestCase
+class ApplicationImplJsfTest extends AbstractFacesTestCase
 {
     
     private static final String RESOURCE_MSG = "The Resource must be stored in the component's attribute " +
@@ -100,9 +101,9 @@ public class ApplicationImplJsfTest extends AbstractFacesTestCase
      */
     private static void assertRendererTypeResourceBeanInfo(UIComponent component, Resource resource, BeanInfo metadata)
     {
-        Assertions.assertEquals(COMPOSITE_RENDERER_MSG, "jakarta.faces.Composite", component.getRendererType());
-        Assertions.assertEquals(resource, component.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY), RESOURCE_MSG);
-        Assertions.assertEquals(metadata, component.getAttributes().get(UIComponent.BEANINFO_KEY), BEANINFO_MSG);
+        assertEquals(COMPOSITE_RENDERER_MSG, "jakarta.faces.Composite", component.getRendererType());
+        assertEquals(resource, component.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY), RESOURCE_MSG);
+        assertEquals(metadata, component.getAttributes().get(UIComponent.BEANINFO_KEY), BEANINFO_MSG);
     }
 
     private TestApplicationWrapper _testApplication;
@@ -147,7 +148,7 @@ public class ApplicationImplJsfTest extends AbstractFacesTestCase
      * Application.createComponent(FacesContext context, Resource componentResource)
      */
     @Test
-    public void testCreateComponentFromResource()
+    void createComponentFromResource()
     {
         /* TODO: Make it work again
         // we need a UINamingContainer for this test

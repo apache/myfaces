@@ -18,17 +18,20 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.ResponseWriter;
+import org.junit.jupiter.api.Assertions;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -88,7 +91,7 @@ public abstract class AbstractClientBehaviorTestCase extends AbstractFaceletTest
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    public void clientBehaviorHolderRendersIdAndName() 
     {
         HtmlRenderedClientEventAttr[] attrs = getClientBehaviorHtmlRenderedAttributes();
         
@@ -97,23 +100,18 @@ public abstract class AbstractClientBehaviorTestCase extends AbstractFaceletTest
             UIComponent component = createComponentToTest();
             ClientBehaviorHolder clientBehaviorHolder = (ClientBehaviorHolder) component;
             clientBehaviorHolder.addClientBehavior(attrs[i].getClientEvent(), new AjaxBehavior());
-            try 
-            {
+            Assertions.assertDoesNotThrow(() -> {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
-                Assertions.assertTrue(output.indexOf(" id=\""+component.getClientId(facesContext)+"\"") > -1);
-                Assertions.assertTrue(output.indexOf(" name=\""+component.getClientId(facesContext)+"\"") > -1);
+                assertTrue(output.indexOf(" id=\"" + component.getClientId(facesContext) + "\"") > -1);
+                assertTrue(output.indexOf(" name=\"" + component.getClientId(facesContext) + "\"") > -1);
                 outputWriter.reset();
-            }
-            catch (Exception e)
-            {
-                Assertions.fail(e.getMessage());
-            }
+            });
         }
     }
     
     @Test
-    public void testClientBehaviorRendered() 
+    public void clientBehaviorRendered() 
     {
         HtmlRenderedClientEventAttr[] attrs = getClientBehaviorHtmlRenderedAttributes();
         
@@ -131,21 +129,17 @@ public abstract class AbstractClientBehaviorTestCase extends AbstractFaceletTest
 
             ClientBehaviorHolder clientBehaviorHolder = (ClientBehaviorHolder) component;
             clientBehaviorHolder.addClientBehavior(attrs[i].getClientEvent(), new AjaxBehavior());
-            try 
-            {
+            HtmlRenderedClientEventAttr attr = attrs[i];
+            Assertions.assertDoesNotThrow(() -> {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
                 //faces.ajax.request('j_id0',event,{'jakarta.faces.behavior.event':'click'})
                 //Only check if the property starts with faces.ajax.request( is enough 
                 //Assertions.assertTrue("output does not match expected output faces.ajax.request(.... for property "+attrs[i].getName(),
                 //        output.matches(".+ "+attrs[i].getName()+"=\"faces\\.ajax\\.request\\(.+"));
-                int index = checkClientBehaviorRenderedOnClientEventProperty(output, 0, attrs[i]);
+                int index = checkClientBehaviorRenderedOnClientEventProperty(output, 0, attr);
                 outputWriter.reset();
-            }
-            catch (Exception e)
-            {
-                Assertions.fail(e.getMessage());
-            }
+            });
         }
     }
     
@@ -159,19 +153,19 @@ public abstract class AbstractClientBehaviorTestCase extends AbstractFaceletTest
             int startPropIndex = propIndex + propStart.length(); 
             int endPropIndex = output.indexOf('"' , startPropIndex );
             String propertyValue = output.substring(startPropIndex, endPropIndex);
-            Assertions.assertTrue(propertyValue.contains("myfaces.ab("));
-            Assertions.assertTrue(propertyValue.contains(attr.getClientEvent()));
+            assertTrue(propertyValue.contains("myfaces.ab("));
+            assertTrue(propertyValue.contains(attr.getClientEvent()));
             return endPropIndex + 1;
         }
         else
         {
-            Assertions.fail("Property " + attr.getName() + " not found");
+            fail("Property " + attr.getName() + " not found");
             return -1;
         }
     }
     
     @Test
-    public void testClientBehaviorRenderedWithHtmlAttribute() 
+    public void clientBehaviorRenderedWithHtmlAttribute() 
     {
         HtmlRenderedClientEventAttr[] attrs = getClientBehaviorHtmlRenderedAttributes();
         
@@ -181,21 +175,17 @@ public abstract class AbstractClientBehaviorTestCase extends AbstractFaceletTest
             ClientBehaviorHolder clientBehaviorHolder = (ClientBehaviorHolder) component;
             clientBehaviorHolder.addClientBehavior(attrs[i].getClientEvent(), new AjaxBehavior());
             component.getAttributes().put(attrs[i].getName(), "htmlValue");
-            try 
-            {
+            HtmlRenderedClientEventAttr attr = attrs[i];
+            Assertions.assertDoesNotThrow(() -> {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
                 //faces.ajax.request('j_id0',event,{'jakarta.faces.behavior.event':'click'})
                 //Only check if the property starts with faces.ajax.request( is enough 
                 //Assertions.assertTrue("output does not match expected output faces.ajax.request(.... for property "+attrs[i].getName(),
                 //        output.matches(".+ "+attrs[i].getName()+"=\"faces\\.ajax\\.request\\(.+"));
-                int index = checkClientBehaviorRenderedOnClientEventPropertyAndHtmlValue(output, 0, attrs[i], "htmlValue");
+                int index = checkClientBehaviorRenderedOnClientEventPropertyAndHtmlValue(output, 0, attr, "htmlValue");
                 outputWriter.reset();
-            }
-            catch (Exception e)
-            {
-                Assertions.fail(e.getMessage());
-            }
+            });
         }
     }
     
@@ -209,15 +199,15 @@ public abstract class AbstractClientBehaviorTestCase extends AbstractFaceletTest
             int startPropIndex = propIndex + propStart.length(); 
             int endPropIndex = output.indexOf('"' , startPropIndex );
             String propertyValue = output.substring(startPropIndex, endPropIndex);
-            Assertions.assertTrue(propertyValue.startsWith("faces.util.chain("));
-            Assertions.assertTrue(propertyValue.contains("myfaces.ab("));
-            Assertions.assertTrue(propertyValue.contains(attr.getClientEvent()));
-            Assertions.assertTrue(propertyValue.contains(value));
+            assertTrue(propertyValue.startsWith("faces.util.chain("));
+            assertTrue(propertyValue.contains("myfaces.ab("));
+            assertTrue(propertyValue.contains(attr.getClientEvent()));
+            assertTrue(propertyValue.contains(value));
             return endPropIndex + 1;
         }
         else
         {
-            Assertions.fail("Property " + attr.getName() + " not found Output: "+output);
+            fail("Property " + attr.getName() + " not found Output: "+output);
             return -1;
         }
     }

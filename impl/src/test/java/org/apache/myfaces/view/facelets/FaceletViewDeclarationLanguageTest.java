@@ -18,8 +18,9 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Locale;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import jakarta.faces.component.UIComponent;
@@ -34,14 +35,14 @@ import org.apache.myfaces.view.facelets.bean.ViewBean;
  *
  * @author Jakob Korherr
  */
-public class FaceletViewDeclarationLanguageTest extends AbstractFaceletTestCase
+class FaceletViewDeclarationLanguageTest extends AbstractFaceletTestCase
 {
 
     /**
      * Test case for MYFACES-3002.
      */
     @Test
-    public void testBuildViewUIViewParameters() throws Exception
+    void buildViewUIViewParameters() throws Exception
     {
         // build a UIViewRoot with a UIViewParameter
         ViewMetadata viewMetadata = this.vdl.getViewMetadata(facesContext, "viewparameter1.xhtml");
@@ -63,16 +64,16 @@ public class FaceletViewDeclarationLanguageTest extends AbstractFaceletTestCase
     {
         // the metadata facet MUST be there
         UIComponent metadataFacet = root.getFacet(UIViewRoot.METADATA_FACET_NAME);
-        Assertions.assertNotNull(metadataFacet);
-        Assertions.assertTrue(metadataFacet instanceof UIPanel); // the metadata-facet must be a UIPanel
+        assertNotNull(metadataFacet);
+        assertInstanceOf(UIPanel.class, metadataFacet); // the metadata-facet must be a UIPanel
 
         // get the UIViewParameter
         UIComponent viewParameter = metadataFacet.getChildren().get(0);
-        Assertions.assertTrue(viewParameter instanceof UIViewParameter);
+        assertInstanceOf(UIViewParameter.class, viewParameter);
     }
 
     @Test
-    public void testBuildViewUIViewParametersLocale() throws Exception
+    void buildViewUIViewParametersLocale() throws Exception
     {
         request.setAttribute("viewBean", new ViewBean());
         
@@ -84,7 +85,7 @@ public class FaceletViewDeclarationLanguageTest extends AbstractFaceletTestCase
         // UIViewParameter must be there
         checkUIViewParameter(root);
         
-        Assertions.assertEquals(Locale.FRANCE, root.getLocale());
+        assertEquals(Locale.FRANCE, root.getLocale());
 
         // build and render view (must not remove UIViewParameter)
         vdl.buildView(facesContext, root, "viewparameter2.xhtml");

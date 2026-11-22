@@ -34,7 +34,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.net.URL;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -49,7 +48,7 @@ public class QuarkusMyFacesShowcaseTest
     private static WebClient webClient;
 
     @BeforeAll
-    public static void initWebClient()
+    static void initWebClient()
     {
         webClient = new WebClient(BrowserVersion.CHROME);
         webClient.getOptions().setJavaScriptEnabled(true);
@@ -61,7 +60,7 @@ public class QuarkusMyFacesShowcaseTest
     }
 
     @AfterAll
-    public static void closeWebClient()
+    static void closeWebClient()
     {
         if (webClient != null)
         {
@@ -71,7 +70,7 @@ public class QuarkusMyFacesShowcaseTest
 
 
     @Test
-    public void shouldOpenIndexPage() throws Exception
+    void shouldOpenIndexPage() throws Exception
     {
         final HtmlPage page = webClient.getPage(url + "/index.xhtml");
         final HtmlDivision datatable = (HtmlDivision) page.getElementById("form:carTable");
@@ -81,7 +80,7 @@ public class QuarkusMyFacesShowcaseTest
     }
 
     @Test
-    public void shouldObserveEvents() throws Exception
+    void shouldObserveEvents() throws Exception
     {
         final HtmlPage page = webClient.getPage(url + "/index.xhtml");
         final HtmlInput called = (HtmlInput) page.getElementById("called");
@@ -92,7 +91,7 @@ public class QuarkusMyFacesShowcaseTest
     }
 
     @Test
-    public void shouldMapExtensionlessSubFolderView() throws Exception
+    void shouldMapExtensionlessSubFolderView() throws Exception
     {
         // MYFACES-4729: AUTOMATIC_EXTENSIONLESS_MAPPING must also register views in sub-folders
         final HtmlPage page = webClient.getPage(url + "/test/subFolder/bar");
@@ -109,7 +108,7 @@ public class QuarkusMyFacesShowcaseTest
 
     @Test
     @Disabled("Check HtmlUnit websocket support, for now this test is not working")
-    public void shouldCallWebSocket() throws IOException
+    void shouldCallWebSocket() throws Exception
     {
         HtmlPage page = webClient.getPage(url + "/socket.xhtml");
         final HtmlSubmitInput sendMessageBtn = (HtmlSubmitInput) page.getElementById("form:sendMessage");

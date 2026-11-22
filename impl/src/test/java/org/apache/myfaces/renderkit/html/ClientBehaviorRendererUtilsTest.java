@@ -22,7 +22,6 @@ import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorBase;
-import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
@@ -32,12 +31,14 @@ import jakarta.faces.component.html.HtmlInputText;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ClientBehaviorRendererUtilsTest extends AbstractFacesTestCase
+class ClientBehaviorRendererUtilsTest extends AbstractFacesTestCase
 {
 
     @Override
@@ -50,7 +51,7 @@ public class ClientBehaviorRendererUtilsTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testBuildBehaviorChain()
+    void buildBehaviorChain()
     {
         Map<String, List<ClientBehavior>> behaviors = new HashMap<String, List<ClientBehavior>>();
 
@@ -58,12 +59,12 @@ public class ClientBehaviorRendererUtilsTest extends AbstractFacesTestCase
         Collection<ClientBehaviorContext.Parameter> params = new ArrayList<ClientBehaviorContext.Parameter>();
         
         UIComponent component = new HtmlInputText();
-        Assertions.assertEquals("", ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, component, 
+        assertEquals("", ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, component, 
                 component.getClientId(facesContext),
                 ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, null,
                 null));
 
-        Assertions.assertEquals("return faces.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'suppe');",
+        assertEquals("return faces.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'suppe');",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, component.getClientId(facesContext), ClientBehaviorEvents.CLICK, 
                         params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
@@ -86,16 +87,16 @@ public class ClientBehaviorRendererUtilsTest extends AbstractFacesTestCase
 
         behaviors.put(ClientBehaviorEvents.CLICK, Arrays.asList(submittingBehavior));
 
-        Assertions.assertEquals("faces.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'script()', 'suppe'); return false;",
+        assertEquals("faces.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'script()', 'suppe'); return false;",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, component.getClientId(facesContext),
                         ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
 
     }
-    
+
     @Test
-    public void testBuildBehaviorChain2()
+    void buildBehaviorChain2()
     {
         Map<String, List<ClientBehavior>> behaviors = new HashMap<String, List<ClientBehavior>>();
 
@@ -103,11 +104,11 @@ public class ClientBehaviorRendererUtilsTest extends AbstractFacesTestCase
         Collection<ClientBehaviorContext.Parameter> params = new ArrayList<ClientBehaviorContext.Parameter>();
         
         UIComponent component = new HtmlInputText();
-        Assertions.assertEquals("", ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, component, 
+        assertEquals("", ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, component, 
                 ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, null,
                 null));
 
-        Assertions.assertEquals("return faces.util.chain(this, event,'huhn', 'suppe');",
+        assertEquals("return faces.util.chain(this, event,'huhn', 'suppe');",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
@@ -129,26 +130,26 @@ public class ClientBehaviorRendererUtilsTest extends AbstractFacesTestCase
 
         behaviors.put(ClientBehaviorEvents.CLICK, Arrays.asList(submittingBehavior));
 
-        Assertions.assertEquals("faces.util.chain(this, event,'huhn', 'script()', 'suppe'); return false;",
+        assertEquals("faces.util.chain(this, event,'huhn', 'script()', 'suppe'); return false;",
                 ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, 
                         ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
 
-    }    
-    
+    }
+
     @Test
-    public void testEscapeJavaScriptForChain()
+    void escapeJavaScriptForChain()
     {
         MockFacesContext facesContext = new MockFacesContext();
         
-        Assertions.assertEquals("var foo = &quot; \\\\&quot; test &quot;; alert(foo);",
+        assertEquals("var foo = &quot; \\\\&quot; test &quot;; alert(foo);",
                 ClientBehaviorRendererUtils.escapeJavaScriptForChain(facesContext, "var foo = &quot; \\&quot; test &quot;; alert(foo);"));
         
-        Assertions.assertEquals("var foo = \\'bar \\'",
+        assertEquals("var foo = \\'bar \\'",
                 ClientBehaviorRendererUtils.escapeJavaScriptForChain(facesContext, "var foo = 'bar '"));
         
-        Assertions.assertEquals("var foo = \\'bar \\\\\\' \\'",
+        assertEquals("var foo = \\'bar \\\\\\' \\'",
                 ClientBehaviorRendererUtils.escapeJavaScriptForChain(facesContext, "var foo = 'bar \\' '"));
     }
 }

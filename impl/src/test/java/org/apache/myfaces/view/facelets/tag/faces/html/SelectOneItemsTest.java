@@ -20,23 +20,24 @@ package org.apache.myfaces.view.facelets.tag.faces.html;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SelectOneItemsTest extends AbstractMyFacesCDIRequestTestCase
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class SelectOneItemsTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Test
-    public void testIndex() throws Exception
+    void index() throws Exception
     {
         startViewRequest("/selectOneItems.xhtml");
         processLifecycleExecuteAndRender();
         
         String content = getRenderedContent();
         System.err.println(content);
-        Assertions.assertTrue(content.contains("Cars"));
-        Assertions.assertTrue(content.contains("Animals"));
-        Assertions.assertTrue(content.contains("Audi"));
-        Assertions.assertTrue(content.contains("Fish"));
+        assertTrue(content.contains("Cars"));
+        assertTrue(content.contains("Animals"));
+        assertTrue(content.contains("Audi"));
+        assertTrue(content.contains("Fish"));
 
         endRequest();
     }

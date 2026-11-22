@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -31,7 +33,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.view.facelets.AbstractFaceletMultipleRequestsTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.ErrorHandler;
@@ -39,7 +40,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class SkipNamespaceUnitTest extends AbstractFaceletMultipleRequestsTestCase
+class SkipNamespaceUnitTest extends AbstractFaceletMultipleRequestsTestCase
 {
     private Boolean isWellFormed = Boolean.FALSE;
 
@@ -52,7 +53,7 @@ public class SkipNamespaceUnitTest extends AbstractFaceletMultipleRequestsTestCa
     }
 
     @Test
-    public void test() 
+    void test() 
     {
         try 
         {
@@ -73,7 +74,7 @@ public class SkipNamespaceUnitTest extends AbstractFaceletMultipleRequestsTestCa
                 }
             }
             parse(writer);
-            Assertions.assertTrue(isWellFormed);
+            assertTrue(isWellFormed);
         } catch (IOException e) 
         {
             e.printStackTrace();

@@ -54,10 +54,10 @@ public class ELParserTestCase extends AbstractFaceletTestCase {
     {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
                 "jakarta.faces.Text", new HtmlTextRenderer());
-    }    
-    
+    }
+
     @Test
-    public void testSelectOneMenu() throws Exception {
+    void selectOneMenu() throws Exception {
         request.setAttribute("test", this);
 
         UIViewRoot root = facesContext.getViewRoot();

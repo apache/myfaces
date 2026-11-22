@@ -18,6 +18,8 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -27,11 +29,10 @@ import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 import org.apache.myfaces.test.el.MockValueExpression;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
-public class _Delta2StateHelperTest extends AbstractComponentTest
+class _Delta2StateHelperTest extends AbstractComponentTest
 {
     
     public static class UITestComponent extends UIComponentBase
@@ -121,18 +122,18 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
     }
 
     @Test
-    public void testSimpleGetterSetter() throws Exception
+    void simpleGetterSetter() throws Exception
     {
         UITestComponent a = new UITestComponent();
-        Assertions.assertNull(a.getTestProperty1());
+        assertNull(a.getTestProperty1());
         a.setTestProperty1("testProperty1");
-        Assertions.assertEquals("testProperty1", a.getTestProperty1());
+        assertEquals("testProperty1", a.getTestProperty1());
         a.setTestProperty1(null);
-        Assertions.assertNull(a.getTestProperty1());
+        assertNull(a.getTestProperty1());
     }
-    
+
     @Test
-    public void testEmptySaveRestore() throws Exception
+    void emptySaveRestore() throws Exception
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -143,12 +144,12 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
 
         Object state2 = b.saveState(facesContext);
 
-        Assertions.assertEquals(a.getTestProperty1(), b.getTestProperty1());
-        Assertions.assertEquals(a.getTestProperty2(), b.getTestProperty2());        
+        assertEquals(a.getTestProperty1(), b.getTestProperty1());
+        assertEquals(a.getTestProperty2(), b.getTestProperty2());        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore() throws Exception
+    void simpleSaveRestore() throws Exception
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -161,12 +162,12 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
 
         Object state2 = b.saveState(facesContext);
 
-        Assertions.assertEquals(a.getTestProperty1(), b.getTestProperty1());
-        Assertions.assertEquals(a.getTestProperty2(), b.getTestProperty2());
+        assertEquals(a.getTestProperty1(), b.getTestProperty1());
+        assertEquals(a.getTestProperty2(), b.getTestProperty2());
     }
-    
+
     @Test
-    public void testDeltaStateSaveRestore()
+    void deltaStateSaveRestore()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -190,14 +191,14 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
 
         Object state2 = b.saveState(facesContext);
 
-        Assertions.assertNull(a.getTestProperty1());
-        Assertions.assertNull(b.getTestProperty1());        
-        Assertions.assertEquals("testProperty2", a.getTestProperty2());
-        Assertions.assertEquals("testProperty2", b.getTestProperty2());
+        assertNull(a.getTestProperty1());
+        assertNull(b.getTestProperty1());        
+        assertEquals("testProperty2", a.getTestProperty2());
+        assertEquals("testProperty2", b.getTestProperty2());
     }
-    
+
     @Test
-    public void testPutPropertyStateHelper1()
+    void putPropertyStateHelper1()
     {
         UITestComponent a = new UITestComponent();
         
@@ -205,32 +206,32 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         Object retValue = helper.put("someProperty", "someValue");
         //No value previously set
-        Assertions.assertNull(retValue);
+        assertNull(retValue);
         
         a.markInitialState();
         
         retValue = helper.put("someProperty", "someOtherValue");
         
-        Assertions.assertEquals("someValue",retValue);
+        assertEquals("someValue",retValue);
         
         retValue = helper.put("someProperty", "someOtherOtherValue");
         
-        Assertions.assertEquals("someOtherValue",retValue);
+        assertEquals("someOtherValue",retValue);
         
         a.clearInitialState();
         
         retValue = helper.put("someProperty", "someOtherOtherOtherValue");
         
-        Assertions.assertEquals("someOtherOtherValue",retValue);
+        assertEquals("someOtherOtherValue",retValue);
     }
 
-    @Test
     // https://issues.apache.org/jira/browse/MYFACES-4590
-    public void testPropertyWithDefault()
+    @Test
+    void propertyWithDefault()
     {
         UITestComponent a = new UITestComponent();
 
-        Assertions.assertEquals(Long.MAX_VALUE, a.getTestPropertyWithDefault(),
+        assertEquals(Long.MAX_VALUE, a.getTestPropertyWithDefault(),
                 "Property should be Long.MAX_VALUE from default)");
 
         ValueExpression valueExpression = new MockValueExpression("#{testPropertyWithDefault}", Object.class);
@@ -238,22 +239,22 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         Map applicationMap = externalContext.getApplicationMap();
         applicationMap.put("testPropertyWithDefault", 100L);
 
-        Assertions.assertEquals(100L, a.getTestPropertyWithDefault(),
+        assertEquals(100L, a.getTestPropertyWithDefault(),
                 "Property should be 100L from expression");
 
         applicationMap.remove("testPropertyWithDefault");
 
-        Assertions.assertEquals(Long.MAX_VALUE, a.getStateHelper().eval("testPropertyWithDefault", Long.MAX_VALUE),
+        assertEquals(Long.MAX_VALUE, a.getStateHelper().eval("testPropertyWithDefault", Long.MAX_VALUE),
                 "Value from stateHelper should be Long.MAX_VALUE from default");
-        Assertions.assertEquals(Long.MAX_VALUE, a.getStateHelper().eval("testPropertyWithDefault", () -> Long.MAX_VALUE),
+        assertEquals(Long.MAX_VALUE, a.getStateHelper().eval("testPropertyWithDefault", () -> Long.MAX_VALUE),
                 "Value from stateHelper should be Long.MAX_VALUE from default");
-        Assertions.assertEquals(Long.MAX_VALUE, a.getTestPropertyWithDefault(),
+        assertEquals(Long.MAX_VALUE, a.getTestPropertyWithDefault(),
                 "Property should be Long.MAX_VALUE from default");
 
     }
-    
+
     @Test
-    public void testPutPropertyStateHelper2()
+    void putPropertyStateHelper2()
     {
         UITestComponent a = new UITestComponent();
         
@@ -261,27 +262,27 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         Object retValue = helper.put("someProperty", "someValue");
         //No value previously set
-        Assertions.assertNull(retValue);
+        assertNull(retValue);
         
         a.markInitialState();
         
         retValue = helper.put("someProperty", null);
         
-        Assertions.assertEquals("someValue",retValue);
+        assertEquals("someValue",retValue);
         
         retValue = helper.put("someProperty", "someOtherOtherValue");
         
-        Assertions.assertNull(retValue);
+        assertNull(retValue);
         
         a.clearInitialState();
         
         retValue = helper.put("someProperty", null);
         
-        Assertions.assertEquals("someOtherOtherValue",retValue);
+        assertEquals("someOtherOtherValue",retValue);
     }
-    
+
     @Test
-    public void testRemovePropertyStateHelper1()
+    void removePropertyStateHelper1()
     {
         UITestComponent a = new UITestComponent();
         
@@ -289,27 +290,27 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         Object retValue = helper.put("someProperty", "someValue");
         //No value previously set
-        Assertions.assertNull(retValue);
+        assertNull(retValue);
         
         a.markInitialState();
         
         retValue = helper.remove("someProperty");
         
-        Assertions.assertEquals("someValue",retValue);
+        assertEquals("someValue",retValue);
         
         retValue = helper.put("someProperty", "someOtherOtherValue");
         
-        Assertions.assertNull(retValue);
+        assertNull(retValue);
         
         a.clearInitialState();
         
         retValue = helper.remove("someProperty");
         
-        Assertions.assertEquals("someOtherOtherValue",retValue);
+        assertEquals("someOtherOtherValue",retValue);
     }
-    
+
     @Test
-    public void testAddItemOnList1()
+    void addItemOnList1()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -329,19 +330,19 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         List listA = (List) helperA.get("somePropertyList");
         
-        Assertions.assertEquals("someValue1",listA.get(0));
-        Assertions.assertEquals("someValue2",listA.get(1));
-        Assertions.assertEquals("someValue3",listA.get(2));
+        assertEquals("someValue1",listA.get(0));
+        assertEquals("someValue2",listA.get(1));
+        assertEquals("someValue3",listA.get(2));
         
         List listB = (List) helperB.get("somePropertyList");
         
-        Assertions.assertEquals("someValue1",listB.get(0));
-        Assertions.assertEquals("someValue2",listB.get(1));
-        Assertions.assertEquals("someValue3",listB.get(2));
+        assertEquals("someValue1",listB.get(0));
+        assertEquals("someValue2",listB.get(1));
+        assertEquals("someValue3",listB.get(2));
     }
-    
+
     @Test
-    public void testAddItemOnList2()
+    void addItemOnList2()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -366,21 +367,21 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         if (listA != null)
         {
-            Assertions.assertFalse(listA.contains("someValue1"));
-            Assertions.assertFalse(listA.contains("someValue2"));
+            assertFalse(listA.contains("someValue1"));
+            assertFalse(listA.contains("someValue2"));
         }
         
         List listB = (List) helperB.get("somePropertyList");
 
         if (listB != null)
         {
-            Assertions.assertFalse(listB.contains("someValue2"));            
-            Assertions.assertFalse(listB.contains("someValue1"));
+            assertFalse(listB.contains("someValue2"));            
+            assertFalse(listB.contains("someValue1"));
         }
     }
-    
+
     @Test
-    public void testAddItemOnList3()
+    void addItemOnList3()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -403,19 +404,19 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         List listA = (List) helperA.get("somePropertyList");
         
-        Assertions.assertTrue(listA.contains("someValue3"));
-        Assertions.assertFalse(listA.contains("someValue1"));
-        Assertions.assertFalse(listA.contains("someValue2"));
+        assertTrue(listA.contains("someValue3"));
+        assertFalse(listA.contains("someValue1"));
+        assertFalse(listA.contains("someValue2"));
         
         List listB = (List) helperB.get("somePropertyList");
 
-        Assertions.assertTrue(listB.contains("someValue3"));
-        Assertions.assertFalse(listB.contains("someValue2"));            
-        Assertions.assertFalse(listB.contains("someValue1"));
-    }    
-    
+        assertTrue(listB.contains("someValue3"));
+        assertFalse(listB.contains("someValue2"));            
+        assertFalse(listB.contains("someValue1"));
+    }
+
     @Test
-    public void testPutItemOnMap1()
+    void putItemOnMap1()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -435,19 +436,19 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         Map mapA = (Map) helperA.get("somePropertyMap");
         
-        Assertions.assertEquals("someValue1",mapA.get("key1"));
-        Assertions.assertEquals("someValue2",mapA.get("key2"));
-        Assertions.assertEquals("someValue3",mapA.get("key3"));        
+        assertEquals("someValue1",mapA.get("key1"));
+        assertEquals("someValue2",mapA.get("key2"));
+        assertEquals("someValue3",mapA.get("key3"));        
 
         Map mapB = (Map) helperB.get("somePropertyMap");
         
-        Assertions.assertEquals("someValue1",mapB.get("key1"));
-        Assertions.assertEquals("someValue2",mapB.get("key2"));
-        Assertions.assertEquals("someValue3",mapB.get("key3"));        
+        assertEquals("someValue1",mapB.get("key1"));
+        assertEquals("someValue2",mapB.get("key2"));
+        assertEquals("someValue3",mapB.get("key3"));        
     }
-    
+
     @Test
-    public void testPutRemoveItemOnMap2()
+    void putRemoveItemOnMap2()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -471,21 +472,21 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         if (mapA != null)
         {
-            Assertions.assertNull(mapA.get("key2"));
-            Assertions.assertNull(mapA.get("key1"));
+            assertNull(mapA.get("key2"));
+            assertNull(mapA.get("key1"));
         }
 
         Map mapB = (Map) helperB.get("somePropertyMap");
         
         if (mapB != null)
         {
-            Assertions.assertNull(mapB.get("key2"));
-            Assertions.assertNull(mapB.get("key1"));
+            assertNull(mapB.get("key2"));
+            assertNull(mapB.get("key1"));
         }
     }
-    
+
     @Test
-    public void testPutRemoveItemOnMap3()
+    void putRemoveItemOnMap3()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -510,16 +511,16 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         if (mapA != null)
         {
-            Assertions.assertNull(mapA.get("key2"));
-            Assertions.assertNull(mapA.get("key1"));
+            assertNull(mapA.get("key2"));
+            assertNull(mapA.get("key1"));
         }
 
         Map mapB = (Map) helperB.get("somePropertyMap");
         
         if (mapB != null)
         {
-            Assertions.assertNull(mapB.get("key2"));
-            Assertions.assertNull(mapB.get("key1"));
+            assertNull(mapB.get("key2"));
+            assertNull(mapB.get("key1"));
         }
     }
     
@@ -575,10 +576,10 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
             }
             return false;
         }
-    }    
-        
+    }
+
     @Test
-    public void testUIViewRootPhaseListener1() throws Exception
+    void uIViewRootPhaseListener1() throws Exception
     {
         UIViewRoot a = new UIViewRoot();
         UIViewRoot b = new UIViewRoot();
@@ -589,12 +590,12 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         b.restoreState(facesContext, a.saveState(facesContext));
         
-        Assertions.assertTrue(a.getPhaseListeners().contains(phaseListener1));
-        Assertions.assertTrue(b.getPhaseListeners().contains(phaseListener1));
+        assertTrue(a.getPhaseListeners().contains(phaseListener1));
+        assertTrue(b.getPhaseListeners().contains(phaseListener1));
     }
-    
+
     @Test
-    public void testUIViewRootPhaseListener2() throws Exception
+    void uIViewRootPhaseListener2() throws Exception
     {
         UIViewRoot a = new UIViewRoot();
         UIViewRoot b = new UIViewRoot();
@@ -608,12 +609,12 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         b.restoreState(facesContext, a.saveState(facesContext));
         
-        Assertions.assertTrue(a.getPhaseListeners().contains(phaseListener1));
-        Assertions.assertTrue(b.getPhaseListeners().contains(phaseListener1));
+        assertTrue(a.getPhaseListeners().contains(phaseListener1));
+        assertTrue(b.getPhaseListeners().contains(phaseListener1));
     }
-    
+
     @Test
-    public void testUIViewRootPhaseListener3() throws Exception
+    void uIViewRootPhaseListener3() throws Exception
     {
         UIViewRoot a = new UIViewRoot();
         UIViewRoot b = new UIViewRoot();
@@ -634,19 +635,19 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         b.restoreState(facesContext, a.saveState(facesContext));
         
-        Assertions.assertTrue(a.getPhaseListeners().contains(phaseListener1));
-        Assertions.assertTrue(b.getPhaseListeners().contains(phaseListener1));
-        Assertions.assertTrue(a.getPhaseListeners().contains(phaseListener2));
-        Assertions.assertTrue(b.getPhaseListeners().contains(phaseListener2));
+        assertTrue(a.getPhaseListeners().contains(phaseListener1));
+        assertTrue(b.getPhaseListeners().contains(phaseListener1));
+        assertTrue(a.getPhaseListeners().contains(phaseListener2));
+        assertTrue(b.getPhaseListeners().contains(phaseListener2));
         
         a.removePhaseListener(phaseListener1);
         a.removePhaseListener(phaseListener2);
         
         c.restoreState(facesContext, a.saveState(facesContext));
         
-        Assertions.assertFalse(a.getPhaseListeners().contains(phaseListener1));
-        Assertions.assertFalse(c.getPhaseListeners().contains(phaseListener1));
-        Assertions.assertFalse(a.getPhaseListeners().contains(phaseListener2));
-        Assertions.assertFalse(c.getPhaseListeners().contains(phaseListener2));
+        assertFalse(a.getPhaseListeners().contains(phaseListener1));
+        assertFalse(c.getPhaseListeners().contains(phaseListener1));
+        assertFalse(a.getPhaseListeners().contains(phaseListener2));
+        assertFalse(c.getPhaseListeners().contains(phaseListener2));
     }    
 }

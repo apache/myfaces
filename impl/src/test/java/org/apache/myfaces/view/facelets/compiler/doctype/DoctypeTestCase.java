@@ -20,15 +20,17 @@ package org.apache.myfaces.view.facelets.compiler.doctype;
 import org.apache.myfaces.view.facelets.tag.ui.*;
 
 import jakarta.faces.component.UIViewRoot;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.faces.view.facelets.Facelet;
 
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class DoctypeTestCase extends AbstractFaceletTestCase
+class DoctypeTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -51,50 +53,50 @@ public class DoctypeTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testCompilerHtml5() throws Exception {
+    void compilerHtml5() throws Exception {
         FaceletFactory ff = vdl.getFaceletFactory();
         Facelet f = ff.getFacelet(this.getClass().getResource("/org/apache/myfaces/view/facelets/compiler/doctype/html5.xhtml"));
         
-        Assertions.assertNotNull(((AbstractFacelet) f).getDoctype());
-        Assertions.assertEquals("html", ((AbstractFacelet) f).getDoctype().getRootElement());
-        Assertions.assertEquals(null, ((AbstractFacelet) f).getDoctype().getPublic());
-        Assertions.assertEquals(null, ((AbstractFacelet) f).getDoctype().getSystem());
+        assertNotNull(((AbstractFacelet) f).getDoctype());
+        assertEquals("html", ((AbstractFacelet) f).getDoctype().getRootElement());
+        assertNull(((AbstractFacelet) f).getDoctype().getPublic());
+        assertNull(((AbstractFacelet) f).getDoctype().getSystem());
     }
-    
+
     @Test
-    public void testCompilerXhtml() throws Exception {
+    void compilerXhtml() throws Exception {
         FaceletFactory ff = vdl.getFaceletFactory();
         Facelet f = ff.getFacelet(this.getClass().getResource("/org/apache/myfaces/view/facelets/compiler/doctype/xhtml.xhtml"));
         
-        Assertions.assertNotNull(((AbstractFacelet) f).getDoctype());
-        Assertions.assertEquals("html", ((AbstractFacelet) f).getDoctype().getRootElement());
+        assertNotNull(((AbstractFacelet) f).getDoctype());
+        assertEquals("html", ((AbstractFacelet) f).getDoctype().getRootElement());
         // MYFACES-4681 - Simplified to <!DOCTYPE html> as HTML5 is default
-        Assertions.assertEquals(null, ((AbstractFacelet) f).getDoctype().getPublic());
-        Assertions.assertEquals(null, ((AbstractFacelet) f).getDoctype().getSystem());
+        assertNull(((AbstractFacelet) f).getDoctype().getPublic());
+        assertNull(((AbstractFacelet) f).getDoctype().getSystem());
     }
-    
+
     @Test
-    public void testHtml5() throws Exception
+    void html5() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "html5.xhtml");
 
-        Assertions.assertNotNull(root.getDoctype());
-        Assertions.assertEquals("html", root.getDoctype().getRootElement());
-        Assertions.assertEquals(null, root.getDoctype().getPublic());
-        Assertions.assertEquals(null, root.getDoctype().getSystem());
+        assertNotNull(root.getDoctype());
+        assertEquals("html", root.getDoctype().getRootElement());
+        assertNull(root.getDoctype().getPublic());
+        assertNull(root.getDoctype().getSystem());
     }
-    
+
     @Test
-    public void testXhtml() throws Exception
+    void xhtml() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "xhtml.xhtml");
 
-        Assertions.assertNotNull(root.getDoctype());
-        Assertions.assertEquals("html", root.getDoctype().getRootElement());
+        assertNotNull(root.getDoctype());
+        assertEquals("html", root.getDoctype().getRootElement());
         // MYFACES-4681 - Simplified to <!DOCTYPE html> as HTML5 is default
-        Assertions.assertEquals(null, root.getDoctype().getPublic()); 
-        Assertions.assertEquals(null, root.getDoctype().getSystem());
+        assertNull(root.getDoctype().getPublic()); 
+        assertNull(root.getDoctype().getSystem());
     }
 }

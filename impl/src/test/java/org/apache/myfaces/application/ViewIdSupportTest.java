@@ -18,17 +18,18 @@
  */
 package org.apache.myfaces.application;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URL;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ViewIdSupportTest extends AbstractFacesTestCase
+class ViewIdSupportTest extends AbstractFacesTestCase
 {
     private final String filePath = this.getDirectory();
     private ViewIdSupport viewHandlerSupport;
@@ -79,72 +80,72 @@ public class ViewIdSupportTest extends AbstractFacesTestCase
             throw new RuntimeException("Error Initializing Context", e);
         }
     }
-    
+
     @Test
-    public void testDeriveViewId2() throws Exception
+    void deriveViewId2() throws Exception
     {        
         request.setPathElements("/testwebapp", "/faces", "/view1.jsp" , null);
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view1.jsp");
         
-        Assertions.assertNotNull(derivedViewId);
+        assertNotNull(derivedViewId);
     }
-    
+
     @Test
-    public void testDeriveViewId21() throws Exception
+    void deriveViewId21() throws Exception
     {        
         request.setPathElements("/testwebapp", "/faces", "/faces/view1.jsp" , null);
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/faces/view1.jsp");
         
-        Assertions.assertNotNull(derivedViewId);
-    }    
-    
+        assertNotNull(derivedViewId);
+    }
+
     @Test
-    public void testDeriveViewId3() throws Exception
+    void deriveViewId3() throws Exception
     {
         request.setPathElements("/testwebapp", "/view2.jsf", null , null);
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view2.jsf");
         
-        Assertions.assertNotNull(derivedViewId);
+        assertNotNull(derivedViewId);
     }
-    
+
     @Test
-    public void testDeriveViewId4() throws Exception
+    void deriveViewId4() throws Exception
     {        
         request.setPathElements("/testwebapp", "/faces", "/view2.xhtml" , null);
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view2.xhtml");
         
-        Assertions.assertNotNull(derivedViewId);
+        assertNotNull(derivedViewId);
     }
 
 
     @Test
-    public void testDeriveViewId5() throws Exception
+    void deriveViewId5() throws Exception
     {
         request.setPathElements("/testwebapp", "/noview1.jsf", null , null);
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/noview1.jsf");
         
-        Assertions.assertNull(derivedViewId);
+        assertNull(derivedViewId);
     }
-    
+
     /**
      * An empty prefix mapping can occur in Spring environments.
      * @throws Exception
      */
     @Test
-    public void testEmptyPrefixMapping() throws Exception
+    void emptyPrefixMapping() throws Exception
     {        
         request.setPathElements("/testwebapp", "", "/view2.xhtml" , null);
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view2.xhtml");
         
-        Assertions.assertEquals("/view2.xhtml", derivedViewId);
+        assertEquals("/view2.xhtml", derivedViewId);
     }
-    
+
     /**
      * An empty prefix mapping can occur in Spring environments.
      * However this should not only return the viewId, but also remove any
@@ -152,13 +153,13 @@ public class ViewIdSupportTest extends AbstractFacesTestCase
      * @throws Exception
      */
     @Test
-    public void testEmptyPrefixMappingDoubleSlash() throws Exception
+    void emptyPrefixMappingDoubleSlash() throws Exception
     {        
         request.setPathElements("/testwebapp", "", "//view2.xhtml" , null);
         
         String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "//view2.xhtml");
         
-        Assertions.assertEquals("/view2.xhtml", derivedViewId);
+        assertEquals("/view2.xhtml", derivedViewId);
     }
 
 }

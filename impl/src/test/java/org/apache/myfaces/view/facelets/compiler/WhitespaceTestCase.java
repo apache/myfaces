@@ -19,6 +19,9 @@
 
 package org.apache.myfaces.view.facelets.compiler;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIOutput;
@@ -38,7 +41,6 @@ import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -80,17 +82,17 @@ public class WhitespaceTestCase extends AbstractFaceletTestCase {
         renderKit.addRenderer(UIPanel.COMPONENT_FAMILY,
                 "jakarta.faces.Grid", new HtmlGridRenderer());
         
-    }    
+    }
 
     @Test
-    public void testSelectOneMenu() throws Exception {
+    void selectOneMenu() throws Exception {
         request.setAttribute("test", this);
 
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "selectOne.xml");
         
-        Assertions.assertNotNull(target);
-        Assertions.assertEquals(2, this.target.getChildCount());
+        assertNotNull(target);
+        assertEquals(2, this.target.getChildCount());
 
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -99,16 +101,16 @@ public class WhitespaceTestCase extends AbstractFaceletTestCase {
         root.encodeAll(facesContext);
         //System.out.println(fw);
     }
-    
+
     @Test
-    public void testPanelGrid() throws Exception {
+    void panelGrid() throws Exception {
         request.setAttribute("test", this);
 
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "panelGrid.xml");
         
-        Assertions.assertNotNull( target);
-        Assertions.assertEquals(3, this.target.getChildCount());
+        assertNotNull( target);
+        assertEquals(3, this.target.getChildCount());
 
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();

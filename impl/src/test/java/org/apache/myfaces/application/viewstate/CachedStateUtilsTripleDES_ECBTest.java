@@ -21,7 +21,7 @@ package org.apache.myfaces.application.viewstate;
 import org.junit.jupiter.api.BeforeEach;
 
 
-public class CachedStateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
+class CachedStateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
 {
     @Override
     @BeforeEach

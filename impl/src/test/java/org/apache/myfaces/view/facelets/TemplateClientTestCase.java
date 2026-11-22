@@ -24,7 +24,7 @@ import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.Test;
 
-public class TemplateClientTestCase extends AbstractFaceletTestCase {
+class TemplateClientTestCase extends AbstractFaceletTestCase {
 
     @Override
     protected void setupComponents() throws Exception
@@ -42,9 +42,9 @@ public class TemplateClientTestCase extends AbstractFaceletTestCase {
     protected void setupRenderers() throws Exception
     {
     }
-    
+
     @Test
-    public void testClientClient() throws Exception {
+    void clientClient() throws Exception {
         request.setAttribute("name", "Mr. Hookom");
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"template-client-client.xhtml");
@@ -54,9 +54,9 @@ public class TemplateClientTestCase extends AbstractFaceletTestCase {
         root.encodeAll(facesContext);
         //System.out.println(fw);
     }
-    
+
     @Test
-    public void testLayoutClient() throws Exception
+    void layoutClient() throws Exception
     {
         request.setAttribute("name", "Mr. Hookom");
         

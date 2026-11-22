@@ -19,6 +19,8 @@
 
 package org.apache.myfaces.view.facelets.tag.faces.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource;
@@ -38,10 +40,9 @@ import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class HtmlTestCase extends AbstractFaceletTestCase {
+class HtmlTestCase extends AbstractFaceletTestCase {
     
     @Override
     protected void setupComponents() throws Exception
@@ -76,48 +77,48 @@ public class HtmlTestCase extends AbstractFaceletTestCase {
                 "jakarta.faces.Button", new HtmlButtonRenderer());
         renderKit.addRenderer(HtmlPanelGrid.COMPONENT_FAMILY,
                 "jakarta.faces.Grid", new HtmlGridRenderer());
-    }    
-    
+    }
+
     @Test
-    public void testCommandComponent() throws Exception {
+    void commandComponent() throws Exception {
         request.getSession().setAttribute("test", new MockBean());
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "componentOwner.xml");
         
         UIComponent c = root.findComponent("cmd");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         
         Object v = c.getAttributes().get("id");
-        Assertions.assertEquals("cmd", v);
+        assertEquals("cmd", v);
         
         ActionSource as2 = (ActionSource) c;
         MethodExpression me = as2.getActionExpression();
-        Assertions.assertNotNull(me);
+        assertNotNull(me);
         
         String result = (String) me.invoke(facesContext.getELContext(), null);
         //System.out.println(result);
     }
-    
+
     @Test
-    public void testCommandButton() throws Exception {
+    void commandButton() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "commandButton.xml");
         
         UIComponent c = root.findComponent("form:button");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         
         Object v = c.getAttributes().get("id");
-        Assertions.assertEquals("button", v);
+        assertEquals("button", v);
     }
 
     @Test
-    public void testPanelGrid() throws Exception {
+    void panelGrid() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "panelGrid.xml");
     }
-    
+
     @Test
-    public void testEmptyHtml() throws Exception {
+    void emptyHtml() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testEmptyHtmlAttribute.xhtml");
         
@@ -128,7 +129,7 @@ public class HtmlTestCase extends AbstractFaceletTestCase {
         root.encodeAll(facesContext);
         sw.flush();
 
-        Assertions.assertTrue(sw.toString().contains("alt=\"\""));
+        assertTrue(sw.toString().contains("alt=\"\""));
     }
             
 

@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.faces.core.validation;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.validator.BeanValidator;
@@ -25,14 +28,13 @@ import jakarta.faces.validator.Validator;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * This test is the same as FlowMyFacesRequestTestCase with the difference that
  * in this case CDI is enabled and the other alternative is used.
  */
-public class BeanValidationCDIRequestTestCase extends AbstractMyFacesCDIRequestTestCase
+class BeanValidationCDIRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpWebConfigParams() throws Exception
@@ -45,9 +47,9 @@ public class BeanValidationCDIRequestTestCase extends AbstractMyFacesCDIRequestT
         servletContext.addInitParameter("jakarta.faces.CLIENT_WINDOW_MODE", "url");
         servletContext.addInitParameter("org.apache.myfaces.validator.BEAN_BEFORE_JSF_VALIDATION", "true");
     }
-    
+
     @Test
-    public void testBeanValidation_1() throws Exception
+    void beanValidation1() throws Exception
     {
         startViewRequest("/testBeanValidation_1.xhtml");
         
@@ -60,13 +62,13 @@ public class BeanValidationCDIRequestTestCase extends AbstractMyFacesCDIRequestT
         processLifecycleExecute();
         
         UIInput username = (UIInput) facesContext.getViewRoot().findComponent("mainForm:username");
-        Assertions.assertNotNull(username);
+        assertNotNull(username);
         Validator[] array = username.getValidators();
-        Assertions.assertTrue(array[0] instanceof BeanValidator);
+        assertInstanceOf(BeanValidator.class, array[0]);
     }
-    
+
     @Test
-    public void testBeanValidation_2() throws Exception
+    void beanValidation2() throws Exception
     {
         startViewRequest("/testBeanValidation_2.xhtml");
         
@@ -79,8 +81,8 @@ public class BeanValidationCDIRequestTestCase extends AbstractMyFacesCDIRequestT
         processLifecycleExecute();
         
         UIInput username = (UIInput) facesContext.getViewRoot().findComponent("mainForm:username");
-        Assertions.assertNotNull(username);
+        assertNotNull(username);
         Validator[] array = username.getValidators();
-        Assertions.assertTrue(array[0] instanceof BeanValidator);
+        assertInstanceOf(BeanValidator.class, array[0]);
     }
 }

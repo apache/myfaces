@@ -18,13 +18,14 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.net.URL;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -53,25 +54,25 @@ public class TagLibraryTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testLoadValidLibraryWithValidation() throws Exception
+    void loadValidLibraryWithValidation() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.VALIDATE_XML, "true");
 
         FaceletTagLibrary faceletTagLib = TagLibraryConfigUnmarshallerImpl.create(
             externalContext, _validLibUrl);
         TagLibrary lib = TagLibraryConfig.create(facesContext, faceletTagLib);
-        Assertions.assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
+        assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
     }
 
     @Test
-    public void testLoadValidLibraryWithoutValidation() throws Exception
+    void loadValidLibraryWithoutValidation() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.VALIDATE_XML, "false");
 
         FaceletTagLibrary faceletTagLib = TagLibraryConfigUnmarshallerImpl.create(
             externalContext, _validLibUrl);
         TagLibrary lib = TagLibraryConfig.create(facesContext, faceletTagLib);
-        Assertions.assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
+        assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
     }
     /*
     public void testLoadInvalidLibraryWithValidation() throws Exception

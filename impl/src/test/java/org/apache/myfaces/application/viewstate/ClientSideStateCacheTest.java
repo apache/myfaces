@@ -18,24 +18,26 @@
  */
 package org.apache.myfaces.application.viewstate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import jakarta.faces.application.StateManager;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMultipleRequestsTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author lu4242
  */
-public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleRequestsTestCase
+class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleRequestsTestCase
 {
     
     private static final int TIMESTAMP_PARAM = 2;
-    
+
     @Test
-    public void testSaveRestoreState() throws Exception
+    void saveRestoreState() throws Exception
     {
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.CLIENT.name());
 
@@ -66,7 +68,7 @@ public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleR
             
             Object value = stateCache.restoreSerializedView(facesContext, "view1.xhtml", savedToken);
             
-            Assertions.assertEquals(1, value);
+            assertEquals(1, value);
             
             facesContext.getViewRoot().setViewId("view2.xhtml");
             savedToken = stateCache.saveSerializedView(facesContext, 2);
@@ -82,7 +84,7 @@ public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleR
             
             Object value = stateCache.restoreSerializedView(facesContext, "view2.xhtml", savedToken);
             
-            Assertions.assertEquals(2, value);
+            assertEquals(2, value);
             
             facesContext.getViewRoot().setViewId("view2.xhtml");
             savedToken = stateCache.saveSerializedView(facesContext, 3);
@@ -98,16 +100,16 @@ public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleR
             
             Object value = stateCache.restoreSerializedView(facesContext, "view1.xhtml", firstSavedToken);
             
-            Assertions.assertEquals(1, value);
+            assertEquals(1, value);
         }
         finally
         {
             tearDownRequest();
         }        
     }
-    
+
     @Test
-    public void testSaveRestoreStateWrongViewId() throws Exception
+    void saveRestoreStateWrongViewId() throws Exception
     {
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.CLIENT.name());
 
@@ -142,7 +144,7 @@ public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleR
             // as parameter.
             Object value = stateCache.restoreSerializedView(facesContext, "/view2.xhtml", firstSavedToken);
             
-            Assertions.assertNull(value);
+            assertNull(value);
         }
         finally
         {
@@ -156,7 +158,7 @@ public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleR
             // It should restore this:
             Object value = stateCache.restoreSerializedView(facesContext, "/view1.xhtml", firstSavedToken);
             
-            Assertions.assertEquals(1, value);
+            assertEquals(1, value);
         }
         finally
         {
@@ -166,7 +168,7 @@ public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleR
     }
 
     @Test
-    public void testSaveRestoreStateClientTimeout() throws Exception
+    void saveRestoreStateClientTimeout() throws Exception
     {
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.CLIENT.name());
         servletContext.addInitParameter(MyfacesConfig.CLIENT_VIEW_STATE_TIMEOUT, "2");
@@ -203,7 +205,7 @@ public class ClientSideStateCacheTest extends AbstractFacesConfigurableMultipleR
             // It should return null, because the timeStamp was changed to a previous date
             Object value = stateCache.restoreSerializedView(facesContext, "/view1.xhtml", firstSavedToken);
             
-            Assertions.assertNull(value);
+            assertNull(value);
         }
         finally
         {

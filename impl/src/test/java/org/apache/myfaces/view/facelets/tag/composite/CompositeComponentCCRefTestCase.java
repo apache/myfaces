@@ -19,6 +19,9 @@
 
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 
 import jakarta.el.ExpressionFactory;
@@ -28,10 +31,9 @@ import jakarta.faces.component.UIViewRoot;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CompositeComponentCCRefTestCase extends AbstractFaceletTestCase
+class CompositeComponentCCRefTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -45,9 +47,9 @@ public class CompositeComponentCCRefTestCase extends AbstractFaceletTestCase
     {
         return new org.apache.el.ExpressionFactoryImpl();
     }
-    
+
     @Test
-    public void testCCRefOnStylesheet() throws Exception
+    void cCRefOnStylesheet() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
         
@@ -58,7 +60,7 @@ public class CompositeComponentCCRefTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCCRefOnStylesheet.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -66,11 +68,11 @@ public class CompositeComponentCCRefTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains(".myCustomStyle { background:red }"));
+        assertTrue(sw.toString().contains(".myCustomStyle { background:red }"));
     }
-    
+
     @Test
-    public void testCCRefOnScript() throws Exception
+    void cCRefOnScript() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
         
@@ -81,7 +83,7 @@ public class CompositeComponentCCRefTestCase extends AbstractFaceletTestCase
         vdl.buildView(facesContext, root, "testCCRefOnScript.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        Assertions.assertNotNull(panelGroup1);
+        assertNotNull(panelGroup1);
 
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -89,7 +91,7 @@ public class CompositeComponentCCRefTestCase extends AbstractFaceletTestCase
         
         root.encodeAll(facesContext);
         sw.flush();
-        Assertions.assertTrue(sw.toString().contains(".myCustomStyle { background:red }"));
-        Assertions.assertTrue(sw.toString().contains(".myCustomScript = 'myvalue'"));
+        assertTrue(sw.toString().contains(".myCustomStyle { background:red }"));
+        assertTrue(sw.toString().contains(".myCustomScript = 'myvalue'"));
     }
 }

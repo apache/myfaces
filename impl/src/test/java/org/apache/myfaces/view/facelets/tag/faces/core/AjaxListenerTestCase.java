@@ -19,6 +19,8 @@
 
 package org.apache.myfaces.view.facelets.tag.faces.core;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +35,6 @@ import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.event.AjaxBehaviorEvent;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,43 +42,43 @@ import org.junit.jupiter.api.Test;
  * f:ajax listener must accept a method taking the AjaxBehaviorEvent or a method taking no arguments.
  * The method taking the event is preferred when both exist.
  */
-public class AjaxListenerTestCase extends AbstractFaceletTestCase
+class AjaxListenerTestCase extends AbstractFaceletTestCase
 {
     private AjaxListenerBean bean;
 
     @BeforeEach
-    public void setUpBean()
+    void setUpBean()
     {
         bean = new AjaxListenerBean();
         facesContext.getExternalContext().getRequestMap().put("ajaxListenerBean", bean);
     }
 
     @Test
-    public void testOneArgMethod() throws Exception
+    void oneArgMethod() throws Exception
     {
-        Assertions.assertEquals(List.of("oneArg(event)"), broadcast("oneArg"));
+        assertEquals(List.of("oneArg(event)"), broadcast("oneArg"));
     }
 
     @Test
-    public void testZeroArgMethod() throws Exception
+    void zeroArgMethod() throws Exception
     {
-        Assertions.assertEquals(List.of("zeroArg()"), broadcast("zeroArg"));
+        assertEquals(List.of("zeroArg()"), broadcast("zeroArg"));
     }
 
     @Test
-    public void testBothMethodsPrefersEvent() throws Exception
+    void bothMethodsPrefersEvent() throws Exception
     {
-        Assertions.assertEquals(List.of("both(event)"), broadcast("both"));
+        assertEquals(List.of("both(event)"), broadcast("both"));
     }
 
     @Test
-    public void testMissingMethod() throws Exception
+    void missingMethod() throws Exception
     {
-        Assertions.assertThrows(MethodNotFoundException.class, () -> broadcast("missing"));
+        assertThrows(MethodNotFoundException.class, () -> broadcast("missing"));
     }
 
     @Test
-    public void testStateSaving() throws Exception
+    void stateSaving() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "ajaxListener.xhtml");
@@ -96,7 +97,7 @@ public class AjaxListenerTestCase extends AbstractFaceletTestCase
         restored.processAjaxBehavior(new AjaxBehaviorEvent(facesContext,
                 root.findComponent("form:zeroArg"), getAjaxBehavior(root, "zeroArg")));
 
-        Assertions.assertEquals(List.of("zeroArg()"), bean.getInvocations());
+        assertEquals(List.of("zeroArg()"), bean.getInvocations());
     }
 
     private List<String> broadcast(String id) throws Exception
@@ -114,12 +115,12 @@ public class AjaxListenerTestCase extends AbstractFaceletTestCase
     private AjaxBehavior getAjaxBehavior(UIViewRoot root, String id)
     {
         UIComponent input = root.findComponent("form:" + id);
-        Assertions.assertNotNull(input);
+        assertNotNull(input);
 
         Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) input).getClientBehaviors();
         List<ClientBehavior> change = behaviors.get("change");
-        Assertions.assertNotNull(change);
-        Assertions.assertEquals(1, change.size());
+        assertNotNull(change);
+        assertEquals(1, change.size());
         return (AjaxBehavior) change.get(0);
     }
 }

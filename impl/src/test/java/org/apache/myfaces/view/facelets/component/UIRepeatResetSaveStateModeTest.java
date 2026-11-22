@@ -18,11 +18,13 @@
  */
 package org.apache.myfaces.view.facelets.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Map;
 import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +33,7 @@ import org.junit.jupiter.api.Test;
  * the delta state, a hard reset clears all state (see {@link ViewPoolProcessor#RESET_MODE_SOFT} and
  * {@link ViewPoolProcessor#RESET_MODE_HARD}). UIRepeat must do the same as UIData with its per-row state.
  */
-public class UIRepeatResetSaveStateModeTest extends AbstractFacesTestCase
+class UIRepeatResetSaveStateModeTest extends AbstractFacesTestCase
 {
     private UIRepeat repeat;
 
@@ -50,24 +52,24 @@ public class UIRepeatResetSaveStateModeTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testSoftResetKeepsDeltaState()
+    void softResetKeepsDeltaState()
     {
         facesContext.getViewRoot().getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY,
                 ViewPoolProcessor.RESET_MODE_SOFT);
         repeat.saveState(facesContext);
 
-        Assertions.assertEquals(Map.of("repeat:0:in", "delta"), repeat._rowDeltaStates.get("repeat:0"));
-        Assertions.assertTrue(repeat._rowTransientStates.isEmpty());
+        assertEquals(Map.of("repeat:0:in", "delta"), repeat._rowDeltaStates.get("repeat:0"));
+        assertTrue(repeat._rowTransientStates.isEmpty());
     }
 
     @Test
-    public void testHardResetClearsAllState()
+    void hardResetClearsAllState()
     {
         facesContext.getViewRoot().getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY,
                 ViewPoolProcessor.RESET_MODE_HARD);
         repeat.saveState(facesContext);
 
-        Assertions.assertTrue(repeat._rowDeltaStates.isEmpty());
-        Assertions.assertTrue(repeat._rowTransientStates.isEmpty());
+        assertTrue(repeat._rowDeltaStates.isEmpty());
+        assertTrue(repeat._rowTransientStates.isEmpty());
     }
 }

@@ -24,9 +24,11 @@ import org.apache.myfaces.spi.impl.DefaultSerialFactory;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 
 import java.io.Serializable;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Arrays;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -63,13 +65,13 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
      * Test for Restore View phase.
      */
     @Test
-    public void testConstructionString()
+    public void constructionString()
     {
         String constructed = StateUtils.construct(sensitiveString, externalContext);
         Object object = StateUtils.reconstruct(constructed, externalContext);
-        Assertions.assertTrue(object instanceof String);
+        assertInstanceOf(String.class, object);
         String string = (String) object;
-        Assertions.assertEquals(string, sensitiveString);
+        assertEquals(string, sensitiveString);
     }
 
     /**
@@ -77,65 +79,65 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
      * StateUtilsTestCase through the construct/reconstruct process.
      */
     @Test
-    public void testConstruction()
+    public void construction()
     {
         String constructed = StateUtils.construct(TEST_DATA, externalContext);
         Object object = org.apache.myfaces.application.viewstate.StateUtils.reconstruct(constructed, externalContext);
-        Assertions.assertTrue(TEST_DATA.equals(object));
+        assertEquals(TEST_DATA, object);
     }
 
     @Test
-    public void testSerialization()
+    public void serialization()
     {
         byte[] bytes = StateUtils.getAsByteArray(TEST_DATA, externalContext);
         Object object = StateUtils.getAsObject(bytes, externalContext);
-        Assertions.assertTrue(TEST_DATA.equals(object));
+        assertEquals(TEST_DATA, object);
     }
 
     @Test
-    public void testCryptography()
+    public void cryptography()
     {
         byte[] sensitiveBytes = sensitiveString.getBytes();
         byte[] secure = StateUtils.encrypt(sensitiveBytes, externalContext);
         byte[] insecure = StateUtils.decrypt(secure, externalContext);
         secure = StateUtils.encrypt(insecure, externalContext); // * 2
         insecure = StateUtils.decrypt(secure, externalContext);
-        Assertions.assertTrue(Arrays.equals(insecure, sensitiveBytes));
+        assertTrue(Arrays.equals(insecure, sensitiveBytes));
     }
 
     @Test
-    public void testCompression()
+    public void compression()
     {
         int size = 2049;
         byte[] originalBytes = new byte[size];
         byte[] lessBytes = StateUtils.compress(originalBytes);
-        Assertions.assertTrue(lessBytes.length < originalBytes.length);
+        assertTrue(lessBytes.length < originalBytes.length);
         byte[] moreBytes = StateUtils.decompress(lessBytes);
-        Assertions.assertTrue(moreBytes.length > lessBytes.length);
-        Assertions.assertTrue(Arrays.equals(moreBytes, originalBytes));
+        assertTrue(moreBytes.length > lessBytes.length);
+        assertTrue(Arrays.equals(moreBytes, originalBytes));
     }
 
     @Test
-    public void testEncoding()
+    public void encoding()
     {
         byte[] originalBytes = sensitiveString.getBytes();
         byte[] encoded = StateUtils.encode(originalBytes);
         byte[] decoded = StateUtils.decode(encoded);
-        Assertions.assertTrue(Arrays.equals(decoded, originalBytes));
+        assertTrue(Arrays.equals(decoded, originalBytes));
     }
 
     /**
      * Simulates testConstruction w/ corrupt data.
      */
     @Test
-    public void testConstructionNegative()
+    public void constructionNegative()
     {
         String constructed = StateUtils.construct(TEST_DATA, externalContext);
         constructed = constructed.substring(1);
         try
         {
             Object object = StateUtils.reconstruct(constructed, externalContext);
-            Assertions.assertFalse(TEST_DATA.equals(object));
+            assertNotEquals(TEST_DATA, object);
         }
         catch (Exception e)
         {
@@ -147,14 +149,14 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
      * Simulates testSerialization w/ corrput data.
      */
     @Test
-    public void testSerializationNegative()
+    public void serializationNegative()
     {
         byte[] bytes = StateUtils.getAsByteArray(TEST_DATA, externalContext);
         bytes[1] = (byte) 3;
         try
         {
             Object object = StateUtils.getAsObject(bytes, externalContext);
-            Assertions.assertFalse(TEST_DATA.equals(object));
+            assertNotEquals(TEST_DATA, object);
         }
         catch (Exception e)
         {
@@ -167,7 +169,7 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
      * Simulates testCryptography w/ corrupt data.
      */
     @Test
-    public void testCryptographyNegative()
+    public void cryptographyNegative()
     {
         byte[] sensitiveBytes = sensitiveString.getBytes();
         byte[] secure = StateUtils.encrypt(sensitiveBytes, externalContext);
@@ -176,7 +178,7 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
         try
         {
             byte[] insecure = StateUtils.decrypt(secure, externalContext);
-            Assertions.assertFalse(Arrays.equals(insecure, sensitiveBytes));
+            assertFalse(Arrays.equals(insecure, sensitiveBytes));
         }
         catch (Exception e)
         {
@@ -188,7 +190,7 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
      * Simulates testCompression w/ corrupt data.
      */
     @Test
-    public void testCompressionNegative()
+    public void compressionNegative()
     {
         int size = 2049;
         byte[] originalBytes = new byte[size];
@@ -197,7 +199,7 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
         try
         {
             byte[] moreBytes = StateUtils.decompress(lessBytes);
-            Assertions.assertFalse(Arrays.equals(moreBytes, originalBytes));
+            assertFalse(Arrays.equals(moreBytes, originalBytes));
         }
         catch (Exception e)
         {
@@ -209,7 +211,7 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
      * Simulates testEncoding w/ corrupt data.
      */
     @Test
-    public void testEncodingNegative()
+    public void encodingNegative()
     {
         byte[] originalBytes = sensitiveString.getBytes();
         byte[] encoded = StateUtils.encode(originalBytes);
@@ -217,7 +219,7 @@ public abstract class AbstractStateUtilsTest extends AbstractFacesTestCase imple
         try
         {
             byte[] decoded = StateUtils.decode(encoded);
-            Assertions.assertFalse(Arrays.equals(decoded, originalBytes));
+            assertFalse(Arrays.equals(decoded, originalBytes));
         }
         catch (Exception e)
         {

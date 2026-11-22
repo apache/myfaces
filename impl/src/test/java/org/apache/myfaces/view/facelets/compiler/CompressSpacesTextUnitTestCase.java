@@ -18,12 +18,13 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -32,9 +33,9 @@ import org.junit.jupiter.api.Test;
  */
 public class CompressSpacesTextUnitTestCase extends AbstractFaceletTestCase
 {
-    
+
     @Test
-    public void testSimpleCompress1() throws Exception {
+    void simpleCompress1() throws Exception {
     
         List<Instruction> instructions = new ArrayList<Instruction>();
         
@@ -61,12 +62,12 @@ public class CompressSpacesTextUnitTestCase extends AbstractFaceletTestCase
         {
             i.write(facesContext);
         }
-        
-        Assertions.assertEquals(fw.toString(), " <p> hello </p><tr><td/></tr> ");
+
+        assertEquals(" <p> hello </p><tr><td/></tr> ", fw.toString());
     }
 
     @Test
-    public void testSimpleCompress2() throws Exception {
+    void simpleCompress2() throws Exception {
         
         List<Instruction> instructions = new ArrayList<Instruction>();
         
@@ -86,13 +87,13 @@ public class CompressSpacesTextUnitTestCase extends AbstractFaceletTestCase
         {
             i.write(facesContext);
         }
-        
-        Assertions.assertEquals(fw.toString(), "<p> hello </p>");
+
+        assertEquals("<p> hello </p>", fw.toString());
 
     }
 
     @Test
-    public void testSimpleCompress3() throws Exception {
+    void simpleCompress3() throws Exception {
     
         List<Instruction> instructions = new ArrayList<Instruction>();
         
@@ -119,12 +120,12 @@ public class CompressSpacesTextUnitTestCase extends AbstractFaceletTestCase
         {
             i.write(facesContext);
         }
-        
-        Assertions.assertEquals(fw.toString(), " <p> hello </p><tr><td/></tr>\n");
+
+        assertEquals(" <p> hello </p><tr><td/></tr>\n", fw.toString());
     }
-    
+
     @Test
-    public void testSimpleCompress4() throws Exception {
+    void simpleCompress4() throws Exception {
         
         List<Instruction> instructions = new ArrayList<Instruction>();
         
@@ -142,13 +143,13 @@ public class CompressSpacesTextUnitTestCase extends AbstractFaceletTestCase
         {
             i.write(facesContext);
         }
-        
-        Assertions.assertEquals(fw.toString(), "\n");
+
+        assertEquals("\n", fw.toString());
 
     }
 
     @Test
-    public void testSimpleCompress4_1() throws Exception {
+    void simpleCompress41() throws Exception {
         
         List<Instruction> instructions = new ArrayList<Instruction>();
         
@@ -166,13 +167,13 @@ public class CompressSpacesTextUnitTestCase extends AbstractFaceletTestCase
         {
             i.write(facesContext);
         }
-        
-        Assertions.assertEquals(fw.toString(), "\r\n");
 
-    }    
-    
+        assertEquals("\r\n", fw.toString());
+
+    }
+
     @Test
-    public void testSimpleCompress5() throws Exception {
+    void simpleCompress5() throws Exception {
         
         List<Instruction> instructions = new ArrayList<Instruction>();
         
@@ -190,13 +191,13 @@ public class CompressSpacesTextUnitTestCase extends AbstractFaceletTestCase
         {
             i.write(facesContext);
         }
-        
-        Assertions.assertEquals(fw.toString(), "&amp;#160;\n");
+
+        assertEquals("&amp;#160;\n", fw.toString());
 
     }
-    
+
     @Test
-    public void testSimpleCompress6() throws Exception {
+    void simpleCompress6() throws Exception {
         
         List<Instruction> instructions = new ArrayList<Instruction>();
 
@@ -224,20 +225,20 @@ public class CompressSpacesTextUnitTestCase extends AbstractFaceletTestCase
             i.write(facesContext);
         }        
         
-        Assertions.assertEquals(fw.toString(), "\r\n<script type=\"text/javascript\">\r\n//<![CDATA[   "+
+        assertEquals(fw.toString(), "\r\n<script type=\"text/javascript\">\r\n//<![CDATA[   "+
             "\r\n     someJavascript();\r\n     //]]>\r\n</script> ");
     }
 
     @Test
-    public void testCompressOnELExpressions() throws Exception
+    void compressOnELExpressions() throws Exception
     {
-        Assertions.assertEquals(tryCompress("#{bean.name}"), "#{bean.name}");
-        Assertions.assertEquals(tryCompress(" #{bean.name}"), " #{bean.name}");
-        Assertions.assertEquals(tryCompress("#{bean.name} "), "#{bean.name} ");
+        assertEquals("#{bean.name}", tryCompress("#{bean.name}"));
+        assertEquals(" #{bean.name}", tryCompress(" #{bean.name}"));
+        assertEquals("#{bean.name} ", tryCompress("#{bean.name} "));
         String text = tryCompress("  #{bean.name}  ");
-        Assertions.assertEquals(tryCompress("  #{bean.name}  "), " #{bean.name} ");
-        Assertions.assertEquals(tryCompress("\n #{bean.name}\n "), "\n#{bean.name}\n");
-        Assertions.assertEquals(tryCompress(" \r\n #{bean.name} \r\n "), "\r\n#{bean.name} ");
+        assertEquals(" #{bean.name} ", tryCompress("  #{bean.name}  "));
+        assertEquals("\n#{bean.name}\n", tryCompress("\n #{bean.name}\n "));
+        assertEquals("\r\n#{bean.name} ", tryCompress(" \r\n #{bean.name} \r\n "));
     }
     
     public String tryCompress(String value)

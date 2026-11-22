@@ -18,10 +18,11 @@
  */
 package org.apache.myfaces.view.facelets.component.rowstate;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.mock.MockPrintWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -47,7 +48,7 @@ public class RowStateRerenderTest extends AbstractMyFacesCDIRequestTestCase
     }
 
     @Test
-    public void testRefreshWithoutMessagesRendersModelValues() throws Exception
+    void refreshWithoutMessagesRendersModelValues() throws Exception
     {
         submitTypedValuesWithValidationError();
         client.ajax("mainForm:refresh", "action", "mainForm:refresh", "mainForm", true);
@@ -57,7 +58,7 @@ public class RowStateRerenderTest extends AbstractMyFacesCDIRequestTestCase
     }
 
     @Test
-    public void testRefreshWithInfoRendersModelValues() throws Exception
+    void refreshWithInfoRendersModelValues() throws Exception
     {
         submitTypedValuesWithValidationError();
         client.ajax("mainForm:refreshWithInfo", "action", "mainForm:refreshWithInfo", "mainForm", true);
@@ -67,7 +68,7 @@ public class RowStateRerenderTest extends AbstractMyFacesCDIRequestTestCase
     }
 
     @Test
-    public void testRefreshWithErrorsRendersTypedValues() throws Exception
+    void refreshWithErrorsRendersTypedValues() throws Exception
     {
         submitTypedValuesWithValidationError();
         client.getParameters().put("mainForm:required", "");
@@ -78,7 +79,7 @@ public class RowStateRerenderTest extends AbstractMyFacesCDIRequestTestCase
     }
 
     @Test
-    public void testRefreshWithFatalRendersTypedValues() throws Exception
+    void refreshWithFatalRendersTypedValues() throws Exception
     {
         submitTypedValuesWithValidationError();
         client.ajax("mainForm:refreshWithFatal", "action", "mainForm:refreshWithFatal", "mainForm", true);
@@ -88,7 +89,7 @@ public class RowStateRerenderTest extends AbstractMyFacesCDIRequestTestCase
     }
 
     @Test
-    public void testRefreshWithErrorsTwiceThenWithoutMessages() throws Exception
+    void refreshWithErrorsTwiceThenWithoutMessages() throws Exception
     {
         submitTypedValuesWithValidationError();
 
@@ -122,7 +123,7 @@ public class RowStateRerenderTest extends AbstractMyFacesCDIRequestTestCase
         client.submit("mainForm:submit");
         processLifecycleExecuteAndRender();
 
-        Assertions.assertTrue(facesContext.isValidationFailed());
+        assertTrue(facesContext.isValidationFailed());
         assertRenderedValues(true);
     }
 
@@ -139,7 +140,7 @@ public class RowStateRerenderTest extends AbstractMyFacesCDIRequestTestCase
             String row = ROWS.get(i);
             String expected = typed ? typed(row) : model[i];
             String input = renderedInput(content, "mainForm:" + row);
-            Assertions.assertTrue(input.contains("value=\"" + expected + "\""),
+            assertTrue(input.contains("value=\"" + expected + "\""),
                     "mainForm:" + row + " should render " + expected + " but was: " + input);
         }
     }
@@ -147,7 +148,7 @@ public class RowStateRerenderTest extends AbstractMyFacesCDIRequestTestCase
     private static String renderedInput(String content, String clientId)
     {
         int start = content.indexOf("id=\"" + clientId + "\"");
-        Assertions.assertTrue(start >= 0, clientId + " not rendered in: " + content);
+        assertTrue(start >= 0, clientId + " not rendered in: " + content);
         return content.substring(start, content.indexOf('>', start));
     }
 

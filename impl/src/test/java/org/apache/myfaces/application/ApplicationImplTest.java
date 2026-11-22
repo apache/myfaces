@@ -30,7 +30,6 @@ import jakarta.faces.convert.ConverterException;
 import jakarta.faces.convert.EnumConverter;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.mock.MockFacesContext;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,12 +40,13 @@ import java.util.ResourceBundle;
 import static org.easymock.EasyMock.*;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ApplicationImplTest
+class ApplicationImplTest
 {
     //TODO: need mock objects for VDL/VDLFactory
     //remove from excludes list in pom.xml after complete
@@ -55,7 +55,7 @@ public class ApplicationImplTest
     protected MockFacesContext facesContext;
 
     @BeforeEach
-    public void setUp() throws Exception
+    void setUp() throws Exception
     {
         application = new ApplicationImpl(new RuntimeConfig());
         facesContext = new MockFacesContext();
@@ -66,12 +66,12 @@ public class ApplicationImplTest
      * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
     @Test
-    public void testGetResourceBundleNPE()
+    void getResourceBundleNPE()
     {
-        Assertions.assertThrows(NullPointerException.class,
+        assertThrows(NullPointerException.class,
                 () ->  application.getResourceBundle(null, "xxx"));
 
-        Assertions.assertThrows(NullPointerException.class,
+        assertThrows(NullPointerException.class,
                 () ->  application.getResourceBundle(facesContext, null));
     }
 
@@ -83,7 +83,7 @@ public class ApplicationImplTest
      * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
     @Test
-    public void testGetResourceBundleFacesException()
+    void getResourceBundleFacesException()
     {
         final ApplicationImpl myApp = new ApplicationImpl(new RuntimeConfig())
         {
@@ -94,7 +94,7 @@ public class ApplicationImplTest
             }
         };
 
-        Assertions.assertThrows(FacesException.class,
+        assertThrows(FacesException.class,
                 () ->  myApp.getResourceBundle(facesContext, "xxx"));
     }
 
@@ -103,7 +103,7 @@ public class ApplicationImplTest
      * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
     @Test
-    public void testGetResourceBundleWithDefaultLocale()
+    void getResourceBundleWithDefaultLocale()
     {
         assertGetResourceBundleWithLocale(Locale.getDefault());
     }
@@ -113,7 +113,7 @@ public class ApplicationImplTest
      * {@link org.apache.myfaces.application.ApplicationImpl#getResourceBundle(jakarta.faces.context.FacesContext, java.lang.String)}.
      */
     @Test
-    public void testGetResourceBundleWithUIViewRootLocale()
+    void getResourceBundleWithUIViewRootLocale()
     {
         Locale locale = new Locale("xx");
         UIViewRoot viewRoot = new UIViewRoot();
@@ -123,7 +123,7 @@ public class ApplicationImplTest
     }
 
     @Test
-    public void testCreateComponentCallSetValueOnExpressionIfValueNull() throws Exception
+    void createComponentCallSetValueOnExpressionIfValueNull() throws Exception
     {
         ValueExpression expr = createMock(ValueExpression.class);
         FacesContext context = createMock(FacesContext.class);
@@ -134,11 +134,11 @@ public class ApplicationImplTest
         application.addComponent("testComponent", UIOutput.class.getName());
         replay(context);
         replay(expr);
-        Assertions.assertTrue(UIOutput.class.isAssignableFrom(application.createComponent(expr, context, "testComponent").getClass()));
+        assertTrue(UIOutput.class.isAssignableFrom(application.createComponent(expr, context, "testComponent").getClass()));
     }
 
     @Test
-    public void testCreateComponentExpressionFacesExceptionTest() throws Exception
+    void createComponentExpressionFacesExceptionTest() throws Exception
     {
         ValueExpression expr = createMock(ValueExpression.class);
         FacesContext context = createMock(FacesContext.class);
@@ -157,7 +157,7 @@ public class ApplicationImplTest
         }
         catch (Throwable e)
         {
-            Assertions.fail("FacesException expected: " + e.getMessage());
+            fail("FacesException expected: " + e.getMessage());
         }
     }
 
@@ -178,20 +178,20 @@ public class ApplicationImplTest
             @Override
             String getBundleName(FacesContext facesContext, String name)
             {
-                Assertions.assertEquals(var, name);
+                assertEquals(var, name);
                 return bundleName;
             }
 
             @Override
             ResourceBundle getResourceBundle(String name, Locale locale, ClassLoader loader)
             {
-                Assertions.assertEquals(Thread.currentThread().getContextClassLoader(), loader);
-                Assertions.assertEquals(bundleName, name);
-                Assertions.assertEquals(expectedLocale, locale);
+                assertEquals(Thread.currentThread().getContextClassLoader(), loader);
+                assertEquals(bundleName, name);
+                assertEquals(expectedLocale, locale);
                 return bundle;
             }
         };
-        Assertions.assertSame(bundle, myapp.getResourceBundle(facesContext, var));
+        assertSame(bundle, myapp.getResourceBundle(facesContext, var));
     }
 
     private enum MyEnum {VALUE1, VALUE2}
@@ -201,17 +201,18 @@ public class ApplicationImplTest
      * {@link jakarta.faces.application.Application#createConverter(java.lang.Class)}.
      */
     @Test
-    public void testCreateEnumConverter() throws Exception
+    void createEnumConverter() throws Exception
     {
         application.addConverter(Enum.class, EnumConverter.class.getName());
 
         Converter converter = application.createConverter(MyEnum.class);
-        Assertions.assertNotNull(converter);
-        Assertions.assertEquals(converter.getClass(), EnumConverter.class);
+        assertNotNull(converter);
+        assertEquals(EnumConverter.class, converter.getClass());
     }    
   
 
     private interface EnumCoded { public int getCode(); }
+
     private enum AnotherEnum implements EnumCoded { 
     	VALUE1, VALUE2;
 		public int getCode() {return 0;}
@@ -236,7 +237,7 @@ public class ApplicationImplTest
             return null;
         }
 	}
-	
+
     /**
      * Test method for
      * {@link jakarta.faces.application.Application#createConverter(java.lang.Class)}.
@@ -247,13 +248,13 @@ public class ApplicationImplTest
      * an enum.
      */
     @Test
-    public void testCreateConverterForInterface() throws Exception 
+    void createConverterForInterface() throws Exception 
     {
         application.addConverter(Enum.class, EnumConverter.class.getName());
     	application.addConverter(EnumCoded.class, EnumCodedTestConverter.class.getName());
     	
     	Converter converter = application.createConverter(AnotherEnum.class);
-    	Assertions.assertNotNull(converter);
-        Assertions.assertEquals(converter.getClass(), EnumCodedTestConverter.class);
+    	assertNotNull(converter);
+        assertEquals(EnumCodedTestConverter.class, converter.getClass());
     }
 }

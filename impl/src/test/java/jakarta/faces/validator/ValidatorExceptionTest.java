@@ -26,10 +26,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ValidatorExceptionTest
+class ValidatorExceptionTest
 {
     @Test
-    public void singleFacesMessageNullSummary()
+    void singleFacesMessageNullSummary()
     {
         FacesMessage message = new FacesMessage(null, null);
 
@@ -38,7 +38,7 @@ public class ValidatorExceptionTest
     }
 
     @Test
-    public void singleFacesMessageWithDetail()
+    void singleFacesMessageWithDetail()
     {
         FacesMessage message = new FacesMessage("summary", "detail");
 
@@ -47,7 +47,7 @@ public class ValidatorExceptionTest
     }
 
     @Test
-    public void singleFacesMessageEmptyDetail()
+    void singleFacesMessageEmptyDetail()
     {
         FacesMessage message = new FacesMessage("summary", "");
 
@@ -57,7 +57,7 @@ public class ValidatorExceptionTest
     }
 
     @Test
-    public void singleFacesMaessageNullDetail()
+    void singleFacesMaessageNullDetail()
     {
         FacesMessage message = new FacesMessage("summary", null);
 
@@ -66,7 +66,7 @@ public class ValidatorExceptionTest
     }
 
     @Test
-    public void multipleFacesMessagesSummaryNull()
+    void multipleFacesMessagesSummaryNull()
     {
         List<FacesMessage> messages = List.of(
                 new FacesMessage(null, null),
@@ -78,7 +78,7 @@ public class ValidatorExceptionTest
 
 
     @Test
-    public void multipleFacesMessagesWithDetail()
+    void multipleFacesMessagesWithDetail()
     {
         List<FacesMessage> messages = List.of(
                 new FacesMessage("summary1", "detail1"),
@@ -89,7 +89,7 @@ public class ValidatorExceptionTest
     }
 
     @Test
-    public void multipleFacesMessagesEmptyDetail()
+    void multipleFacesMessagesEmptyDetail()
     {
         List<FacesMessage> messages = List.of(
                 new FacesMessage("summary1", ""),
@@ -101,7 +101,7 @@ public class ValidatorExceptionTest
     }
 
     @Test
-    public void multipleFacesMessagesNullDetail()
+    void multipleFacesMessagesNullDetail()
     {
         List<FacesMessage> messages = List.of(
                 new FacesMessage("summary1", null),

@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.jstl.core;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.Map;
 
 import jakarta.faces.component.UIComponent;
@@ -27,10 +30,9 @@ import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CifTestCase extends AbstractFaceletTestCase
+class CifTestCase extends AbstractFaceletTestCase
 {
 
     protected void setUpServletObjects() throws Exception
@@ -39,9 +41,9 @@ public class CifTestCase extends AbstractFaceletTestCase
         
         servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "true");
     }
-    
+
     @Test
-    public void testIf1() throws Exception
+    void if1() throws Exception
     {
         facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
         
@@ -55,11 +57,11 @@ public class CifTestCase extends AbstractFaceletTestCase
         e.setManagement(true);
         vdl.buildView(facesContext, root,"if2.xhtml");
         UIComponent c = root.findComponent("form");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         c = root.findComponent("start");
-        Assertions.assertNotNull( c);
+        assertNotNull( c);
         c = root.findComponent("end");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
                
         
         // now make sure it isn't
@@ -70,18 +72,18 @@ public class CifTestCase extends AbstractFaceletTestCase
         root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"if2.xhtml");
         c = root.findComponent("form");
-        Assertions.assertNull(c);
+        assertNull(c);
         // start and end are from if2.xhtml, so they shouldn't be here!
         c = root.findComponent("start");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         c = root.findComponent("end");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         facesContext.getAttributes().remove(root);
 
     }
-    
+
     @Test
-    public void testIf2() throws Exception
+    void if2() throws Exception
     {
         facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
         
@@ -95,11 +97,11 @@ public class CifTestCase extends AbstractFaceletTestCase
         e.setManagement(false);
         vdl.buildView(facesContext, root,"if2.xhtml");
         UIComponent c = root.findComponent("form");
-        Assertions.assertNull(c);
+        assertNull(c);
         c = root.findComponent("start");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         c = root.findComponent("end");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         //facesContext.getAttributes().remove(root);
         
         //rebuild if.xml but with form present now
@@ -107,16 +109,16 @@ public class CifTestCase extends AbstractFaceletTestCase
         root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"if2.xhtml");
         c = root.findComponent("form");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         // start and end shouldn't be in the component tree
         c = root.findComponent("start");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         c = root.findComponent("end");
-        Assertions.assertNotNull(c);
-    }    
-    
+        assertNotNull(c);
+    }
+
     @Test
-    public void testIf3() throws Exception
+    void if3() throws Exception
     {
         facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
         
@@ -130,12 +132,12 @@ public class CifTestCase extends AbstractFaceletTestCase
         e.setManagement(true);
         vdl.buildView(facesContext, root,"if3.xhtml");
         UIComponent c = root.findComponent("form");
-        Assertions.assertNotNull(c);
-        Assertions.assertNotNull(c.getFacet("header"));
+        assertNotNull(c);
+        assertNotNull(c.getFacet("header"));
         c = root.findComponent("start");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         c = root.findComponent("end");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         //facesContext.getAttributes().remove(root);
         
         //rebuild if.xml but with form present now
@@ -143,12 +145,12 @@ public class CifTestCase extends AbstractFaceletTestCase
         root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"if3.xhtml");
         c = root.findComponent("form");
-        Assertions.assertNotNull(c);
-        Assertions.assertNull(c.getFacet("header"));
+        assertNotNull(c);
+        assertNull(c.getFacet("header"));
         // start and end shouldn't be in the component tree
         c = root.findComponent("start");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         c = root.findComponent("end");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
     }
 }

@@ -18,11 +18,13 @@
  */
 package org.apache.myfaces.view.facelets.component.rowstate;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.faces.render.ResponseStateManager;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.core.mock.MockMyFacesClient;
 import org.apache.myfaces.test.mock.MockPrintWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -62,7 +64,7 @@ public class RowStateSharedSavedStateTest extends AbstractMyFacesCDIRequestTestC
     }
 
     @Test
-    public void testSecondRestoreOfSavedStateDoesNotSeeChangesOfFirstRestore() throws Exception
+    void secondRestoreOfSavedStateDoesNotSeeChangesOfFirstRestore() throws Exception
     {
         startViewRequest("/rowStateSharedSavedState.xhtml");
         processLifecycleExecuteAndRender();
@@ -71,7 +73,7 @@ public class RowStateSharedSavedStateTest extends AbstractMyFacesCDIRequestTestC
         putRows("first", "one");
         client.submit("form:submit");
         processLifecycleExecuteAndRender();
-        Assertions.assertFalse(facesContext.getMessageList().isEmpty(), "required input should fail");
+        assertFalse(facesContext.getMessageList().isEmpty(), "required input should fail");
         assertRows("first", "one");
         String viewStateOfStep1 = renderedViewState();
 
@@ -79,7 +81,7 @@ public class RowStateSharedSavedStateTest extends AbstractMyFacesCDIRequestTestC
         putRows("first", "second");
         client.submit("form:submit");
         processLifecycleExecuteAndRender();
-        Assertions.assertFalse(facesContext.getMessageList().isEmpty(), "required input should fail");
+        assertFalse(facesContext.getMessageList().isEmpty(), "required input should fail");
         assertRows("first", "second");
 
         // step 3: restore the view state of step 1 again, as the back button or a second tab would do
@@ -87,7 +89,7 @@ public class RowStateSharedSavedStateTest extends AbstractMyFacesCDIRequestTestC
         client.getParameters().put("form:required", "");
         client.ajax("form:refresh", "action", "form:required", "form", true);
         processLifecycleExecuteAndRender();
-        Assertions.assertFalse(facesContext.getMessageList().isEmpty(), "required input should fail");
+        assertFalse(facesContext.getMessageList().isEmpty(), "required input should fail");
         assertRows("first", "one");
         endRequest();
     }
@@ -117,7 +119,7 @@ public class RowStateSharedSavedStateTest extends AbstractMyFacesCDIRequestTestC
     {
         String content = new String(((MockPrintWriter) response.getWriter()).content());
         int start = content.indexOf("name=\"" + ResponseStateManager.VIEW_STATE_PARAM + "\"");
-        Assertions.assertTrue(start >= 0, "view state not rendered in: " + content);
+        assertTrue(start >= 0, "view state not rendered in: " + content);
         String field = content.substring(start, content.indexOf('>', start));
         int valueStart = field.indexOf("value=\"") + "value=\"".length();
         return field.substring(valueStart, field.indexOf('"', valueStart));
@@ -126,9 +128,9 @@ public class RowStateSharedSavedStateTest extends AbstractMyFacesCDIRequestTestC
     private static void assertRenderedValue(String content, String clientId, String expected)
     {
         int start = content.indexOf("id=\"" + clientId + "\"");
-        Assertions.assertTrue(start >= 0, clientId + " not rendered in: " + content);
+        assertTrue(start >= 0, clientId + " not rendered in: " + content);
         String input = content.substring(start, content.indexOf('>', start));
-        Assertions.assertTrue(input.contains("value=\"" + expected + "\""),
+        assertTrue(input.contains("value=\"" + expected + "\""),
                 clientId + " should render " + expected + " but was: " + input);
     }
 }

@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 import jakarta.faces.FactoryFinder;
 
@@ -30,7 +32,6 @@ import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -95,7 +96,7 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
     }
 
     @Test
-    public void testHtmlPropertyPassTru() throws Exception
+    void htmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = {
             //_EventProperties
@@ -132,51 +133,51 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 messages, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
-    
+
     @Test
-    public void testRenderSpanOnlyWhenNecessary1() throws Exception
+    void renderSpanOnlyWhenNecessary1() throws Exception
     {
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSummary", "detailWarnSummary"));
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
-        Assertions.assertTrue(output.contains("warnSummary"));
-        Assertions.assertTrue(!output.contains("span"));
+        assertTrue(output.contains("warnSummary"));
+        assertFalse(output.contains("span"));
     }
-    
+
     @Test
-    public void testRenderSpanOnlyWhenNecessary2() throws Exception
+    void renderSpanOnlyWhenNecessary2() throws Exception
     {
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSummary", "detailWarnSummary"));
         messages.setLayout("table");
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
-        Assertions.assertTrue(output.contains("warnSummary"));
-        Assertions.assertTrue(!output.contains("span"));
+        assertTrue(output.contains("warnSummary"));
+        assertFalse(output.contains("span"));
     }
-    
+
     @Test
-    public void testRenderSpanOnlyWhenNecessary3() throws Exception
+    void renderSpanOnlyWhenNecessary3() throws Exception
     {
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.WARN, "warnSummary", "detailWarnSummary"));
         messages.setId("msgPanel");
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
-        Assertions.assertTrue(output.contains("warnSummary"));
-        Assertions.assertTrue(!output.contains("span"));
+        assertTrue(output.contains("warnSummary"));
+        assertFalse(output.contains("span"));
     }
-    
+
     /**
      * It should output the class on li
      * @throws Exception
      */
     @Test
-    public void testRenderSpanOnlyWhenNecessary4() throws Exception
+    void renderSpanOnlyWhenNecessary4() throws Exception
     {
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.FATAL, "fatalSummary", "detailFatalSummary"));
         messages.setId("msgPanel");
@@ -184,17 +185,17 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
-        Assertions.assertTrue(output.contains("fatalSummary"));
-        Assertions.assertTrue(output.contains("li class=\"fatalClass\""));
-        Assertions.assertTrue(!output.contains("span"));
+        assertTrue(output.contains("fatalSummary"));
+        assertTrue(output.contains("li class=\"fatalClass\""));
+        assertFalse(output.contains("span"));
     }
-    
+
     /**
      * It should output the class on td
      * @throws Exception
      */
     @Test
-    public void testRenderSpanOnlyWhenNecessary5() throws Exception
+    void renderSpanOnlyWhenNecessary5() throws Exception
     {
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.Severity.FATAL, "fatalSummary", "detailFatalSummary"));
         messages.setId("msgPanel");
@@ -203,13 +204,13 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
-        Assertions.assertTrue(output.contains("fatalSummary"));
-        Assertions.assertTrue(output.contains("td class=\"fatalClass\""));
-        Assertions.assertTrue(!output.contains("span"));
+        assertTrue(output.contains("fatalSummary"));
+        assertTrue(output.contains("td class=\"fatalClass\""));
+        assertFalse(output.contains("span"));
     }
-    
+
     @Test
-    public void testHtmlPropertyPassTruNotRendered() throws Exception
+    void htmlPropertyPassTruNotRendered() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
         
@@ -227,7 +228,7 @@ public class HtmlMessagesRendererTest extends AbstractFacesConfigurableMockTestC
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 messages, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            Assertions.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
 }

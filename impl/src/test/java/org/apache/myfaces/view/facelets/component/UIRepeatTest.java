@@ -25,11 +25,13 @@ import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -62,7 +64,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
      * {@link jakarta.faces.component.UIData#setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
      */
     @Test
-    public void testValueExpression()
+    void valueExpression()
     {
         assertSetValueExpressionException(IllegalArgumentException.class, "rowIndex");
         assertSetValueExpressionException(NullPointerException.class, null);
@@ -70,7 +72,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
 
     private void assertSetValueExpressionException(Class<? extends Throwable> expected, final String name)
     {
-        Assertions.assertThrows(expected,
+        assertThrows(expected,
                 () -> _testImpl.setValueExpression(name, null));
     }
 
@@ -79,7 +81,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
      * Adapted to use UIRepeat with rowStatePreserved
      */
     @Test
-    public void testPreserveRowComponentState() throws Exception
+    void preserveRowComponentState() throws Exception
     {
         List<RowData> model = new ArrayList<RowData>();
         model.add(new RowData("text1","style1"));
@@ -128,7 +130,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assertions.assertEquals(rowData.getText(), text.getValue());
+            assertEquals(rowData.getText(), text.getValue());
             text.getAttributes().put("style", rowData.getStyle());
         }
         
@@ -139,7 +141,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
         for (int i = 0; i < model.size(); i++)
         {
             table.setRowIndex(i);
-            Assertions.assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
+            assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
         }
         
     }
@@ -156,7 +158,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
      * @throws Exception 
      */
     @Test
-    public void testSaveAndRestorePortletLifecycleWithoutPss1() throws Exception
+    void saveAndRestorePortletLifecycleWithoutPss1() throws Exception
     {
         List<RowData> model = new ArrayList<RowData>();
         model.add(new RowData("text1","style1"));
@@ -180,7 +182,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assertions.assertEquals(rowData.getText(), text.getValue());
+            assertEquals(rowData.getText(), text.getValue());
             text.setSubmittedValue("value"+(i+1));
             //text.getAttributes().put("style", rowData.getStyle());
         }
@@ -219,11 +221,11 @@ public class UIRepeatTest extends AbstractFacesTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            Assertions.assertEquals("value"+(i+1), text.getSubmittedValue());
+            assertEquals("value"+(i+1), text.getSubmittedValue());
             //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
         }
     }
-    
+
     /**
      * A UIRepeat nested inside another UIRepeat keeps its per-row state per enclosing row: the inner repeat's row 0
      * in outer row 0 is a different cell from the inner repeat's row 0 in outer row 1. Keying the inner repeat's
@@ -231,7 +233,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
      * submitted values of every enclosing row but the last.
      */
     @Test
-    public void testNestedRepeatRowStateIsScopedPerOuterRow()
+    void nestedRepeatRowStateIsScopedPerOuterRow()
     {
         UIViewRoot root = facesContext.getViewRoot();
         root.setId(root.createUniqueId());
@@ -273,7 +275,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
             for (int innerRow = 0; innerRow < 2; innerRow++)
             {
                 inner.setRowIndex(innerRow);
-                Assertions.assertEquals("v" + outerRow + innerRow, input.getSubmittedValue(),
+                assertEquals("v" + outerRow + innerRow, input.getSubmittedValue(),
                         "outer row " + outerRow + ", inner row " + innerRow
                                 + " must keep the value submitted into it");
             }
@@ -331,7 +333,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
      * This exercises {@code saveChildStates} / {@code restoreChildStates}.
      */
     @Test
-    public void testStatefulRowStateIsPreservedOnRevisit()
+    void statefulRowStateIsPreservedOnRevisit()
     {
         UIViewRoot root = facesContext.getViewRoot();
         UIRepeat repeat = createRepeat(root, Arrays.asList("a", "b", "c"));
@@ -354,7 +356,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
         for (int i = 0; i < 3; i++)
         {
             repeat.setRowIndex(i);
-            Assertions.assertEquals("submitted_" + i, input.getSubmittedValue(),
+            assertEquals("submitted_" + i, input.getSubmittedValue(),
                     "Row " + i + ": submitted value should be restored from Integer row-index-keyed _rowStates");
         }
         repeat.setRowIndex(-1);
@@ -365,7 +367,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
      * components to their initial (empty) state.
      */
     @Test
-    public void testStatefulResetToInitialStateAtIndexMinusOne()
+    void statefulResetToInitialStateAtIndexMinusOne()
     {
         UIViewRoot root = facesContext.getViewRoot();
         UIRepeat repeat = createRepeat(root, Arrays.asList("a", "b"));
@@ -383,9 +385,9 @@ public class UIRepeatTest extends AbstractFacesTestCase
 
         // Reset to -1: components must be in their clean template state.
         repeat.setRowIndex(-1);
-        Assertions.assertNull(input.getSubmittedValue(),
+        assertNull(input.getSubmittedValue(),
                 "After reset to -1, submitted value must be cleared to initial state");
-        Assertions.assertTrue(input.isValid(),
+        assertTrue(input.isValid(),
                 "After reset to -1, valid flag must be restored to true");
     }
 
@@ -393,7 +395,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
      * Multiple UIInput siblings must each have independent per-row state.
      */
     @Test
-    public void testStatefulMultipleEVHSiblingsHaveIndependentState()
+    void statefulMultipleEVHSiblingsHaveIndependentState()
     {
         UIViewRoot root = facesContext.getViewRoot();
         UIRepeat repeat = createRepeat(root, Arrays.asList("x", "y"));
@@ -419,13 +421,13 @@ public class UIRepeatTest extends AbstractFacesTestCase
 
         // Revisit row 0 — both inputs must have their row-0 values.
         repeat.setRowIndex(0);
-        Assertions.assertEquals("a0", inputA.getSubmittedValue());
-        Assertions.assertEquals("b0", inputB.getSubmittedValue());
+        assertEquals("a0", inputA.getSubmittedValue());
+        assertEquals("b0", inputB.getSubmittedValue());
 
         // Revisit row 1 — both inputs must have their row-1 values.
         repeat.setRowIndex(1);
-        Assertions.assertEquals("a1", inputA.getSubmittedValue());
-        Assertions.assertEquals("b1", inputB.getSubmittedValue());
+        assertEquals("a1", inputA.getSubmittedValue());
+        assertEquals("b1", inputB.getSubmittedValue());
     }
 
     /**
@@ -433,7 +435,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
      * {@code _iterationEVHList} (depth-first traversal).
      */
     @Test
-    public void testStatefulNestedEVHStateIsPreserved()
+    void statefulNestedEVHStateIsPreserved()
     {
         UIViewRoot root = facesContext.getViewRoot();
         UIRepeat repeat = createRepeat(root, Arrays.asList("x", "y"));
@@ -456,11 +458,11 @@ public class UIRepeatTest extends AbstractFacesTestCase
         repeat.setRowIndex(-1);
 
         repeat.setRowIndex(0);
-        Assertions.assertEquals("nested_0", input.getSubmittedValue(),
+        assertEquals("nested_0", input.getSubmittedValue(),
                 "Nested UIInput row-0 state must be restored");
 
         repeat.setRowIndex(1);
-        Assertions.assertEquals("nested_1", input.getSubmittedValue(),
+        assertEquals("nested_1", input.getSubmittedValue(),
                 "Nested UIInput row-1 state must be restored");
     }
 
@@ -473,7 +475,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
      * reset clientIds correctly so each row produces unique clientIds.
      */
     @Test
-    public void testReadOnlyClientIdResetPerRow()
+    void readOnlyClientIdResetPerRow()
     {
         UIViewRoot root = facesContext.getViewRoot();
         UIRepeat repeat = createRepeat(root, Arrays.asList("x", "y", "z"));
@@ -492,13 +494,13 @@ public class UIRepeatTest extends AbstractFacesTestCase
         repeat.setRowIndex(2);
         String clientId2 = out.getClientId(facesContext);
 
-        Assertions.assertNotEquals(clientId0, clientId1, "ClientIds must differ between rows");
-        Assertions.assertNotEquals(clientId1, clientId2, "ClientIds must differ between rows");
+        assertNotEquals(clientId0, clientId1, "ClientIds must differ between rows");
+        assertNotEquals(clientId1, clientId2, "ClientIds must differ between rows");
 
         // After resetting, the IDs must match the first pass.
         repeat.setRowIndex(-1);
         repeat.setRowIndex(0);
-        Assertions.assertEquals(clientId0, out.getClientId(facesContext),
+        assertEquals(clientId0, out.getClientId(facesContext),
                 "ClientId for row 0 must be stable across iteration sequences");
     }
 
@@ -507,7 +509,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
      * state is not saved ({@code _iterationResetList} includes them).
      */
     @Test
-    public void testReadOnlyTransientComponentClientIdIsReset()
+    void readOnlyTransientComponentClientIdIsReset()
     {
         UIViewRoot root = facesContext.getViewRoot();
         UIRepeat repeat = createRepeat(root, Arrays.asList("x", "y"));
@@ -524,7 +526,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
         repeat.setRowIndex(1);
         String id1 = transientOut.getClientId(facesContext);
 
-        Assertions.assertNotEquals(id0, id1,
+        assertNotEquals(id0, id1,
                 "Transient component clientId must be reset per row");
     }
 
@@ -537,7 +539,7 @@ public class UIRepeatTest extends AbstractFacesTestCase
      * iteration sequence (simulating RENDER_RESPONSE) must still work correctly.
      */
     @Test
-    public void testIterationListsAreRebuiltAfterEncodeBegin() throws Exception
+    void iterationListsAreRebuiltAfterEncodeBegin() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         root.setRenderKitId("HTML_BASIC");
@@ -563,11 +565,11 @@ public class UIRepeatTest extends AbstractFacesTestCase
         // Second iteration sequence (simulates RENDER_RESPONSE row walk)
         // must still reset clientIds without NPE or stale state
         repeat.setRowIndex(0);
-        Assertions.assertNull(input.getSubmittedValue(),
+        assertNull(input.getSubmittedValue(),
                 "After encodeBegin, _rowStates is cleared and initial state is clean");
 
         repeat.setRowIndex(1);
-        Assertions.assertNull(input.getSubmittedValue());
+        assertNull(input.getSubmittedValue());
 
         repeat.setRowIndex(-1);
     }

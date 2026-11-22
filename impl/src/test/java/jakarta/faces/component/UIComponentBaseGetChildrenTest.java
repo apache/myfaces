@@ -18,17 +18,18 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UIComponentBaseGetChildrenTest extends AbstractFacesTestCase
+class UIComponentBaseGetChildrenTest extends AbstractFacesTestCase
 {
     @Test
-    public void testGetChildrenAddAll()
+    void getChildrenAddAll()
     {
         UIInput input0 = new UIInput();
         UIInput input1 = new UIInput();
@@ -56,23 +57,23 @@ public class UIComponentBaseGetChildrenTest extends AbstractFacesTestCase
         // inserted to the first ones
         children.addAll(0, list);
         
-        Assertions.assertEquals(4, children.size());
-        Assertions.assertEquals(input2.getId(), children.get(0).getId());
-        Assertions.assertEquals(input3.getId(), children.get(1).getId());
+        assertEquals(4, children.size());
+        assertEquals(input2.getId(), children.get(0).getId());
+        assertEquals(input3.getId(), children.get(1).getId());
     }
-    
+
     @Test
-    public void testSimpleAddRemove()
+    void simpleAddRemove()
     {
         UIInput input = new UIInput();
         input.setId("input0");
         UIPanel panel = new UIPanel();
         panel.getChildren().add(input);
-        Assertions.assertEquals(panel, input.getParent());
+        assertEquals(panel, input.getParent());
         panel.getChildren().remove(input);
-        Assertions.assertNull(input.getParent());
+        assertNull(input.getParent());
     }
-    
+
     /** Whenever a new child component is added, the parent property 
      * of the child must be set to this component instance. 
      * If the parent property of the child was already non-null, 
@@ -80,7 +81,7 @@ public class UIComponentBaseGetChildrenTest extends AbstractFacesTestCase
      * (where it may have been either a child or a facet).
      */
     @Test
-    public void testSetChild1()
+    void setChild1()
     {
         UIInput input = new UIInput();
         input.setId("input0");
@@ -90,16 +91,16 @@ public class UIComponentBaseGetChildrenTest extends AbstractFacesTestCase
         
         UIPanel panel = new UIPanel();
         panel.getChildren().add(input);
-        Assertions.assertEquals(panel, input.getParent());
+        assertEquals(panel, input.getParent());
         
         panel.getChildren().set(0, input1);
         
-        Assertions.assertEquals(panel, input1.getParent());
-        Assertions.assertNull(input.getParent());
+        assertEquals(panel, input1.getParent());
+        assertNull(input.getParent());
     }
-    
+
     @Test
-    public void testSetChild2()
+    void setChild2()
     {
         UIInput input = new UIInput();
         input.setId("input0");
@@ -109,7 +110,7 @@ public class UIComponentBaseGetChildrenTest extends AbstractFacesTestCase
         
         UIPanel panel = new UIPanel();
         panel.getChildren().add(input);
-        Assertions.assertEquals(panel, input.getParent());
+        assertEquals(panel, input.getParent());
         
         UIViewRoot root = new UIViewRoot();
         root.getChildren().add(panel);
@@ -117,19 +118,18 @@ public class UIComponentBaseGetChildrenTest extends AbstractFacesTestCase
         
         panel.getChildren().set(0, input1);
         
-        Assertions.assertEquals(panel, input1.getParent());
-        Assertions.assertNull(input.getParent());
+        assertEquals(panel, input1.getParent());
+        assertNull(input.getParent());
         
-        Assertions.assertTrue(root.getFacets().isEmpty());
+        assertTrue(root.getFacets().isEmpty());
     }
-    
-    
-    
+
+
     /** Whenever an existing child component is removed, the parent 
      * property of the child must be set to null.
      */
     @Test
-    public void testSetFacetClearChild()
+    void setFacetClearChild()
     {
         UIInput input = new UIInput();
         input.setId("input0");
@@ -139,22 +139,22 @@ public class UIComponentBaseGetChildrenTest extends AbstractFacesTestCase
         
         UIPanel panel = new UIPanel();
         panel.getChildren().add(input);
-        Assertions.assertEquals(panel, input.getParent());
+        assertEquals(panel, input.getParent());
 
         UIViewRoot root = new UIViewRoot();
         root.getChildren().add(panel);
         root.getFacets().put("customFacet", input1);
 
         root.getFacets().put("customFacet", input);
-        Assertions.assertEquals(root, input.getParent());
-        Assertions.assertNull(input1.getParent());
+        assertEquals(root, input.getParent());
+        assertNull(input1.getParent());
         
-        Assertions.assertFalse(root.getFacets().isEmpty());
-        Assertions.assertTrue(panel.getChildCount() == 0);
+        assertFalse(root.getFacets().isEmpty());
+        assertEquals(0, panel.getChildCount());
     }
 
     @Test
-    public void testSetFacetClearFacet()
+    void setFacetClearFacet()
     {
         UIInput input = new UIInput();
         input.setId("input0");
@@ -164,17 +164,17 @@ public class UIComponentBaseGetChildrenTest extends AbstractFacesTestCase
         
         UIPanel panel = new UIPanel();
         panel.getFacets().put("header", input);
-        Assertions.assertEquals(panel, input.getParent());
+        assertEquals(panel, input.getParent());
 
         UIViewRoot root = new UIViewRoot();
         root.getChildren().add(panel);
         root.getFacets().put("customFacet", input1);
 
         root.getFacets().put("customFacet", input);
-        Assertions.assertEquals(root, input.getParent());
-        Assertions.assertNull(input1.getParent());
+        assertEquals(root, input.getParent());
+        assertNull(input1.getParent());
         
-        Assertions.assertFalse(root.getFacets().isEmpty());
-        Assertions.assertTrue(panel.getChildCount() == 0);
+        assertFalse(root.getFacets().isEmpty());
+        assertEquals(0, panel.getChildCount());
     }
 }

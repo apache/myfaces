@@ -29,11 +29,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class DynamicComponentFaceletTestCase extends AbstractFaceletTestCase
+class DynamicComponentFaceletTestCase extends AbstractFaceletTestCase
 {
-    
+
     @Test
-    public void testCompileComponentHandler() throws Exception
+    void compileComponentHandler() throws Exception
     {
         Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("value", "hello");

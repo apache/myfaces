@@ -19,6 +19,8 @@
 
 package org.apache.myfaces.view.facelets.tag.jstl.core;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,10 +45,9 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public final class JstlCoreTestCase extends AbstractFaceletTestCase {
+final class JstlCoreTestCase extends AbstractFaceletTestCase {
 
     @Override
     protected ExpressionFactory createExpressionFactory()
@@ -87,9 +88,9 @@ public final class JstlCoreTestCase extends AbstractFaceletTestCase {
         renderKit.addRenderer(HtmlOutputText.COMPONENT_FAMILY,
                 "jakarta.faces.Text", new HtmlTextRenderer());
     }
-    
+
     @Test
-    public void testIf() throws Exception {
+    void testIf() throws Exception {
         Map session = facesContext.getExternalContext().getSessionMap();
         Employee e = new Employee();
         session.put("employee", e);
@@ -100,7 +101,7 @@ public final class JstlCoreTestCase extends AbstractFaceletTestCase {
         e.setManagement(true);
         vdl.buildView(facesContext, root,"if.xml");
         UIComponent c = root.findComponent("form");
-        Assertions.assertNotNull(c);
+        assertNotNull(c);
         
         // now make sure it isn't
         e.setManagement(false);
@@ -110,11 +111,11 @@ public final class JstlCoreTestCase extends AbstractFaceletTestCase {
         root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"if.xml");
         c = root.findComponent("form");
-        Assertions.assertNull(c);
+        assertNull(c);
     }
-    
+
     @Test
-    public void testForEach() throws Exception {
+    void forEach() throws Exception {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map session = facesContext.getExternalContext().getSessionMap();
         Collection c = new ArrayList();
@@ -137,9 +138,9 @@ public final class JstlCoreTestCase extends AbstractFaceletTestCase {
         root.encodeAll(facesContext);
         sw.flush();
     }
-    
+
     @Test
-    public void testForEach1() throws Exception {
+    void forEach1() throws Exception {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map session = facesContext.getExternalContext().getSessionMap();
         Collection c = new ArrayList();
@@ -158,16 +159,16 @@ public final class JstlCoreTestCase extends AbstractFaceletTestCase {
         root.encodeAll(facesContext);
         sw.flush();
         
-        Assertions.assertTrue(sw.toString().contains("A = true/false"));
-        Assertions.assertTrue(sw.toString().contains("B = false/false"));
-        Assertions.assertTrue(sw.toString().contains("C = false/false"));
-        Assertions.assertTrue(sw.toString().contains("D = false/false"));
-        Assertions.assertTrue(sw.toString().contains("E = false/false"));
-        Assertions.assertTrue(sw.toString().contains("F = false/false"));
-        Assertions.assertTrue(sw.toString().contains("G = false/false"));
-        Assertions.assertTrue(sw.toString().contains("H = false/false"));
-        Assertions.assertTrue(sw.toString().contains("I = false/false"));
-        Assertions.assertTrue(sw.toString().contains("J = false/true"));
+        assertTrue(sw.toString().contains("A = true/false"));
+        assertTrue(sw.toString().contains("B = false/false"));
+        assertTrue(sw.toString().contains("C = false/false"));
+        assertTrue(sw.toString().contains("D = false/false"));
+        assertTrue(sw.toString().contains("E = false/false"));
+        assertTrue(sw.toString().contains("F = false/false"));
+        assertTrue(sw.toString().contains("G = false/false"));
+        assertTrue(sw.toString().contains("H = false/false"));
+        assertTrue(sw.toString().contains("I = false/false"));
+        assertTrue(sw.toString().contains("J = false/true"));
     }
 
     /**
@@ -177,7 +178,7 @@ public final class JstlCoreTestCase extends AbstractFaceletTestCase {
      * @throws Exception 
      */
     @Test
-    public void testForEach2() throws Exception {
+    void forEach2() throws Exception {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map session = facesContext.getExternalContext().getSessionMap();
         Collection c = new ArrayList();
@@ -196,15 +197,15 @@ public final class JstlCoreTestCase extends AbstractFaceletTestCase {
         root.encodeAll(facesContext);
         sw.flush();
         
-        Assertions.assertTrue(sw.toString().contains("value1 = /"));
+        assertTrue(sw.toString().contains("value1 = /"));
     }
-    
+
     @Test
-    public void testForEach2CacheAlways() throws Exception
+    void forEach2CacheAlways() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
-        testForEach2();
+        forEach2();
     }
 
 
@@ -214,7 +215,7 @@ public final class JstlCoreTestCase extends AbstractFaceletTestCase {
      * @throws Exception 
      */
     @Test
-    public void testForEach3() throws Exception {
+    void forEach3() throws Exception {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map session = facesContext.getExternalContext().getSessionMap();
         Collection c = new ArrayList();
@@ -233,25 +234,25 @@ public final class JstlCoreTestCase extends AbstractFaceletTestCase {
         root.encodeAll(facesContext);
         sw.flush();
         
-        Assertions.assertTrue(sw.toString().contains("A = true/false"));
-        Assertions.assertTrue(sw.toString().contains("B = false/false"));
-        Assertions.assertTrue(sw.toString().contains("C = false/false"));
-        Assertions.assertTrue(sw.toString().contains("D = false/false"));
-        Assertions.assertTrue(sw.toString().contains("E = false/false"));
-        Assertions.assertTrue(sw.toString().contains("F = false/false"));
-        Assertions.assertTrue(sw.toString().contains("G = false/false"));
-        Assertions.assertTrue(sw.toString().contains("H = false/false"));
-        Assertions.assertTrue(sw.toString().contains("I = false/false"));
-        Assertions.assertTrue(sw.toString().contains("J = false/true"));
-        Assertions.assertFalse(sw.toString().contains("value1 ="));
+        assertTrue(sw.toString().contains("A = true/false"));
+        assertTrue(sw.toString().contains("B = false/false"));
+        assertTrue(sw.toString().contains("C = false/false"));
+        assertTrue(sw.toString().contains("D = false/false"));
+        assertTrue(sw.toString().contains("E = false/false"));
+        assertTrue(sw.toString().contains("F = false/false"));
+        assertTrue(sw.toString().contains("G = false/false"));
+        assertTrue(sw.toString().contains("H = false/false"));
+        assertTrue(sw.toString().contains("I = false/false"));
+        assertTrue(sw.toString().contains("J = false/true"));
+        assertFalse(sw.toString().contains("value1 ="));
     }
-    
+
     @Test
-    public void testForEach3CacheAlways() throws Exception
+    void forEach3CacheAlways() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
-        testForEach3();
+        forEach3();
     }
 
 
@@ -261,7 +262,7 @@ public final class JstlCoreTestCase extends AbstractFaceletTestCase {
      * @throws Exception 
      */
     @Test
-    public void testForEach4() throws Exception {
+    void forEach4() throws Exception {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map session = facesContext.getExternalContext().getSessionMap();
         Collection c = new ArrayList();
@@ -280,26 +281,26 @@ public final class JstlCoreTestCase extends AbstractFaceletTestCase {
         root.encodeAll(facesContext);
         sw.flush();
         
-        Assertions.assertTrue(sw.toString().contains("value = A"));
-        Assertions.assertTrue(sw.toString().contains("value = B"));
-        Assertions.assertTrue(sw.toString().contains("value = C"));
-        Assertions.assertTrue(sw.toString().contains("value = D"));
-        Assertions.assertTrue(sw.toString().contains("value = E"));
-        Assertions.assertTrue(sw.toString().contains("value = F"));
-        Assertions.assertTrue(sw.toString().contains("value = G"));
-        Assertions.assertTrue(sw.toString().contains("value = H"));
-        Assertions.assertTrue(sw.toString().contains("value = I"));
-        Assertions.assertTrue(sw.toString().contains("value = J"));
-        Assertions.assertTrue(!sw.toString().contains("value = value"));
-        Assertions.assertTrue(!sw.toString().contains("A = A"));
+        assertTrue(sw.toString().contains("value = A"));
+        assertTrue(sw.toString().contains("value = B"));
+        assertTrue(sw.toString().contains("value = C"));
+        assertTrue(sw.toString().contains("value = D"));
+        assertTrue(sw.toString().contains("value = E"));
+        assertTrue(sw.toString().contains("value = F"));
+        assertTrue(sw.toString().contains("value = G"));
+        assertTrue(sw.toString().contains("value = H"));
+        assertTrue(sw.toString().contains("value = I"));
+        assertTrue(sw.toString().contains("value = J"));
+        assertFalse(sw.toString().contains("value = value"));
+        assertFalse(sw.toString().contains("A = A"));
     }
 
     @Test
-    public void testForEach4CacheAlways() throws Exception
+    void forEach4CacheAlways() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
-        testForEach4();
+        forEach4();
     }
 
 }

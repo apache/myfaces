@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
  * StateUtils.
  */
 
-public class StateUtilsDefaultTest extends AbstractStateUtilsTest
+class StateUtilsDefaultTest extends AbstractStateUtilsTest
 {
     @Override
     @BeforeEach

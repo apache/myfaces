@@ -18,7 +18,8 @@
  */
 package org.apache.myfaces.renderkit;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 
 import jakarta.el.ValueExpression;
@@ -35,7 +36,6 @@ import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
  * @author Bruno Aranda (latest modification by $Author: struberg $)
  * @version $Revision: 1188235 $ $Date: 2011-10-24 13:09:33 -0400 (Mon, 24 Oct 2011) $
  */
-public class ErrorPageWriterTest extends AbstractFacesTestCase
+class ErrorPageWriterTest extends AbstractFacesTestCase
 {
     private MockResponseWriter writer ;
     private HtmlOutputText outputText;
@@ -79,7 +79,7 @@ public class ErrorPageWriterTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testValueExpressionGetExpressionStringReturnsNull() throws IOException
+    void valueExpressionGetExpressionStringReturnsNull() throws Exception
     {
         //See MYFACES-3413 for details
         UIViewRoot root = facesContext.getViewRoot();
@@ -106,7 +106,7 @@ public class ErrorPageWriterTest extends AbstractFacesTestCase
         }
         int indexOfHasRenderedAttribute = output.indexOf("rendered=\"\"");
         boolean hasRenderedAttribute = (-1 != indexOfHasRenderedAttribute);
-        Assertions.assertTrue(hasRenderedAttribute, "rendered attribute wasn't written correctly: " + surroundingText);
+        assertTrue(hasRenderedAttribute, "rendered attribute wasn't written correctly: " + surroundingText);
     }
     
 }

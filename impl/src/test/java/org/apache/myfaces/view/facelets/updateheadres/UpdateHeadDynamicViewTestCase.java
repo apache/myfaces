@@ -18,16 +18,18 @@
  */
 package org.apache.myfaces.view.facelets.updateheadres;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
 
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTestCase
+class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTestCase
 {
 
     @Override
@@ -38,9 +40,9 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.StateSavingMethod.CLIENT.name());
         servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
     }
-    
+
     @Test
-    public void testNoUpdateScript1Head() throws Exception
+    void noUpdateScript1Head() throws Exception
     {
         startViewRequest("/ajaxContent.xhtml");
         processLifecycleExecuteAndRender();
@@ -53,13 +55,13 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         processLifecycleExecuteAndRender();
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assertions.assertFalse(text.contains("update id=\"jakarta.faces.ViewHead\""));
+        assertFalse(text.contains("update id=\"jakarta.faces.ViewHead\""));
         //System.out.println(text);
         endRequest();
     }
-    
+
     @Test
-    public void testUpdateScript2Head() throws Exception
+    void updateScript2Head() throws Exception
     {
         startViewRequest("/ajaxContent.xhtml");
         processLifecycleExecuteAndRender();
@@ -73,14 +75,14 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assertions.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
-        Assertions.assertTrue(text.contains("alert(\"script2\");"));
+        assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
+        assertTrue(text.contains("alert(\"script2\");"));
         //System.out.println(text);
         endRequest();
     }
-    
+
     @Test
-    public void testUpdateScript3Head() throws Exception
+    void updateScript3Head() throws Exception
     {
         startViewRequest("/ajaxContent.xhtml");
         processLifecycleExecuteAndRender();
@@ -94,10 +96,10 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assertions.assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
-        Assertions.assertTrue(text.contains("alert(\"script3\");"));
+        assertTrue(text.contains("update id=\"jakarta.faces.Resource\""));
+        assertTrue(text.contains("alert(\"script3\");"));
          // MYFACES-4681 - HTML5 is default output mode, so the type attribute is unnecessary
-        Assertions.assertTrue(text.contains("link rel=\"stylesheet\" href=\"/test/faces/jakarta.faces.resource/style3.css\""));
+        assertTrue(text.contains("link rel=\"stylesheet\" href=\"/test/faces/jakarta.faces.resource/style3.css\""));
         //System.out.println(text);
         endRequest();
     }

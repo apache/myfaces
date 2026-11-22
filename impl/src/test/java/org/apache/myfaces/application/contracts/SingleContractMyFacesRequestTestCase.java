@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.application.contracts;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -33,10 +36,9 @@ import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.test.mock.MockPrintWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
+class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpWebConfigParams() throws Exception
@@ -48,9 +50,9 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequ
         servletContext.addInitParameter("jakarta.faces.CONFIG_FILES", "/no-contract-faces-config.xml");
         servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.Production.toString());
     }
-    
+
     @Test
-    public void testDefaultConfiguration() throws Exception
+    void defaultConfiguration() throws Exception
     {
         startViewRequest("/index.xhtml");
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
@@ -59,19 +61,19 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequ
         Set<String> externalContextContracts = runtimeConfig.getExternalContextResourceLibraryContracts();
         Set<String> classloaderContracts = runtimeConfig.getClassLoaderResourceLibraryContracts();
 
-        Assertions.assertTrue(allContracts.contains("yellow"));
-        Assertions.assertTrue(allContracts.contains("blue"));
-        Assertions.assertTrue(allContracts.contains("red"));
+        assertTrue(allContracts.contains("yellow"));
+        assertTrue(allContracts.contains("blue"));
+        assertTrue(allContracts.contains("red"));
 
-        Assertions.assertTrue(classloaderContracts.contains("yellow"));
-        Assertions.assertTrue(classloaderContracts.contains("blue"));
-        Assertions.assertTrue(externalContextContracts.contains("red"));
+        assertTrue(classloaderContracts.contains("yellow"));
+        assertTrue(classloaderContracts.contains("blue"));
+        assertTrue(externalContextContracts.contains("red"));
         
         processLifecycleExecute();
         executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assertions.assertTrue(contractsList == null || contractsList.isEmpty());
+        assertTrue(contractsList == null || contractsList.isEmpty());
         
         executeViewHandlerRender();
         executeAfterRender();
@@ -80,7 +82,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequ
     }
 
     @Test
-    public void testView1() throws Exception
+    void view1() throws Exception
     {
         startViewRequest("/view_1.xhtml");
         
@@ -88,7 +90,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequ
         executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assertions.assertTrue(contractsList.contains("yellow"));
+        assertTrue(contractsList.contains("yellow"));
         
         executeViewHandlerRender();
         executeAfterRender();
@@ -99,18 +101,18 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequ
         processLifecycleExecute();
         
         List<String> contractsList2 = facesContext.getResourceLibraryContracts();
-        Assertions.assertTrue(contractsList2.contains("yellow"));
+        assertTrue(contractsList2.contains("yellow"));
     }
-    
+
     @Test
-    public void testView2() throws Exception
+    void view2() throws Exception
     {
         startViewRequest("/view_2.xhtml");
         processLifecycleExecute();
         executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assertions.assertTrue(contractsList.contains("blue"));
+        assertTrue(contractsList.contains("blue"));
         
         executeViewHandlerRender();
         executeAfterRender();
@@ -121,18 +123,18 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequ
         processLifecycleExecute();
         
         List<String> contractsList2 = facesContext.getResourceLibraryContracts();
-        Assertions.assertTrue(contractsList2.contains("blue"));
+        assertTrue(contractsList2.contains("blue"));
     }
 
     @Test
-    public void testView3() throws Exception
+    void view3() throws Exception
     {
         startViewRequest("/view_3.xhtml");
         processLifecycleExecute();
         executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assertions.assertTrue(contractsList.contains("red"));
+        assertTrue(contractsList.contains("red"));
         
         executeViewHandlerRender();
         executeAfterRender();
@@ -143,25 +145,25 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequ
         processLifecycleExecute();
         
         List<String> contractsList2 = facesContext.getResourceLibraryContracts();
-        Assertions.assertTrue(contractsList2.contains("red"));
+        assertTrue(contractsList2.contains("red"));
     }
-    
+
     @Test
-    public void testView1_3() throws Exception
+    void view13() throws Exception
     {
         startViewRequest("/view_1.xhtml");
         processLifecycleExecute();
         executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assertions.assertTrue(contractsList.contains("yellow"));
+        assertTrue(contractsList.contains("yellow"));
         
         executeViewHandlerRender();
         executeAfterRender();
         
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();        
         String content1 = new String(writer1.content());
-        Assertions.assertTrue(content1.contains("header_yellow"));
+        assertTrue(content1.contains("header_yellow"));
         
         endRequest();
         
@@ -170,21 +172,21 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequ
         executeBuildViewCycle();
         
         contractsList = facesContext.getResourceLibraryContracts();
-        Assertions.assertTrue(contractsList.contains("red"));
+        assertTrue(contractsList.contains("red"));
         
         executeViewHandlerRender();
 
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
-        Assertions.assertTrue(content2.contains("header_red"));
+        assertTrue(content2.contains("header_red"));
         
         executeAfterRender();
         
         endRequest();
-    }    
+    }
 
     @Test
-    public void testGetViewResourcesYellow()
+    void getViewResourcesYellow()
     {
         startViewRequest("/view_1.xhtml");
         processLifecycleExecute();        
@@ -210,14 +212,14 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequ
                 hasRedPage = true;
             }
         }
-        Assertions.assertTrue(hasYellowPage);
-        Assertions.assertFalse(hasBluePage);
-        Assertions.assertFalse(hasRedPage);
+        assertTrue(hasYellowPage);
+        assertFalse(hasBluePage);
+        assertFalse(hasRedPage);
     }
 
-    
+
     @Test
-    public void testGetViewResourcesBlue()
+    void getViewResourcesBlue()
     {
         startViewRequest("/view_2.xhtml");
         processLifecycleExecute();        
@@ -243,13 +245,13 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequ
                 hasRedPage = true;
             }
         }
-        Assertions.assertFalse(hasYellowPage);
-        Assertions.assertTrue(hasBluePage);
-        Assertions.assertFalse(hasRedPage);
+        assertFalse(hasYellowPage);
+        assertTrue(hasBluePage);
+        assertFalse(hasRedPage);
     }
 
     @Test
-    public void testGetTopLevelViewResourcesBlue()
+    void getTopLevelViewResourcesBlue()
     {
         startViewRequest("/view_2.xhtml");
         processLifecycleExecute();        
@@ -276,9 +278,9 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesCDIRequ
             }
             //System.out.println(s);
         }
-        Assertions.assertFalse(hasYellowPage);
-        Assertions.assertTrue(hasBluePage);
-        Assertions.assertFalse(hasRedPage);
+        assertFalse(hasYellowPage);
+        assertTrue(hasBluePage);
+        assertFalse(hasRedPage);
     }
 
 }

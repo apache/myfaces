@@ -18,16 +18,17 @@
  */
 package org.apache.myfaces.view.facelets.test.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.junit.jupiter.api.Test;
 
-public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
+class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpWebConfigParams() throws Exception
@@ -41,67 +42,67 @@ public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFa
     protected ExpressionFactory createExpressionFactory()
     {
         return new org.apache.el.ExpressionFactoryImpl();
-    }    
-    
+    }
+
     @Test
-    public void testUIPanel1() throws Exception
+    void uIPanel1() throws Exception
     {
         startViewRequest("/testMyUIPanel1.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel1");
-        Assertions.assertNotNull(comp);
-        Assertions.assertTrue(comp instanceof MyUIPanel1);
+        assertNotNull(comp);
+        assertInstanceOf(MyUIPanel1.class, comp);
         
         endRequest();
-    }    
+    }
 
     @Test
-    public void testUIPanel2() throws Exception
+    void uIPanel2() throws Exception
     {
         startViewRequest("/testMyUIPanel2.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel1");
-        Assertions.assertNotNull(comp);
-        Assertions.assertTrue(comp instanceof MyUIPanel2);
+        assertNotNull(comp);
+        assertInstanceOf(MyUIPanel2.class, comp);
         
         endRequest();
     }
-    
+
     @Test
-    public void testUIPanel3() throws Exception
+    void uIPanel3() throws Exception
     {
         startViewRequest("/testMyUIPanel3.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel3");
-        Assertions.assertNotNull(comp);
-        Assertions.assertTrue(comp instanceof MyUIPanel3);
+        assertNotNull(comp);
+        assertInstanceOf(MyUIPanel3.class, comp);
 
         // Check component type
         MyUIPanel3 comp2 = (MyUIPanel3) 
             facesContext.getApplication().createComponent("myUIPanel3");
-        Assertions.assertNotNull(comp2);
+        assertNotNull(comp2);
         
         endRequest();
     }
-    
+
     // Test for MYFACES-4003
     @Test
-    public void testInputTextWithClass() throws Exception
+    void inputTextWithClass() throws Exception
     {
         startViewRequest("/testClassAttribute.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent jsfInputText = facesContext.getViewRoot().findComponent("form:JSF_inputText");
-        Assertions.assertNotNull(jsfInputText);
-        Assertions.assertEquals("TEST", jsfInputText.getAttributes().get("styleClass"));
+        assertNotNull(jsfInputText);
+        assertEquals("TEST", jsfInputText.getAttributes().get("styleClass"));
         
         // The "class" attribute should have been mapped to a "styleClass" attribute
         UIComponent testInputText = facesContext.getViewRoot().findComponent("form:test_inputText");
-        Assertions.assertNotNull(testInputText);
-        Assertions.assertEquals("TEST", testInputText.getAttributes().get("styleClass"));
+        assertNotNull(testInputText);
+        assertEquals("TEST", testInputText.getAttributes().get("styleClass"));
         
         endRequest();
     }    

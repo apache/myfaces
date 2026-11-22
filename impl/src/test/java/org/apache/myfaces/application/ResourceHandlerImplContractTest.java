@@ -22,11 +22,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class ResourceHandlerImplContractTest extends AbstractFaceletTestCase
+class ResourceHandlerImplContractTest extends AbstractFaceletTestCase
 {
-    
+
     @Test
-    public void testSimpleContract() throws Exception
+    void simpleContract() throws Exception
     {
         
     }

@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui.template;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 import jakarta.faces.application.ViewHandler;
 
@@ -25,10 +28,9 @@ import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class DecorateTestCase extends AbstractFaceletTestCase {
+class DecorateTestCase extends AbstractFaceletTestCase {
 
     @Override
     protected void setUpServletObjects() throws Exception
@@ -38,7 +40,7 @@ public class DecorateTestCase extends AbstractFaceletTestCase {
     }
 
     @Test
-    public void testDecorate1() throws Exception {
+    void decorate1() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "decorate1.xhtml");
         
@@ -49,15 +51,15 @@ public class DecorateTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("fragmentNumber1"));
-        Assertions.assertTrue(response.contains("decorateContent"));
-        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        assertTrue(response.contains("fragmentNumber1"));
+        assertTrue(response.contains("decorateContent"));
+        assertFalse(response.contains("This fragment will not be inserted"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
     }
-    
+
     @Test
-    public void testDecorate2EmptyDecorate() throws Exception {
+    void decorate2EmptyDecorate() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "decorate2.xhtml");
         
@@ -68,13 +70,13 @@ public class DecorateTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        assertFalse(response.contains("This fragment will not be inserted"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
     }
-    
+
     @Test
-    public void testDecorate3EmptyDecorate() throws Exception {
+    void decorate3EmptyDecorate() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "decorate3.xhtml");
         
@@ -85,13 +87,13 @@ public class DecorateTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        assertFalse(response.contains("This fragment will not be inserted"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
     }
-    
+
     @Test
-    public void testDecorate4DefineOverInsert() throws Exception {
+    void decorate4DefineOverInsert() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "decorate4.xhtml");
         
@@ -102,12 +104,12 @@ public class DecorateTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("fragmentNumber1"));
-        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        assertTrue(response.contains("fragmentNumber1"));
+        assertFalse(response.contains("This fragment will not be inserted"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
     }
-    
+
     /**
      * Based on
      * 
@@ -122,7 +124,7 @@ public class DecorateTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testDecorate5() throws Exception 
+    void decorate5() throws Exception 
     {
         /*
         decorate5.xhtml
@@ -173,8 +175,8 @@ public class DecorateTestCase extends AbstractFaceletTestCase {
         
         String response = sw.toString();
 
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
         
         response = checkStringInOrder(response, "start first decoration");
         response = checkStringInOrder(response, "start second decoration");
@@ -188,7 +190,7 @@ public class DecorateTestCase extends AbstractFaceletTestCase {
     private String checkStringInOrder(String response, String token)
     {
         int pos = response.indexOf(token);
-        Assertions.assertTrue(pos > -1);
+        assertTrue(pos > -1);
         return response.substring(pos+token.length());
     }
 
@@ -199,7 +201,7 @@ public class DecorateTestCase extends AbstractFaceletTestCase {
      * @throws Exception
      */
     @Test
-    public void testDecorateNested1() throws Exception {
+    void decorateNested1() throws Exception {
         /*
         decorate4.xhtml
 
@@ -246,17 +248,17 @@ public class DecorateTestCase extends AbstractFaceletTestCase {
         sw.flush();
         
         String response = sw.toString();
-        Assertions.assertTrue(response.contains("fragmentNumber3"));
-        Assertions.assertTrue(response.contains("fragmentNumber2"));
-        Assertions.assertFalse(response.contains("fragmentNumber1"));
-        Assertions.assertFalse(response.contains("This fragment will not be inserted"));
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED"));
-        Assertions.assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
+        assertTrue(response.contains("fragmentNumber3"));
+        assertTrue(response.contains("fragmentNumber2"));
+        assertFalse(response.contains("fragmentNumber1"));
+        assertFalse(response.contains("This fragment will not be inserted"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED"));
+        assertTrue(response.contains("THIS SHOULD BE RENDERED TOO"));
     }
-    
-    
+
+
     @Test
-    public void testDecorateNested2() throws Exception
+    void decorateNested2() throws Exception
     {
         /*
         decorateNested2.xhtml

@@ -19,26 +19,27 @@
 
 package jakarta.faces.application;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.mock.MockStateManager;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class StateManagerTest
+class StateManagerTest
 {
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
     @Test
-    public void testNullThrowsIsSavingStateInClient()
+    void nullThrowsIsSavingStateInClient()
     {
         MockStateManager subject = new MockStateManager();
         try
         {
             subject.isSavingStateInClient(null);
-            Assertions.fail("should have thrown an exception");
+            fail("should have thrown an exception");
         }
         catch (RuntimeException e)
         {
@@ -49,7 +50,7 @@ public class StateManagerTest
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
     @Test
-    public void testIsSavingStateInClientTrue()
+    void isSavingStateInClientTrue()
     {
         FacesContext context = Mockito.spy(FacesContext.class);
         ExternalContext external = Mockito.spy(ExternalContext.class);
@@ -59,14 +60,14 @@ public class StateManagerTest
                 .thenReturn("client");
 
         MockStateManager subject = new MockStateManager();
-        Assertions.assertEquals(true, subject.isSavingStateInClient(context));
+        assertTrue(subject.isSavingStateInClient(context));
     }
 
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
     @Test
-    public void testIsSavingStateInClientFalse()
+    void isSavingStateInClientFalse()
     {
         FacesContext context = Mockito.spy(FacesContext.class);
         ExternalContext external = Mockito.spy(ExternalContext.class);
@@ -76,14 +77,14 @@ public class StateManagerTest
                 .thenReturn("server");
 
         MockStateManager subject = new MockStateManager();
-        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
+        assertFalse(subject.isSavingStateInClient(context));
     }
 
     /*
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
     @Test
-    public void testIsSavingStateInClientBogus()
+    void isSavingStateInClientBogus()
     {
         FacesContext context = Mockito.spy(FacesContext.class);
         ExternalContext external = Mockito.spy(ExternalContext.class);
@@ -93,7 +94,7 @@ public class StateManagerTest
                 .thenReturn("blorf");
 
         MockStateManager subject = new MockStateManager();
-        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
+        assertFalse(subject.isSavingStateInClient(context));
 
         Mockito.verify(external)
                 .log("Illegal state saving method 'blorf', default server state saving will be used");
@@ -103,7 +104,7 @@ public class StateManagerTest
      * Test method for 'jakarta.faces.application.StateManager.isSavingStateInClient(FacesContext)'
      */
     @Test
-    public void testIsSavingStateInClientNull()
+    void isSavingStateInClientNull()
     {
         FacesContext context = Mockito.spy(FacesContext.class);
         ExternalContext external = Mockito.spy(ExternalContext.class);
@@ -113,7 +114,7 @@ public class StateManagerTest
                 .thenReturn(null);
 
         MockStateManager subject = new MockStateManager();
-        Assertions.assertEquals(false, subject.isSavingStateInClient(context));
+        assertFalse(subject.isSavingStateInClient(context));
 
         Mockito.verify(external)
                 .log("No state saving method defined, assuming default server state saving");

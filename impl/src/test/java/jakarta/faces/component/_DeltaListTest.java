@@ -18,6 +18,8 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,10 +27,9 @@ import java.util.List;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.FacesListener;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class _DeltaListTest extends AbstractComponentTest
+class _DeltaListTest extends AbstractComponentTest
 {
 
     public static class UITestComponent extends UIComponentBase
@@ -47,7 +48,7 @@ public class _DeltaListTest extends AbstractComponentTest
         
         public void addTestFacesListener(FacesListener listener)
         {
-            Assertions.assertNotNull(listener);
+            assertNotNull(listener);
 
             if (_facesListeners == null)
             {
@@ -58,7 +59,7 @@ public class _DeltaListTest extends AbstractComponentTest
         
         public FacesListener[] getTestFacesListeners(Class clazz)
         {
-            Assertions.assertNotNull(clazz);
+            assertNotNull(clazz);
 
             if (!FacesListener.class.isAssignableFrom(clazz))
             {
@@ -387,18 +388,18 @@ public class _DeltaListTest extends AbstractComponentTest
     }
 
     @Test
-    public void testSimpleAddRemove()
+    void simpleAddRemove()
     {
         UITestComponent a = new UITestComponent();
         FacesListener listener1 = new NoStateFacesListener(); 
         a.addTestFacesListener(listener1);
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener1));
         a.removeTestFacesListener(listener1);
-        Assertions.assertFalse(a._facesListeners.contains(listener1));        
+        assertFalse(a._facesListeners.contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore1()
+    void simpleSaveRestore1()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -406,16 +407,16 @@ public class _DeltaListTest extends AbstractComponentTest
         a.addTestFacesListener(listener1);
         b.addTestFacesListener(listener1);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertTrue(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener1));
+        assertTrue(b._facesListeners.contains(listener1));
         a.removeTestFacesListener(listener1);
         b.removeTestFacesListener(listener1);
-        Assertions.assertFalse(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));        
+        assertFalse(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore2()
+    void simpleSaveRestore2()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -425,16 +426,16 @@ public class _DeltaListTest extends AbstractComponentTest
         a.addTestFacesListener(listener1);
         Object [] savedState1 = (Object[]) a.saveState(facesContext);       
         b.restoreState(facesContext, savedState1);
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertTrue(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener1));
+        assertTrue(b._facesListeners.contains(listener1));
         a.removeTestFacesListener(listener1);
         b.removeTestFacesListener(listener1);
-        Assertions.assertFalse(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));        
+        assertFalse(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore3()
+    void simpleSaveRestore3()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -446,16 +447,16 @@ public class _DeltaListTest extends AbstractComponentTest
         b.markInitialState();
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
         b.restoreState(facesContext, savedState1);        
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertTrue(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener1));
+        assertTrue(b._facesListeners.contains(listener1));
         a.removeTestFacesListener(listener1);
         b.removeTestFacesListener(listener1);
-        Assertions.assertFalse(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));        
+        assertFalse(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore4()
+    void simpleSaveRestore4()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -467,22 +468,22 @@ public class _DeltaListTest extends AbstractComponentTest
         b.markInitialState();
         a.addTestFacesListener(listener2);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertTrue(a._facesListeners.contains(listener2));
-        Assertions.assertTrue(b._facesListeners.contains(listener1));
-        Assertions.assertTrue(b._facesListeners.contains(listener2));
+        assertTrue(a._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener2));
+        assertTrue(b._facesListeners.contains(listener1));
+        assertTrue(b._facesListeners.contains(listener2));
         a.removeTestFacesListener(listener1);
         b.removeTestFacesListener(listener1);
         a.removeTestFacesListener(listener2);
         b.removeTestFacesListener(listener2);
-        Assertions.assertFalse(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(a._facesListeners.contains(listener2));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener2));
+        assertFalse(a._facesListeners.contains(listener1));
+        assertFalse(a._facesListeners.contains(listener2));
+        assertFalse(b._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener2));
     }
-    
+
     @Test
-    public void testSimpleSaveRestore5()
+    void simpleSaveRestore5()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -495,29 +496,29 @@ public class _DeltaListTest extends AbstractComponentTest
         b.markInitialState();
         a.addTestFacesListener(listener2);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertTrue(a._facesListeners.contains(listener2));
-        Assertions.assertTrue(b._facesListeners.contains(listener1));
-        Assertions.assertTrue(b._facesListeners.contains(listener2));
+        assertTrue(a._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener2));
+        assertTrue(b._facesListeners.contains(listener1));
+        assertTrue(b._facesListeners.contains(listener2));
         a.removeTestFacesListener(listener1);
         b.removeTestFacesListener(listener1);
         a.removeTestFacesListener(listener2);
         b.removeTestFacesListener(listener2);
-        Assertions.assertFalse(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(a._facesListeners.contains(listener2));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener2));
+        assertFalse(a._facesListeners.contains(listener1));
+        assertFalse(a._facesListeners.contains(listener2));
+        assertFalse(b._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener2));
         
         //Save fully
         b.clearInitialState();
         c.restoreState(facesContext, b.saveState(facesContext));
         //c._facesListeners should be empty
-        Assertions.assertFalse(c._facesListeners.contains(listener1));
-        Assertions.assertFalse(c._facesListeners.contains(listener2));
+        assertFalse(c._facesListeners.contains(listener1));
+        assertFalse(c._facesListeners.contains(listener2));
     }
-    
+
     @Test
-    public void testSimpleSaveRestore6()
+    void simpleSaveRestore6()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -532,18 +533,18 @@ public class _DeltaListTest extends AbstractComponentTest
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
         // This is not null because StateFacesListener is instance of StateHolder 
         // and always needs to be saved and restored!
-        Assertions.assertNotNull(savedState1[1]);
+        assertNotNull(savedState1[1]);
         b.restoreState(facesContext, savedState1);        
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertTrue(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener1));
+        assertTrue(b._facesListeners.contains(listener1));
         a.removeTestFacesListener(listener1);
         b.removeTestFacesListener(listener1);
-        Assertions.assertFalse(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));        
+        assertFalse(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore7()
+    void simpleSaveRestore7()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -558,29 +559,29 @@ public class _DeltaListTest extends AbstractComponentTest
         b.markInitialState();
         a.addTestFacesListener(listener2);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertTrue(a._facesListeners.contains(listener2));
-        Assertions.assertTrue(b._facesListeners.contains(listener1));
-        Assertions.assertTrue(b._facesListeners.contains(listener2));
+        assertTrue(a._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener2));
+        assertTrue(b._facesListeners.contains(listener1));
+        assertTrue(b._facesListeners.contains(listener2));
         a.removeTestFacesListener(listener1);
         b.removeTestFacesListener(listener1);
         a.removeTestFacesListener(listener2);
         b.removeTestFacesListener(listener2);
-        Assertions.assertFalse(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(a._facesListeners.contains(listener2));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener2));
+        assertFalse(a._facesListeners.contains(listener1));
+        assertFalse(a._facesListeners.contains(listener2));
+        assertFalse(b._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener2));
         
         //Save fully
         b.clearInitialState();
         c.restoreState(facesContext, b.saveState(facesContext));
         //c._facesListeners should be empty
-        Assertions.assertFalse(c._facesListeners.contains(listener1));
-        Assertions.assertFalse(c._facesListeners.contains(listener2));
+        assertFalse(c._facesListeners.contains(listener1));
+        assertFalse(c._facesListeners.contains(listener2));
     }
-    
+
     @Test
-    public void testSimpleSaveRestore8()
+    void simpleSaveRestore8()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -592,18 +593,18 @@ public class _DeltaListTest extends AbstractComponentTest
         b.markInitialState();
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
         // This is null because StateFacesListener is instance of PartialStateHolder 
-        Assertions.assertNull(savedState1 == null ? null : savedState1[1]);
+        assertNull(savedState1 == null ? null : savedState1[1]);
         b.restoreState(facesContext, savedState1);        
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertTrue(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener1));
+        assertTrue(b._facesListeners.contains(listener1));
         a.removeTestFacesListener(listener1);
         b.removeTestFacesListener(listener1);
-        Assertions.assertFalse(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));        
+        assertFalse(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));        
     }
-    
+
     @Test
-    public void testSimpleSaveRestore9()
+    void simpleSaveRestore9()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -619,22 +620,22 @@ public class _DeltaListTest extends AbstractComponentTest
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
         // This is null because StateFacesListener is instance of PartialStateHolder but a
         // listener was added after markInitialState
-        Assertions.assertNotNull(savedState1[1]);
+        assertNotNull(savedState1[1]);
         b.restoreState(facesContext, savedState1);        
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertTrue(b._facesListeners.contains(listener1));
-        Assertions.assertTrue(a._facesListeners.contains(listener2));
-        Assertions.assertTrue(b._facesListeners.contains(listener2));
+        assertTrue(a._facesListeners.contains(listener1));
+        assertTrue(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener2));
+        assertTrue(b._facesListeners.contains(listener2));
         a.removeTestFacesListener(listener1);
         b.removeTestFacesListener(listener1);
-        Assertions.assertFalse(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));
-        Assertions.assertTrue(a._facesListeners.contains(listener2));
-        Assertions.assertTrue(b._facesListeners.contains(listener2));
-    }    
-    
+        assertFalse(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener2));
+        assertTrue(b._facesListeners.contains(listener2));
+    }
+
     @Test
-    public void testSimpleSaveRestoreTransient1()
+    void simpleSaveRestoreTransient1()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -643,13 +644,13 @@ public class _DeltaListTest extends AbstractComponentTest
         listener1.setValue("value");
         a.addTestFacesListener(listener1);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));
-        Assertions.assertTrue(b._facesListeners.isEmpty());
+        assertTrue(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));
+        assertTrue(b._facesListeners.isEmpty());
     }
-    
+
     @Test
-    public void testSimpleSaveRestoreTransient2()
+    void simpleSaveRestoreTransient2()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -660,12 +661,12 @@ public class _DeltaListTest extends AbstractComponentTest
         listener1.setValue("value");
         a.addTestFacesListener(listener1);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));
     }
-    
+
     @Test
-    public void testSimpleSaveRestoreTransient3()
+    void simpleSaveRestoreTransient3()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -679,76 +680,76 @@ public class _DeltaListTest extends AbstractComponentTest
         listener1.setValue("value");
         a.addTestFacesListener(listener1);
         b.restoreState(facesContext, a.saveState(facesContext));
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));
-    }
-    
-    @Test
-    public void testSimpleSaveRestoreTransient4()
-    {
-        UITestComponent a = new UITestComponent();
-        UITestComponent b = new UITestComponent();
-        StateFacesListener listener1 = new StateFacesListener();
-        listener1.setTransient(true);
-        listener1.setValue("value");
-        a.addTestFacesListener(listener1);
-        b.addTestFacesListener(listener1);
-        a.markInitialState();
-        b.markInitialState();
-        //Since listener1 is transient
-        Object [] savedState1 = (Object[]) a.saveState(facesContext);
-        b.restoreState(facesContext, savedState1);  
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));
-    }
-    
-    @Test
-    public void testSimpleSaveRestoreTransient5()
-    {
-        UITestComponent a = new UITestComponent();
-        UITestComponent b = new UITestComponent();
-        StateFacesListener listener1 = new StateFacesListener();
-        listener1.setTransient(true);
-        listener1.setValue("value");
-        StateFacesListener listener2 = new StateFacesListener();
-        listener2.setValue("value");
-        a.addTestFacesListener(listener1);
-        a.addTestFacesListener(listener2);
-        b.addTestFacesListener(listener1);
-        b.addTestFacesListener(listener2);
-        a.markInitialState();
-        b.markInitialState();
-        listener2.setValue("value2");
-        //Since listener1 is transient
-        Object [] savedState1 = (Object[]) a.saveState(facesContext);
-        b.restoreState(facesContext, savedState1);  
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));
-        Assertions.assertTrue(a._facesListeners.contains(listener2));
-        Assertions.assertTrue(b._facesListeners.contains(listener2));
-        Assertions.assertEquals("value2", ((StateFacesListener)b._facesListeners.get(b._facesListeners.indexOf(listener2))).getValue());
-    }
-    
-    @Test
-    public void testSimpleSaveRestoreTransient6()
-    {
-        UITestComponent a = new UITestComponent();
-        UITestComponent b = new UITestComponent();
-        TransientStateFacesListener listener1 = new TransientStateFacesListener();
-        listener1.setValue("value");
-        a.addTestFacesListener(listener1);
-        b.addTestFacesListener(listener1);
-        a.markInitialState();
-        b.markInitialState();
-        //Since listener1 is transient
-        Object [] savedState1 = (Object[]) a.saveState(facesContext);
-        b.restoreState(facesContext, savedState1);  
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));
     }
 
     @Test
-    public void testSimpleSaveRestoreTransient7()
+    void simpleSaveRestoreTransient4()
+    {
+        UITestComponent a = new UITestComponent();
+        UITestComponent b = new UITestComponent();
+        StateFacesListener listener1 = new StateFacesListener();
+        listener1.setTransient(true);
+        listener1.setValue("value");
+        a.addTestFacesListener(listener1);
+        b.addTestFacesListener(listener1);
+        a.markInitialState();
+        b.markInitialState();
+        //Since listener1 is transient
+        Object [] savedState1 = (Object[]) a.saveState(facesContext);
+        b.restoreState(facesContext, savedState1);  
+        assertTrue(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));
+    }
+
+    @Test
+    void simpleSaveRestoreTransient5()
+    {
+        UITestComponent a = new UITestComponent();
+        UITestComponent b = new UITestComponent();
+        StateFacesListener listener1 = new StateFacesListener();
+        listener1.setTransient(true);
+        listener1.setValue("value");
+        StateFacesListener listener2 = new StateFacesListener();
+        listener2.setValue("value");
+        a.addTestFacesListener(listener1);
+        a.addTestFacesListener(listener2);
+        b.addTestFacesListener(listener1);
+        b.addTestFacesListener(listener2);
+        a.markInitialState();
+        b.markInitialState();
+        listener2.setValue("value2");
+        //Since listener1 is transient
+        Object [] savedState1 = (Object[]) a.saveState(facesContext);
+        b.restoreState(facesContext, savedState1);  
+        assertTrue(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener2));
+        assertTrue(b._facesListeners.contains(listener2));
+        assertEquals("value2", ((StateFacesListener)b._facesListeners.get(b._facesListeners.indexOf(listener2))).getValue());
+    }
+
+    @Test
+    void simpleSaveRestoreTransient6()
+    {
+        UITestComponent a = new UITestComponent();
+        UITestComponent b = new UITestComponent();
+        TransientStateFacesListener listener1 = new TransientStateFacesListener();
+        listener1.setValue("value");
+        a.addTestFacesListener(listener1);
+        b.addTestFacesListener(listener1);
+        a.markInitialState();
+        b.markInitialState();
+        //Since listener1 is transient
+        Object [] savedState1 = (Object[]) a.saveState(facesContext);
+        b.restoreState(facesContext, savedState1);  
+        assertTrue(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));
+    }
+
+    @Test
+    void simpleSaveRestoreTransient7()
     {
         UITestComponent a = new UITestComponent();
         UITestComponent b = new UITestComponent();
@@ -767,10 +768,10 @@ public class _DeltaListTest extends AbstractComponentTest
         //Since listener1 is transient
         Object [] savedState1 = (Object[]) a.saveState(facesContext);
         b.restoreState(facesContext, savedState1);  
-        Assertions.assertTrue(a._facesListeners.contains(listener1));
-        Assertions.assertFalse(b._facesListeners.contains(listener1));
-        Assertions.assertTrue(a._facesListeners.contains(listener2));
-        Assertions.assertTrue(b._facesListeners.contains(listener2));
-        Assertions.assertEquals("value2", ((StateFacesListener)b._facesListeners.get(b._facesListeners.indexOf(listener2))).getValue());
+        assertTrue(a._facesListeners.contains(listener1));
+        assertFalse(b._facesListeners.contains(listener1));
+        assertTrue(a._facesListeners.contains(listener2));
+        assertTrue(b._facesListeners.contains(listener2));
+        assertEquals("value2", ((StateFacesListener)b._facesListeners.get(b._facesListeners.indexOf(listener2))).getValue());
     }
 }

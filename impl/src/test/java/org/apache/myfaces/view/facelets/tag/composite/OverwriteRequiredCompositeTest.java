@@ -19,14 +19,15 @@
 
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UICommand;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 // test for MYFACES-4656
-public class OverwriteRequiredCompositeTest extends AbstractMyFacesCDIRequestTestCase
+class OverwriteRequiredCompositeTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpServletObjects() throws Exception
@@ -37,28 +38,28 @@ public class OverwriteRequiredCompositeTest extends AbstractMyFacesCDIRequestTes
     }
 
     @Test
-    public void testSimpleCompositeComponent() throws Exception
+    void simpleCompositeComponent() throws Exception
     {
         startViewRequest("/overwriteRequiredComposite.xhtml");
         processLifecycleExecuteAndRender();
         String content = getRenderedContent(facesContext);
 
-        Assertions.assertTrue(content.contains("form:fifth REQUIRED: false")
+        assertTrue(content.contains("form:fifth REQUIRED: false")
                 && content.contains("form:fifth VALID: true"));
-        Assertions.assertTrue(content.contains("form:sixth REQUIRED: true")
+        assertTrue(content.contains("form:sixth REQUIRED: true")
                 && content.contains("form:sixth VALID: true"));
-        Assertions.assertTrue(content.contains("form:seventh REQUIRED: true")
+        assertTrue(content.contains("form:seventh REQUIRED: true")
                 && content.contains("form:seventh VALID: true"));
-        Assertions.assertTrue(content.contains("form:eight REQUIRED: true")
+        assertTrue(content.contains("form:eight REQUIRED: true")
                 && content.contains("form:eight VALID: true"));
 
-        Assertions.assertTrue(content.contains("form:ninth REQUIRED: false")
+        assertTrue(content.contains("form:ninth REQUIRED: false")
             && content.contains("form:ninth VALID: true"));
-        Assertions.assertTrue(content.contains("form:tenth REQUIRED: true")
+        assertTrue(content.contains("form:tenth REQUIRED: true")
             && content.contains("form:tenth VALID: true"));
-        Assertions.assertTrue(content.contains("form:eleventh REQUIRED: true")
+        assertTrue(content.contains("form:eleventh REQUIRED: true")
             && content.contains("form:eleventh VALID: true"));
-        Assertions.assertTrue(content.contains("form:twelvth REQUIRED: true")
+        assertTrue(content.contains("form:twelvth REQUIRED: true")
             && content.contains("form:twelvth VALID: true"));
 
 

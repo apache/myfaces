@@ -21,14 +21,15 @@ package org.apache.myfaces.util.lang;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
-import java.util.Set;
-import org.junit.jupiter.api.Assertions;
 
-public class XorShiftRandomTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Set;
+
+class XorShiftRandomTest
 {
 
     @Test
-    public void testXorShiftRandom()
+    void xorShiftRandom()
     {
         XorShiftRandom random = new XorShiftRandom(System.nanoTime());
         Set<Long> randomVals = new HashSet<Long>(10);
@@ -41,12 +42,12 @@ public class XorShiftRandomTest
         }
 
         // if the random generator is good then we had no collisions.
-        Assertions.assertEquals(randomVals.size(), 100);
+        assertEquals(100, randomVals.size());
     }
 
 
     @Test
-    public void testThreadsafeXorShiftRandom()
+    void threadsafeXorShiftRandom()
     {
         XorShiftRandom random = new ThreadsafeXorShiftRandom();
         Set<Long> randomVals = new HashSet<Long>(10);
@@ -59,6 +60,6 @@ public class XorShiftRandomTest
         }
 
         // if the random generator is good then we had no collisions.
-        Assertions.assertEquals(randomVals.size(), 100);
+        assertEquals(100, randomVals.size());
     }
 }

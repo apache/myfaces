@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.html.HtmlForm;
@@ -26,7 +29,6 @@ import jakarta.faces.component.html.HtmlOutputText;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -34,7 +36,7 @@ import org.junit.jupiter.api.Test;
  * page's ui:define; components from the included fragment must be in the tree
  * (e.g. for Ajax update targets).
  */
-public class IncludeHandler4577TestCase extends AbstractFaceletTestCase
+class IncludeHandler4577TestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -58,13 +60,13 @@ public class IncludeHandler4577TestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testInsertInsideIncludeSeesOuterDefine() throws Exception
+    void insertInsideIncludeSeesOuterDefine() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "myfaces4577_main.xhtml");
 
         UIComponent toolbar = root.findComponent("form:toolbar");
-        Assertions.assertNotNull(toolbar, "toolbar from ui:include inside ui:define must be built");
-        Assertions.assertEquals("toolbar", ((HtmlOutputText) toolbar).getValue());
+        assertNotNull(toolbar, "toolbar from ui:include inside ui:define must be built");
+        assertEquals("toolbar", ((HtmlOutputText) toolbar).getValue());
     }
 }

@@ -18,6 +18,8 @@
  */
 package jakarta.faces.event;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
@@ -28,14 +30,13 @@ import jakarta.faces.component.UICommand;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.easymock.classextension.EasyMock;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link MethodExpressionValueChangeListener}
  */
-public class MethodExpressionValueChangeListenerTest extends AbstractFacesTestCase
+class MethodExpressionValueChangeListenerTest extends AbstractFacesTestCase
 {
 
     private MethodExpression methodExpressionOneArg;
@@ -74,20 +75,20 @@ public class MethodExpressionValueChangeListenerTest extends AbstractFacesTestCa
     }
 
     @Test
-    public void testMethodExpressionValueChangeListener() 
+    void methodExpressionValueChangeListener() 
     {
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener();
     }
 
     @Test
-    public void testMethodExpressionValueChangeListenerMethodExpression() 
+    void methodExpressionValueChangeListenerMethodExpression() 
     {
         EasyMock.replay(methodExpressionOneArg);
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener(methodExpressionOneArg);
     }
 
     @Test
-    public void testMethodExpressionValueChangeListenerMethodExpressionMethodExpression() 
+    void methodExpressionValueChangeListenerMethodExpressionMethodExpression() 
     {
         EasyMock.replay(methodExpressionOneArg);
         EasyMock.replay(methodExpressionZeroArg);
@@ -99,7 +100,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractFacesTestCa
      * Test for case: method with ValueChangeEvent param exists (pre-Faces 2.0 case)
      */
     @Test
-    public void testProcessValueChange() 
+    void processValueChange() 
     {
         // First, try to invoke the MethodExpression passed to the constructor of this instance,
         // passing the argument ValueChangeEvent as the argument:
@@ -117,7 +118,7 @@ public class MethodExpressionValueChangeListenerTest extends AbstractFacesTestCa
      * Test for case: method exists but has no ValueChangeEvent param (new possibility in Faces 2.0)
      */
     @Test
-    public void testProcessValueChange2() throws Exception 
+    void processValueChange2() throws Exception 
     {
         // First, try to invoke the MethodExpression passed to the constructor of this instance,
         // passing the argument ValueChangeEvent as the argument
@@ -140,16 +141,16 @@ public class MethodExpressionValueChangeListenerTest extends AbstractFacesTestCa
     }
 
     @Test
-    public void testSaveState() 
+    void saveState() 
     {
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg);
         Object[] expectedState = new Object [] {methodExpressionOneArg, methodExpressionZeroArg};
-        Assertions.assertTrue(Arrays.deepEquals(expectedState, (Object[]) methodExpressionValueChangeListener.saveState(facesContext)), 
+        assertTrue(Arrays.deepEquals(expectedState, (Object[]) methodExpressionValueChangeListener.saveState(facesContext)), 
                 "Both MethodExpression instances described in the constructor must be saved.");
     }
 
     @Test
-    public void testRestoreState() throws IllegalAccessException, NoSuchFieldException
+    void restoreState() throws Exception
     {
         // State saving always call JavaBean constructor:
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener();
@@ -160,31 +161,31 @@ public class MethodExpressionValueChangeListenerTest extends AbstractFacesTestCa
         // Test if the instance variables are set to the right values via reflection
         Field oneArgField = MethodExpressionValueChangeListener.class.getDeclaredField("methodExpressionOneArg");
         oneArgField.setAccessible(true);
-        Assertions.assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionValueChangeListener));
+        assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionValueChangeListener));
         
         Field zeroArgField = MethodExpressionValueChangeListener.class.getDeclaredField("methodExpressionZeroArg");
         zeroArgField.setAccessible(true);
-        Assertions.assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionValueChangeListener));
+        assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionValueChangeListener));
     }
 
     @Test
-    public void testSaveStateWhileInitialStateMarked()
+    void saveStateWhileInitialStateMarked()
     {
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg);
         methodExpressionValueChangeListener.markInitialState();
-        Assertions.assertTrue(methodExpressionValueChangeListener.initialStateMarked());
-        Assertions.assertNull(methodExpressionValueChangeListener.saveState(facesContext),
+        assertTrue(methodExpressionValueChangeListener.initialStateMarked());
+        assertNull(methodExpressionValueChangeListener.saveState(facesContext),
                 "No state must be saved while the initial state is marked.");
 
         methodExpressionValueChangeListener.clearInitialState();
-        Assertions.assertFalse(methodExpressionValueChangeListener.initialStateMarked());
+        assertFalse(methodExpressionValueChangeListener.initialStateMarked());
         Object[] expectedState = new Object [] {methodExpressionOneArg, methodExpressionZeroArg};
-        Assertions.assertTrue(Arrays.deepEquals(expectedState, (Object[]) methodExpressionValueChangeListener.saveState(facesContext)),
+        assertTrue(Arrays.deepEquals(expectedState, (Object[]) methodExpressionValueChangeListener.saveState(facesContext)),
                 "Both MethodExpression instances must be saved after clearInitialState().");
     }
 
     @Test
-    public void testRestoreNullState() throws IllegalAccessException, NoSuchFieldException
+    void restoreNullState() throws Exception
     {
         methodExpressionValueChangeListener = new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg);
         methodExpressionValueChangeListener.markInitialState();
@@ -192,11 +193,11 @@ public class MethodExpressionValueChangeListenerTest extends AbstractFacesTestCa
 
         Field oneArgField = MethodExpressionValueChangeListener.class.getDeclaredField("methodExpressionOneArg");
         oneArgField.setAccessible(true);
-        Assertions.assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionValueChangeListener));
+        assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionValueChangeListener));
 
         Field zeroArgField = MethodExpressionValueChangeListener.class.getDeclaredField("methodExpressionZeroArg");
         zeroArgField.setAccessible(true);
-        Assertions.assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionValueChangeListener));
+        assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionValueChangeListener));
     }
 
 }

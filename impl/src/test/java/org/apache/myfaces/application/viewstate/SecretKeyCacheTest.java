@@ -20,11 +20,13 @@ package org.apache.myfaces.application.viewstate;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 
 import javax.crypto.SecretKey;
-import org.junit.jupiter.api.Assertions;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SecretKeyCacheTest extends AbstractFacesTestCase
+class SecretKeyCacheTest extends AbstractFacesTestCase
 {
     @Override
     @BeforeEach
@@ -38,19 +40,18 @@ public class SecretKeyCacheTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testDefaultAlgorithmUse(){
+    void defaultAlgorithmUse(){
         
         StateUtils.initSecret(servletContext);
         
         SecretKey secretKey = (SecretKey) servletContext.getAttribute(StateUtils.INIT_SECRET_KEY_CACHE);
-        
-        Assertions.assertTrue(StateUtils.DEFAULT_ALGORITHM.equals(secretKey.getAlgorithm()),
-                "Making sure MyFaces uses the default algorithm when one is not specified");
+
+        assertEquals(StateUtils.DEFAULT_ALGORITHM, secretKey.getAlgorithm(), "Making sure MyFaces uses the default algorithm when one is not specified");
         
     }
-    
+
     @Test
-    public void testInitFacesWithoutCache(){
+    void initFacesWithoutCache(){
 
         servletContext.addInitParameter(StateUtils.INIT_SECRET_KEY_CACHE, "false");
         
@@ -58,20 +59,20 @@ public class SecretKeyCacheTest extends AbstractFacesTestCase
 
         Object object = servletContext.getAttribute(StateUtils.INIT_SECRET_KEY_CACHE);
         
-        Assertions.assertNull(object, "Making sure StateUtils.initSecret does not create a SecretKey");
+        assertNull(object, "Making sure StateUtils.initSecret does not create a SecretKey");
         
     }
-    
+
     @Test
-    public void testInitFacesWithCache(){
+    void initFacesWithCache(){
         
         StateUtils.initSecret(servletContext);
         
         Object object = servletContext.getAttribute(StateUtils.INIT_SECRET_KEY_CACHE);
-        
-        Assertions.assertFalse(object == null, "Making sure StateUtils.initSecret() puts an object in application scope");
-        
-        Assertions.assertTrue(object instanceof SecretKey, "Making sure StateUtils.initSecret() is creating a SecretKey");
+
+        assertNotNull(object, "Making sure StateUtils.initSecret() puts an object in application scope");
+
+        assertInstanceOf(SecretKey.class, object, "Making sure StateUtils.initSecret() is creating a SecretKey");
         
     }
     

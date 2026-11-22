@@ -15,24 +15,25 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.Serializable;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.LongConverter;
-import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.junit.jupiter.api.Test;
 
-public class UIOutputPSSTest extends AbstractFacesTestCase
+class UIOutputPSSTest extends AbstractFacesTestCase
 {
-    
+
     /**
      * Check null delta when converter only implements Converter interface.
      * 
      * @throws Exception 
      */
     @Test
-    public void testConverterDeltaState1() throws Exception
+    void converterDeltaState1() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -42,7 +43,7 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         Object state1 = output.saveState(facesContext);
         
         // null delta expected
-        Assertions.assertNull(state1);
+        assertNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -53,11 +54,11 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assertions.assertEquals(converter2, output2.getConverter());
+        assertEquals(converter2, output2.getConverter());
     }
-    
+
     @Test
-    public void testConverterDeltaState2() throws Exception
+    void converterDeltaState2() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -67,7 +68,7 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         Object state1 = output.saveState(facesContext);
         
         // null delta expected
-        Assertions.assertNull(state1);
+        assertNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -78,11 +79,11 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assertions.assertEquals(converter2, output2.getConverter());
+        assertEquals(converter2, output2.getConverter());
     }
-    
+
     @Test
-    public void testConverterDeltaState3() throws Exception
+    void converterDeltaState3() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -92,7 +93,7 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         Object state1 = output.saveState(facesContext);
         
         // StateHolder only force always to save the state
-        Assertions.assertNotNull(state1);
+        assertNotNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -103,11 +104,11 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter IS replaced, because it should be always stored into the state
-        Assertions.assertNotSame(converter2, output2.getConverter());
+        assertNotSame(converter2, output2.getConverter());
     }
-    
+
     @Test
-    public void testConverterDeltaState4() throws Exception
+    void converterDeltaState4() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -117,7 +118,7 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         Object state1 = output.saveState(facesContext);
         
         // PartialStateHolder only save state if delta is null
-        Assertions.assertNull(state1);
+        assertNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -128,11 +129,11 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assertions.assertEquals(converter2, output2.getConverter());
+        assertEquals(converter2, output2.getConverter());
     }
-    
+
     @Test
-    public void testConverterDeltaState5() throws Exception
+    void converterDeltaState5() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -142,7 +143,7 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         Object state1 = output.saveState(facesContext);
         
         // PartialStateHolder only save state if delta is null
-        Assertions.assertNotNull(state1);
+        assertNotNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -153,11 +154,11 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary (delta change)
-        Assertions.assertEquals(converter2, output2.getConverter());
+        assertEquals(converter2, output2.getConverter());
     }
-    
+
     @Test
-    public void testConverterDeltaState6() throws Exception
+    void converterDeltaState6() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -170,8 +171,8 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         Object[] state1 = (Object[])output.saveState(facesContext);
         
         // null delta expected
-        Assertions.assertNotNull(state1);
-        Assertions.assertEquals(state1.length, 1);
+        assertNotNull(state1);
+        assertEquals(1, state1.length);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -182,14 +183,14 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assertions.assertEquals(converter2, output2.getConverter());
+        assertEquals(converter2, output2.getConverter());
         
         // Check parentDelta works
-        Assertions.assertEquals("style1", output2.getAttributes().get("style"));
+        assertEquals("style1", output2.getAttributes().get("style"));
     }
 
     @Test
-    public void testConverterDeltaState7() throws Exception
+    void converterDeltaState7() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -202,8 +203,8 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         Object[] state1 = (Object[])output.saveState(facesContext);
         
         // null delta expected
-        Assertions.assertNotNull(state1);
-        Assertions.assertEquals(state1.length, 1);
+        assertNotNull(state1);
+        assertEquals(1, state1.length);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -214,14 +215,14 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assertions.assertEquals(converter2, output2.getConverter());
+        assertEquals(converter2, output2.getConverter());
         
         // Check parentDelta works
-        Assertions.assertEquals("style1", output2.getAttributes().get("style"));
+        assertEquals("style1", output2.getAttributes().get("style"));
     }
-    
+
     @Test
-    public void testConverterDeltaState8() throws Exception
+    void converterDeltaState8() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -234,10 +235,10 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         Object[] state1 = (Object[])output.saveState(facesContext);
         
         // StateHolder force state
-        Assertions.assertNotNull(state1);
-        Assertions.assertEquals(state1.length, 2);
-        Assertions.assertNotNull(state1[1]);
-        Assertions.assertNotNull(state1[0]);
+        assertNotNull(state1);
+        assertEquals(2, state1.length);
+        assertNotNull(state1[1]);
+        assertNotNull(state1[0]);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -248,14 +249,14 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter IS replaced, because it should be always stored into the state
-        Assertions.assertNotSame(converter2, output2.getConverter());
+        assertNotSame(converter2, output2.getConverter());
         
         // Check parentDelta works
-        Assertions.assertEquals("style1", output2.getAttributes().get("style"));
+        assertEquals("style1", output2.getAttributes().get("style"));
     }
 
     @Test
-    public void testConverterDeltaState9() throws Exception
+    void converterDeltaState9() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -268,8 +269,8 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         Object[] state1 = (Object[])output.saveState(facesContext);
         
         // null delta expected
-        Assertions.assertNotNull(state1);
-        Assertions.assertEquals(state1.length, 1);
+        assertNotNull(state1);
+        assertEquals(1, state1.length);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -280,14 +281,14 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary
-        Assertions.assertEquals(converter2, output2.getConverter());
+        assertEquals(converter2, output2.getConverter());
         
         // Check parentDelta works
-        Assertions.assertEquals("style1", output2.getAttributes().get("style"));
+        assertEquals("style1", output2.getAttributes().get("style"));
     }
-    
+
     @Test
-    public void testConverterDeltaState10() throws Exception
+    void converterDeltaState10() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -300,10 +301,10 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         Object[] state1 = (Object[])output.saveState(facesContext);
         
         // PartialStateHolder force state only when there is delta
-        Assertions.assertNotNull(state1);
-        Assertions.assertEquals(state1.length, 2);
-        Assertions.assertNotNull(state1[1]);
-        Assertions.assertNotNull(state1[0]);
+        assertNotNull(state1);
+        assertEquals(2, state1.length);
+        assertNotNull(state1[1]);
+        assertNotNull(state1[0]);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -314,19 +315,19 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check converter is not replaced, because it is not necessary (delta change)
-        Assertions.assertEquals(converter2, output2.getConverter());
+        assertEquals(converter2, output2.getConverter());
         
         // Check parentDelta works
-        Assertions.assertEquals("style1", output2.getAttributes().get("style"));
+        assertEquals("style1", output2.getAttributes().get("style"));
     }
-    
+
     /**
      * Check set null converter after markInitialState case
      * 
      * @throws Exception 
      */
     @Test
-    public void testConverterDeltaState11() throws Exception
+    void converterDeltaState11() throws Exception
     {
         Converter[] converters = new Converter[]{
             new LongConverter(),
@@ -354,10 +355,10 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
             Object[] state1 = (Object[])output.saveState(facesContext);
 
             // The null spot force state to be set.
-            Assertions.assertNotNull(state1);
-            Assertions.assertEquals(state1.length, 2);
-            Assertions.assertNull(state1[1]); // null spot in state means null Converter
-            Assertions.assertNotNull(state1[0]); //because _isConverterSet()
+            assertNotNull(state1);
+            assertEquals(2, state1.length);
+            assertNull(state1[1]); // null spot in state means null Converter
+            assertNotNull(state1[0]); //because _isConverterSet()
 
             UIOutput output2 = new UIOutput();
             output2.setId("output1");
@@ -368,12 +369,12 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
             output2.restoreState(facesContext, state1);
 
             // Check converter is set to null
-            Assertions.assertNull(output2.getConverter());
+            assertNull(output2.getConverter());
         }
     }
 
     @Test
-    public void testConverterDeltaState12() throws Exception
+    void converterDeltaState12() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -384,7 +385,7 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         
         // Transient means no state, but the effect is the converter disappear
         // (because is transient, and in Faces 1.2/1.1 that was the effect).
-        Assertions.assertNotNull(state1);
+        assertNotNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -395,11 +396,11 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check no converter should be found
-        Assertions.assertNull(output2.getConverter());
+        assertNull(output2.getConverter());
     }
-    
+
     @Test
-    public void testConverterDeltaState13() throws Exception
+    void converterDeltaState13() throws Exception
     {
         UIOutput output = new UIOutput();
         output.setId("output1");
@@ -410,7 +411,7 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         
         // Transient means no state, but the effect is the converter disappear
         // (because is transient, and in Faces 1.2/1.1 that was the effect).
-        Assertions.assertNotNull(state1);
+        assertNotNull(state1);
         
         UIOutput output2 = new UIOutput();
         output2.setId("output1");
@@ -421,7 +422,7 @@ public class UIOutputPSSTest extends AbstractFacesTestCase
         output2.restoreState(facesContext, state1);
         
         // Check no converter should be found
-        Assertions.assertNull(output2.getConverter());
+        assertNull(output2.getConverter());
     }
 
     public static class LongSerializableConverter extends LongConverter implements Serializable

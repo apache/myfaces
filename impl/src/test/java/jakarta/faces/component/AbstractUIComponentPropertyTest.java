@@ -23,6 +23,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
@@ -31,7 +32,6 @@ import org.apache.myfaces.test.mock.MockFacesContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import  org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -95,15 +95,15 @@ public abstract class AbstractUIComponentPropertyTest<T>
     }
     
     @Test
-    public void testDefaultValue() throws Exception
+    public void defaultValue() throws Exception
     {
         Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
                 .invoke(_component);
-        Assertions.assertEquals(_defaultValue, val);
+        assertEquals(_defaultValue, val);
     }
 
     @Test
-    public void testExplicitValue() throws Exception
+    public void explicitValue() throws Exception
     {
         for (T testValue : _testValues)
         {
@@ -112,12 +112,12 @@ public abstract class AbstractUIComponentPropertyTest<T>
             
             Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
                     .invoke(_component);
-            Assertions.assertEquals(testValue, val);
+            assertEquals(testValue, val);
         }
     }
 
     @Test
-    public void testExpressionWithLiteralTextValue() throws Exception
+    public void expressionWithLiteralTextValue() throws Exception
     {
         for (T testValue : _testValues)
         {
@@ -128,13 +128,13 @@ public abstract class AbstractUIComponentPropertyTest<T>
             
             Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
                     .invoke(_component);
-            Assertions.assertEquals(testValue, val);
+            assertEquals(testValue, val);
             _mocksControl.reset();
         }
     }
 
     @Test
-    public void testExpressionValue() throws Exception
+    public void expressionValue() throws Exception
     {
         for (T testValue : _testValues)
         {
@@ -147,7 +147,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
             
             Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
                     .invoke(_component);
-            Assertions.assertEquals(testValue, val);
+            assertEquals(testValue, val);
             _mocksControl.reset();
         }
     }

@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
@@ -32,7 +34,6 @@ import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.spi.impl.DefaultSerialFactory;
 import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class StateManagerWithFaceletsTest extends AbstractFaceletMultipleRequestsTestCase
@@ -55,7 +56,7 @@ public class StateManagerWithFaceletsTest extends AbstractFaceletMultipleRequest
     }
 
     @Test
-    public void testWriteAndRestoreState() throws Exception
+    void writeAndRestoreState() throws Exception
     {
         String viewId = "/simpleTree.xhtml";
         
@@ -95,16 +96,16 @@ public class StateManagerWithFaceletsTest extends AbstractFaceletMultipleRequest
             
             UIViewRoot restoredViewRoot = sms.restoreView(facesContext, viewId, RenderKitFactory.HTML_BASIC_RENDER_KIT);
             
-            Assertions.assertNotNull(restoredViewRoot);
+            assertNotNull(restoredViewRoot);
         }
         finally
         {
             tearDownRequest();
         }
     }
-    
+
     @Test
-    public void testWriteAndRestoreStateWithMyFacesRSM() throws Exception
+    void writeAndRestoreStateWithMyFacesRSM() throws Exception
     {
         String viewId = "/simpleTree.xhtml";
         String viewStateParam = null;
@@ -148,7 +149,7 @@ public class StateManagerWithFaceletsTest extends AbstractFaceletMultipleRequest
             
             UIViewRoot restoredViewRoot = sms.restoreView(facesContext, viewId, RenderKitFactory.HTML_BASIC_RENDER_KIT);
             
-            Assertions.assertNotNull(restoredViewRoot);
+            assertNotNull(restoredViewRoot);
         }
         finally
         {

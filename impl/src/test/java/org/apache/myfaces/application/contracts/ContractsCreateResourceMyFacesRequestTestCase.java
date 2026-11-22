@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.application.contracts;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import java.util.Set;
 import jakarta.faces.application.Resource;
@@ -29,10 +31,9 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
+class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected void setUpWebConfigParams() throws Exception
@@ -43,9 +44,9 @@ public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFac
         servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
         servletContext.addInitParameter("jakarta.faces.CONFIG_FILES", "/blue-faces-config.xml");
     }
-    
+
     @Test
-    public void testDefaultConfiguration() throws Exception
+    void defaultConfiguration() throws Exception
     {
         startViewRequest("/index.xhtml");
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
@@ -54,39 +55,39 @@ public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFac
         Set<String> externalContextContracts = runtimeConfig.getExternalContextResourceLibraryContracts();
         Set<String> classloaderContracts = runtimeConfig.getClassLoaderResourceLibraryContracts();
 
-        Assertions.assertTrue(allContracts.contains("yellow"));
-        Assertions.assertTrue(allContracts.contains("blue"));
-        Assertions.assertTrue(allContracts.contains("red"));
+        assertTrue(allContracts.contains("yellow"));
+        assertTrue(allContracts.contains("blue"));
+        assertTrue(allContracts.contains("red"));
 
-        Assertions.assertTrue(classloaderContracts.contains("yellow"));
-        Assertions.assertTrue(classloaderContracts.contains("blue"));
-        Assertions.assertTrue(externalContextContracts.contains("red"));
+        assertTrue(classloaderContracts.contains("yellow"));
+        assertTrue(classloaderContracts.contains("blue"));
+        assertTrue(externalContextContracts.contains("red"));
         
         List<String> defaultContracts = runtimeConfig.getContractMappings().get("*");
         
-        Assertions.assertFalse(defaultContracts.contains("yellow"));
-        Assertions.assertTrue(defaultContracts.contains("blue"));
-        Assertions.assertFalse(defaultContracts.contains("red"));
+        assertFalse(defaultContracts.contains("yellow"));
+        assertTrue(defaultContracts.contains("blue"));
+        assertFalse(defaultContracts.contains("red"));
         
         processLifecycleExecute();
         executeBuildViewCycle();
         
         List<String> contractsList = facesContext.getResourceLibraryContracts();
-        Assertions.assertFalse(contractsList.contains("yellow"));
-        Assertions.assertTrue(contractsList.contains("blue"));
-        Assertions.assertFalse(contractsList.contains("red"));
+        assertFalse(contractsList.contains("yellow"));
+        assertTrue(contractsList.contains("blue"));
+        assertFalse(contractsList.contains("red"));
         
         ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
         
         ViewResource resource1 = resourceHandler.createViewResource(facesContext, "/panel.xhtml");
-        Assertions.assertNotNull(resource1);
-        Assertions.assertTrue(resource1.getURL().toString().contains("panel.xhtml"));
+        assertNotNull(resource1);
+        assertTrue(resource1.getURL().toString().contains("panel.xhtml"));
         
         Resource resource2 = resourceHandler.createResource("myjs.js", "mylib");
-        Assertions.assertNotNull(resource2);
+        assertNotNull(resource2);
         
         boolean libraryFound = resourceHandler.libraryExists("mylib");
-        Assertions.assertTrue(libraryFound);
+        assertTrue(libraryFound);
         
         endRequest();
     }

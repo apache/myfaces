@@ -18,6 +18,8 @@
  */
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,12 +30,11 @@ import jakarta.faces.model.ListDataModel;
 
 import org.apache.myfaces.dummy.data.Data;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class InvokeOnComponentTest extends AbstractComponentTest
+class InvokeOnComponentTest extends AbstractComponentTest
 {
 
     ContextCallback cc = null;
@@ -56,7 +57,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
     }
 
     @Test
-    public void testInvokeOnFormPrependId() throws Exception
+    void invokeOnFormPrependId() throws Exception
     {
         UIForm form = new UIForm();
         form.setId("form");
@@ -69,11 +70,11 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        Assertions.assertTrue(val.get());
+        assertTrue(val.get());
     }
-    
+
     @Test
-    public void testInvokeOnFormPrependIdFalse() throws Exception
+    void invokeOnFormPrependIdFalse() throws Exception
     {
         UIForm form = new UIForm();
         form.setId("form");
@@ -86,11 +87,11 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        Assertions.assertTrue(val.get());
+        assertTrue(val.get());
     }
-    
+
     @Test
-    public void testInvokeOnFormPrependIdChild() throws Exception
+    void invokeOnFormPrependIdChild() throws Exception
     {
         UIForm form = new UIForm();
         form.setId("form");
@@ -108,11 +109,11 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        Assertions.assertTrue(val.get());
+        assertTrue(val.get());
     }
-    
+
     @Test
-    public void testInvokeOnFormPrependIdFalseChild() throws Exception
+    void invokeOnFormPrependIdFalseChild() throws Exception
     {
         UIForm form = new UIForm();
         form.setId("form");
@@ -130,11 +131,11 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        Assertions.assertTrue(val.get());
+        assertTrue(val.get());
     }
-    
+
     @Test
-    public void atestInvokeOnComp() throws Exception
+    void atestInvokeOnComp() throws Exception
     {
         UIForm form = new UIForm();
         UIInput i1 = new UIInput();
@@ -160,7 +161,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
     }
 
     @Test
-    public void btestInvokeOnCompOnUIData() throws Exception
+    void btestInvokeOnCompOnUIData() throws Exception
     {
         // column1
         UIColumn c1 = new UIColumn();
@@ -210,7 +211,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
     }
 
     @Test
-    public void testInvokeOnCompOnUIDataChildren() throws Exception
+    void invokeOnCompOnUIDataChildren() throws Exception
     {
         // column1
         UIColumn c1 = new UIColumn();

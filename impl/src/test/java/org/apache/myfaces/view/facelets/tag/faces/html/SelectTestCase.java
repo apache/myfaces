@@ -37,7 +37,7 @@ import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.junit.jupiter.api.Test;
 
-public class SelectTestCase extends AbstractFaceletTestCase
+class SelectTestCase extends AbstractFaceletTestCase
 {
 
     @Override
@@ -80,7 +80,7 @@ public class SelectTestCase extends AbstractFaceletTestCase
     }
 
     @Test
-    public void testSelectOne() throws Exception
+    void selectOne() throws Exception
     {
         request.getSession().setAttribute("test", new MockBean());
         request.addParameter("testForm:alignment", "10");

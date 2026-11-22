@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlSelectManyMenuClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
+class HtmlSelectManyMenuClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
 {
     private HtmlRenderedClientEventAttr[] attrs = null;
     

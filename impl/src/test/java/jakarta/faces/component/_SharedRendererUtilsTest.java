@@ -19,7 +19,11 @@
 package jakarta.faces.component;
 
 import org.apache.myfaces.core.api.shared.SharedRendererUtils;
+
 import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -32,11 +36,10 @@ import jakarta.faces.convert.ConverterException;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class _SharedRendererUtilsTest extends AbstractFacesTestCase
+class _SharedRendererUtilsTest extends AbstractFacesTestCase
 {
     /**
      * A POJO used for testing. 
@@ -201,69 +204,69 @@ public class _SharedRendererUtilsTest extends AbstractFacesTestCase
      * In this scenario it stores the values of submittedValue in a new object array.
      */
     @Test
-    public void testGetConvertedUISelectManyValueNoConverterNoValueExpression()
+    void getConvertedUISelectManyValueNoConverterNoValueExpression()
     {
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        Assertions.assertTrue(target instanceof Object[]);
-        Assertions.assertTrue(Arrays.deepEquals((Object[]) target, submittedValue));
+        assertInstanceOf(Object[].class, target);
+        assertTrue(Arrays.deepEquals((Object[]) target, submittedValue));
     }
-    
+
     /**
      * Test case for the case that UISelectMany has a ValueExpression pointing to a primitive
      * integer array and uses a standard jsf converter.
      */
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetConvertedUISelectManyValuePrimitiveIntArray()
+    void getConvertedUISelectManyValuePrimitiveIntArray()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
         ValueExpression expr = new MockValueExpression("#{bean.intArrayValue}", int[].class);
         uiSelectMany.setValueExpression("value", expr);
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        Assertions.assertTrue(target instanceof int[]);
+        assertInstanceOf(int[].class, target);
         int[] array = (int[]) target;
-        Assertions.assertTrue(new Integer(submittedValue[0]).equals(array[0]));
-        Assertions.assertTrue(new Integer(submittedValue[0]).equals(array[0]));
+        assertEquals(new Integer(submittedValue[0]), array[0]);
+        assertEquals(new Integer(submittedValue[0]), array[0]);
         
     }
-    
+
     /**
      * Test case for the case that UISelectMany has a ValueExpression pointing to a non-primitive
      * Float array and uses a standard jsf converter.
      */
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetConvertedUISelectManyValueNonPrimitiveFloatArray()
+    void getConvertedUISelectManyValueNonPrimitiveFloatArray()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
         ValueExpression expr = new MockValueExpression("#{bean.floatArrayValue}", Float[].class);
         uiSelectMany.setValueExpression("value", expr);
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        Assertions.assertTrue(target instanceof Float[]);
+        assertInstanceOf(Float[].class, target);
         Float[] array = (Float[]) target;
-        Assertions.assertTrue(new Float(submittedValue[0]).equals(array[0]));
-        Assertions.assertTrue(new Float(submittedValue[1]).equals(array[1]));
+        assertEquals(new Float(submittedValue[0]), array[0]);
+        assertEquals(new Float(submittedValue[1]), array[1]);
     }
-    
+
     /**
      * Test case for the case that UISelectMany has a ValueExpression pointing to a 
      * POJO array and uses a provided converter.
      */
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetConvertedUISelectManyValuePOJOArray()
+    void getConvertedUISelectManyValuePOJOArray()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
         ValueExpression expr = new MockValueExpression("#{bean.pojoArrayValue}", POJO[].class);
         uiSelectMany.setValueExpression("value", expr);
         uiSelectMany.setConverter(pojoConverter);
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        Assertions.assertTrue(target instanceof POJO[]);
+        assertInstanceOf(POJO[].class, target);
         POJO[] array = (POJO[]) target;
-        Assertions.assertTrue(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0]).equals(array[0]));
-        Assertions.assertTrue(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1]).equals(array[1]));
+        assertEquals(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0]), array[0]);
+        assertEquals(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1]), array[1]);
     }
-    
+
     /**
      * Test case for the case that UISelectMany has a ValueExpression pointing to a 
      * Collection of POJOs and uses a provided converter. 
@@ -272,19 +275,19 @@ public class _SharedRendererUtilsTest extends AbstractFacesTestCase
      */
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetConvertedUISelectManyValuePOJOCollectionWithoutCollectionType()
+    void getConvertedUISelectManyValuePOJOCollectionWithoutCollectionType()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
         ValueExpression expr = new MockValueExpression("#{bean.pojoCollectionValue}", Collection.class);
         uiSelectMany.setValueExpression("value", expr);
         uiSelectMany.setConverter(pojoConverter);
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        Assertions.assertTrue(target instanceof Collection);
+        assertInstanceOf(Collection.class, target);
         Collection collection = (Collection) target;
-        Assertions.assertTrue(collection.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0])));
-        Assertions.assertTrue(collection.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1])));
+        assertTrue(collection.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0])));
+        assertTrue(collection.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1])));
     }
-    
+
     /**
      * Test case for the case that UISelectMany has a ValueExpression pointing to a 
      * Collection of POJOs and uses a provided converter. 
@@ -294,7 +297,7 @@ public class _SharedRendererUtilsTest extends AbstractFacesTestCase
      */
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetConvertedUISelectManyValuePOJOCollectionWithCollectionType()
+    void getConvertedUISelectManyValuePOJOCollectionWithCollectionType()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
         ValueExpression expr = new MockValueExpression("#{bean.pojoCollectionValue}", Collection.class);
@@ -302,19 +305,19 @@ public class _SharedRendererUtilsTest extends AbstractFacesTestCase
         uiSelectMany.setConverter(pojoConverter);
         uiSelectMany.getAttributes().put("collectionType", "java.util.HashSet");
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        Assertions.assertTrue(target instanceof HashSet);
+        assertInstanceOf(HashSet.class, target);
         HashSet hashSet = (HashSet) target;
-        Assertions.assertTrue(hashSet.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0])));
-        Assertions.assertTrue(hashSet.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1])));
+        assertTrue(hashSet.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0])));
+        assertTrue(hashSet.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1])));
     }
-    
+
     /**
      * In this test case the method can not proceed, because it is not able to
      * obtain a converter. So it throws a ConverterException.
      */
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetConvertedUISelectManyValueNoConverter()
+    void getConvertedUISelectManyValueNoConverter()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
         ValueExpression expr = new MockValueExpression("#{bean.pojoArrayValue}", POJO[].class);
@@ -322,21 +325,21 @@ public class _SharedRendererUtilsTest extends AbstractFacesTestCase
         try
         {
             SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-            Assertions.fail();
+            fail();
         }
         catch (ConverterException ce)
         {
             // success
         }
     }
-    
+
     /**
      * In this test case the method gets a wrong hint for a collection type
      * (java.util.Collection can not be instantiated). So it throws a FacesException.
      */
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetConvertedUISelectManyValueWrongCollectionType()
+    void getConvertedUISelectManyValueWrongCollectionType()
     {
         externalContext.getApplicationMap().put("bean", new Bean());
         ValueExpression expr = new MockValueExpression("#{bean.pojoCollectionValue}", Collection.class);
@@ -346,7 +349,7 @@ public class _SharedRendererUtilsTest extends AbstractFacesTestCase
         try
         {
             SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-            Assertions.fail();
+            fail();
         }
         catch (FacesException fe)
         {

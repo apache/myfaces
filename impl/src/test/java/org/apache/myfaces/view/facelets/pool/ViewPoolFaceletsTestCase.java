@@ -18,12 +18,14 @@
  */
 package org.apache.myfaces.view.facelets.pool;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.RenderKitFactory;
-import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.view.facelets.AbstractFaceletTestCase;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
@@ -34,7 +36,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author lu4242
  */
-public class ViewPoolFaceletsTestCase extends AbstractFaceletTestCase
+class ViewPoolFaceletsTestCase extends AbstractFaceletTestCase
 {
     
     @Override
@@ -69,7 +71,7 @@ public class ViewPoolFaceletsTestCase extends AbstractFaceletTestCase
      * @throws Exception 
      */
     @Test
-    public void testDynPageResourceCleanup1() throws Exception
+    void dynPageResourceCleanup1() throws Exception
     {
         facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
@@ -100,24 +102,24 @@ public class ViewPoolFaceletsTestCase extends AbstractFaceletTestCase
         // the resource should still be there
         //Assertions.assertEquals(1, oldCount);
         // The code in MYFACES-3659 reset the component after refresh
-        Assertions.assertEquals(0, oldCount);
+        assertEquals(0, oldCount);
 
         // Clear the view and synchronize resources
         ViewStructureMetadata metadata = processor.retrieveViewStructureMetadata(facesContext, root);
-        Assertions.assertNotNull(metadata);
+        assertNotNull(metadata);
         processor.clearTransientAndNonFaceletComponentsForDynamicView(facesContext, root, metadata);
         
         // the resource added by state checkA=true should not be there
-        Assertions.assertEquals(0, headerFacet.getChildCount());
+        assertEquals(0, headerFacet.getChildCount());
     }
-    
+
     /**
      * Check remove component resource added using @ResourceDependency
      * 
      * @throws Exception 
      */
     @Test
-    public void testDynPageResourceCleanup2() throws Exception
+    void dynPageResourceCleanup2() throws Exception
     {
         facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
         ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
@@ -146,15 +148,15 @@ public class ViewPoolFaceletsTestCase extends AbstractFaceletTestCase
         // the resource should still be there
         UIComponent headerFacet = root.getFacet("head");
         int oldCount = headerFacet.getChildCount();
-        Assertions.assertEquals(1, oldCount);
+        assertEquals(1, oldCount);
 
         // Clear the view and synchronize resources
         ViewStructureMetadata metadata = processor.retrieveViewStructureMetadata(facesContext, root);
-        Assertions.assertNotNull(metadata);
+        assertNotNull(metadata);
         processor.clearTransientAndNonFaceletComponentsForDynamicView(facesContext, root, metadata);
         
         // the resource added by state checkA=true should not be there
-        Assertions.assertEquals(0, headerFacet.getChildCount());
+        assertEquals(0, headerFacet.getChildCount());
     }
     
 }

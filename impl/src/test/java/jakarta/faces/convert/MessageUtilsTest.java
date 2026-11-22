@@ -18,29 +18,30 @@
  */
 package jakarta.faces.convert;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.html.HtmlInputText;
 import org.apache.myfaces.core.api.shared.MessageUtils;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class MessageUtilsTest extends AbstractFacesTestCase
+class MessageUtilsTest extends AbstractFacesTestCase
 {
 
     @Test
-    public void testGetLabelFromAttributesMap()
+    void getLabelFromAttributesMap()
     {
         HtmlInputText inputText = new HtmlInputText();
         inputText.getAttributes().put("label", "testLabel");
         Object label = MessageUtils.getLabel(facesContext, inputText);
-        Assertions.assertEquals("testLabel", label);
+        assertEquals("testLabel", label);
     }
 
     @Test
-    public void testGetLabelFromValueExpression()
+    void getLabelFromValueExpression()
     {
         facesContext.getExternalContext().getRequestMap().put("lbl", "testLabel");
         HtmlInputText inputText = new HtmlInputText();
@@ -48,15 +49,15 @@ public class MessageUtilsTest extends AbstractFacesTestCase
         inputText.setValueExpression("label", expression);
 
         Object label = MessageUtils.getLabel(facesContext, inputText);
-        Assertions.assertEquals("testLabel", label);
+        assertEquals("testLabel", label);
     }
 
     @Test
-    public void testGetLabelReturnsClientIdWhenLabelIsNotSpecified()
+    void getLabelReturnsClientIdWhenLabelIsNotSpecified()
     {
         HtmlInputText inputText = new HtmlInputText();
         inputText.setId("testId");
         Object label = MessageUtils.getLabel(facesContext, inputText);
-        Assertions.assertEquals("testId", label);
+        assertEquals("testId", label);
     }
 }

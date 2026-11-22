@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -34,7 +36,6 @@ import jakarta.faces.component.html.HtmlGraphicImage;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
-import org.junit.jupiter.api.Assertions;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
@@ -43,7 +44,7 @@ import org.junit.jupiter.api.Test;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
 import org.junit.jupiter.api.BeforeEach;
 
-public class RendererUtilsTest extends AbstractFacesTestCase {
+class RendererUtilsTest extends AbstractFacesTestCase {
 
     private MockResponseWriter writer;
 
@@ -103,7 +104,7 @@ public class RendererUtilsTest extends AbstractFacesTestCase {
     }
 
     @Test
-    public void testGetIconSrc() {
+    void getIconSrc() {
 
         // Training a mock:
         resourceHandlerMock.createResource(resourceName, libraryName);
@@ -117,13 +118,13 @@ public class RendererUtilsTest extends AbstractFacesTestCase {
         String iconSrc = RendererUtils.getIconSrc(facesContext, graphicImage,
                 HTML.IMG_ELEM);
 
-        Assertions.assertEquals(requestPath, iconSrc,
+        assertEquals(requestPath, iconSrc,
                 "If name or name/library present, source must be obtained from ResourceHandler");
 
     }
 
     @Test
-    public void testGetIconSrcResourceNotFound() throws Exception {
+    void getIconSrcResourceNotFound() throws Exception {
         // Training a mock:
         EasyMock.reset(resourceHandlerMock);
         resourceHandlerMock.createResource(resourceName, libraryName);
@@ -134,48 +135,48 @@ public class RendererUtilsTest extends AbstractFacesTestCase {
         String iconSrc = RendererUtils.getIconSrc(facesContext, graphicImage,
                 HTML.IMG_ELEM);
 
-        Assertions.assertEquals("RES_NOT_FOUND", iconSrc);
-        Assertions.assertTrue(facesContext.getMessages(graphicImage.getClientId(facesContext)).hasNext());
+        assertEquals("RES_NOT_FOUND", iconSrc);
+        assertTrue(facesContext.getMessages(graphicImage.getClientId(facesContext)).hasNext());
 
     }
 
     @Test
-    public void testGetStringValue() {
+    void getStringValue() {
         // Test for situation where submittedValue IS NOT String: 
         UIInput uiInput = new UIInput();
         Object submittedValue = new Object();
         uiInput.setSubmittedValue(submittedValue);
 
         String stringValue = RendererUtils.getStringValue(facesContext, uiInput);
-        Assertions.assertNotNull(stringValue);
-        Assertions.assertEquals(submittedValue.toString(), stringValue,
+        assertNotNull(stringValue);
+        assertEquals(submittedValue.toString(), stringValue,
                 "If submittedvalue is not String, toString() must be used");
     }
 
     @Test
-    public void testGetConvertedUIOutputValue() {
+    void getConvertedUIOutputValue() {
         UIInput uiInput = new UIInput();
         StringBuilder submittedValue = new StringBuilder("submittedValue");
         uiInput.setSubmittedValue(submittedValue);
 
         Object convertedUIOutputValue = RendererUtils.getConvertedUIOutputValue(facesContext, uiInput, submittedValue);
-        Assertions.assertEquals(submittedValue.toString(), convertedUIOutputValue);
+        assertEquals(submittedValue.toString(), convertedUIOutputValue);
     }
 
     @Test
-    public void testIsRendered() {
+    void isRendered() {
         UIComponent uiComponent = new UIOutput();
         boolean rendered = ComponentUtils.isRendered(facesContext, uiComponent);
-        Assertions.assertTrue(rendered);
+        assertTrue(rendered);
 
         uiComponent.setRendered(false);
         rendered = ComponentUtils.isRendered(facesContext, uiComponent);
-        Assertions.assertFalse(rendered);
+        assertFalse(rendered);
 
         uiComponent = _setUpComponentStack();
         rendered = ComponentUtils.isRendered(facesContext, uiComponent);
-        Assertions.assertFalse(rendered);
-        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext));
+        assertFalse(rendered);
+        assertEquals(parent, UIComponent.getCurrentComponent(facesContext));
     }
 
     /**
@@ -193,7 +194,7 @@ public class RendererUtilsTest extends AbstractFacesTestCase {
         @Override
         public Object getValue(ELContext elContext) {
             UIComponent currentComponent = UIComponent.getCurrentComponent(facesContext);
-            Assertions.assertEquals(currentComponent, toVerify);
+            assertEquals(currentComponent, toVerify);
             return false;
         }
     }
@@ -210,17 +211,17 @@ public class RendererUtilsTest extends AbstractFacesTestCase {
 
         @Override
         public void encodeBegin(FacesContext context) throws IOException {
-            Assertions.fail();
+            fail();
         }
 
         @Override
         public void encodeChildren(FacesContext context) throws IOException {
-            Assertions.fail();
+            fail();
         }
 
         @Override
         public void encodeEnd(FacesContext context) throws IOException {
-            Assertions.fail();
+            fail();
         }
     }
 

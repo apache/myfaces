@@ -18,6 +18,8 @@
  */
 package jakarta.faces.component.behavior;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,7 +30,6 @@ import java.util.Set;
 import jakarta.faces.event.PhaseId;
 
 import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +38,7 @@ import org.junit.jupiter.api.Test;
  * _DeltaStateHelper), which restores every List as an ArrayList and keeps any other Serializable collection as it is.
  * So collections without a zero-argument constructor, such as List.of() (MYFACES-4776), are restored there too.
  */
-public class BehaviorRestoreCollectionTest extends AbstractFacesTestCase
+class BehaviorRestoreCollectionTest extends AbstractFacesTestCase
 {
     @Override
     @BeforeEach
@@ -48,14 +49,14 @@ public class BehaviorRestoreCollectionTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testFullState()
+    void fullState()
     {
         assertRoundTrip(false, List.of("a", "b"), Arrays.asList("c", "d"));
         assertRoundTrip(false, Collections.unmodifiableList(new ArrayList<>(List.of("a"))), Set.of("c"));
     }
 
     @Test
-    public void testDeltaState()
+    void deltaState()
     {
         assertRoundTrip(true, List.of("a", "b"), Arrays.asList("c", "d"));
         assertRoundTrip(true, Collections.singletonList("a"), Set.of("c"));
@@ -80,7 +81,7 @@ public class BehaviorRestoreCollectionTest extends AbstractFacesTestCase
         }
         restored.restoreState(facesContext, state);
 
-        Assertions.assertEquals(new ArrayList<>(execute), new ArrayList<>(restored.getExecute()));
-        Assertions.assertEquals(new ArrayList<>(render), new ArrayList<>(restored.getRender()));
+        assertEquals(new ArrayList<>(execute), new ArrayList<>(restored.getExecute()));
+        assertEquals(new ArrayList<>(render), new ArrayList<>(restored.getRender()));
     }
 }

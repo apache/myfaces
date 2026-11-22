@@ -19,8 +19,10 @@
 
 package jakarta.faces;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import  org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import  org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,12 +34,12 @@ public class FacesExceptionTest
     }
 
     @BeforeEach
-    public void setUp() throws Exception
+    void setUp() throws Exception
     {
     }
 
     @AfterEach
-    public void tearDown() throws Exception
+    void tearDown() throws Exception
     {
     }
 
@@ -45,53 +47,53 @@ public class FacesExceptionTest
      * Test method for 'jakarta.faces.FacesException.FacesException()'
      */
     @Test
-    public void testFacesException()
+    void facesException()
     {
         FacesException e = new FacesException();
-        Assertions.assertNull(e.getCause());
-        Assertions.assertNull(e.getMessage());
+        assertNull(e.getCause());
+        assertNull(e.getMessage());
     }
 
     /*
      * Test method for 'jakarta.faces.FacesException.FacesException(Throwable)'
      */
     @Test
-    public void testFacesExceptionThrowable()
+    void facesExceptionThrowable()
     {
         Throwable t = new Throwable();
         FacesException fe = new FacesException(t);
-        Assertions.assertEquals(t, fe.getCause());
+        assertEquals(t, fe.getCause());
     }
 
     /*
      * Test method for 'jakarta.faces.FacesException.FacesException(String)'
      */
     @Test
-    public void testFacesExceptionString()
+    void facesExceptionString()
     {
         String m = "Message";
         FacesException e = new FacesException(m);
-        Assertions.assertEquals(e.getMessage(), m);
+        assertEquals(e.getMessage(), m);
     }
 
     /*
      * Test method for 'jakarta.faces.FacesException.FacesException(String, Throwable)'
      */
     @Test
-    public void testFacesExceptionStringThrowable()
+    void facesExceptionStringThrowable()
     {
         String m = "Message";
         Throwable t = new Throwable();
         FacesException fe = new FacesException(m, t);
-        Assertions.assertEquals(t, fe.getCause());
-        Assertions.assertEquals(fe.getMessage(), m);
+        assertEquals(t, fe.getCause());
+        assertEquals(fe.getMessage(), m);
     }
 
     /*
      * Test method for 'jakarta.faces.FacesException.getCause()'
      */
     @Test
-    public void testGetCause()
+    void getCause()
     {
 
     }

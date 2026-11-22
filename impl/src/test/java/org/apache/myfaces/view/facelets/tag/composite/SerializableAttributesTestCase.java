@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.beans.BeanDescriptor;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,13 +27,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import jakarta.faces.component.UINamingContainer;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SerializableAttributesTestCase
+class SerializableAttributesTestCase
 {
     @Test
-    public void testSerializeCompositeResourceWrapper() throws Exception
+    void serializeCompositeResourceWrapper() throws Exception
     {
         CompositeResourceWrapper subject = new CompositeResourceWrapper();
         subject.setResourceName("testRes");
@@ -46,15 +47,15 @@ public class SerializableAttributesTestCase
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         CompositeResourceWrapper blorg = (CompositeResourceWrapper) ois.readObject();
-        Assertions.assertEquals(blorg.getResourceName(), subject.getResourceName());
-        Assertions.assertEquals(blorg.getLibraryName(), subject.getLibraryName());
-        Assertions.assertEquals(blorg.getContentType(), subject.getContentType());
+        assertEquals(blorg.getResourceName(), subject.getResourceName());
+        assertEquals(blorg.getLibraryName(), subject.getLibraryName());
+        assertEquals(blorg.getContentType(), subject.getContentType());
         oos.close();
         ois.close();
     }
-    
+
     @Test
-    public void testSerializeCompositeComponentBeanInfo() throws Exception
+    void serializeCompositeComponentBeanInfo() throws Exception
     {
         BeanDescriptor descriptor = new BeanDescriptor(UINamingContainer.class);
         CompositeComponentBeanInfo subject = new CompositeComponentBeanInfo(descriptor);
@@ -70,8 +71,8 @@ public class SerializableAttributesTestCase
         ObjectInputStream ois = new ObjectInputStream(bais);
         CompositeComponentBeanInfo blorg = (CompositeComponentBeanInfo) ois.readObject();
         
-        Assertions.assertEquals(UINamingContainer.class, blorg.getBeanDescriptor().getBeanClass());
-        Assertions.assertEquals(pd.getName(), blorg.getPropertyDescriptorsList().get(0).getName());
+        assertEquals(UINamingContainer.class, blorg.getBeanDescriptor().getBeanClass());
+        assertEquals(pd.getName(), blorg.getPropertyDescriptorsList().get(0).getName());
         oos.close();
         ois.close();
     }

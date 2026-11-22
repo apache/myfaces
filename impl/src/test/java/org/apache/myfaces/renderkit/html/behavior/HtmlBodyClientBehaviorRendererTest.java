@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
@@ -36,7 +38,7 @@ import org.junit.jupiter.api.Test;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
+class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
 {
     private HtmlRenderedClientEventAttr[] attrs = null;
     
@@ -82,7 +84,7 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
      * <body> does not have "name", so we just need to check "id"
      */
     @Test
-    public void testClientBehaviorHolderRendersIdAndName() 
+    public void clientBehaviorHolderRendersIdAndName() 
     {
         HtmlRenderedClientEventAttr[] attrs = getClientBehaviorHtmlRenderedAttributes();
         
@@ -91,17 +93,12 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
             UIComponent component = createComponentToTest();
             ClientBehaviorHolder clientBehaviorHolder = (ClientBehaviorHolder) component;
             clientBehaviorHolder.addClientBehavior(attrs[i].getClientEvent(), new AjaxBehavior());
-            try 
-            {
+            Assertions.assertDoesNotThrow(() -> {
                 component.encodeAll(facesContext);
                 String output = outputWriter.toString();
-                Assertions.assertTrue(output.contains("id=\"j_id__"));
+                assertTrue(output.contains("id=\"j_id__"));
                 outputWriter.reset();
-            }
-            catch (Exception e)
-            {
-                Assertions.fail(e.getMessage());
-            }
+            });
         }
     }
 
@@ -111,33 +108,28 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
      * &lt;h:body&gt; therefore keeps working, and so do e.g. "unload", "pagehide" and "popstate".
      */
     @Test
-    public void testWindowEventsAreBehaviorEvents()
+    void windowEventsAreBehaviorEvents()
     {
         HtmlBody body = new HtmlBody();
 
-        Assertions.assertTrue(body.getEventNames().contains(ClientBehaviorEvents.CLICK));
-        Assertions.assertTrue(body.getEventNames().contains(ClientBehaviorEvents.LOAD));
-        Assertions.assertTrue(body.getEventNames().contains(ClientBehaviorEvents.UNLOAD));
-        Assertions.assertTrue(body.getEventNames().contains(HtmlEvents.HtmlWindowEvent.pagehide.name()));
-        Assertions.assertTrue(body.getEventNames().contains(HtmlEvents.HtmlWindowEvent.popstate.name()));
+        assertTrue(body.getEventNames().contains(ClientBehaviorEvents.CLICK));
+        assertTrue(body.getEventNames().contains(ClientBehaviorEvents.LOAD));
+        assertTrue(body.getEventNames().contains(ClientBehaviorEvents.UNLOAD));
+        assertTrue(body.getEventNames().contains(HtmlEvents.HtmlWindowEvent.pagehide.name()));
+        assertTrue(body.getEventNames().contains(HtmlEvents.HtmlWindowEvent.popstate.name()));
 
         // but not on any other component
         HtmlPanelGroup group = new HtmlPanelGroup();
-        Assertions.assertTrue(group.getEventNames().contains(ClientBehaviorEvents.LOAD));
-        Assertions.assertFalse(group.getEventNames().contains(ClientBehaviorEvents.UNLOAD));
-        Assertions.assertFalse(group.getEventNames().contains(HtmlEvents.HtmlWindowEvent.pagehide.name()));
+        assertTrue(group.getEventNames().contains(ClientBehaviorEvents.LOAD));
+        assertFalse(group.getEventNames().contains(ClientBehaviorEvents.UNLOAD));
+        assertFalse(group.getEventNames().contains(HtmlEvents.HtmlWindowEvent.pagehide.name()));
 
         // still supported as a plain attribute
         body.setOnload("alert('load')");
-        try
-        {
+        Assertions.assertDoesNotThrow(() -> {
             body.encodeAll(facesContext);
-            Assertions.assertTrue(outputWriter.toString().contains(HTML.ONLOAD_ATTR + "=\"alert('load')\""));
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(outputWriter.toString().contains(HTML.ONLOAD_ATTR + "=\"alert('load')\""));
+        });
     }
 
     /**
@@ -145,43 +137,33 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
      * second time.
      */
     @Test
-    public void testRendererHandledWindowEventIsRenderedOnce()
+    void rendererHandledWindowEventIsRenderedOnce()
     {
         HtmlBody body = new HtmlBody();
         body.addClientBehavior(ClientBehaviorEvents.LOAD, new AjaxBehavior());
 
-        try
-        {
+        Assertions.assertDoesNotThrow(() -> {
             body.encodeAll(facesContext);
             String output = outputWriter.toString();
-            Assertions.assertTrue(output.contains(HTML.ONLOAD_ATTR + "=\""), output);
-            Assertions.assertEquals(output.indexOf(HTML.ONLOAD_ATTR + "=\""),
+            assertTrue(output.contains(HTML.ONLOAD_ATTR + "=\""), output);
+            assertEquals(output.indexOf(HTML.ONLOAD_ATTR + "=\""),
                     output.lastIndexOf(HTML.ONLOAD_ATTR + "=\""), output);
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+        });
     }
 
     /**
      * The window level events which the renderer does not handle itself are rendered generically.
      */
     @Test
-    public void testGenericWindowEventIsRendered()
+    void genericWindowEventIsRendered()
     {
         HtmlBody body = new HtmlBody();
         body.addClientBehavior(HtmlEvents.HtmlWindowEvent.pagehide.name(), new AjaxBehavior());
 
-        try
-        {
+        Assertions.assertDoesNotThrow(() -> {
             body.encodeAll(facesContext);
-            Assertions.assertTrue(outputWriter.toString().contains(" onpagehide=\""), outputWriter.toString());
-        }
-        catch (Exception e)
-        {
-            Assertions.fail(e.getMessage());
-        }
+            assertTrue(outputWriter.toString().contains(" onpagehide=\""), outputWriter.toString());
+        });
     }
 
 }

@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.application;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +40,6 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.base.junit.AbstractFacesConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ClientBehaviorTestCase extends AbstractFacesConfigurableMockTestCase
@@ -127,7 +129,7 @@ public class ClientBehaviorTestCase extends AbstractFacesConfigurableMockTestCas
     }
 
     @Test
-    public void testAddBehaviorWithResourceDependencies() throws Exception
+    void addBehaviorWithResourceDependencies() throws Exception
     {
 
         application.addComponent(UITestComponentWithBehavior.COMPONENT_TYPE,
@@ -144,12 +146,12 @@ public class ClientBehaviorTestCase extends AbstractFacesConfigurableMockTestCas
         comp.addClientBehavior("click", behavior);
 
         // verify that method still works
-        Assertions.assertTrue(comp.getClientBehaviors().get("click").contains(behavior));
+        assertTrue(comp.getClientBehaviors().get("click").contains(behavior));
 
         // get behavior resource
         List<UIComponent> resources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        Assertions.assertEquals(1, resources.size());
+        assertEquals(1, resources.size());
         Map<String,Object> attrMap = resources.get(0).getAttributes();
-        Assertions.assertEquals("test.js", attrMap.get("name"));
+        assertEquals("test.js", attrMap.get("name"));
     }
 }

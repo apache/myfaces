@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.util.lang;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -30,129 +32,128 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ConcurrentLRUCacheTest
+class ConcurrentLRUCacheTest
 {
     @Test
-    public void testPutAndGet()
+    void putAndGet()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
 
-        Assertions.assertNull(cache.get("a"));
-        Assertions.assertEquals(0, cache.size());
+        assertNull(cache.get("a"));
+        assertEquals(0, cache.size());
 
-        Assertions.assertNull(cache.put("a", "1"));
-        Assertions.assertEquals("1", cache.get("a"));
-        Assertions.assertEquals(1, cache.size());
+        assertNull(cache.put("a", "1"));
+        assertEquals("1", cache.get("a"));
+        assertEquals(1, cache.size());
 
-        Assertions.assertNull(cache.get("b"));
+        assertNull(cache.get("b"));
     }
 
     @Test
-    public void testPutReturnsPreviousValue()
+    void putReturnsPreviousValue()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
 
-        Assertions.assertNull(cache.put("a", "1"));
-        Assertions.assertEquals("1", cache.put("a", "2"));
-        Assertions.assertEquals("2", cache.get("a"));
-        Assertions.assertEquals(1, cache.size());
+        assertNull(cache.put("a", "1"));
+        assertEquals("1", cache.put("a", "2"));
+        assertEquals("2", cache.get("a"));
+        assertEquals(1, cache.size());
     }
 
     @Test
-    public void testPutIgnoresNullValue()
+    void putIgnoresNullValue()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
 
-        Assertions.assertNull(cache.put("a", null));
-        Assertions.assertEquals(0, cache.size());
+        assertNull(cache.put("a", null));
+        assertEquals(0, cache.size());
 
         cache.put("a", "1");
         // a null value must not drop the existing mapping either
-        Assertions.assertNull(cache.put("a", null));
-        Assertions.assertEquals("1", cache.get("a"));
+        assertNull(cache.put("a", null));
+        assertEquals("1", cache.get("a"));
     }
 
     @Test
-    public void testRemove()
+    void remove()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
         cache.put("a", "1");
 
-        Assertions.assertNull(cache.remove("unknown"));
-        Assertions.assertEquals("1", cache.remove("a"));
-        Assertions.assertNull(cache.get("a"));
-        Assertions.assertEquals(0, cache.size());
-        Assertions.assertNull(cache.remove("a"));
+        assertNull(cache.remove("unknown"));
+        assertEquals("1", cache.remove("a"));
+        assertNull(cache.get("a"));
+        assertEquals(0, cache.size());
+        assertNull(cache.remove("a"));
     }
 
     @Test
-    public void testClear()
+    void clear()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
         putRange(cache, 0, 5);
-        Assertions.assertEquals(5, cache.size());
+        assertEquals(5, cache.size());
 
         cache.clear();
 
-        Assertions.assertEquals(0, cache.size());
-        Assertions.assertNull(cache.get("k0"));
-        Assertions.assertTrue(cache.getLatestAccessedItems(10).isEmpty());
+        assertEquals(0, cache.size());
+        assertNull(cache.get("k0"));
+        assertTrue(cache.getLatestAccessedItems(10).isEmpty());
     }
 
     @Test
-    public void testInvalidWaterMarks()
+    void invalidWaterMarks()
     {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ConcurrentLRUCache<>(0, 0));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ConcurrentLRUCache<>(-1, 0));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ConcurrentLRUCache<>(10, 10));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ConcurrentLRUCache<>(10, 11));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ConcurrentLRUCache<>(10, -1));
+        assertThrows(IllegalArgumentException.class, () -> new ConcurrentLRUCache<>(0, 0));
+        assertThrows(IllegalArgumentException.class, () -> new ConcurrentLRUCache<>(-1, 0));
+        assertThrows(IllegalArgumentException.class, () -> new ConcurrentLRUCache<>(10, 10));
+        assertThrows(IllegalArgumentException.class, () -> new ConcurrentLRUCache<>(10, 11));
+        assertThrows(IllegalArgumentException.class, () -> new ConcurrentLRUCache<>(10, -1));
     }
 
     @Test
-    public void testNoEvictionBelowUpperWaterMark()
+    void noEvictionBelowUpperWaterMark()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
         putRange(cache, 0, 10);
 
-        Assertions.assertEquals(10, cache.size());
-        Assertions.assertEquals(keys(0, 10), keysOf(cache));
+        assertEquals(10, cache.size());
+        assertEquals(keys(0, 10), keysOf(cache));
     }
 
     @Test
-    public void testEvictionDropsDownToLowerWaterMark()
+    void evictionDropsDownToLowerWaterMark()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
         putRange(cache, 0, 11);
 
         // the 11th put crosses the upper water mark, nothing was accessed, so the entries which
         // were inserted first are dropped
-        Assertions.assertEquals(5, cache.size());
-        Assertions.assertEquals(keys(6, 11), keysOf(cache));
+        assertEquals(5, cache.size());
+        assertEquals(keys(6, 11), keysOf(cache));
     }
 
     @Test
-    public void testEvictionKeepsAccessedEntries()
+    void evictionKeepsAccessedEntries()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
         putRange(cache, 0, 10);
 
         // k0 and k1 are the oldest entries, but accessing them protects them
-        Assertions.assertEquals("v0", cache.get("k0"));
-        Assertions.assertEquals("v1", cache.get("k1"));
+        assertEquals("v0", cache.get("k0"));
+        assertEquals("v1", cache.get("k1"));
 
         cache.put("k10", "v10");
 
-        Assertions.assertEquals(5, cache.size());
-        Assertions.assertEquals(new LinkedHashSet<>(Arrays.asList("k0", "k1", "k8", "k9", "k10")),
+        assertEquals(5, cache.size());
+        assertEquals(new LinkedHashSet<>(Arrays.asList("k0", "k1", "k8", "k9", "k10")),
                 keysOf(cache));
     }
 
     @Test
-    public void testEvictionResetsTheAccessFlag()
+    void evictionResetsTheAccessFlag()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
         putRange(cache, 0, 10);
@@ -165,68 +166,68 @@ public class ConcurrentLRUCacheTest
         cache.get("k8");
         putRange(cache, 11, 17);
 
-        Assertions.assertEquals(5, cache.size());
-        Assertions.assertEquals(new LinkedHashSet<>(Arrays.asList("k8", "k13", "k14", "k15", "k16")),
+        assertEquals(5, cache.size());
+        assertEquals(new LinkedHashSet<>(Arrays.asList("k8", "k13", "k14", "k15", "k16")),
                 keysOf(cache));
     }
 
     @Test
-    public void testEvictionWithLowerWaterMarkZero()
+    void evictionWithLowerWaterMarkZero()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(2, 0);
         putRange(cache, 0, 3);
 
-        Assertions.assertEquals(0, cache.size());
+        assertEquals(0, cache.size());
     }
 
     @Test
-    public void testRepeatedPutsStayBounded()
+    void repeatedPutsStayBounded()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
 
         for (int i = 0; i < 1000; i++)
         {
             cache.put("k" + i, "v" + i);
-            Assertions.assertTrue(cache.size() <= 10, "size must never exceed the upper water mark");
+            assertTrue(cache.size() <= 10, "size must never exceed the upper water mark");
         }
 
-        Assertions.assertEquals(10, cache.size());
-        Assertions.assertEquals(keys(990, 1000), keysOf(cache));
+        assertEquals(10, cache.size());
+        assertEquals(keys(990, 1000), keysOf(cache));
     }
 
     @Test
-    public void testAccessedItemsReturnEveryEntry()
+    void accessedItemsReturnEveryEntry()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
         putRange(cache, 0, 5);
 
         // all five entries share the same state, none of them may be swallowed
-        Assertions.assertEquals(5, cache.getLatestAccessedItems(5).size());
-        Assertions.assertEquals(5, cache.getLatestAccessedItems(100).size());
-        Assertions.assertEquals(5, cache.getOldestAccessedItems(100).size());
+        assertEquals(5, cache.getLatestAccessedItems(5).size());
+        assertEquals(5, cache.getLatestAccessedItems(100).size());
+        assertEquals(5, cache.getOldestAccessedItems(100).size());
 
         Map<String, String> items = cache.getLatestAccessedItems(100);
         for (int i = 0; i < 5; i++)
         {
-            Assertions.assertEquals("v" + i, items.get("k" + i));
+            assertEquals("v" + i, items.get("k" + i));
         }
     }
 
     @Test
-    public void testAccessedItemsRespectN()
+    void accessedItemsRespectN()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
         putRange(cache, 0, 5);
 
-        Assertions.assertTrue(cache.getLatestAccessedItems(0).isEmpty());
-        Assertions.assertTrue(cache.getLatestAccessedItems(-1).isEmpty());
-        Assertions.assertTrue(cache.getOldestAccessedItems(0).isEmpty());
-        Assertions.assertEquals(1, cache.getLatestAccessedItems(1).size());
-        Assertions.assertEquals(3, cache.getOldestAccessedItems(3).size());
+        assertTrue(cache.getLatestAccessedItems(0).isEmpty());
+        assertTrue(cache.getLatestAccessedItems(-1).isEmpty());
+        assertTrue(cache.getOldestAccessedItems(0).isEmpty());
+        assertEquals(1, cache.getLatestAccessedItems(1).size());
+        assertEquals(3, cache.getOldestAccessedItems(3).size());
     }
 
     @Test
-    public void testAccessedItemsOrder()
+    void accessedItemsOrder()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
         cache.put("k0", "v0");
@@ -236,23 +237,23 @@ public class ConcurrentLRUCacheTest
         // k0 was accessed, so it ranks before the untouched entries; those are ordered by insertion
         cache.get("k0");
 
-        Assertions.assertEquals(Arrays.asList("k0", "k2", "k1"),
+        assertEquals(Arrays.asList("k0", "k2", "k1"),
                 new ArrayList<>(cache.getLatestAccessedItems(3).keySet()));
-        Assertions.assertEquals(Arrays.asList("k1", "k2", "k0"),
+        assertEquals(Arrays.asList("k1", "k2", "k0"),
                 new ArrayList<>(cache.getOldestAccessedItems(3).keySet()));
     }
 
     @Test
-    public void testAccessedItemsOnEmptyCache()
+    void accessedItemsOnEmptyCache()
     {
         ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(10, 5);
 
-        Assertions.assertTrue(cache.getLatestAccessedItems(10).isEmpty());
-        Assertions.assertTrue(cache.getOldestAccessedItems(10).isEmpty());
+        assertTrue(cache.getLatestAccessedItems(10).isEmpty());
+        assertTrue(cache.getOldestAccessedItems(10).isEmpty());
     }
 
     @Test
-    public void testConcurrentAccess() throws Exception
+    void concurrentAccess() throws Exception
     {
         final int upperWaterMark = 200;
         final ConcurrentLRUCache<String, String> cache = new ConcurrentLRUCache<>(upperWaterMark, 100);
@@ -283,7 +284,7 @@ public class ConcurrentLRUCacheTest
                             if (value != null)
                             {
                                 // a key must never be mapped to the value of another key
-                                Assertions.assertEquals(valueOf(key), value);
+                                assertEquals(valueOf(key), value);
                             }
                             else
                             {
@@ -292,7 +293,7 @@ public class ConcurrentLRUCacheTest
 
                             if ((j & 0xFF) == 0)
                             {
-                                Assertions.assertTrue(cache.getLatestAccessedItems(10).size() <= 10);
+                                assertTrue(cache.getLatestAccessedItems(10).size() <= 10);
                             }
                         }
                     }
@@ -308,7 +309,7 @@ public class ConcurrentLRUCacheTest
             }
 
             start.countDown();
-            Assertions.assertTrue(done.await(60, TimeUnit.SECONDS), "threads did not finish in time");
+            assertTrue(done.await(60, TimeUnit.SECONDS), "threads did not finish in time");
         }
         finally
         {
@@ -323,7 +324,7 @@ public class ConcurrentLRUCacheTest
         // one quiescent put is enough to bring a cache which grew during the concurrent phase back
         // under the upper water mark
         cache.put("quiescent", "v");
-        Assertions.assertTrue(cache.size() <= upperWaterMark,
+        assertTrue(cache.size() <= upperWaterMark,
                 "size " + cache.size() + " exceeds the upper water mark " + upperWaterMark);
     }
 

@@ -23,6 +23,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.EnumSet;
@@ -49,11 +50,10 @@ import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.test.mock.visit.MockVisitCallback;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class UIInputTest extends AbstractFacesTestCase
+class UIInputTest extends AbstractFacesTestCase
 {
 
     private Converter mockConverter;
@@ -99,7 +99,7 @@ public class UIInputTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testWhenSpecifiedConverterMessageIsUsedInCaseConverterExceptionOccurs()
+    void whenSpecifiedConverterMessageIsUsedInCaseConverterExceptionOccurs()
     {
         input.setConverterMessage("Cannot convert");
 
@@ -112,16 +112,16 @@ public class UIInputTest extends AbstractFacesTestCase
         input.validate(facesContext);
         verify(mockConverter);
 
-        Assertions.assertFalse(input.isValid());
-        Assertions.assertNotNull(facesContext.getMessages("testId"));
+        assertFalse(input.isValid());
+        assertNotNull(facesContext.getMessages("testId"));
 
         FacesMessage message = (FacesMessage) facesContext.getMessages("testId").next();
-        Assertions.assertEquals(message.getDetail(), "Cannot convert");
-        Assertions.assertEquals(message.getSummary(), "Cannot convert");
+        assertEquals("Cannot convert", message.getDetail());
+        assertEquals("Cannot convert", message.getSummary());
     }
 
     @Test
-    public void testWhenSpecifiedValidatorMessageIsUsedInCaseValidatorExceptionOccurs()
+    void whenSpecifiedValidatorMessageIsUsedInCaseValidatorExceptionOccurs()
     {
         input.setValidatorMessage("Cannot validate");
 
@@ -133,16 +133,16 @@ public class UIInputTest extends AbstractFacesTestCase
         input.validateValue(facesContext, "xxx");
         verify(mockValidator);
 
-        Assertions.assertFalse(input.isValid());
-        Assertions.assertNotNull(facesContext.getMessages("testId"));
+        assertFalse(input.isValid());
+        assertNotNull(facesContext.getMessages("testId"));
 
         FacesMessage message = (FacesMessage) facesContext.getMessages("testId").next();
-        Assertions.assertEquals(message.getDetail(), "Cannot validate");
-        Assertions.assertEquals(message.getSummary(), "Cannot validate");
+        assertEquals("Cannot validate", message.getDetail());
+        assertEquals("Cannot validate", message.getSummary());
     }
 
     @Test
-    public void testUpdateModelSetsTheLocalValueToModelValue()
+    void updateModelSetsTheLocalValueToModelValue()
     {
         input.setValue("testValue");
 
@@ -152,11 +152,11 @@ public class UIInputTest extends AbstractFacesTestCase
         input.updateModel(facesContext);
 
         String updatedValue = expression.getValue(facesContext.getELContext()).toString();
-        Assertions.assertEquals("testValue", updatedValue);
+        assertEquals("testValue", updatedValue);
     }
 
     @Test
-    public void testValidateWithEmptyStringWithEmptyStringAsNullEnabled()
+    void validateWithEmptyStringWithEmptyStringAsNullEnabled()
     {
         try
         {
@@ -174,7 +174,7 @@ public class UIInputTest extends AbstractFacesTestCase
                         throws ValidatorException
                 {
                     // the value must be null
-                    Assertions.assertNull(value);
+                    assertNull(value);
                 }
 
                 
@@ -183,16 +183,16 @@ public class UIInputTest extends AbstractFacesTestCase
             input.setSubmittedValue("");
             input.validate(facesContext);
 
-            Assertions.assertEquals(null, input.getSubmittedValue());
+            assertNull(input.getSubmittedValue());
         }
         finally
         {
             facesContext.setExternalContext(externalContext);
         }
     }
-    
+
     @Test
-    public void testValidateWithNonStringWithEmptyStringAsNullEnabled()
+    void validateWithNonStringWithEmptyStringAsNullEnabled()
     {
         try
         {
@@ -209,7 +209,7 @@ public class UIInputTest extends AbstractFacesTestCase
                         throws ValidatorException
                 {
                     // the value must not be null
-                    Assertions.assertNotNull(value);
+                    assertNotNull(value);
                     
                     // throw Exception to ensure this was called
                     throw new RuntimeException();
@@ -234,7 +234,7 @@ public class UIInputTest extends AbstractFacesTestCase
             {
                 input.validate(facesContext);
                 
-                Assertions.fail(); // validate() was not called --> fail!
+                fail(); // validate() was not called --> fail!
             }
             catch (RuntimeException e)
             {
@@ -248,7 +248,7 @@ public class UIInputTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testValidateWithNonEmptyStringWithEmptyStringAsNullEnabled()
+    void validateWithNonEmptyStringWithEmptyStringAsNullEnabled()
     {
         try
         {
@@ -260,8 +260,8 @@ public class UIInputTest extends AbstractFacesTestCase
             input.setSubmittedValue("asd");
             input.validate(facesContext);
 
-            Assertions.assertEquals(null, input.getSubmittedValue());
-            Assertions.assertEquals("asd", input.getValue());
+            assertNull(input.getSubmittedValue());
+            assertEquals("asd", input.getValue());
         }
         finally
         {
@@ -270,7 +270,7 @@ public class UIInputTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testValidateWithEmptyStringWithEmptyStringAsNullDisabled()
+    void validateWithEmptyStringWithEmptyStringAsNullDisabled()
     {
         try
         {
@@ -282,7 +282,7 @@ public class UIInputTest extends AbstractFacesTestCase
             input.setSubmittedValue("");
             input.validate(facesContext);
 
-            Assertions.assertEquals("", input.getValue());
+            assertEquals("", input.getValue());
         }
         finally
         {
@@ -291,7 +291,7 @@ public class UIInputTest extends AbstractFacesTestCase
     }
 
     @Test
-    public void testValidateWithEmptyStringWithEmptyStringAsNullNotSpecified()
+    void validateWithEmptyStringWithEmptyStringAsNullNotSpecified()
     {
         try
         {
@@ -303,20 +303,20 @@ public class UIInputTest extends AbstractFacesTestCase
             input.setSubmittedValue("");
             input.validate(facesContext);
 
-            Assertions.assertEquals("", input.getValue());
+            assertEquals("", input.getValue());
         }
         finally
         {
             facesContext.setExternalContext(externalContext);
         }
     }
-    
+
     /**
      * Tests if UIInput.processValidators() correctly calls FacesContext.validationFailed()
      * if a validation error occurs.
      */
     @Test
-    public void testValidationErrorTriggersFacesContextValidationFailed()
+    void validationErrorTriggersFacesContextValidationFailed()
     {
         LengthValidator validator = new LengthValidator();
         validator.setMinimum(5);
@@ -324,9 +324,9 @@ public class UIInputTest extends AbstractFacesTestCase
         
         input.setSubmittedValue("123");
         
-        Assertions.assertFalse(facesContext.isValidationFailed());
+        assertFalse(facesContext.isValidationFailed());
         input.processValidators(facesContext);
-        Assertions.assertTrue(facesContext.isValidationFailed());
+        assertTrue(facesContext.isValidationFailed());
     }
 
     static public class InitParameterMockExternalContext extends org.apache.myfaces.test.mock.MockExternalContext {
@@ -352,82 +352,82 @@ public class UIInputTest extends AbstractFacesTestCase
             return initParameters;
         }
     }
-    
+
     @Test
-    public void testProcessDecodesRenderedFalse() throws Exception {
+    void processDecodesRenderedFalse() throws Exception {
         input = new VerifyNoLifecycleMethodComponent();
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, false);
         
         input.processDecodes(facesContext);
         
-        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processDecodes must not change currentComponent");
+        assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processDecodes must not change currentComponent");
         
     }
-    
+
     @Test
-    public void testProcessDecodesRenderedTrue() throws Exception {
+    void processDecodesRenderedTrue() throws Exception {
         
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
         _setUpValueExpressionForImmediate();
         
         input.processDecodes(facesContext);
         
-        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processDecodes must not change currentComponent");
+        assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processDecodes must not change currentComponent");
     }
-    
+
     @Test
-    public void testProcessValidatorsRenderedFalse() throws Exception {
+    void processValidatorsRenderedFalse() throws Exception {
         input = new VerifyNoLifecycleMethodComponent();
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, false);
         
         input.processValidators(facesContext);
         
-        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processValidators must not change currentComponent");
+        assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processValidators must not change currentComponent");
         
     }
-    
+
     @Test
-    public void testProcessValidatorsRenderedTrue() throws Exception {
+    void processValidatorsRenderedTrue() throws Exception {
         
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
         _setUpValueExpressionForImmediate();
         
         input.processValidators(facesContext);
         
-        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processValidators must not change currentComponent");
+        assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processValidators must not change currentComponent");
     }
-    
+
     @Test
-    public void testProcessUpdatesRenderedFalse() throws Exception {
+    void processUpdatesRenderedFalse() throws Exception {
         input = new VerifyNoLifecycleMethodComponent();    
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,input, false);
         
         input.processUpdates(facesContext);
         
-        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processValidators must not change currentComponent");
+        assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processValidators must not change currentComponent");
         
     }
-    
+
     @Test
-    public void testProcessUpdatesRenderedTrue() throws Exception {
+    void processUpdatesRenderedTrue() throws Exception {
         
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
         _setUpValueExpressionForImmediate();
         
         input.processUpdates(facesContext);
         
-        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processValidators must not change currentComponent");
+        assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processValidators must not change currentComponent");
     }
-    
+
     @Test
-    public void testVisitTree() throws Exception {
+    void visitTree() throws Exception {
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
         
         VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, EnumSet.of(VisitHint.SKIP_UNRENDERED));
         MockVisitCallback mockVisitCallback = new MockVisitCallback();
         input.visitTree(visitContext, mockVisitCallback);
         
-        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "visitTree must not change currentComponent");
+        assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "visitTree must not change currentComponent");
     }
     
     /** Verifies no call to encode* and process* methods */
@@ -435,27 +435,27 @@ public class UIInputTest extends AbstractFacesTestCase
     {
         @Override
         public void decode(FacesContext context) {
-            Assertions.fail();
+            fail();
         }
         @Override
         public void validate(FacesContext context) {
-            Assertions.fail();
+            fail();
         }
         @Override
         public void updateModel(FacesContext context) {
-            Assertions.fail();
+            fail();
         }
         @Override
         public void encodeBegin(FacesContext context) throws IOException {
-            Assertions.fail();
+            fail();
         }
         @Override
         public void encodeChildren(FacesContext context) throws IOException {
-            Assertions.fail();
+            fail();
         }
         @Override
         public void encodeEnd(FacesContext context) throws IOException {
-            Assertions.fail();
+            fail();
         }
     }
     

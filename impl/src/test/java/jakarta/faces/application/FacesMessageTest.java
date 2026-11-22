@@ -20,82 +20,85 @@
 package jakarta.faces.application;
 
 import jakarta.faces.application.FacesMessage.Severity;
+
 import java.io.ByteArrayInputStream;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class FacesMessageTest
+class FacesMessageTest
 {
 
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage()'
      */
     @Test
-    public void testFacesMessage()
+    void facesMessage()
     {
         FacesMessage msg = new FacesMessage();
-        Assertions.assertEquals(msg.getSeverity(), Severity.INFO);
-        Assertions.assertNull(msg.getSummary());
-        Assertions.assertNull(msg.getDetail());
+        assertEquals(Severity.INFO, msg.getSeverity());
+        assertNull(msg.getSummary());
+        assertNull(msg.getDetail());
     }
 
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(String)'
      */
     @Test
-    public void testFacesMessageString()
+    void facesMessageString()
     {
         String summary = "summary";
         FacesMessage msg = new FacesMessage(summary);
-        Assertions.assertEquals(msg.getSeverity(), Severity.INFO);
-        Assertions.assertEquals(msg.getSummary(), summary);
-        Assertions.assertEquals(msg.getDetail(), summary);
+        assertEquals(Severity.INFO, msg.getSeverity());
+        assertEquals(msg.getSummary(), summary);
+        assertEquals(msg.getDetail(), summary);
     }
 
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(String, String)'
      */
     @Test
-    public void testFacesMessageStringString()
+    void facesMessageStringString()
     {
         String summary = "summary";
         String detail = "detail";
         FacesMessage msg = new FacesMessage(summary, detail);
-        Assertions.assertEquals(msg.getSeverity(), Severity.INFO);
-        Assertions.assertEquals(msg.getSummary(), summary);
-        Assertions.assertEquals(msg.getDetail(), detail);
+        assertEquals(Severity.INFO, msg.getSeverity());
+        assertEquals(msg.getSummary(), summary);
+        assertEquals(msg.getDetail(), detail);
     }
 
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(Severity, String, String)'
      */
     @Test
-    public void testFacesMessageSeverityStringString()
+    void facesMessageSeverityStringString()
     {
         String summary = "summary";
         String detail = "detail";
         FacesMessage msg = new FacesMessage(Severity.ERROR, summary, detail);
-        Assertions.assertEquals(msg.getSeverity(), Severity.ERROR);
-        Assertions.assertEquals(msg.getSummary(), summary);
-        Assertions.assertEquals(msg.getDetail(), detail);
+        assertEquals(Severity.ERROR, msg.getSeverity());
+        assertEquals(msg.getSummary(), summary);
+        assertEquals(msg.getDetail(), detail);
     }
 
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.FacesMessage(Severity, String, String)'
      */
     @Test
-    public void testFacesMessageNullSeverityStringString()
+    void facesMessageNullSeverityStringString()
     {
         String summary = "summary";
         String detail = "detail";
         try
         {
             new FacesMessage(null, summary, detail);
-            Assertions.fail("Should have thrown an exception");
+            fail("Should have thrown an exception");
         }
         catch (NullPointerException e)
         {
@@ -106,25 +109,25 @@ public class FacesMessageTest
      * Test method for 'jakarta.faces.application.FacesMessage.setSeverity(Severity)'
      */
     @Test
-    public void testSetSeverity()
+    void setSeverity()
     {
         FacesMessage msg = new FacesMessage();
-        Assertions.assertEquals(msg.getSeverity(), Severity.INFO);
+        assertEquals(Severity.INFO, msg.getSeverity());
         msg.setSeverity(Severity.FATAL);
-        Assertions.assertEquals(msg.getSeverity(), Severity.FATAL);
+        assertEquals(Severity.FATAL, msg.getSeverity());
     }
 
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.setSeverity(Severity)'
      */
     @Test
-    public void testSetNullSeverity()
+    void setNullSeverity()
     {
         FacesMessage msg = new FacesMessage();
         try
         {
             msg.setSeverity(null);
-            Assertions.fail("Should have thrown an exception");
+            fail("Should have thrown an exception");
         }
         catch (NullPointerException e)
         {
@@ -135,86 +138,86 @@ public class FacesMessageTest
      * Test method for 'jakarta.faces.application.FacesMessage.setSummary(String)'
      */
     @Test
-    public void testSetSummary()
+    void setSummary()
     {
         FacesMessage msg = new FacesMessage();
         String summary = "summary";
         msg.setSummary(summary);
-        Assertions.assertEquals(msg.getSummary(), summary);
-        Assertions.assertEquals(msg.getDetail(), summary);
+        assertEquals(msg.getSummary(), summary);
+        assertEquals(msg.getDetail(), summary);
     }
 
     /*
      * Test method for 'jakarta.faces.application.FacesMessage.setDetail(String)'
      */
     @Test
-    public void testSetDetail()
+    void setDetail()
     {
         FacesMessage msg = new FacesMessage();
         String detail = "detail";
         msg.setDetail(detail);
-        Assertions.assertEquals(msg.getSummary(), null);
-        Assertions.assertEquals(msg.getDetail(), detail);
+        assertNull(msg.getSummary());
+        assertEquals(msg.getDetail(), detail);
     }
 
     @Test
-    public void testSeverityOrdering()
+    void severityOrdering()
     {
         // make sure they are ordered correctly from least to worst
-        Assertions.assertTrue(0 > Severity.INFO.compareTo(Severity.WARN));
-        Assertions.assertTrue(0 > Severity.WARN.compareTo(Severity.ERROR));
-        Assertions.assertTrue(0 > Severity.ERROR.compareTo(Severity.FATAL));
+        assertTrue(0 > Severity.INFO.compareTo(Severity.WARN));
+        assertTrue(0 > Severity.WARN.compareTo(Severity.ERROR));
+        assertTrue(0 > Severity.ERROR.compareTo(Severity.FATAL));
         // make sure they are ordered correctly from worts to least
-        Assertions.assertTrue(0 < Severity.FATAL.compareTo(Severity.ERROR));
-        Assertions.assertTrue(0 < Severity.ERROR.compareTo(Severity.WARN));
-        Assertions.assertTrue(0 < Severity.WARN.compareTo(Severity.INFO));
+        assertTrue(0 < Severity.FATAL.compareTo(Severity.ERROR));
+        assertTrue(0 < Severity.ERROR.compareTo(Severity.WARN));
+        assertTrue(0 < Severity.WARN.compareTo(Severity.INFO));
     }
 
     @Test
-    public void testSeverityEquality()
+    void severityEquality()
     {
         // make sure they all respond as equals when they should
-        Assertions.assertEquals(0, Severity.INFO.compareTo(Severity.INFO));
-        Assertions.assertEquals(0, Severity.WARN.compareTo(Severity.WARN));
-        Assertions.assertEquals(0, Severity.ERROR.compareTo(Severity.ERROR));
-        Assertions.assertEquals(0, Severity.FATAL.compareTo(Severity.FATAL));
+        assertEquals(0, Severity.INFO.compareTo(Severity.INFO));
+        assertEquals(0, Severity.WARN.compareTo(Severity.WARN));
+        assertEquals(0, Severity.ERROR.compareTo(Severity.ERROR));
+        assertEquals(0, Severity.FATAL.compareTo(Severity.FATAL));
     }
 
     @Test
-    public void testSeverityValues()
+    void severityValues()
     {
         // Faces spec requires this list to be sorted by ordinal
         for (int i = 0, sz = FacesMessage.VALUES.size(); i < sz; i++)
         {
             FacesMessage.Severity severity = (Severity) FacesMessage.VALUES.get(i);
-            Assertions.assertEquals(i, severity.ordinal());
+            assertEquals(i, severity.ordinal());
         }
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSeverityValuesMap()
+    void severityValuesMap()
     {
         Map<String, FacesMessage.Severity> severityMap = (Map<String, FacesMessage.Severity>) FacesMessage.VALUES_MAP;
 
         for (Map.Entry<String, FacesMessage.Severity> e : severityMap.entrySet())
         {
-            Assertions.assertEquals(e.getKey(), e.getValue().toString());
+            assertEquals(e.getKey(), e.getValue().toString());
         }
     }
 
     @Test
-    public void testSerialization() throws Exception
+    void serialization() throws Exception
     {
         String summary = "summary";
         String detail = "detail";
         FacesMessage msg = new FacesMessage(summary, detail);
 
         // check if properties are set correctly
-        Assertions.assertEquals(msg.getSeverity(), Severity.INFO);
-        Assertions.assertEquals(msg.getSummary(), summary);
-        Assertions.assertEquals(msg.getDetail(), detail);
-        Assertions.assertEquals(msg.isRendered(), false);
+        assertEquals(Severity.INFO, msg.getSeverity());
+        assertEquals(msg.getSummary(), summary);
+        assertEquals(msg.getDetail(), detail);
+        assertEquals(false, msg.isRendered());
 
         // serialize instance
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -227,10 +230,10 @@ public class FacesMessageTest
         FacesMessage deserialized = (FacesMessage) in.readObject();
 
         // FacesMessage properties must equal!
-        Assertions.assertSame(msg.getSeverity(), deserialized.getSeverity());
-        Assertions.assertEquals(msg.getSummary(), deserialized.getSummary());
-        Assertions.assertEquals(msg.getDetail(), deserialized.getDetail());
-        Assertions.assertEquals(msg.isRendered(), deserialized.isRendered());
+        assertSame(msg.getSeverity(), deserialized.getSeverity());
+        assertEquals(msg.getSummary(), deserialized.getSummary());
+        assertEquals(msg.getDetail(), deserialized.getDetail());
+        assertEquals(msg.isRendered(), deserialized.isRendered());
     }
 
 }
